@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "exports": {
+    "Fmo.BusinessServices/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.2",
+      "compile": {
+        "bin/Debug/Fmo.BusinessServices.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/Fmo.BusinessServices.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Fmo.BusinessServices.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}
