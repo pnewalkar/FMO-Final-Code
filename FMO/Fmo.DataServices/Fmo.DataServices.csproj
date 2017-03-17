@@ -106,8 +106,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Services\" />
+    <Folder Include="Repositories\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
