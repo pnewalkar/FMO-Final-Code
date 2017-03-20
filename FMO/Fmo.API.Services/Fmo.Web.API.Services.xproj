@@ -17,6 +17,9 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fmo.BusinessServices\Fmo.BusinessServices.csproj" />
+    <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj" />
+    <ProjectReference Include="..\Fmo.DataServices\Fmo.DataServices.csproj" />
+    <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet.Web\Microsoft.DotNet.Web.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

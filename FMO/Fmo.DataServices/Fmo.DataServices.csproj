@@ -105,10 +105,10 @@
     <Compile Include="Infrastructure\RepositoryBase.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Interfaces\ISearchDeliveryPointsRepository.cs" />
+    <Compile Include="Repositories\SerarchDeliveryPointsRepository.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
       <Project>{1d645c11-6570-4327-9e60-b6e7d676ba0d}</Project>
