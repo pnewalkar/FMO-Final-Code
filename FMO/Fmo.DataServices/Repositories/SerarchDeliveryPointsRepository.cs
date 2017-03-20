@@ -19,7 +19,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var result = DataContext.DeliveryPoints.Where(x => x.DeliveryPoint_Id == 1).ToList();
+                var result = DataContext.DeliveryPoints.ToList();
                 return result;
             }
             catch(Exception ex)

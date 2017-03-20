@@ -8,19 +8,13 @@ namespace Fmo.DataServices.Entities
         public FMODBContext()
             : base("name=FMODBContext")
         {
-            Database.SetInitializer<FMODBContext>(null);
+           
         }
 
         public FMODBContext(string connString) : base(connString)
         {
-            Database.SetInitializer<FMODBContext>(null);
-        }
-
-        //public static string GetConnectionString()
-        //{
-        //    return new ConfigurationManager.ConnectionStrings["FMODBContext"].ToString();
-        //}
-
+        
+        }      
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
         public virtual DbSet<AMUChangeRequest> AMUChangeRequests { get; set; }
