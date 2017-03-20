@@ -8,18 +8,24 @@ using System.Configuration;
 
 namespace Fmo.DataServices.Infrastructure
 {
-public class DatabaseFactory<TContext> : Disposable, IDatabaseFactory<TContext>
-    where TContext : DbContext
-{
-    private TContext dataContext;
-    public TContext Get()
+    public class DatabaseFactory<TContext> : Disposable, IDatabaseFactory<TContext>
+        where TContext : DbContext
     {
-            return dataContext ?? (dataContext = (TContext)Activator.CreateInstance(typeof(TContext), "Data Source=10.246.8.254 ;Initial Catalog=FMO-AD;User ID=sa;Password=Password1#"));
+        private TContext dataContext;
+
+        public DatabaseFactory(TContext context)
+        {
+            dataContext = context;
         }
-    protected override void DisposeCore()
-    {
-        if (dataContext != null)
-            dataContext.Dispose();
+
+        public TContext Get()
+        {
+            return dataContext ?? (dataContext = (TContext)Activator.CreateInstance(typeof(TContext)));
+        }
+        protected override void DisposeCore()
+        {
+            if (dataContext != null)
+                dataContext.Dispose();
+        }
     }
-}
 }

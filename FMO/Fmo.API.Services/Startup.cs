@@ -47,10 +47,10 @@ namespace Fmo.API.Services
 
 
             //---Adding scope for all classes
+            services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
             services.AddTransient<IDeliveryPointBussinessService, DeliveryPointBusinessService>();
             services.AddTransient<ISearchDeliveryPointsRepository, SearchDeliveryPointsRepository>();
-            //services.AddSingleton<FMODBContext, FMODBContext>();
-            services.AddScoped<FMODBContext>(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
+            //services.AddSingleton<FMODBContext, FMODBContext>();           
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
             services.AddTransient<IDatabaseFactory<FMODBContext>, DatabaseFactory<FMODBContext>>();
         }

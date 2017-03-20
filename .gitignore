@@ -1,1 +1,4 @@
 *.stackdump
+/FMO/Fmo.UI/package.json
+/FMO/Fmo.UI/bower.json
+/FMO/Fmo.UI/.bowerrc
