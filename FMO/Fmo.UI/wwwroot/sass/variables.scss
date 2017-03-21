@@ -1,0 +1,27 @@
+$font-stack: Chevin;
+$font-height: 18px;
+div{
+    background: none;
+}
+
+h1 {
+    color: white;
+    font-family: $font-stack;
+    font-size: $font-height; !important
+}
+
+		.fa{
+			margin-right: 10px;
+			color: white;
+			background: none;
+		}
+		span{
+			margin-right: 10px;
+			color: white;
+			background: none;
+		}
+
+		h2{
+			color: white;
+			background: none;
+		}

@@ -1,0 +1,36 @@
+<div layout="row" >
+  <div flex="auto">
+      <action-menu></action-menu>
+    
+    
+        <!--For Header-View-->
+        <md-content>
+            <md-toolbar>
+                <div class="md-toolbar-tools" style="background: #da202a">
+                    
+                    <span flex="5" ng-controller="AppCtrl">
+                        <md-button class="md-icon-button" aria-label="Side Panel" ng-click="openSideNavPanel()">
+                             <i class="fa fa-bars" aria-hidden="true"></i>
+                        </md-button>
+                    </span>
+                    
+                    <h2 flex="60"><header></header></h2>
+                    
+                    <span flex="10"><search></search></span>
+                    
+                    <span flex="10"><unit-selector></unit-selector></span>
+                    
+                    <span  flex="10"><role-selector></role-selector></span>
+                    
+                    <span flex="5"><task></task></span>
+                </div>
+            </md-toolbar>
+	   </md-content>
+        
+        <!--For Map-View-->
+      <div flex="auto" style="background: yellow">
+          <layers></layers>
+      </div>
+        
+	</div>
+</div>
