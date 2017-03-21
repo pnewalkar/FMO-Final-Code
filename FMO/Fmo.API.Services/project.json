@@ -24,6 +24,15 @@
       "dependencies": {
         "Fmo.BusinessServices": {
           "target": "project"
+        },
+        "Fmo.Common": {
+          "target": "project"
+        },
+        "Fmo.DataServices": {
+          "target": "project"
+        },
+        "Fmo.DTO": {
+          "target": "project"
         }
       }
     }
