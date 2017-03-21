@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.BusinessServices.Services;
+using Fmo.DataServices.Repositories.Interface;
+using Fmo.DataServices.Repositories;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Entities;
 
 namespace Fmo.API.Services
 {
@@ -38,6 +44,15 @@ namespace Fmo.API.Services
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+
+
+            //---Adding scope for all classes
+            services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
+            services.AddTransient<IDeliveryPointBussinessService, DeliveryPointBusinessService>();
+            services.AddTransient<ISearchDeliveryPointsRepository, SearchDeliveryPointsRepository>();
+            //services.AddSingleton<FMODBContext, FMODBContext>();           
+            services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
+            services.AddTransient<IDatabaseFactory<FMODBContext>, DatabaseFactory<FMODBContext>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -50,7 +65,10 @@ namespace Fmo.API.Services
 
             app.UseApplicationInsightsExceptionTelemetry();
 
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("default", "{controller=DeliveryPoints}/{action=Get}/{id?}");
+            });
         }
     }
 }
