@@ -1,5 +1,4 @@
-﻿
-namespace Fmo.DataServices.Entities
+﻿namespace Fmo.DataServices.Entities
 {
     using System.Configuration;
     using System.Data.Entity.Infrastructure;
@@ -11,4 +10,5 @@ namespace Fmo.DataServices.Entities
             return new FMODBContext(ConfigurationManager.ConnectionStrings["FMODBContext"].ToString());
         }
     }
+}
 }
