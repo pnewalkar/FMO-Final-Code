@@ -2,3 +2,5 @@
 /FMO/Fmo.UI/package.json
 /FMO/Fmo.UI/bower.json
 /FMO/Fmo.UI/.bowerrc
+/FMO/Fmo.DTO/StreetName.cs
+/FMO/Fmo.DTO/PostCode.cs

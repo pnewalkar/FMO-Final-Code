@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Entities\AccessLink.cs" />
     <Compile Include="Entities\AddressLocation.cs" />
+    <Compile Include="Entities\AdvanceSearch.cs" />
     <Compile Include="Entities\AMUChangeRequest.cs" />
     <Compile Include="Entities\AreaHazard.cs" />
     <Compile Include="Entities\Block.cs" />
@@ -108,8 +109,10 @@
     <Compile Include="Repositories\Interfaces\IRouteLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\IRouteSimulationRepository.cs" />
     <Compile Include="Repositories\Interfaces\ISearchDeliveryPointsRepository.cs" />
+    <Compile Include="Repositories\Interfaces\ISearchRepository.cs" />
     <Compile Include="Repositories\RouteLogRepository.cs" />
     <Compile Include="Repositories\RouteSimulationRepository.cs" />
+    <Compile Include="Repositories\SearchRepository.cs" />
     <Compile Include="Repositories\SerarchDeliveryPointsRepository.cs" />
   </ItemGroup>
   <ItemGroup />
