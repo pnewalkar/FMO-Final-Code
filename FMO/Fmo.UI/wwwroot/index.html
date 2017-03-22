@@ -1,4 +1,3 @@
-﻿
 <!DOCTYPE html>
 <html ng-app="RMGApp">
 <head>
@@ -7,86 +6,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="../../content/bootstrap/css/bootstrap.css" rel="stylesheet" />
-    <style type="text/css">
-        body {
-            padding-top: 60px;
-            padding-bottom: 40px;
-        }
-    </style>
-    <link href="../../content/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
-    <!--<script src="../scripts/angular.js"></script>-->
-    <script src="https://code.angularjs.org/1.5.9/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular-route.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
-    <script src="app/app.module.js"></script>
-    <script src="app/app.constant.js"></script>
     
-    <script src="app/app.routes.js"></script>
-    <script src="app/fmo/fmoApi.service.js"></script>
-    <script src="app/fmo/delivery-point/delivery-point.component.js"></script>
-    <script src="app/fmo/delivery-point/delivery-point.controller.js"></script>
-    <script src="app/fmo/fmo.controller.js"></script>
+    <!--Styles-->
+    <link rel="shortcut icon" href="//www.royalmailgroup.com/sites/default/files/rmgicon_0.ico"  />
+    <link rel="stylesheet" href="./bower_components/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="./bower_components/angular-material-data-table/dist/md-data-table.min.css">
+    <link rel="stylesheet" href="./bower_components/reset-css/reset.css">
+    <link rel="stylesheet" href="./bower_components/ol3-popup/src/ol3-popup.css">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    
+    <!--Icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    <!--Custom Styles-->
+    <link rel="stylesheet" href="./css/variables.css" /> 
 
-    <!--<script src="app.module.js"></script>
-    <script src="app.routes.js"></script>
-    <script src="fmo/delivery-point/delivery-point.component.js"></script>
-    <script src="fmo/delivery-point/delivery-point.controller.js"></script>
-    <script src="fmo/fmo.controller.js"></script>-->
-    <!--<script src="fmo/fmo.module.js"></script>
-    <script src="fmo/fmo.routes.js"></script>-->
+    <!--Angular Material-->
+      <script src="./bower_components/angular/angular.min.js"></script>
+      <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
+      <script src="./bower_components/angular-aria/angular-aria.min.js"></script>
+      <script src="./bower_components/angular-messages/angular-messages.min.js"></script>
+      <script src="./bower_components/angular-material/angular-material.min.js"></script>
+      <script src="./bower_components/angular-route/angular-route.min.js"></script>
+      <script src="./bower_components/svg-assets-cache.js/svg-assets-cache.js"></script>
+     <script src="./bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    
+    <!--Angular material Data-Table-->
+      <script src="./bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
+    
+    <!--Open Layer-->
+    <!--<script src="./bower_components/ol3-popup/src/ol3-popup.js"></script>-->
+    
+    <!--TurfJS-->
+    
+	      
+    <!--Custom Scripts-->
+    <!--FMO App-->
+    <script src="fmo-app.module.js"></script>
+    <script src="fmo-app.config.js"></script>
+    <!--FMO Home-->
+    <script src="./app/fmo-home.module.js"></script>
+    <script src="./app/fmo-home.controller.js"></script>
+    <script src="./app/fmo-home.component.js"></script>
+    <!--FMO Toolbar Header-->
+    <script src="app/common/fmo-toolbar/fmo-header.module.js"></script>
+    <script src="app/common/fmo-toolbar/fmo-header.controller.js"></script>
+    <script src="app/common/fmo-toolbar/fmo-header.component.js"></script>
+    <!--FMO Action Menu Side Nav-->
+    <script src="./app/common/fmo-action-menu/fmo-sidenav.module.js"></script>
+    <script src="./app/common/fmo-action-menu/fmo-sideNav.component.js"></script>
+    <script src="app/common/fmo-action-menu/fmo-sideNav.controller.js"></script> 
+    <!--FMO Search-->
+    <script src="./app/common/fmo-search/fmo-search.module.js"></script>
+    <script src="./app/common/fmo-search/fmo-search.controller.js"></script>
+    <script src="./app/common/fmo-search/fmo-search.component.js"></script>
+    <!--FMO Unit Selector-->
+    <script src="./app/common/fmo-unit-selector/fmo-unitSelector.module.js"></script>
+    <script src="./app/common/fmo-unit-selector/fmo-unitSelector.controller.js"></script>
+    <script src="./app/common/fmo-unit-selector/fmo-unitSelector.component.js"></script>
+    <!--FMO Role Selector-->
+    <script src="./app/common/fmo-role-selector/fmo-roleSelector.module.js"></script>
+    <script src="./app/common/fmo-role-selector/fmo-roleSelector.controller.js"></script>
+    <script src="./app/common/fmo-role-selector/fmo-roleSelector.component.js"></script>
+    <!--FMO Task-->
+    <script src="./app/common/fmo-task/fmo-task.module.js"></script>
+    <script src="./app/common/fmo-task/fmo-task.controller.js"></script>
+    <script src="./app/common/fmo-task/fmo-task.component.js"></script>    
+    <!--FMO-Layers-->
+    <script src="app/common/fmo-layers/fmo-layers.module.js"></script>
+    <script src="app/common/fmo-layers/fmo-layers.controller.js"></script>
+    <script src="app/common/fmo-layers/fmo-layers.component.js"></script>
+    <!--FMO-Context-->
+    <script src="app/common/fmo-context/fmo-context.module.js"></script>
+    <script src="app/common/fmo-context/fmo-context.controller.js"></script>
+    <script src="app/common/fmo-context/fmo-context.component.js"></script>
+    <!--FMO-Mini Map-->
+    <script src="app/common/fmo-mini-map/fmo-miniMap.module.js"></script>
+    <script src="app/common/fmo-mini-map/fmo-miniMap.controller.js"></script>
+    <script src="app/common/fmo-mini-map/fmo-miniMap.component.js"></script>
+    <!--FMO-Map Keys-->
+    <script src="app/common/fmo-map-keys/fmo-mapKeys.module.js"></script>
+    <script src="app/common/fmo-map-keys/fmo-mapKeys.controller.js"></script>
+    <script src="app/common/fmo-map-keys/fmo-mapKeys.component.js"></script>
+    <!--Address Point-->
+    <script src="app/fmo/address-point/address-point.module.js"></script>
+    <script src="app/fmo/address-point/address-point.component.js"></script>
 </head>
 <body>
-
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="brand" href="#">Royal Mail Group</a>
-                <div class="nav-collapse collapse">
-                    <ul class="nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a ui-sref="user">About</a></li>
-
-                        <li><a href="#contact">Contact</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li class="nav-header">Nav header</li>
-                                <li><a href="#">Separated link</a></li>
-                                <li><a href="#">One more separated link</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <form class="navbar-form pull-right">
-                        <input class="span2" type="text" placeholder="Email">
-                        <input class="span2" type="password" placeholder="Password">
-                        <button type="submit" class="btn">Sign in</button>
-                    </form>
-                </div><!--/.nav-collapse -->
-            </div>
-        </div>
-    </div>
-    <div>
-        <div ui-view></div>
-    </div>
-
-
-    <div class="container">
-        <hr>
-        <footer>
-            <p>&copy; Company 2013</p>
-        </footer>
-
-    </div> <!-- /container -->
-
+<fmo-home></fmo-home>
 </body>
 </html>
