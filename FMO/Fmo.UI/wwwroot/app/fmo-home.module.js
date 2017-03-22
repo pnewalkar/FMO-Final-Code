@@ -1,0 +1,11 @@
+angular.module('fmoCommonHome',['fmoCommonHeader',
+                          'fmoCommonActionMenu',
+                          'fmoCommonSearch',
+                          'fmoCommonUnitSelector',
+                          'fmoCommonRoleSelector',
+                          'fmoCommonTask',
+                          'fmoContext',
+                          'fmoMiniMap',
+                          'fmoMapKeys',
+                          'fmoLayers'
+                         ]);
