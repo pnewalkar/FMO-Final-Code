@@ -105,7 +105,11 @@
     <Compile Include="Infrastructure\RepositoryBase.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Interfaces\IRouteLogRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IRouteSimulationRepository.cs" />
     <Compile Include="Repositories\Interfaces\ISearchDeliveryPointsRepository.cs" />
+    <Compile Include="Repositories\RouteLogRepository.cs" />
+    <Compile Include="Repositories\RouteSimulationRepository.cs" />
     <Compile Include="Repositories\SerarchDeliveryPointsRepository.cs" />
   </ItemGroup>
   <ItemGroup />
