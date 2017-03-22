@@ -1,0 +1,29 @@
+$font-stack: Chevin;
+$font-height: 18px;
+
+
+.md-toolbar-tools{
+  background: #da202a;
+}
+
+h2 {
+    color: white;
+    font-family: $font-stack;
+    font-size: $font-height; !important
+}
+
+		.fa{
+			margin-right: 10px;
+			color: white;
+			background: none;
+		}
+		span{
+			margin-right: 10px;
+			color: white;
+			background: none;
+		}
+
+		h2{
+			color: white;
+			background: none;
+		}

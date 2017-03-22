@@ -1,7 +1,7 @@
-﻿MyApp.factory('fmoService',['$http', function ($http) {
+﻿MyApp.factory('fmoService', ['$http', '__env', function ($http, __env) {
     var fmoService = {};
 
-   
+    var url = __env;
     //api.deleteUser = deleteUser;
 
     
@@ -27,7 +27,7 @@
         //objEmployee = encodeURIComponent(objEmployee);
         
         //return $http.post('http://localhost:62032/api/Home/getheroes', JSON.stringify({ name: "jitendra", address: "shirpur", city: "shirpur", mobileno: "9619183061" }), { headers: {"Content-Type":"application/json"}});
-        return $http.post('http://localhost:62032/api/Home/GetHeroes', objEmployee);
+        return $http.post(url.apiUrl + '/api/Home/GetHeroes', objEmployee);
       
     };
 
