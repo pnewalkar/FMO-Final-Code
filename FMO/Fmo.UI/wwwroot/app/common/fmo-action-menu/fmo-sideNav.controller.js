@@ -1,10 +1,9 @@
 
 angular
-  .module('fmoCommonActionMenu')
-
-
-  .controller('AppCtrl', function ($scope, $mdSidenav) {
-    $scope.openSideNavPanel = function() {
+    .module('fmoCommonActionMenu')
+    .controller("fmoCommonActionMenuCtrl", fmoCommonActionMenuCtrl)
+    function fmoCommonActionMenuCtrl ($scope, $mdSidenav) {
+        $scope.openSideNavPanel = function() {
         $mdSidenav('left').open();
     };
-});
+};
