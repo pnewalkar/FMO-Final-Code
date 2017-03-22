@@ -8,8 +8,8 @@
             <md-toolbar>
                 <div class="md-toolbar-tools" style="background: #da202a">
                     
-                    <span flex="5" ng-controller="AppCtrl">
-                        <md-button class="md-icon-button" aria-label="Side Panel" ng-click="openSideNavPanel()">
+                    <span flex="5" ng-controller="AppCtrl" aria-label="Side Panel" ng-click="openSideNavPanel()">
+                        <md-button class="md-icon-button">
                              <i class="fa fa-bars" aria-hidden="true"></i>
                         </md-button>
                     </span>
@@ -28,8 +28,31 @@
 	   </md-content>
         
         <!--For Map-View-->
-      <div flex="auto" style="background: yellow">
-          <layers></layers>
+      <div flex="auto" layout="row">
+          
+          <span flex="33">
+               <context></context>  
+          </span>
+          
+          <span flex="33">
+                Map-View
+          </span>
+          
+          <span flex="33" layout="column">
+              <span flex="50">
+                   <mini-map></mini-map>
+              </span>
+              
+              <span flex="50">
+                   <layers></layers> 
+              </span>
+              
+              <span flex="50">
+                   <map-keys></map-keys>
+              </span>
+              
+          </span>
+          
       </div>
         
 	</div>

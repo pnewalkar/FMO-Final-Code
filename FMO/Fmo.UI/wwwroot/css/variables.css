@@ -1,7 +1,45 @@
-div {
-  background: none; }
+.md-toolbar-tools{
+  background: #da202a;
+}
 
-h1 {
-  color: white;
+.brandName, .unitSelector, .roleSelector,.searchBar {
+   color: white;
   font-family: Chevin;
-  font-size: 18px; }
+  font-size: 18px;  
+  background: none;
+}
+
+.fa{
+     font-size: 18px; 
+    color: white;
+}
+
+.unitSelector{
+    margin-left: 15px;
+}
+.customPanel{
+    position: absolute;
+    margin-top: 20px;
+}
+
+.customRight1Panel{
+    margin-top: 130px;
+}
+
+.customRight2Panel{
+    margin-top: 250px;
+}
+
+i.fa.fa-plus-circle {
+    float: right;
+    color:black;
+}
+/*.panel-heading .accordion-toggle:after {
+    font-family: 'Glyphicons Halflings'; 
+    content: "\f055";   
+    float: right;       
+    color: grey;      
+}
+.panel-heading .accordion-toggle.collapsed:after {
+    content: "\f056"; 
+}*/
