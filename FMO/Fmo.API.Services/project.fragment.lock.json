@@ -8,6 +8,8 @@
         "bin/Debug/Fmo.BusinessServices.dll": {}
       },
       "runtime": {
+        "../packages/AutoMapper.6.0.1/lib/net45/AutoMapper.dll": {},
+        "../packages/System.ValueTuple.4.3.0/lib/netstandard1.0/System.ValueTuple.dll": {},
         "bin/Debug/Fmo.BusinessServices.dll": {}
       },
       "contentFiles": {
