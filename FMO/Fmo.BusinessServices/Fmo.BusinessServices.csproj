@@ -41,8 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IDeliveryPointBussinessService.cs" />
+    <Compile Include="Interfaces\ISearchBussinessService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeliveryPointBusinessService.cs" />
+    <Compile Include="Services\SearchBussinessService.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
