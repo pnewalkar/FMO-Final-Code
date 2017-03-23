@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Fmo.DataServices.Entities;
+using Fmo.Entities;
 
 
 namespace Fmo.BusinessServices.Interfaces

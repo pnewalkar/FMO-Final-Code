@@ -50,54 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\AccessLink.cs" />
-    <Compile Include="Entities\AddressLocation.cs" />
-    <Compile Include="Entities\AdvanceSearch.cs" />
-    <Compile Include="Entities\AMUChangeRequest.cs" />
-    <Compile Include="Entities\AreaHazard.cs" />
-    <Compile Include="Entities\Block.cs" />
-    <Compile Include="Entities\BlockSequence.cs" />
-    <Compile Include="Entities\Context\FMODBContext.cs" />
-    <Compile Include="Entities\Context\FMODBContextFactory.cs" />
-    <Compile Include="Entities\DeliveryGroup.cs" />
-    <Compile Include="Entities\DeliveryPoint.cs" />
-    <Compile Include="Entities\DeliveryRoute.cs" />
-    <Compile Include="Entities\DeliveryRouteActivity.cs" />
-    <Compile Include="Entities\DeliveryUnitLocation.cs" />
-    <Compile Include="Entities\DeliveryUnitPostcodeSector.cs" />
-    <Compile Include="Entities\GroupHazard.cs" />
-    <Compile Include="Entities\NetworkLink.cs" />
-    <Compile Include="Entities\NetworkLinkReference.cs" />
-    <Compile Include="Entities\NetworkNode.cs" />
-    <Compile Include="Entities\NetworkReference.cs" />
-    <Compile Include="Entities\Notification.cs" />
-    <Compile Include="Entities\OSAccessRestriction.cs" />
-    <Compile Include="Entities\OSConnectingLink.cs" />
-    <Compile Include="Entities\OSConnectingNode.cs" />
-    <Compile Include="Entities\OSPathLink.cs" />
-    <Compile Include="Entities\OSPathNode.cs" />
-    <Compile Include="Entities\OSRestrictionForVehicle.cs" />
-    <Compile Include="Entities\OSRoadLink.cs" />
-    <Compile Include="Entities\OSRoadNode.cs" />
-    <Compile Include="Entities\OSTurnRestriction.cs" />
-    <Compile Include="Entities\POBox.cs" />
-    <Compile Include="Entities\PointHazard.cs" />
-    <Compile Include="Entities\Polygon.cs" />
-    <Compile Include="Entities\PolygonObject.cs" />
-    <Compile Include="Entities\PostalAddress.cs" />
-    <Compile Include="Entities\Postcode.cs" />
-    <Compile Include="Entities\PostcodeArea.cs" />
-    <Compile Include="Entities\PostcodeDistrict.cs" />
-    <Compile Include="Entities\PostcodeSector.cs" />
-    <Compile Include="Entities\ReferenceData.cs" />
-    <Compile Include="Entities\ReferenceDataCategory.cs" />
-    <Compile Include="Entities\RMGDeliveryPoint.cs" />
-    <Compile Include="Entities\RMGLink.cs" />
-    <Compile Include="Entities\RMGNode.cs" />
-    <Compile Include="Entities\RoadName.cs" />
-    <Compile Include="Entities\Scenario.cs" />
-    <Compile Include="Entities\SpecialInstruction.cs" />
-    <Compile Include="Entities\StreetName.cs" />
+    <Compile Include="DBContext\FMODBContext.cs" />
+    <Compile Include="DBContext\FMODBContextFactory.cs" />
     <Compile Include="Infrastructure\DatabaseFactory.cs" />
     <Compile Include="Infrastructure\Disposable.cs" />
     <Compile Include="Infrastructure\IDatabaseFactory.cs" />
@@ -120,6 +74,10 @@
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
       <Project>{1d645c11-6570-4327-9e60-b6e7d676ba0d}</Project>
       <Name>Fmo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FMO.Entities\Fmo.Entities.csproj">
+      <Project>{355491a6-65fa-4145-bb68-74e0e1576433}</Project>
+      <Name>Fmo.Entities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

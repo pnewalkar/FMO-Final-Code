@@ -1,4 +1,4 @@
-﻿namespace Fmo.DataServices.Entities
+﻿namespace Fmo.DataServices.DBContext
 {
     using System.Configuration;
     using System.Data.Entity.Infrastructure;
