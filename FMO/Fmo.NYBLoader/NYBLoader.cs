@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using System.IO;
+using System.IO.Compression;
 
 namespace Fmo.NYBLoader
 {
@@ -16,8 +17,24 @@ namespace Fmo.NYBLoader
             List<PostalAddress> lstAddressDetails = null;
             try
             {
-              //  string strNybDetails = File.ReadAllText(strPath, Encoding.ASCII);
-                string[] arrNybDetails = File.ReadAllLines(strPath, Encoding.ASCII);//strNybDetails.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                string strLine = string.Empty;
+
+                ZipArchive zip = ZipFile.OpenRead(strPath);
+
+                foreach (ZipArchiveEntry entry in zip.Entries)
+                {
+
+                    using (Stream stream = entry.Open())
+                    {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            strLine = reader.ReadToEnd();
+                        }
+                    }
+                }
+
+                string[] arrNybDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                Array.Resize(ref arrNybDetails, arrNybDetails.Length - 1);
 
                 if (arrNybDetails.Count() > 0 && ValidateFile(arrNybDetails))
                 {
@@ -32,7 +49,7 @@ namespace Fmo.NYBLoader
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
 
-                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM")) && n.IsValidData == false).ToList();
+                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
 
                     }
                 }

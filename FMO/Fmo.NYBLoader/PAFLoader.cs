@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using System.IO;
+using System.IO.Compression;
 
 namespace Fmo.NYBLoader
 {
@@ -16,8 +17,25 @@ namespace Fmo.NYBLoader
             List<PostalAddress> lstAddressDetails = null;
             try
             {
-                //  string strPAFDetails = File.ReadAllText(strPath, Encoding.ASCII);
-                string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);//strNybDetails.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                //string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);
+                string strLine = string.Empty;
+
+                ZipArchive zip = ZipFile.OpenRead(strPath);
+
+                foreach (ZipArchiveEntry entry in zip.Entries)
+                {
+
+                    using (Stream stream = entry.Open())
+                    {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            strLine = reader.ReadToEnd();
+                        }
+                    }
+                }
+
+                string[] arrPAFDetails= strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
 
                 if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {
