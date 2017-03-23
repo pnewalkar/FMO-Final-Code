@@ -1,4 +1,4 @@
-﻿using Fmo.DataServices.Entities;
+﻿using Fmo.Entities;
 using Fmo.DataServices.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;

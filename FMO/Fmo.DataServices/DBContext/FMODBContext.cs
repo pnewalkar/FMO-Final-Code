@@ -1,7 +1,8 @@
-namespace Fmo.DataServices.Entities
+namespace Fmo.DataServices.DBContext
 {
     using System.Configuration;
     using System.Data.Entity;
+    using Fmo.Entities;
 
     public partial class FMODBContext : DbContext
     {

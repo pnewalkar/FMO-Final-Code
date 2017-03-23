@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.Entity;
-using Fmo.DataServices.Repositories.Interface;
+using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Entities;
+using Fmo.Entities;
+using Fmo.DataServices.DBContext;
 
 namespace Fmo.DataServices.Repositories
 {

@@ -1,7 +1,7 @@
 ﻿using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
 using Fmo.Common.TestSupport;
-using Fmo.DataServices.Repositories.Interface;
+using Fmo.DataServices.Repositories.Interfaces;
 using Moq;
 using NUnit.Framework;
 
