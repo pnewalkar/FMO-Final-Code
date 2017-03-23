@@ -49,5 +49,15 @@ namespace Fmo.DTO
 
         public string POBoxNumber { get; set; }
 
+        public bool IsValidData { get; set; }
+
+        public string Date { get; set; }
+
+        public string Time { get; set; }
+
+        public string AmendmentType { get; set; }
+
+        public string AmendmentDesc { get; set; }
+
     }
 }
