@@ -1,4 +1,4 @@
-angular.module('fmoCommonHome',['fmoCommonHeader',
+angular.module('fmoCommonHome', ['fmoCommonHeader', 'ngRoute',
                           'fmoCommonActionMenu',
                           'fmoCommonSearch',
                           'fmoCommonUnitSelector',
@@ -7,5 +7,6 @@ angular.module('fmoCommonHome',['fmoCommonHeader',
                           'fmoContext',
                           'fmoMiniMap',
                           'fmoMapKeys',
-                          'fmoLayers'
-                         ]);
+                          'fmoLayers',
+                          'mapView'
+]);

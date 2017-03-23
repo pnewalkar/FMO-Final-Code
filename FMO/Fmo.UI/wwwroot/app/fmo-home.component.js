@@ -3,5 +3,5 @@ angular.module('fmoCommonHome')
     restrict: 'E',
     scope: {},
     templateUrl: 'app/fmo-home.html',
-    controller: 'fmoCommonHomeCtrl'
+    controller: 'FMOHomeController as vm'
   });

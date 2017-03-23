@@ -34,16 +34,16 @@
       <script src="./bower_components/angular-material/angular-material.min.js"></script>
       <script src="./bower_components/angular-route/angular-route.min.js"></script>
       <script src="./bower_components/svg-assets-cache.js/svg-assets-cache.js"></script>
-     <script src="./bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+     <!--<script src="./bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>-->
     
     <!--Angular material Data-Table-->
       <script src="./bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
     
     <!--Open Layer-->
     <!--<script src="./bower_components/ol3-popup/src/ol3-popup.js"></script>-->
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.css"/>
     <!--TurfJS-->
-    
+    <script src="https://openlayers.org/en/v4.0.1/build/ol.js" type="text/javascript"></script>
 	      
     <!--Custom Scripts-->
     <!--FMO App-->
@@ -54,6 +54,32 @@
     <script src="./app/fmo-home.module.js"></script>
     <script src="./app/fmo-home.controller.js"></script>
     <script src="./app/fmo-home.component.js"></script>
+
+
+    <!--<script src="map-view/map-view.module.js"></script>
+    <script src="map-view/map-view.component.js"></script>
+    <script src="map-view/map-view.controller.js"></script>
+    <script src="map-view/map-view.factory.js"></script>
+    <script src="map-view/map-view.service.js"></script>
+    <script src="map-view/map-styles.factory.js"></script>-->
+
+    <script src="app/common/fmo-map-view/map-view.module.js"></script>
+
+    <script src="app/common/fmo-map-view/map-view.component.js"></script>
+
+    <script src="app/common/fmo-map-view/map-view.controller.js"></script>
+    <script src="app/common/fmo-map-view/map-view.factory.js"></script>
+
+    <script src="app/common/fmo-map-view/map-view.service.js"></script>
+    <script src="app/common/fmo-map-view/map-styles.factory.js"></script>
+
+
+    <!--<link href="app/map-view.css" rel="stylesheet" />
+
+    <script src="app/map-view.factory.js"></script>
+    <script src="app/map-view.service.js"></script>
+    <script src="app/map-styles.factory.js"></script>-->
+
     <!--FMO Toolbar Header-->
     <script src="app/common/fmo-toolbar/fmo-header.module.js"></script>
     <script src="app/common/fmo-toolbar/fmo-header.controller.js"></script>
