@@ -9,10 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
-using Fmo.DataServices.Repositories.Interface;
+using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Entities;
+using Fmo.DataServices.DBContext;
 
 namespace Fmo.API.Services
 {
@@ -45,6 +45,16 @@ namespace Fmo.API.Services
 
             services.AddMvc();
 
+            services.AddCors(
+                options => options.AddPolicy("AllowCors",
+                    builder =>
+                    {
+                        builder
+                            .AllowAnyOrigin() 
+                            .WithMethods("GET", "PUT", "POST", "DELETE")
+                            .AllowAnyHeader();
+                    })
+            );
 
             //---Adding scope for all classes
             services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
@@ -69,6 +79,7 @@ namespace Fmo.API.Services
             {
                 routes.MapRoute("default", "{controller=DeliveryPoints}/{action=Get}/{id?}");
             });
+            app.UseCors("AllowCors");
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using Fmo.Common.TestSupport;
-using Fmo.DataServices.Entities;
+using Fmo.Entities;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
-using Fmo.DataServices.Repositories.Interface;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DataServices.DBContext;
 using Moq;
 using NUnit.Framework;
 

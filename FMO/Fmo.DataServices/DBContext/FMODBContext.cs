@@ -1,7 +1,8 @@
-namespace Fmo.DataServices.Entities
+namespace Fmo.DataServices.DBContext
 {
     using System.Configuration;
     using System.Data.Entity;
+    using Fmo.Entities;
 
     public partial class FMODBContext : DbContext
     {
@@ -60,6 +61,8 @@ namespace Fmo.DataServices.Entities
         public virtual DbSet<Scenario> Scenarios { get; set; }
         public virtual DbSet<SpecialInstruction> SpecialInstructions { get; set; }
         public virtual DbSet<StreetName> StreetNames { get; set; }
+
+        public virtual DbSet<AdvanceSearch> AdvanceSearch { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

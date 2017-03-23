@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
-using Fmo.DataServices.Repositories.Interface;
-using Fmo.DataServices.Entities;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
 {
