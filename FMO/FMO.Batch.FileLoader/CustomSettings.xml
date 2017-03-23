@@ -17,11 +17,11 @@
     </ExecutableArguments>
   </CustomFolderSettings>
   <CustomFolderSettings FolderID="ExampleNYB_files">
-    <FolderEnabled>false</FolderEnabled>
+    <FolderEnabled>true</FolderEnabled>
     <FolderDescription>
       Files in format NYB corresponding to the example project
     </FolderDescription>
-    <FolderFilter>*.NYB</FolderFilter>
+    <FolderFilter>*</FolderFilter>
     <FolderPath>D:\Project\SourceFiles\ConsoleApplication1\TestData\PAF\</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>

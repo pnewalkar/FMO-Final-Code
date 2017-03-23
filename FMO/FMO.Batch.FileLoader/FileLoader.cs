@@ -21,10 +21,23 @@ namespace FMO.Batch.FileLoader
     {
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
+        private readonly IKernel kernal;
 
         public FileLoader()
         {
+            kernal = new StandardKernel();
+            Register(kernal);
             InitializeComponent();
+        }
+
+        protected static void Register(IKernel kernel)
+        {
+            kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
+            kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
+        }
+        protected T Get<T>()
+        {
+            return kernal.Get<T>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -135,10 +148,16 @@ namespace FMO.Batch.FileLoader
 
             try
             {
-                IKernel kernal = new StandardKernel();
-                kernal.Bind<INYBLoader>().To<NYBLoader>();
-                var nybInstance = kernal.Get<NYBLoader>();
-                List<PostalAddress> lstAddressDetails = nybInstance.LoadNYBDetailsFromCSV(strFilePath);
+                List<PostalAddress> lstAddressDetails = kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(strFilePath);
+
+
+
+
+                File.Move(strFilePath, "Processed folder");
+                //IKernel kernal = new StandardKernel();
+                //kernal.Bind<INYBLoader>().To<NYBLoader>();
+                //var nybInstance = kernal.Get<NYBLoader>();
+                //List<PostalAddress> lstAddressDetails = nybInstance.LoadNYBDetailsFromCSV(strFilePath);
 
             }
             catch (Exception ex)
