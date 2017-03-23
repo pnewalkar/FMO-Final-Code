@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Fmo.DTO;
+using Fmo.NYBLoader;
+using Fmo.NYBLoader.Interfaces;
+using Ninject;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -131,10 +135,10 @@ namespace FMO.Batch.FileLoader
 
             try
             {
-                //IKernel kernal = new StandardKernel();
-                //kernal.Bind<INYBLoader>().To<NYBLoader>();
-                //var nybInstance = kernal.Get<NYBLoader>();
-                //List<PostalAddressDTO> lstAddressDetails = nybInstance.LoadNYBDetailsFromCSV(strFilePath);
+                IKernel kernal = new StandardKernel();
+                kernal.Bind<INYBLoader>().To<NYBLoader>();
+                var nybInstance = kernal.Get<NYBLoader>();
+                List<PostalAddress> lstAddressDetails = nybInstance.LoadNYBDetailsFromCSV(strFilePath);
 
             }
             catch (Exception ex)
