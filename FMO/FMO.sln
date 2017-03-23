@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMO.Batch.FileLoader", "FMO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.NYBLoader", "Fmo.NYBLoader\Fmo.NYBLoader.csproj", "{4E169F3D-90C8-4889-96AD-9C0D51C5C174}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMO.Entities", "FMO.Entities\FMO.Entities.csproj", "{355491A6-65FA-4145-BB68-74E0E1576433}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{4E169F3D-90C8-4889-96AD-9C0D51C5C174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E169F3D-90C8-4889-96AD-9C0D51C5C174}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E169F3D-90C8-4889-96AD-9C0D51C5C174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{355491A6-65FA-4145-BB68-74E0E1576433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{355491A6-65FA-4145-BB68-74E0E1576433}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{355491A6-65FA-4145-BB68-74E0E1576433}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{355491A6-65FA-4145-BB68-74E0E1576433}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
