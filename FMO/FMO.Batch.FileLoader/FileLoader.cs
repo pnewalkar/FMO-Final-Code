@@ -1,4 +1,5 @@
 ﻿using Fmo.DTO;
+using Fmo.MessageBrokerCore.Messaging;
 using Fmo.NYBLoader;
 using Fmo.NYBLoader.Interfaces;
 using Ninject;
@@ -148,8 +149,13 @@ namespace FMO.Batch.FileLoader
 
             try
             {
-                List<PostalAddress> lstAddressDetails = kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(strFilePath);
-
+                List<PostalAddress> lstAddressDetails = kernal.Get<PAFLoader>().LoadPAFDetailsFromCSV(strFilePath);
+                IMessageBroker msgBroker = new MessageBroker();
+                foreach (var addDetail in lstAddressDetails)
+                {
+                    IMessage msg = msgBroker.CreateMessage("4545", MessageType.PostalAddress);
+                    msgBroker.SendMessage(msg);
+                }
 
 
 

@@ -27,8 +27,8 @@ namespace Fmo.MessageBrokerCore.Messaging
                     break;
 
             }
-
-            return new MessageAdapter(fileType);
+            IMessageAdapter objAdapter=new  MessageAdapter(fileType);
+            return objAdapter;
 
         }
     }
