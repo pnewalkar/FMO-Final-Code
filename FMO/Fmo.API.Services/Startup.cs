@@ -9,10 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
-using Fmo.DataServices.Repositories.Interface;
+using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Entities;
+using Fmo.DataServices.DBContext;
 
 namespace Fmo.API.Services
 {

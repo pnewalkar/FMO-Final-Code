@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FMO.Entities")]
+[assembly: AssemblyTitle("Fmo.Entities")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Capgemini")]
-[assembly: AssemblyProduct("FMO.Entities")]
+[assembly: AssemblyProduct("Fmo.Entities")]
 [assembly: AssemblyCopyright("Copyright © Capgemini 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -1,4 +1,4 @@
-namespace FMO.Entities
+namespace Fmo.Entities
 {
     using System;
     using System.Collections.Generic;

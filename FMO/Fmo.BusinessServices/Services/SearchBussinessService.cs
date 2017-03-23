@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DataServices.Entities;
+using Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMO.Entities
+namespace Fmo.Entities
 {
     public partial class AdvanceSearch
     {
