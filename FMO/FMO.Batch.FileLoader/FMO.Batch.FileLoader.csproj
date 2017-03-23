@@ -72,7 +72,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CustomSettings.xml" />
+    <Content Include="CustomSettings.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FileLoader.resx">
@@ -86,6 +88,10 @@
     <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj">
       <Project>{43fc012e-5274-4cf4-8689-97b3ce067c11}</Project>
       <Name>Fmo.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FMO.MessageBrokerCore\Fmo.MessageBrokerCore.csproj">
+      <Project>{10a130a3-105f-4df9-9d74-00d252b5acc7}</Project>
+      <Name>Fmo.MessageBrokerCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fmo.NYBLoader\Fmo.NYBLoader.csproj">
       <Project>{4e169f3d-90c8-4889-96ad-9c0d51c5c174}</Project>

@@ -1,0 +1,95 @@
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+#mini-map{
+    height: 150px;
+    width: 244px;
+}
+
+.ol-zoom {
+    top: 0;
+    left: auto;
+    position:relative;
+}
+
+.right-panels {
+    right: 5px;
+    top:70px;
+    position: absolute;
+    float: right;
+}
+
+.right-panels-bottom {
+    right: 5px;
+    bottom: 35px;
+    position: absolute;
+    float: right;
+}
+
+.middle-panels-top {
+    left: 45%;
+    top: 70px;
+    position: absolute;
+}
+
+.left-panels {
+    left:5px;
+    top:70px;
+    position: absolute;
+    height:calc(100% - 85px);
+    pointer-events: none;
+}
+
+.tooltip {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+.tooltip-measure {
+    opacity: 1;
+    font-weight: bold;
+}
+.tooltip-static {
+    background-color: #ffcc33;
+    color: black;
+    border: 1px solid white;
+}
+.tooltip-measure:before,
+.tooltip-static:before {
+    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    margin-left: -7px;
+    left: 50%;
+}
+.tooltip-static:before {
+    border-top-color: #ffcc33;
+}
+
+.context-panel {
+    height:calc(100% - 30px);
+}
+
+.address-panel {
+    text-align:center;
+}
+.address-text {
+    height: 36px;
+    line-height: 36px;
+    font-weight: bold;
+}
+
+.zoom-control{
+    position: absolute;
+    left: -35px;
+    top: 0;
+}

@@ -10,13 +10,14 @@ using System.IO.Compression;
 
 namespace Fmo.NYBLoader
 {
-    public class NYBLoader : INYBLoader
+    public class PAFLoader : IPAFLoader
     {
-        public List<PostalAddress> LoadNYBDetailsFromCSV(string strPath)
+        public List<PostalAddress> LoadPAFDetailsFromCSV(string strPath)
         {
             List<PostalAddress> lstAddressDetails = null;
             try
             {
+                //string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);
                 string strLine = string.Empty;
 
                 ZipArchive zip = ZipFile.OpenRead(strPath);
@@ -33,23 +34,23 @@ namespace Fmo.NYBLoader
                     }
                 }
 
-                string[] arrNybDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                Array.Resize(ref arrNybDetails, arrNybDetails.Length - 1);
+                string[] arrPAFDetails= strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
 
-                if (arrNybDetails.Count() > 0 && ValidateFile(arrNybDetails))
+                if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {
-                    lstAddressDetails = arrNybDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
+                    lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
 
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
 
-                        //Validate NYB Details
-                        ValidateNYBDetails(lstAddressDetails);
+                        //Validate PAF Details
+                        ValidatePAFDetails(lstAddressDetails);
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
 
-                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM")) && n.IsValidData == false).ToList();
 
                     }
                 }
@@ -74,12 +75,12 @@ namespace Fmo.NYBLoader
             {
                 foreach (string line in arrLines)
                 {
-                    if (line.Count(n => n == ',') != 15)
+                    if (line.Count(n => n == ',') != 19)
                     {
                         isFileValid = false;
                         break;
                     }
-                    if (line.ToCharArray().Count() > 507)
+                    if (line.ToCharArray().Count() > 534)
                     {
                         isFileValid = false;
                         break;
@@ -95,30 +96,34 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
-        private PostalAddress MapNYBDetailsToDTO(string csvLine)
+        private PostalAddress MapPAFDetailsToDTO(string csvLine)
         {
             PostalAddress objAddDTO = new PostalAddress();
             try
             {
                 string[] values = csvLine.Split(',');
-                if (values.Count() == 16)
+                if (values.Count() == 20)
                 {
-                    objAddDTO.Postcode = values[0];
-                    objAddDTO.PostTown = values[1];
-                    objAddDTO.DependentLocality = values[2];
-                    objAddDTO.DoubleDependentLocality = values[3];
-                    objAddDTO.Thoroughfare = values[4];
-                    objAddDTO.DependentThoroughfare = values[5];
-                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[6]) && !string.IsNullOrWhiteSpace(values[6]) ? Convert.ToInt16(values[6]) : Convert.ToInt16(0);
-                    objAddDTO.BuildingName = values[7];
-                    objAddDTO.SubBuildingName = values[8];
-                    objAddDTO.POBoxNumber = values[9];
-                    objAddDTO.DepartmentName = values[10];
-                    objAddDTO.OrganisationName = values[11];
-                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) && !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
-                    objAddDTO.PostcodeType = values[13];
-                    objAddDTO.SmallUserOrganisationIndicator = values[14];
-                    objAddDTO.DeliveryPointSuffix = values[15];
+                    objAddDTO.Date = values[0];
+                    objAddDTO.Time = values[1];
+                    objAddDTO.AmendmentType = values[2];
+                    objAddDTO.AmendmentDesc = values[3];
+                    objAddDTO.Postcode = values[4];
+                    objAddDTO.PostTown = values[5];
+                    objAddDTO.DependentLocality = values[6];
+                    objAddDTO.DoubleDependentLocality = values[7];
+                    objAddDTO.Thoroughfare = values[8];
+                    objAddDTO.DependentThoroughfare = values[9];
+                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[10]) && !string.IsNullOrWhiteSpace(values[10]) ? Convert.ToInt16(values[10]) : Convert.ToInt16(0);
+                    objAddDTO.BuildingName = values[11];
+                    objAddDTO.SubBuildingName = values[12];
+                    objAddDTO.POBoxNumber = values[13];
+                    objAddDTO.DepartmentName = values[14];
+                    objAddDTO.OrganisationName = values[15];
+                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[16]) && !string.IsNullOrWhiteSpace(values[16]) ? Convert.ToInt32(values[16]) : 0;
+                    objAddDTO.PostcodeType = values[17];
+                    objAddDTO.SmallUserOrganisationIndicator = values[18];
+                    objAddDTO.DeliveryPointSuffix = values[19];
                 }
 
             }
@@ -133,7 +138,7 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
-        private void ValidateNYBDetails(List<PostalAddress> lstAddress)
+        private void ValidatePAFDetails(List<PostalAddress> lstAddress)
         {
 
             try
