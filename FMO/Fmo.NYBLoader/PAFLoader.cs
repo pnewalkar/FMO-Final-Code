@@ -15,23 +15,12 @@ namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private readonly IKernel kernal;
+        //private readonly IKernel kernal;
         private readonly IMessageBroker msgBroker;
 
-        public PAFLoader(IMessageBroker messageBroaker)
+        public PAFLoader(IMessageBroker messageBroker)
         {
-            kernal = new StandardKernel();
-            Register(kernal);
-            this.msgBroker = messageBroaker;
-        }
-
-        protected static void Register(IKernel kernel)
-        {
-            kernel.Bind<IMessageBroker>().To<MessageBroker>().InSingletonScope();
-        }
-        protected T Get<T>()
-        {
-            return kernal.Get<T>();
+            this.msgBroker = messageBroker;
         }
         public void LoadPAFDetailsFromCSV(string strPath)
         {

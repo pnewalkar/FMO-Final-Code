@@ -23,6 +23,9 @@
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
+        static INYBLoader nybLoader = default(INYBLoader);
+        static IPAFLoader pafLoader = default(IPAFLoader);
+        static IMessageBroker msgBroker = default(IMessageBroker);
 
         public FileLoader()
         {
@@ -35,11 +38,11 @@
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
-        }
+            kernel.Bind<IMessageBroker>().To<MessageBroker>().InSingletonScope();
 
-        protected T Get<T>()
-        {
-            return kernal.Get<T>();
+            nybLoader = kernel.Get<INYBLoader>();
+            pafLoader = kernel.Get<IPAFLoader>();
+            msgBroker = kernel.Get<IMessageBroker>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -145,7 +148,7 @@
                 switch (action_Args)
                 {
                     case "PAF":
-                        kernal.Get<PAFLoader>().LoadPAFDetailsFromCSV(fileName);
+                        pafLoader.LoadPAFDetailsFromCSV(fileName);
                         break;
                     case "NYB":
                         kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(fileName);
