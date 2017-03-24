@@ -16,30 +16,28 @@ namespace Fmo.NYBLoader
     public class PAFLoader : IPAFLoader
     {
         private readonly IKernel kernal;
+        private readonly IMessageBroker msgBroker;
 
-        public PAFLoader()
+        public PAFLoader(IMessageBroker messageBroaker)
         {
             kernal = new StandardKernel();
             Register(kernal);
+            this.msgBroker = messageBroaker;
         }
 
         protected static void Register(IKernel kernel)
         {
-            kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
-            kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
+            kernel.Bind<IMessageBroker>().To<MessageBroker>().InSingletonScope();
         }
         protected T Get<T>()
         {
             return kernal.Get<T>();
         }
-        public List<PostalAddress> LoadPAFDetailsFromCSV(string strPath)
+        public void LoadPAFDetailsFromCSV(string strPath)
         {
             List<PostalAddress> lstAddressDetails = null;
             try
             {
-                //string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);
-                
-
                 ZipArchive zip = ZipFile.OpenRead(strPath);
                 
 
@@ -82,7 +80,6 @@ namespace Fmo.NYBLoader
                             }
                             else
                             {
-                                IMessageBroker msgBroker = new MessageBroker();
                                 foreach (var addDetail in lstAddressDetails)
                                 {
                                     string strXml = SerializeObject<PostalAddress>(addDetail);
@@ -90,13 +87,12 @@ namespace Fmo.NYBLoader
                                     msgBroker.SendMessage(msg);
                                 }
                                 File.WriteAllText(Path.Combine("Processed file", strfileName), strLine);
-
                             }
-
                         }
                     }
                     else
                     {
+                        File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
                         //TO DO
                         //Log error
                     }
@@ -106,10 +102,9 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
-
+                
                 throw;
             }
-            return lstAddressDetails;
         }
 
        
