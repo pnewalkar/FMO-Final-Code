@@ -9,6 +9,6 @@ namespace Fmo.NYBLoader.Interfaces
 {
     public interface INYBLoader
     {
-         List<PostalAddress> LoadNYBDetailsFromCSV(string strPath);
+         void LoadNYBDetailsFromCSV(string strPath);
     }
 }

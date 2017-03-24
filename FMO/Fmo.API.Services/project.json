@@ -33,6 +33,9 @@
         },
         "Fmo.DTO": {
           "target": "project"
+        },
+        "Fmo.MappingConfiguration": {
+          "target": "project"
         }
       }
     }
