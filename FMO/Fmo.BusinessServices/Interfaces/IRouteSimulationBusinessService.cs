@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-    public interface IPostalAddressBusinessService
+   public  interface IRouteSimulationBusinessService
     {
-        bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress);
+        List<DTO.DeliveryRouteDTO> ListOfRouteSimulations();
+        List<ScenarioDTO> ListOfScenarios();
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-    public class PostCode
+    public class PostCodeDTO
     {
         public string PostcodeUnit { get; set; }
 

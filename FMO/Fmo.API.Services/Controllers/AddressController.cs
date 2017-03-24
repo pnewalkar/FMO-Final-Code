@@ -21,7 +21,7 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpPost("SaveAddressdetails")]
-        public bool SaveAddressdetails([FromBody]List<PostalAddress> lstAddressDetails)
+        public bool SaveAddressdetails([FromBody]List<PostalAddressDTO> lstAddressDetails)
         {
             bool saveFlag = false;
             try
@@ -34,6 +34,13 @@ namespace Fmo.API.Services.Controllers
                 throw;
             }
             return saveFlag;
+        }
+
+        [HttpGet("getSample")]
+        public string GetSample()
+        {
+
+            return "virendra";
         }
     }
 }

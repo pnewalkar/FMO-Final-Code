@@ -7,29 +7,35 @@ using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Entity = Fmo.Entities;
 using Fmo.DTO;
+using Fmo.MappingConfiguration;
 
 namespace Fmo.BusinessServices.Services
 {
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
         IAddressRepository addressRepository = default(IAddressRepository);
+        IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
 
-        public PostalAddressBusinessService(IAddressRepository _addressRepository)
+        public PostalAddressBusinessService(IAddressRepository _addressRepository, IReferenceDataCategoryRepository _refDataRepository)
         {
             this.addressRepository = _addressRepository;
+            this.refDataRepository = _refDataRepository;
         }
 
-        public bool SavePostalAddress(List<DTO.PostalAddress> lstPostalAddress)
+        public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress)
         {
             bool saveFlag = false;
             try
             {
-                //Mapper.Initialize(config => { config.CreateMap<DTO.PostalAddress, Entity.PostalAddress>(); });
-                //var lstPostalAddressEntities = Mapper.Map<List<DTO.PostalAddress>, List<Entity.PostalAddress>>(lstPostalAddress);
-                //foreach (var addEntity in lstPostalAddressEntities)
-                //{
-                //    addressRepository.SaveAddress(addEntity);
-                //}
+                var refDataAddressType = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Type");
+                var refDataAddressStatus = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Status");
+
+                var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddressDTO, Entity.PostalAddress>(lstPostalAddress);
+
+                foreach (var addEntity in lstPostalAddressEntities)
+                {
+                    addressRepository.SaveAddress(addEntity);
+                }
                 saveFlag = true;
             }
             catch (Exception)

@@ -10,6 +10,6 @@ namespace Fmo.BusinessServices.Interfaces
 {
     public interface IDeliveryPointBussinessService
     {
-        List<DeliveryPoint> SearchDelievryPoints();
+        List<DeliveryPointDTO> SearchDelievryPoints();
     }
 }

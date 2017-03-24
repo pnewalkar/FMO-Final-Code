@@ -47,10 +47,14 @@
   <ItemGroup>
     <Compile Include="Interfaces\IDeliveryPointBussinessService.cs" />
     <Compile Include="Interfaces\IPostalAddressBusinessService.cs" />
+    <Compile Include="Interfaces\IRouteLogBusinessService.cs" />
+    <Compile Include="Interfaces\IRouteSimulationBusinessService.cs" />
     <Compile Include="Interfaces\ISearchBussinessService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeliveryPointBusinessService.cs" />
     <Compile Include="Services\PostalAddressBusinessService.cs" />
+    <Compile Include="Services\RouteLogBusinessService.cs" />
+    <Compile Include="Services\RouteSimulationBusinessService.cs" />
     <Compile Include="Services\SearchBussinessService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +74,10 @@
     <ProjectReference Include="..\FMO.Entities\Fmo.Entities.csproj">
       <Project>{355491a6-65fa-4145-bb68-74e0e1576433}</Project>
       <Name>Fmo.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fmo.MappingConfiguration\Fmo.MappingConfiguration.csproj">
+      <Project>{348fe78c-1051-4d06-b29e-2e1eff30cc7a}</Project>
+      <Name>Fmo.MappingConfiguration</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -22,7 +22,8 @@ namespace Fmo.API.Services.Controllers
 
         public JsonResult Get()
         {
-            return Json(businessService.SearchDelievryPoints());
+            //return Json(businessService.SearchDelievryPoints());
+            return Json("");
         }
 
 

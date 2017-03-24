@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-    public class StreetName
+    public class StreetNameDTO
     {
         public int StreetName_Id { get; set; }
 

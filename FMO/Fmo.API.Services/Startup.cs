@@ -64,6 +64,9 @@ namespace Fmo.API.Services
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
             services.AddTransient<IDatabaseFactory<FMODBContext>, DatabaseFactory<FMODBContext>>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
+            services.AddTransient<IAddressRepository, AddressRepository>();
+            services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
