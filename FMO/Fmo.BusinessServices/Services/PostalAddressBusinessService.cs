@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using Entity = Fmo.DataServices.Entities;
+using Entity = Fmo.Entities;
 using Fmo.DTO;
-using AutoMapper;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -25,12 +24,12 @@ namespace Fmo.BusinessServices.Services
             bool saveFlag = false;
             try
             {
-                Mapper.Initialize(config => { config.CreateMap<DTO.PostalAddress, Entity.PostalAddress>(); });
-                var lstPostalAddressEntities = Mapper.Map<List<DTO.PostalAddress>, List<Entity.PostalAddress>>(lstPostalAddress);
-                foreach (var addEntity in lstPostalAddressEntities)
-                {
-                    addressRepository.SaveAddress(addEntity);
-                }
+                //Mapper.Initialize(config => { config.CreateMap<DTO.PostalAddress, Entity.PostalAddress>(); });
+                //var lstPostalAddressEntities = Mapper.Map<List<DTO.PostalAddress>, List<Entity.PostalAddress>>(lstPostalAddress);
+                //foreach (var addEntity in lstPostalAddressEntities)
+                //{
+                //    addressRepository.SaveAddress(addEntity);
+                //}
                 saveFlag = true;
             }
             catch (Exception)

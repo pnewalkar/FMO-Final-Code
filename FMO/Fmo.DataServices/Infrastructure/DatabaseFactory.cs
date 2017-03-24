@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.Entity;
-using Fmo.DataServices.Entities;
 using System.Configuration;
 
 namespace Fmo.DataServices.Infrastructure

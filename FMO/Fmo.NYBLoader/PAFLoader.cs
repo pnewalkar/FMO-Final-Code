@@ -62,7 +62,7 @@ namespace Fmo.NYBLoader
                             }
                             else
                             {
-                                MessageProcess();
+                                //MessageProcess();
                                 File.WriteAllText(Path.Combine("Processed file", strfileName), strLine);
                             }
 
@@ -85,17 +85,7 @@ namespace Fmo.NYBLoader
             return lstAddressDetails;
         }
 
-        private bool MessageProcess()
-        {
-            try
-            {
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+       
 
         private bool ValidateFile(string[] arrLines)
         {
