@@ -76,50 +76,6 @@
           "copyToOutput": true
         }
       }
-    },
-    "Fmo.Entities/1.0.0": {
-      "type": "project",
-      "framework": ".NETFramework,Version=v4.5.2",
-      "compile": {
-        "bin/Debug/Fmo.Entities.dll": {}
-      },
-      "runtime": {
-        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
-        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
-        "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
-        "bin/Debug/Fmo.Entities.dll": {}
-      },
-      "contentFiles": {
-        "bin/Debug/Fmo.Entities.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        },
-        "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
-          "buildAction": "Content",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "sqlservertypes/x64/msvcr120.dll"
-        },
-        "bin/Debug/sqlservertypes/x64/sqlserverspatial140.dll": {
-          "buildAction": "Content",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "sqlservertypes/x64/sqlserverspatial140.dll"
-        },
-        "bin/Debug/sqlservertypes/x86/msvcr120.dll": {
-          "buildAction": "Content",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "sqlservertypes/x86/msvcr120.dll"
-        },
-        "bin/Debug/sqlservertypes/x86/sqlserverspatial140.dll": {
-          "buildAction": "Content",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "sqlservertypes/x86/sqlserverspatial140.dll"
-        }
-      }
     }
   }
 }

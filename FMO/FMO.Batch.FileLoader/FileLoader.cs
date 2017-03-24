@@ -1,28 +1,28 @@
-﻿using Fmo.DTO;
-using Fmo.MessageBrokerCore.Messaging;
-using Fmo.NYBLoader;
-using Fmo.NYBLoader.Interfaces;
-using Ninject;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-
-namespace FMO.Batch.FileLoader
+﻿namespace FMO.Batch.FileLoader
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Configuration;
+    using System.Data;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.ServiceProcess;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml.Serialization;
+    using Fmo.DTO;
+    using Fmo.MessageBrokerCore.Messaging;
+    using Fmo.NYBLoader;
+    using Fmo.NYBLoader.Interfaces;
+    using Ninject;
+
     public partial class FileLoader : ServiceBase
     {
+        private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
-        private readonly IKernel kernal;
 
         public FileLoader()
         {
@@ -36,6 +36,7 @@ namespace FMO.Batch.FileLoader
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
         }
+
         protected T Get<T>()
         {
             return kernal.Get<T>();
