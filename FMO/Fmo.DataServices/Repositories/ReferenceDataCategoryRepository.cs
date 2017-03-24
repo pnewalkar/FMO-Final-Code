@@ -19,12 +19,12 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.ReferenceDataCategory> GetReferenceDataCategoryDetails(string strCategoryname)
+        public List<Dto.ReferenceDataCategoryDTO> GetReferenceDataCategoryDetails(string strCategoryname)
         {
             try
             {
                 var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName == strCategoryname).ToList();
-                return GenericMapper.MapList<Entity.ReferenceDataCategory, Dto.ReferenceDataCategory>(result);
+                return GenericMapper.MapList<Entity.ReferenceDataCategory, Dto.ReferenceDataCategoryDTO>(result);
             }
             catch (Exception ex)
             {

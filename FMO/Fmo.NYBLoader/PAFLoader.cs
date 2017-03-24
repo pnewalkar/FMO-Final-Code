@@ -35,7 +35,7 @@ namespace Fmo.NYBLoader
         }
         public void LoadPAFDetailsFromCSV(string strPath)
         {
-            List<PostalAddress> lstAddressDetails = null;
+            List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
                 ZipArchive zip = ZipFile.OpenRead(strPath);
@@ -82,7 +82,7 @@ namespace Fmo.NYBLoader
                             {
                                 foreach (var addDetail in lstAddressDetails)
                                 {
-                                    string strXml = SerializeObject<PostalAddress>(addDetail);
+                                    string strXml = SerializeObject<PostalAddressDTO>(addDetail);
                                     IMessage msg = msgBroker.CreateMessage(strXml, MessageType.PostalAddress);
                                     msgBroker.SendMessage(msg);
                                 }
@@ -163,9 +163,9 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
-        private PostalAddress MapPAFDetailsToDTO(string csvLine)
+        private PostalAddressDTO MapPAFDetailsToDTO(string csvLine)
         {
-            PostalAddress objAddDTO = new PostalAddress();
+            PostalAddressDTO objAddDTO = new PostalAddressDTO();
             try
             {
                 string[] values = csvLine.Split(',');
@@ -206,12 +206,12 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
-        private void ValidatePAFDetails(List<PostalAddress> lstAddress)
+        private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
 
             try
             {
-                foreach (PostalAddress objAdd in lstAddress)
+                foreach (PostalAddressDTO objAdd in lstAddress)
                 {
                     if ((string.IsNullOrEmpty(objAdd.Postcode)) && !ValidatePostCode(objAdd.Postcode))
                     {

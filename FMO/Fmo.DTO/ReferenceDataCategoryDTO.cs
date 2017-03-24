@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-   public class ReferenceDataCategory
+   public class ReferenceDataCategoryDTO
     {
         public int ReferenceDataCategory_Id { get; set; }
         
@@ -16,6 +16,6 @@ namespace Fmo.DTO
 
         public int CategoryType { get; set; }
         
-        public virtual ICollection<ReferenceData> ReferenceDatas { get; set; }
+        public virtual ICollection<ReferenceDataDTO> ReferenceDatas { get; set; }
     }
 }

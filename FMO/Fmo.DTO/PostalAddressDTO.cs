@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-    public class PostalAddress
+    public class PostalAddressDTO
     {
 
         public int Address_Id { get; set; }

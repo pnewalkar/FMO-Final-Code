@@ -22,7 +22,7 @@ namespace Fmo.BusinessServices.Services
             this.refDataRepository = _refDataRepository;
         }
 
-        public bool SavePostalAddress(List<DTO.PostalAddress> lstPostalAddress)
+        public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress)
         {
             bool saveFlag = false;
             try
@@ -30,7 +30,7 @@ namespace Fmo.BusinessServices.Services
                 var refDataAddressType = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Type");
                 var refDataAddressStatus = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Status");
 
-                var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddress, Entity.PostalAddress>(lstPostalAddress);
+                var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddressDTO, Entity.PostalAddress>(lstPostalAddress);
 
                 foreach (var addEntity in lstPostalAddressEntities)
                 {

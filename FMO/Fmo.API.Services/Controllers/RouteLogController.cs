@@ -15,7 +15,7 @@ namespace Fmo.API.Services.Controllers
     {
         protected IRouteLogBusinessService routeLogBusinessService;
 
-        public List<DeliveryRoute> ListOfRouteLogs()
+        public List<DeliveryRouteDTO> ListOfRouteLogs()
         {
             return routeLogBusinessService.ListOfRouteLogs();
         }

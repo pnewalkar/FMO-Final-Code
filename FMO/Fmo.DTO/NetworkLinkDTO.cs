@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-    public class NetworkLink
+    public class NetworkLinkDTO
     {
         public int NetworkLink_Id { get; set; }
 

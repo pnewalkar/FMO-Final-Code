@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Fmo.DTO;
 
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.MappingConfiguration.Interface;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -18,9 +17,9 @@ namespace Fmo.BusinessServices.Services
             this.routeSimulationRespository = routeSimulationRespository;
         }
 
-        public List<DTO.DeliveryRoute> ListOfRouteSimulations()
+        public List<DTO.DeliveryRouteDTO> ListOfRouteSimulations()
         {
-            List<DTO.DeliveryRoute> lst = new List<DTO.DeliveryRoute>();
+            List<DTO.DeliveryRouteDTO> lst = new List<DTO.DeliveryRouteDTO>();
             return lst;
         }
 

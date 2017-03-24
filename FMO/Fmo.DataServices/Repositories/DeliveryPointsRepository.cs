@@ -19,7 +19,7 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.DeliveryPoint> SearchDelievryPoints()
+        public List<Dto.DeliveryPointDTO> SearchDelievryPoints()
         {
             try
             {
@@ -27,7 +27,7 @@ namespace Fmo.DataServices.Repositories
                 ////IAutoMapper<Entity.DeliveryPoint, Dto.DeliveryPoint> deliveryMapper 
                 //return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
 
-               return new List<Dto.DeliveryPoint>();
+               return new List<Dto.DeliveryPointDTO>();
             }
             catch (Exception ex)
             {

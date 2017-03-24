@@ -21,7 +21,7 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpPost("SaveAddressdetails")]
-        public bool SaveAddressdetails([FromBody]List<PostalAddress> lstAddressDetails)
+        public bool SaveAddressdetails([FromBody]List<PostalAddressDTO> lstAddressDetails)
         {
             bool saveFlag = false;
             try

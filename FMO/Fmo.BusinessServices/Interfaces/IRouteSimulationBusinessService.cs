@@ -9,7 +9,7 @@ namespace Fmo.BusinessServices.Interfaces
 {
    public  interface IRouteSimulationBusinessService
     {
-        List<DTO.DeliveryRoute> ListOfRouteSimulations();
+        List<DTO.DeliveryRouteDTO> ListOfRouteSimulations();
         List<ScenarioDTO> ListOfScenarios();
     }
 }

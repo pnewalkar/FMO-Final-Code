@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-    public class RoadName
+    public class RoadNameDTO
     {
 
         public int RoadName_Id { get; set; }

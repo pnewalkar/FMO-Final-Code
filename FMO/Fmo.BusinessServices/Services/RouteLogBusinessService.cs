@@ -18,9 +18,9 @@ namespace Fmo.BusinessServices.Services
             this.routeLogRepository = routeLogRepository;
         }
 
-        public List<DeliveryRoute> ListOfRouteLogs()
+        public List<DeliveryRouteDTO> ListOfRouteLogs()
         {
-            List<DeliveryRoute> lst = new List<DeliveryRoute>();
+            List<DeliveryRouteDTO> lst = new List<DeliveryRouteDTO>();
             return lst;
         }
 
