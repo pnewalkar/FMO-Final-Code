@@ -51,6 +51,7 @@
     <Compile Include="ReferenceData.cs" />
     <Compile Include="ReferenceDataCategory.cs" />
     <Compile Include="RoadName.cs" />
+    <Compile Include="ScenarioDTO.cs" />
     <Compile Include="StreetName.cs" />
   </ItemGroup>
   <ItemGroup />

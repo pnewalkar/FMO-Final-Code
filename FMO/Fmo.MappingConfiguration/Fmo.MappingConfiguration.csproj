@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="GenericMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteLogMapper.cs" />
+    <Compile Include="RouteSimulationMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

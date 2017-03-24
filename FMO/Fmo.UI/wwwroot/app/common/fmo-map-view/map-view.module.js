@@ -3,5 +3,6 @@
 angular.module('mapView', [
     'ngRoute',
 	'fmoCommonSearch',
-    'fmoMapKeys'
+    'fmoMapKeys',
+    'mapToolbar'
 ]);
