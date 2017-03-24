@@ -7,11 +7,31 @@ using System.Threading.Tasks;
 using Fmo.DTO;
 using System.IO;
 using System.IO.Compression;
+using Ninject;
+using System.Xml.Serialization;
+using Fmo.MessageBrokerCore.Messaging;
 
 namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
+        private readonly IKernel kernal;
+
+        public PAFLoader()
+        {
+            kernal = new StandardKernel();
+            Register(kernal);
+        }
+
+        protected static void Register(IKernel kernel)
+        {
+            kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
+            kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
+        }
+        protected T Get<T>()
+        {
+            return kernal.Get<T>();
+        }
         public List<PostalAddress> LoadPAFDetailsFromCSV(string strPath)
         {
             List<PostalAddress> lstAddressDetails = null;
@@ -62,8 +82,15 @@ namespace Fmo.NYBLoader
                             }
                             else
                             {
-                                //MessageProcess();
+                                IMessageBroker msgBroker = new MessageBroker();
+                                foreach (var addDetail in lstAddressDetails)
+                                {
+                                    string strXml = SerializeObject<PostalAddress>(addDetail);
+                                    IMessage msg = msgBroker.CreateMessage(strXml, MessageType.PostalAddress);
+                                    msgBroker.SendMessage(msg);
+                                }
                                 File.WriteAllText(Path.Combine("Processed file", strfileName), strLine);
+
                             }
 
                         }
@@ -85,7 +112,17 @@ namespace Fmo.NYBLoader
             return lstAddressDetails;
         }
 
-       
+        private bool MessageProcess()
+        {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         private bool ValidateFile(string[] arrLines)
         {
