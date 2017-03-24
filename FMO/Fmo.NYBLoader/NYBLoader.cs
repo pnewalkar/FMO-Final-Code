@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using System.IO;
+using System.IO.Compression;
 
 namespace Fmo.NYBLoader
 {
@@ -16,31 +17,64 @@ namespace Fmo.NYBLoader
             List<PostalAddress> lstAddressDetails = null;
             try
             {
-              //  string strNybDetails = File.ReadAllText(strPath, Encoding.ASCII);
-                string[] arrNybDetails = File.ReadAllLines(strPath, Encoding.ASCII);//strNybDetails.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                //string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);
 
-                if (arrNybDetails.Count() > 0 && ValidateFile(arrNybDetails))
+
+                ZipArchive zip = ZipFile.OpenRead(strPath);
+
+
+                foreach (ZipArchiveEntry entry in zip.Entries)
                 {
-                    lstAddressDetails = arrNybDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
+                    string strLine = string.Empty;
+                    string strfileName = string.Empty;
 
-
-                    if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                    using (Stream stream = entry.Open())
                     {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            strLine = reader.ReadToEnd();
+                        }
+                    }
+                    strfileName = entry.Name;
 
-                        //Validate NYB Details
-                        ValidateNYBDetails(lstAddressDetails);
+                    string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
 
-                        //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+                    if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
+                    {
+                        lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
 
-                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM")) && n.IsValidData == false).ToList();
 
+                        if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                        {
+
+                            //Validate NYB Details
+                            ValidateNYBDetails(lstAddressDetails);
+
+                            //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+
+                            lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+                            var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                            if (invalidRecordCount > 0)
+                            {
+                                File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
+                            }
+                            else
+                            {
+                                File.WriteAllText(Path.Combine("Processed file", strfileName), strLine);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        //TO DO
+                        //Log error
                     }
                 }
-                else
-                {
-                    //TO DO
-                    //Log error
-                }
+
+
             }
             catch (Exception)
             {
@@ -102,6 +136,7 @@ namespace Fmo.NYBLoader
                     objAddDTO.PostcodeType = values[13];
                     objAddDTO.SmallUserOrganisationIndicator = values[14];
                     objAddDTO.DeliveryPointSuffix = values[15];
+                    objAddDTO.IsValidData = true;
                 }
 
             }

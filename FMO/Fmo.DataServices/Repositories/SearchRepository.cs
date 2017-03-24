@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Entities;
+using Fmo.DataServices.DBContext;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
