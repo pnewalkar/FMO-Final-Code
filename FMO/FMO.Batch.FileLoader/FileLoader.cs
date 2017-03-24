@@ -1,4 +1,5 @@
 ﻿using Fmo.DTO;
+using Fmo.MessageBrokerCore.Messaging;
 using Fmo.NYBLoader;
 using Fmo.NYBLoader.Interfaces;
 using Ninject;
@@ -135,23 +136,39 @@ namespace FMO.Batch.FileLoader
         /// <param name="e">List of arguments - FileSystemEventArgs</param>
         /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
         /// <param name="action_Args">arguments to be passed to the executable (action)</param>
-        void fileSWatch_Created(object sender, FileSystemEventArgs e,string action_Exec, string action_Args)
+        void fileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
         {
             string fileName = e.FullPath;
-            ExecuteProcess(fileName);
+            if (!string.IsNullOrEmpty(action_Args))
+            {
+                switch (action_Args)
+                {
+                    case "PAF":
+                        ExecutePAFProcess(fileName);
+                        break;
+                    case "NYB":
+                        ExecuteNYBProcess(fileName);
+                        break;
+                }
+            }
+            // ExecuteProcess(fileName);
         }
 
         /// <summary>Executes a set of instructions through the command window</summary>
         /// <param name="executableFile">Name of the executable file or program</param>
-        private void ExecuteProcess(string strFilePath)
+        private void ExecutePAFProcess(string strFilePath)
         {
 
             try
             {
-                List<PostalAddress> lstAddressDetails = kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(strFilePath);
-
-
-
+                List<PostalAddress> lstAddressDetails = kernal.Get<PAFLoader>().LoadPAFDetailsFromCSV(strFilePath);
+                IMessageBroker msgBroker = new MessageBroker();
+                foreach (var addDetail in lstAddressDetails)
+                {
+                    string strXml = SerializeObject<PostalAddress>(addDetail);
+                    IMessage msg = msgBroker.CreateMessage(strXml, MessageType.PostalAddress);
+                    msgBroker.SendMessage(msg);
+                }
 
                 File.Move(strFilePath, "Processed folder");
                 //IKernel kernal = new StandardKernel();
@@ -166,9 +183,69 @@ namespace FMO.Batch.FileLoader
             }
         }
 
+        private void ExecuteNYBProcess(string strFilePath)
+        {
+
+            try
+            {
+                List<PostalAddress> lstAddressDetails = kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(strFilePath);
+                var InvalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList();
+
+                if (InvalidRecordCount.Count > 0)
+                {
+                    File.Move(strFilePath, "Error folder");
+                }
+                else
+                {
+                    File.Move(strFilePath, "Processed folder");
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                // Register a Log of the Exception
+            }
+        }
+
+        private void SendMessage(string strFilePath)
+        {
+
+        }
+
         public void OnDebug()
         {
             OnStart(null);
+        }
+
+        private string SerializeObject<T>(T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
+            }
+        }
+
+        private T DeserializeXMLFileToObject<T>(string XmlFilename)
+        {
+            T returnObject = default(T);
+            if (string.IsNullOrEmpty(XmlFilename)) return default(T);
+
+            try
+            {
+                StreamReader xmlStream = new StreamReader(XmlFilename);
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                returnObject = (T)serializer.Deserialize(xmlStream);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return returnObject;
         }
     }
 }
