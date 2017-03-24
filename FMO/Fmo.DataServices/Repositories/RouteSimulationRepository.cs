@@ -16,5 +16,11 @@ namespace Fmo.DataServices.Repositories
             return ListOfRouteLogs;
 
         }
+
+        public List<Scenario> ListOfScenario()
+        {
+            List<Scenario> ListOfScenario = new List<Scenario>();
+            return ListOfScenario;
+        }
     }
 }
