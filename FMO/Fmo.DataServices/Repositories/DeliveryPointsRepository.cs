@@ -25,9 +25,9 @@ namespace Fmo.DataServices.Repositories
             {
                 var result = DataContext.DeliveryPoints.ToList();
                 //IAutoMapper<Entity.DeliveryPoint, Dto.DeliveryPoint> deliveryMapper 
-                return DeliveryPointMapper.SetupMappings(result);
+                return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
