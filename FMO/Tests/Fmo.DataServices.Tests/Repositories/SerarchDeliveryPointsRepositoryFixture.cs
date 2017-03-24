@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Fmo.Common.TestSupport;
-using Fmo.Entities;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DataServices.DBContext;
 using Moq;
 using NUnit.Framework;
+using DTO=Fmo.DTO;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -15,7 +16,7 @@ namespace Fmo.DataServices.Tests.Repositories
     {
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
-        private ISearchDeliveryPointsRepository testCandidate;
+        private IDeliveryPointsRepository testCandidate;
 
         protected override void OnSetup()
         {

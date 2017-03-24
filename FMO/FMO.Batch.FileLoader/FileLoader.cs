@@ -1,28 +1,28 @@
-﻿using Fmo.DTO;
-using Fmo.MessageBrokerCore.Messaging;
-using Fmo.NYBLoader;
-using Fmo.NYBLoader.Interfaces;
-using Ninject;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-
-namespace FMO.Batch.FileLoader
+﻿namespace FMO.Batch.FileLoader
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Configuration;
+    using System.Data;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.ServiceProcess;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml.Serialization;
+    using Fmo.DTO;
+    using Fmo.MessageBrokerCore.Messaging;
+    using Fmo.NYBLoader;
+    using Fmo.NYBLoader.Interfaces;
+    using Ninject;
+
     public partial class FileLoader : ServiceBase
     {
+        private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
-        private readonly IKernel kernal;
 
         public FileLoader()
         {
@@ -36,6 +36,7 @@ namespace FMO.Batch.FileLoader
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
         }
+
         protected T Get<T>()
         {
             return kernal.Get<T>();
@@ -144,81 +145,21 @@ namespace FMO.Batch.FileLoader
                 switch (action_Args)
                 {
                     case "PAF":
-                        ExecutePAFProcess(fileName);
+                        kernal.Get<PAFLoader>().LoadPAFDetailsFromCSV(fileName);
                         break;
                     case "NYB":
-                        ExecuteNYBProcess(fileName);
+                        kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(fileName);
                         break;
                 }
             }
             // ExecuteProcess(fileName);
         }
 
-        /// <summary>Executes a set of instructions through the command window</summary>
-        /// <param name="executableFile">Name of the executable file or program</param>
-        private void ExecutePAFProcess(string strFilePath)
-        {
-
-            try
-            {
-                List<PostalAddress> lstAddressDetails = kernal.Get<PAFLoader>().LoadPAFDetailsFromCSV(strFilePath);
-                IMessageBroker msgBroker = new MessageBroker();
-                foreach (var addDetail in lstAddressDetails)
-                {
-                    string strXml = SerializeObject<PostalAddress>(addDetail);
-                    IMessage msg = msgBroker.CreateMessage(strXml, MessageType.PostalAddress);
-                    msgBroker.SendMessage(msg);
-                }
-
-                File.Move(strFilePath, "Processed folder");
-                //IKernel kernal = new StandardKernel();
-                //kernal.Bind<INYBLoader>().To<NYBLoader>();
-                //var nybInstance = kernal.Get<NYBLoader>();
-                //List<PostalAddress> lstAddressDetails = nybInstance.LoadNYBDetailsFromCSV(strFilePath);
-
-            }
-            catch (Exception ex)
-            {
-                // Register a Log of the Exception
-            }
-        }
-
-        private void ExecuteNYBProcess(string strFilePath)
-        {
-
-            try
-            {
-                List<PostalAddress> lstAddressDetails = kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(strFilePath);
-                var InvalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList();
-
-                if (InvalidRecordCount.Count > 0)
-                {
-                    File.Move(strFilePath, "Error folder");
-                }
-                else
-                {
-                    File.Move(strFilePath, "Processed folder");
-                }
-
-
-
-            }
-            catch (Exception ex)
-            {
-                // Register a Log of the Exception
-            }
-        }
-
-        private void SendMessage(string strFilePath)
-        {
-
-        }
-
         public void OnDebug()
         {
             OnStart(null);
         }
-
+        /*
         private string SerializeObject<T>(T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
@@ -247,5 +188,6 @@ namespace FMO.Batch.FileLoader
             }
             return returnObject;
         }
+        */
     }
 }

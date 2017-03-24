@@ -77,6 +77,24 @@
         }
       }
     },
+    "Fmo.MappingConfiguration/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.2",
+      "compile": {
+        "bin/Debug/Fmo.MappingConfiguration.dll": {}
+      },
+      "runtime": {
+        "../packages/AutoMapper.6.0.2/lib/net45/AutoMapper.dll": {},
+        "bin/Debug/Fmo.MappingConfiguration.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Fmo.MappingConfiguration.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
     "Fmo.Entities/1.0.0": {
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
