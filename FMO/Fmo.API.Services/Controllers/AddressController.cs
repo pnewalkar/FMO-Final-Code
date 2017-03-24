@@ -35,5 +35,12 @@ namespace Fmo.API.Services.Controllers
             }
             return saveFlag;
         }
+
+        [HttpGet("getSample")]
+        public string GetSample()
+        {
+
+            return "virendra";
+        }
     }
 }

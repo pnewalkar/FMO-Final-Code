@@ -71,6 +71,10 @@
       <Project>{355491a6-65fa-4145-bb68-74e0e1576433}</Project>
       <Name>Fmo.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fmo.MappingConfiguration\Fmo.MappingConfiguration.csproj">
+      <Project>{348fe78c-1051-4d06-b29e-2e1eff30cc7a}</Project>
+      <Name>Fmo.MappingConfiguration</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />

@@ -48,6 +48,8 @@
     <Compile Include="PostalAddress.cs" />
     <Compile Include="PostCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceData.cs" />
+    <Compile Include="ReferenceDataCategory.cs" />
     <Compile Include="RoadName.cs" />
     <Compile Include="StreetName.cs" />
   </ItemGroup>
