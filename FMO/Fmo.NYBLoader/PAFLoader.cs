@@ -38,10 +38,10 @@ namespace Fmo.NYBLoader
             try
             {
                 //string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);
-                
+
 
                 ZipArchive zip = ZipFile.OpenRead(strPath);
-                
+
 
                 foreach (ZipArchiveEntry entry in zip.Entries)
                 {
@@ -102,7 +102,7 @@ namespace Fmo.NYBLoader
                     }
                 }
 
-               
+
             }
             catch (Exception)
             {
@@ -112,16 +112,32 @@ namespace Fmo.NYBLoader
             return lstAddressDetails;
         }
 
-        private bool MessageProcess()
-        {
-            try
-            {
 
-            }
-            catch (Exception)
+
+        private string SerializeObject<T>(T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
             {
-                throw;
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
             }
+        }
+
+        private T DeserializeXMLFileToObject<T>(string xmlFilename)
+        {
+            T returnObject = default(T);
+            if (string.IsNullOrEmpty(xmlFilename))
+            {
+                return default(T);
+            }
+
+            StreamReader xmlStream = new StreamReader(xmlFilename);
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            returnObject = (T)serializer.Deserialize(xmlStream);
+
+            return returnObject;
         }
 
         private bool ValidateFile(string[] arrLines)

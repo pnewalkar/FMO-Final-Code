@@ -189,20 +189,7 @@
 
             try
             {
-                List<PostalAddress> lstAddressDetails = kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(strFilePath);
-                var InvalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList();
-
-                if (InvalidRecordCount.Count > 0)
-                {
-                    File.Move(strFilePath, "Error folder");
-                }
-                else
-                {
-                    File.Move(strFilePath, "Processed folder");
-                }
-
-
-
+               kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(strFilePath);
             }
             catch (Exception ex)
             {

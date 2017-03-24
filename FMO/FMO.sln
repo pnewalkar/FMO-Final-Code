@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.BusinessServices.Tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.DataServices.Tests", "Tests\Fmo.DataServices.Tests\Fmo.DataServices.Tests.csproj", "{666DA567-17FA-4AEE-B492-AF334DB7FF8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMO.Batch.FileLoader", "FMO.Batch.FileLoader\FMO.Batch.FileLoader.csproj", "{899723CB-0C54-4D8A-8F2C-966D28D511C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.Batch.FileLoader", "FMO.Batch.FileLoader\Fmo.Batch.FileLoader.csproj", "{899723CB-0C54-4D8A-8F2C-966D28D511C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.NYBLoader", "Fmo.NYBLoader\Fmo.NYBLoader.csproj", "{4E169F3D-90C8-4889-96AD-9C0D51C5C174}"
 EndProject

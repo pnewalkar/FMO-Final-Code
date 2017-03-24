@@ -12,14 +12,11 @@ namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
-        public List<PostalAddress> LoadNYBDetailsFromCSV(string strPath)
+        public void LoadNYBDetailsFromCSV(string strPath)
         {
             List<PostalAddress> lstAddressDetails = null;
             try
             {
-                //string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);
-
-
                 ZipArchive zip = ZipFile.OpenRead(strPath);
 
 
@@ -54,15 +51,16 @@ namespace Fmo.NYBLoader
                             //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
 
                             lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+
                             var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
 
                             if (invalidRecordCount > 0)
                             {
-                                File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
+                                File.WriteAllText(Path.Combine("Error file", AppendTimeStamp(strfileName)), strLine);
                             }
                             else
                             {
-                                File.WriteAllText(Path.Combine("Processed file", strfileName), strLine);
+                                File.WriteAllText(Path.Combine("Processed file", AppendTimeStamp(strfileName)), strLine);
                             }
 
                         }
@@ -81,7 +79,6 @@ namespace Fmo.NYBLoader
 
                 throw;
             }
-            return lstAddressDetails;
         }
 
         private bool ValidateFile(string[] arrLines)
@@ -244,6 +241,15 @@ namespace Fmo.NYBLoader
                 throw;
             }
             return isValid;
+        }
+
+        private string AppendTimeStamp(string strfileName)
+        {
+            return string.Concat(
+                Path.GetFileNameWithoutExtension(strfileName),
+               string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
+                Path.GetExtension(strfileName)
+                );
         }
     }
 }
