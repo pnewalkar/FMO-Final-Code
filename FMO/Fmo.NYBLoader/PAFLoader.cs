@@ -85,7 +85,7 @@ namespace Fmo.NYBLoader
             return lstAddressDetails;
         }
 
-        private bool MessageProcess()
+        private void MessageProcess()
         {
             try
             {

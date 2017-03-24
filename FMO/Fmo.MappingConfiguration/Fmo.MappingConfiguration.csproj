@@ -47,6 +47,8 @@
     <Compile Include="DeliveryPointMapper.cs" />
     <Compile Include="Interface\IAutoMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RouteLogMapper.cs" />
+    <Compile Include="RouteSimulationMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

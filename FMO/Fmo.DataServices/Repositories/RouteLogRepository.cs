@@ -13,8 +13,8 @@ namespace Fmo.DataServices.Repositories
 
        public List<DeliveryRoute> ListOfRouteLogs()
         {
-            List<DeliveryRoute> ListOfRouteLogs = new List<DeliveryRoute>();
-            return ListOfRouteLogs;
+            List<DeliveryRoute> listOfRouteLogs = new List<DeliveryRoute>();
+            return listOfRouteLogs;
         }
 
         public List<Scenario> ListOfScenario()
