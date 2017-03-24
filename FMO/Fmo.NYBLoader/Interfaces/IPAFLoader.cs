@@ -9,6 +9,6 @@ namespace Fmo.NYBLoader.Interfaces
 {
     public interface IPAFLoader
     {
-         List<PostalAddress> LoadPAFDetailsFromCSV(string strPath);
+         void LoadPAFDetailsFromCSV(string strPath);
     }
 }
