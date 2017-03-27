@@ -5,6 +5,8 @@
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
+    using System.Linq;
+    using System.Collections.Generic;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
