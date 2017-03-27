@@ -1,17 +1,13 @@
-﻿using Fmo.Entities;
-using Fmo.DataServices.Repositories.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
-   public class RouteLogRepository : IRouteLogRepository
+    public class RouteLogRepository : IRouteLogRepository
     {
-
-       public List<DeliveryRoute> ListOfRouteLogs()
+        public List<DeliveryRoute> ListOfRouteLogs()
         {
             List<DeliveryRoute> listOfRouteLogs = new List<DeliveryRoute>();
             return listOfRouteLogs;

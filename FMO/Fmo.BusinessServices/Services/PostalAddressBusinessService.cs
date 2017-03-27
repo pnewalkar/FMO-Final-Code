@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using Entity = Fmo.Entities;
-using Fmo.DTO;
 using Fmo.MappingConfiguration;
+using Entity = Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
 {
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
-        IAddressRepository addressRepository = default(IAddressRepository);
-        IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
+        private IAddressRepository addressRepository = default(IAddressRepository);
+        private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
 
-        public PostalAddressBusinessService(IAddressRepository _addressRepository, IReferenceDataCategoryRepository _refDataRepository)
+        public PostalAddressBusinessService(IAddressRepository addressRepository, IReferenceDataCategoryRepository refDataRepository)
         {
-            this.addressRepository = _addressRepository;
-            this.refDataRepository = _refDataRepository;
+            this.addressRepository = addressRepository;
+            this.refDataRepository = refDataRepository;
         }
 
         public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress)
@@ -36,13 +32,14 @@ namespace Fmo.BusinessServices.Services
                 {
                     addressRepository.SaveAddress(addEntity);
                 }
+
                 saveFlag = true;
             }
             catch (Exception)
             {
-
                 throw;
             }
+
             return saveFlag;
         }
     }

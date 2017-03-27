@@ -1,6 +1,6 @@
-﻿using Fmo.Entities;
+﻿using System.Collections.Generic;
 using Fmo.DataServices.Repositories.Interfaces;
-using System.Collections.Generic;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -10,7 +10,6 @@ namespace Fmo.DataServices.Repositories
         {
             List<DeliveryRoute> listOfRouteLogs = new List<DeliveryRoute>();
             return listOfRouteLogs;
-
         }
 
         public List<Scenario> ListOfScenario()

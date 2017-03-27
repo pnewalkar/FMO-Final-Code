@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Fmo.DataServices.Infrastructure
 {
@@ -19,6 +16,11 @@ namespace Fmo.DataServices.Infrastructure
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        protected virtual void DisposeCore()
+        {
+        }
+
         private void Dispose(bool disposing)
         {
             if (!isDisposed && disposing)
@@ -28,10 +30,5 @@ namespace Fmo.DataServices.Infrastructure
 
             isDisposed = true;
         }
-
-        protected virtual void DisposeCore()
-        {
-        }
-    }   
+    }
 }
-
