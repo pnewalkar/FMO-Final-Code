@@ -1,0 +1,43 @@
+<span layout="row" layout-wrap>
+	<span flex="100">
+        
+        <side-nav></side-nav>
+        
+		<md-toolbar>
+   			<span class="md-toolbar-tools">
+                
+   				<span flex="5" ng-controller="sideNavController" aria-label="Side Panel" ng-click="openSideNavPanel()">
+                    <md-button class="md-icon-button" aria-label="Side Nav">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </md-button>
+                </span>
+
+     			<h2>
+        			<span flex="55" flex="auto">Royal Mail Group</span>
+      			</h2>
+
+      			<span flex></span>
+      			 
+      			<span flex="10">
+                    <search></search>
+                </span>
+
+      			<span flex="10">
+          			<unit-selector></unit-selector>
+        		</span>
+        		
+        		<span flex="10">
+          			<role-selector></role-selector>
+        		</span>
+
+        		<span flex="5">
+          			<task></task>
+        		</span>
+    		</span>
+		</md-toolbar>
+	</span>
+
+	<span flex="100">
+		<div><map-view></map-view></div>
+	</span>
+</span>
