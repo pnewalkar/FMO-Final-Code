@@ -63,12 +63,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressRepository.cs" />
-    <Compile Include="Repositories\Interfaces\IRouteLogRepository.cs" />
-    <Compile Include="Repositories\Interfaces\IRouteSimulationRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IDeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryPointsRepository.cs" />
     <Compile Include="Repositories\Interfaces\ISearchRepository.cs" />
-    <Compile Include="Repositories\RouteLogRepository.cs" />
-    <Compile Include="Repositories\RouteSimulationRepository.cs" />
+    <Compile Include="Repositories\DeliveryRouteRepository.cs" />
     <Compile Include="Repositories\SearchRepository.cs" />
     <Compile Include="Repositories\DeliveryPointsRepository.cs" />
   </ItemGroup>

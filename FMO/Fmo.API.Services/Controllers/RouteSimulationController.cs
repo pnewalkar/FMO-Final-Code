@@ -13,16 +13,24 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class RouteSimulationController : Controller
     {
-        protected IRouteSimulationBusinessService routeSimulationBusinessService;
+        protected IDeliveryRouteBusinessService deliveryRouteBusinessService;
 
-        public List<DeliveryRoute> ListOfRouteLogs()
+        [HttpGet]
+        public List<DeliveryRoute> RouteSimulations()
         {
-            return routeSimulationBusinessService.ListOfRouteSimulations();
+            return deliveryRouteBusinessService.ListOfRoute();
         }
 
+        [HttpGet]
+        public List<ReferenceDataDTO> RouteLogsStatus()
+        {
+            return deliveryRouteBusinessService.ListOfRouteLogStatus();
+        }
+
+        [HttpGet]
         public List<ScenarioDTO> ListOfScenario()
         {
-            return routeSimulationBusinessService.ListOfScenarios();
+            return deliveryRouteBusinessService.ListOfScenario();
         }
     }
 }
