@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Fmo.Entities;
-
 
 namespace Fmo.BusinessServices.Interfaces
 {
-
     public interface ISearchBussinessService
     {
-
         List<AdvanceSearch> FetchAdvanceSearchDetails();
     }
 }

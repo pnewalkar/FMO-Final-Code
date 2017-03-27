@@ -1,6 +1,5 @@
 namespace Fmo.DataServices.DBContext
 {
-    using System.Configuration;
     using System.Data.Entity;
     using Fmo.Entities;
 
@@ -9,57 +8,101 @@ namespace Fmo.DataServices.DBContext
         public FMODBContext()
             : base("name=FMODBContext")
         {
-           
         }
 
-        public FMODBContext(string connString) : base(connString)
+        public FMODBContext(string connString)
+            : base(connString)
         {
-        
-        }      
+        }
+
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
+
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
+
         public virtual DbSet<AMUChangeRequest> AMUChangeRequests { get; set; }
+
         public virtual DbSet<AreaHazard> AreaHazards { get; set; }
+
         public virtual DbSet<Block> Blocks { get; set; }
+
         public virtual DbSet<BlockSequence> BlockSequences { get; set; }
+
         public virtual DbSet<DeliveryGroup> DeliveryGroups { get; set; }
+
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
+
         public virtual DbSet<DeliveryRoute> DeliveryRoutes { get; set; }
+
         public virtual DbSet<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }
+
         public virtual DbSet<DeliveryUnitLocation> DeliveryUnitLocations { get; set; }
+
         public virtual DbSet<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }
+
         public virtual DbSet<GroupHazard> GroupHazards { get; set; }
+
         public virtual DbSet<NetworkLink> NetworkLinks { get; set; }
+
         public virtual DbSet<NetworkLinkReference> NetworkLinkReferences { get; set; }
+
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
+
         public virtual DbSet<NetworkReference> NetworkReferences { get; set; }
+
         public virtual DbSet<Notification> Notifications { get; set; }
+
         public virtual DbSet<OSAccessRestriction> OSAccessRestrictions { get; set; }
+
         public virtual DbSet<OSConnectingLink> OSConnectingLinks { get; set; }
+
         public virtual DbSet<OSConnectingNode> OSConnectingNodes { get; set; }
+
         public virtual DbSet<OSPathLink> OSPathLinks { get; set; }
+
         public virtual DbSet<OSPathNode> OSPathNodes { get; set; }
+
         public virtual DbSet<OSRestrictionForVehicle> OSRestrictionForVehicles { get; set; }
+
         public virtual DbSet<OSRoadLink> OSRoadLinks { get; set; }
+
         public virtual DbSet<OSRoadNode> OSRoadNodes { get; set; }
+
         public virtual DbSet<OSTurnRestriction> OSTurnRestrictions { get; set; }
+
         public virtual DbSet<POBox> POBoxes { get; set; }
+
         public virtual DbSet<PointHazard> PointHazards { get; set; }
+
         public virtual DbSet<Polygon> Polygons { get; set; }
+
         public virtual DbSet<PolygonObject> PolygonObjects { get; set; }
+
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
+
         public virtual DbSet<Postcode> Postcodes { get; set; }
+
         public virtual DbSet<PostcodeArea> PostcodeAreas { get; set; }
+
         public virtual DbSet<PostcodeDistrict> PostcodeDistricts { get; set; }
+
         public virtual DbSet<PostcodeSector> PostcodeSectors { get; set; }
+
         public virtual DbSet<ReferenceData> ReferenceDatas { get; set; }
+
         public virtual DbSet<ReferenceDataCategory> ReferenceDataCategories { get; set; }
+
         public virtual DbSet<RMGDeliveryPoint> RMGDeliveryPoints { get; set; }
+
         public virtual DbSet<RMGLink> RMGLinks { get; set; }
+
         public virtual DbSet<RMGNode> RMGNodes { get; set; }
+
         public virtual DbSet<RoadName> RoadNames { get; set; }
+
         public virtual DbSet<Scenario> Scenarios { get; set; }
+
         public virtual DbSet<SpecialInstruction> SpecialInstructions { get; set; }
+
         public virtual DbSet<StreetName> StreetNames { get; set; }
 
         public virtual DbSet<AdvanceSearch> AdvanceSearch { get; set; }

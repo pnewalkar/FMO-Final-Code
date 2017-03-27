@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
-using Entity = Fmo.Entities;
 using Fmo.MappingConfiguration;
 using Dto = Fmo.DTO;
-using System;
+using Entity = Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -19,18 +18,28 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.ReferenceDataCategoryDTO> GetReferenceDataCategoryDetails(string strCategoryname)
+        public int GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
+            int statusId = 0;
             try
             {
-                var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName == strCategoryname).ToList();
-                return GenericMapper.MapList<Entity.ReferenceDataCategory, Dto.ReferenceDataCategoryDTO>(result);
+                var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName == strCategoryname).SingleOrDefault();
+                if (result != null)
+                {
+                    if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+                    {
+                        statusId = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault().ReferenceData_Id;
+                    }
+                }
+
             }
             catch (Exception ex)
             {
-                //TO DO implement logging
-                throw;
+                // TO DO implement logging
+                throw ex;
             }
+            return statusId;
         }
+
     }
 }

@@ -19,7 +19,6 @@ namespace Fmo.MappingConfiguration
             Mapper.Configuration.CreateMapper();
 
             TDestination result = Mapper.Map<TSource, TDestination>(source);
-            Mapper.AssertConfigurationIsValid();
             return result;
         }
 
@@ -29,7 +28,6 @@ namespace Fmo.MappingConfiguration
 
             Mapper.Configuration.CreateMapper();
             List<TDestination> result = Mapper.Map<List<TSource>, List<TDestination>>(source);
-            Mapper.AssertConfigurationIsValid();
             return result;
         }
 

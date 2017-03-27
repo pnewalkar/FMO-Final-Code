@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Entity;
-using System.Data;
-using System.Linq.Expressions;
-
-namespace Fmo.DataServices.Infrastructure
+﻿namespace Fmo.DataServices.Infrastructure
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Linq.Expressions;
+
     public abstract class RepositoryBase<T, TContext>
         where T : class
         where TContext : DbContext
     {
-        private TContext dataContext;
         private readonly IDbSet<T> dbset;
+        private TContext dataContext;
 
         protected RepositoryBase(IDatabaseFactory<TContext> databaseFactory)
         {
@@ -52,7 +51,9 @@ namespace Fmo.DataServices.Infrastructure
         {
             IEnumerable<T> objects = dbset.Where<T>(where).AsEnumerable();
             foreach (T obj in objects)
+            {
                 dbset.Remove(obj);
+            }
         }
 
         public virtual T GetById(object id)

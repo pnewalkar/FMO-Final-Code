@@ -46,15 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IDeliveryPointBussinessService.cs" />
+    <Compile Include="Interfaces\IDeliveryRouteBusinessService.cs" />
     <Compile Include="Interfaces\IPostalAddressBusinessService.cs" />
-    <Compile Include="Interfaces\IRouteLogBusinessService.cs" />
-    <Compile Include="Interfaces\IRouteSimulationBusinessService.cs" />
     <Compile Include="Interfaces\ISearchBussinessService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeliveryPointBusinessService.cs" />
     <Compile Include="Services\PostalAddressBusinessService.cs" />
-    <Compile Include="Services\RouteLogBusinessService.cs" />
-    <Compile Include="Services\RouteSimulationBusinessService.cs" />
+    <Compile Include="Services\DeliveryRouteBusinessService.cs" />
     <Compile Include="Services\SearchBussinessService.cs" />
   </ItemGroup>
   <ItemGroup>
