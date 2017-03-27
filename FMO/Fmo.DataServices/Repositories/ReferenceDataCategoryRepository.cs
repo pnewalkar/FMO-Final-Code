@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
-using Entity = Fmo.Entities;
 using Fmo.MappingConfiguration;
 using Dto = Fmo.DTO;
-using System;
+using Entity = Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -36,8 +35,8 @@ namespace Fmo.DataServices.Repositories
             }
             catch (Exception ex)
             {
-                //TO DO implement logging
-                throw;
+                // TO DO implement logging
+                throw ex;
             }
             return statusId;
         }

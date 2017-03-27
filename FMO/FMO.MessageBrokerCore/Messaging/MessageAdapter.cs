@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Messaging; //This is the only place where we reference MSMQ
 using System.Configuration;
+using System.Linq;
+using System.Messaging; //This is the only place where we reference MSMQ
 using Fmo.MessageBrokerCore.FileTypes;
 
 namespace Fmo.MessageBrokerCore.Messaging
@@ -12,18 +11,18 @@ namespace Fmo.MessageBrokerCore.Messaging
     {
         //here is where we implement the message queue technology of our choice
         private MessageQueue messageQueue = null;
-        private static string QueueRootPath = ConfigurationSettings.AppSettings["Queue_Root_Path"].ToString();
+
+        private static string QueueRootPath = ConfigurationManager.AppSettings["Queue_Root_Path"].ToString();
 
         public MessageAdapter(IFileType fileType)
         {
-
             KeyValuePair<string, string> queueDetails = fileType.GetQueue(QueueRootPath);
+
             //TODO: Route the message to different queue depending on messagetype
             if (MessageQueue.Exists(queueDetails.Value))
             {
                 messageQueue = new MessageQueue(queueDetails.Value);
                 messageQueue.Label = queueDetails.Key;
-
             }
             else
             {
@@ -34,7 +33,6 @@ namespace Fmo.MessageBrokerCore.Messaging
             }
         }
 
- 
         public IMessage PopMessage()
         {
             // Set the formatter to indicate body contains an Order.
@@ -42,7 +40,7 @@ namespace Fmo.MessageBrokerCore.Messaging
             System.Messaging.Message mqMessage = messageQueue.Receive();
             Message returnMessage = (Message)mqMessage.Body;
 
-           // messageQueue.Purge();
+            // messageQueue.Purge();
             return returnMessage;
         }
 
@@ -55,7 +53,5 @@ namespace Fmo.MessageBrokerCore.Messaging
         {
             return messageQueue.GetAllMessages().Count() > 0;
         }
-
-
     }
 }

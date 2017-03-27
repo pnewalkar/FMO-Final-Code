@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using Fmo.Common.TestSupport;
+using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DataServices.DBContext;
+using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
-using DTO=Fmo.DTO;
-using Fmo.Entities;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -18,12 +17,20 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryPointsRepository testCandidate;
 
+        [Test]
+        public void Test_SearchDeliveryPoints()
+        {
+            var actualResult = testCandidate.SearchDelievryPoints();
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult.Count == 2);
+        }
+
         protected override void OnSetup()
         {
             var deliveryPoint = new List<DeliveryPoint>()
             {
-                new DeliveryPoint(){ DeliveryPoint_Id = 1 },
-                new DeliveryPoint(){ DeliveryPoint_Id = 2 }
+                new DeliveryPoint() { DeliveryPoint_Id = 1 },
+                new DeliveryPoint() { DeliveryPoint_Id = 2 }
             };
 
             var mockDeliveryPointDBSet = MockDbSet(deliveryPoint);
@@ -35,15 +42,7 @@ namespace Fmo.DataServices.Tests.Repositories
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
 
-            testCandidate = new SearchDeliveryPointsRepository(mockDatabaseFactory.Object);
-        }
-
-        [Test]
-        public void Test_SearchDeliveryPoints()
-        {
-            var actualResult = testCandidate.SearchDelievryPoints();
-            Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult.Count == 2);
+            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object);
         }
     }
 }
