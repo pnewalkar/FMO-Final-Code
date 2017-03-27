@@ -1,4 +1,4 @@
-angular.module('FMOApp', ['ngMaterial',
+var app=angular.module('FMOApp', ['ngMaterial',
                           'ngMessages',
                           'home'        
                          ]);
