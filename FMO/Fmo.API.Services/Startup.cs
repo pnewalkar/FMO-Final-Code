@@ -59,11 +59,14 @@ namespace Fmo.API.Services
             //---Adding scope for all classes
             services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
             services.AddTransient<IDeliveryPointBussinessService, DeliveryPointBusinessService>();
-            services.AddTransient<IDeliveryPointsRepository, SearchDeliveryPointsRepository>();
+            services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
             //services.AddSingleton<FMODBContext, FMODBContext>();           
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
             services.AddTransient<IDatabaseFactory<FMODBContext>, DatabaseFactory<FMODBContext>>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
+            services.AddTransient<IAddressRepository, AddressRepository>();
+            services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

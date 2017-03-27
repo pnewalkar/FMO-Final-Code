@@ -1,42 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.MappingConfiguration;
 using Entity = Fmo.Entities;
-using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
-        IAddressRepository addressRepository = default(IAddressRepository);
+        private IAddressRepository addressRepository = default(IAddressRepository);
+        private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
 
-        public PostalAddressBusinessService(IAddressRepository _addressRepository)
+        public PostalAddressBusinessService(IAddressRepository addressRepository, IReferenceDataCategoryRepository refDataRepository)
         {
-            this.addressRepository = _addressRepository;
+            this.addressRepository = addressRepository;
+            this.refDataRepository = refDataRepository;
         }
 
-        public bool SavePostalAddress(List<DTO.PostalAddress> lstPostalAddress)
+        public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress)
         {
             bool saveFlag = false;
             try
             {
-                //Mapper.Initialize(config => { config.CreateMap<DTO.PostalAddress, Entity.PostalAddress>(); });
-                //var lstPostalAddressEntities = Mapper.Map<List<DTO.PostalAddress>, List<Entity.PostalAddress>>(lstPostalAddress);
-                //foreach (var addEntity in lstPostalAddressEntities)
-                //{
-                //    addressRepository.SaveAddress(addEntity);
-                //}
+                var refDataAddressType = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Type");
+                var refDataAddressStatus = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Status");
+
+                var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddressDTO, Entity.PostalAddress>(lstPostalAddress);
+
+                foreach (var addEntity in lstPostalAddressEntities)
+                {
+                    addressRepository.SaveAddress(addEntity);
+                }
+
                 saveFlag = true;
             }
             catch (Exception)
             {
-
                 throw;
             }
+
             return saveFlag;
         }
     }

@@ -15,27 +15,16 @@ namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private readonly IKernel kernal;
+        //private readonly IKernel kernal;
         private readonly IMessageBroker msgBroker;
 
-        public PAFLoader(IMessageBroker messageBroaker)
+        public PAFLoader(IMessageBroker messageBroker)
         {
-            kernal = new StandardKernel();
-            Register(kernal);
-            this.msgBroker = messageBroaker;
-        }
-
-        protected static void Register(IKernel kernel)
-        {
-            kernel.Bind<IMessageBroker>().To<MessageBroker>().InSingletonScope();
-        }
-        protected T Get<T>()
-        {
-            return kernal.Get<T>();
+            this.msgBroker = messageBroker;
         }
         public void LoadPAFDetailsFromCSV(string strPath)
         {
-            List<PostalAddress> lstAddressDetails = null;
+            List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
                 ZipArchive zip = ZipFile.OpenRead(strPath);
@@ -82,7 +71,7 @@ namespace Fmo.NYBLoader
                             {
                                 foreach (var addDetail in lstAddressDetails)
                                 {
-                                    string strXml = SerializeObject<PostalAddress>(addDetail);
+                                    string strXml = SerializeObject<PostalAddressDTO>(addDetail);
                                     IMessage msg = msgBroker.CreateMessage(strXml, MessageType.PostalAddress);
                                     msgBroker.SendMessage(msg);
                                 }
@@ -163,9 +152,9 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
-        private PostalAddress MapPAFDetailsToDTO(string csvLine)
+        private PostalAddressDTO MapPAFDetailsToDTO(string csvLine)
         {
-            PostalAddress objAddDTO = new PostalAddress();
+            PostalAddressDTO objAddDTO = new PostalAddressDTO();
             try
             {
                 string[] values = csvLine.Split(',');
@@ -206,12 +195,12 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
-        private void ValidatePAFDetails(List<PostalAddress> lstAddress)
+        private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
 
             try
             {
-                foreach (PostalAddress objAdd in lstAddress)
+                foreach (PostalAddressDTO objAdd in lstAddress)
                 {
                     if ((string.IsNullOrEmpty(objAdd.Postcode)) && !ValidatePostCode(objAdd.Postcode))
                     {

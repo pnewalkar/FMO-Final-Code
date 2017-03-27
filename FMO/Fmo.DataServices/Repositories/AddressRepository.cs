@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Entity;
-using Fmo.DataServices.Infrastructure;
-using Fmo.Entities;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DataServices.DBContext;
-
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.Entities;
+
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
-
-
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory) : base(databaseFactory)
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+            : base(databaseFactory)
         {
-
         }
 
         public bool SaveAddress(PostalAddress objPostalAddress)
@@ -31,6 +25,7 @@ namespace Fmo.DataServices.Repositories
             {
                 throw ex;
             }
+
             return saveFlag;
         }
     }

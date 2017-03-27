@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-  public  class DeliveryPoint
+  public  class DeliveryPointDTO
     {
         public int DeliveryPoint_Id { get; set; }
 

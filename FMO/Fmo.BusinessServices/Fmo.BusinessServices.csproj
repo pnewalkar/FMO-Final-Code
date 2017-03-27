@@ -74,7 +74,7 @@
       <Name>Fmo.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fmo.MappingConfiguration\Fmo.MappingConfiguration.csproj">
-      <Project>{348FE78C-1051-4D06-B29E-2E1EFF30CC7A}</Project>
+      <Project>{348fe78c-1051-4d06-b29e-2e1eff30cc7a}</Project>
       <Name>Fmo.MappingConfiguration</Name>
     </ProjectReference>
   </ItemGroup>

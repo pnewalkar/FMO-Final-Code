@@ -12,9 +12,11 @@ namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
+
+
         public void LoadNYBDetailsFromCSV(string strPath)
         {
-            List<PostalAddress> lstAddressDetails = null;
+            List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
                 ZipArchive zip = ZipFile.OpenRead(strPath);
@@ -109,9 +111,9 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
-        private PostalAddress MapNYBDetailsToDTO(string csvLine)
+        private PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
-            PostalAddress objAddDTO = new PostalAddress();
+            PostalAddressDTO objAddDTO = new PostalAddressDTO();
             try
             {
                 string[] values = csvLine.Split(',');
@@ -148,12 +150,12 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
-        private void ValidateNYBDetails(List<PostalAddress> lstAddress)
+        private void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
 
             try
             {
-                foreach (PostalAddress objAdd in lstAddress)
+                foreach (PostalAddressDTO objAdd in lstAddress)
                 {
                     if ((string.IsNullOrEmpty(objAdd.Postcode)) && !ValidatePostCode(objAdd.Postcode))
                     {

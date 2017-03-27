@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-    public class DeliveryRoute
+    public class DeliveryRouteDTO
     {
 
         public int DeliveryRoute_Id { get; set; }

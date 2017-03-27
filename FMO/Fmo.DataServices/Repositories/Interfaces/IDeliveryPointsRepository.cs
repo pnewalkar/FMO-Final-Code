@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Entity;
+﻿using System.Collections.Generic;
 using Fmo.DTO;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryPointsRepository
     {
-        List<DeliveryPoint> SearchDelievryPoints();
+        List<DeliveryPointDTO> SearchDelievryPoints();
     }
 }
