@@ -8,6 +8,7 @@
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using DTO;
 
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
@@ -16,10 +17,10 @@
         {
         }
 
-        public List<DTO.DeliveryRoute> ListOfRoute()
+        public List<DTO.DeliveryRouteDTO> ListOfRoute()
         {
             IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.ToList().Where(x => x.DeliveryScenario_Id == 1);
-            return GenericMapper.MapList<DeliveryRoute, DTO.DeliveryRoute>(result.ToList());
+            return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
         }
 
         public List<DTO.ReferenceDataDTO> ListOfRouteLogStatus()

@@ -15,17 +15,17 @@ namespace Fmo.BusinessServices.Services
             this.routeSimulationRespository = routeSimulationRespository;
         }
 
-        public List<DeliveryRoute> ListOfRoute()
+        public List<DTO.DeliveryRouteDTO> ListOfRoute()
         {
             return routeSimulationRespository.ListOfRoute();
         }
 
-        public List<ReferenceDataDTO> ListOfRouteLogStatus()
+        public List<DTO.ReferenceDataDTO> ListOfRouteLogStatus()
         {
             return routeSimulationRespository.ListOfRouteLogStatus();
         }
 
-        public List<ScenarioDTO> ListOfScenario()
+        public List<DTO.ScenarioDTO> ListOfScenario()
         {
             return routeSimulationRespository.ListOfScenario();
         }

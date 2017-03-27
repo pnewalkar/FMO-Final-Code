@@ -10,7 +10,7 @@ namespace Fmo.BusinessServices.Interfaces
    public interface IDeliveryRouteBusinessService
     {
         List<DTO.ReferenceDataDTO> ListOfRouteLogStatus();
-        List<DTO.DeliveryRoute> ListOfRoute();
+        List<DTO.DeliveryRouteDTO> ListOfRoute();
         List<DTO.ScenarioDTO> ListOfScenario();
     }
 }
