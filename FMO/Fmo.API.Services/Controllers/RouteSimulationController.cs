@@ -16,7 +16,7 @@ namespace Fmo.API.Services.Controllers
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService;
 
         [HttpGet]
-        public List<DeliveryRoute> RouteSimulations()
+        public List<DeliveryRouteDTO> RouteSimulations()
         {
             return deliveryRouteBusinessService.ListOfRoute();
         }

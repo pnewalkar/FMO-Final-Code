@@ -66,6 +66,8 @@ namespace Fmo.API.Services
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IAddressRepository, AddressRepository>();
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
+            services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
+            services.AddTransient<IDeliveryRouteRepository, DeliveryRouteRepository>();
             
         }
 
