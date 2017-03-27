@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FMO.Batch.FileLoader
+﻿namespace FMO.Batch.FileLoader
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        private static void Main()
         {
-            #if DEBUG
-            //While debugging this section is used.
+#if DEBUG
+
+            // While debugging this section is used.
             FileLoader myService = new FileLoader();
             myService.OnDebug();
             System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
 
-            #else
+#else
+
                 //In Release this section is used. This is the "normal" way.
                ServiceBase[] ServicesToRun;
                         ServicesToRun = new ServiceBase[]
@@ -28,7 +23,7 @@ namespace FMO.Batch.FileLoader
                             new FileLoaderService()
                         };
                         ServiceBase.Run(ServicesToRun);
-            #endif 
+#endif
         }
     }
 }

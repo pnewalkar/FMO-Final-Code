@@ -13,16 +13,24 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class RouteLogController : Controller
     {
-        protected IRouteLogBusinessService routeLogBusinessService;
+        protected IDeliveryRouteBusinessService deliveryRouteBusinessService;
 
-        public List<DeliveryRouteDTO> ListOfRouteLogs()
+        [HttpGet]
+        public List<DeliveryRoute> ListOfRouteLogs()
         {
-            return routeLogBusinessService.ListOfRouteLogs();
+            return deliveryRouteBusinessService.ListOfRoute();
         }
 
+        [HttpGet]
+        public List<ReferenceDataDTO> RouteLogsStatus()
+        {
+            return deliveryRouteBusinessService.ListOfRouteLogStatus();
+        }
+
+        [HttpGet]
         public List<ScenarioDTO> ListOfScenario()
         {
-            return routeLogBusinessService.ListOfScenarios();
-        } 
+            return deliveryRouteBusinessService.ListOfScenario();
+        }
     }
 }

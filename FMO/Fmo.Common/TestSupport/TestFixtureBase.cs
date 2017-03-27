@@ -36,6 +36,18 @@ namespace Fmo.Common.TestSupport
         }
 
         /// <summary>
+        /// Setups the per-test instances.
+        /// </summary>
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            CreatedMockObjects = new List<object>();
+            TestMockRepository = new MockRepository(MockBehavior.Loose);
+
+            OnSetup();
+        }
+
+        /// <summary>
         /// Configures if the test should use the unit of work mocks. In some test cases (e.g. integration tests),
         /// this method should be overriden to return false.
         /// </summary>
@@ -51,7 +63,8 @@ namespace Fmo.Common.TestSupport
         /// <typeparam name="T">The type of the object that shall be mocked.</typeparam>
         /// <returns>The created mock.</returns>
         /// <remarks>The created mock is registered in the <c>CreatedMockObjects</c> collection.</remarks>
-        protected Mock<T> CreateMock<T>() where T : class
+        protected Mock<T> CreateMock<T>()
+            where T : class
         {
             Mock<T> mock = TestMockRepository.Create<T>();
             CreatedMockObjects.Add(mock.Object);
@@ -63,7 +76,8 @@ namespace Fmo.Common.TestSupport
         /// </summary>
         /// <typeparam name="T">The type of the object which mocks should be resolved.</typeparam>
         /// <returns>A list of the created mocks for the specified type.</returns>
-        protected List<Mock<T>> GetCreatedMocksByType<T>() where T : class
+        protected List<Mock<T>> GetCreatedMocksByType<T>()
+            where T : class
         {
             return CreatedMockObjects.FindAll(vm => vm is T).
                     ConvertAll<Mock<T>>(vm => Mock.Get<T>((T)vm));
@@ -74,14 +88,15 @@ namespace Fmo.Common.TestSupport
         /// </summary>
         /// <typeparam name="T">The type of the object which mocks should be resolved.</typeparam>
         /// <returns>A list of the created view model mocks for the specified type.</returns>
-        protected Mock<T> GetMockByType<T>() where T : class
+        protected Mock<T> GetMockByType<T>()
+            where T : class
         {
             var allCreatedMocks = CreatedMockObjects.FindAll(vm => vm is T).
                     ConvertAll<Mock<T>>(vm => Mock.Get<T>((T)vm));
 
             if (allCreatedMocks.Count != 1)
             {
-                string msg = String.Format(
+                string msg = string.Format(
                                        CultureInfo.InvariantCulture,
                                        "Unexpected state of the inner mock collection. Expected exactly one mock of type {0} but found {1}.",
                                        typeof(T),
@@ -97,22 +112,11 @@ namespace Fmo.Common.TestSupport
         /// </summary>
         /// <typeparam name="T">The type of the object which mocks should be resolved.</typeparam>
         /// <returns>A list of the created mocks for the specified type.</returns>
-        protected List<T> GetCreatedMockObjectsByType<T>() where T : class
+        protected List<T> GetCreatedMockObjectsByType<T>()
+            where T : class
         {
             return CreatedMockObjects.FindAll(vm => vm is T).
                     ConvertAll<T>(vm => (T)vm);
-        }
-
-        /// <summary>
-        /// Setups the per-test instances.
-        /// </summary>
-        [OneTimeSetUp]
-        public void Setup()
-        {
-            CreatedMockObjects = new List<object>();
-            TestMockRepository = new MockRepository(MockBehavior.Loose);
-
-            OnSetup();
         }
 
         /// <summary>
