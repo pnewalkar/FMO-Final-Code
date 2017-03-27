@@ -27,21 +27,23 @@ namespace Fmo.BusinessServices.Services
             bool saveFlag = false;
             try
             {
-                var refDataAddressType = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Type");
-                var refDataAddressStatus = refDataRepository.GetReferenceDataCategoryDetails("Postal Address Status");
+                int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type","NYB");
+                int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status","L");
 
                 var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddressDTO, Entity.PostalAddress>(lstPostalAddress);
 
                 foreach (var addEntity in lstPostalAddressEntities)
                 {
+                    addEntity.AddressStatus_Id = addressStatusId;
+                    addEntity.AddressType_Id = addressTypeId;
                     addressRepository.SaveAddress(addEntity);
                 }
                 saveFlag = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+               
             }
             return saveFlag;
         }

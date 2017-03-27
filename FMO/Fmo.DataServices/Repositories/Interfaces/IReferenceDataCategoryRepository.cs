@@ -9,6 +9,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IReferenceDataCategoryRepository
     {
-        List<ReferenceDataCategoryDTO> GetReferenceDataCategoryDetails(string strCategoryname);
+        int GetReferenceDataId(string strCategoryname, string strRefDataName);
     }
 }

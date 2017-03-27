@@ -7,12 +7,17 @@ using System.Threading.Tasks;
 using Fmo.DTO;
 using System.IO;
 using System.IO.Compression;
+using System.Configuration;
+using System.Net.Http;
 
 namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
-
+        private static string strProcessedFilePath = ConfigurationSettings.AppSettings["ProcessedFilePath"].ToString();
+        private static string strErrorFilePath = ConfigurationSettings.AppSettings["ErrorFilePath"].ToString();
+        private static string strFMOWEbApiURL = ConfigurationSettings.AppSettings["FMOWebAPIURL"].ToString();
+        private static string strFMOWebAPIName = ConfigurationSettings.AppSettings["FMOWebAPIName"].ToString();
 
         public void LoadNYBDetailsFromCSV(string strPath)
         {
@@ -37,7 +42,10 @@ namespace Fmo.NYBLoader
                     strfileName = entry.Name;
 
                     string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                    Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                    if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length-1])) {
+
+                        Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                    }
 
                     if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                     {
@@ -58,11 +66,12 @@ namespace Fmo.NYBLoader
 
                             if (invalidRecordCount > 0)
                             {
-                                File.WriteAllText(Path.Combine("Error file", AppendTimeStamp(strfileName)), strLine);
+                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
                             }
                             else
                             {
-                                File.WriteAllText(Path.Combine("Processed file", AppendTimeStamp(strfileName)), strLine);
+                                SaveNYBDetails(lstAddressDetails).Wait();
+                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                             }
 
                         }
@@ -252,6 +261,24 @@ namespace Fmo.NYBLoader
                string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
                 Path.GetExtension(strfileName)
                 );
+        }
+
+        private async Task SaveNYBDetails(List<PostalAddressDTO> lstAddress)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(strFMOWEbApiURL);
+                    var result = await client.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
+                    //Employee product = await result.Content.ReadAsAsync<Employee>();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

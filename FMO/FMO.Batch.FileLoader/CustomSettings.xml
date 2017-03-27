@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ArrayOfCustomFolderSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <CustomFolderSettings FolderID="ExamplePAF_files">
-    <FolderEnabled>true</FolderEnabled>
+    <FolderEnabled>false</FolderEnabled>
     <FolderDescription>
       Files in format PAF corresponding to the example project
     </FolderDescription>
@@ -19,7 +19,7 @@
       Files in format NYB corresponding to the example project
     </FolderDescription>
     <FolderFilter>*</FolderFilter>
-    <FolderPath>D:\Project\SourceFiles\ConsoleApplication1\TestData\NYB\</FolderPath>
+    <FolderPath>D:\NYB\</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the

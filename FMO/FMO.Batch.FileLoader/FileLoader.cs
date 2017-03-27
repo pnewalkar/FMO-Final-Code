@@ -151,7 +151,7 @@
                         pafLoader.LoadPAFDetailsFromCSV(fileName);
                         break;
                     case "NYB":
-                        kernal.Get<NYBLoader>().LoadNYBDetailsFromCSV(fileName);
+                        nybLoader.LoadNYBDetailsFromCSV(fileName);
                         break;
                 }
             }
