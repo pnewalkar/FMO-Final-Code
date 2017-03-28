@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Fmo.BusinessServices.Interfaces;
+using Fmo.BusinessServices.Services;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories;
+using Fmo.DataServices.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.BusinessServices.Services;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DataServices.Repositories;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.DBContext;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Fmo.API.Services
 {
-    public class Startup
+    public partial class Startup
     {
         public Startup(IHostingEnvironment env)
         {
