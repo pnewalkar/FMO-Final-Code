@@ -32,7 +32,7 @@ function MapPanelController($scope, $rootScope, $timeout) {
     function togglePanel() {
         if (vm.group) {
             $rootScope.panelGroups[vm.group].forEach(function (panel) {
-                if (panel != vm) {
+                if (panel !== vm) {
                     panel.closePanel();
                 }
             });

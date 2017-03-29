@@ -29,8 +29,7 @@ h2 span{
     font-size: 15px;
 }
 
-div.panel {
-    height: 100px;
+div.panel-content {
     padding: 5px 10px;
     background-color: white;
     

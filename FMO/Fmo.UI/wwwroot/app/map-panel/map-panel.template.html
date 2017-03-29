@@ -7,6 +7,10 @@
             <i ng-show="vm.collapsed" class="fa pull-right fa-plus-circle"></i>-->
         </li>
     </ul>
-    <div ng-transclude></div>
-   
+    
+    <div ng-transclude ng-hide="vm.collapsed" class="panel-content"></div>
+    <div ng-show="vm.collapsed && vm.hasCollapsedtext()" class="map-panel-summary" id="map-panel-hidden-content">
+        {{vm.collapsedtext}}
+    </div>
+
 </div>
