@@ -15,22 +15,28 @@
         {
         }
 
-        public bool DeleteNYBPostalAddress(List<int> lstUDPRN)
+        public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressTypeID)
         {
             bool deleteFlag = false;
             try
             {
                 if (lstUDPRN != null && lstUDPRN.Count() > 0)
                 {
-                    var lstAddress = DataContext.PostalAddresses.Where(n => !lstUDPRN.Contains(n.UDPRN.Value)).ToList();
+                    var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressTypeID).ToList();
                     if (lstAddress != null && lstUDPRN.Count > 0)
                     {
                         lstAddress.ForEach(x =>
                         {
-                            DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
-
-                            DataContext.SaveChanges();
+                            if (x.DeliveryPoints != null && x.DeliveryPoints.Count > 0)
+                            {
+                                // TO DO Log error 
+                            }
+                            else
+                            {
+                                DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
+                            }
                         });
+                        DataContext.SaveChanges();
                     }
 
                     deleteFlag = true;
