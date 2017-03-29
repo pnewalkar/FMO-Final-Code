@@ -14,7 +14,7 @@ namespace FMO.Batch.FileLoader
         /// <summary> Gets or sets unique identifier of the combination File type/folder.
         /// Arbitrary number (for instance 001, 002, and so on)</summary>
         [XmlAttribute]
-        public string FolderID { get; set; }
+        public string FolderId { get; set; }
 
         /// <summary>Gets or sets a value indicating whether if TRUE: the file type and folder will be monitored</summary>
         [XmlElement]
