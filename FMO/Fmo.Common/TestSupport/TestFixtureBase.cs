@@ -76,7 +76,7 @@ namespace Fmo.Common.TestSupport
         /// </summary>
         /// <typeparam name="T">The type of the object which mocks should be resolved.</typeparam>
         /// <returns>A list of the created mocks for the specified type.</returns>
-        protected List<Mock<T>> GetCreatedMocksByType<T>()
+        protected IList<Mock<T>> GetCreatedMocksByType<T>()
             where T : class
         {
             return CreatedMockObjects.FindAll(vm => vm is T).
@@ -112,7 +112,7 @@ namespace Fmo.Common.TestSupport
         /// </summary>
         /// <typeparam name="T">The type of the object which mocks should be resolved.</typeparam>
         /// <returns>A list of the created mocks for the specified type.</returns>
-        protected List<T> GetCreatedMockObjectsByType<T>()
+        protected IList<T> GetCreatedMockObjectsByType<T>()
             where T : class
         {
             return CreatedMockObjects.FindAll(vm => vm is T).
