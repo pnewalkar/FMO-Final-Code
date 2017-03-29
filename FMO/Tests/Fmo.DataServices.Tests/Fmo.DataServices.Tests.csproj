@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Fmo.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -70,6 +71,10 @@
       <Project>{245B42EE-7F97-4077-9695-84871B70BD6A}</Project>
       <Name>Fmo.DataServices</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Fmo.DTO\Fmo.DTO.csproj">
+      <Project>{43fc012e-5274-4cf4-8689-97b3ce067c11}</Project>
+      <Name>Fmo.DTO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\FMO.Entities\Fmo.Entities.csproj">
       <Project>{355491a6-65fa-4145-bb68-74e0e1576433}</Project>
       <Name>Fmo.Entities</Name>
@@ -77,6 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

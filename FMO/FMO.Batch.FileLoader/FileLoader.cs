@@ -1,28 +1,24 @@
-﻿using Fmo.DTO;
-using Fmo.MessageBrokerCore.Messaging;
-using Fmo.NYBLoader;
-using Fmo.NYBLoader.Interfaces;
-using Ninject;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-
-namespace FMO.Batch.FileLoader
+﻿namespace FMO.Batch.FileLoader
 {
+    using Fmo.MessageBrokerCore.Messaging;
+    using Fmo.NYBLoader;
+    using Fmo.NYBLoader.Interfaces;
+    using Ninject;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.IO;
+    using System.ServiceProcess;
+    using System.Text;
+    using System.Xml.Serialization;
+
     public partial class FileLoader : ServiceBase
     {
+        private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
-        private readonly IKernel kernal;
+        private static INYBLoader nybLoader = default(INYBLoader);
+        private static IPAFLoader pafLoader = default(IPAFLoader);
+        private static IMessageBroker msgBroker = default(IMessageBroker);
 
         public FileLoader()
         {
@@ -35,15 +31,21 @@ namespace FMO.Batch.FileLoader
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
-        }
-        protected T Get<T>()
-        {
-            return kernal.Get<T>();
+            kernel.Bind<IMessageBroker>().To<MessageBroker>().InSingletonScope();
+
+            nybLoader = kernel.Get<INYBLoader>();
+            pafLoader = kernel.Get<IPAFLoader>();
+            msgBroker = kernel.Get<IMessageBroker>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
         /// <param name="args">array of arguments</param>
         protected override void OnStart(string[] args)
+        {
+            Start();
+        }
+
+        private void Start()
         {
             // Initialize the list of FileSystemWatchers based on the XML configuration file
             PopulateListFileSystemWatchers();
@@ -114,10 +116,11 @@ namespace FMO.Batch.FileLoader
                     fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
                       NotifyFilters.DirectoryName;
                     // Associate the event that will be triggered when a new file
-                    // is added to the monitored folder, using a lambda expression                   
+                    // is added to the monitored folder, using a lambda expression
                     //fileSWatch.Created += (senderObj, fileSysArgs) =>
                     //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
                     fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
+                    fileSWatch.Error += OnFileSystemWatcherError;
                     // Begin watching
                     fileSWatch.EnableRaisingEvents = true;
                     // Add the systemWatcher to the list
@@ -130,51 +133,74 @@ namespace FMO.Batch.FileLoader
             }
         }
 
+        private void OnFileSystemWatcherError(object sender, ErrorEventArgs e)
+        {
+            var watcher = (FileSystemWatcher)sender;
+            watcher.EnableRaisingEvents = false;
+            watcher.Dispose();
+
+            //Log error
+            Start();
+        }
+
         /// <summary>This event is triggered when a file with the specified
         /// extension is created on the monitored folder</summary>
         /// <param name="sender">Object raising the event</param>
         /// <param name="e">List of arguments - FileSystemEventArgs</param>
         /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
         /// <param name="action_Args">arguments to be passed to the executable (action)</param>
-        void fileSWatch_Created(object sender, FileSystemEventArgs e,string action_Exec, string action_Args)
+        private void fileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
         {
             string fileName = e.FullPath;
-            ExecuteProcess(fileName);
-        }
-
-        /// <summary>Executes a set of instructions through the command window</summary>
-        /// <param name="executableFile">Name of the executable file or program</param>
-        private void ExecuteProcess(string strFilePath)
-        {
-
-            try
+            if (!string.IsNullOrEmpty(action_Args))
             {
-                List<PostalAddress> lstAddressDetails = kernal.Get<PAFLoader>().LoadPAFDetailsFromCSV(strFilePath);
-                IMessageBroker msgBroker = new MessageBroker();
-                foreach (var addDetail in lstAddressDetails)
+                switch (action_Args)
                 {
-                    IMessage msg = msgBroker.CreateMessage("4545", MessageType.PostalAddress);
-                    msgBroker.SendMessage(msg);
+                    case "PAF":
+                        pafLoader.LoadPAFDetailsFromCSV(fileName);
+                        break;
+
+                    case "NYB":
+                        nybLoader.LoadNYBDetailsFromCSV(fileName);
+                        break;
                 }
-
-
-
-                File.Move(strFilePath, "Processed folder");
-                //IKernel kernal = new StandardKernel();
-                //kernal.Bind<INYBLoader>().To<NYBLoader>();
-                //var nybInstance = kernal.Get<NYBLoader>();
-                //List<PostalAddress> lstAddressDetails = nybInstance.LoadNYBDetailsFromCSV(strFilePath);
-
             }
-            catch (Exception ex)
-            {
-                // Register a Log of the Exception
-            }
+            // ExecuteProcess(fileName);
         }
 
         public void OnDebug()
         {
             OnStart(null);
         }
+
+        /*
+        private string SerializeObject<T>(T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
+            }
+        }
+
+        private T DeserializeXMLFileToObject<T>(string XmlFilename)
+        {
+            T returnObject = default(T);
+            if (string.IsNullOrEmpty(XmlFilename)) return default(T);
+
+            try
+            {
+                StreamReader xmlStream = new StreamReader(XmlFilename);
+                XmlSerializer serializer = new XmlSerializer(typeof(T));
+                returnObject = (T)serializer.Deserialize(xmlStream);
+            }
+            catch (Exception ex)
+            {
+            }
+            return returnObject;
+        }
+        */
     }
 }

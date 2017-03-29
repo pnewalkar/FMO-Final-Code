@@ -6,48 +6,122 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using System.IO;
+using System.IO.Compression;
+using Ninject;
+using System.Xml.Serialization;
+using Fmo.MessageBrokerCore.Messaging;
 
 namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        public List<PostalAddress> LoadPAFDetailsFromCSV(string strPath)
+        //private readonly IKernel kernal;
+        private readonly IMessageBroker msgBroker;
+
+        public PAFLoader(IMessageBroker messageBroker)
         {
-            List<PostalAddress> lstAddressDetails = null;
+            this.msgBroker = messageBroker;
+        }
+        public void LoadPAFDetailsFromCSV(string strPath)
+        {
+            List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-                //  string strPAFDetails = File.ReadAllText(strPath, Encoding.ASCII);
-                string[] arrPAFDetails = File.ReadAllLines(strPath, Encoding.ASCII);//strNybDetails.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                ZipArchive zip = ZipFile.OpenRead(strPath);
+                
 
-                if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
+                foreach (ZipArchiveEntry entry in zip.Entries)
                 {
-                    lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
+                    string strLine = string.Empty;
+                    string strfileName = string.Empty;
 
-
-                    if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                    using (Stream stream = entry.Open())
                     {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            strLine = reader.ReadToEnd();
+                        }
+                    }
+                    strfileName = entry.Name;
 
-                        //Validate PAF Details
-                        ValidatePAFDetails(lstAddressDetails);
+                    string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
 
-                        //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+                    if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
+                    {
+                        lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
 
-                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM")) && n.IsValidData == false).ToList();
 
+                        if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                        {
+
+                            //Validate PAF Details
+                            ValidatePAFDetails(lstAddressDetails);
+
+                            //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+
+                            lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+                            var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                            if (invalidRecordCount > 0)
+                            {
+                                File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
+                            }
+                            else
+                            {
+                                foreach (var addDetail in lstAddressDetails)
+                                {
+                                    string strXml = SerializeObject<PostalAddressDTO>(addDetail);
+                                    IMessage msg = msgBroker.CreateMessage(strXml, MessageType.PostalAddress);
+                                    msgBroker.SendMessage(msg);
+                                }
+                                File.WriteAllText(Path.Combine("Processed file", strfileName), strLine);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
+                        //TO DO
+                        //Log error
                     }
                 }
-                else
-                {
-                    //TO DO
-                    //Log error
-                }
+
+               
             }
             catch (Exception)
             {
-
+                
                 throw;
             }
-            return lstAddressDetails;
+        }
+
+       
+
+        private string SerializeObject<T>(T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
+            }
+        }
+
+        private T DeserializeXMLFileToObject<T>(string xmlFilename)
+        {
+            T returnObject = default(T);
+            if (string.IsNullOrEmpty(xmlFilename))
+            {
+                return default(T);
+            }
+
+            StreamReader xmlStream = new StreamReader(xmlFilename);
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            returnObject = (T)serializer.Deserialize(xmlStream);
+
+            return returnObject;
         }
 
         private bool ValidateFile(string[] arrLines)
@@ -78,9 +152,9 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
-        private PostalAddress MapPAFDetailsToDTO(string csvLine)
+        private PostalAddressDTO MapPAFDetailsToDTO(string csvLine)
         {
-            PostalAddress objAddDTO = new PostalAddress();
+            PostalAddressDTO objAddDTO = new PostalAddressDTO();
             try
             {
                 string[] values = csvLine.Split(',');
@@ -106,6 +180,7 @@ namespace Fmo.NYBLoader
                     objAddDTO.PostcodeType = values[17];
                     objAddDTO.SmallUserOrganisationIndicator = values[18];
                     objAddDTO.DeliveryPointSuffix = values[19];
+                    objAddDTO.IsValidData = true;
                 }
 
             }
@@ -120,12 +195,12 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
-        private void ValidatePAFDetails(List<PostalAddress> lstAddress)
+        private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
 
             try
             {
-                foreach (PostalAddress objAdd in lstAddress)
+                foreach (PostalAddressDTO objAdd in lstAddress)
                 {
                     if ((string.IsNullOrEmpty(objAdd.Postcode)) && !ValidatePostCode(objAdd.Postcode))
                     {

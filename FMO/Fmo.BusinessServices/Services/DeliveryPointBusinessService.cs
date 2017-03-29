@@ -5,20 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.Entities;
+using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
     public class DeliveryPointBusinessService : IDeliveryPointBussinessService
     {
-        ISearchDeliveryPointsRepository searchDeliveryPointsRepository = default(ISearchDeliveryPointsRepository);
+        private IDeliveryPointsRepository searchDeliveryPointsRepository = default(IDeliveryPointsRepository);
 
-        public DeliveryPointBusinessService(ISearchDeliveryPointsRepository _searchDeliveryPointsRepository)
+        public DeliveryPointBusinessService(IDeliveryPointsRepository searchDeliveryPointsRepository)
         {
-            this.searchDeliveryPointsRepository = _searchDeliveryPointsRepository;
+            this.searchDeliveryPointsRepository = searchDeliveryPointsRepository;
         }
 
-        public List<DeliveryPoint> SearchDelievryPoints()
+        public List<DeliveryPointDTO> SearchDelievryPoints()
         {
             return searchDeliveryPointsRepository.SearchDelievryPoints();
         }

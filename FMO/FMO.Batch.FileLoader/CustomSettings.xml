@@ -1,20 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ArrayOfCustomFolderSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <CustomFolderSettings FolderID="ExamplePAF_files">
-    <FolderEnabled>true</FolderEnabled>
+    <FolderEnabled>false</FolderEnabled>
     <FolderDescription>
       Files in format PAF corresponding to the example project
     </FolderDescription>
-    <FolderFilter>*.csv</FolderFilter>
+    <FolderFilter>*.zip</FolderFilter>
     <FolderPath>D:\Project\SourceFiles\ConsoleApplication1\TestData\PAF\</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the
       corresponding file name -->
-    <ExecutableArguments>
-      /C echo It works properly for .KML extension-- File {0}
-      &gt; c:\temp\it_works_KML.txt
-    </ExecutableArguments>
+    <ExecutableArguments>PAF</ExecutableArguments>
   </CustomFolderSettings>
   <CustomFolderSettings FolderID="ExampleNYB_files">
     <FolderEnabled>true</FolderEnabled>
@@ -22,14 +19,11 @@
       Files in format NYB corresponding to the example project
     </FolderDescription>
     <FolderFilter>*</FolderFilter>
-    <FolderPath>D:\Project\SourceFiles\ConsoleApplication1\TestData\NYB\</FolderPath>
+    <FolderPath>D:\NYB\</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the
       corresponding file name -->
-    <ExecutableArguments>
-      /C echo It works properly for .ZIP extension -- File {0}
-      &gt; c:\temp\it_works_ZIP.txt
-    </ExecutableArguments>
+    <ExecutableArguments>NYB</ExecutableArguments>
   </CustomFolderSettings>
 </ArrayOfCustomFolderSettings>
