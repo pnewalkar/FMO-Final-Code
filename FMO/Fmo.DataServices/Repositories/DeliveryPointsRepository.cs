@@ -15,7 +15,7 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.DeliveryPointDTO> SearchDelievryPoints()
+        public List<Dto.DeliveryPointDTO> SearchDeliveryPoints()
         {
             try
             {

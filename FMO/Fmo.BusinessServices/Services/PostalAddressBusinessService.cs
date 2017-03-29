@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using Entity = Fmo.Entities;
-using Fmo.DTO;
 using Fmo.MappingConfiguration;
+using Entity = Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
 {
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
-        IAddressRepository addressRepository = default(IAddressRepository);
-        IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
+        private IAddressRepository addressRepository = default(IAddressRepository);
+        private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
 
         public PostalAddressBusinessService(IAddressRepository _addressRepository, IReferenceDataCategoryRepository _refDataRepository)
         {
@@ -27,8 +23,8 @@ namespace Fmo.BusinessServices.Services
             bool saveFlag = false;
             try
             {
-                int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type","NYB");
-                int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status","L");
+                int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
+                int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
 
                 var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddressDTO, Entity.PostalAddress>(lstPostalAddress);
 
@@ -38,13 +34,14 @@ namespace Fmo.BusinessServices.Services
                     addEntity.AddressType_Id = addressTypeId;
                     addressRepository.SaveAddress(addEntity);
                 }
+
                 saveFlag = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-               
+                throw;
             }
+
             return saveFlag;
         }
     }

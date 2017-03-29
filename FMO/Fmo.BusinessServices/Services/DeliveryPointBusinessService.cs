@@ -20,7 +20,7 @@ namespace Fmo.BusinessServices.Services
 
         public List<DeliveryPointDTO> SearchDelievryPoints()
         {
-            return searchDeliveryPointsRepository.SearchDelievryPoints();
+            return searchDeliveryPointsRepository.SearchDeliveryPoints();
         }
     }
 }
