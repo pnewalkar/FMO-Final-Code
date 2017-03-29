@@ -1,6 +1,18 @@
 angular.module('mapPanel')
   .component('mapPanel', {
     restrict: 'E',
-    scope: {},
-    templateUrl: './map-panel/map-panel.template.html'
+    transclude: true,
+    bindings: {
+        showheader: '<',
+        paneltitle: '@',
+        collapsedtext: '@',
+        collapsed: '=',
+        isleftpanel: '<',
+        oncreate: "=",
+        oncollapse: "=",
+        group: "@",
+        panelcolor: "@"
+    },
+    templateUrl: './map-panel/map-panel.template.html',
+    controller: 'MapPanelController as vm'
   });
