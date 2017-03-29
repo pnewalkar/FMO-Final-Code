@@ -34,6 +34,7 @@ function mapService() {
 	vm.selectionListeners = [];
 	vm.getFeaturesWithinFeature = function(){};
 	vm.callSelectionListeners = callSelectionListeners;
+	vm.refreshLayers = refreshLayers;
 	vm.styleLayers = function () { };
 	vm.onMap = function (event, callback) { };
 	vm.offMap = function (event, callback) { };
@@ -101,5 +102,12 @@ function mapService() {
 		vm.selectionListeners.forEach(function(callback){
 			callback(selectedFeatures);
 		})
+	}
+
+	function refreshLayers() {
+	    vm.mapLayers.forEach(function (layer) {
+	        layer.layer.setVisible(layer.selected);
+	    });
+	    vm.layerSummary = getLayerSummary();
 	}
 }
