@@ -73,5 +73,5 @@ div.panel {
 }
 
 .map-view{
-    height:300px;position:absolute; width:100%;text-align:center;
+    height:auto;position:absolute; width:100%;text-align:center;
 }

@@ -18,7 +18,7 @@
 
         public List<DTO.DeliveryRouteDTO> ListOfRoute()
         {
-            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.ToList().Where(x => x.DeliveryScenario_Id == 1);
+            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.ToList().Where(x => x.DeliveryScenario_Id == 1 && x.OperationalStatus_Id == 1);
             return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
         }
 
