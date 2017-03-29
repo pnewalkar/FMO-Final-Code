@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.MappingConfiguration;
 using Entity = Fmo.Entities;
+
 
 namespace Fmo.BusinessServices.Services
 {
@@ -34,6 +36,8 @@ namespace Fmo.BusinessServices.Services
                     addEntity.AddressType_Id = addressTypeId;
                     addressRepository.SaveAddress(addEntity);
                 }
+                List<int> lstUDPRNS = lstPostalAddress.Select(n => n.UDPRN.Value).ToList();
+                saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
 
                 saveFlag = true;
             }

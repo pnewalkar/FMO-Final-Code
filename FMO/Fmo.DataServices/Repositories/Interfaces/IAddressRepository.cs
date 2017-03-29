@@ -7,6 +7,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         bool SaveAddress(PostalAddress objPostalAddress);
 
-        bool DeleteNYBPostalAddress(List<int> lstUDPRN);
+        bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressTypeID);
     }
 }
