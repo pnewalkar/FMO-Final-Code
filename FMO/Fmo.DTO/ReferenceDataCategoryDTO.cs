@@ -16,6 +16,6 @@ namespace Fmo.DTO
 
         public int CategoryType { get; set; }
         
-        public virtual ICollection<ReferenceDataDTO> ReferenceDatas { get; set; }
+        public virtual ICollection<ReferenceDataDTO> ReferenceData { get; set; }
     }
 }

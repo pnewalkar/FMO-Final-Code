@@ -8,9 +8,9 @@ namespace Fmo.BusinessServices.Services
     {
         private IDeliveryRouteRepository routeSimulationRespository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRepository)
         {
-            this.routeSimulationRespository = routeSimulationRespository;
+            this.routeSimulationRespository = routeSimulationRepository;
         }
 
         public List<DTO.DeliveryRouteDTO> ListOfRoute()

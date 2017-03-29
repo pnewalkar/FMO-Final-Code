@@ -12,9 +12,9 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class DeliveryPointsController : Controller
     {
-        IDeliveryPointBussinessService businessService = default(IDeliveryPointBussinessService);
+        IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
 
-        public DeliveryPointsController(IDeliveryPointBussinessService _businessService)
+        public DeliveryPointsController(IDeliveryPointBusinessService _businessService)
         {
             businessService = _businessService;
         }

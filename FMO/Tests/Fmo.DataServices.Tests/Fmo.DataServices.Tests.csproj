@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\SerarchDeliveryPointsRepositoryFixture.cs" />
+    <Compile Include="Repositories\SearchDeliveryPointsRepositoryFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -9,7 +9,7 @@ namespace Fmo.DTO
     public class DeliveryRouteDTO
     {
 
-        public int DeliveryRoute_Id { get; set; }
+        public int DeliveryRouteId { get; set; }
 
         public int? ExternalId { get; set; }
 
@@ -17,13 +17,13 @@ namespace Fmo.DTO
 
         public string RouteNumber { get; set; }
 
-        public int OperationalStatus_Id { get; set; }
+        public int OperationalStatusId { get; set; }
 
-        public int RouteMethodType_Id { get; set; }
+        public int RouteMethodTypeId { get; set; }
 
-        public int? TravelOutTransportType_Id { get; set; }
+        public int? TravelOutTransportTypeId { get; set; }
 
-        public int? TravelInTransportType_Id { get; set; }
+        public int? TravelInTransportTypeId { get; set; }
 
         public decimal? TravelOutTimeMin { get; set; }
 
@@ -31,7 +31,7 @@ namespace Fmo.DTO
 
         public decimal? SpanTimeMin { get; set; }
 
-        public int? DeliveryScenario_Id { get; set; }
+        public int? DeliveryScenarioId { get; set; }
 
         public string DeliveryRouteBarcode { get; set; }
 

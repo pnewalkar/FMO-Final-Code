@@ -5,6 +5,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryPointsRepository
     {
-        List<DeliveryPointDTO> SearchDelievryPoints();
+        List<DeliveryPointDTO> SearchDeliveryPoints();
     }
 }

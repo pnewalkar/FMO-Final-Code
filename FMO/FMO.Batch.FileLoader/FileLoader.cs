@@ -15,7 +15,6 @@
     {
         private static INYBLoader nybLoader = default(INYBLoader);
         private static IPAFLoader pafLoader = default(IPAFLoader);
-        private static IMessageBroker msgBroker = default(IMessageBroker);
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
@@ -40,7 +39,6 @@
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
-            msgBroker = kernel.Get<IMessageBroker>();
         }
 
         /// <summary>Event automatically fired when the service is stopped by Windows</summary>
@@ -69,6 +67,32 @@
             Start();
         }
 
+        /// <summary>This event is triggered when a file with the specified
+        /// extension is created on the monitored folder</summary>
+        /// <param name="sender">Object raising the event</param>
+        /// <param name="e">List of arguments - FileSystemEventArgs</param>
+        /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
+        /// <param name="action_Args">arguments to be passed to the executable (action)</param>
+        private static void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
+        {
+            string fileName = e.FullPath;
+            if (!string.IsNullOrEmpty(action_Args))
+            {
+                switch (action_Args)
+                {
+                    case "PAF":
+                        pafLoader.LoadPAFDetailsFromCSV(fileName);
+                        break;
+
+                    case "NYB":
+                        nybLoader.LoadNYBDetailsFromCSV(fileName);
+                        break;
+                }
+            }
+
+            // ExecuteProcess(fileName);
+        }
+
         private void Start()
         {
             // Initialize the list of FileSystemWatchers based on the XML configuration file
@@ -87,14 +111,14 @@
 
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
-            TextReader reader = new StreamReader(fileNameXML);
-            object obj = deserializer.Deserialize(reader);
 
-            // Close the TextReader object
-            reader.Close();
+            using (TextReader reader = new StreamReader(fileNameXML))
+            {
+                object obj = deserializer.Deserialize(reader);
 
-            // Obtain a list of CustomFolderSettings from XML Input data
-            listFolders = obj as List<CustomFolderSettings>;
+                // Obtain a list of CustomFolderSettings from XML Input data
+                listFolders = obj as List<CustomFolderSettings>;
+            }
         }
 
         /// <summary>Start the file system watcher for each of the file
@@ -114,43 +138,44 @@
                 if (customFolder.FolderEnabled && dir.Exists)
                 {
                     // Creates a new instance of FileSystemWatcher
-                    FileSystemWatcher fileSWatch = new FileSystemWatcher();
+                    using (FileSystemWatcher fileSWatch = new FileSystemWatcher())
+                    {
+                        // Sets the filter
+                        fileSWatch.Filter = customFolder.FolderFilter;
 
-                    // Sets the filter
-                    fileSWatch.Filter = customFolder.FolderFilter;
+                        // Sets the folder location
+                        fileSWatch.Path = customFolder.FolderPath;
 
-                    // Sets the folder location
-                    fileSWatch.Path = customFolder.FolderPath;
+                        // Sets the action to be executed
+                        StringBuilder actionToExecute = new StringBuilder(
+                          customFolder.ExecutableFile);
 
-                    // Sets the action to be executed
-                    StringBuilder actionToExecute = new StringBuilder(
-                      customFolder.ExecutableFile);
+                        // List of arguments
+                        StringBuilder actionArguments = new StringBuilder(
+                          customFolder.ExecutableArguments);
 
-                    // List of arguments
-                    StringBuilder actionArguments = new StringBuilder(
-                      customFolder.ExecutableArguments);
+                        // Subscribe to notify filters
+                        fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
+                          NotifyFilters.DirectoryName;
 
-                    // Subscribe to notify filters
-                    fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
-                      NotifyFilters.DirectoryName;
+                        // Associate the event that will be triggered when a new file
+                        // is added to the monitored folder, using a lambda expression
+                        // fileSWatch.Created += (senderObj, fileSysArgs) =>
+                        //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
+                        fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
+                        fileSWatch.Error += OnFileSystemWatcherError;
 
-                    // Associate the event that will be triggered when a new file
-                    // is added to the monitored folder, using a lambda expression
-                    // fileSWatch.Created += (senderObj, fileSysArgs) =>
-                    //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
-                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
-                    fileSWatch.Error += OnFileSystemWatcherError;
+                        // Begin watching
+                        fileSWatch.EnableRaisingEvents = true;
 
-                    // Begin watching
-                    fileSWatch.EnableRaisingEvents = true;
+                        // Add the systemWatcher to the list
+                        listFileSystemWatcher.Add(fileSWatch);
 
-                    // Add the systemWatcher to the list
-                    listFileSystemWatcher.Add(fileSWatch);
-
-                    // Record a log entry into Windows Event Log
-                    // CustomLogEvent(String.Format(
-                    //  "Starting to monitor files with extension ({0}) in the folder ({1})",
-                    //  fileSWatch.Filter, fileSWatch.Path));
+                        // Record a log entry into Windows Event Log
+                        // CustomLogEvent(String.Format(
+                        //  "Starting to monitor files with extension ({0}) in the folder ({1})",
+                        //  fileSWatch.Filter, fileSWatch.Path));
+                    }
                 }
             }
         }
@@ -163,32 +188,6 @@
 
             // Log error
             Start();
-        }
-
-        /// <summary>This event is triggered when a file with the specified
-        /// extension is created on the monitored folder</summary>
-        /// <param name="sender">Object raising the event</param>
-        /// <param name="e">List of arguments - FileSystemEventArgs</param>
-        /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
-        /// <param name="action_Args">arguments to be passed to the executable (action)</param>
-        private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
-        {
-            string fileName = e.FullPath;
-            if (!string.IsNullOrEmpty(action_Args))
-            {
-                switch (action_Args)
-                {
-                    case "PAF":
-                        pafLoader.LoadPAFDetailsFromCSV(fileName);
-                        break;
-
-                    case "NYB":
-                        nybLoader.LoadNYBDetailsFromCSV(fileName);
-                        break;
-                }
-            }
-
-            // ExecuteProcess(fileName);
         }
 
         /*
