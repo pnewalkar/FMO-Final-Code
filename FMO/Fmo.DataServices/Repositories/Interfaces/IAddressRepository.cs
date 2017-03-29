@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Fmo.Entities;
+﻿using Fmo.Entities;
+using System.Collections.Generic;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {

@@ -15,7 +15,7 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.DeliveryPointDTO> SearchDeliveryPoints()
+        public List<Dto.DeliveryPointDTO> SearchDelievryPoints()
         {
             try
             {
@@ -24,9 +24,9 @@ namespace Fmo.DataServices.Repositories
                 // return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
                 return new List<Dto.DeliveryPointDTO>();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

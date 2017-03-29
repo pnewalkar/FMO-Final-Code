@@ -22,9 +22,9 @@ namespace Fmo.DataServices.Repositories
                 var result = DataContext.AdvanceSearch.ToList();
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

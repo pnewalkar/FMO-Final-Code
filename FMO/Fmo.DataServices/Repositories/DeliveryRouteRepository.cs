@@ -1,13 +1,14 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using DTO;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using DTO;
 
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
@@ -24,7 +25,7 @@
 
         public List<DTO.ReferenceDataDTO> ListOfRouteLogStatus()
         {
-            var result = DataContext.ReferenceData.ToList();
+            var result = DataContext.ReferenceDatas.ToList();
             return GenericMapper.MapList<ReferenceData, DTO.ReferenceDataDTO>(result);
         }
 

@@ -31,7 +31,7 @@ namespace Fmo.API.Services.Controllers
             catch (Exception ex)
             {
 
-                throw ex;
+              
             }
             return saveFlag;
         }

@@ -12,7 +12,7 @@
     <Rule Id="CA1011" Action="Error" />
     <Rule Id="CA1012" Action="Error" />
     <Rule Id="CA1013" Action="Error" />
-    <Rule Id="CA1014" Action="Error" />
+    <Rule Id="CA1014" Action="None" />
     <Rule Id="CA1016" Action="Error" />
     <Rule Id="CA1017" Action="Error" />
     <Rule Id="CA1018" Action="Error" />
@@ -202,11 +202,39 @@
     <Rule Id="CA2242" Action="Error" />
     <Rule Id="CA2243" Action="Error" />
   </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
+    <Rule Id="CS3000" Action="None" />
+    <Rule Id="CS3001" Action="None" />
+    <Rule Id="CS3002" Action="None" />
+    <Rule Id="CS3003" Action="None" />
+    <Rule Id="CS3005" Action="None" />
+    <Rule Id="CS3006" Action="None" />
+    <Rule Id="CS3007" Action="None" />
+    <Rule Id="CS3008" Action="None" />
+    <Rule Id="CS3009" Action="None" />
+    <Rule Id="CS3010" Action="None" />
+    <Rule Id="CS3011" Action="None" />
+    <Rule Id="CS3012" Action="None" />
+    <Rule Id="CS3013" Action="None" />
+    <Rule Id="CS3014" Action="None" />
+    <Rule Id="CS3015" Action="None" />
+    <Rule Id="CS3016" Action="None" />
+    <Rule Id="CS3017" Action="None" />
+    <Rule Id="CS3018" Action="None" />
+    <Rule Id="CS3019" Action="None" />
+    <Rule Id="CS3021" Action="None" />
+    <Rule Id="CS3022" Action="None" />
+    <Rule Id="CS3023" Action="None" />
+    <Rule Id="CS3024" Action="None" />
+    <Rule Id="CS3026" Action="None" />
+    <Rule Id="CS3027" Action="None" />
+  </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA1101" Action="None" />
     <Rule Id="SA1200" Action="None" />
     <Rule Id="SA1601" Action="None" />
     <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1633" Action="None" />
     <Rule Id="SA1639" Action="Warning" />
     <Rule Id="SA1652" Action="None" />
   </Rules>

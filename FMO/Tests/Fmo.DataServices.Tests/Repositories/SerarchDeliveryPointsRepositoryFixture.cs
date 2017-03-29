@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Fmo.DataServices.Tests.Repositories
 {
     [TestFixture]
-    public class SearchDeliveryPointsRepositoryFixture : RepositoryFixtureBase
+    public class SerarchDeliveryPointsRepositoryFixture : RepositoryFixtureBase
     {
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
@@ -20,7 +20,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public void Test_SearchDeliveryPoints()
         {
-            var actualResult = testCandidate.SearchDeliveryPoints();
+            var actualResult = testCandidate.SearchDelievryPoints();
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 2);
         }

@@ -10,11 +10,9 @@
 #if DEBUG
 
             // While debugging this section is used.
-            using (FileLoader myService = new FileLoader())
-            {
-                myService.OnDebug();
-                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-            }
+            FileLoader myService = new FileLoader();
+            myService.OnDebug();
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
 
 #else
 
