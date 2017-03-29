@@ -5,11 +5,11 @@ using Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
 {
-    public class SearchBusinessService : ISearchBusinessService
+    public class SearchBussinessService : ISearchBussinessService
     {
         private ISearchRepository searchRepository = default(ISearchRepository);
 
-        public SearchBusinessService(ISearchRepository searchRepository)
+        public SearchBussinessService(ISearchRepository searchRepository)
         {
             this.searchRepository = searchRepository;
         }

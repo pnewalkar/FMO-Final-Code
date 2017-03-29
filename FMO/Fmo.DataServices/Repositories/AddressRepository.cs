@@ -1,12 +1,12 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
+    using System.Linq;
+    using System.Collections.Generic;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -15,38 +15,31 @@
         {
         }
 
-        public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressTypeID)
+        public bool DeleteNYBPostalAddress(List<int> lstUDPRN)
         {
             bool deleteFlag = false;
             try
             {
                 if (lstUDPRN != null && lstUDPRN.Count() > 0)
                 {
-                    var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressTypeID).ToList();
+                    var lstAddress = DataContext.PostalAddresses.Where(n => !lstUDPRN.Contains(n.UDPRN.Value)).ToList();
                     if (lstAddress != null && lstUDPRN.Count > 0)
                     {
-                        lstAddress.ForEach(x =>
+                        foreach (var entity in lstAddress)
                         {
-                            if (x.DeliveryPoints != null && x.DeliveryPoints.Count > 0)
-                            {
-                                // TO DO Log error 
-                            }
-                            else
-                            {
-                                DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
-                            }
-                        });
-                        DataContext.SaveChanges();
+                            DataContext.Entry(lstAddress).State = System.Data.Entity.EntityState.Deleted;
+
+                            DataContext.SaveChanges();
+                        }
                     }
 
                     deleteFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
-
             return deleteFlag;
         }
 
@@ -82,14 +75,13 @@
                     {
                         DataContext.PostalAddresses.Add(objPostalAddress);
                     }
-
                     DataContext.SaveChanges();
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
 
             return saveFlag;

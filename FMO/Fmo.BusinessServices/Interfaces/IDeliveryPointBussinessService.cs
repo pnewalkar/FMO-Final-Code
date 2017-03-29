@@ -8,8 +8,8 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-    public interface IDeliveryPointBusinessService
+    public interface IDeliveryPointBussinessService
     {
-        List<DeliveryPointDTO> SearchDeliveryPoints();
+        List<DeliveryPointDTO> SearchDelievryPoints();
     }
 }

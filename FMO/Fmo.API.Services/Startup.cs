@@ -1,23 +1,22 @@
-﻿using Fmo.BusinessServices.Interfaces;
-using Fmo.BusinessServices.Services;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories;
-using Fmo.DataServices.Repositories.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.BusinessServices.Services;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DataServices.Repositories;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.DBContext;
 
 namespace Fmo.API.Services
 {
-    public partial class Startup
+    public class Startup
     {
         public Startup(IHostingEnvironment env)
         {
@@ -59,7 +58,7 @@ namespace Fmo.API.Services
 
             //---Adding scope for all classes
             services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
-            services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
+            services.AddTransient<IDeliveryPointBussinessService, DeliveryPointBusinessService>();
             services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
             //services.AddSingleton<FMODBContext, FMODBContext>();           
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();

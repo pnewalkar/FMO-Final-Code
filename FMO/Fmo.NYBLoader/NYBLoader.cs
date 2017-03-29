@@ -1,91 +1,98 @@
-﻿using System;
+﻿using Fmo.NYBLoader.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Fmo.DTO;
-using Fmo.NYBLoader.Interfaces;
+using System.IO;
+using System.IO.Compression;
+using System.Configuration;
+using System.Net.Http;
 
 namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
-        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
-        private static string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
-        private static string strFMOWebAPIName = ConfigurationManager.AppSettings["FMOWebAPIName"].ToString();
+        private static string strProcessedFilePath = ConfigurationSettings.AppSettings["ProcessedFilePath"].ToString();
+        private static string strErrorFilePath = ConfigurationSettings.AppSettings["ErrorFilePath"].ToString();
+        private static string strFMOWEbApiURL = ConfigurationSettings.AppSettings["FMOWebAPIURL"].ToString();
+        private static string strFMOWebAPIName = ConfigurationSettings.AppSettings["FMOWebAPIName"].ToString();
 
         public void LoadNYBDetailsFromCSV(string strPath)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-                using (ZipArchive zip = ZipFile.OpenRead(strPath))
+                ZipArchive zip = ZipFile.OpenRead(strPath);
+
+
+                foreach (ZipArchiveEntry entry in zip.Entries)
                 {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    string strLine = string.Empty;
+                    string strfileName = string.Empty;
+
+                    using (Stream stream = entry.Open())
                     {
-                        string strLine = string.Empty;
-                        string strfileName = string.Empty;
-
-                        Stream stream = entry.Open();
-                        
-                            using (var reader = new StreamReader(stream))
-                            {
-                                strLine = reader.ReadToEnd();
-                            }
-                        
-                        strfileName = entry.Name;
-
-                        string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
+                        using (var reader = new StreamReader(stream))
                         {
-                            Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
-                        }
-
-                        if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
-                        {
-                            lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
-
-                            if (lstAddressDetails != null && lstAddressDetails.Count > 0)
-                            {
-                                //Validate NYB Details
-                                ValidateNYBDetails(lstAddressDetails);
-
-                                //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
-
-                                lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
-
-                                var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
-
-                                if (invalidRecordCount > 0)
-                                {
-                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                }
-                                else
-                                {
-                                    SaveNYBDetails(lstAddressDetails).Wait();
-                                    File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //TO DO
-                            //Log error
+                            strLine = reader.ReadToEnd();
                         }
                     }
+                    strfileName = entry.Name;
+
+                    string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                    if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length-1])) {
+
+                        Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                    }
+
+                    if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
+                    {
+                        lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
+
+
+                        if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                        {
+
+                            //Validate NYB Details
+                            ValidateNYBDetails(lstAddressDetails);
+
+                            //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+
+                            lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+
+                            var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                            if (invalidRecordCount > 0)
+                            {
+                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                            }
+                            else
+                            {
+                                SaveNYBDetails(lstAddressDetails).Wait();
+                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        //TO DO
+                        //Log error
+                    }
                 }
+
+
             }
             catch (Exception)
             {
+
                 throw;
             }
         }
 
-        private static bool ValidateFile(string[] arrLines)
+        private bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
             try
@@ -106,13 +113,14 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
+
                 throw;
             }
 
             return isFileValid;
         }
 
-        private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
+        private PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             try
@@ -138,17 +146,22 @@ namespace Fmo.NYBLoader
                     objAddDTO.DeliveryPointSuffix = values[15];
                     objAddDTO.IsValidData = true;
                 }
+
             }
             catch (Exception)
             {
+
                 throw;
             }
+
+
 
             return objAddDTO;
         }
 
-        private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
+        private void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
+
             try
             {
                 foreach (PostalAddressDTO objAdd in lstAddress)
@@ -200,11 +213,12 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
+
                 throw;
             }
         }
 
-        private static bool ValidatePostCode(string strPostCode)
+        private bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
             try
@@ -224,6 +238,7 @@ namespace Fmo.NYBLoader
                         {
                             isValid = false;
                         }
+
                     }
                     else
                     {
@@ -233,12 +248,13 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
+
                 throw;
             }
             return isValid;
         }
 
-        private static string AppendTimeStamp(string strfileName)
+        private string AppendTimeStamp(string strfileName)
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
@@ -255,12 +271,12 @@ namespace Fmo.NYBLoader
                 {
                     client.BaseAddress = new Uri(strFMOWEbApiURL);
                     var result = await client.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
-
                     //Employee product = await result.Content.ReadAsAsync<Employee>();
                 }
             }
             catch (Exception)
             {
+
                 throw;
             }
         }

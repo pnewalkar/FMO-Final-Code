@@ -13,9 +13,9 @@ namespace Fmo.API.Services.Controllers
     public class SearchController : Controller
     {
 
-        ISearchBusinessService searchBussinessService = default(ISearchBusinessService);
+        ISearchBussinessService searchBussinessService = default(ISearchBussinessService);
 
-        public SearchController(ISearchBusinessService _searchBussinessService)
+        public SearchController(ISearchBussinessService _searchBussinessService)
         {
             searchBussinessService = _searchBussinessService;
         }
