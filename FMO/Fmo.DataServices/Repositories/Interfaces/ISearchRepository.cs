@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using Fmo.Entities;
+﻿using Fmo.DTO;
+using System.Collections.Generic;
+
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface ISearchRepository
     {
-        List<AdvanceSearch> FetchAdvanceSearchDetails();
+        AdvanceSearchDTO FetchAdvanceSearchDetails(string Searchtext);
     }
 }

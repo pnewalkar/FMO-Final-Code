@@ -1,13 +1,28 @@
-<div class="md-whiteframe-3dp main">
+<div class="col-lg-3 col-lg-offset-1 customPanel customRight1Panel">
     <div class="accordion">
         Layers
     </div>
     
-    <div class="panel">
-        <ul>
+    <div class="panel show-lg">
+        <!--<ul>
           <li>Lorem ilisum dolor sit amet.</li>
           <li>Lorem ilisum dolor sit amet.</li>
           <li>Lorem ilisum dolor sit amet.</li>
-        </ul>
+        </ul>-->
+        <div class="panel-body">
+            <div ng-repeat="group in vm.groups">
+                <div ng-repeat="layer in group.layers">
+                    <md-switch class="thin-switch" aria-label="layer.layerName" ng-change="vm.onChange(layer)" ng-model="layer.selected" ng-disabled="false">
+                        {{layer.layerName}}
+                    </md-switch>
+                </div>
+            </div>
+            <hr ng-show="vm.showUngrouped()" />
+            <div class="layer-switch" ng-repeat="layer in vm.ungrouped" ng-show="layer.selectorVisible">
+                <md-switch class="thin-switch" ng-model="layer.selected" aria-label="layer.layerName" ng-change="vm.onChange(layer)" ng-disabled="false">
+                    {{layer.layerName}}
+                </md-switch>
+            </div>
+        </div>
     </div>
 </div>

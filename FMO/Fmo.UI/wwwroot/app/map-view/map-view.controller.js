@@ -254,7 +254,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
-        drawingLayerSelector.selectorVisible = false;
+        drawingLayerSelector.selectorVisible = true;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
 
         var routesSelector = new MapFactory.LayerSelector();
@@ -302,10 +302,10 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
 
         var mockWFSLayerSelector = new MapFactory.LayerSelector();
-        mockWFSLayerSelector.layerName = "WFS mock";
+        mockWFSLayerSelector.layerName = "Delivery Points";
         mockWFSLayerSelector.layer = mockWFSLayer;
         mockWFSLayerSelector.group = "";
-        mockWFSLayerSelector.zIndex = 7;
+        mockWFSLayerSelector.zIndex = 8;
         mockWFSLayerSelector.selected = false;
         mockWFSLayerSelector.onMiniMap = false;
         mockWFSLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);

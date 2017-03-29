@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.Entities;
+using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -14,9 +14,9 @@ namespace Fmo.BusinessServices.Services
             this.searchRepository = searchRepository;
         }
 
-        public List<AdvanceSearch> FetchAdvanceSearchDetails()
+        public AdvanceSearchDTO FetchAdvanceSearchDetails(string SearchText)
         {
-            return searchRepository.FetchAdvanceSearchDetails();
+            return searchRepository.FetchAdvanceSearchDetails(SearchText);
         }
     }
 }
