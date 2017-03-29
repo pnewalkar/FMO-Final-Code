@@ -9,9 +9,9 @@ namespace Fmo.DTO
 {
   public  class DeliveryPointDTO
     {
-        public int DeliveryPoint_Id { get; set; }
+        public int DeliveryPointId { get; set; }
 
-        public int Address_Id { get; set; }
+        public int AddressId { get; set; }
 
         public string LocationProvider { get; set; }
 
@@ -37,7 +37,7 @@ namespace Fmo.DTO
 
         public string DeliveryPointUseIndicator { get; set; }
 
-        public int? DeliveryGroup_Id { get; set; }
+        public int? DeliveryGroupId { get; set; }
 
         public bool IsUnit { get; set; }
 

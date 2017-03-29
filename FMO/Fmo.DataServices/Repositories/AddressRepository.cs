@@ -25,20 +25,20 @@
                     var lstAddress = DataContext.PostalAddresses.Where(n => !lstUDPRN.Contains(n.UDPRN.Value)).ToList();
                     if (lstAddress != null && lstUDPRN.Count > 0)
                     {
-                        foreach (var entity in lstAddress)
+                        lstAddress.ForEach(x =>
                         {
-                            DataContext.Entry(lstAddress).State = System.Data.Entity.EntityState.Deleted;
+                            DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
 
                             DataContext.SaveChanges();
-                        }
+                        });
                     }
 
                     deleteFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return deleteFlag;
@@ -81,9 +81,9 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return saveFlag;

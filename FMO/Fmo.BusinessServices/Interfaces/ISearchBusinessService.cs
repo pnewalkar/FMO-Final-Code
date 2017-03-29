@@ -3,7 +3,7 @@ using Fmo.Entities;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-    public interface ISearchBussinessService
+    public interface ISearchBusinessService
     {
         List<AdvanceSearch> FetchAdvanceSearchDetails();
     }

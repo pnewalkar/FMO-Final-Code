@@ -24,7 +24,7 @@
 
         public List<DTO.ReferenceDataDTO> ListOfRouteLogStatus()
         {
-            var result = DataContext.ReferenceDatas.ToList();
+            var result = DataContext.ReferenceData.ToList();
             return GenericMapper.MapList<ReferenceData, DTO.ReferenceDataDTO>(result);
         }
 

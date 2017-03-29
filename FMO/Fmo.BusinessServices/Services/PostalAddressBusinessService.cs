@@ -37,9 +37,9 @@ namespace Fmo.BusinessServices.Services
 
                 saveFlag = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return saveFlag;

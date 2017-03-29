@@ -9,7 +9,7 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
-    public class DeliveryPointBusinessService : IDeliveryPointBussinessService
+    public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
         private IDeliveryPointsRepository searchDeliveryPointsRepository = default(IDeliveryPointsRepository);
 
@@ -18,9 +18,9 @@ namespace Fmo.BusinessServices.Services
             this.searchDeliveryPointsRepository = searchDeliveryPointsRepository;
         }
 
-        public List<DeliveryPointDTO> SearchDelievryPoints()
+        public List<DeliveryPointDTO> SearchDeliveryPoints()
         {
-            return searchDeliveryPointsRepository.SearchDelievryPoints();
+            return searchDeliveryPointsRepository.SearchDeliveryPoints();
         }
     }
 }

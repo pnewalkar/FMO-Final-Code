@@ -87,7 +87,7 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<PostcodeSector> PostcodeSectors { get; set; }
 
-        public virtual DbSet<ReferenceData> ReferenceDatas { get; set; }
+        public virtual DbSet<ReferenceData> ReferenceData { get; set; }
 
         public virtual DbSet<ReferenceDataCategory> ReferenceDataCategories { get; set; }
 
