@@ -95,6 +95,23 @@
         }
       }
     },
+    "Fmo.Helpers/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.2",
+      "compile": {
+        "bin/Debug/Fmo.Helpers.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/Fmo.Helpers.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Fmo.Helpers.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
     "Fmo.Entities/1.0.0": {
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
