@@ -31,15 +31,14 @@ namespace Fmo.DataServices.Repositories
                         statusId = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault().ReferenceData_Id;
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 // TO DO implement logging
                 throw ex;
             }
+
             return statusId;
         }
-
     }
 }
