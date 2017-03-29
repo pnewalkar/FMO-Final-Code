@@ -1,12 +1,12 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
+    using System.Linq;
+    using System.Collections.Generic;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -40,7 +40,6 @@
             {
                 throw ex;
             }
-
             return deleteFlag;
         }
 
@@ -76,7 +75,6 @@
                     {
                         DataContext.PostalAddresses.Add(objPostalAddress);
                     }
-
                     DataContext.SaveChanges();
                     saveFlag = true;
                 }

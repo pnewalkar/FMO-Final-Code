@@ -10,26 +10,6 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
     var tasks;
     vm.counter = 0;
 
-    var getDeliveryPoints = function () {
-        notificationFactory.getDeliveryPoints()
-            .then(function (response) {
-                vm.tasks = response.data;
-                if (vm.tasks.length > 0) {
-                    vm.counter = vm.tasks.length;
-                    vm.color = "green";
-                }
-                else {
-                    vm.color = "white";
-                }
-
-            }, function (error) {
-                //$scope.status = 'Unable to load customer data: ' + error.message;
-            });
-    }
-
-
-    $interval(getDeliveryPoints, 30000);
-
     //$scope.$on('changeColor', function (event, data) {
     //    debugger;
     //    var vm = this;
@@ -318,7 +298,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
         vm.showRoadPanel = false;
     }
-
+    initialiseMiniMap();
     function initialiseMiniMap() {
         mapFactory.initialiseMiniMap();
         vm.miniMap = mapFactory.getMiniMap();

@@ -14,10 +14,10 @@ namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
-        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
-        private static string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
-        private static string strFMOWebAPIName = ConfigurationManager.AppSettings["FMOWebAPIName"].ToString();
+        private static string strProcessedFilePath = ConfigurationSettings.AppSettings["ProcessedFilePath"].ToString();
+        private static string strErrorFilePath = ConfigurationSettings.AppSettings["ErrorFilePath"].ToString();
+        private static string strFMOWEbApiURL = ConfigurationSettings.AppSettings["FMOWebAPIURL"].ToString();
+        private static string strFMOWebAPIName = ConfigurationSettings.AppSettings["FMOWebAPIName"].ToString();
 
         public void LoadNYBDetailsFromCSV(string strPath)
         {
