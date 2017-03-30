@@ -6,22 +6,10 @@ using System.Threading.Tasks;
 
 namespace Fmo.Common.Enums
 {
-    public enum FileType
-    {
-        PAF,
-        NYB,
-        USR
-    }
-
     public enum PostcodeType
     {
         S,
         L,
         Y
-    }
-
-    public enum DeliveryPointSuffix
-    {
-        
     }
 }
