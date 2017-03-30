@@ -23,9 +23,9 @@
                 // return context.Students.Find(id);
                 return objAddressLocation;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

@@ -7,7 +7,7 @@ namespace Fmo.Common.TestSupport
 {
     public abstract class RepositoryFixtureBase : TestFixtureBase
     {
-        public Mock<DbSet<T>> MockDbSet<T>(IEnumerable<T> list)
+        public static Mock<DbSet<T>> MockDbSet<T>(IEnumerable<T> list)
             where T : class, new()
         {
             IQueryable<T> queryableList = list.AsQueryable();

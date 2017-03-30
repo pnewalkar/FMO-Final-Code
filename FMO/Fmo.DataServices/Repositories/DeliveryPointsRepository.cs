@@ -2,13 +2,13 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Dto = Fmo.DTO;
     using Entity = Fmo.Entities;
-    using System.Linq;
-    using Entities;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -26,9 +26,9 @@ namespace Fmo.DataServices.Repositories
                 // return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
                 return new List<Dto.DeliveryPointDTO>();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -41,9 +41,9 @@ namespace Fmo.DataServices.Repositories
                 // return context.Students.Find(id);
                 return objDeliveryPoint;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -63,6 +63,7 @@ namespace Fmo.DataServices.Repositories
             {
                 throw;
             }
+
             return saveFlag;
         }
     }
