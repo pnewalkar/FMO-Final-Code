@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html ng-app="FMOApp">
 <head>
     <meta charset="utf-8">
@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="../build/sass/variables.css" />
     <!--angular material scripts-->
     <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="../bower_components/angular-aria/angular-aria.min.js"></script>
     <script src="../bower_components/angular-messages/angular-messages.min.js"></script>
@@ -38,28 +38,24 @@
     <script src="../bower_components/turfjs/turf.min.js"></script>
     <!--custom scripts-->
     <script src="./app.module.js"></script>
-    <script src="./app.config.js"></script><!--
-    <script src="home/home.route.js"></script>-->
+    <script src="./app.config.js"></script>
     <!--home-->
     <script src="./home/home.module.js"></script>
     <script src="./home/home.controller.js"></script>
     <script src="./home/home.component.js"></script>
+    <script src="home/home.route.js"></script>
     <!--side nav-->
     <script src="./side-nav/side-nav.module.js"></script>
     <script src="./side-nav/side-nav.controller.js"></script>
     <script src="./side-nav/side-nav.component.js"></script>
-    <!--unit selector-->
-    <script src="./unit-selector/unit-selector.module.js"></script>
-    <script src="./unit-selector/unit-selector.controller.js"></script>
-    <script src="./unit-selector/unit-selector.component.js"></script>
-    <!--role selector-->
-    <script src="./role-selector/role-selector.module.js"></script>
-    <script src="./role-selector/role-selector.controller.js"></script>
-    <script src="./role-selector/role-selector.component.js"></script>
     <!--search-->
     <script src="./search/search.module.js"></script>
     <script src="./search/search.controller.js"></script>
     <script src="./search/search.component.js"></script>
+    <!--unit selector-->
+    <script src="./unit-selector/unit-selector.module.js"></script>
+    <script src="./unit-selector/unit-selector.controller.js"></script>
+    <script src="./unit-selector/unit-selector.component.js"></script>
     <!--task-->
     <script src="./task/task.module.js"></script>
     <script src="./task/task.controller.js"></script>
@@ -67,11 +63,10 @@
 
 
     <!--Open Layer-->
-    <!--<script src="./bower_components/ol3-popup/src/ol3-popup.js"></script>-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.0.1/ol.css" />
+    <script src="../bower_components/ol3-popup/src/ol3-popup.js"></script>
     <!--TurfJS-->
     <script src="https://openlayers.org/en/v3.20.0/build/ol.js" type="text/javascript"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.14/proj4.js"></script>
+    
 
     <!--map view-->
     <script src="./map-view/map-view.module.js"></script>
@@ -80,13 +75,6 @@
     <script src="./map-view/map-view.factory.js"></script>
     <script src="./map-view/map-view.service.js"></script>
     <script src="./map-view/map-styles.factory.js"></script>
-
-    <!--map toolbar-->
-    <link href="map-toolbar/map-toolbar.css" rel="stylesheet" />
-    <script src="./map-toolbar/map-toolbar.module.js"></script>
-    <script src="./map-toolbar/map-toolbar.controller.js"></script>
-    <script src="./map-toolbar/map-toolbar.component.js"></script>
-
 
     <!--map panel-->
     <script src="./map-panel/map-panel.module.js"></script>
