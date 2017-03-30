@@ -9,6 +9,8 @@
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;
     using Ninject;
+    using Fmo.MessageBrokerCore.Messaging;
+    using Fmo.DTO;
 
     public partial class FileLoader : ServiceBase
     {
@@ -17,6 +19,7 @@
         private List<CustomFolderSettings> listFolders;
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
+        private ITPFLoader tpfLoader = default(ITPFLoader);
 
         public FileLoader()
         {
@@ -29,9 +32,13 @@
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
+            kernel.Bind<ITPFLoader>().To<TPFLoader>().InSingletonScope();
+            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
+            kernel.Bind<IMessageBroker<USR>>().To<MessageBroker<USR>>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
+            tpfLoader = kernel.Get<ITPFLoader>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -176,6 +183,10 @@
 
                     case "NYB":
                         this.nybLoader.LoadNYBDetailsFromCSV(fileName);
+                        break;
+
+                    case "TPF":
+                        this.tpfLoader.LoadTPFDetailsFromXML(fileName);
                         break;
                 }
             }

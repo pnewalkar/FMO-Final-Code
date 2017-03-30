@@ -54,6 +54,7 @@
     <Compile Include="RoadNameDTO.cs" />
     <Compile Include="ScenarioDTO.cs" />
     <Compile Include="StreetNameDTO.cs" />
+    <Compile Include="USR.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

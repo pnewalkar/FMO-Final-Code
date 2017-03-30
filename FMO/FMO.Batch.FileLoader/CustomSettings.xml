@@ -26,4 +26,17 @@
       corresponding file name -->
     <ExecutableArguments>NYB</ExecutableArguments>
   </CustomFolderSettings>
+  <CustomFolderSettings FolderID="ExampleTPF_files">
+    <FolderEnabled>true</FolderEnabled>
+    <FolderDescription>
+      Files in format TPF corresponding to the example project
+    </FolderDescription>
+    <FolderFilter>*</FolderFilter>
+    <FolderPath>D:\Projects\SourceFiles\TPF\</FolderPath>
+    <FolderIncludeSub>false</FolderIncludeSub>
+    <ExecutableFile>CMD.EXE</ExecutableFile>
+    <!-- The block {0} will be automatically replaced with the
+      corresponding file name -->
+    <ExecutableArguments>TPF</ExecutableArguments>
+  </CustomFolderSettings>
 </ArrayOfCustomFolderSettings>
