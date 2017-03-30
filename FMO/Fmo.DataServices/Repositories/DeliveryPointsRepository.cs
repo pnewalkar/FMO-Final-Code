@@ -18,14 +18,14 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.DeliveryPointDTO> SearchDeliveryPoints()
+        public List<DeliveryPointDTO> SearchDeliveryPoints()
         {
             try
             {
                 // var result = DataContext.DeliveryPoints.ToList();
                 ////IAutoMapper<Entity.DeliveryPoint, Dto.DeliveryPoint> deliveryMapper
                 // return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
-                return new List<Dto.DeliveryPointDTO>();
+                return new List<DeliveryPointDTO>();
             }
             catch (Exception)
             {
