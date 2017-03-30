@@ -13,7 +13,7 @@ using Fmo.MessageBrokerCore.Messaging;
 using System.Configuration;
 using Fmo.MessageBrokerCore;
 using Fmo.Common;
-using Fmo.Common.Fmo.Constants;
+using Fmo.Common.Constants;
 
 namespace Fmo.NYBLoader
 {

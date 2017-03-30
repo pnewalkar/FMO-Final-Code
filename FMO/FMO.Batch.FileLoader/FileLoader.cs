@@ -1,16 +1,16 @@
 ﻿namespace FMO.Batch.FileLoader
 {
+    using Fmo.DTO;
+    using Fmo.MessageBrokerCore.Messaging;
+    using Fmo.NYBLoader;
+    using Fmo.NYBLoader.Interfaces;
+    using Ninject;
     using System.Collections.Generic;
     using System.Configuration;
     using System.IO;
     using System.ServiceProcess;
     using System.Text;
     using System.Xml.Serialization;
-    using Fmo.NYBLoader;
-    using Fmo.NYBLoader.Interfaces;
-    using Ninject;
-    using Fmo.MessageBrokerCore.Messaging;
-    using Fmo.DTO;
 
     public partial class FileLoader : ServiceBase
     {
@@ -52,7 +52,6 @@
         {
             // Initialize the list of FileSystemWatchers based on the XML configuration file
             PopulateListFileSystemWatchers();
-
             // Start the file system watcher for each of the file specification
             // and folders found on the List<>
             StartFileSystemWatcher();
@@ -67,11 +66,9 @@
                 {
                     // Stop listening
                     fsw.EnableRaisingEvents = false;
-
                     // Dispose the Object
                     fsw.Dispose();
                 }
-
                 // Clean the list
                 listFileSystemWatcher.Clear();
             }
@@ -82,17 +79,14 @@
         {
             // Get the XML file name from the App.config file
             string fileNameXML = ConfigurationManager.AppSettings["XMLFileFolderSettings"];
-
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
-
-            using (TextReader reader = new StreamReader(fileNameXML))
-            {
-                object obj = deserializer.Deserialize(reader);
-
-                // Obtain a list of CustomFolderSettings from XML Input data
-                listFolders = obj as List<CustomFolderSettings>;
-            }
+            TextReader reader = new StreamReader(fileNameXML);
+            object obj = deserializer.Deserialize(reader);
+            // Close the TextReader object
+            reader.Close();
+            // Obtain a list of CustomFolderSettings from XML Input data
+            listFolders = obj as List<CustomFolderSettings>;
         }
 
         /// <summary>Start the file system watcher for each of the file
@@ -101,55 +95,43 @@
         {
             // Creates a new instance of the list
             this.listFileSystemWatcher = new List<FileSystemWatcher>();
-
             // Loop the list to process each of the folder specifications found
             foreach (CustomFolderSettings customFolder in listFolders)
             {
                 DirectoryInfo dir = new DirectoryInfo(customFolder.FolderPath);
-
                 // Checks whether the folder is enabled and
                 // also the directory is a valid location
                 if (customFolder.FolderEnabled && dir.Exists)
                 {
                     // Creates a new instance of FileSystemWatcher
-                    using (FileSystemWatcher fileSWatch = new FileSystemWatcher())
-                    {
-                        // Sets the filter
-                        fileSWatch.Filter = customFolder.FolderFilter;
-
-                        // Sets the folder location
-                        fileSWatch.Path = customFolder.FolderPath;
-
-                        // Sets the action to be executed
-                        StringBuilder actionToExecute = new StringBuilder(
-                          customFolder.ExecutableFile);
-
-                        // List of arguments
-                        StringBuilder actionArguments = new StringBuilder(
-                          customFolder.ExecutableArguments);
-
-                        // Subscribe to notify filters
-                        fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
-                          NotifyFilters.DirectoryName;
-
-                        // Associate the event that will be triggered when a new file
-                        // is added to the monitored folder, using a lambda expression
-                        // fileSWatch.Created += (senderObj, fileSysArgs) =>
-                        //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
-                        fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
-                        fileSWatch.Error += OnFileSystemWatcherError;
-
-                        // Begin watching
-                        fileSWatch.EnableRaisingEvents = true;
-
-                        // Add the systemWatcher to the list
-                        listFileSystemWatcher.Add(fileSWatch);
-
-                        // Record a log entry into Windows Event Log
-                        // CustomLogEvent(String.Format(
-                        //  "Starting to monitor files with extension ({0}) in the folder ({1})",
-                        //  fileSWatch.Filter, fileSWatch.Path));
-                    }
+                    FileSystemWatcher fileSWatch = new FileSystemWatcher();
+                    // Sets the filter
+                    fileSWatch.Filter = customFolder.FolderFilter;
+                    // Sets the folder location
+                    fileSWatch.Path = customFolder.FolderPath;
+                    // Sets the action to be executed
+                    StringBuilder actionToExecute = new StringBuilder(
+                      customFolder.ExecutableFile);
+                    // List of arguments
+                    StringBuilder actionArguments = new StringBuilder(
+                      customFolder.ExecutableArguments);
+                    // Subscribe to notify filters
+                    fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
+                      NotifyFilters.DirectoryName;
+                    // Associate the event that will be triggered when a new file
+                    // is added to the monitored folder, using a lambda expression
+                    //fileSWatch.Created += (senderObj, fileSysArgs) =>
+                    //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
+                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
+                    fileSWatch.Error += OnFileSystemWatcherError;
+                    // Begin watching
+                    fileSWatch.EnableRaisingEvents = true;
+                    // Add the systemWatcher to the list
+                    listFileSystemWatcher.Add(fileSWatch);
+                    // Record a log entry into Windows Event Log
+                    //CustomLogEvent(String.Format(
+                    //  "Starting to monitor files with extension ({0}) in the folder ({1})",
+                    //  fileSWatch.Filter, fileSWatch.Path));
                 }
             }
         }
@@ -190,7 +172,6 @@
                         break;
                 }
             }
-
             // ExecuteProcess(fileName);
         }
 
@@ -222,7 +203,7 @@
                 XmlSerializer serializer = new XmlSerializer(typeof(T));
                 returnObject = (T)serializer.Deserialize(xmlStream);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
             }
             return returnObject;

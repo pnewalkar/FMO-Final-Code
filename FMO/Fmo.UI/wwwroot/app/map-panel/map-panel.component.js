@@ -4,7 +4,8 @@ angular.module('mapPanel')
     scope: {},
     transclude:true,
     bindings: {
-        paneltitle: '@'
+        paneltitle: '@',
+        oncreate: "="
     },
     templateUrl: './map-panel/map-panel.template.html',
     controller: 'MapPanelController as vm'
