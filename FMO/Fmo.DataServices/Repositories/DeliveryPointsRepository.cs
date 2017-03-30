@@ -7,8 +7,9 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
-    using Dto = Fmo.DTO;
+    using Fmo.DTO;
     using Entity = Fmo.Entities;
+    using MappingConfiguration;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -47,14 +48,17 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        public bool InsertDeliveryPoint(DeliveryPoint objDeliveryPoint)
+        public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
             bool saveFlag = false;
             try
             {
                 if (objDeliveryPoint != null)
                 {
-                    DataContext.DeliveryPoints.Add(objDeliveryPoint);
+                    var deliveryPoint = new DeliveryPoint();
+                    GenericMapper.Map(objDeliveryPoint, deliveryPoint);
+
+                    DataContext.DeliveryPoints.Add(deliveryPoint);
                     DataContext.SaveChanges();
                     saveFlag = true;
                 }

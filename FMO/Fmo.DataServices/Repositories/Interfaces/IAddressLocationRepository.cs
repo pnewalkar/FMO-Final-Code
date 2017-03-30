@@ -1,9 +1,10 @@
-﻿using Fmo.Entities;
+﻿using Fmo.DTO;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IAddressLocationRepository
     {
-        AddressLocation GetAddressLocationByUDPRN(int uDPRN);
+        AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN);
     }
 }

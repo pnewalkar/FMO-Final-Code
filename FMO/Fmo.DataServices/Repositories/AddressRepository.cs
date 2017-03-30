@@ -7,6 +7,8 @@
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
+    using Fmo.DTO;
+    using MappingConfiguration;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -111,7 +113,7 @@
             return statusId;
         }
 
-        public int GetPostalAddress(PostalAddress objPostalAddress)
+        public int GetPostalAddress(DTO.PostalAddressDTO objPostalAddress)
         {
             int addressId = 0;
             try
@@ -138,14 +140,16 @@
             return addressId;
         }
 
-        public bool UpdateAddress(PostalAddress objPostalAddress, int addressType)
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, int addressType)
         {
             bool saveFlag = false;
             try
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.Address_Id == objPostalAddress.Address_Id && n.AddressType_Id == addressType).SingleOrDefault();
+
+
+                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.Address_Id == objPostalAddress.Address_Id && n.AddressType_Id == addressType).SingleOrDefault();
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -164,6 +168,18 @@
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.UDPRN = objPostalAddress.UDPRN;
+
+                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        {
+                            foreach (var objDelPoint in objAddress.DeliveryPoints)
+                            {
+                                objDelPoint.UDPRN = objPostalAddress.UDPRN;
+                            }
+                        }
+                        else
+                        {
+                            //To DO log error
+                        }
                         DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
                     }
                     else

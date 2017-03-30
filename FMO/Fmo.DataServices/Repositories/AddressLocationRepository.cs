@@ -6,6 +6,8 @@
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
+    using DTO;
+    using MappingConfiguration;
 
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository
     {
@@ -14,14 +16,18 @@
         {
         }
 
-        public AddressLocation GetAddressLocationByUDPRN(int uDPRN)
+        public AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN)
         {
             try
             {
                 var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
 
+                var addressLocationDTO = new AddressLocationDTO();
+
+                GenericMapper.Map(addressLocationDTO, objAddressLocation);
+
                 // return context.Students.Find(id);
-                return objAddressLocation;
+                return addressLocationDTO;
             }
             catch (Exception)
             {
