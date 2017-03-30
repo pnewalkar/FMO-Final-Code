@@ -26,7 +26,7 @@ namespace Fmo.API.Services.Controllers
             {
                 postalAddressBusinessService.SavePAFDetails(postalAddress);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

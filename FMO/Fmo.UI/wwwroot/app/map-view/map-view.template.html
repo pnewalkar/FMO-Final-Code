@@ -1,17 +1,15 @@
 <div id="map"></div>
-    
 <div id="leftPanel">
     <map-panel
                paneltitle="Context">
         Context
     </map-panel>
 </div>
-    
+<div><map-toolbar></map-toolbar></div>
 <div id="rightPanel">
     <div class="miniMap">
-        <map-panel
-                   paneltitle="Mini Map">
-            Mini-Map
+        <map-panel paneltitle="Mini Map" oncreate="vm.initialiseMiniMap">
+            <div id="mini-map" ></div>
         </map-panel>
     </div>
         
@@ -29,3 +27,4 @@
         </map-panel>
     </div>
 </div>
+

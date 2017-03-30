@@ -16,9 +16,9 @@ namespace Fmo.API.Services.Controllers
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService;
 
         [HttpGet]
-        public List<DeliveryRouteDTO> ListOfRouteLogs()
+        public List<DeliveryRouteDTO> ListOfRouteLogs(int operationStateID, int deliveryScenarioID)
         {
-            return deliveryRouteBusinessService.ListOfRoute();
+            return deliveryRouteBusinessService.ListOfRoute(operationStateID, deliveryScenarioID);
         }
 
         [HttpGet]
@@ -28,9 +28,9 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpGet]
-        public List<ScenarioDTO> ListOfScenario()
+        public List<ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID)
         {
-            return deliveryRouteBusinessService.ListOfScenario();
+            return deliveryRouteBusinessService.ListOfScenario(operationStateID, deliveryUnitID);
         }
     }
 }

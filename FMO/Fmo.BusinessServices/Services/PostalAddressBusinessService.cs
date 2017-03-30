@@ -1,11 +1,11 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.MappingConfiguration;
-using System;
-using System.Collections.Generic;
 using Entity = Fmo.Entities;
-using System.Linq;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -43,12 +43,15 @@ namespace Fmo.BusinessServices.Services
                     addEntity.AddressType_Id = addressTypeId;
                     addressRepository.SaveAddress(addEntity);
                 }
+
                 List<int> lstUDPRNS = lstPostalAddress.Select(n => n.UDPRN.Value).ToList();
                 saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                throw;
             }
+
             return saveFlag;
         }
 
@@ -75,22 +78,23 @@ namespace Fmo.BusinessServices.Services
                 else
                 {
                     addressRepository.UpdateAddress(postalAddressEntities, addressTypeNYB);
+
                     // chk address record have resp. dp
                     if (deliveryPointsRepository.GetDeliveryPointByUDPRN(postalAddressEntities.UDPRN ?? 0) == null)
                     {
                         if (addressLocationRepository.GetAddressLocationByUDPRN(postalAddressEntities.UDPRN ?? 0) != null)
-                        { 
-                            //create DP
-                            //var deliveryPointEntities = GenericMapper.Map<DTO.DeliveryPointDTO, Entity.DeliveryPoint>();
-                            //deliveryPointsRepository.InsertDeliveryPoint(deliveryPointEntities);
-                            //update udprn of DP as UDPRN of adress locn
+                        {
+                            // create DP
+                            // var deliveryPointEntities = GenericMapper.Map<DTO.DeliveryPointDTO, Entity.DeliveryPoint>();
+                            // deliveryPointsRepository.InsertDeliveryPoint(deliveryPointEntities);
+                            // update udprn of DP as UDPRN of adress locn
 
-                            //update locan of DP as locan of adress locn
-                            //update locan provider of DP as locan of adress locn
+                            // update locan of DP as locan of adress locn
+                            // update locan provider of DP as locan of adress locn
                         }
                         else
                         {
-                            //create task
+                            // create task
                         }
                     }
                     else

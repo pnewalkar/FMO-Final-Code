@@ -33,7 +33,7 @@
                             }
                             else
                             {
-                                DataContext.Entry(lstAddress).State = System.Data.Entity.EntityState.Deleted;
+                                DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
                             }
                         });
                         DataContext.SaveChanges();
@@ -87,9 +87,9 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return saveFlag;
@@ -102,11 +102,12 @@
             {
                 statusId = DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefault().UDPRN ?? 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TO DO implement logging
-                throw ex;
+                throw;
             }
+
             return statusId;
         }
 
@@ -125,13 +126,15 @@
                                       n.DepartmentName == objPostalAddress.DepartmentName &&
                                       n.Thoroughfare == objPostalAddress.Thoroughfare &&
                                       n.DependentThoroughfare == objPostalAddress.DependentThoroughfare
-                                ).SingleOrDefault().Address_Id;
+                                      ).SingleOrDefault().Address_Id;
+
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TO DO implement logging
-                throw ex;
+                throw;
             }
+
             return addressId;
         }
 
@@ -165,15 +168,16 @@
                     }
                     else
                     {
-                        //Error Log entry
+                        // Error Log entry
                     }
+
                     DataContext.SaveChanges();
                     saveFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return saveFlag;

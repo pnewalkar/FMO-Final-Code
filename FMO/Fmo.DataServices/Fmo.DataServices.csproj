@@ -51,8 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBContext\AuditContext.cs" />
     <Compile Include="DBContext\FMODBContext.cs" />
-    <Compile Include="DBContext\FMODBContextFactory.cs" />
     <Compile Include="Infrastructure\DatabaseFactory.cs" />
     <Compile Include="Infrastructure\Disposable.cs" />
     <Compile Include="Infrastructure\IDatabaseFactory.cs" />
@@ -68,9 +68,11 @@
     <Compile Include="Repositories\Interfaces\IDeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryPointsRepository.cs" />
     <Compile Include="Repositories\Interfaces\IReferenceDataCategoryRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IScenarioRepository.cs" />
     <Compile Include="Repositories\Interfaces\ISearchRepository.cs" />
     <Compile Include="Repositories\DeliveryRouteRepository.cs" />
     <Compile Include="Repositories\ReferenceDataCategoryRepository.cs" />
+    <Compile Include="Repositories\ScenarioRepository.cs" />
     <Compile Include="Repositories\SearchRepository.cs" />
     <Compile Include="Repositories\DeliveryPointsRepository.cs" />
   </ItemGroup>
@@ -100,8 +102,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="stylecop.json" />
-    <None Include="stylecop1.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

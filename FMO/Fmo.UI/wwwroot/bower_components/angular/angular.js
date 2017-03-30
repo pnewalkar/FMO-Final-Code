@@ -12,7 +12,7 @@
  * Angular. It can be called as follows:
  *
  * var exampleMinErr = minErr('example');
- * throw exampleMinErr('one', 'This {0} is {1}', foo, bar);
+ * throwampleMinErr('one', 'This {0} is {1}', foo, bar);
  *
  * The above creates an instance of minErr in the example namespace. The
  * resulting error will have a namespaced error code of example.one.  The
@@ -10622,7 +10622,7 @@ function $DocumentProvider() {
  * If you wish, you can manually delegate exceptions, e.g.
  * `try { ... } catch(e) { $exceptionHandler(e); }`
  *
- * @param {Error} exception Exception associated with the error.
+ * @param {Error} Exceptionception associated with the error.
  * @param {string=} cause Optional information about the context in which
  *       the error was thrown.
  *

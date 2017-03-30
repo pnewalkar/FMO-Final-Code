@@ -3,7 +3,7 @@ namespace Fmo.DataServices.DBContext
     using System.Data.Entity;
     using Fmo.Entities;
 
-    public partial class FMODBContext : DbContext
+    public partial class FMODBContext : AuditContext
     {
         public FMODBContext()
             : base("name=FMODBContext")
@@ -105,7 +105,7 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<StreetName> StreetNames { get; set; }
 
-        public virtual DbSet<AdvanceSearch> AdvanceSearch { get; set; }
+        //public virtual DbSet<AdvanceSearch> AdvanceSearch { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
