@@ -31,15 +31,21 @@ namespace Fmo.DataServices.Repositories
                         statusId = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault().ReferenceData_Id;
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 // TO DO implement logging
                 throw ex;
             }
+
             return statusId;
         }
 
+        public List<Dto.ReferenceDataDTO> ListOfRouteLogStatus()
+        {
+            var query = DataContext.ReferenceDatas.Join(DataContext.ReferenceDataCategories, r => r.ReferenceDataCategory_Id, p => p.ReferenceDataCategory_Id, (r, p) => new { r.ReferenceDataName, r.ReferenceDataValue })
+                .Select(a => new Entity.ReferenceData { ReferenceDataName = a.ReferenceDataName });
+            return GenericMapper.MapList<Entity.ReferenceData, DTO.ReferenceDataDTO>(query.ToList());
+        }
     }
 }

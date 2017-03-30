@@ -10,34 +10,12 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
     var tasks;
     vm.counter = 0;
 
-    //$scope.$on('changeColor', function (event, data) {
-    //    debugger;
-    //    var vm = this;
-    //    vm.counter = 0;
-    //    vm.color = "white";
-    //});
+  
     $scope.$on('eventX', function (ev, args) {
         debugger;
         console.log('eventX found on Controller1 $scope');
     });
 
-    //var increaseCounter = function () {
-    //    //get the list of tasks from the json file    
-
-    //    $http.get('data/json/tasks.json').then(function (response) {
-    //        vm.tasks = response.data.tasksList;
-    //        if (vm.tasks.length > 0) {
-    //            vm.counter = vm.counter + 1;
-    //            vm.color = "green";
-
-    //            //$scope.$broadcast('panelcolorchange', { data: "red" });
-    //        }
-    //        // sortBy(vm.propertyName);
-    //    });
-
-    //}
-
-    //$interval(increaseCounter, 30000);
     $scope.$on('refreshLayers', refreshLayers);
 
     vm.streetName = "No Street Infomation";
