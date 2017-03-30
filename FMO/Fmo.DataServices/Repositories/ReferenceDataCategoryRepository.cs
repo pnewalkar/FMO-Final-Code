@@ -29,10 +29,10 @@ namespace Fmo.DataServices.Repositories
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TO DO implement logging
-                throw ex;
+                throw;
             }
 
             return statusId;

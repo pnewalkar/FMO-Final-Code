@@ -2,6 +2,8 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -24,10 +26,45 @@ namespace Fmo.DataServices.Repositories
                 // return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
                 return new List<Dto.DeliveryPointDTO>();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
+        }
+
+        public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
+        {
+            try
+            {
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+
+                // return context.Students.Find(id);
+                return objDeliveryPoint;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool InsertDeliveryPoint(DeliveryPoint objDeliveryPoint)
+        {
+            bool saveFlag = false;
+            try
+            {
+                if (objDeliveryPoint != null)
+                {
+                    DataContext.DeliveryPoints.Add(objDeliveryPoint);
+                    DataContext.SaveChanges();
+                    saveFlag = true;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return saveFlag;
         }
     }
 }
