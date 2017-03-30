@@ -19,8 +19,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var result = DataContext.AdvanceSearch.ToList();
-                return result;
+               // var result = DataContext.AdvanceSearch.ToList();
+                return new List<AdvanceSearch>();
             }
             catch (Exception)
             {
