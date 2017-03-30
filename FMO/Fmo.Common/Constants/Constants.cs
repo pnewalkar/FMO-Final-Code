@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fmo.Common.Fmo.Constants
+namespace Fmo.Common.Constants
 {
     public class Constants
     {

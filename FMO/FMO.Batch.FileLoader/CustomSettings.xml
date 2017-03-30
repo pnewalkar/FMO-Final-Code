@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ArrayOfCustomFolderSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <CustomFolderSettings FolderID="ExamplePAF_files">
-    <FolderEnabled>false</FolderEnabled>
+    <FolderEnabled>true</FolderEnabled>
     <FolderDescription>
       Files in format PAF corresponding to the example project
     </FolderDescription>

@@ -1,5 +1,6 @@
 ﻿namespace FMO.Batch.FileLoader
 {
+    using Fmo.DTO;
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;
@@ -18,6 +19,7 @@
         private List<CustomFolderSettings> listFolders;
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
+        //private IMessageBroker<PostalAddressDTO> msgBroker = default(IMessageBroker<PostalAddressDTO>);
 
         public FileLoader()
         {
@@ -30,9 +32,11 @@
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
+            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
+            //msgBroker = kernal.Get<IMessageBroker<PostalAddressDTO>>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
