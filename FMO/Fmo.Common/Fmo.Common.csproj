@@ -62,7 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fmo.Constants\Constants.cs" />
+    <Compile Include="Constants\Constants.cs" />
+    <Compile Include="Enums\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSupport\RepositoryFixtureBase.cs" />
     <Compile Include="TestSupport\TestFixtureBase.cs" />
