@@ -14,19 +14,19 @@ namespace Fmo.MessageBrokerCore.Messaging
         ThirdParty
     }
 
-    public interface IMessageBroker
+    public interface IMessageBroker<T>
     {
 
         //takes an object, serialises it and returns a message
-        IMessage CreateMessage(Object obj,MessageType msgType);
+        IMessage CreateMessage(Object obj, string queueName, string queueRootPath);
 
         //sends a message to the specified recipient
         void SendMessage(IMessage message);
 
         //Gets a message 
-        IMessage ReceiveMessage(MessageType type);
+        IMessage ReceiveMessage(string queueName, string queueRootPath);
 
-        bool HasMessage(MessageType type);
+        bool HasMessage(string queueName, string queueRootPath);
 
     }
 }

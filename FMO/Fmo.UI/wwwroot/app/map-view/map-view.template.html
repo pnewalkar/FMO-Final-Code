@@ -1,50 +1,30 @@
 <div id="map"></div>
     
 <div id="leftPanel">
-    <map-panel class="layer-panel show-panel"
-        paneltitle="Contextpanel"
-        showheader="true"
-        collapsed="false"
-        collapsedtext=""      
-        oncollapse="vm.oncollapse" >
-       
+    <map-panel
+               paneltitle="Context">
+        Context
     </map-panel>
 </div>
     
 <div id="rightPanel">
     <div class="miniMap">
-        <map-panel class="layer-panel show-panel"
-        paneltitle="MiniMap"
-        showheader="true"
-        collapsed="false"
-        collapsedtext=""
-        oncreate="vm.initialiseMiniMap"
-        oncollapse="vm.oncollapse">
-        <div id="mini-map" class="mini-map"></div>
+        <map-panel
+                   paneltitle="Mini Map">
+            Mini-Map
         </map-panel>
     </div>
         
     <div class="layers">
-        <map-panel class="layer-panel show-panel"
-        paneltitle="Layers"
-        showheader="true"
-        collapsed="false"
-        collapsedtext=""
-        oncreate=""
-        oncollapse="vm.oncollapse">
-
+        <map-panel
+                   paneltitle="Layers">
             <layers></layers>
         </map-panel>
     </div>
         
-    <div class="key">
-        <map-panel class="layer-panel show-panel"
-        paneltitle="Map Keys"
-        showheader="true"
-        collapsed="false"
-        collapsedtext=""
-        oncreate=""
-        oncollapse="vm.oncollapse">
+    <div>
+        <map-panel
+                   paneltitle="Map Keys">
             <map-keys></map-keys>
         </map-panel>
     </div>

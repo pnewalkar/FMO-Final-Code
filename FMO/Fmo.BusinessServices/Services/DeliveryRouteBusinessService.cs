@@ -1,8 +1,6 @@
-﻿using Fmo.BusinessServices.Interfaces;
-using System.Collections.Generic;
-using Fmo.DTO;
+﻿using System.Collections.Generic;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using System;
 
 namespace Fmo.BusinessServices.Services
 {

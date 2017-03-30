@@ -276,7 +276,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
         vm.showRoadPanel = false;
     }
-    initialiseMiniMap();
+
     function initialiseMiniMap() {
         mapFactory.initialiseMiniMap();
         vm.miniMap = mapFactory.getMiniMap();

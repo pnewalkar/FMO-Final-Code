@@ -7,6 +7,8 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.Repositories.Interfaces;
     using Dto = Fmo.DTO;
     using Entity = Fmo.Entities;
+    using System.Linq;
+    using Entities;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -15,7 +17,7 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.DeliveryPointDTO> SearchDelievryPoints()
+        public List<Dto.DeliveryPointDTO> SearchDeliveryPoints()
         {
             try
             {
@@ -28,6 +30,40 @@ namespace Fmo.DataServices.Repositories
             {
                 throw ex;
             }
+        }
+
+        public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
+        {
+            try
+            {
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+
+                // return context.Students.Find(id);
+                return objDeliveryPoint;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool InsertDeliveryPoint(DeliveryPoint objDeliveryPoint)
+        {
+            bool saveFlag = false;
+            try
+            {
+                if (objDeliveryPoint != null)
+                {
+                    DataContext.DeliveryPoints.Add(objDeliveryPoint);
+                    DataContext.SaveChanges();
+                    saveFlag = true;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return saveFlag;
         }
     }
 }

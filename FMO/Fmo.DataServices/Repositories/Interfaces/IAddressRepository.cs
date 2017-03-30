@@ -1,5 +1,5 @@
-﻿using Fmo.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
@@ -7,6 +7,12 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         bool SaveAddress(PostalAddress objPostalAddress);
 
-        bool DeleteNYBPostalAddress(List<int> lstUDPRN);
+        int GetPostalAddress(int? uDPRN);
+
+        int GetPostalAddress(PostalAddress objPostalAddress);
+
+        bool UpdateAddress(PostalAddress objPostalAddress, int addressType);
+
+        bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType);
     }
 }

@@ -68,6 +68,7 @@ namespace Fmo.API.Services
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddTransient<IDeliveryRouteRepository, DeliveryRouteRepository>();
+            services.AddTransient<IScenarioRepository, ScenarioRepository>();
             
         }
 

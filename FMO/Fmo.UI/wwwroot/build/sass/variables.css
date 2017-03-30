@@ -20,16 +20,19 @@ h2 span{
 }
 
 
-.accordion {
+ul.panel-header {
     background-color: #eee;
     color: #444;
     cursor: pointer;
     padding: 10px;
     text-align: left;
-    font-size: 15px;
+    font-size: 16px;
+    width: 200px;
 }
 
 div.panel-content {
+    height: 100px;
+    width: 200px;
     padding: 5px 10px;
     background-color: white;
     
