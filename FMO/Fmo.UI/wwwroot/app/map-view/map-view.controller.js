@@ -373,7 +373,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
                 anchor: [0.5, 46],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'pixels',
-                src: '../app/location_black.png'
+                src: '../app/location_red.png'
 
             }))
         });
