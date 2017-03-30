@@ -157,7 +157,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (objAdd.PostcodeType != "S" || objAdd.PostcodeType != "L"))
+                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (!string.Equals(objAdd.PostcodeType, "S", StringComparison.OrdinalIgnoreCase) || !string.Equals(objAdd.PostcodeType, "L", StringComparison.OrdinalIgnoreCase)))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -165,7 +165,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (objAdd.PostcodeType != "Y" || objAdd.PostcodeType != " "))
+                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (!string.Equals(objAdd.PostcodeType, "Y", StringComparison.OrdinalIgnoreCase) || objAdd.PostcodeType != " "))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -176,7 +176,7 @@ namespace Fmo.NYBLoader
                     if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
                     {
                         char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                        if (objAdd.PostcodeType == "L" && objAdd.DeliveryPointSuffix != "1A")
+                        if (string.Equals(objAdd.PostcodeType, "L", StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, "1A", StringComparison.OrdinalIgnoreCase))
                         {
                             objAdd.IsValidData = false;
                         }

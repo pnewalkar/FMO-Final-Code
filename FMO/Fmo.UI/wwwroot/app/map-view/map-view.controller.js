@@ -80,7 +80,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
     mapService.addSelectionListener(selectFeatures);
     mapService.mapLayers = mapFactory.getAllLayers();
-    mapService.mapButtons = ["area", "line", "measure", "select", "delete", "modify"];
+    mapService.mapButtons = ["line", "point", "select"];
     mapService.centerMapOn = centerMapOn;
     mapService.centerMapOnFeature = centerMapOnFeature;
     mapService.clearDrawingLayer = clearDrawingLayer;
@@ -199,7 +199,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         //var satelliteLayer = mapFactory.addLayer(satelliteSelector);
 
         var roadsSelector = new MapFactory.LayerSelector();
-        roadsSelector.layerName = "Roads";
+        roadsSelector.layerName = "Base Layer";
         //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
@@ -367,11 +367,30 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
+
+        var iconStyle = new ol.style.Style({
+            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
+                anchor: [0.5, 46],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+                src: '../app/location_black.png'
+
+            }))
+        });
+
+        var name = button.name;
+        if (name == "point")
+            style = iconStyle;
+
+
         vm.interactions.draw = new ol.interaction.Draw({
             source: vm.drawingLayer.layer.getSource(),
             type: button.shape,
             style: style
+           // condition: ol.events.condition.singleClick,
+            //freehandCondition: ol.events.condition.noModifierKeys
         });
+
         switch (button.name) {
             case "measure":
                 setupMeasure();
