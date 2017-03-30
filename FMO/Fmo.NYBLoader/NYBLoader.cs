@@ -30,13 +30,9 @@ namespace Fmo.NYBLoader
                         string strLine = string.Empty;
                         string strfileName = string.Empty;
 
-                        using (Stream stream = entry.Open())
-                        {
-                            using (var reader = new StreamReader(stream))
-                            {
-                                strLine = reader.ReadToEnd();
-                            }
-                        }
+                        Stream stream = entry.Open();
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
 
                         string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
@@ -85,7 +81,7 @@ namespace Fmo.NYBLoader
             }
         }
 
-        private bool ValidateFile(string[] arrLines)
+        private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
             try
@@ -112,7 +108,7 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
-        private PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
+        private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             try
@@ -147,7 +143,7 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
-        private void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
+        private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             try
             {
@@ -204,7 +200,7 @@ namespace Fmo.NYBLoader
             }
         }
 
-        private bool ValidatePostCode(string strPostCode)
+        private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
             try
@@ -238,7 +234,7 @@ namespace Fmo.NYBLoader
             return isValid;
         }
 
-        private string AppendTimeStamp(string strfileName)
+        private static string AppendTimeStamp(string strfileName)
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
@@ -247,7 +243,7 @@ namespace Fmo.NYBLoader
                 );
         }
 
-        private async Task SaveNYBDetails(List<PostalAddressDTO> lstAddress)
+        private static async Task SaveNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             try
             {

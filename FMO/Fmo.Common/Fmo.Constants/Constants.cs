@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.Common.Fmo.Constants
 {
-    public class Constants
+    public static class Constants
     {
         public const string USR_XML_ROOT = "ThirdParty";
         public const string INSERT = "I";

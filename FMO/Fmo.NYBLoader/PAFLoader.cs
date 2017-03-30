@@ -19,8 +19,8 @@ namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private static string strProcessedFilePath = ConfigurationSettings.AppSettings["ProcessedFilePath"].ToString();
-        private static string strErrorFilePath = ConfigurationSettings.AppSettings["ErrorFilePath"].ToString();
+        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
+        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
         //private readonly IKernel kernal;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
 
@@ -41,13 +41,10 @@ namespace Fmo.NYBLoader
                         string strLine = string.Empty;
                         string strfileName = string.Empty;
 
-                        using (Stream stream = entry.Open())
-                        {
-                            using (var reader = new StreamReader(stream))
-                            {
-                                strLine = reader.ReadToEnd();
-                            }
-                        }
+                        Stream stream = entry.Open();
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
+
                         strfileName = entry.Name;
 
                         string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
@@ -121,7 +118,7 @@ namespace Fmo.NYBLoader
             }
         }
 
-        private string AppendTimeStamp(string strfileName)
+        private static string AppendTimeStamp(string strfileName)
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
@@ -130,7 +127,7 @@ namespace Fmo.NYBLoader
                 );
         }
 
-        private string SerializeObject<T>(T toSerialize)
+        private static string SerializeObject<T>(T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
@@ -141,22 +138,22 @@ namespace Fmo.NYBLoader
             }
         }
 
-        private T DeserializeXMLFileToObject<T>(string xmlFilename)
-        {
-            T returnObject = default(T);
-            if (string.IsNullOrEmpty(xmlFilename))
-            {
-                return default(T);
-            }
+        //private static T DeserializeXMLFileToObject<T>(string xmlFilename)
+        //{
+        //    T returnObject = default(T);
+        //    if (string.IsNullOrEmpty(xmlFilename))
+        //    {
+        //        return default(T);
+        //    }
 
-            StreamReader xmlStream = new StreamReader(xmlFilename);
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            returnObject = (T)serializer.Deserialize(xmlStream);
+        //    StreamReader xmlStream = new StreamReader(xmlFilename);
+        //    XmlSerializer serializer = new XmlSerializer(typeof(T));
+        //    returnObject = (T)serializer.Deserialize(xmlStream);
 
-            return returnObject;
-        }
+        //    return returnObject;
+        //}
 
-        private bool ValidateFile(string[] arrLines)
+        private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
             try
@@ -184,7 +181,7 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
-        private PostalAddressDTO MapPAFDetailsToDTO(string csvLine)
+        private static PostalAddressDTO MapPAFDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             try
@@ -227,7 +224,7 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
-        private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
+        private static void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
 
             try
@@ -286,7 +283,7 @@ namespace Fmo.NYBLoader
             }
         }
 
-        private bool ValidatePostCode(string strPostCode)
+        private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
             try
