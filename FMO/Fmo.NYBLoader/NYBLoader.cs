@@ -24,63 +24,67 @@ namespace Fmo.NYBLoader
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-                ZipArchive zip = ZipFile.OpenRead(strPath);
-
-
-                foreach (ZipArchiveEntry entry in zip.Entries)
+              
+                using (ZipArchive zip = ZipFile.OpenRead(strPath))
                 {
-                    string strLine = string.Empty;
-                    string strfileName = string.Empty;
-
-                    using (Stream stream = entry.Open())
+                    foreach (ZipArchiveEntry entry in zip.Entries)
                     {
-                        using (var reader = new StreamReader(stream))
+                        string strLine = string.Empty;
+                        string strfileName = string.Empty;
+
+                        using (Stream stream = entry.Open())
                         {
-                            strLine = reader.ReadToEnd();
+                            using (var reader = new StreamReader(stream))
+                            {
+                                strLine = reader.ReadToEnd();
+                            }
                         }
-                    }
-                    strfileName = entry.Name;
+                        strfileName = entry.Name;
 
-                    string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                    if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length-1])) {
-
-                        Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
-                    }
-
-                    if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
-                    {
-                        lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
-
-
-                        if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                        string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                        if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
                         {
 
-                            //Validate NYB Details
-                            ValidateNYBDetails(lstAddressDetails);
-
-                            //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
-
-                            lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
-
-                            var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
-
-                            if (invalidRecordCount > 0)
-                            {
-                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                            }
-                            else
-                            {
-                                SaveNYBDetails(lstAddressDetails).Wait();
-                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                            }
-
+                            Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
                         }
-                    }
-                    else
-                    {
-                        //TO DO
-                        //Log error
-                    }
+
+                        if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
+                        {
+                            lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
+
+
+                            if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                            {
+
+                                //Validate NYB Details
+                                ValidateNYBDetails(lstAddressDetails);
+
+                                //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+
+                                lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+
+                                var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                                if (invalidRecordCount > 0)
+                                {
+                                    //TO DO
+                                    //Log error
+                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                }
+                                else
+                                {
+                                    SaveNYBDetails(lstAddressDetails).Wait();
+                                    File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            //TO DO
+                            //Log error
+                        }
+                    } 
                 }
 
 
