@@ -22,6 +22,6 @@ namespace Fmo.Common.Enums
 
     public enum DeliveryPointSuffix
     {
-        1A
+        
     }
 }
