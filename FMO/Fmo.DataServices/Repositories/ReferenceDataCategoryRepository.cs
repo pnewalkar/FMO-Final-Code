@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.MappingConfiguration;
-using Dto = Fmo.DTO;
 using Entity = Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
@@ -31,15 +28,14 @@ namespace Fmo.DataServices.Repositories
                         statusId = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault().ReferenceData_Id;
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 // TO DO implement logging
                 throw ex;
             }
+
             return statusId;
         }
-
     }
 }

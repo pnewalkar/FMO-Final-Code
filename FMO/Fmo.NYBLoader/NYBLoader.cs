@@ -1,30 +1,28 @@
-﻿using Fmo.NYBLoader.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fmo.DTO;
+using System.Configuration;
 using System.IO;
 using System.IO.Compression;
-using System.Configuration;
+using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Fmo.DTO;
+using Fmo.NYBLoader.Interfaces;
 
 namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
-        private static string strProcessedFilePath = ConfigurationSettings.AppSettings["ProcessedFilePath"].ToString();
-        private static string strErrorFilePath = ConfigurationSettings.AppSettings["ErrorFilePath"].ToString();
-        private static string strFMOWEbApiURL = ConfigurationSettings.AppSettings["FMOWebAPIURL"].ToString();
-        private static string strFMOWebAPIName = ConfigurationSettings.AppSettings["FMOWebAPIName"].ToString();
+        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
+        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
+        private static string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
+        private static string strFMOWebAPIName = ConfigurationManager.AppSettings["FMOWebAPIName"].ToString();
 
         public void LoadNYBDetailsFromCSV(string strPath)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-              
                 using (ZipArchive zip = ZipFile.OpenRead(strPath))
                 {
                     foreach (ZipArchiveEntry entry in zip.Entries)
@@ -44,7 +42,6 @@ namespace Fmo.NYBLoader
                         string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
                         if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
                         {
-
                             Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
                         }
 
@@ -52,10 +49,8 @@ namespace Fmo.NYBLoader
                         {
                             lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
 
-
                             if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                             {
-
                                 //Validate NYB Details
                                 ValidateNYBDetails(lstAddressDetails);
 
@@ -67,8 +62,6 @@ namespace Fmo.NYBLoader
 
                                 if (invalidRecordCount > 0)
                                 {
-                                    //TO DO
-                                    //Log error
                                     File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                                 else
@@ -76,7 +69,6 @@ namespace Fmo.NYBLoader
                                     SaveNYBDetails(lstAddressDetails).Wait();
                                     File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
-
                             }
                         }
                         else
@@ -84,14 +76,11 @@ namespace Fmo.NYBLoader
                             //TO DO
                             //Log error
                         }
-                    } 
+                    }
                 }
-
-
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -117,7 +106,6 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -150,22 +138,17 @@ namespace Fmo.NYBLoader
                     objAddDTO.DeliveryPointSuffix = values[15];
                     objAddDTO.IsValidData = true;
                 }
-
             }
             catch (Exception)
             {
-
                 throw;
             }
-
-
 
             return objAddDTO;
         }
 
         private void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
-
             try
             {
                 foreach (PostalAddressDTO objAdd in lstAddress)
@@ -217,7 +200,6 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -242,7 +224,6 @@ namespace Fmo.NYBLoader
                         {
                             isValid = false;
                         }
-
                     }
                     else
                     {
@@ -252,7 +233,6 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
-
                 throw;
             }
             return isValid;
@@ -275,12 +255,12 @@ namespace Fmo.NYBLoader
                 {
                     client.BaseAddress = new Uri(strFMOWEbApiURL);
                     var result = await client.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
+
                     //Employee product = await result.Content.ReadAsAsync<Employee>();
                 }
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

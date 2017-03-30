@@ -20,7 +20,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public void Test_SearchDeliveryPoints()
         {
-            var actualResult = testCandidate.SearchDelievryPoints();
+            var actualResult = testCandidate.SearchDeliveryPoints();
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 2);
         }
