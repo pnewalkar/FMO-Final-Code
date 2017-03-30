@@ -122,7 +122,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
     mapService.addSelectionListener(selectFeatures);
     mapService.mapLayers = mapFactory.getAllLayers();
-    mapService.mapButtons = ["area", "line", "point", "measure", "select", "delete", "modify"];
+    mapService.mapButtons = ["line", "point","select"];
     mapService.centerMapOn = centerMapOn;
     mapService.centerMapOnFeature = centerMapOnFeature;
     mapService.clearDrawingLayer = clearDrawingLayer;
@@ -415,7 +415,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
                 anchor: [0.5, 46],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'pixels',
-                src: 'https://openlayers.org/en/v4.0.1/examples/data/icon.png'
+                src: '../app/location_black.png'
 
             }))
         });
@@ -431,7 +431,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
             type: button.shape,
             style: style
             //condition: ol.events.condition.singleClick,
-            //freehandCondition: ol.events.condition.noModifierKeys
+            //freehandCondition: ol.events.condition.pointerMove
         });
 
         switch (button.name) {
