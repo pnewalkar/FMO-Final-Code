@@ -1,16 +1,10 @@
 <div class="md-whiteframe-3dp">
-    <ul class="accordion">
-        <li ng-click="vm.togglePanel()">
-           {{vm.paneltitle}}
-            <i class="fa fa-plus-circle pull-right" ></i>
-            <!--<i ng-show="!vm.collapsed" class="fa pull-right fa-minus-circle"></i>
-            <i ng-show="vm.collapsed" class="fa pull-right fa-plus-circle"></i>-->
+    <ul ng-click="togglePannel()" class="panel-header">
+        <li>
+            {{vm.paneltitle}}
+            <i ng-show="vm.collapsed" class="fa fa-plus-circle pull-right" ></i>
+            <i ng-show="!vm.collapsed" class="fa pull-right fa-minus-circle" ></i>
         </li>
     </ul>
-    
-    <div ng-transclude ng-hide="vm.collapsed" class="panel-content"></div>
-    <div ng-show="vm.collapsed && vm.hasCollapsedtext()" class="map-panel-summary" id="map-panel-hidden-content">
-        {{vm.collapsedtext}}
-    </div>
-
+    <div ng-hide="collapsedPanel" ng-transclude class="panel-content"></div>
 </div>

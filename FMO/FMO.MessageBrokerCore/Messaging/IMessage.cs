@@ -15,8 +15,9 @@ namespace Fmo.MessageBrokerCore.Messaging
 
             object Content { get; }
 
-            MessageType  MessType { get; }
+            string QueueName { get; }
 
+            string QueueRootpath { get; }
     }
     //interface IMessage<T> : IMessage
     //{

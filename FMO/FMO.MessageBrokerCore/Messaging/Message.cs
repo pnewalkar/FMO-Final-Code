@@ -12,6 +12,8 @@ namespace Fmo.MessageBrokerCore.Messaging
         private Guid _id;
         private long _priority;
         private MessageType _messageType;
+        private string _queueName;
+        private string _queueRootpath;
 
         public Message()
         {
@@ -58,18 +60,31 @@ namespace Fmo.MessageBrokerCore.Messaging
                 _content=value;
             }
         }
-        public MessageType MessType
+
+        public string QueueName
         {
             get
             {
-                return _messageType;
+                return _queueName;
             }
+
             set
             {
-                _messageType = value;
+                _queueName = value;
             }
         }
 
+        public string QueueRootpath
+        {
+            get
+            {
+                return _queueRootpath;
+            }
 
+            set
+            {
+                _queueRootpath = value;
+            }
+        }
     }
 }
