@@ -33,7 +33,7 @@
                             }
                             else
                             {
-                                DataContext.Entry(lstAddress).State = System.Data.Entity.EntityState.Deleted;
+                                DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
                             }
                         });
                         DataContext.SaveChanges();
