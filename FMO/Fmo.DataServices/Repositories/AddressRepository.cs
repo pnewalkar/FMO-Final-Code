@@ -1,14 +1,13 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.Entities;
     using Fmo.DTO;
-    using MappingConfiguration;
+    using Fmo.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -119,17 +118,15 @@
             try
             {
                 addressId = DataContext.PostalAddresses
-                               .Where
-                                (n => n.Postcode == objPostalAddress.Postcode &&
+                               .Where(
+                                n => n.Postcode == objPostalAddress.Postcode &&
                                       n.BuildingName == objPostalAddress.BuildingName &&
                                       n.BuildingNumber == objPostalAddress.BuildingNumber &&
                                       n.SubBuildingName == objPostalAddress.SubBuildingName &&
                                       n.OrganisationName == objPostalAddress.OrganisationName &&
                                       n.DepartmentName == objPostalAddress.DepartmentName &&
                                       n.Thoroughfare == objPostalAddress.Thoroughfare &&
-                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare
-                                      ).SingleOrDefault().Address_Id;
-
+                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).SingleOrDefault().Address_Id;
             }
             catch (Exception)
             {
@@ -147,8 +144,6 @@
             {
                 if (objPostalAddress != null)
                 {
-
-
                     var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.Address_Id == objPostalAddress.Address_Id && n.AddressType_Id == addressType).SingleOrDefault();
                     if (objAddress != null)
                     {

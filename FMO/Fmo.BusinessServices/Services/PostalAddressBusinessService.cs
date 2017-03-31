@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Fmo.BusinessServices.Interfaces;
+﻿using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.MappingConfiguration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Entity = Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
@@ -59,7 +59,7 @@ namespace Fmo.BusinessServices.Services
         {
             try
             {
-               // var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
+                // var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
                 int addressTypeUSR = refDataRepository.GetReferenceDataId("Postal Address Type", "USR");
                 int addressTypePAF = refDataRepository.GetReferenceDataId("Postal Address Type", "PAF");
                 int addressTypeNYB = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
@@ -76,7 +76,6 @@ namespace Fmo.BusinessServices.Services
                     }
                     if (true)
                     {
-
                     }
                 }
                 else
