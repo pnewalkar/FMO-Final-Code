@@ -17,7 +17,7 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<DTO.DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID)
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
         {
             IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.ToList().Where(x => x.DeliveryScenario_Id == deliveryScenarioID && x.OperationalStatus_Id == operationStateID);
             return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());

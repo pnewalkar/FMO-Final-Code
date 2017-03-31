@@ -5,11 +5,11 @@ namespace Fmo.BusinessServices.Interfaces
 {
     public interface IDeliveryRouteBusinessService
     {
-        List<ReferenceDataDTO> ListOfRouteLogStatus();
+        List<ReferenceDataDTO> FetchRouteLogStatus();
 
-        List<DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID);
+        List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);
 
-        List<ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID);
+        List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID);
 
         List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText);
     }
