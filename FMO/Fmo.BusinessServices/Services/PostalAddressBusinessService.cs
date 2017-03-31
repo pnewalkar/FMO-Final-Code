@@ -35,9 +35,7 @@ namespace Fmo.BusinessServices.Services
                 int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
                 int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
 
-                var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddressDTO, Entity.PostalAddress>(lstPostalAddress);
-
-                foreach (var addEntity in lstPostalAddressEntities)
+                foreach (var addEntity in lstPostalAddress)
                 {
                     addEntity.AddressStatus_Id = addressStatusId;
                     addEntity.AddressType_Id = addressTypeId;
@@ -59,7 +57,7 @@ namespace Fmo.BusinessServices.Services
         {
             try
             {
-               // var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
+                // var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
                 int addressTypeUSR = refDataRepository.GetReferenceDataId("Postal Address Type", "USR");
                 int addressTypePAF = refDataRepository.GetReferenceDataId("Postal Address Type", "PAF");
                 int addressTypeNYB = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
