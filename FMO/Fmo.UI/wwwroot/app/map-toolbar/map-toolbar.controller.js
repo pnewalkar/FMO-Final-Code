@@ -50,7 +50,7 @@ angular.module('mapToolbar')
 		function getShapeForButton(button) {
 		    switch (button){		        
 		        case 'point':
-		            return 'Point';		       
+		            return 'point';		       
 		        case 'line':
 		        case 'measure':
 		            return 'LineString';

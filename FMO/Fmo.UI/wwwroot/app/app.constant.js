@@ -14,8 +14,5 @@ if (window.location.hostname == "localhost") {
 else {
     GlobalSettings.apiUrl = "";
 }
-
-GlobalSettings.vectorMapUrl = "http://api.tiles.mapbox.com/v4/digitalglobe.nal0g75k/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGlnaXRhbGdsb2JlIiwiYSI6ImNpcGg5dHkzYTAxM290bG1kemJraHU5bmoifQ.CHhq1DFgZPSQQC-DYWpzaQ"
-
 angular.module('FMOApp')
 .constant("GlobalSettings", GlobalSettings);
