@@ -56,7 +56,6 @@
   <ItemGroup>
     <Compile Include="Entities\AccessLink.cs" />
     <Compile Include="Entities\AddressLocation.cs" />
-    <Compile Include="Entities\AdvanceSearch.cs" />
     <Compile Include="Entities\AMUChangeRequest.cs" />
     <Compile Include="Entities\AreaHazard.cs" />
     <Compile Include="Entities\AuditLog.cs" />

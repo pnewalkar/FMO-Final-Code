@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fmo.DTO;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
-   public interface IScenarioRepository
+  public interface IPostCodeRepository
     {
-        List<DTO.ScenarioDTO> FetchScenario(int operationStateID, int deliveryUnitID);
+
+        List<PostCodeDTO> FetchPostCodeUnit(string searchText);
     }
 }

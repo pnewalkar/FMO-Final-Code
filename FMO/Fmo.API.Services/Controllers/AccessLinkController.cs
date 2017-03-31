@@ -10,29 +10,17 @@ using Fmo.DTO;
 
 namespace Fmo.API.Services.Controllers
 {
-    
-    [Route("api/deliveryPoints")]
-    public class DeliveryPointsController : Controller
+    [Route("api/accessLinks")]
+    public class AccessLinkController : Controller
     {
-        IDeliveryPointBussinessService businessService = default(IDeliveryPointBussinessService);
-
-        public DeliveryPointsController(IDeliveryPointBussinessService _businessService)
-        {
-            businessService = _businessService;
-        }
+       IAccessLinkBussinessService accessLinkBussinessService = default(IAccessLinkBussinessService);
 
 
-        public JsonResult Get()
-        {
-            //return Json(businessService.SearchDelievryPoints());
-            return Json("");
-        }
-
-        [Route("fetchDeliveryPoint")]
+        [Route("fetchAccessLink")]
         [HttpGet]
-        public List<DeliveryPointDTO> FetchDeliveryPoints()
+        public List<AccessLinkDTO> FetchAccessLink(List<AccessLinkDTO> AccessLinkDTO)
         {
-            return businessService.SearchDelievryPoints();
+            return accessLinkBussinessService.SearchAccessLink();
         }
 
         //// GET: api/values
