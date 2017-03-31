@@ -34,7 +34,7 @@
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
             kernel.Bind<ITPFLoader>().To<TPFLoader>().InSingletonScope();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            kernel.Bind<IMessageBroker<USR>>().To<MessageBroker<USR>>().InSingletonScope();
+            kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
