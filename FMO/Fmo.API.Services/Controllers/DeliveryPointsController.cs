@@ -19,42 +19,16 @@ namespace Fmo.API.Services.Controllers
         IExceptionHelper exceptionHelper = default(IExceptionHelper);
         ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public DeliveryPointsController(IDeliveryPointBusinessService businessService, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper)
+        public DeliveryPointsController(IDeliveryPointBusinessService businessService, ILoggingHelper loggingHelper)
         {
             this.businessService = businessService;
-            this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
         }
 
         public JsonResult Get()
         {
-            //try
-            //{
-                throw new BusinessLogicException("Price invalid");
-                string a = "a";
-                int i = Convert.ToInt16(a) / 2;
-                //return Json(businessService.SearchDelievryPoints());
-                return Json("");
-            //}
-            //catch(Exception ex)
-            //{
-                //string errMessage = default(string);
-                //Exception n;
-                //if (exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.UIPolicy, out n))
-                //{
-                //    errMessage = n.Message;
-                //}
-
-                //ex.Data["UserMessage"] = ex.Message;
-                //Exception n;
-                //if (exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out n))
-                //{
-                //    throw n;
-                //}
-                //return Json("");
-            //}
+           return Json("");   
         }
-
 
         //// GET: api/values
         //[HttpGet]
