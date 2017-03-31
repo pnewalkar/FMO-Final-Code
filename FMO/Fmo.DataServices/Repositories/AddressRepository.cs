@@ -5,6 +5,7 @@
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Entities;
+    using MappingConfiguration;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -61,11 +62,29 @@
                     var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
                     if (objAddress != null)
                     {
-                        GenericMapper.Map(objPostalAddress, objAddress);
+                        objAddress.Postcode = objPostalAddress.Postcode;
+                        objAddress.PostTown = objPostalAddress.PostTown;
+                        objAddress.DependentLocality = objPostalAddress.DependentLocality;
+                        objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
+                        objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
+                        objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
+                        objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
+                        objAddress.BuildingName = objPostalAddress.BuildingName;
+                        objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
+                        objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
+                        objAddress.DepartmentName = objPostalAddress.DepartmentName;
+                        objAddress.OrganisationName = objPostalAddress.OrganisationName;
+                        objAddress.UDPRN = objPostalAddress.UDPRN;
+                        objAddress.PostcodeType = objPostalAddress.PostcodeType;
+                        objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
+                        objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
+                        DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
+
                     }
                     else
                     {
-                        DataContext.PostalAddresses.Add(objAddress);
+                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        DataContext.PostalAddresses.Add(entity);
                     }
 
                     DataContext.SaveChanges();
