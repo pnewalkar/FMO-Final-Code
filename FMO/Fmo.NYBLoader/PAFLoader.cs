@@ -14,6 +14,7 @@ using System.Configuration;
 using Fmo.MessageBrokerCore;
 using Fmo.Common;
 using Fmo.Common.Constants;
+using System.Net.Http;
 
 namespace Fmo.NYBLoader
 {
@@ -52,19 +53,7 @@ namespace Fmo.NYBLoader
 
                         if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                         {
-                            //lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
-                            lstAddressDetails = new List<PostalAddressDTO>
-                        {
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="A", AmendmentType="B"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="B", AmendmentType="C"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="C", AmendmentType="D"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="D", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =2, DepartmentName="E", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =3, DepartmentName="F", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =4, DepartmentName="G", AmendmentType="I"},
-                        };
-
-
+                            lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
                             if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                             {
 
@@ -92,9 +81,12 @@ namespace Fmo.NYBLoader
                                 {
                                     foreach (var addDetail in lstAddressDetails)
                                     {
-                                        string strXml = SerializeObject<PostalAddressDTO>(addDetail);
-                                        IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                                        msgBroker.SendMessage(msg);
+                                        SavePAFDetails(addDetail).Wait();
+
+
+                                        //string strXml = SerializeObject<PostalAddressDTO>(addDetail);
+                                        //IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                                        //msgBroker.SendMessage(msg);
                                     }
                                     File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
@@ -125,6 +117,26 @@ namespace Fmo.NYBLoader
                string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
                 Path.GetExtension(strfileName)
                 );
+        }
+
+        private static async Task SavePAFDetails(PostalAddressDTO Address)
+        {
+            string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
+            string strFMOWebAPIName = "/api/PAF/SavePAFDetails";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(strFMOWEbApiURL);
+                    var result = await client.PostAsJsonAsync(strFMOWebAPIName, Address);
+
+                    //Employee product = await result.Content.ReadAsAsync<Employee>();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private static string SerializeObject<T>(T toSerialize)
