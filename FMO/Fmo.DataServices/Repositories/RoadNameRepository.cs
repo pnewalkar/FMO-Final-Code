@@ -1,3 +1,4 @@
+﻿
 namespace Fmo.DataServices.Repositories
 {
     using System;
@@ -10,20 +11,20 @@ namespace Fmo.DataServices.Repositories
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
-    public class DeliveryPointsRepository : RepositoryBase<DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
+    public class RoadNameRepository : RepositoryBase<RoadName, FMODBContext>, IRoadNameRepository
     {
-        public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+
+        public RoadNameRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
         }
 
-        public List<DeliveryPointDTO> SearchDelievryPoints()
+        public List<RoadNameDTO> FetchRoadName()
         {
             try
-            { 
-
-             var result = DataContext.DeliveryPoints.ToList();
-             return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result.ToList());
+            {
+                var result = DataContext.RoadNames.ToList();
+                return GenericMapper.MapList<RoadName, RoadNameDTO>(result.ToList());
             }
             catch (Exception ex)
             {

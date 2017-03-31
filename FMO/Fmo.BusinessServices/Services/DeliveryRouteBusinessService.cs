@@ -29,5 +29,10 @@ namespace Fmo.BusinessServices.Services
         {
             return routeSimulationRespository.ListOfScenario();
         }
+
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
+        {
+            return routeSimulationRespository.FetchDeliveryRoute(searchText);
+        }
     }
 }

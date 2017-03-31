@@ -34,5 +34,18 @@
             IEnumerable<Scenario> result = DataContext.Scenarios.ToList().Where(x => x.OperationalState_Id == 1 && x.DeliveryUnit_Id == 1);
             return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
         }
+
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
+        {
+            try
+            {
+                var result = DataContext.DeliveryRoutes.ToList();
+                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

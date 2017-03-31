@@ -4,13 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fmo.DTO;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryRouteRepository
     {
-        List<DTO.ReferenceDataDTO> ListOfRouteLogStatus();
-        List<DTO.DeliveryRouteDTO> ListOfRoute();
-        List<DTO.ScenarioDTO> ListOfScenario();
+        List<ReferenceDataDTO> ListOfRouteLogStatus();
+
+        List<DeliveryRouteDTO> ListOfRoute();
+
+        List<ScenarioDTO> ListOfScenario();
+
+        List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText);
     }
 }

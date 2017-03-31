@@ -1,8 +1,8 @@
 'use strict';
 angular.module('layers')
-    .controller('LayerSelectorController', ['$scope', '$rootScope', '$http', 'mapService', 'mapStylesFactory', LayerSelectorController]);
+    .controller('LayerSelectorController', ['$scope', '$rootScope', '$http', 'mapService', 'mapStylesFactory', 'layersApiService', LayerSelectorController]);
 
-function LayerSelectorController($scope, $rootScope, $http, mapService, mapStylesFactory) {
+function LayerSelectorController($scope, $rootScope, $http, mapService, mapStylesFactory, layersApiService) {
     var vm = this;
 
     vm.showUngrouped = showUngrouped;
@@ -36,10 +36,12 @@ function LayerSelectorController($scope, $rootScope, $http, mapService, mapStyle
     }
 
     function refreshLayer() {
-        mapService.refreshLayers();
+       // mapService.refreshLayers();
     }
     function onChange(changedLayer) {
-
+        debugger;
+       // fetchDeliveryPoints();
+        fetchAccessLinks();
         if (changedLayer.group) {
             var group = vm.groups[vm.groupNames[changedLayer.group]];
             var otherEnabled = false;
@@ -53,6 +55,7 @@ function LayerSelectorController($scope, $rootScope, $http, mapService, mapStyle
                 changedLayer.selected = true;
         }
         refreshLayer();
+  
         //$rootScope.$emit('refreshLayers');
     }
 
@@ -63,8 +66,18 @@ function LayerSelectorController($scope, $rootScope, $http, mapService, mapStyle
         })
         return showGrouped;
     }
+    function fetchDeliveryPoints() {
+        var data ;
+       var data= layersApiService.fetchDeliveryPoints();
+        return showGrouped;
+    }
 
 
+    function fetchAccessLinks() {
+        var data;
+        var data = layersApiService.fetchAccessLinks();
+        return showGrouped;
+    }
     vm.getLayerData();
 
     $scope.$on("updateLayerControl", getLayerData);

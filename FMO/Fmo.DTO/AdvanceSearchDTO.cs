@@ -20,5 +20,13 @@ namespace Fmo.DTO
 
         public ICollection<NetworkLinkDTO> NetworkLink { get; set; }
 
+
+        ////public int TotalCount{
+        ////    get
+        ////    {
+        ////        return DeliveryRoute.Count+
+        ////    }
+        ////    }
+
     }
 }

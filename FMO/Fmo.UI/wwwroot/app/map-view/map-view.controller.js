@@ -230,7 +230,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "Drawing";
+        drawingLayerSelector.layerName = "AccessLinks";
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;

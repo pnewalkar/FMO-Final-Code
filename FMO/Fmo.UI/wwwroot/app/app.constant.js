@@ -14,5 +14,5 @@ if (window.location.hostname == "localhost") {
 else {
     GlobalSettings.apiUrl = "";
 }
-angular.module('RMGApp')
+angular.module('FMOApp')
 .constant("GlobalSettings", GlobalSettings);

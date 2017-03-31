@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="AdvanceSearchDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />
