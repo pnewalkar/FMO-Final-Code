@@ -1,12 +1,14 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
     using Fmo.Entities;
+    using MappingConfiguration;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -50,7 +52,7 @@
             return deleteFlag;
         }
 
-        public bool SaveAddress(PostalAddress objPostalAddress)
+        public bool SaveAddress(PostalAddressDTO objPostalAddress)
         {
             bool saveFlag = false;
             try
@@ -77,10 +79,12 @@
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
+
                     }
                     else
                     {
-                        DataContext.PostalAddresses.Add(objPostalAddress);
+                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        DataContext.PostalAddresses.Add(entity);
                     }
 
                     DataContext.SaveChanges();
@@ -111,23 +115,21 @@
             return statusId;
         }
 
-        public int GetPostalAddress(PostalAddress objPostalAddress)
+        public int GetPostalAddress(DTO.PostalAddressDTO objPostalAddress)
         {
             int addressId = 0;
             try
             {
                 addressId = DataContext.PostalAddresses
-                               .Where
-                                (n => n.Postcode == objPostalAddress.Postcode &&
+                               .Where(
+                                n => n.Postcode == objPostalAddress.Postcode &&
                                       n.BuildingName == objPostalAddress.BuildingName &&
                                       n.BuildingNumber == objPostalAddress.BuildingNumber &&
                                       n.SubBuildingName == objPostalAddress.SubBuildingName &&
                                       n.OrganisationName == objPostalAddress.OrganisationName &&
                                       n.DepartmentName == objPostalAddress.DepartmentName &&
                                       n.Thoroughfare == objPostalAddress.Thoroughfare &&
-                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare
-                                      ).SingleOrDefault().Address_Id;
-
+                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).SingleOrDefault().Address_Id;
             }
             catch (Exception)
             {
@@ -138,14 +140,14 @@
             return addressId;
         }
 
-        public bool UpdateAddress(PostalAddress objPostalAddress, int addressType)
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, int addressType)
         {
             bool saveFlag = false;
             try
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.Address_Id == objPostalAddress.Address_Id && n.AddressType_Id == addressType).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.Address_Id == objPostalAddress.Address_Id && n.AddressType_Id == addressType).SingleOrDefault();
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -164,6 +166,18 @@
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.UDPRN = objPostalAddress.UDPRN;
+
+                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        {
+                            foreach (var objDelPoint in objAddress.DeliveryPoints)
+                            {
+                                objDelPoint.UDPRN = objPostalAddress.UDPRN;
+                            }
+                        }
+                        else
+                        {
+                            //To DO log error
+                        }
                         DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
                     }
                     else

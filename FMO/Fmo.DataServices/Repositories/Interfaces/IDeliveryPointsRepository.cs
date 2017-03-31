@@ -10,6 +10,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 
         DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN);
 
-        bool InsertDeliveryPoint(DeliveryPoint objDeliveryPoint);
+        bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
     }
 }

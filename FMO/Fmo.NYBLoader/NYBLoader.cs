@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
+using Fmo.Common.Enums;
+using Fmo.Common.Constants;
 
 namespace Fmo.NYBLoader
 {
@@ -157,7 +159,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (!string.Equals(objAdd.PostcodeType, "S", StringComparison.OrdinalIgnoreCase) || !string.Equals(objAdd.PostcodeType, "L", StringComparison.OrdinalIgnoreCase)))
+                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) || !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -165,7 +167,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (!string.Equals(objAdd.PostcodeType, "Y", StringComparison.OrdinalIgnoreCase) || objAdd.PostcodeType != " "))
+                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (!string.Equals(objAdd.PostcodeType, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) || objAdd.PostcodeType != " "))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -176,7 +178,7 @@ namespace Fmo.NYBLoader
                     if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
                     {
                         char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                        if (string.Equals(objAdd.PostcodeType, "L", StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, "1A", StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                         {
                             objAdd.IsValidData = false;
                         }

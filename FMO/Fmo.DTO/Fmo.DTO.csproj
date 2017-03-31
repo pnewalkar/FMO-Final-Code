@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddressLocationDTO.cs" />
+    <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="AdvanceSearchDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />

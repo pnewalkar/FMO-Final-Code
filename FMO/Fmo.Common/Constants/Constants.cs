@@ -16,5 +16,6 @@ namespace Fmo.Common.Constants
         public const string QUEUE_PAF = "QUEUE_PAF";
         public const string QUEUE_THIRD_PARTY = "QUEUE_THIRD_PARTY";
         public const string QUEUE_PATH = @".\Private$\";
+        public const string DeliveryPointSuffix = "1A";
     }
 }

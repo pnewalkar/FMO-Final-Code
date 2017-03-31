@@ -7,8 +7,9 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
-    using Dto = Fmo.DTO;
+    using Fmo.DTO;
     using Entity = Fmo.Entities;
+    using MappingConfiguration;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -17,14 +18,12 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<Dto.DeliveryPointDTO> SearchDeliveryPoints()
+        public List<DeliveryPointDTO> SearchDeliveryPoints()
         {
             try
             {
-                // var result = DataContext.DeliveryPoints.ToList();
-                ////IAutoMapper<Entity.DeliveryPoint, Dto.DeliveryPoint> deliveryMapper
-                // return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
-                return new List<Dto.DeliveryPointDTO>();
+                var result = DataContext.DeliveryPoints.ToList();
+                return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result.ToList());
             }
             catch (Exception)
             {
@@ -47,14 +46,17 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        public bool InsertDeliveryPoint(DeliveryPoint objDeliveryPoint)
+        public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
             bool saveFlag = false;
             try
             {
                 if (objDeliveryPoint != null)
                 {
-                    DataContext.DeliveryPoints.Add(objDeliveryPoint);
+                    var deliveryPoint = new DeliveryPoint();
+                    GenericMapper.Map(objDeliveryPoint, deliveryPoint);
+
+                    DataContext.DeliveryPoints.Add(deliveryPoint);
                     DataContext.SaveChanges();
                     saveFlag = true;
                 }

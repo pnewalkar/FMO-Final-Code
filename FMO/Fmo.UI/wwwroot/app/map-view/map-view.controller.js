@@ -208,11 +208,11 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "Drawing";
+        drawingLayerSelector.layerName = "AccessLinks";
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
-        drawingLayerSelector.selectorVisible = false;
+        drawingLayerSelector.selectorVisible = true;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
 
         var routesSelector = new MapFactory.LayerSelector();
@@ -260,10 +260,10 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
 
         var mockWFSLayerSelector = new MapFactory.LayerSelector();
-        mockWFSLayerSelector.layerName = "WFS mock";
+        mockWFSLayerSelector.layerName = "Delivery Points";
         mockWFSLayerSelector.layer = mockWFSLayer;
         mockWFSLayerSelector.group = "";
-        mockWFSLayerSelector.zIndex = 7;
+        mockWFSLayerSelector.zIndex = 8;
         mockWFSLayerSelector.selected = false;
         mockWFSLayerSelector.onMiniMap = false;
         mockWFSLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
@@ -373,7 +373,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
                 anchor: [0.5, 46],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'pixels',
-                src: '../app/location_black.png'
+                src: '../app/location_red.png'
 
             }))
         });

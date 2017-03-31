@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Fmo.BusinessServices.Interfaces;
+﻿using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.MappingConfiguration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Entity = Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
@@ -35,9 +35,7 @@ namespace Fmo.BusinessServices.Services
                 int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
                 int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
 
-                var lstPostalAddressEntities = GenericMapper.MapList<DTO.PostalAddressDTO, Entity.PostalAddress>(lstPostalAddress);
-
-                foreach (var addEntity in lstPostalAddressEntities)
+                foreach (var addEntity in lstPostalAddress)
                 {
                     addEntity.AddressStatus_Id = addressStatusId;
                     addEntity.AddressType_Id = addressTypeId;
@@ -59,41 +57,48 @@ namespace Fmo.BusinessServices.Services
         {
             try
             {
-                var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
+                // var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
                 int addressTypeUSR = refDataRepository.GetReferenceDataId("Postal Address Type", "USR");
                 int addressTypePAF = refDataRepository.GetReferenceDataId("Postal Address Type", "PAF");
                 int addressTypeNYB = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
 
                 // Match address on UDPRN
-                if (addressRepository.GetPostalAddress(postalAddressEntities.UDPRN) == 0)
+                if (addressRepository.GetPostalAddress(postalAddress.UDPRN) == 0)
                 {
                     // Match address on Address Details
-                    if (addressRepository.GetPostalAddress(postalAddressEntities) != 0)
+                    if (addressRepository.GetPostalAddress(postalAddress) != 0)
                     {
-                        postalAddressEntities.AddressType_Id = addressTypePAF;
-                        postalAddressEntities.AddressStatus_Id = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
-                        addressRepository.UpdateAddress(postalAddressEntities, addressTypeUSR);
+                        postalAddress.AddressType_Id = addressTypePAF;
+                        postalAddress.AddressStatus_Id = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
+                        addressRepository.UpdateAddress(postalAddress, addressTypeUSR);
+                    }
+                    if (true)
+                    {
                     }
                 }
                 else
                 {
-                    addressRepository.UpdateAddress(postalAddressEntities, addressTypeNYB);
+                    // Scenerio 1a
+                    addressRepository.UpdateAddress(postalAddress, addressTypeNYB);
 
                     // chk address record have resp. dp
-                    if (deliveryPointsRepository.GetDeliveryPointByUDPRN(postalAddressEntities.UDPRN ?? 0) == null)
+                    if (deliveryPointsRepository.GetDeliveryPointByUDPRN(postalAddress.UDPRN ?? 0) == null)
                     {
-                        if (addressLocationRepository.GetAddressLocationByUDPRN(postalAddressEntities.UDPRN ?? 0) != null)
+                        var addressLocation = addressLocationRepository.GetAddressLocationByUDPRN(postalAddress.UDPRN ?? 0);
+                        var deliveryPointDTO = new DeliveryPointDTO();
+                        deliveryPointDTO.UDPRN = addressLocation.UDPRN;
+                        if (addressLocation != null)
                         {
-                            // create DP
-                            // var deliveryPointEntities = GenericMapper.Map<DTO.DeliveryPointDTO, Entity.DeliveryPoint>();
-                            // deliveryPointsRepository.InsertDeliveryPoint(deliveryPointEntities);
-                            // update udprn of DP as UDPRN of adress locn
-
-                            // update locan of DP as locan of adress locn
-                            // update locan provider of DP as locan of adress locn
+                            deliveryPointDTO.Address_Id = postalAddress.Address_Id;
+                            deliveryPointDTO.LocationXY = addressLocation.LocationXY;
+                            deliveryPointDTO.Latitude = addressLocation.Latitude;
+                            deliveryPointDTO.Longitude = addressLocation.Longitude;
+                            deliveryPointDTO.LocationProvider = "E"; // Update in Enum
+                            deliveryPointsRepository.InsertDeliveryPoint(deliveryPointDTO);
                         }
                         else
                         {
+                            deliveryPointsRepository.InsertDeliveryPoint(deliveryPointDTO);
                             // create task
                         }
                     }

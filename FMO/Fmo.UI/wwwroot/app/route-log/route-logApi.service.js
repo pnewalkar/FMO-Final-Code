@@ -1,7 +1,8 @@
 ﻿
 // Just for reference
 angular.module('fmoCommonHome')
-    .factory('fmoService', ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
+    .factory('fmoService',
+    ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
     var fmoService = {};
   
     //var getUsers = function (objEmployee) {

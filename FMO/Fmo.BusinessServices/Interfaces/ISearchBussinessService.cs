@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Fmo.Entities;
+using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
     public interface ISearchBussinessService
     {
-        List<AdvanceSearch> FetchAdvanceSearchDetails();
+       AdvanceSearchDTO FetchAdvanceSearchDetails(string SearchText);
     }
 }
