@@ -367,29 +367,11 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
-
-        var iconStyle = new ol.style.Style({
-            text: new ol.style.Text({
-                text: '\uf041',
-                font: 'normal 18px FontAwesome',
-                textBaseline: 'Bottom',
-                fill: new ol.style.Fill({
-                    color: 'red',
-                })
-            })
-        });
-
-        var name = button.name;
-        if (name == "point")
-            style = iconStyle;
-
-
+      
         vm.interactions.draw = new ol.interaction.Draw({
             source: vm.drawingLayer.layer.getSource(),
             type: button.shape,
-            style: style
-           // condition: ol.events.condition.singleClick,
-            //freehandCondition: ol.events.condition.noModifierKeys
+            style: style 
         });
 
         switch (button.name) {
@@ -405,7 +387,10 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
             default:
                 break;
         }
-        vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+       
+        vm.interactions.draw.on('drawend', function (evt) {
+            evt.feature.set("type", "deliverypoint");
+        })
 
     }
 
