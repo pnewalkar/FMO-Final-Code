@@ -1,6 +1,7 @@
-angular.module('fmoRouteLog')
+angular.module('routeLog')
   .component('routeLog', {
     restrict: 'E',
     scope: {},
-    templateUrl: 'app/fmo/route-log/route-log.template.html'
+    templateUrl: 'app/route-log/route-log.template.html',
+    controller: 'RouteLogController as vm'
   });

@@ -2,9 +2,9 @@
 
 angular.module('mapView')
 	.run(['$route', function () { }])
-	.controller('MapController', ['$scope', 'mapFactory', '$timeout', 'mapService', 'mapStylesFactory', '$interval', '$http', MapController])
+	.controller('MapController', ['$scope', 'mapFactory', '$timeout', 'mapService', 'mapStylesFactory', '$interval', '$http','GlobalSettings', MapController])
 
-function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactory, $interval, $http) {
+function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactory, $interval, $http, GlobalSettings) {
     var vm = this;
     vm.showNotification = showNotification;
     var tasks;
@@ -142,7 +142,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
             source: new ol.source.XYZ({
-                url: 'http://api.tiles.mapbox.com/v4/digitalglobe.nal0g75k/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGlnaXRhbGdsb2JlIiwiYSI6ImNpcGg5dHkzYTAxM290bG1kemJraHU5bmoifQ.CHhq1DFgZPSQQC-DYWpzaQ',
+                url: GlobalSettings.vectorMapUrl,
                 attribution: "© DigitalGlobe, Inc"
             })
         });
@@ -208,11 +208,11 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "Drawing";
+        drawingLayerSelector.layerName = "AccessLinks";
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
-        drawingLayerSelector.selectorVisible = false;
+        drawingLayerSelector.selectorVisible = true;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
 
         var routesSelector = new MapFactory.LayerSelector();
@@ -260,10 +260,10 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
 
         var mockWFSLayerSelector = new MapFactory.LayerSelector();
-        mockWFSLayerSelector.layerName = "WFS mock";
+        mockWFSLayerSelector.layerName = "Delivery Points";
         mockWFSLayerSelector.layer = mockWFSLayer;
         mockWFSLayerSelector.group = "";
-        mockWFSLayerSelector.zIndex = 7;
+        mockWFSLayerSelector.zIndex = 8;
         mockWFSLayerSelector.selected = false;
         mockWFSLayerSelector.onMiniMap = false;
         mockWFSLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
@@ -367,28 +367,11 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
-
-        var iconStyle = new ol.style.Style({
-            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
-                anchor: [0.5, 46],
-                anchorXUnits: 'fraction',
-                anchorYUnits: 'pixels',
-                src: '../app/location_red.png'
-
-            }))
-        });
-
-        var name = button.name;
-        if (name == "point")
-            style = iconStyle;
-
-
+      
         vm.interactions.draw = new ol.interaction.Draw({
             source: vm.drawingLayer.layer.getSource(),
             type: button.shape,
-            style: style
-           // condition: ol.events.condition.singleClick,
-            //freehandCondition: ol.events.condition.noModifierKeys
+            style: style 
         });
 
         switch (button.name) {
@@ -404,7 +387,19 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
             default:
                 break;
         }
-        vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+               
+        var name = button.name;
+        if (name == "point") {
+            vm.interactions.draw.on('drawend', function (evt)
+            {
+                evt.feature.set("type", "deliverypoint");
+
+            })
+        }
+        else
+        {
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+        }
 
     }
 

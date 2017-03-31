@@ -1,0 +1,28 @@
+<div>
+    <md-radio-group class="no-margin" layout="row" layout-align="space-around center">
+        <md-radio-button class="center-text" value="live" selected>
+            Live
+        </md-radio-button>
+        <md-radio-button class="center-text" value="planned">
+            Planned
+        </md-radio-button>
+    </md-radio-group>
+</div>
+
+<div layout="column" flex>
+    <md-input-container class="short-input" flex="50">
+        <label>Route Type</label>
+        <md-select ng-model="vm.routeType" ng-change="vm.routeTypeChange()" placeholder="Select a route type">
+            <md-option value="empty"><em>No Route Type</em></md-option>
+            <md-option ng-repeat="routeType in vm.routeTypes" ng-value="routeType">{{routeType.name}}</md-option>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container class="short-input" flex="50">
+        <label>Scenario</label>
+        <md-select ng-disabled="!vm.routeType" ng-model="vm.scenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
+            <md-option value="empty"><em>No Scenario</em></md-option>
+            <md-option ng-repeat="scenario in vm.scenarios" ng-value="scenario">{{scenario.name}}</md-option>
+        </md-select>
+    </md-input-container>
+</div>
