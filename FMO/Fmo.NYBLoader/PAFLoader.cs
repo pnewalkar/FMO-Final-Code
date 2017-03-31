@@ -1,21 +1,30 @@
-﻿using System;
+﻿using Fmo.NYBLoader.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Fmo.DTO;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
+using Ninject;
 using System.Xml.Serialization;
-using Fmo.DTO;
 using Fmo.MessageBrokerCore.Messaging;
-using Fmo.NYBLoader.Interfaces;
+using System.Configuration;
+using Fmo.MessageBrokerCore;
+using Fmo.Common;
+using Fmo.Common.Constants;
 
 namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
+        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
+        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
         //private readonly IKernel kernal;
-        private readonly IMessageBroker msgBroker;
+        private readonly IMessageBroker<PostalAddressDTO> msgBroker;
 
-        public PAFLoader(IMessageBroker messageBroker)
+        public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker)
         {
             this.msgBroker = messageBroker;
         }
@@ -33,10 +42,8 @@ namespace Fmo.NYBLoader
                         string strfileName = string.Empty;
 
                         Stream stream = entry.Open();
-                        using (var reader = new StreamReader(stream))
-                        {
-                            strLine = reader.ReadToEnd();
-                        }
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
 
                         strfileName = entry.Name;
 
@@ -45,48 +52,79 @@ namespace Fmo.NYBLoader
 
                         if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                         {
-                            lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
+                            //lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
+                            lstAddressDetails = new List<PostalAddressDTO>
+                        {
+                            new PostalAddressDTO() {UDPRN =1, DepartmentName="A", AmendmentType="B"},
+                            new PostalAddressDTO() {UDPRN =1, DepartmentName="B", AmendmentType="C"},
+                            new PostalAddressDTO() {UDPRN =1, DepartmentName="C", AmendmentType="D"},
+                            new PostalAddressDTO() {UDPRN =1, DepartmentName="D", AmendmentType="I"},
+                            new PostalAddressDTO() {UDPRN =2, DepartmentName="E", AmendmentType="I"},
+                            new PostalAddressDTO() {UDPRN =3, DepartmentName="F", AmendmentType="I"},
+                            new PostalAddressDTO() {UDPRN =4, DepartmentName="G", AmendmentType="I"},
+                        };
+
 
                             if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                             {
+
                                 //Validate PAF Details
                                 ValidatePAFDetails(lstAddressDetails);
 
                                 //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
-
                                 lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+
+                                //Remove duplicate PAF events which have create and delete instance for same UDPRN
+                                lstAddressDetails = lstAddressDetails
+                                                        .SkipWhile(n => (n.UDPRN.Equals("B")))
+                                                        .GroupBy(x => x.UDPRN)
+                                                        .Where(g => g.Count() == 1)
+                                                        .SelectMany(g => g.Select(o => o))
+                                                        .ToList();
+
                                 var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
 
                                 if (invalidRecordCount > 0)
                                 {
-                                    File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
+                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                                 else
                                 {
                                     foreach (var addDetail in lstAddressDetails)
                                     {
                                         string strXml = SerializeObject<PostalAddressDTO>(addDetail);
-                                        IMessage msg = msgBroker.CreateMessage(strXml, MessageType.PostalAddress);
+                                        IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
                                         msgBroker.SendMessage(msg);
                                     }
-                                    File.WriteAllText(Path.Combine("Processed file", strfileName), strLine);
+                                    File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                             }
                         }
                         else
                         {
                             File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
-
                             //TO DO
                             //Log error
                         }
                     }
                 }
+
+
             }
             catch (Exception)
             {
+
                 throw;
             }
+        }
+
+        private static string AppendTimeStamp(string strfileName)
+        {
+            return string.Concat(
+                Path.GetFileNameWithoutExtension(strfileName),
+               string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
+                Path.GetExtension(strfileName)
+                );
         }
 
         private static string SerializeObject<T>(T toSerialize)
@@ -99,6 +137,21 @@ namespace Fmo.NYBLoader
                 return textWriter.ToString();
             }
         }
+
+        //private static T DeserializeXMLFileToObject<T>(string xmlFilename)
+        //{
+        //    T returnObject = default(T);
+        //    if (string.IsNullOrEmpty(xmlFilename))
+        //    {
+        //        return default(T);
+        //    }
+
+        //    StreamReader xmlStream = new StreamReader(xmlFilename);
+        //    XmlSerializer serializer = new XmlSerializer(typeof(T));
+        //    returnObject = (T)serializer.Deserialize(xmlStream);
+
+        //    return returnObject;
+        //}
 
         private static bool ValidateFile(string[] arrLines)
         {
@@ -121,6 +174,7 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
+
                 throw;
             }
 
@@ -157,17 +211,22 @@ namespace Fmo.NYBLoader
                     objAddDTO.DeliveryPointSuffix = values[19];
                     objAddDTO.IsValidData = true;
                 }
+
             }
             catch (Exception)
             {
+
                 throw;
             }
+
+
 
             return objAddDTO;
         }
 
         private static void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
+
             try
             {
                 foreach (PostalAddressDTO objAdd in lstAddress)
@@ -219,6 +278,7 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
+
                 throw;
             }
         }
@@ -243,6 +303,7 @@ namespace Fmo.NYBLoader
                         {
                             isValid = false;
                         }
+
                     }
                     else
                     {
@@ -252,6 +313,7 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
+
                 throw;
             }
             return isValid;

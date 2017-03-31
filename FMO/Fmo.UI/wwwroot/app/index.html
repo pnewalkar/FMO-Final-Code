@@ -6,23 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-	<title>FMO</title>
+    <title>FMO</title>
     <!--favicon-->
-    <link rel="icon" href="//www.royalmailgroup.com/sites/default/files/rmgicon_0.ico"  />
+    <link rel="icon" href="//www.royalmailgroup.com/sites/default/files/rmgicon_0.ico" />
     <!--styles-->
     <link rel="stylesheet" href="../bower_components/reset-css/reset.css">
-    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css" >
+    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="../bower_components/angular-material-data-table/dist/md-data-table.min.css">
-    <link rel="stylesheet" href="../bower_components/ol3-popup/src/ol3-popup.css">
-    <link rel="stylesheet" href="../bower_components/OpenLayers/css/ol.css">
     <!--icons-->
     <link rel="stylesheet" href="../bower_components/components-font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../bower_components/material-design-icons-iconfont/dist/material-design-icons.css">
     <!--custom styles-->
     <link rel="stylesheet" href="../build/sass/variables.css" />
     <!--angular material scripts-->
     <script src="../bower_components/angular/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="../bower_components/angular-aria/angular-aria.min.js"></script>
     <script src="../bower_components/angular-messages/angular-messages.min.js"></script>
@@ -35,28 +32,23 @@
     <!--<script src="../bower_components/openlayers/"></script>-->
     <!--<script src="../bower_components/ol3-popup/src/ol3-popup.js"></script>-->
     <!--turfjs script-->
-    <script src="../bower_components/turfjs/turf.min.js"></script>
     <!--custom scripts-->
     <script src="./app.module.js"></script>
     <script src="./app.config.js"></script>
-  
+    <script src="./app.constant.js"></script>
     <!--home-->
     <script src="./home/home.module.js"></script>
     <script src="./home/home.controller.js"></script>
     <script src="./home/home.component.js"></script>
-    <script src="./home/home.route.js"></script>
     <!--side nav-->
     <script src="./side-nav/side-nav.module.js"></script>
     <script src="./side-nav/side-nav.controller.js"></script>
     <script src="./side-nav/side-nav.component.js"></script>
+    <script src="side-nav/side-nav.route.js"></script>
     <!--unit selector-->
     <script src="./unit-selector/unit-selector.module.js"></script>
     <script src="./unit-selector/unit-selector.controller.js"></script>
     <script src="./unit-selector/unit-selector.component.js"></script>
-    <!--role selector-->
-    <script src="./role-selector/role-selector.module.js"></script>
-    <script src="./role-selector/role-selector.controller.js"></script>
-    <script src="./role-selector/role-selector.component.js"></script>
     <!--search-->
     <script src="./search/search.module.js"></script>
     <script src="./search/search.controller.js"></script>
@@ -82,6 +74,12 @@
     <script src="./map-view/map-view.service.js"></script>
     <script src="./map-view/map-styles.factory.js"></script>
 
+    <!--map toolbar-->
+    <link href="map-toolbar/map-toolbar.css" rel="stylesheet" />
+    <script src="./map-toolbar/map-toolbar.module.js"></script>
+    <script src="./map-toolbar/map-toolbar.controller.js"></script>
+    <script src="./map-toolbar/map-toolbar.component.js"></script>
+
     <!--map panel-->
     <script src="./map-panel/map-panel.module.js"></script>
     <script src="./map-panel/map-panel.controller.js"></script>
@@ -94,10 +92,26 @@
     <script src="./layers/layers.module.js"></script>
     <script src="./layers/layers.controller.js"></script>
     <script src="./layers/layers.component.js"></script>
+    <script src="./layers/layersApiService.js"></script>
+
     <!--mini-map-->
     <script src="./mini-map/mini-map.module.js"></script>
     <script src="./mini-map/mini-map.controller.js"></script>
     <script src="./mini-map/mini-map.component.js"></script>
+
+    <!--route log-->
+    <script src="./route-log/route-log.module.js"></script>
+    <script src="./route-log/route-logApi.service.js"></script>
+    <script src="./route-log/route-log.businessService.js"></script>
+    <script src="./route-log/route-log.controller.js"></script>
+    <script src="./route-log/route-log.component.js"></script>
+
+    <!--route simulation-->
+    <script src="./simulation/simulation.module.js"></script>
+    <script src="simulation/simulationApi.service.js"></script>
+    <script src="./simulation/simulation.businessService.js"></script>
+    <script src="./simulation/simulation.controller.js"></script>
+    <script src="./simulation/simulation.component.js"></script>
 
 </head>
 <body>

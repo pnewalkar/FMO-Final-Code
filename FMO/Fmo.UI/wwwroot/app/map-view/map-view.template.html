@@ -1,18 +1,30 @@
-<div id="map" class="map-view"></div>
-
-<div class="context">
-    <map-panel></map-panel>
+<div id="map"></div>
+<div id="leftPanel">
+    <map-panel
+               paneltitle="Context">
+        <div ui-view></div>
+    </map-panel>
 </div>
-
-<div class="miniMap">
-    <mini-map></mini-map>
-</div>
-
-<div class="mapKeys">
-    <layers></layers>
-</div>
-
-<div class="layers" >
-    <map-keys></map-keys>
+<div><map-toolbar></map-toolbar></div>
+<div id="rightPanel">
+    <div class="miniMap">
+        <map-panel paneltitle="Mini Map" oncreate="vm.initialiseMiniMap">
+            <div id="mini-map" ></div>
+        </map-panel>
+    </div>
+        
+    <div class="layers">
+        <map-panel
+                   paneltitle="Layers">
+            <layers></layers>
+        </map-panel>
+    </div>
+        
+    <div>
+        <map-panel
+                   paneltitle="Map Keys">
+            <map-keys></map-keys>
+        </map-panel>
+    </div>
 </div>
 

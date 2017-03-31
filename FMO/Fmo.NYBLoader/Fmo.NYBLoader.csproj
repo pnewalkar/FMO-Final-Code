@@ -59,11 +59,17 @@
   <ItemGroup>
     <Compile Include="Interfaces\IPAFLoader.cs" />
     <Compile Include="Interfaces\INYBLoader.cs" />
+    <Compile Include="Interfaces\ITPFLoader.cs" />
     <Compile Include="PAFLoader.cs" />
     <Compile Include="NYBLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TPFLoader.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
+      <Project>{1d645c11-6570-4327-9e60-b6e7d676ba0d}</Project>
+      <Name>Fmo.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj">
       <Project>{43fc012e-5274-4cf4-8689-97b3ce067c11}</Project>
       <Name>Fmo.DTO</Name>
@@ -75,6 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Schemas\USRFileSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

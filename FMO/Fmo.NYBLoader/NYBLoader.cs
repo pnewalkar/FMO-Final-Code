@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
+using Fmo.Common.Enums;
+using Fmo.Common.Constants;
 
 namespace Fmo.NYBLoader
 {
@@ -31,12 +33,8 @@ namespace Fmo.NYBLoader
                         string strfileName = string.Empty;
 
                         Stream stream = entry.Open();
-                        
-                            using (var reader = new StreamReader(stream))
-                            {
-                                strLine = reader.ReadToEnd();
-                            }
-                        
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
 
                         string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
@@ -161,7 +159,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (objAdd.PostcodeType != "S" || objAdd.PostcodeType != "L"))
+                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) || !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -169,7 +167,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (objAdd.PostcodeType != "Y" || objAdd.PostcodeType != " "))
+                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (!string.Equals(objAdd.PostcodeType, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) || objAdd.PostcodeType != " "))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -180,7 +178,7 @@ namespace Fmo.NYBLoader
                     if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
                     {
                         char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                        if (objAdd.PostcodeType == "L" && objAdd.DeliveryPointSuffix != "1A")
+                        if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                         {
                             objAdd.IsValidData = false;
                         }
@@ -247,7 +245,7 @@ namespace Fmo.NYBLoader
                 );
         }
 
-        private async Task SaveNYBDetails(List<PostalAddressDTO> lstAddress)
+        private static async Task SaveNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             try
             {

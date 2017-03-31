@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,7 +11,7 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class AddressController : Controller
     {
-        IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
+        private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
 
         public AddressController(IPostalAddressBusinessService _businessService)
         {
@@ -28,10 +26,8 @@ namespace Fmo.API.Services.Controllers
             {
                 businessService.SavePostalAddress(lstAddressDetails);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                throw ex;
             }
             return saveFlag;
         }
@@ -39,7 +35,6 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("getSample")]
         public string GetSample()
         {
-
             return "virendra";
         }
     }

@@ -1,14 +1,15 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using DTO;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.Entities;
-    using Fmo.MappingConfiguration;
+﻿using System.Collections.Generic;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.Entities;
+using Fmo.DTO;
+using Fmo.MappingConfiguration;
+using System;
+using System.Linq;
 
+namespace Fmo.DataServices.Repositories
+{
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
         public DeliveryRouteRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -16,22 +17,23 @@
         {
         }
 
-        public List<DTO.DeliveryRouteDTO> ListOfRoute()
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
         {
-            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.ToList().Where(x => x.DeliveryScenario_Id == 1 && x.OperationalStatus_Id == 1);
+            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.ToList().Where(x => x.DeliveryScenario_Id == deliveryScenarioID && x.OperationalStatus_Id == operationStateID);
             return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
         }
 
-        public List<DTO.ReferenceDataDTO> ListOfRouteLogStatus()
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
         {
-            var result = DataContext.ReferenceData.ToList();
-            return GenericMapper.MapList<ReferenceData, DTO.ReferenceDataDTO>(result);
-        }
-
-        public List<DTO.ScenarioDTO> ListOfScenario()
-        {
-            IEnumerable<Scenario> result = DataContext.Scenarios.ToList().Where(x => x.OperationalState_Id == 1 && x.DeliveryUnit_Id == 1);
-            return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
+            try
+            {
+                var result = DataContext.DeliveryRoutes.ToList();
+                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

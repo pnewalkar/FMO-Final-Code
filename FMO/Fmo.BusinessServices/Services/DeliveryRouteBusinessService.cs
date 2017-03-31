@@ -1,31 +1,41 @@
 ﻿using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
     public class DeliveryRouteBusinessService : IDeliveryRouteBusinessService
     {
         private IDeliveryRouteRepository routeSimulationRespository;
+        private IReferenceDataCategoryRepository referenceDataCategoryRepository;
+        private IScenarioRepository scenarioRepository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRepository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository)
         {
-            this.routeSimulationRespository = routeSimulationRepository;
+            this.routeSimulationRespository = routeSimulationRespository;
+            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
+            this.scenarioRepository = scenarioRepository;
         }
 
-        public List<DTO.DeliveryRouteDTO> ListOfRoute()
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
         {
-            return routeSimulationRespository.ListOfRoute();
+            return routeSimulationRespository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
-        public List<DTO.ReferenceDataDTO> ListOfRouteLogStatus()
+        public List<ReferenceDataDTO> FetchRouteLogStatus()
         {
-            return routeSimulationRespository.ListOfRouteLogStatus();
+            return referenceDataCategoryRepository.RouteLogStatus();
         }
 
-        public List<DTO.ScenarioDTO> ListOfScenario()
+        public List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID)
         {
-            return routeSimulationRespository.ListOfScenario();
+            return scenarioRepository.FetchScenario(operationStateID, deliveryUnitID);
+        }
+
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
+        {
+            return routeSimulationRespository.FetchDeliveryRoute(searchText);
         }
     }
 }

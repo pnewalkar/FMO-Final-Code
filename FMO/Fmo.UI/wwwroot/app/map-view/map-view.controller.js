@@ -2,62 +2,20 @@
 
 angular.module('mapView')
 	.run(['$route', function () { }])
-	.controller('MapController', ['$scope', 'mapFactory', '$timeout', 'mapService', 'mapStylesFactory', '$interval', '$http', MapController])
+	.controller('MapController', ['$scope', 'mapFactory', '$timeout', 'mapService', 'mapStylesFactory', '$interval', '$http','GlobalSettings', MapController])
 
-function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactory, $interval, $http) {
+function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactory, $interval, $http, GlobalSettings) {
     var vm = this;
     vm.showNotification = showNotification;
     var tasks;
     vm.counter = 0;
 
-    var getDeliveryPoints = function () {
-        notificationFactory.getDeliveryPoints()
-            .then(function (response) {
-                vm.tasks = response.data;
-                if (vm.tasks.length > 0) {
-                    vm.counter = vm.tasks.length;
-                    vm.color = "green";
-                }
-                else {
-                    vm.color = "white";
-                }
-
-            }, function (error) {
-                //$scope.status = 'Unable to load customer data: ' + error.message;
-            });
-    }
-
-
-    $interval(getDeliveryPoints, 30000);
-
-    //$scope.$on('changeColor', function (event, data) {
-    //    debugger;
-    //    var vm = this;
-    //    vm.counter = 0;
-    //    vm.color = "white";
-    //});
+  
     $scope.$on('eventX', function (ev, args) {
         debugger;
         console.log('eventX found on Controller1 $scope');
     });
 
-    //var increaseCounter = function () {
-    //    //get the list of tasks from the json file    
-
-    //    $http.get('data/json/tasks.json').then(function (response) {
-    //        vm.tasks = response.data.tasksList;
-    //        if (vm.tasks.length > 0) {
-    //            vm.counter = vm.counter + 1;
-    //            vm.color = "green";
-
-    //            //$scope.$broadcast('panelcolorchange', { data: "red" });
-    //        }
-    //        // sortBy(vm.propertyName);
-    //    });
-
-    //}
-
-    //$interval(increaseCounter, 30000);
     $scope.$on('refreshLayers', refreshLayers);
 
     vm.streetName = "No Street Infomation";
@@ -122,7 +80,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
     mapService.addSelectionListener(selectFeatures);
     mapService.mapLayers = mapFactory.getAllLayers();
-    mapService.mapButtons = ["area", "line", "measure", "select", "delete", "modify"];
+    mapService.mapButtons = ["line", "point", "select"];
     mapService.centerMapOn = centerMapOn;
     mapService.centerMapOnFeature = centerMapOnFeature;
     mapService.clearDrawingLayer = clearDrawingLayer;
@@ -184,7 +142,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
             source: new ol.source.XYZ({
-                url: 'http://api.tiles.mapbox.com/v4/digitalglobe.nal0g75k/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGlnaXRhbGdsb2JlIiwiYSI6ImNpcGg5dHkzYTAxM290bG1kemJraHU5bmoifQ.CHhq1DFgZPSQQC-DYWpzaQ',
+                url: GlobalSettings.vectorMapUrl,
                 attribution: "© DigitalGlobe, Inc"
             })
         });
@@ -241,7 +199,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         //var satelliteLayer = mapFactory.addLayer(satelliteSelector);
 
         var roadsSelector = new MapFactory.LayerSelector();
-        roadsSelector.layerName = "Roads";
+        roadsSelector.layerName = "Base Layer";
         //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
@@ -250,11 +208,11 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "Drawing";
+        drawingLayerSelector.layerName = "AccessLinks";
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
-        drawingLayerSelector.selectorVisible = false;
+        drawingLayerSelector.selectorVisible = true;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
 
         var routesSelector = new MapFactory.LayerSelector();
@@ -302,10 +260,10 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
 
         var mockWFSLayerSelector = new MapFactory.LayerSelector();
-        mockWFSLayerSelector.layerName = "WFS mock";
+        mockWFSLayerSelector.layerName = "Delivery Points";
         mockWFSLayerSelector.layer = mockWFSLayer;
         mockWFSLayerSelector.group = "";
-        mockWFSLayerSelector.zIndex = 7;
+        mockWFSLayerSelector.zIndex = 8;
         mockWFSLayerSelector.selected = false;
         mockWFSLayerSelector.onMiniMap = false;
         mockWFSLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
@@ -409,11 +367,31 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
+
+        var iconStyle = new ol.style.Style({
+            text: new ol.style.Text({
+                text: '\uf041',
+                font: 'normal 18px FontAwesome',
+                textBaseline: 'Bottom',
+                fill: new ol.style.Fill({
+                    color: 'red',
+                })
+            })
+        });
+
+        var name = button.name;
+        if (name == "point")
+            style = iconStyle;
+
+
         vm.interactions.draw = new ol.interaction.Draw({
             source: vm.drawingLayer.layer.getSource(),
             type: button.shape,
             style: style
+           // condition: ol.events.condition.singleClick,
+            //freehandCondition: ol.events.condition.noModifierKeys
         });
+
         switch (button.name) {
             case "measure":
                 setupMeasure();

@@ -96,6 +96,10 @@
     <Compile Include="Interface\ILoggingHelper.cs" />
     <Compile Include="LoggingManagement\LoggingHelper.cs" />
     <Compile Include="LoggingManagement\LoggingConfig.cs" />
+    <Compile Include="Constants\Constants.cs" />
+    <Compile Include="Enums\PostcodeType.cs" />
+    <Compile Include="Enums\FileType.cs" />
+    <Compile Include="Enums\DeliveryPointSuffix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSupport\RepositoryFixtureBase.cs" />
     <Compile Include="TestSupport\TestFixtureBase.cs" />

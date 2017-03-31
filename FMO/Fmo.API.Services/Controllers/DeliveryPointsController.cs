@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.DTO;
 using Fmo.Common.Interface;
 using Fmo.Common.Enums;
 using Fmo.Common.ExceptionManagement;
@@ -12,11 +13,11 @@ using Fmo.Common.ExceptionManagement;
 
 namespace Fmo.API.Services.Controllers
 {
-    [Route("api/[controller]")]
+    
+    [Route("api/deliveryPoints")]
     public class DeliveryPointsController : Controller
     {
         IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
-        IExceptionHelper exceptionHelper = default(IExceptionHelper);
         ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public DeliveryPointsController(IDeliveryPointBusinessService businessService, ILoggingHelper loggingHelper)
@@ -28,6 +29,13 @@ namespace Fmo.API.Services.Controllers
         public JsonResult Get()
         {
            return Json("");   
+        }
+
+        [Route("fetchDeliveryPoint")]
+        [HttpGet]
+        public List<DeliveryPointDTO> FetchDeliveryPoints()
+        {
+            return businessService.SearchDelievryPoints();
         }
 
         //// GET: api/values
