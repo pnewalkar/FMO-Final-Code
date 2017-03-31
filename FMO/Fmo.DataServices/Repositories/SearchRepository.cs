@@ -46,9 +46,9 @@ namespace Fmo.DataServices.Repositories
 
                 return objAdvDTO;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

@@ -36,7 +36,7 @@ function LayerSelectorController($scope, $rootScope, $http, mapService, mapStyle
     }
 
     function refreshLayer() {
-       // mapService.refreshLayers();
+        mapService.refreshLayers();
     }
     function onChange(changedLayer) {
         debugger;

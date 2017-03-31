@@ -6,5 +6,7 @@ namespace Fmo.BusinessServices.Interfaces
     public interface IPostalAddressBusinessService
     {
         bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress);
+
+        void SavePAFDetails(PostalAddressDTO postalAddress);
     }
 }

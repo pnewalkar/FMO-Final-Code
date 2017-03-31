@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +8,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryRouteRepository
     {
-        List<ReferenceDataDTO> ListOfRouteLogStatus();
-
-        List<DeliveryRouteDTO> ListOfRoute();
-
-        List<ScenarioDTO> ListOfScenario();
+        List<DTO.DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID);
 
         List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText);
     }

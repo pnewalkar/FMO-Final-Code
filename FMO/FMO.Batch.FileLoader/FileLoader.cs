@@ -1,5 +1,6 @@
 ﻿namespace FMO.Batch.FileLoader
 {
+    using Fmo.DTO;
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;
@@ -16,9 +17,9 @@
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
-        private static INYBLoader nybLoader = default(INYBLoader);
-        private static IPAFLoader pafLoader = default(IPAFLoader);
-        private static IMessageBroker msgBroker = default(IMessageBroker);
+        private INYBLoader nybLoader = default(INYBLoader);
+        private IPAFLoader pafLoader = default(IPAFLoader);
+        private ITPFLoader tpfLoader = default(ITPFLoader);
 
         public FileLoader()
         {
@@ -27,15 +28,17 @@
             InitializeComponent();
         }
 
-        protected static void Register(IKernel kernel)
+        protected void Register(IKernel kernel)
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
-            kernel.Bind<IMessageBroker>().To<MessageBroker>().InSingletonScope();
+            kernel.Bind<ITPFLoader>().To<TPFLoader>().InSingletonScope();
+            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
+            kernel.Bind<IMessageBroker<USR>>().To<MessageBroker<USR>>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
-            msgBroker = kernel.Get<IMessageBroker>();
+            tpfLoader = kernel.Get<ITPFLoader>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -157,11 +160,15 @@
                 switch (action_Args)
                 {
                     case "PAF":
-                        pafLoader.LoadPAFDetailsFromCSV(fileName);
+                        this.pafLoader.LoadPAFDetailsFromCSV(fileName);
                         break;
 
                     case "NYB":
-                        nybLoader.LoadNYBDetailsFromCSV(fileName);
+                        this.nybLoader.LoadNYBDetailsFromCSV(fileName);
+                        break;
+
+                    case "TPF":
+                        this.tpfLoader.LoadTPFDetailsFromXML(fileName);
                         break;
                 }
             }

@@ -1,33 +1,35 @@
-﻿using Fmo.BusinessServices.Interfaces;
-using System.Collections.Generic;
-using Fmo.DTO;
+﻿using System.Collections.Generic;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using System;
 
 namespace Fmo.BusinessServices.Services
 {
     public class DeliveryRouteBusinessService : IDeliveryRouteBusinessService
     {
         private IDeliveryRouteRepository routeSimulationRespository;
+        private IReferenceDataCategoryRepository referenceDataCategoryRepository;
+        private IScenarioRepository scenarioRepository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository)
         {
             this.routeSimulationRespository = routeSimulationRespository;
+            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
+            this.scenarioRepository = scenarioRepository;
         }
 
-        public List<DTO.DeliveryRouteDTO> ListOfRoute()
+        public List<DTO.DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID)
         {
-            return routeSimulationRespository.ListOfRoute();
+            return routeSimulationRespository.ListOfRoute(operationStateID, deliveryScenarioID);
         }
 
         public List<DTO.ReferenceDataDTO> ListOfRouteLogStatus()
         {
-            return routeSimulationRespository.ListOfRouteLogStatus();
+            return referenceDataCategoryRepository.ListOfRouteLogStatus();
         }
 
-        public List<DTO.ScenarioDTO> ListOfScenario()
+        public List<DTO.ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID)
         {
-            return routeSimulationRespository.ListOfScenario();
+            return scenarioRepository.ListOfScenario(operationStateID, deliveryUnitID);
         }
 
         public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)

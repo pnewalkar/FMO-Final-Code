@@ -1,21 +1,11 @@
-﻿using Fmo.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fmo.DTO;
+﻿using System.Collections.Generic;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-   public interface IDeliveryRouteBusinessService
+    public interface IDeliveryRouteBusinessService
     {
-        List<ReferenceDataDTO> ListOfRouteLogStatus();
-
-        List<DeliveryRouteDTO> ListOfRoute();
-
-        List<ScenarioDTO> ListOfScenario();
-
-        List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText);
+        List<DTO.ReferenceDataDTO> ListOfRouteLogStatus();
+        List<DTO.DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID);
+        List<DTO.ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID);
     }
 }

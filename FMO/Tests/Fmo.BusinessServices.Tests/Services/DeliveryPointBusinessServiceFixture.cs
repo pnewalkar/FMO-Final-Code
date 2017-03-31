@@ -17,7 +17,7 @@ namespace Fmo.BusinessServices.Tests.Services
         public void Test_SearchDeliveryPoints()
         {
             testCandidate.SearchDelievryPoints();
-            mockDeliveryPointsRepository.Verify(x => x.SearchDelievryPoints(), Times.Once());
+            mockDeliveryPointsRepository.Verify(x => x.SearchDeliveryPoints(), Times.Once());
         }
 
         protected override void OnSetup()

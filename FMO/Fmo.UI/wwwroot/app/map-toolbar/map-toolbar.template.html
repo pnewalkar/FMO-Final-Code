@@ -1,0 +1,21 @@
+<div layout-align="center start" class="map-toolbar" layout="row">
+    <md-button ng-class="vm.selectedButton=='select' ? 'button md-raised selected' : 'button md-raised'"
+               ng-click="vm.setSelectedButton('select')"
+               ng-show="vm.showButton('select') || vm.deselectButton('select')">
+        <i class="fa fa-hand-pointer-o pad-icon" ></i>
+        <span flex></span>Select
+    </md-button>
+    <md-button ng-class="vm.selectedButton=='point' ? 'button md-raised selected' : 'button md-raised'"
+               ng-click="vm.setSelectedButton('point')"
+               ng-show="vm.showButton('point') || vm.deselectButton('point')">
+        <i class="fa fa-map-marker pad-icon" style="color:black"></i>
+        <span flex></span>Point
+    </md-button>	  	
+    <md-button ng-class="vm.selectedButton=='line' ? 'button md-raised selected' : 'button md-raised'"
+               ng-click="vm.setSelectedButton('line')"
+               ng-show="vm.showButton('line') || vm.deselectButton('line')">
+        <md-icon md-font-icon="timeline" class="material-icons pad-icon" style="color:black"></md-icon>
+        <span flex></span>Line
+    </md-button>   
+    <div ng-show="vm.autoSelect()" />
+</div>

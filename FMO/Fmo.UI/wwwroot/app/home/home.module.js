@@ -1,7 +1,6 @@
 angular.module('home', [      'sideNav',
-                              'unitSelector',
-                              'roleSelector',
                               'search',
+                              'unitSelector',
                               'task',
                               'mapView'
                              ]);

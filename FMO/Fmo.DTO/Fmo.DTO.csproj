@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="AdvanceSearchDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="RoadNameDTO.cs" />
     <Compile Include="ScenarioDTO.cs" />
     <Compile Include="StreetNameDTO.cs" />
+    <Compile Include="USR.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

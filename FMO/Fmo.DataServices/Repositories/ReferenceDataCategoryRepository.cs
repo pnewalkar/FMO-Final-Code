@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.MappingConfiguration;
-using Dto = Fmo.DTO;
 using Entity = Fmo.Entities;
+using System.Collections.Generic;
+using Fmo.MappingConfiguration;
+using Fmo.DTO;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -31,15 +31,21 @@ namespace Fmo.DataServices.Repositories
                         statusId = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault().ReferenceData_Id;
                     }
                 }
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TO DO implement logging
-                throw ex;
+                throw;
             }
+
             return statusId;
         }
 
+        public List<ReferenceDataDTO> ListOfRouteLogStatus()
+        {
+            var query = DataContext.ReferenceDatas.Join(DataContext.ReferenceDataCategories, r => r.ReferenceDataCategory_Id, p => p.ReferenceDataCategory_Id, (r, p) => new { r.ReferenceDataName, r.ReferenceDataValue })
+                .Select(a => new Entity.ReferenceData { ReferenceDataName = a.ReferenceDataName });
+            return GenericMapper.MapList<Entity.ReferenceData, DTO.ReferenceDataDTO>(query.ToList());
+        }
     }
 }
