@@ -2,9 +2,9 @@
 
 angular.module('mapView')
 	.run(['$route', function () { }])
-	.controller('MapController', ['$scope', 'mapFactory', '$timeout', 'mapService', 'mapStylesFactory', '$interval', '$http', MapController])
+	.controller('MapController', ['$scope', 'mapFactory', '$timeout', 'mapService', 'mapStylesFactory', '$interval', '$http','GlobalSettings', MapController])
 
-function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactory, $interval, $http) {
+function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactory, $interval, $http, GlobalSettings) {
     var vm = this;
     vm.showNotification = showNotification;
     var tasks;
@@ -142,7 +142,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
             source: new ol.source.XYZ({
-                url: 'http://api.tiles.mapbox.com/v4/digitalglobe.nal0g75k/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGlnaXRhbGdsb2JlIiwiYSI6ImNpcGg5dHkzYTAxM290bG1kemJraHU5bmoifQ.CHhq1DFgZPSQQC-DYWpzaQ',
+                url: GlobalSettings.vectorMapUrl,
                 attribution: "© DigitalGlobe, Inc"
             })
         });
@@ -369,13 +369,14 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
 
         var iconStyle = new ol.style.Style({
-            image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
-                anchor: [0.5, 46],
-                anchorXUnits: 'fraction',
-                anchorYUnits: 'pixels',
-                src: '../app/location_red.png'
-
-            }))
+            text: new ol.style.Text({
+                text: '\uf041',
+                font: 'normal 18px FontAwesome',
+                textBaseline: 'Bottom',
+                fill: new ol.style.Fill({
+                    color: 'red',
+                })
+            })
         });
 
         var name = button.name;
