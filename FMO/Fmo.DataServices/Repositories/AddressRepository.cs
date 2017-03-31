@@ -51,7 +51,7 @@
             return deleteFlag;
         }
 
-        public bool SaveAddress(PostalAddress objPostalAddress)
+        public bool SaveAddress(PostalAddressDTO objPostalAddress)
         {
             bool saveFlag = false;
             try
@@ -61,27 +61,11 @@
                     var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
                     if (objAddress != null)
                     {
-                        objAddress.Postcode = objPostalAddress.Postcode;
-                        objAddress.PostTown = objPostalAddress.PostTown;
-                        objAddress.DependentLocality = objPostalAddress.DependentLocality;
-                        objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
-                        objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
-                        objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
-                        objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
-                        objAddress.BuildingName = objPostalAddress.BuildingName;
-                        objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
-                        objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
-                        objAddress.DepartmentName = objPostalAddress.DepartmentName;
-                        objAddress.OrganisationName = objPostalAddress.OrganisationName;
-                        objAddress.UDPRN = objPostalAddress.UDPRN;
-                        objAddress.PostcodeType = objPostalAddress.PostcodeType;
-                        objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
-                        objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                        DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
+                        GenericMapper.Map(objPostalAddress, objAddress);
                     }
                     else
                     {
-                        DataContext.PostalAddresses.Add(objPostalAddress);
+                        DataContext.PostalAddresses.Add(objAddress);
                     }
 
                     DataContext.SaveChanges();

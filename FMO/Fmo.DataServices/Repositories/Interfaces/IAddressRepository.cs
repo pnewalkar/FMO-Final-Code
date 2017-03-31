@@ -6,7 +6,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IAddressRepository
     {
-        bool SaveAddress(PostalAddress objPostalAddress);
+        bool SaveAddress(PostalAddressDTO objPostalAddress);
 
         int GetPostalAddress(int? uDPRN);
 
