@@ -387,10 +387,19 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
             default:
                 break;
         }
-       
-        vm.interactions.draw.on('drawend', function (evt) {
-            evt.feature.set("type", "deliverypoint");
-        })
+               
+        var name = button.name;
+        if (name == "point") {
+            vm.interactions.draw.on('drawend', function (evt)
+            {
+                evt.feature.set("type", "deliverypoint");
+
+            })
+        }
+        else
+        {
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+        }
 
     }
 
