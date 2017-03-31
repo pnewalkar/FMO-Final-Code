@@ -8,6 +8,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
    public interface IScenarioRepository
     {
-        List<DTO.ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID);
+        List<DTO.ScenarioDTO> Scenario(int operationStateID, int deliveryUnitID);
     }
 }

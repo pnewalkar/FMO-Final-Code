@@ -15,7 +15,7 @@
         {
         }
 
-        public List<DTO.ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID)
+        public List<DTO.ScenarioDTO> Scenario(int operationStateID, int deliveryUnitID)
         {
             IEnumerable<Scenario> result = DataContext.Scenarios.ToList().Where(x => x.OperationalState_Id == operationStateID && x.DeliveryUnit_Id == deliveryUnitID);
             return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());

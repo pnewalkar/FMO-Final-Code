@@ -4,6 +4,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryRouteRepository
     {
-        List<DTO.DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID);
+        List<DTO.DeliveryRouteDTO> SearchDeliveryRoute(int operationStateID, int deliveryScenarioID);
     }
 }

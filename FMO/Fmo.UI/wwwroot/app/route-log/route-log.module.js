@@ -1,1 +1,1 @@
-angular.module('fmoRouteLog',[]);
+angular.module('routeLog',[]);
