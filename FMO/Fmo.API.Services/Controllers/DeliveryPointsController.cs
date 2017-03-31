@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Interface;
+using Fmo.Common.Enums;
+using Fmo.Common.ExceptionManagement;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,17 +16,43 @@ namespace Fmo.API.Services.Controllers
     public class DeliveryPointsController : Controller
     {
         IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
+        IExceptionHelper exceptionHelper = default(IExceptionHelper);
+        ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public DeliveryPointsController(IDeliveryPointBusinessService _businessService)
+        public DeliveryPointsController(IDeliveryPointBusinessService businessService, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper)
         {
-            businessService = _businessService;
+            this.businessService = businessService;
+            this.exceptionHelper = exceptionHelper;
+            this.loggingHelper = loggingHelper;
         }
-
 
         public JsonResult Get()
         {
-            //return Json(businessService.SearchDelievryPoints());
-            return Json("");
+            //try
+            //{
+                throw new BusinessLogicException("Price invalid");
+                string a = "a";
+                int i = Convert.ToInt16(a) / 2;
+                //return Json(businessService.SearchDelievryPoints());
+                return Json("");
+            //}
+            //catch(Exception ex)
+            //{
+                //string errMessage = default(string);
+                //Exception n;
+                //if (exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.UIPolicy, out n))
+                //{
+                //    errMessage = n.Message;
+                //}
+
+                //ex.Data["UserMessage"] = ex.Message;
+                //Exception n;
+                //if (exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out n))
+                //{
+                //    throw n;
+                //}
+                //return Json("");
+            //}
         }
 
 
@@ -58,5 +87,5 @@ namespace Fmo.API.Services.Controllers
         //public void Delete(int id)
         //{
         //}
-    }
+    }   
 }

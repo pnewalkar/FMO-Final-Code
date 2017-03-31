@@ -14,6 +14,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fmo.Common.ExceptionManagement;
+using Fmo.Common.LoggingManagement;
+using Fmo.Common.Interface;
+using Fmo.API.Services.MiddlerWare;
 
 namespace Fmo.API.Services
 {
@@ -58,10 +62,11 @@ namespace Fmo.API.Services
             );
 
             //---Adding scope for all classes
+            services.AddSingleton<IExceptionHelper, ExceptionHelper>();
+            services.AddSingleton<ILoggingHelper, LoggingHelper>();
             services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
             services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
-            services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
-            //services.AddSingleton<FMODBContext, FMODBContext>();           
+            services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();    
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
             services.AddTransient<IDatabaseFactory<FMODBContext>, DatabaseFactory<FMODBContext>>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
@@ -69,7 +74,6 @@ namespace Fmo.API.Services
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddTransient<IDeliveryRouteRepository, DeliveryRouteRepository>();
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -82,6 +86,7 @@ namespace Fmo.API.Services
 
             app.UseApplicationInsightsExceptionTelemetry();
 
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "{controller=DeliveryPoints}/{action=Get}/{id?}");
