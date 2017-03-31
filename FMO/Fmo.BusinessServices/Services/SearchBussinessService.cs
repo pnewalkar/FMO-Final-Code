@@ -24,7 +24,7 @@ namespace Fmo.BusinessServices.Services
 
         public AdvanceSearchDTO FetchAdvanceSearchDetails(string searchText)
         {
-            deliveryPointsRepository.SearchDelievryPoints();
+            deliveryPointsRepository.SearchDeliveryPoints();
             postCodeRepository.FetchPostCodeUnit(searchText);
             streetNetworkRepository.FetchStreetNetwork(searchText);
             deliveryRouteRepository.FetchDeliveryRoute(searchText);
