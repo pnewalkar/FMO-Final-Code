@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IAccessLinkBussinessService.cs" />
-    <Compile Include="Interfaces\IDeliveryPointBussinessService.cs" />
+    <Compile Include="Interfaces\IDeliveryPointBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryRouteBusinessService.cs" />
     <Compile Include="Interfaces\IPostalAddressBusinessService.cs" />
     <Compile Include="Interfaces\IPostCodeBussinessService.cs" />
