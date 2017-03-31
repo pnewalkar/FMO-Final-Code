@@ -43,6 +43,22 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.ExceptionHandling.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Moq, Version=4.7.1.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.7.1\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
@@ -53,6 +69,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -62,6 +79,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumExtensions.cs" />
+    <Compile Include="Enums\ExceptionHandlingPolicy.cs" />
+    <Compile Include="Enums\LoggingCategory.cs" />
+    <Compile Include="ExceptionManagement\ExceptionHandlingConfiguration.cs" />
+    <Compile Include="ExceptionManagement\ExceptionHelper.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\BusinessLogicException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\DataAccessException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\EntityAlreadyExistsException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\EntityNotFoundException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\InfrastructureException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\MailSendException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\ServiceException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\WebServiceException.cs" />
+    <Compile Include="Interface\IExceptionHelper.cs" />
+    <Compile Include="Interface\ILoggingHelper.cs" />
+    <Compile Include="LoggingManagement\LoggingHelper.cs" />
+    <Compile Include="LoggingManagement\LoggingConfig.cs" />
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Enums\PostcodeType.cs" />
     <Compile Include="Enums\FileType.cs" />
@@ -69,6 +103,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSupport\RepositoryFixtureBase.cs" />
     <Compile Include="TestSupport\TestFixtureBase.cs" />
+    <Compile Include="ValueAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -81,6 +116,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
