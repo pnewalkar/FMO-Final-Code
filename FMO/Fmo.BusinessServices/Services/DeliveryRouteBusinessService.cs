@@ -7,20 +7,20 @@ namespace Fmo.BusinessServices.Services
 {
     public class DeliveryRouteBusinessService : IDeliveryRouteBusinessService
     {
-        private IDeliveryRouteRepository routeSimulationRespository;
+        private IDeliveryRouteRepository deliveryRouteRespository;
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IScenarioRepository scenarioRepository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository deliveryRouteRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository)
         {
-            this.routeSimulationRespository = routeSimulationRespository;
+            this.deliveryRouteRespository = deliveryRouteRespository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.scenarioRepository = scenarioRepository;
         }
 
         public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
         {
-            return routeSimulationRespository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
+            return deliveryRouteRespository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
         public List<ReferenceDataDTO> FetchRouteLogStatus()
@@ -35,7 +35,7 @@ namespace Fmo.BusinessServices.Services
 
         public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
         {
-            return routeSimulationRespository.FetchDeliveryRoute(searchText);
+            return deliveryRouteRespository.FetchDeliveryRoute(searchText);
         }
     }
 }
