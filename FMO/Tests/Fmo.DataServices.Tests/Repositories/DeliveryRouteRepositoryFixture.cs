@@ -7,6 +7,7 @@ using Fmo.DataServices.DBContext;
 using Moq;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
+using NUnit.Framework;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -15,6 +16,15 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryRouteRepository testCandidate;
+
+        [Test]
+        public void Test_FetchDeliveryRoute()
+        {
+
+            var actualResult = testCandidate.FetchDeliveryRoute(1, 1);
+            Assert.IsNotNull(actualResult);
+            //  Assert.IsTrue(actualResult.Count == 1);
+        }
 
         protected override void OnSetup()
         {
