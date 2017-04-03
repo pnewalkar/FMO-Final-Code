@@ -1,4 +1,4 @@
-<div id="map"></div>
+<div id="map" class="mapContainer"></div>
 <div id="leftPanel">
     <map-panel class="context-panel"
 				paneltitle="Context"
@@ -13,6 +13,9 @@
 
 <div><map-toolbar></map-toolbar></div>
 <div id="rightPanel">
+    
+    <div id="zoom-control" class="zoom-control"></div>
+    
     <div class="miniMap">
         <map-panel class="layer-panel show-panel"
                paneltitle="MiniMap"
@@ -27,28 +30,23 @@
         
     <div class="layers">
         <map-panel
-                   class="layer-panel show-panel"
-               paneltitle="Layers"
-               showheader="true"
-               collapsed="true"
-               group="SelectorKeyGroup">
+                class="layer-panel show-panel"
+                paneltitle="Layers"
+                showheader="true"
+                collapsed="true"
+                group="SelectorKeyGroup">
             <layers></layers>
         </map-panel>
     </div>
         
     <div>
         <map-panel
-<<<<<<< HEAD
                 class="key-panel show-panel"
-               paneltitle="Map Key"
-               showheader="true"
-               collapsed="true"
-               group="SelectorKeyGroup">
+                paneltitle="Map Key"
+                showheader="true"
+                collapsed="true"
+                group="SelectorKeyGroup">
             <map-keys></map-keys>
-=======
-                   paneltitle="Map Keys">
-            <map-key></map-key>
->>>>>>> 3827d8db90b036c0a76690ad8a286abc3229c260
         </map-panel>
     </div>
 </div>
