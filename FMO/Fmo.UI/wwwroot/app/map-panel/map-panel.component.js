@@ -4,8 +4,11 @@ angular.module('mapPanel')
     scope: {},
     transclude:true,
     bindings: {
+        showheader: '<',
         paneltitle: '@',
-        oncreate: "="
+        collapsed: '=',
+        isleftpanel: '<',
+        oncreate: "=",
     },
     templateUrl: './map-panel/map-panel.template.html',
     controller: 'MapPanelController as vm'

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
@@ -10,32 +12,39 @@ namespace Fmo.BusinessServices.Services
         private IDeliveryRouteRepository routeSimulationRespository;
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IScenarioRepository scenarioRepository;
+        private IDeliveryUnitLocationRepository deliveryUnitLocationRespository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository,IDeliveryUnitLocationRepository deliveryUnitLocationRespository)
         {
             this.routeSimulationRespository = routeSimulationRespository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.scenarioRepository = scenarioRepository;
+            this.deliveryUnitLocationRespository = deliveryUnitLocationRespository;
         }
 
-        public List<DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID)
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
         {
-            return routeSimulationRespository.ListOfRoute(operationStateID, deliveryScenarioID);
+            return routeSimulationRespository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
-        public List<ReferenceDataDTO> ListOfRouteLogStatus()
+        public List<ReferenceDataDTO> FetchRouteLogStatus()
         {
-            return referenceDataCategoryRepository.ListOfRouteLogStatus();
+            return referenceDataCategoryRepository.RouteLogStatus();
         }
 
-        public List<ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID)
+        public List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID)
         {
-            return scenarioRepository.ListOfScenario(operationStateID, deliveryUnitID);
+            return scenarioRepository.FetchScenario(operationStateID, deliveryUnitID);
         }
 
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText)
         {
-            return routeSimulationRespository.FetchDeliveryRoute(searchText);
+            return await routeSimulationRespository.FetchDeliveryRoute(searchText);
+        }
+
+        public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
+        {
+            return deliveryUnitLocationRespository.FetchDeliveryUnit();
         }
     }
 }

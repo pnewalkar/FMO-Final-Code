@@ -9,6 +9,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
   public interface IRoadNameRepository
     {
-        List<RoadNameDTO> FetchRoadName();
+        Task<List<RoadNameDTO>> FetchRoadName();
     }
 }

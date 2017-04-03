@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
     public interface IDeliveryRouteBusinessService
     {
-        List<ReferenceDataDTO> ListOfRouteLogStatus();
+        List<DeliveryUnitLocationDTO> FetchDeliveryUnit();
 
-        List<DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID);
+        List<ReferenceDataDTO> FetchRouteLogStatus();
 
-        List<ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID);
+        List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);
 
-        List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText);
+        List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID);
+
+        Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText);
     }
 }

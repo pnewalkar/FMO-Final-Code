@@ -41,7 +41,7 @@ namespace Fmo.DataServices.Repositories
             return statusId;
         }
 
-        public List<ReferenceDataDTO> ListOfRouteLogStatus()
+        public List<ReferenceDataDTO> RouteLogStatus()
         {
             var query = DataContext.ReferenceDatas.Join(DataContext.ReferenceDataCategories, r => r.ReferenceDataCategory_Id, p => p.ReferenceDataCategory_Id, (r, p) => new { r.ReferenceDataName, r.ReferenceDataValue })
                 .Select(a => new Entity.ReferenceData { ReferenceDataName = a.ReferenceDataName });

@@ -2,9 +2,10 @@
 
 angular.module('mapView', [
     'ngRoute',
-    'mapKeys',
+    'mapKey',
     'layers',
     'miniMap',
     'mapPanel',
+    'simulation',
     'mapToolbar'
 ]);
