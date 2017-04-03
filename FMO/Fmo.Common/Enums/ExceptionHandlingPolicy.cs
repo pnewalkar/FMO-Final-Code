@@ -10,21 +10,21 @@ namespace Fmo.Common.Enums
         None = 0,
 
         /// <summary>
-        /// ExceptionShielding
+        /// JustThrowException
         /// </summary>
-        [Description("ExceptionShielding")]
-        ExceptionShielding = 1,
+        [Description("JustThrowException")]
+        JustThrowException = 1,
 
         /// <summary>
-        /// LoggingAndReplacingException
+        /// LoggAndReplaceException
         /// </summary>
-        [Description("LoggingAndReplacingException")]
-        LoggingAndReplacingException = 2,
+        [Description("LoggAndReplaceException")]
+        LoggAndReplaceException = 2,
 
         /// <summary>
-        /// LogAndWrap
+        /// LogAndWrapException
         /// </summary>
-        [Description("LogAndWrap")]
-        LogAndWrap = 3
+        [Description("LogAndWrapException")]
+        LogAndWrapException = 3
     }
 }
