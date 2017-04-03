@@ -66,6 +66,10 @@
     <Compile Include="TPFLoader.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fmo.API.Services\Fmo.Web.API.Services.xproj">
+      <Project>{d3cd1b5f-6619-4613-9027-ad3c4f20111a}</Project>
+      <Name>Fmo.Web.API.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
       <Project>{1d645c11-6570-4327-9e60-b6e7d676ba0d}</Project>
       <Name>Fmo.Common</Name>
