@@ -5,6 +5,8 @@ namespace Fmo.BusinessServices.Interfaces
 {
     public interface IDeliveryRouteBusinessService
     {
+        List<DeliveryUnitLocationDTO> FetchDeliveryUnit();
+
         List<ReferenceDataDTO> FetchRouteLogStatus();
 
         List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);

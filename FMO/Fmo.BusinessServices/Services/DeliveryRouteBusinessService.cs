@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
@@ -10,12 +11,14 @@ namespace Fmo.BusinessServices.Services
         private IDeliveryRouteRepository routeSimulationRespository;
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IScenarioRepository scenarioRepository;
+        private IDeliveryUnitLocationRepository deliveryUnitLocationRespository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository,IDeliveryUnitLocationRepository deliveryUnitLocationRespository)
         {
             this.routeSimulationRespository = routeSimulationRespository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.scenarioRepository = scenarioRepository;
+            this.deliveryUnitLocationRespository = deliveryUnitLocationRespository;
         }
 
         public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
@@ -36,6 +39,11 @@ namespace Fmo.BusinessServices.Services
         public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
         {
             return routeSimulationRespository.FetchDeliveryRoute(searchText);
+        }
+
+        public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
+        {
+            return deliveryUnitLocationRespository.FetchDeliveryUnit();
         }
     }
 }
