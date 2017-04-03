@@ -1,12 +1,12 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Fmo.Common.TestSupport;
-using Fmo.Entities;
-using System.Collections.Generic;
 using Fmo.DataServices.DBContext;
-using Moq;
 using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DataServices.Repositories;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.Entities;
+using Moq;
+using NUnit.Framework;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -15,6 +15,13 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IReferenceDataCategoryRepository testCandidate;
+
+        [Test]
+        public void Test_RouteLogStatus()
+        {
+            var actualResult = testCandidate.RouteLogStatus();
+            Assert.IsNotNull(actualResult);
+        }
 
         protected override void OnSetup()
         {
