@@ -18,9 +18,9 @@ namespace Fmo.DataServices.Tests.Repositories
         private IDeliveryPointsRepository testCandidate;
 
         [Test]
-        public void Test_SearchDeliveryPoints()
+        public async void Test_SearchDeliveryPoints()
         {
-            var actualResult = testCandidate.SearchDeliveryPoints();
+            var actualResult = await testCandidate.SearchDeliveryPoints();
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 2);
         }

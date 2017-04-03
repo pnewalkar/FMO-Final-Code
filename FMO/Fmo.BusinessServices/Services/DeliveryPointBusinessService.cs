@@ -18,9 +18,9 @@ namespace Fmo.BusinessServices.Services
             this.searchDeliveryPointsRepository = searchDeliveryPointsRepository;
         }
 
-        public List<DeliveryPointDTO> SearchDelievryPoints()
+        public async Task<List<DeliveryPointDTO>> SearchDelievryPoints()
         {
-            return searchDeliveryPointsRepository.SearchDeliveryPoints();
+            return await searchDeliveryPointsRepository.SearchDeliveryPoints();
         }
     }
 }

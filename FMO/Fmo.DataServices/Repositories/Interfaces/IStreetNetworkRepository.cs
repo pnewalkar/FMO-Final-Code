@@ -9,7 +9,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
  public interface IStreetNetworkRepository
     {
-
-        List<StreetNameDTO> FetchStreetNetwork(string searchText);
+        Task<List<StreetNameDTO>> FetchStreetNetwork(string searchText);
     }
 }

@@ -9,7 +9,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
   public interface IPostCodeRepository
     {
-
-        List<PostCodeDTO> FetchPostCodeUnit(string searchText);
+        Task<List<PostCodeDTO>> FetchPostCodeUnit(string searchText);
     }
 }
