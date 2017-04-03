@@ -1,7 +1,6 @@
 <div layout="row"
-     layout-align="center start"
+     layout-align="center start" ng-show="vm.showKey(pointType.id)"
      ng-repeat="pointType in vm.pointTypes">
-     <!--ng-show="vm.showKey(pointType.id)"-->
      
     <md-icon ng-style="{'font': pointType.style.text_.font_,
                         'font-size': '24px',
@@ -17,9 +16,8 @@
 </div>
 
 <div layout="row"
-     layout-align="center start"
+     layout-align="center start" ng-show="vm.showKey(areaType.id)"
      ng-repeat="areaType in vm.areaTypes">
-     <!--ng-show="vm.showKey(areaType.id)"-->
      
     <md-icon class="fa fa-square-o" ng-style="{'font-size': '24px',
                                                'text-shadow': '-1px 0 ' + areaType.style.stroke_.color_ + ',' +
@@ -32,9 +30,8 @@
 </div>
 
 <div layout="row"
-     layout-align="center start"
+     layout-align="center start" ng-show="vm.showKey(lineType.id)"
      ng-repeat="lineType in vm.lineTypes">
-     <!--ng-show="vm.showKey(lineType.id)"-->
      
     <md-icon class="material-icons" ng-style="{'font-size': '24px',
                                                'text-shadow': '-1px 0 ' + lineType.style.stroke_.color_ + ',' +
