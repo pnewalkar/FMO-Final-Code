@@ -1,1 +1,55 @@
-Map keys
+<!--<ul>
+    <li><i class="fa fa-map-marker" aria-hidden="true" style="color:red"></i><span>Delivery Point</span> </li>
+    <li><i class="fa fa-map-marker" aria-hidden="true" style="color:green"></i>Selected Point</li>
+    <li><i class="fa fa-map-marker" aria-hidden="true" style="color:blue"></i>Collection Point</li>
+</ul>-->
+
+<div layout="row"
+     layout-align="center start"
+     ng-repeat="pointType in vm.pointTypes">
+     <!--ng-show="vm.showKey(pointType.id)"-->
+     
+    <md-icon ng-style="{'font': pointType.style.text_.font_,
+                        'font-size': '24px',
+                        'text-shadow': '-1px 0 ' + pointType.style.text_.stroke_.color_ + ',' +
+                                     '0 1px ' + pointType.style.text_.stroke_.color_ + ',' +
+                                     '1px 0 ' + pointType.style.text_.stroke_.color_ + ',' +
+                                     '0 -1px ' + pointType.style.text_.stroke_.color_,
+                        'color': pointType.style.text_.fill_.color_}">
+        {{pointType.style.text_.text_}}
+    </md-icon>
+    <span flex></span>
+    {{pointType.text}}
+</div>
+
+<div layout="row"
+     layout-align="center start"
+     ng-repeat="areaType in vm.areaTypes">
+     <!--ng-show="vm.showKey(areaType.id)"-->
+     
+    <md-icon class="fa fa-square-o" ng-style="{'font-size': '24px',
+                                               'text-shadow': '-1px 0 ' + areaType.style.stroke_.color_ + ',' +
+                                                            '0 1px ' + areaType.style.stroke_.color_ + ',' +
+                                                            '1px 0 ' + areaType.style.stroke_.color_ + ',' +
+                                                            '0 -1px ' + areaType.style.stroke_.color_,
+                                               'color': areaType.style.fill_.color_}"></md-icon>
+    <span flex></span>
+    {{areaType.text}}
+</div>
+
+<div layout="row"
+     layout-align="center start"
+     ng-repeat="lineType in vm.lineTypes">
+     <!--ng-show="vm.showKey(lineType.id)"-->
+     
+    <md-icon class="material-icons" ng-style="{'font-size': '24px',
+                                               'text-shadow': '-1px 0 ' + lineType.style.stroke_.color_ + ',' +
+                                                            '0 1px ' + lineType.style.stroke_.color_ + ',' +
+                                                            '1px 0 ' + lineType.style.stroke_.color_ + ',' +
+                                                            '0 -1px ' + lineType.style.stroke_.color_,
+                                               'color': lineType.style.fill_.color_}">
+        timeline
+    </md-icon>
+    <span flex></span>
+    {{lineType.text}}
+</div>

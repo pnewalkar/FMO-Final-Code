@@ -1,1 +1,1 @@
-angular.module('mapKeys',[]);
+angular.module('mapKey', []);

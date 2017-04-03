@@ -18,19 +18,19 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public List<DeliveryRouteDTO> ListOfRouteLogs(int operationStateID, int deliveryScenarioID)
         {
-            return deliveryRouteBusinessService.SearchDeliveryRoute(operationStateID, deliveryScenarioID);
+            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
         [HttpGet]
         public List<ReferenceDataDTO> RouteLogsStatus()
         {
-            return deliveryRouteBusinessService.RouteLogStatus();
+            return deliveryRouteBusinessService.FetchRouteLogStatus();
         }
 
         [HttpGet]
         public List<ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID)
         {
-            return deliveryRouteBusinessService.SearchDeliveryScenario(operationStateID, deliveryUnitID);
+            return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
         }
     }
 }
