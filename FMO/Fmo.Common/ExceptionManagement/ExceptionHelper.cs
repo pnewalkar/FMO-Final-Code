@@ -1,18 +1,18 @@
-﻿namespace Fmo.Common.ExceptionManagement
-{
-    using System;
-    using System.Configuration;
-    using System.IO;
-    using Fmo.Common.Enums;
-    using Fmo.Common.Interface;
-    using Fmo.Common.LoggingManagement;
-    using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
-    using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
-    using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging;
-    using Microsoft.Practices.EnterpriseLibrary.Logging;
+﻿using System;
+using System.Configuration;
+using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
+using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
+using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging;
+using Fmo.Common.Enums;
+using Fmo.Common.Interface;
+using System.IO;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
+using Fmo.Common.LoggingManagement;
 
+namespace Fmo.Common.ExceptionManagement
+{
     /// <summary>
-    /// Exception Helper class.
+    /// This class should be inherited.
     /// </summary>
     public class ExceptionHelper : IExceptionHelper
     {
@@ -23,10 +23,10 @@
         {
             if (!isInitialized)
             {
-                if (!Directory.Exists(ConfigurationManager.AppSettings["LogFilePath"]))
-                {
-                    Directory.CreateDirectory(ConfigurationManager.AppSettings["LogFilePath"]);
-                }
+                //IConfigurationSource config = ConfigurationSourceFactory.Create();
+                //ExceptionPolicyFactory factory = new ExceptionPolicyFactory(config);
+                //ExceptionManager exceptionManager = factory.CreateManager();
+                //ExceptionPolicy.SetExceptionManager(exceptionManager);
 
                 LoggingConfiguration loggingConfiguration = LoggingConfig.BuildProgrammaticConfig();
                 LogWriter logWriter = new LogWriter(loggingConfiguration);
@@ -34,7 +34,10 @@
                 ExceptionPolicy.SetExceptionManager(exceptionManager);
                 isInitialized = true;
 
-                // string startupPath = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName;
+                if (!Directory.Exists(@"C:\Temp"))
+                {
+                    Directory.CreateDirectory(@"C:\Temp");
+                }
             }
         }
 

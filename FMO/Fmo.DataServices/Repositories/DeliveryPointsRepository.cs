@@ -33,21 +33,19 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
+        public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
         {
-            var objDeliveryPoint = new DeliveryPointDTO();
             try
             {
-                var deliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
 
-                GenericMapper.Map(deliveryPoint, objDeliveryPoint);
+                // return context.Students.Find(id);
+                return objDeliveryPoint;
             }
             catch (Exception)
             {
                 throw;
             }
-
-            return objDeliveryPoint;
         }
 
         public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)

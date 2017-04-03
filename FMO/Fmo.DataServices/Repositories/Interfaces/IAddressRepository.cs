@@ -8,13 +8,11 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         bool SaveAddress(PostalAddressDTO objPostalAddress);
 
-        PostalAddressDTO GetPostalAddress(int? uDPRN);
+        int GetPostalAddress(int? uDPRN);
 
-        PostalAddressDTO GetPostalAddress(PostalAddressDTO objPostalAddress);
+        int GetPostalAddress(PostalAddressDTO objPostalAddress);
 
-        bool UpdateAddress(PostalAddressDTO objPostalAddress);
-
-        bool InsertAddress(PostalAddressDTO objPostalAddress);
+        bool UpdateAddress(PostalAddressDTO objPostalAddress, int addressType);
 
         bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType);
     }
