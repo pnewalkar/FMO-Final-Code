@@ -47,6 +47,7 @@
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />
     <Compile Include="NetworkLinkDTO.cs" />
+    <Compile Include="NotificationDTO.cs" />
     <Compile Include="PostalAddressDTO.cs" />
     <Compile Include="PostCodeDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

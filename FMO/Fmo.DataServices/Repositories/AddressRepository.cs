@@ -99,28 +99,48 @@
             return saveFlag;
         }
 
-        public int GetPostalAddress(int? uDPRN)
+        public bool InsertAddress(PostalAddressDTO objPostalAddress)
         {
-            int statusId = 0;
+            bool saveFlag = false;
             try
             {
-                statusId = DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefault().UDPRN ?? 0;
+                if (objPostalAddress != null)
+                {
+                        var objAddress = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        DataContext.PostalAddresses.Add(objAddress);
+
+                    DataContext.SaveChanges();
+                    saveFlag = true;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return saveFlag;
+        }
+
+        public PostalAddressDTO GetPostalAddress(int? uDPRN)
+        {
+            try
+            {
+                var postalAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+
+                return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
             catch (Exception)
             {
                 // TO DO implement logging
                 throw;
             }
-
-            return statusId;
         }
 
-        public int GetPostalAddress(DTO.PostalAddressDTO objPostalAddress)
+        public PostalAddressDTO GetPostalAddress(DTO.PostalAddressDTO objPostalAddress)
         {
-            int addressId = 0;
             try
             {
-                addressId = DataContext.PostalAddresses
+                var postalAddress = DataContext.PostalAddresses
                                .Where(
                                 n => n.Postcode == objPostalAddress.Postcode &&
                                       n.BuildingName == objPostalAddress.BuildingName &&
@@ -129,25 +149,27 @@
                                       n.OrganisationName == objPostalAddress.OrganisationName &&
                                       n.DepartmentName == objPostalAddress.DepartmentName &&
                                       n.Thoroughfare == objPostalAddress.Thoroughfare &&
-                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).SingleOrDefault().Address_Id;
+                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).SingleOrDefault();
+
+
+                return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
             catch (Exception)
             {
                 // TO DO implement logging
                 throw;
             }
-
-            return addressId;
         }
 
-        public bool UpdateAddress(PostalAddressDTO objPostalAddress, int addressType)
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress)// , int addressType)&& n.AddressType_Id == addressType
         {
             bool saveFlag = false;
             try
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.Address_Id == objPostalAddress.Address_Id && n.AddressType_Id == addressType).SingleOrDefault();
+                    //.Include("DeliveryPoints")
+                    var objAddress = DataContext.PostalAddresses.Where(n => n.Address_Id == objPostalAddress.Address_Id).SingleOrDefault();
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -167,17 +189,17 @@
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.UDPRN = objPostalAddress.UDPRN;
 
-                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
-                        {
-                            foreach (var objDelPoint in objAddress.DeliveryPoints)
-                            {
-                                objDelPoint.UDPRN = objPostalAddress.UDPRN;
-                            }
-                        }
-                        else
-                        {
-                            //To DO log error
-                        }
+                        //if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        //{
+                        //    foreach (var objDelPoint in objAddress.DeliveryPoints)
+                        //    {
+                        //        objDelPoint.UDPRN = objPostalAddress.UDPRN;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    //To DO log error
+                        //}
                         DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
                     }
                     else

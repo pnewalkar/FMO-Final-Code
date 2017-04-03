@@ -1,11 +1,7 @@
 angular.module('FMOApp')
 .config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/home');
-    $stateProvider.state('home', {
-        url: '/',
-        templateUrl: '/app/index.html'
-
-    })
+    $stateProvider
         .state('routeLog', {
             url: '/routeLog',
             templateUrl: '/app/route-log/route-log.template.html',

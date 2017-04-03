@@ -28,7 +28,7 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpGet]
-        public List<ScenarioDTO> ListOfScenario(int operationStateID, int deliveryUnitID)
+        public List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID)
         {
             return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
         }
