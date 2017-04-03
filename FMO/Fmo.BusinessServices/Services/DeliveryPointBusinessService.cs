@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using System.Net.Http;
+using System.IO;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -21,6 +23,12 @@ namespace Fmo.BusinessServices.Services
         public List<DeliveryPointDTO> SearchDelievryPoints()
         {
             return searchDeliveryPointsRepository.SearchDeliveryPoints();
+        }
+
+        public MemoryStream GetDeliveryPoints(string bbox)
+        {
+            object[] bboxArr = bbox.Split(',');
+            return searchDeliveryPointsRepository.GetDeliveryPoints(bboxArr);
         }
     }
 }

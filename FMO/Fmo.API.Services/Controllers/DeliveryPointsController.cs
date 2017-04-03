@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net;
+using System.IO;
+
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,6 +38,33 @@ namespace Fmo.API.Services.Controllers
         public List<DeliveryPointDTO> FetchDeliveryPoints()
         {
             return businessService.SearchDelievryPoints();
+        }
+
+        [Route("GetDeliveryPoints")]
+        [HttpGet]
+        public HttpResponseMessage GetDeliveryPoints(string bbox)
+        {
+            //try
+            //{
+                object[] bboxArr = bbox.Split(',');
+
+                MemoryStream memoryStream = businessService.GetDeliveryPoints(bbox);
+
+                var result = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StreamContent(memoryStream)
+                };
+
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                result.Content.Headers.ContentLength = memoryStream.Length;
+                return result;
+            //}
+
+            //catch (Exception ex)
+            //{
+
+            //}
+
         }
 
         //// GET: api/values
