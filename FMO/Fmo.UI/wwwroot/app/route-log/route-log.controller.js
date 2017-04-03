@@ -1,16 +1,12 @@
-﻿angular.module('routeLog', [])
+﻿angular.module('routeLog')
 .controller('RouteLogController', ['$scope', RouteLogController])
 function RouteLogController($scope) {
-    $scope.RouteLogStatus();
-    $scope.RouteLogStatus = function () {
-
+   
+    RouteLogStatus();
+   
+     function RouteLogStatus() {
+        debugger;
         alert('Jitu');
-    }
-
-    $scope.Scenario = function () {
-    }
-
-    $scope.Routes = function () {
     }
 
 }
