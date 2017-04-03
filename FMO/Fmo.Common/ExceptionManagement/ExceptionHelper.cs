@@ -1,18 +1,18 @@
-﻿using System;
-using System.Configuration;
-using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
-using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
-using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging;
-using Fmo.Common.Enums;
-using Fmo.Common.Interface;
-using System.IO;
-using Microsoft.Practices.EnterpriseLibrary.Logging;
-using Fmo.Common.LoggingManagement;
-
-namespace Fmo.Common.ExceptionManagement
+﻿namespace Fmo.Common.ExceptionManagement
 {
+    using System;
+    using System.Configuration;
+    using System.IO;
+    using Fmo.Common.Enums;
+    using Fmo.Common.Interface;
+    using Fmo.Common.LoggingManagement;
+    using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
+    using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
+    using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging;
+    using Microsoft.Practices.EnterpriseLibrary.Logging;
+
     /// <summary>
-    /// This class should be inherited.
+    /// Exception Helper class.
     /// </summary>
     public class ExceptionHelper : IExceptionHelper
     {
@@ -23,10 +23,10 @@ namespace Fmo.Common.ExceptionManagement
         {
             if (!isInitialized)
             {
-                //IConfigurationSource config = ConfigurationSourceFactory.Create();
-                //ExceptionPolicyFactory factory = new ExceptionPolicyFactory(config);
-                //ExceptionManager exceptionManager = factory.CreateManager();
-                //ExceptionPolicy.SetExceptionManager(exceptionManager);
+                if (!Directory.Exists(ConfigurationManager.AppSettings["LogFilePath"]))
+                {
+                    Directory.CreateDirectory(ConfigurationManager.AppSettings["LogFilePath"]);
+                }
 
                 LoggingConfiguration loggingConfiguration = LoggingConfig.BuildProgrammaticConfig();
                 LogWriter logWriter = new LogWriter(loggingConfiguration);
@@ -34,10 +34,7 @@ namespace Fmo.Common.ExceptionManagement
                 ExceptionPolicy.SetExceptionManager(exceptionManager);
                 isInitialized = true;
 
-                if (!Directory.Exists(@"C:\Temp"))
-                {
-                    Directory.CreateDirectory(@"C:\Temp");
-                }
+                // string startupPath = Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.FullName;
             }
         }
 

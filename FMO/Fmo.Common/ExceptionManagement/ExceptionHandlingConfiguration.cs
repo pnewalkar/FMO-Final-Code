@@ -95,9 +95,9 @@ namespace Fmo.Common.ExceptionManagement
                      })
             };
 
-            policies.Add(new ExceptionPolicyDefinition("ExceptionShielding", exceptionShielding));
-            policies.Add(new ExceptionPolicyDefinition("LoggingAndReplacingException", loggingAndReplacing));
-            policies.Add(new ExceptionPolicyDefinition("LogAndWrap", logAndWrap));
+            policies.Add(new ExceptionPolicyDefinition("JustThrowException", exceptionShielding));
+            policies.Add(new ExceptionPolicyDefinition("LoggAndReplaceException", loggingAndReplacing));
+            policies.Add(new ExceptionPolicyDefinition("LogAndWrapException", logAndWrap));
             return new ExceptionManager(policies);
         }
     }

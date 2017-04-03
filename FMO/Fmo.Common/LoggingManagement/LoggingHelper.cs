@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,14 +18,14 @@ namespace Fmo.Common.LoggingManagement
 
         public LoggingHelper()
         {
+            if (!Directory.Exists(ConfigurationManager.AppSettings["LogFilePath"]))
+            {
+                Directory.CreateDirectory(ConfigurationManager.AppSettings["LogFilePath"]);
+            }
+
             LoggingConfiguration loggingConfiguration = LoggingConfig.BuildProgrammaticConfig();
             logWriter = new LogWriter(loggingConfiguration);
             Logger.SetLogWriter(logWriter, false);
-
-            if (!Directory.Exists(@"D:\Temp"))
-            {
-                Directory.CreateDirectory(@"D:\Temp");
-            }
         }
 
         public void LogError(Exception exception)

@@ -31,7 +31,7 @@ namespace Fmo.API.Services.MiddlerWare
             catch (Exception ex)
             {
                 Exception newException;
-                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrapException, out newException);
                 if (rethrow)
                 {
                     if (newException == null)
