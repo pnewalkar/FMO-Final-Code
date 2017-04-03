@@ -9,6 +9,6 @@ angular.module('unitSelector')
         };
       
         unitSelectorAPIService.GetDeliveryUnit = getDeliveryUnit;      
-        return simulationAPIService;
+        return unitSelectorAPIService;
 
     }]);
