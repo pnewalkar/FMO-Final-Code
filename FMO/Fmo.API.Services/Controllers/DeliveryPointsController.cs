@@ -33,9 +33,9 @@ namespace Fmo.API.Services.Controllers
 
         [Route("fetchDeliveryPoint")]
         [HttpGet]
-        public List<DeliveryPointDTO> FetchDeliveryPoints()
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPoints()
         {
-            return businessService.SearchDelievryPoints();
+            return await businessService.SearchDelievryPoints();
         }
 
         //// GET: api/values

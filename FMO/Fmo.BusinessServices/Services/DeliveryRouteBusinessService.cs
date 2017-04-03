@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
@@ -33,9 +34,9 @@ namespace Fmo.BusinessServices.Services
             return scenarioRepository.FetchScenario(operationStateID, deliveryUnitID);
         }
 
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText)
         {
-            return routeSimulationRespository.FetchDeliveryRoute(searchText);
+            return await routeSimulationRespository.FetchDeliveryRoute(searchText);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
@@ -11,6 +12,6 @@ namespace Fmo.BusinessServices.Interfaces
 
         List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID);
 
-        List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText);
+        Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText);
     }
 }

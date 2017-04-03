@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -17,11 +19,11 @@
         {
         }
 
-        public List<StreetNameDTO> FetchStreetNetwork(string searchText)
+        public async Task<List<StreetNameDTO>> FetchStreetNetwork(string searchText)
         {
             try
             {
-                var result = DataContext.StreetNames.ToList();
+                var result = await DataContext.StreetNames.ToListAsync();
                 return GenericMapper.MapList<StreetName, StreetNameDTO>(result.ToList());
             }
             catch (Exception ex)

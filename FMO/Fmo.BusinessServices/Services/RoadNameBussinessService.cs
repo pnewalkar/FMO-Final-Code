@@ -14,14 +14,14 @@ namespace Fmo.BusinessServices.Services
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
 
-        public RoadNameBussinessService(IRoadNameRepository _roadNameRepository)
+        public RoadNameBussinessService(IRoadNameRepository roadNameRepository)
         {
-            this.roadNameRepository = _roadNameRepository;
+            this.roadNameRepository = roadNameRepository;
         }
 
-        public List<RoadNameDTO> FetchRoadName()
+        public async Task<List<RoadNameDTO>> FetchRoadName()
         {
-            return roadNameRepository.FetchRoadName();
+            return await roadNameRepository.FetchRoadName();
         }
     }
 }

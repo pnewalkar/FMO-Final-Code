@@ -15,9 +15,9 @@ namespace Fmo.BusinessServices.Services
     {
         private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
 
-        public List<PostCodeDTO> FetchPostCodeUnit(string searchText)
+        public async Task<List<PostCodeDTO>> FetchPostCodeUnit(string searchText)
         {
-            return postCodeRepository.FetchPostCodeUnit(searchText);
+            return await postCodeRepository.FetchPostCodeUnit(searchText);
         }
     }
 }
