@@ -11,16 +11,11 @@ namespace Fmo.BusinessServices.Services
 {
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
-        private IDeliveryPointsRepository searchDeliveryPointsRepository = default(IDeliveryPointsRepository);
+        private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
 
-        public DeliveryPointBusinessService(IDeliveryPointsRepository searchDeliveryPointsRepository)
+        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository)
         {
-            this.searchDeliveryPointsRepository = searchDeliveryPointsRepository;
-        }
-
-        public async Task<List<DeliveryPointDTO>> SearchDelievryPoints()
-        {
-            return await searchDeliveryPointsRepository.SearchDeliveryPoints();
+            this.deliveryPointsRepository = deliveryPointsRepository;
         }
     }
 }
