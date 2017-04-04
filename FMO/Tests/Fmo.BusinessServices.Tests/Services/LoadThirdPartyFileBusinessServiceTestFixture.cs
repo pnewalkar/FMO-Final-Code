@@ -14,11 +14,11 @@
     public class LoadThirdPartyFileBusinessServiceTestFixture : TestFixtureBase
     {
         private ITPFLoader testCandidate;
-        private IMessageBroker<addressLocation> msgBroker;
+        private IMessageBroker<AddressLocationUSRDTO> msgBroker;
 
         protected override void OnSetup()
         {
-            msgBroker = new MessageBroker<addressLocation>();
+            msgBroker = new MessageBroker<AddressLocationUSRDTO>();
             testCandidate = new TPFLoader(msgBroker);
         }
 
@@ -26,8 +26,8 @@
         public void Test_ValidRecords_Count()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -35,7 +35,7 @@
                     latitude = (decimal)57.14683,
                     longitude = (decimal)-2.08973
                 },
-                new addressLocation {
+                new AddressLocationUSRDTO {
                     udprn = 13645,
                     changeType = "I",
                     xCoordinate = 393450,
@@ -45,7 +45,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc.Count, methodOutput.Count);
         }
 
@@ -53,8 +53,8 @@
         public void Test_ValidRecords_Data_1()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -62,7 +62,7 @@
                     latitude = (decimal)57.14683,
                     longitude = (decimal)-2.08973
                 },
-                new addressLocation {
+                new AddressLocationUSRDTO {
                     udprn = 13645,
                     changeType = "I",
                     xCoordinate = 393450,
@@ -72,7 +72,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc[0].udprn, methodOutput[0].udprn);
         }
 
@@ -80,8 +80,8 @@
         public void Test_ValidRecords_Data_2()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -89,7 +89,7 @@
                     latitude = (decimal)57.14683,
                     longitude = (decimal)-2.08973
                 },
-                new addressLocation {
+                new AddressLocationUSRDTO {
                     udprn = 13645,
                     changeType = "I",
                     xCoordinate = 393450,
@@ -99,7 +99,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc[0].changeType, methodOutput[0].changeType);
         }
 
@@ -107,8 +107,8 @@
         public void Test_ValidRecords_Data_3()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -116,7 +116,7 @@
                     latitude = (decimal)57.14683,
                     longitude = (decimal)-2.08973
                 },
-                new addressLocation {
+                new AddressLocationUSRDTO {
                     udprn = 13645,
                     changeType = "I",
                     xCoordinate = 393450,
@@ -126,7 +126,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc[1].xCoordinate, methodOutput[1].xCoordinate);
         }
 
@@ -134,8 +134,8 @@
         public void Test_InValidRecords_Count()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -145,7 +145,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc.Count, methodOutput.Count);
         }
 
@@ -153,8 +153,8 @@
         public void Test_InValidRecords_Data_1()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -164,7 +164,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc[0].udprn, methodOutput[0].udprn);
         }
 
@@ -172,8 +172,8 @@
         public void Test_InValidRecords_Data_2()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -183,7 +183,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc[0].changeType, methodOutput[0].changeType);
         }
 
@@ -191,8 +191,8 @@
         public void Test_InValidRecords_Data_3()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
-            List<addressLocation> testLstAddressLoc = new List<addressLocation>(new addressLocation[] {
-                new addressLocation {
+            List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[] {
+                new AddressLocationUSRDTO {
                     udprn = 12132,
                     changeType = "I",
                     xCoordinate = 1234,
@@ -202,7 +202,7 @@
                 }
             });
 
-            List<addressLocation> methodOutput = testCandidate.GetValidRecords(str);
+            List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc[0].xCoordinate, methodOutput[0].xCoordinate);
         }
     }

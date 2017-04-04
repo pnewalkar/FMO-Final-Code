@@ -43,7 +43,7 @@
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
             kernel.Bind<ITPFLoader>().To<TPFLoader>().InSingletonScope();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>().InSingletonScope();
+            kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>(new[] { new ConstructorArgument("_client", new HttpClient()), new ConstructorArgument("_strFMOWEbApiURL", strFMOWEbApiURL) });
             pafLoader = kernel.Get<IPAFLoader>();

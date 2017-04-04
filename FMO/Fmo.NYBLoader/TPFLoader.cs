@@ -18,11 +18,11 @@ namespace Fmo.NYBLoader
 {
     public class TPFLoader : ITPFLoader
     {
-        private readonly IMessageBroker<addressLocation> msgBroker;
+        private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
         private const string XSD_LOCATION = @"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd";
 
 
-        public TPFLoader(IMessageBroker<addressLocation> messageBroker)
+        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker)
         {
             this.msgBroker = messageBroker;
         }
@@ -31,10 +31,10 @@ namespace Fmo.NYBLoader
         public void LoadTPFDetailsFromXML(string strPath)
         {
             string destinationPath = string.Empty;
-            List <addressLocation> lstUSRFiles = null;
-            List<addressLocation> lstUSRInsertFiles = null;
-            List<addressLocation> lstUSRUpdateFiles = null;
-            List<addressLocation> lstUSRDeleteFiles = null;
+            List <AddressLocationUSRDTO> lstUSRFiles = null;
+            List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
+            List<AddressLocationUSRDTO> lstUSRUpdateFiles = null;
+            List<AddressLocationUSRDTO> lstUSRDeleteFiles = null;
 
 
             try
@@ -47,7 +47,7 @@ namespace Fmo.NYBLoader
 
                 lstUSRInsertFiles.ForEach(addressLocation =>
                 {
-                    string xmlUSR = SerializeObject<addressLocation>(addressLocation);
+                    string xmlUSR = SerializeObject<AddressLocationUSRDTO>(addressLocation);
                     IMessage USRMsg = msgBroker.CreateMessage(xmlUSR, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(USRMsg);
                 });
@@ -84,12 +84,12 @@ namespace Fmo.NYBLoader
             }
         }
 
-        public List<addressLocation> GetValidRecords(string strPath)
+        public List<AddressLocationUSRDTO> GetValidRecords(string strPath)
         {
 
             try
             {
-                List<addressLocation> lstUSRFiles = new List<addressLocation>();
+                List<AddressLocationUSRDTO> lstUSRFiles = new List<AddressLocationUSRDTO>();
 
                 XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USR_XML_ROOT));
                 XmlDocument validXmlDocument = new XmlDocument();
@@ -119,7 +119,7 @@ namespace Fmo.NYBLoader
                     using (XmlReader xmlReader = XmlReader.Create(new StringReader(validXmlDocument.OuterXml)))
                     {
                         xmlReader.MoveToContent();
-                        lstUSRFiles = (List<addressLocation>)(new XmlSerializer(typeof(List<addressLocation>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));
+                        lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));
                     }
                 };
 
