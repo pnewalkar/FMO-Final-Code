@@ -43,7 +43,7 @@
             kernel.Bind<IPAFLoader>().To<PAFLoader>();
             kernel.Bind<ITPFLoader>().To<TPFLoader>();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
-            kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>().InSingletonScope();
+            kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IHttpHandler>().To<HttpHandler>();
             kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
 
