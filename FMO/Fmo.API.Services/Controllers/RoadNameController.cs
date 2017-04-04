@@ -16,9 +16,9 @@ namespace Fmo.API.Services.Controllers
 
         IRoadNameBussinessService roadNameBussinessService = default(IRoadNameBussinessService);
 
-        public List<RoadNameDTO> FetchRoadName(List<RoadNameDTO> RoadNameDTO)
+        public async Task<List<RoadNameDTO>> FetchRoadName(List<RoadNameDTO> RoadNameDTO)
         {
-            return roadNameBussinessService.FetchRoadName();
+            return await roadNameBussinessService.FetchRoadName();
         }
         //// GET: api/values
         //[HttpGet]

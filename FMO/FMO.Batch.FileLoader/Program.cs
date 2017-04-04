@@ -6,7 +6,7 @@
         /// The main entry point for the application.
         /// </summary>
         private static void Main()
-        {
+       {
 #if DEBUG
 
             // While debugging this section is used.

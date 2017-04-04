@@ -2,14 +2,16 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using Entity = Fmo.Entities;
     using MappingConfiguration;
+    using Entity = Fmo.Entities;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -18,11 +20,11 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<DeliveryPointDTO> SearchDeliveryPoints()
+        public async Task<List<DeliveryPointDTO>> SearchDeliveryPoints()
         {
             try
             {
-                var result = DataContext.DeliveryPoints.ToList();
+                var result = await DataContext.DeliveryPoints.ToListAsync();
                 return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result.ToList());
             }
             catch (Exception)
@@ -31,20 +33,19 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
+        public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
         {
-            var objDeliveryPoint = new DeliveryPointDTO();
             try
             {
-                var deliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
 
-                GenericMapper.Map(deliveryPoint, objDeliveryPoint);
+                // return context.Students.Find(id);
+                return objDeliveryPoint;
             }
             catch (Exception)
             {
                 throw;
             }
-            return objDeliveryPoint;
         }
 
         public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)

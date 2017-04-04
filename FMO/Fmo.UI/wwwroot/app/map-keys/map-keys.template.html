@@ -1,1 +1,46 @@
-Map keys
+<div layout="row"
+     layout-align="center start" ng-show="vm.showKey(pointType.id)"
+     ng-repeat="pointType in vm.pointTypes">
+     
+    <md-icon ng-style="{'font': pointType.style.text_.font_,
+                        'font-size': '24px',
+                        'text-shadow': '-1px 0 ' + pointType.style.text_.stroke_.color_ + ',' +
+                                     '0 1px ' + pointType.style.text_.stroke_.color_ + ',' +
+                                     '1px 0 ' + pointType.style.text_.stroke_.color_ + ',' +
+                                     '0 -1px ' + pointType.style.text_.stroke_.color_,
+                        'color': pointType.style.text_.fill_.color_}">
+        {{pointType.style.text_.text_}}
+    </md-icon>
+    <span flex></span>
+    {{pointType.text}}
+</div>
+
+<div layout="row"
+     layout-align="center start" ng-show="vm.showKey(areaType.id)"
+     ng-repeat="areaType in vm.areaTypes">
+     
+    <md-icon class="fa fa-square-o" ng-style="{'font-size': '24px',
+                                               'text-shadow': '-1px 0 ' + areaType.style.stroke_.color_ + ',' +
+                                                            '0 1px ' + areaType.style.stroke_.color_ + ',' +
+                                                            '1px 0 ' + areaType.style.stroke_.color_ + ',' +
+                                                            '0 -1px ' + areaType.style.stroke_.color_,
+                                               'color': areaType.style.fill_.color_}"></md-icon>
+    <span flex></span>
+    {{areaType.text}}
+</div>
+
+<div layout="row"
+     layout-align="center start" ng-show="vm.showKey(lineType.id)"
+     ng-repeat="lineType in vm.lineTypes">
+     
+    <md-icon class="material-icons" ng-style="{'font-size': '24px',
+                                               'text-shadow': '-1px 0 ' + lineType.style.stroke_.color_ + ',' +
+                                                            '0 1px ' + lineType.style.stroke_.color_ + ',' +
+                                                            '1px 0 ' + lineType.style.stroke_.color_ + ',' +
+                                                            '0 -1px ' + lineType.style.stroke_.color_,
+                                               'color': lineType.style.fill_.color_}">
+        timeline
+    </md-icon>
+    <span flex></span>
+    {{lineType.text}}
+</div>

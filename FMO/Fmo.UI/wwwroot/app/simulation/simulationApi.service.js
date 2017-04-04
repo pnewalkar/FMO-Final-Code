@@ -3,6 +3,11 @@
 angular.module('simulation')
     .factory('simulationAPIService', ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
         var simulationAPIService = {};
+
+        var getDeliveryUnit = function () {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
+        };
+
         var getStatus = function () {
             return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
         };
@@ -15,6 +20,7 @@ angular.module('simulation')
             return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryRoute?deliveryUnitID=' + deliveryUnitID + '&deliveryUnitID=' + deliveryUnitID);
         };
 
+        simulationAPIService.GetDeliveryUnit = getDeliveryUnit;
         simulationAPIService.GetStatus = getStatus;
         simulationAPIService.GetScenario = getScenario;
         simulationAPIService.GetRoutes = getRoutes;

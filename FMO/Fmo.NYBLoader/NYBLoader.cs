@@ -17,10 +17,17 @@ namespace Fmo.NYBLoader
     {
         private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
         private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
-        private static string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
+        private static string strFMOWEbApiURL = string.Empty;
         private static string strFMOWebAPIName = ConfigurationManager.AppSettings["FMOWebAPIName"].ToString();
+        private static HttpClient client;
 
-        public void LoadNYBDetailsFromCSV(string strPath)
+        public NYBLoader(HttpClient _client, string _strFMOWEbApiURL)
+        {
+            client = _client;
+            strFMOWEbApiURL = _strFMOWEbApiURL;
+        }
+
+        public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strPath)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
@@ -56,15 +63,14 @@ namespace Fmo.NYBLoader
 
                                 lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
 
-                                var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
+                                var invalidRecordsCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
 
-                                if (invalidRecordCount > 0)
+                                if (invalidRecordsCount > 0)
                                 {
                                     File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                                 else
                                 {
-                                    SaveNYBDetails(lstAddressDetails).Wait();
                                     File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                             }
@@ -81,6 +87,7 @@ namespace Fmo.NYBLoader
             {
                 throw;
             }
+            return lstAddressDetails;
         }
 
         private static bool ValidateFile(string[] arrLines)
@@ -245,17 +252,29 @@ namespace Fmo.NYBLoader
                 );
         }
 
-        private static async Task SaveNYBDetails(List<PostalAddressDTO> lstAddress)
+        public bool SaveNYBDetails(List<PostalAddressDTO> lstAddress)
+        {
+            bool saveflag = false;
+            try
+            {
+                saveflag = true;
+                SaveRecords(lstAddress).Wait();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return saveflag;
+        }
+
+        private static async Task SaveRecords(List<PostalAddressDTO> lstAddress)
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(strFMOWEbApiURL);
-                    var result = await client.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
-
-                    //Employee product = await result.Content.ReadAsAsync<Employee>();
-                }
+                client.BaseAddress = new Uri(strFMOWEbApiURL);
+                var result = await client.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
+                //Employee product = await result.Content.ReadAsAsync<Employee>();
             }
             catch (Exception)
             {
