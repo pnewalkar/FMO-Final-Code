@@ -9,6 +9,5 @@ namespace Fmo.BusinessServices.Interfaces
 {
    public interface IStreetNetworkBussinessService
     {
-        Task<List<StreetNameDTO>> FetchStreetNetwork(string searchText);
     }
 }

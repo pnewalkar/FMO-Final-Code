@@ -20,6 +20,7 @@ namespace Fmo.API.Services.Controllers
             this.postalAddressBusinessService = postalAddressBusinessService;
         }
 
+        [HttpPost("SavePAFDetails")]
         public void SavePAFDetails([FromBody]PostalAddressDTO postalAddress)
         {
             try
