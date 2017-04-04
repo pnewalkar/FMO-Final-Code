@@ -9,18 +9,13 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
-   public class StreetNetworkBussinessService: IStreetNetworkBussinessService
+   public class StreetNetworkBussinessService : IStreetNetworkBussinessService
     {
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
 
         public StreetNetworkBussinessService(IStreetNetworkRepository streetNetworkRepository)
         {
             this.streetNetworkRepository = streetNetworkRepository;
-        }
-
-        public async Task<List<StreetNameDTO>> FetchStreetNetwork(string searchText)
-        {
-            return await streetNetworkRepository.FetchStreetNetwork(searchText);
         }
     }
 }
