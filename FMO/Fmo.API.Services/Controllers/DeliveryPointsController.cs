@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
+using Fmo.Common.Interface;
+using Fmo.Common.Enums;
+using Fmo.Common.ExceptionManagement;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net;
@@ -19,25 +22,25 @@ namespace Fmo.API.Services.Controllers
     [Route("api/deliveryPoints")]
     public class DeliveryPointsController : Controller
     {
-        IDeliveryPointBussinessService businessService = default(IDeliveryPointBussinessService);
+        IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
+        ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public DeliveryPointsController(IDeliveryPointBussinessService _businessService)
+        public DeliveryPointsController(IDeliveryPointBusinessService businessService, ILoggingHelper loggingHelper)
         {
-            businessService = _businessService;
+            this.businessService = businessService;
+            this.loggingHelper = loggingHelper;
         }
-
 
         public JsonResult Get()
         {
-            //return Json(businessService.SearchDelievryPoints());
-            return Json("");
+           return Json("");   
         }
 
         [Route("fetchDeliveryPoint")]
         [HttpGet]
-        public List<DeliveryPointDTO> FetchDeliveryPoints()
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPoints()
         {
-            return businessService.SearchDelievryPoints();
+            return await businessService.SearchDelievryPoints();
         }
 
         [Route("GetDeliveryPoints")]
@@ -98,5 +101,5 @@ namespace Fmo.API.Services.Controllers
         //public void Delete(int id)
         //{
         //}
-    }
+    }   
 }

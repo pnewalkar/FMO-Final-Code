@@ -9,8 +9,9 @@ using System.IO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-    public interface IDeliveryPointBussinessService
+    public interface IDeliveryPointBusinessService
     {
+        Task<List<DeliveryPointDTO>> SearchDelievryPoints();
         List<DeliveryPointDTO> SearchDelievryPoints();
 
         MemoryStream GetDeliveryPoints(string bbox);

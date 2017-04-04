@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.Entities;
 using Fmo.DTO;
+using Fmo.Entities;
 using Fmo.MappingConfiguration;
-using System;
-using System.Linq;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -17,17 +19,17 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<DTO.DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID)
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
         {
-            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.ToList().Where(x => x.DeliveryScenario_Id == deliveryScenarioID && x.OperationalStatus_Id == operationStateID);
+            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.Where(x => x.DeliveryScenario_Id == deliveryScenarioID && x.OperationalStatus_Id == operationStateID).ToList();
             return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
         }
 
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText)
         {
             try
             {
-                var result = DataContext.DeliveryRoutes.ToList();
+                var result = await DataContext.DeliveryRoutes.ToListAsync();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
             }
             catch (Exception ex)

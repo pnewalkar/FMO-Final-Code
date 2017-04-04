@@ -1,19 +1,23 @@
 ﻿namespace FMO.Batch.FileLoader
 {
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.IO;
+    using System.Linq;
+    using System.Net.Http;
+    using System.ServiceProcess;
+    using System.Text;
+    using System.Xml.Serialization;
     using Fmo.DTO;
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;
     using Ninject;
-    using System.Collections.Generic;
-    using System.Configuration;
-    using System.IO;
-    using System.ServiceProcess;
-    using System.Text;
-    using System.Xml.Serialization;
+    using Ninject.Parameters;
 
     public partial class FileLoader : ServiceBase
     {
+        private static string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
@@ -28,15 +32,20 @@
             InitializeComponent();
         }
 
+        public void OnDebug()
+        {
+            OnStart(null);
+        }
+
         protected void Register(IKernel kernel)
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
             kernel.Bind<ITPFLoader>().To<TPFLoader>().InSingletonScope();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            kernel.Bind<IMessageBroker<USR>>().To<MessageBroker<USR>>().InSingletonScope();
+            kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>().InSingletonScope();
 
-            nybLoader = kernel.Get<INYBLoader>();
+            nybLoader = kernel.Get<INYBLoader>(new[] { new ConstructorArgument("_client", new HttpClient()), new ConstructorArgument("_strFMOWEbApiURL", strFMOWEbApiURL) });
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
         }
@@ -48,15 +57,6 @@
             Start();
         }
 
-        private void Start()
-        {
-            // Initialize the list of FileSystemWatchers based on the XML configuration file
-            PopulateListFileSystemWatchers();
-            // Start the file system watcher for each of the file specification
-            // and folders found on the List<>
-            StartFileSystemWatcher();
-        }
-
         /// <summary>Event automatically fired when the service is stopped by Windows</summary>
         protected override void OnStop()
         {
@@ -66,12 +66,24 @@
                 {
                     // Stop listening
                     fsw.EnableRaisingEvents = false;
+
                     // Dispose the Object
                     fsw.Dispose();
                 }
+
                 // Clean the list
                 listFileSystemWatcher.Clear();
             }
+        }
+
+        private void Start()
+        {
+            // Initialize the list of FileSystemWatchers based on the XML configuration file
+            PopulateListFileSystemWatchers();
+
+            // Start the file system watcher for each of the file specification
+            // and folders found on the List<>
+            StartFileSystemWatcher();
         }
 
         /// <summary>Reads an XML file and populates a list of <CustomFolderSettings> </summary>
@@ -79,12 +91,15 @@
         {
             // Get the XML file name from the App.config file
             string fileNameXML = ConfigurationManager.AppSettings["XMLFileFolderSettings"];
+
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
             TextReader reader = new StreamReader(fileNameXML);
             object obj = deserializer.Deserialize(reader);
+
             // Close the TextReader object
             reader.Close();
+
             // Obtain a list of CustomFolderSettings from XML Input data
             listFolders = obj as List<CustomFolderSettings>;
         }
@@ -95,41 +110,53 @@
         {
             // Creates a new instance of the list
             this.listFileSystemWatcher = new List<FileSystemWatcher>();
+
             // Loop the list to process each of the folder specifications found
             foreach (CustomFolderSettings customFolder in listFolders)
             {
                 DirectoryInfo dir = new DirectoryInfo(customFolder.FolderPath);
+
                 // Checks whether the folder is enabled and
                 // also the directory is a valid location
                 if (customFolder.FolderEnabled && dir.Exists)
                 {
                     // Creates a new instance of FileSystemWatcher
                     FileSystemWatcher fileSWatch = new FileSystemWatcher();
+
                     // Sets the filter
                     fileSWatch.Filter = customFolder.FolderFilter;
+
                     // Sets the folder location
                     fileSWatch.Path = customFolder.FolderPath;
+
                     // Sets the action to be executed
                     StringBuilder actionToExecute = new StringBuilder(
                       customFolder.ExecutableFile);
+
                     // List of arguments
                     StringBuilder actionArguments = new StringBuilder(
                       customFolder.ExecutableArguments);
+
                     // Subscribe to notify filters
                     fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
                       NotifyFilters.DirectoryName;
+
                     // Associate the event that will be triggered when a new file
                     // is added to the monitored folder, using a lambda expression
-                    //fileSWatch.Created += (senderObj, fileSysArgs) =>
+                    // fileSWatch.Created += (senderObj, fileSysArgs) =>
                     //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
                     fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
                     fileSWatch.Error += OnFileSystemWatcherError;
+
                     // Begin watching
                     fileSWatch.EnableRaisingEvents = true;
+
                     // Add the systemWatcher to the list
                     listFileSystemWatcher.Add(fileSWatch);
+
                     // Record a log entry into Windows Event Log
-                    //CustomLogEvent(String.Format(
+
+                    // CustomLogEvent(String.Format(
                     //  "Starting to monitor files with extension ({0}) in the folder ({1})",
                     //  fileSWatch.Filter, fileSWatch.Path));
                 }
@@ -142,7 +169,7 @@
             watcher.EnableRaisingEvents = false;
             watcher.Dispose();
 
-            //Log error
+            // Log error
             Start();
         }
 
@@ -164,7 +191,7 @@
                         break;
 
                     case "NYB":
-                        this.nybLoader.LoadNYBDetailsFromCSV(fileName);
+                        LoadNYBDetails(fileName);
                         break;
 
                     case "TPF":
@@ -172,12 +199,28 @@
                         break;
                 }
             }
+
             // ExecuteProcess(fileName);
         }
 
-        public void OnDebug()
+        private void LoadNYBDetails(string fileName)
         {
-            OnStart(null);
+            try
+            {
+                List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(fileName);
+                if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                {
+                    var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+                    if (invalidRecordsCount == 0)
+                    {
+                        this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
 
         /*

@@ -71,7 +71,7 @@
     <Compile Include="ScenarioDTO.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="StreetNameDTO.cs" />
-    <Compile Include="USR.cs" />
+    <Compile Include="addressLocation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

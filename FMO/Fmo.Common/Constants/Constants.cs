@@ -8,7 +8,7 @@ namespace Fmo.Common.Constants
 {
     public static class Constants
     {
-        public const string USR_XML_ROOT = "ThirdParty";
+        public const string USR_XML_ROOT = "USR";
         public const string INSERT = "I";
         public const string UPDATE = "U";
         public const string DELETE = "D";

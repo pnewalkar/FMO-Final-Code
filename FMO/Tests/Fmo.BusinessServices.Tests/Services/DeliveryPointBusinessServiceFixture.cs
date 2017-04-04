@@ -11,7 +11,7 @@ namespace Fmo.BusinessServices.Tests.Services
     public class DeliveryPointBusinessServiceFixture : TestFixtureBase
     {
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
-        private IDeliveryPointBussinessService testCandidate;
+        private IDeliveryPointBusinessService testCandidate;
 
         [Test]
         public void Test_SearchDeliveryPoints()

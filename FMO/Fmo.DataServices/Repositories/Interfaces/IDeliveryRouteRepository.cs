@@ -8,8 +8,8 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryRouteRepository
     {
-        List<DTO.DeliveryRouteDTO> ListOfRoute(int operationStateID, int deliveryScenarioID);
+        List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);
 
-        List<DeliveryRouteDTO> FetchDeliveryRoute(string searchText);
+        Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText);
     }
 }

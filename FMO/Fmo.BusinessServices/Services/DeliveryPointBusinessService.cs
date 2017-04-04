@@ -11,7 +11,7 @@ using System.IO;
 
 namespace Fmo.BusinessServices.Services
 {
-    public class DeliveryPointBusinessService : IDeliveryPointBussinessService
+    public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
         private IDeliveryPointsRepository searchDeliveryPointsRepository = default(IDeliveryPointsRepository);
 
@@ -20,9 +20,9 @@ namespace Fmo.BusinessServices.Services
             this.searchDeliveryPointsRepository = searchDeliveryPointsRepository;
         }
 
-        public List<DeliveryPointDTO> SearchDelievryPoints()
+        public async Task<List<DeliveryPointDTO>> SearchDelievryPoints()
         {
-            return searchDeliveryPointsRepository.SearchDeliveryPoints();
+            return await searchDeliveryPointsRepository.SearchDeliveryPoints();
         }
 
         public MemoryStream GetDeliveryPoints(string bbox)

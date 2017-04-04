@@ -1,29 +1,54 @@
 <div id="map"></div>
 <div id="leftPanel">
-    <map-panel
-               paneltitle="Context">
-        Context
+    <map-panel class="context-panel"
+				paneltitle="Context"
+				showheader="true"
+				collapsed="false"
+				isleftpanel="true">
+        <!--<simulation></simulation>-->
+        <div ui-view></div>
     </map-panel>
 </div>
+
+
 <div><map-toolbar></map-toolbar></div>
 <div id="rightPanel">
     <div class="miniMap">
-        <map-panel paneltitle="Mini Map" oncreate="vm.initialiseMiniMap">
+        <map-panel class="layer-panel show-panel"
+               paneltitle="MiniMap"
+               showheader="true"
+               collapsed="false"
+               collapsedtext=""
+               oncreate="vm.initialiseMiniMap"
+               oncollapse="vm.oncollapse">
             <div id="mini-map" ></div>
         </map-panel>
     </div>
         
     <div class="layers">
         <map-panel
-                   paneltitle="Layers">
+                   class="layer-panel show-panel"
+               paneltitle="Layers"
+               showheader="true"
+               collapsed="true"
+               group="SelectorKeyGroup">
             <layers></layers>
         </map-panel>
     </div>
         
     <div>
         <map-panel
-                   paneltitle="Map Keys">
+<<<<<<< HEAD
+                class="key-panel show-panel"
+               paneltitle="Map Key"
+               showheader="true"
+               collapsed="true"
+               group="SelectorKeyGroup">
             <map-keys></map-keys>
+=======
+                   paneltitle="Map Keys">
+            <map-key></map-key>
+>>>>>>> 3827d8db90b036c0a76690ad8a286abc3229c260
         </map-panel>
     </div>
 </div>

@@ -2,13 +2,18 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
     using System.IO;
+    using System.Threading.Tasks;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using MappingConfiguration;
+    using Entity = Fmo.Entities;
+
     using Entity = Fmo.Entities;
     using System.Linq;
     using System.Data.SqlTypes;
@@ -21,11 +26,11 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<DeliveryPointDTO> SearchDeliveryPoints()
+        public async Task<List<DeliveryPointDTO>> SearchDeliveryPoints()
         {
             try
             {
-                var result = DataContext.DeliveryPoints.ToList();
+                var result = await DataContext.DeliveryPoints.ToListAsync();
                 return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result.ToList());
             }
             catch (Exception)

@@ -9,6 +9,6 @@ namespace Fmo.BusinessServices.Interfaces
 {
   public interface IPostCodeBussinessService
     {
-        List<PostCodeDTO> FetchPostCodeUnit(string searchText);
+        Task<List<PostCodeDTO>> FetchPostCodeUnit(string searchText);
     }
 }
