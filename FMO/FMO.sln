@@ -41,6 +41,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.Helpers", "Fmo.Helpers\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.NYBLoader.Tests", "Fmo.NYBLoader.Tests\Fmo.NYBLoader.Tests.csproj", "{A6ECA7A6-3B7B-4DF8-BD19-9325236ECCC5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DBScripts", "DBScripts", "{8C4500AF-722D-437F-843E-06B6766E1941}"
+	ProjectSection(SolutionItems) = preProject
+		DB_20170404160652_AddRowVersionColumnToDeliveryPointTable .sql = DB_20170404160652_AddRowVersionColumnToDeliveryPointTable .sql
+		DB_20170404160654_AddRowVersionColumnToAccessLinkTable .sql = DB_20170404160654_AddRowVersionColumnToAccessLinkTable .sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
