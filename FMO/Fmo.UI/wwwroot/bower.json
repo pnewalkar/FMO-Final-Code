@@ -26,7 +26,8 @@
     "svg-assets-cache.js": "svg-assets-cache#*",
     "components-font-awesome": "^4.7.0",
     "ol3-popup": "1.0.1",
-    "angular-ui-router": "^0.4.2"
+    "angular-ui-router": "^0.4.2",
+    "proj4": "^2.4.3"
   },
   "dependencies": {
     "material-design-icons-iconfont": "^3.0.3"
