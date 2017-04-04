@@ -190,6 +190,7 @@
                 {
                     case "PAF":
                         this.pafLoader.LoadPAFDetailsFromCSV(fileName);
+                        //this.pafLoader.ProcessPAF(fileName);
                         break;
 
                     case "NYB":
