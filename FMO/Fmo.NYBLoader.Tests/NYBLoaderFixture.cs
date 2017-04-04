@@ -95,7 +95,6 @@ namespace Fmo.NYBLoader.Tests
             int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsNotNull(methodOutput);
             Assert.IsTrue(InValidReccount == 1);
-            Assert.IsFalse(InValidReccount == 2);
         }
 
         [Test]
@@ -105,7 +104,6 @@ namespace Fmo.NYBLoader.Tests
             List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strFilePath);
             int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsTrue(InValidReccount == 1);
-            Assert.IsFalse(InValidReccount == 2);
         }
     }
 
