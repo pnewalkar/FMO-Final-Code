@@ -1,5 +1,4 @@
-﻿
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;

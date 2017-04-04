@@ -61,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestData\InvalidFile\InvalidPAF.zip" />
+    <None Include="TestData\ValidFile\ValidPAF.zip" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Fmo.BusinessServices\Fmo.BusinessServices.csproj">

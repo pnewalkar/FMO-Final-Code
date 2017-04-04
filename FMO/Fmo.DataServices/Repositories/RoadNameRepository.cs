@@ -1,8 +1,8 @@
-﻿
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
     using Fmo.DataServices.DBContext;
@@ -11,11 +11,9 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System.Data.Entity;
 
     public class RoadNameRepository : RepositoryBase<RoadName, FMODBContext>, IRoadNameRepository
     {
-
         public RoadNameRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
