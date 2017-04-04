@@ -56,6 +56,7 @@
     <Compile Include="Services\DeliveryPointBusinessServiceFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DeliveryRouteBusinessServiceFixture.cs" />
+    <Compile Include="Services\PostalAddressBusinessServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
