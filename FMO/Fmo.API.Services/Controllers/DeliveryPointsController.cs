@@ -49,18 +49,9 @@ namespace Fmo.API.Services.Controllers
         {
             //try
             //{
-                object[] bboxArr = bbox.Split(',');
 
-                MemoryStream memoryStream = businessService.GetDeliveryPoints(bbox);
 
-                var result = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StreamContent(memoryStream)
-                };
-
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                result.Content.Headers.ContentLength = memoryStream.Length;
-                return result;
+            return businessService.GetDeliveryPoints();
             //}
 
             //catch (Exception ex)

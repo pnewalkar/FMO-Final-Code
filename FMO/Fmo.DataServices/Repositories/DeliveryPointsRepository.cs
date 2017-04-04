@@ -14,11 +14,13 @@ namespace Fmo.DataServices.Repositories
     using MappingConfiguration;
     using Entity = Fmo.Entities;
 
-    using Entity = Fmo.Entities;
+
     using System.Linq;
     using System.Data.SqlTypes;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
+    using System.Text;
+
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
         public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -92,11 +94,23 @@ namespace Fmo.DataServices.Repositories
             return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
         }
 
-        public MemoryStream GetDeliveryPoints(object[] parameters)
+        public MemoryStream GetDeliveryPoints()
         {
+
+            string json;
+
+            using (StreamReader r = new StreamReader(@"D:\Richa\FMO-AD\FMO\Fmo.DataServices\TestData\deliveryPoint.json"))
+            {
+                json = r.ReadToEnd();
+            }
+
+            var resultBytes = Encoding.UTF8.GetBytes(json);
+            return new MemoryStream(resultBytes);
+
+
             //GenericRepository gUoW = new GenericRepository();
 
-            List<DeliveryPoint> result = GetData(null, parameters).ToList();
+            /*List<DeliveryPoint> result = GetData(null, parameters).ToList();
             //gUoW.DpRep.GetData().ToList<OpenLayersWebAPI.ViewModels.deliveryPoint>();
 
             var geoJson = new GeoJson
@@ -131,7 +145,10 @@ namespace Fmo.DataServices.Repositories
             var resultBytes = System.Text.Encoding.UTF8.GetBytes(geoJson.getJson().ToString());
 
 
-            return new MemoryStream(resultBytes);
+            return new MemoryStream(resultBytes);*/
+
+
+
         }
     }
 }

@@ -14,6 +14,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 
         bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
-        MemoryStream GetDeliveryPoints(object[] parameters);
+        MemoryStream GetDeliveryPoints();
     }
 }

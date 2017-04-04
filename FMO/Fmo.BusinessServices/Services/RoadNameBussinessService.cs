@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using System.IO;
 
 namespace Fmo.BusinessServices.Services 
 {
@@ -22,6 +23,12 @@ namespace Fmo.BusinessServices.Services
         public async Task<List<RoadNameDTO>> FetchRoadName()
         {
             return await roadNameRepository.FetchRoadName();
+        }
+
+        public MemoryStream GetRoadRoutes(string bbox)
+        {
+            string[] bboxArr = bbox.Split(',');
+            return roadNameRepository.GetRoadRoutes(bboxArr);
         }
     }
 }

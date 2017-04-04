@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using System.IO;
-
-namespace Fmo.BusinessServices.Interfaces
+﻿namespace Fmo.BusinessServices.Interfaces
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using System.Net.Http;
+
     public interface IDeliveryPointBusinessService
     {
         Task<List<DeliveryPointDTO>> SearchDelievryPoints();
-        List<DeliveryPointDTO> SearchDelievryPoints();
 
-        MemoryStream GetDeliveryPoints(string bbox);
+        HttpResponseMessage GetDeliveryPoints();
     }
 }

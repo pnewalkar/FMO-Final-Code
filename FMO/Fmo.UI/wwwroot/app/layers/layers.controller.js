@@ -41,7 +41,7 @@ function LayerSelectorController($scope, $rootScope, $http, mapService, mapStyle
     function onChange(changedLayer) {
         debugger;
        // fetchDeliveryPoints();
-        fetchAccessLinks();
+      //  fetchAccessLinks();
         if (changedLayer.group) {
             var group = vm.groups[vm.groupNames[changedLayer.group]];
             var otherEnabled = false;

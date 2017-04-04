@@ -8,6 +8,9 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using System.Net.Http;
 using System.IO;
+using Fmo.DataServices.Repositories;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -25,10 +28,24 @@ namespace Fmo.BusinessServices.Services
             return await searchDeliveryPointsRepository.SearchDeliveryPoints();
         }
 
-        public MemoryStream GetDeliveryPoints(string bbox)
+        public HttpResponseMessage GetDeliveryPoints()
         {
-            object[] bboxArr = bbox.Split(',');
-            return searchDeliveryPointsRepository.GetDeliveryPoints(bboxArr);
+            //object[] bboxArr = bbox.Split(',');
+            //return searchDeliveryPointsRepository.GetDeliveryPoints(bboxArr);
+
+
+
+            MemoryStream deliveryPoints = this.searchDeliveryPointsRepository.GetDeliveryPoints();
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(deliveryPoints)
+            };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            result.Content.Headers.ContentLength = deliveryPoints.Length;
+            return result;
+
         }
     }
 }

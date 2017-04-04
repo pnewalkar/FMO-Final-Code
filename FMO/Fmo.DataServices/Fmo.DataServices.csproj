@@ -121,6 +121,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="TestData\deliveryPoint.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SqlServerTypes\readme.htm" />
