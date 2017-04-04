@@ -8,8 +8,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryPointsRepository
     {
-        Task<List<DeliveryPointDTO>> SearchDeliveryPoints();
-
         DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN);
 
         bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);

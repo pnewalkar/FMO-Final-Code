@@ -28,26 +28,11 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public async Task<List<DeliveryPointDTO>> SearchDeliveryPoints()
-        {
-            try
-            {
-                var result = await DataContext.DeliveryPoints.ToListAsync();
-                return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result.ToList());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
         {
             try
             {
                 var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-
-                // return context.Students.Find(id);
                 return objDeliveryPoint;
             }
             catch (Exception)

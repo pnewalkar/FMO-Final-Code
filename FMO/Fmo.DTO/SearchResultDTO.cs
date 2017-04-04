@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fmo.DTO
 {
-    public class AdvanceSearchDTO
+    public class SearchResultDTO
     {
         public ICollection<DeliveryRouteDTO> DeliveryRoute { get; set; }
 
@@ -20,13 +21,7 @@ namespace Fmo.DTO
 
         public ICollection<NetworkLinkDTO> NetworkLink { get; set; }
 
-
-        ////public int TotalCount{
-        ////    get
-        ////    {
-        ////        return DeliveryRoute.Count+
-        ////    }
-        ////    }
-
+        [NotMapped]
+        public int TotalCount { get; set; }
     }
 }

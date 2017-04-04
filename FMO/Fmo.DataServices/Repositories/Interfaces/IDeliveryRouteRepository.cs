@@ -11,5 +11,9 @@ namespace Fmo.DataServices.Repositories.Interfaces
         List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);
 
         Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText);
+
+        Task<List<DeliveryRouteDTO>> FetchPostCodeUnitforBasicSearch(string searchText);
+
+        Task<int> GetDeliveryRouteUnitCount(string searchText);
     }
 }

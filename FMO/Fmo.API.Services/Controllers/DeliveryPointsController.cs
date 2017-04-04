@@ -40,7 +40,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPoints()
         {
-            return await businessService.SearchDelievryPoints();
+            throw new NotImplementedException();
         }
 
         [Route("GetDeliveryPoints")]

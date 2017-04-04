@@ -34,7 +34,34 @@ namespace Fmo.DataServices.Repositories
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
+            }
+        }
+
+        public async Task<List<DeliveryRouteDTO>> FetchPostCodeUnitforBasicSearch(string searchText)
+        {
+            try
+            {
+                int takeCount = 5;
+                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
+                    .Take(takeCount).ToListAsync();
+                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<int> GetDeliveryRouteUnitCount(string searchText)
+        {
+            try
+            {
+                return await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).CountAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }
