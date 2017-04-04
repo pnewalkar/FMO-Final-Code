@@ -57,6 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ConfigurationHelper.cs" />
+    <Compile Include="Common\HttpHandler.cs" />
+    <Compile Include="Interfaces\IHttpHandler.cs" />
+    <Compile Include="Interfaces\IConfigurationHelper.cs" />
     <Compile Include="Interfaces\IPAFLoader.cs" />
     <Compile Include="Interfaces\INYBLoader.cs" />
     <Compile Include="Interfaces\ITPFLoader.cs" />

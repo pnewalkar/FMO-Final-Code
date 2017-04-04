@@ -16,6 +16,12 @@ namespace Fmo.API.Services.Controllers
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService;
 
         [HttpGet]
+        public List<DeliveryUnitLocationDTO> DeliveryUnit()
+        {
+            return deliveryRouteBusinessService.FetchDeliveryUnit();
+        }
+
+        [HttpGet]
         public List<DeliveryRouteDTO> ListOfRouteLogs(int operationStateID, int deliveryScenarioID)
         {
             return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);

@@ -72,11 +72,13 @@
     <Compile Include="Repositories\AddressLocationRepository.cs" />
     <Compile Include="Repositories\AccessLinkRepository.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
+    <Compile Include="Repositories\DeliveryUnitLocationRespository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressLocationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAccessLinkRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryPointsRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IDeliveryUnitLocationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostCodeRepository.cs" />
     <Compile Include="Repositories\Interfaces\IReferenceDataCategoryRepository.cs" />
     <Compile Include="Repositories\Interfaces\IScenarioRepository.cs" />

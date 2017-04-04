@@ -59,6 +59,7 @@
     <Compile Include="GeoJson.cs" />
     <Compile Include="Geometry.cs" />
     <Compile Include="Groups.cs" />
+    <Compile Include="DeliveryUnitLocationDTO.cs" />
     <Compile Include="NetworkLinkDTO.cs" />
     <Compile Include="PostalAddressDTO.cs" />
     <Compile Include="PostCodeDTO.cs" />
@@ -71,7 +72,7 @@
     <Compile Include="ScenarioDTO.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="StreetNameDTO.cs" />
-    <Compile Include="addressLocation.cs" />
+    <Compile Include="AddressLocationUSRDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

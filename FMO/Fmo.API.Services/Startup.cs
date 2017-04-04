@@ -75,8 +75,9 @@ namespace Fmo.API.Services
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddTransient<IDeliveryRouteRepository, DeliveryRouteRepository>();
             services.AddTransient<IScenarioRepository, ScenarioRepository>();
-            
+            services.AddTransient<IDeliveryUnitLocationRepository, DeliveryUnitLocationRespository>();
             services.AddTransient<IAddressLocationRepository, AddressLocationRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
