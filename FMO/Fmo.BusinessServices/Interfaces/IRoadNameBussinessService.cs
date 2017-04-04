@@ -9,6 +9,6 @@ namespace Fmo.BusinessServices.Interfaces
 {
    public interface IRoadNameBussinessService
     {
-        List<RoadNameDTO> FetchRoadName();
+        Task<List<RoadNameDTO>> FetchRoadName();
     }
 }

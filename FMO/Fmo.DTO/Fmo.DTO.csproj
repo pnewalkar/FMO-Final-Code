@@ -46,6 +46,7 @@
     <Compile Include="AdvanceSearchDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />
+    <Compile Include="DeliveryUnitLocationDTO.cs" />
     <Compile Include="NetworkLinkDTO.cs" />
     <Compile Include="PostalAddressDTO.cs" />
     <Compile Include="PostCodeDTO.cs" />
