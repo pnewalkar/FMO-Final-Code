@@ -19,5 +19,7 @@ namespace Fmo.Common.Constants
         public const string PROCESSED_FOLDER = "Processed";
         public const string ERROR_FOLDER = "Error";
         public const string DeliveryPointSuffix = "1A";
+        public const int BNG_COORDINATE_SYSTEM = 27700;
     }
 }
+
