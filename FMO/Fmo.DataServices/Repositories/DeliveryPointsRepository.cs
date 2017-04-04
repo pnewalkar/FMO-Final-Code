@@ -2,16 +2,14 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Linq;
-    using System.Threading.Tasks;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using MappingConfiguration;
     using Entity = Fmo.Entities;
+    using MappingConfiguration;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -20,17 +18,35 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
+        public List<DeliveryPointDTO> SearchDeliveryPoints()
         {
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-                return objDeliveryPoint;
+                // var result = DataContext.DeliveryPoints.ToList();
+                ////IAutoMapper<Entity.DeliveryPoint, Dto.DeliveryPoint> deliveryMapper
+                // return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
+                return new List<DeliveryPointDTO>();
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+
+        public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
+        {
+            var objDeliveryPoint = new DeliveryPointDTO();
+            try
+            {
+                var deliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+
+                GenericMapper.Map(deliveryPoint, objDeliveryPoint);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return objDeliveryPoint;
         }
 
         public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
