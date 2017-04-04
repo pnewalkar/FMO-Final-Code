@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\DeliveryRouteRepositoryFixture.cs" />
+    <Compile Include="Repositories\DeliveryUnitLocationRepositoryFixture.cs" />
     <Compile Include="Repositories\ReferenceDataCategoryRepositoryFixture.cs" />
     <Compile Include="Repositories\ScenarioRepositoryFixture.cs" />
     <Compile Include="Repositories\SerarchDeliveryPointsRepositoryFixture.cs" />
