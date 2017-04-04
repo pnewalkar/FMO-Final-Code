@@ -10,6 +10,5 @@ namespace Fmo.BusinessServices.Interfaces
 {
     public interface IDeliveryPointBusinessService
     {
-        Task<List<DeliveryPointDTO>> SearchDelievryPoints();
     }
 }
