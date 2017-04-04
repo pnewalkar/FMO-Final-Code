@@ -32,15 +32,23 @@ namespace Fmo.BusinessServices.Tests.Services
         {
             List<ScenarioDTO> actualResult = testCandidate.FetchDeliveryScenario(operationalStateID, deliveryUnitID);
             Assert.NotNull(actualResult);
-            mockReferenceDataCategoryRepository.Verify(x => x.RouteLogStatus(), Times.Once());
+            mockScenarioRepository.Verify(x => x.FetchScenario(operationalStateID, deliveryUnitID), Times.Once());
         }
 
         [Test]
         public void Test_FetchDeliveryRoute()
         {
             List<DeliveryRouteDTO> actualResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryUnitID);
+            mockDeliveryRouteRepository.Verify(x => x.FetchDeliveryRoute(operationalStateID, deliveryUnitID), Times.Once());
             Assert.NotNull(actualResult);
-            mockReferenceDataCategoryRepository.Verify(x => x.RouteLogStatus(), Times.Once());
+        }
+
+        [Test]
+        public void Test_FetchDeliveryUnit()
+        {
+            List<DeliveryUnitLocationDTO> actualResult = testCandidate.FetchDeliveryUnit();
+            Assert.NotNull(actualResult);
+            mockIDeliveryUnitLocationRepository.Verify(x => x.FetchDeliveryUnit(), Times.Once());
         }
 
         protected override void OnSetup()
