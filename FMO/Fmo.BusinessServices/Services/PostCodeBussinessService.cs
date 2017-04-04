@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
-using Entity = Fmo.Entities;
 using Fmo.DTO;
 using Fmo.MappingConfiguration;
+using Entity = Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
 {

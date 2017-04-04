@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NYBLoaderFixture.cs" />
+    <Compile Include="PAFLoaderFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +80,10 @@
     <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj">
       <Project>{43fc012e-5274-4cf4-8689-97b3ce067c11}</Project>
       <Name>Fmo.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FMO.MessageBrokerCore\Fmo.MessageBrokerCore.csproj">
+      <Project>{10A130A3-105F-4DF9-9D74-00D252B5ACC7}</Project>
+      <Name>Fmo.MessageBrokerCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fmo.NYBLoader\Fmo.NYBLoader.csproj">
       <Project>{4e169f3d-90c8-4889-96ad-9c0d51c5c174}</Project>

@@ -13,13 +13,6 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
         private IDeliveryPointBusinessService testCandidate;
 
-        [Test]
-        public void Test_SearchDeliveryPoints()
-        {
-            testCandidate.SearchDelievryPoints();
-            mockDeliveryPointsRepository.Verify(x => x.SearchDeliveryPoints(), Times.Once());
-        }
-
         protected override void OnSetup()
         {
             mockDeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();

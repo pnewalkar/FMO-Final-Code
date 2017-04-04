@@ -19,14 +19,56 @@ namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
-        //private readonly IKernel kernal;
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
 
         public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker)
         {
             this.msgBroker = messageBroker;
+        }
+
+
+        public void ProcessPAF(string strPath)
+        {
+            List<PostalAddressDTO> lstAddressDetails = null;
+            try
+            {
+                using (ZipArchive zip = ZipFile.OpenRead(strPath))
+                {
+                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    {
+                        lstAddressDetails = LoadPAFinMemory(entry);
+                        if (lstAddressDetails != null)
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private List<PostalAddressDTO> LoadPAFinMemory(ZipArchiveEntry entry)
+        {
+            string strLine = string.Empty;
+            string strfileName = string.Empty;
+
+            Stream stream = entry.Open();
+            var reader = new StreamReader(stream);
+            strLine = reader.ReadToEnd();
+            strfileName = entry.Name;
+
+            List<PostalAddressDTO> obj = new List<PostalAddressDTO>();
+            return obj;
         }
 
         public void LoadPAFDetailsFromCSV(string strPath)
@@ -40,11 +82,12 @@ namespace Fmo.NYBLoader
                     {
                         string strLine = string.Empty;
                         string strfileName = string.Empty;
+                        string destinationPath = string.Empty;
+                        string errorPath = string.Empty;
 
                         Stream stream = entry.Open();
                         var reader = new StreamReader(stream);
                         strLine = reader.ReadToEnd();
-
                         strfileName = entry.Name;
 
                         string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
@@ -52,18 +95,7 @@ namespace Fmo.NYBLoader
 
                         if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                         {
-                            //lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
-                            lstAddressDetails = new List<PostalAddressDTO>
-                        {
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="A", AmendmentType="B"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="B", AmendmentType="C"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="C", AmendmentType="D"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="D", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =2, DepartmentName="E", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =3, DepartmentName="F", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =4, DepartmentName="G", AmendmentType="I"},
-                        };
-
+                            lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
 
                             if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                             {
@@ -90,12 +122,7 @@ namespace Fmo.NYBLoader
                                 }
                                 else
                                 {
-                                    foreach (var addDetail in lstAddressDetails)
-                                    {
-                                        string strXml = SerializeObject<PostalAddressDTO>(addDetail);
-                                        IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                                        msgBroker.SendMessage(msg);
-                                    }
+                                    SavePAFDetails(lstAddressDetails);
                                     File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                             }
@@ -116,6 +143,33 @@ namespace Fmo.NYBLoader
 
                 throw;
             }
+        }
+
+        private bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        {
+            bool saveflag = false;
+            try
+            {
+                saveflag = true;
+                /*
+                                    var lstPAFInsertEvents = lstAddressDetails.Where(insertFiles => insertFiles.AmendmentType == "I").ToList();//Constants.INSERT
+                                    var lstPAFUpdateEvents = lstAddressDetails.Where(updateFiles => updateFiles.AmendmentType == "U").ToList();//Constants.UPDATE
+                                    var lstPAFDeleteEvents = lstAddressDetails.Where(deleteFiles => deleteFiles.changeType == "D").ToList();//Constants.DELETE
+                                    Process each events seprately */
+
+                foreach (var addDetail in lstPostalAddress)
+                {
+                    string strXml = SerializeObject<PostalAddressDTO>(addDetail);
+                    IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    msgBroker.SendMessage(msg);
+                }
+            }
+            catch (Exception)
+            {
+
+                saveflag = false;
+            }
+            return saveflag;
         }
 
         private static string AppendTimeStamp(string strfileName)

@@ -17,7 +17,7 @@ namespace Fmo.Common.Constants
         public const string QUEUE_THIRD_PARTY = "QUEUE_THIRD_PARTY";
         public const string QUEUE_PATH = @".\Private$\";
         public const string PROCESSED_FOLDER = "Processed";
-        public const string ERROR_FOLDER = "Error";
+        public const string Error_FOLDER = "Error";
         public const string DeliveryPointSuffix = "1A";
         public const int BNG_COORDINATE_SYSTEM = 27700;
     }

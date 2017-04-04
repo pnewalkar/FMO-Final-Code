@@ -17,14 +17,6 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryPointsRepository testCandidate;
 
-        [Test]
-        public async void Test_SearchDeliveryPoints()
-        {
-            var actualResult = await testCandidate.SearchDeliveryPoints();
-            Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult.Count == 2);
-        }
-
         protected override void OnSetup()
         {
             var deliveryPoint = new List<DeliveryPoint>()

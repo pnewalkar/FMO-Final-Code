@@ -14,7 +14,7 @@ namespace Fmo.BusinessServices.Services
         private IScenarioRepository scenarioRepository;
         private IDeliveryUnitLocationRepository deliveryUnitLocationRespository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository,IDeliveryUnitLocationRepository deliveryUnitLocationRespository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository, IDeliveryUnitLocationRepository deliveryUnitLocationRespository)
         {
             this.routeSimulationRespository = routeSimulationRespository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;

@@ -18,7 +18,8 @@ namespace Fmo.Common.ExceptionManagement
         {
         }
 
-        public EntityNotFoundException(Type entityType, string message, params object[] args) : base(message, args)
+        public EntityNotFoundException(Type entityType, string message, params object[] args)
+        : base(message, args)
         {
             EntityType = entityType;
         }
