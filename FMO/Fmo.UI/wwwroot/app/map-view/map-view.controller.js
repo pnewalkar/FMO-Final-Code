@@ -272,7 +272,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
 
         //var deliveryPointsSelector = new MapFactory.LayerSelector();
         //deliveryPointsSelector.layerName = "Delivery Points";
-        //deliveryPointsSelector.layerUrl = mockDeliveryPointsLayer;
+        //deliveryPointsSelector.layerUrl = "map-view/mock_points.json";
         //deliveryPointsSelector.group = "";
         //deliveryPointsSelector.zIndex = 5;
         //deliveryPointsSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
@@ -308,7 +308,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         mockWFSLayerSelector.layer = mockDeliveryPointsLayer;
         mockWFSLayerSelector.group = "";
         mockWFSLayerSelector.zIndex = 8;
-        mockWFSLayerSelector.selected = true;
+        mockWFSLayerSelector.selected = false;
         mockWFSLayerSelector.onMiniMap = false;
         mockWFSLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
         mockWFSLayerSelector.keys = ["deliverypoint"];
@@ -317,7 +317,7 @@ function MapController($scope, mapFactory, $timeout, mapService, mapStylesFactor
         //var deliveryPointsSelector = new MapFactory.LayerSelector();
         //deliveryPointsSelector.layerName = "Delivery Points";
         ////deliveryPointsSelector.layerUrl = "map-view/mock_routes.json";
-        //deliveryPointsSelector.layerUrl = mockDeliveryPointsLayer;
+        //deliveryPointsSelector.layerUrl = "map-view/mock_points.json";
         //deliveryPointsSelector.group = "";
         //deliveryPointsSelector.zIndex = 5;
         //deliveryPointsSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);

@@ -12,8 +12,8 @@
 
     public interface IDeliveryPointBusinessService
     {
-        Task<List<DeliveryPointDTO>> SearchDelievryPoints();
+        //   Task<List<DeliveryPointDTO>> SearchDelievryPoints();
 
-        HttpResponseMessage GetDeliveryPoints();
+        object GetDeliveryPoints();
     }
 }

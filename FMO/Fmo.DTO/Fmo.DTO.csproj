@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
-    <Compile Include="AdvanceSearchDTO.cs" />
     <Compile Include="Coordinates.cs" />
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
