@@ -12,12 +12,12 @@
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;
+    using Fmo.NYBLoader.Common;
     using Ninject;
     using Ninject.Parameters;
 
     public partial class FileLoader : ServiceBase
     {
-        private static string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
@@ -39,13 +39,15 @@
 
         protected void Register(IKernel kernel)
         {
-            kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
-            kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
-            kernel.Bind<ITPFLoader>().To<TPFLoader>().InSingletonScope();
-            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>().InSingletonScope();
+            kernel.Bind<INYBLoader>().To<NYBLoader>();
+            kernel.Bind<IPAFLoader>().To<PAFLoader>();
+            kernel.Bind<ITPFLoader>().To<TPFLoader>();
+            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
+            kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>();
+            kernel.Bind<IHttpHandler>().To<HttpHandler>();
+            kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
 
-            nybLoader = kernel.Get<INYBLoader>(new[] { new ConstructorArgument("_client", new HttpClient()), new ConstructorArgument("_strFMOWEbApiURL", strFMOWEbApiURL) });
+            nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
         }

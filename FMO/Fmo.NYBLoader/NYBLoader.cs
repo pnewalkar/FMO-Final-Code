@@ -15,16 +15,25 @@ namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
-        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
-        private static string strFMOWEbApiURL = string.Empty;
-        private static string strFMOWebAPIName = ConfigurationManager.AppSettings["FMOWebAPIName"].ToString();
-        private static HttpClient client;
+        private static int noOfCharacters = 15;
+        private static int maxCharacters = 507;
+        private static int csvValues = 16;
+        private static string dateTimeFormat = "{0:-yyyy-MM-d-HH-mm-ss}";
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;
+        private string strFMOWEbApiURL = string.Empty;
+        private string strFMOWebAPIName = string.Empty;
+        private IHttpHandler httpHandler;
+        private IConfigurationHelper configurationHelper;
 
-        public NYBLoader(HttpClient _client, string _strFMOWEbApiURL)
+        public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
-            client = _client;
-            strFMOWEbApiURL = _strFMOWEbApiURL;
+            this.configurationHelper = configurationHelper;
+            this.httpHandler = httpHandler;
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ProcessedFilePath");
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ErrorFilePath").ToString();
+            this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIURL").ToString();
+            this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIName").ToString();
         }
 
         public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strPath)
@@ -61,7 +70,7 @@ namespace Fmo.NYBLoader
 
                                 //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
 
-                                lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+                                lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith(PostCodePrefix.GY.ToString()) || n.Postcode.StartsWith(PostCodePrefix.JE.ToString()) || n.Postcode.StartsWith(PostCodePrefix.IM.ToString()))).ToList();
 
                                 var invalidRecordsCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
 
@@ -97,12 +106,12 @@ namespace Fmo.NYBLoader
             {
                 foreach (string line in arrLines)
                 {
-                    if (line.Count(n => n == ',') != 15)
+                    if (line.Count(n => n == ',') != noOfCharacters)
                     {
                         isFileValid = false;
                         break;
                     }
-                    if (line.ToCharArray().Count() > 507)
+                    if (line.ToCharArray().Count() > maxCharacters)
                     {
                         isFileValid = false;
                         break;
@@ -123,7 +132,7 @@ namespace Fmo.NYBLoader
             try
             {
                 string[] values = csvLine.Split(',');
-                if (values.Count() == 16)
+                if (values.Count() == csvValues)
                 {
                     objAddDTO.Postcode = values[0];
                     objAddDTO.PostTown = values[1];
@@ -158,7 +167,7 @@ namespace Fmo.NYBLoader
             {
                 foreach (PostalAddressDTO objAdd in lstAddress)
                 {
-                    if ((string.IsNullOrEmpty(objAdd.Postcode)) && !ValidatePostCode(objAdd.Postcode))
+                    if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -166,7 +175,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) || !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -174,7 +183,7 @@ namespace Fmo.NYBLoader
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (!string.Equals(objAdd.PostcodeType, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) || objAdd.PostcodeType != " "))
+                    if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -247,7 +256,7 @@ namespace Fmo.NYBLoader
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
-               string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
+               string.Format(dateTimeFormat, DateTime.Now),
                 Path.GetExtension(strfileName)
                 );
         }
@@ -258,28 +267,16 @@ namespace Fmo.NYBLoader
             try
             {
                 saveflag = true;
-                SaveRecords(lstAddress).Wait();
+                httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
+                httpHandler.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
             }
             catch (Exception)
             {
 
-                throw;
+                saveflag = false;
             }
             return saveflag;
         }
 
-        private static async Task SaveRecords(List<PostalAddressDTO> lstAddress)
-        {
-            try
-            {
-                client.BaseAddress = new Uri(strFMOWEbApiURL);
-                var result = await client.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
-                //Employee product = await result.Content.ReadAsAsync<Employee>();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
     }
 }
