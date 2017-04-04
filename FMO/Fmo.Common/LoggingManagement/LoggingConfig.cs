@@ -21,6 +21,7 @@ namespace Fmo.Common.LoggingManagement
             var flatFileTraceListener = new FlatFileTraceListener(@"C:\Temp\FMO.log", "----------------------------------------", "----------------------------------------", formatter);
             var eventLog = new EventLog("Application", ".", "Enterprise Library Logging");
             var eventLogTraceListener = new FormattedEventLogTraceListener(eventLog);
+
             // Build Configuration
             var config = new LoggingConfiguration();
             config.AddLogSource("General", SourceLevels.All, true).AddTraceListener(eventLogTraceListener);

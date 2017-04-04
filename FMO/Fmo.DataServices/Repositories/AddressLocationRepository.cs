@@ -2,11 +2,11 @@
 {
     using System;
     using System.Linq;
+    using DTO;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
-    using DTO;
     using MappingConfiguration;
 
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository

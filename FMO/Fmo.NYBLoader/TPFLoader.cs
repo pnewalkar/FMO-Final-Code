@@ -16,19 +16,19 @@ using System.Xml.Schema;
 
 namespace Fmo.NYBLoader
 {
-    public class TPFLoader : ITPFLoader
+    public class TpfLoader : ITpfLoader
     {
         private readonly IMessageBroker<addressLocation> msgBroker;
         private const string XSD_LOCATION = @"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd";
 
 
-        public TPFLoader(IMessageBroker<addressLocation> messageBroker)
+        public TpfLoader(IMessageBroker<addressLocation> messageBroker)
         {
             this.msgBroker = messageBroker;
         }
 
 
-        public void LoadTPFDetailsFromXML(string strPath)
+        public void LoadTPFDetailsFromXml(string strPath)
         {
             string destinationPath = string.Empty;
             List <addressLocation> lstUSRFiles = null;
@@ -127,11 +127,11 @@ namespace Fmo.NYBLoader
             }
             catch (Exception ex)
             {
-                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER, new FileInfo(strPath).Name);
+                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER, new FileInfo(strPath).Name);
 
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER)))
+                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER)))
                 {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER));
+                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER));
                 }
 
                 File.Move(strPath, destinationPath);

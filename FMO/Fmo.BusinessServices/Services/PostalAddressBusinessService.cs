@@ -1,10 +1,10 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.MappingConfiguration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Entity = Fmo.Entities;
 
 namespace Fmo.BusinessServices.Services
@@ -72,6 +72,7 @@ namespace Fmo.BusinessServices.Services
                         postalAddress.AddressStatus_Id = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
                         addressRepository.UpdateAddress(postalAddress, addressTypeUSR);
                     }
+
                     if (true)
                     {
                     }
@@ -99,6 +100,7 @@ namespace Fmo.BusinessServices.Services
                         else
                         {
                             deliveryPointsRepository.InsertDeliveryPoint(deliveryPointDTO);
+
                             // create task
                         }
                     }

@@ -7,10 +7,6 @@ namespace Fmo.Common.ExceptionManagement
     [ExcludeFromCodeCoverage]
     public class InfrastructureException : Exception
     {
-        protected InfrastructureException()
-        {
-
-        }
         public InfrastructureException(string message)
             : base(message)
         {
@@ -28,6 +24,10 @@ namespace Fmo.Common.ExceptionManagement
 
         public InfrastructureException(Exception innerException, string message, params object[] args)
             : base(string.Format(message, args), innerException)
+        {
+        }
+
+        protected InfrastructureException()
         {
         }
     }

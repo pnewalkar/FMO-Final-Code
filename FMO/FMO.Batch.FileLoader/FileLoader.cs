@@ -23,7 +23,7 @@
         private List<CustomFolderSettings> listFolders;
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
-        private ITPFLoader tpfLoader = default(ITPFLoader);
+        private ITpfLoader tpfLoader = default(ITpfLoader);
 
         public FileLoader()
         {
@@ -39,15 +39,15 @@
 
         protected void Register(IKernel kernel)
         {
-            kernel.Bind<INYBLoader>().To<NYBLoader>().InSingletonScope();
+            kernel.Bind<INYBLoader>().To<NybLoader>().InSingletonScope();
             kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
-            kernel.Bind<ITPFLoader>().To<TPFLoader>().InSingletonScope();
+            kernel.Bind<ITpfLoader>().To<TpfLoader>().InSingletonScope();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
             kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>(new[] { new ConstructorArgument("_client", new HttpClient()), new ConstructorArgument("_strFMOWEbApiURL", strFMOWEbApiURL) });
             pafLoader = kernel.Get<IPAFLoader>();
-            tpfLoader = kernel.Get<ITPFLoader>();
+            tpfLoader = kernel.Get<ITpfLoader>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -145,7 +145,7 @@
                     // is added to the monitored folder, using a lambda expression
                     // fileSWatch.Created += (senderObj, fileSysArgs) =>
                     //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
-                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
+                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
                     fileSWatch.Error += OnFileSystemWatcherError;
 
                     // Begin watching
@@ -179,7 +179,7 @@
         /// <param name="e">List of arguments - FileSystemEventArgs</param>
         /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
         /// <param name="action_Args">arguments to be passed to the executable (action)</param>
-        private void fileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
+        private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
         {
             string fileName = e.FullPath;
             if (!string.IsNullOrEmpty(action_Args))
@@ -195,7 +195,7 @@
                         break;
 
                     case "TPF":
-                        this.tpfLoader.LoadTPFDetailsFromXML(fileName);
+                        this.tpfLoader.LoadTPFDetailsFromXml(fileName);
                         break;
                 }
             }

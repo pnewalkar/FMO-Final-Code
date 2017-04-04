@@ -19,7 +19,6 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public void Test_FetchDeliveryRoute()
         {
-
             var actualResult = testCandidate.FetchDeliveryRoute(1, 1);
             Assert.IsNotNull(actualResult);
         }

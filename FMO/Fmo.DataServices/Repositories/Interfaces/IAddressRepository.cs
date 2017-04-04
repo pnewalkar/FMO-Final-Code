@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Fmo.Entities;
 using Fmo.DTO;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {

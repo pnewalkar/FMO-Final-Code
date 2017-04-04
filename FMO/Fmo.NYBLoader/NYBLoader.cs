@@ -13,7 +13,7 @@ using Fmo.Common.Constants;
 
 namespace Fmo.NYBLoader
 {
-    public class NYBLoader : INYBLoader
+    public class NybLoader : INYBLoader
     {
         private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
         private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
@@ -21,7 +21,7 @@ namespace Fmo.NYBLoader
         private static string strFMOWebAPIName = ConfigurationManager.AppSettings["FMOWebAPIName"].ToString();
         private static HttpClient client;
 
-        public NYBLoader(HttpClient _client, string _strFMOWEbApiURL)
+        public NybLoader(HttpClient _client, string _strFMOWEbApiURL)
         {
             client = _client;
             strFMOWEbApiURL = _strFMOWEbApiURL;

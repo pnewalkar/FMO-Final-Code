@@ -1,12 +1,12 @@
-﻿using Fmo.BusinessServices.Interfaces;
-using Fmo.DataServices.Repositories.Interfaces;
-using Moq;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.DataServices.Repositories.Interfaces;
+using Moq;
+using NUnit.Framework;
 
 namespace Fmo.BusinessServices.Tests.Services
 {
@@ -22,12 +22,10 @@ namespace Fmo.BusinessServices.Tests.Services
         [Test]
         public void SavePAFDetailsTestFixture()
         {
-
         }
 
         public void SetUp()
         {
-
         }
     }
 }

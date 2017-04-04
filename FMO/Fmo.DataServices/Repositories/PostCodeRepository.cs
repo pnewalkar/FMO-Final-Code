@@ -1,5 +1,4 @@
-﻿
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +14,6 @@ namespace Fmo.DataServices.Repositories
 
     public class PostCodeRepository : RepositoryBase<Postcode, FMODBContext>, IPostCodeRepository
     {
-
         public PostCodeRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {

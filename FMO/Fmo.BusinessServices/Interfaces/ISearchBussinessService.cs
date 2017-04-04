@@ -5,6 +5,6 @@ namespace Fmo.BusinessServices.Interfaces
 {
     public interface ISearchBussinessService
     {
-       AdvanceSearchDTO FetchAdvanceSearchDetails(string SearchText);
+       AdvanceSearchDTO FetchAdvanceSearchDetails(string searchText);
     }
 }

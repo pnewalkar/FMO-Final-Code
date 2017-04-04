@@ -18,12 +18,15 @@ namespace Fmo.Common
 
             foreach (var field in type.GetFields())
             {
-                var attribute = Attribute.GetCustomAttribute(field,
+                var attribute = Attribute.GetCustomAttribute(
+                    field,
                     typeof(DescriptionAttribute)) as DescriptionAttribute;
                 if (attribute != null)
                 {
                     if (attribute.Description == description)
+                    {
                         return (T)field.GetValue(null);
+                    }
                 }
                 else
                 {
@@ -43,6 +46,7 @@ namespace Fmo.Common
             {
                 throw new ArgumentNullException("value", "paramater cannot be null");
             }
+
             // Get the type
             var type = value.GetType();
 
@@ -74,25 +78,29 @@ namespace Fmo.Common
 
         public static string GetDescription(this Enum en) // ext method
         {
-
-            Type type = en.GetType();
-
-            MemberInfo[] memInfo = type.GetMember(en.ToString());
-
-            if (memInfo != null && memInfo.Length > 0)
+            if (en != null)
             {
+                Type type = en.GetType();
+                MemberInfo[] memInfo = type.GetMember(en.ToString());
 
-                object[] attrs = memInfo[0].GetCustomAttributes(
-                    typeof(DescriptionAttribute),
-                    false);
-
-                if (attrs != null && attrs.Length > 0)
+                if (memInfo != null && memInfo.Length > 0)
                 {
-                    return ((DescriptionAttribute)attrs[0]).Description;
-                }
-            }
+                    object[] attrs = memInfo[0].GetCustomAttributes(
+                        typeof(DescriptionAttribute),
+                        false);
 
-            return en.ToString();
+                    if (attrs != null && attrs.Length > 0)
+                    {
+                        return ((DescriptionAttribute)attrs[0]).Description;
+                    }
+                }
+
+                return en.ToString();
+            }
+            else
+            {
+                throw new ArgumentException("invalid enum " + en.ToString());
+            }
         }
 
         private static object GetEnumStringValue(string value, Type enumType, bool ignoreCase)
@@ -106,7 +114,7 @@ namespace Fmo.Common
                                       let attributes = fieldInfo.GetCustomAttributes(typeof(ValueAttribute), false)
                                       where attributes.Length > 0
                                       let attribute = (ValueAttribute)attributes[0]
-                                      where String.Compare(attribute.Value, value, ignoreCase) == 0
+                                      where string.Compare(attribute.Value, value, ignoreCase) == 0
                                       select fieldInfo)
             {
                 return Enum.Parse(enumType, fieldInfo.Name);

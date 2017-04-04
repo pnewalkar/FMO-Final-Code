@@ -8,8 +8,8 @@ namespace Fmo.Common.Enums
 {
     public enum FileType
     {
-        PAF,
-        NYB,
-        USR
+        Paf,
+        Nyb,
+        Usr
     }
 }
