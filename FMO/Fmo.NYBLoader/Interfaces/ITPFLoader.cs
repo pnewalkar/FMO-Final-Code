@@ -10,6 +10,6 @@ namespace Fmo.NYBLoader.Interfaces
     public interface ITPFLoader
     {
         void LoadTPFDetailsFromXML(string strPath);
-        List<addressLocation> GetValidRecords(string strPath);
+        List<AddressLocationUSRDTO> GetValidRecords(string strPath);
     }
 }
