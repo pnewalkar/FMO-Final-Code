@@ -12,18 +12,18 @@
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;
+    using Fmo.NYBLoader.Common;
     using Ninject;
     using Ninject.Parameters;
 
     public partial class FileLoader : ServiceBase
     {
-        private static string strFMOWEbApiURL = ConfigurationManager.AppSettings["FMOWebAPIURL"].ToString();
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
-        private ITpfLoader tpfLoader = default(ITpfLoader);
+        private ITPFLoader tpfLoader = default(ITPFLoader);
 
         public FileLoader()
         {
@@ -39,15 +39,17 @@
 
         protected void Register(IKernel kernel)
         {
-            kernel.Bind<INYBLoader>().To<NybLoader>().InSingletonScope();
-            kernel.Bind<IPAFLoader>().To<PAFLoader>().InSingletonScope();
-            kernel.Bind<ITpfLoader>().To<TpfLoader>().InSingletonScope();
-            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            kernel.Bind<IMessageBroker<addressLocation>>().To<MessageBroker<addressLocation>>().InSingletonScope();
+            kernel.Bind<INYBLoader>().To<NYBLoader>();
+            kernel.Bind<IPAFLoader>().To<PAFLoader>();
+            kernel.Bind<ITPFLoader>().To<TPFLoader>();
+            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
+            kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
+            kernel.Bind<IHttpHandler>().To<HttpHandler>();
+            kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
 
-            nybLoader = kernel.Get<INYBLoader>(new[] { new ConstructorArgument("_client", new HttpClient()), new ConstructorArgument("_strFMOWEbApiURL", strFMOWEbApiURL) });
+            nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
-            tpfLoader = kernel.Get<ITpfLoader>();
+            tpfLoader = kernel.Get<ITPFLoader>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -145,7 +147,7 @@
                     // is added to the monitored folder, using a lambda expression
                     // fileSWatch.Created += (senderObj, fileSysArgs) =>
                     //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
-                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
+                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
                     fileSWatch.Error += OnFileSystemWatcherError;
 
                     // Begin watching
@@ -179,7 +181,7 @@
         /// <param name="e">List of arguments - FileSystemEventArgs</param>
         /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
         /// <param name="action_Args">arguments to be passed to the executable (action)</param>
-        private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
+        private void fileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
         {
             string fileName = e.FullPath;
             if (!string.IsNullOrEmpty(action_Args))
@@ -188,6 +190,7 @@
                 {
                     case "PAF":
                         this.pafLoader.LoadPAFDetailsFromCSV(fileName);
+                        //this.pafLoader.ProcessPAF(fileName);
                         break;
 
                     case "NYB":
@@ -195,7 +198,7 @@
                         break;
 
                     case "TPF":
-                        this.tpfLoader.LoadTPFDetailsFromXml(fileName);
+                        this.tpfLoader.LoadTPFDetailsFromXML(fileName);
                         break;
                 }
             }

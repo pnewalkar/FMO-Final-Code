@@ -41,6 +41,11 @@ namespace Fmo.Entities
 
         public int OperationalObjectType_Id { get; set; }
 
+        [Column(TypeName = "timestamp")]
+        [MaxLength(8)]
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public virtual DeliveryGroup DeliveryGroup { get; set; }
 
         public virtual DeliveryPoint DeliveryPoint { get; set; }

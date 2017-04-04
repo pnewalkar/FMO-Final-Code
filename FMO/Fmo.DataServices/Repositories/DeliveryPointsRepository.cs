@@ -2,16 +2,14 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Linq;
-    using System.Threading.Tasks;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using MappingConfiguration;
     using Entity = Fmo.Entities;
+    using MappingConfiguration;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -20,12 +18,14 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public async Task<List<DeliveryPointDTO>> SearchDeliveryPoints()
+        public List<DeliveryPointDTO> SearchDeliveryPoints()
         {
             try
             {
-                var result = await DataContext.DeliveryPoints.ToListAsync();
-                return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result.ToList());
+                // var result = DataContext.DeliveryPoints.ToList();
+                ////IAutoMapper<Entity.DeliveryPoint, Dto.DeliveryPoint> deliveryMapper
+                // return GenericMapper.MapList<Entity.DeliveryPoint, Dto.DeliveryPoint>(result);
+                return new List<DeliveryPointDTO>();
             }
             catch (Exception)
             {
@@ -33,19 +33,20 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
+        public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
         {
+            var objDeliveryPoint = new DeliveryPointDTO();
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                var deliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
 
-                // return context.Students.Find(id);
-                return objDeliveryPoint;
+                GenericMapper.Map(deliveryPoint, objDeliveryPoint);
             }
             catch (Exception)
             {
                 throw;
             }
+            return objDeliveryPoint;
         }
 
         public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)

@@ -19,10 +19,38 @@
         {
         }
 
+        public async Task<List<PostCodeDTO>> FetchPostCodeUnitforBasicSearch(string searchText)
+        {
+            try
+            {
+                int takeCount = 5;
+                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).Take(takeCount).ToListAsync();
+                return GenericMapper.MapList<Postcode, PostCodeDTO>(postCodeDetails.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<int> GetPostCodeUnitCount(string searchText)
+        {
+            try
+            {
+                return await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).CountAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<List<PostCodeDTO>> FetchPostCodeUnit(string searchText)
         {
             try
             {
+                var postCodeDetails = DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).ToList();
+
                 var result = await DataContext.Postcodes.ToListAsync();
                 return GenericMapper.MapList<Postcode, PostCodeDTO>(result.ToList());
             }

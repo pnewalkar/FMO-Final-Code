@@ -54,6 +54,11 @@ namespace Fmo.Entities
 
         public bool IsUnit { get; set; }
 
+        [Column(TypeName = "timestamp")]
+        [MaxLength(8)]
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }
 

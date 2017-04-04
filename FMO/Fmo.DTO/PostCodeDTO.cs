@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fmo.DTO
 {
@@ -15,5 +16,8 @@ namespace Fmo.DTO
         public string InwardCode { get; set; }
 
         public string Sector { get; set; }
+
+        [NotMapped]
+        public int TotalCount { get; set; }
     }
 }

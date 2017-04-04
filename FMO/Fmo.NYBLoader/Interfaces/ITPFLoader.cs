@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Fmo.NYBLoader.Interfaces
 {
-    public interface ITpfLoader
+    public interface ITPFLoader
     {
-        void LoadTPFDetailsFromXml(string strPath);
-        List<addressLocation> GetValidRecords(string strPath);
+        void LoadTPFDetailsFromXML(string strPath);
+        List<AddressLocationUSRDTO> GetValidRecords(string strPath);
     }
 }

@@ -1,7 +1,8 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$scope', 'unitSelectorAPIService', UnitSelectorController])
-function UnitSelectorController($scope, unitSelectorAPIService) {
+.controller('UnitSelectorController', ['$scope', '$stateParams', '$state' ,'unitSelectorAPIService', UnitSelectorController])
+function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService) {
     var vm = this;
+    vm.DeliveryUnit = DeliveryUnit;
    
     vm.deliveryUnit = [
        { id: 1, name: 'Unit One' },
@@ -11,9 +12,11 @@ function UnitSelectorController($scope, unitSelectorAPIService) {
     vm.selectedUser = { id: 1, name: 'Bob' };
     
     function DeliveryUnit() {
-        unitSelectorAPIService.GetDeliveryUnit().then(function (response) {
-            vm.deliveryUnit = response.data;
-        });
+
+        $state.go('routeSimulation', { selectedUnit: vm.selectedUser });
+        //unitSelectorAPIService.GetDeliveryUnit().then(function (response) {
+        //    vm.deliveryUnit = response.data;
+        //});
     }
 
 }
