@@ -19,28 +19,19 @@ namespace Fmo.NYBLoader
     public class TPFLoader : ITPFLoader
     {
         private readonly IMessageBroker<addressLocation> msgBroker;
-        private const string XSD_LOCATION = @"D:\Software\Jitendra\FMO-AD\FMO\Fmo.NYBLoader\ReferenceSchema\USRFileSchema.xsd";
+        private const string XSD_LOCATION = @"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd";
 
 
         public TPFLoader(IMessageBroker<addressLocation> messageBroker)
         {
-            //kernal = new StandardKernel();
-            //Register(kernal);
             this.msgBroker = messageBroker;
         }
 
-        protected static void Register(IKernel kernel)
-        {
-            //kernel.Bind<IMessageBroker>().To<MessageBroker>().InSingletonScope();
-        }
-        //protected T Get<T>()
-        //{
-        //    return kernal.Get<T>();
-        //}
 
         public void LoadTPFDetailsFromXML(string strPath)
         {
-            List<addressLocation> lstUSRFiles = null;
+            string destinationPath = string.Empty;
+            List <addressLocation> lstUSRFiles = null;
             List<addressLocation> lstUSRInsertFiles = null;
             List<addressLocation> lstUSRUpdateFiles = null;
             List<addressLocation> lstUSRDeleteFiles = null;
@@ -48,38 +39,7 @@ namespace Fmo.NYBLoader
 
             try
             {
-                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USR_XML_ROOT));
-                XmlDocument validXmlDocument = new XmlDocument();
-                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, Constants.USR_XML_ROOT, null);
-                validXmlDocument.AppendChild(rootNode);
-
-
-                using (TextReader reader = new StreamReader(strPath))
-                {
-                    //lstUSRFiles = (List<USR>)fledeserializer.Deserialize(reader);
-                    List<XmlNode> xmlNodes = ((XmlNode[])fledeserializer.Deserialize(reader)).ToList();
-                    List<XmlNode> validXmlNodes = new List<XmlNode>();
-
-                    xmlNodes.ForEach(xmlNode =>
-                    {
-                        if (IsXmlValid(XSD_LOCATION, xmlNode))
-                        {
-                            validXmlNodes.Add(xmlNode);
-                        }
-
-                    });
-                    validXmlNodes.ForEach(xmlNode =>
-                    {
-                        XmlNode newNode = validXmlDocument.ImportNode(xmlNode, true);
-                        rootNode.AppendChild(newNode);
-                    });
-
-                    using (XmlReader xmlReader = XmlReader.Create(new StringReader(validXmlDocument.OuterXml)))
-                    {
-                        xmlReader.MoveToContent();
-                        lstUSRFiles = (List<addressLocation>)(new XmlSerializer(typeof(List<addressLocation>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));    
-                    }
-                };
+                lstUSRFiles = GetValidRecords(strPath);
 
                 lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.changeType == Constants.INSERT).ToList();
                 lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.changeType == Constants.UPDATE).ToList();
@@ -92,8 +52,16 @@ namespace Fmo.NYBLoader
                     msgBroker.SendMessage(USRMsg);
                 });
 
+                destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER, new FileInfo(strPath).Name);
 
-                //Code to be uncommented after 
+                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER)))
+                {
+                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER));
+                }
+
+                File.Move(strPath, destinationPath);
+
+                //Code to be uncommented after confirmation
                 /*lstUSRUpdateFiles.ForEach(addressLocation =>
                 {
                     string xmlUSR = SerializeObject<addressLocation>(addressLocation);
@@ -116,6 +84,63 @@ namespace Fmo.NYBLoader
             }
         }
 
+        public List<addressLocation> GetValidRecords(string strPath)
+        {
+
+            try
+            {
+                List<addressLocation> lstUSRFiles = new List<addressLocation>();
+
+                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USR_XML_ROOT));
+                XmlDocument validXmlDocument = new XmlDocument();
+                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, Constants.USR_XML_ROOT, null);
+                validXmlDocument.AppendChild(rootNode);
+
+
+                using (TextReader reader = new StreamReader(strPath))
+                {
+                    List<XmlNode> xmlNodes = ((XmlNode[])fledeserializer.Deserialize(reader)).ToList();
+                    List<XmlNode> validXmlNodes = new List<XmlNode>();
+
+                    xmlNodes.ForEach(xmlNode =>
+                    {
+                        if (IsXmlValid(XSD_LOCATION, xmlNode))
+                        {
+                            validXmlNodes.Add(xmlNode);
+                        }
+
+                    });
+                    validXmlNodes.ForEach(xmlNode =>
+                    {
+                        XmlNode newNode = validXmlDocument.ImportNode(xmlNode, true);
+                        rootNode.AppendChild(newNode);
+                    });
+
+                    using (XmlReader xmlReader = XmlReader.Create(new StringReader(validXmlDocument.OuterXml)))
+                    {
+                        xmlReader.MoveToContent();
+                        lstUSRFiles = (List<addressLocation>)(new XmlSerializer(typeof(List<addressLocation>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));
+                    }
+                };
+
+                return lstUSRFiles;
+            }
+            catch (Exception ex)
+            {
+                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER, new FileInfo(strPath).Name);
+
+                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER)))
+                {
+                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER));
+                }
+
+                File.Move(strPath, destinationPath);
+
+                throw ex;
+            }
+
+        }
+
         private bool IsXmlValid(string xsdFile, XmlNode xNode)
         {
 
@@ -124,7 +149,8 @@ namespace Fmo.NYBLoader
                 bool result = true;
                 XDocument xDoc = XDocument.Load(new XmlNodeReader(xNode));
                 XmlSchemaSet schemas = new XmlSchemaSet();
-                schemas.Add("http://tempuri.org/AddressLocationSchema.xsd", xsdFile);
+                schemas.Add("", XmlReader.Create(xsdFile));
+
                 xDoc.Validate(schemas, (o, e) =>
                 {
                     //logger code to write schema mismatch exception 
