@@ -65,10 +65,17 @@ namespace Fmo.API.Services
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
             services.AddSingleton<ILoggingHelper, LoggingHelper>();
             services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
-            services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
-            services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();    
+
+            //Infrastructure
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
             services.AddTransient<IDatabaseFactory<FMODBContext>, DatabaseFactory<FMODBContext>>();
+
+            //BusinessServices
+            services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
+            services.AddTransient<ISearchBussinessService, SearchBussinessService>();
+
+            //Repositories
+            services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();    
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IAddressRepository, AddressRepository>();
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
@@ -77,7 +84,7 @@ namespace Fmo.API.Services
             services.AddTransient<IScenarioRepository, ScenarioRepository>();
             services.AddTransient<IDeliveryUnitLocationRepository, DeliveryUnitLocationRespository>();
             services.AddTransient<IAddressLocationRepository, AddressLocationRepository>();
-
+            services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

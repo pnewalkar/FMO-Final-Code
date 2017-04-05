@@ -13,16 +13,9 @@ angular.module('mapToolbar')
 		vm.selectedButton = null;
 		vm.autoSelect = autoSelect;
 
-		function setSelectedButton(button) {
-			switch (button){
-				case 'delete':
-					$scope.$emit('deleteSelectedFeature');
-					return;
-				case 'save':
-					$scope.$emit('saveDrawingLayer');
-					return;
-			}
-
+		function setSelectedButton(button)
+		{
+			          
 			var shape = getShapeForButton(button);
 
 			if (button == vm.selectedButton && mapService.mapButtons.length != 1) {
@@ -52,7 +45,6 @@ angular.module('mapToolbar')
 		        case 'point':
 		            return 'Point';		       
 		        case 'line':
-		        case 'measure':
 		            return 'LineString';
 		        default:
 		            return undefined;

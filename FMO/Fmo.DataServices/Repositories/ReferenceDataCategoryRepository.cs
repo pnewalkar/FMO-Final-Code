@@ -28,11 +28,15 @@ namespace Fmo.DataServices.Repositories
                 {
                     if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
                     {
-                        statusId = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault().ReferenceData_Id;
+                        var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault();
+                        if (referenceData != null)
+                        {
+                            statusId = referenceData.ReferenceData_Id;
+                        }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // TO DO implement logging
                 throw;

@@ -18,40 +18,50 @@ using System.Threading.Tasks;
 namespace Fmo.BusinessServices.Tests.Services
 {
     [TestFixture]
-    public class PostalAddressBusinessServiceFixture: TestFixtureBase
+    public class PostalAddressBusinessServiceFixture : TestFixtureBase
     {
-        /*private Mock<IAddressRepository> mockAddressRepository;
-        private Mock<IReferenceDataCategoryRepository> mockReferenceDataCategoryRepository;
-        private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
-        private Mock<IAddressLocationRepository> mockAddressLocationRepository;
-        private IPostalAddressBusinessService testCandidate;*/
+        private Mock<IAddressRepository> mockAddressRepository;
+        private Mock<IReferenceDataCategoryRepository> mockrefDataRepository;
+        private Mock<IDeliveryPointsRepository> mockdeliveryPointsRepository;
+        private Mock<IAddressLocationRepository> mockaddressLocationRepository;
+        private IPostalAddressBusinessService testCandidate;
 
-        private IPAFLoader testCandidate;
-        private IMessageBroker<PostalAddressDTO> msgBroaker;
-
-        protected override void OnSetup()
+        [Test]
+        public void Test_ValidPostalAddressData()
         {
-            msgBroaker = new MessageBroker<PostalAddressDTO>();
-            testCandidate = new PAFLoader(msgBroaker);
-
-            /*mockAddressRepository = CreateMock<IAddressRepository>();
-            mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
-            mockDeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
-            mockAddressLocationRepository = CreateMock<IAddressLocationRepository>();
-
-            testCandidate = new PostalAddressBusinessService(
-                mockAddressRepository.Object,
-                mockReferenceDataCategoryRepository.Object,
-                mockDeliveryPointsRepository.Object,
-                mockAddressLocationRepository.Object
-                );*/
+            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10, UDPRN = 14856 } };
+            var result = testCandidate.SavePostalAddress(lstPostalAddressDTO);
+            mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
+            mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            mockAddressRepository.Verify(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<int>()), Times.Once());
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
         }
 
         [Test]
-        public void Test_LoadPAFDetailsFromCSV_Positive()
+        public void Test_InvalidPostalAddressData()
         {
-            string strPath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.zip");
-            testCandidate.LoadPAFDetailsFromCSV(strPath);
+            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
+            var result = testCandidate.SavePostalAddress(lstPostalAddressDTO);
+            mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
+            mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            mockAddressRepository.Verify(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<int>()), Times.Once());
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result);
         }
+
+        protected override void OnSetup()
+        {
+            mockAddressRepository = CreateMock<IAddressRepository>();
+            mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
+            mockdeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
+            mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
+            mockrefDataRepository.Setup(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(2);
+            mockAddressRepository.Setup(x => x.SaveAddress(It.IsAny<PostalAddressDTO>())).Returns(true);
+            mockAddressRepository.Setup(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<int>())).Returns(true);
+
+            testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object);
+        }
+
     }
 }

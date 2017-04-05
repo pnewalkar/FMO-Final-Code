@@ -26,10 +26,10 @@ namespace Fmo.NYBLoader.Tests
         }
 
         [Test]
-        public void Test_ValidRecords_Count()
+        public void Test_LoadPAF_Count()
         {
             string strFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.zip");
-            //List<PostalAddressDTO> methodOutput = testCandidate.LoadPAFDetailsFromCSV(strFilePath);
+            //List<PostalAddressDTO> methodOutput = testCandidate.LoadPAF(strFilePath);
         }
     }
 }

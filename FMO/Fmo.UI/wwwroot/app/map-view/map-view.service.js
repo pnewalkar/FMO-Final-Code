@@ -38,7 +38,8 @@ function mapService() {
     vm.styleLayers = function () { };
     vm.onMap = function (event, callback) { };
     vm.offMap = function (event, callback) { };
-
+    vm.layerSummary = function () { };
+   
     function getLayer(layerName) {
         var returnVal = null;
         vm.mapLayers.forEach(function (layer) {
@@ -103,7 +104,20 @@ function mapService() {
             callback(selectedFeatures);
         })
     }
+    function getLayerSummary() {
+        debugger;
+        var summary = "";
+        vm.mapLayers.forEach(function (layer) {
+            if (layer.selected && layer.selectorVisible)
+                summary += layer.layerName + ", ";
+        });
+        if (summary.lastIndexOf(", ") == summary.length - 2)
+            summary = summary.substring(0, summary.length - 2);
+        else
+            summary = "No layers selected";
 
+        return summary;
+    }
     function refreshLayers() {
         vm.mapLayers.forEach(function (layer) {
             layer.layer.setVisible(layer.selected);

@@ -80,7 +80,7 @@ namespace Fmo.NYBLoader
 
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

@@ -18,5 +18,8 @@ namespace Fmo.DTO
         public string roadClassification { get; set; }
 
         public string DesignatedName { get; set; }
+
+        public string type { get; set; }
+        public List<Feature> features { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace Fmo.Common.ExceptionManagement
 {
@@ -9,6 +10,11 @@ namespace Fmo.Common.ExceptionManagement
     {
         public EntityAlreadyExistsException(string message, params object[] args)
             : base(message, args)
+        {
+        }
+
+        protected EntityAlreadyExistsException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

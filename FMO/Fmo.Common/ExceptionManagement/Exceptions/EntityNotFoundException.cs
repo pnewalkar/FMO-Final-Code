@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace Fmo.Common.ExceptionManagement
 {
@@ -22,6 +23,11 @@ namespace Fmo.Common.ExceptionManagement
         : base(message, args)
         {
             EntityType = entityType;
+        }
+
+        protected EntityNotFoundException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
         }
 
         public Type EntityType { get; private set; }
