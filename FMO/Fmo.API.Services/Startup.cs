@@ -64,7 +64,7 @@ namespace Fmo.API.Services
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
             services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
+            services.AddSingleton(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
 
             //Infrastructure
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
@@ -85,6 +85,8 @@ namespace Fmo.API.Services
             services.AddTransient<IDeliveryUnitLocationRepository, DeliveryUnitLocationRespository>();
             services.AddTransient<IAddressLocationRepository, AddressLocationRepository>();
             services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
+            services.AddTransient<IPostCodeRepository, PostCodeRepository>();
+            services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

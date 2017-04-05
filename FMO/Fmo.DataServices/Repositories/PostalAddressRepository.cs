@@ -25,14 +25,27 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 int takeCount = 5;
-                var postalAddress = await DataContext.PostalAddresses.Where(l => l.OrganisationName.Contains(searchText)
+                var postalAddressDto = await DataContext.PostalAddresses.Where(l => l.OrganisationName.Contains(searchText)
                                     || l.BuildingName.Contains(searchText)
                                     || l.SubBuildingName.Contains(searchText)
                                     || SqlFunctions.StringConvert((double)l.BuildingNumber).StartsWith(searchText)
                                     || l.Thoroughfare.Contains(searchText)
                                     || l.DependentLocality.Contains(searchText))
-                    .Take(takeCount).ToListAsync();
-                return GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress.ToList());
+                    .Take(takeCount)
+                    .Select(l => new PostalAddressDTO
+                    {
+                        Address_Id = l.Address_Id,
+                        AddressType_Id = l.AddressType_Id,
+                        OrganisationName = l.OrganisationName,
+                        BuildingName = l.BuildingName,
+                        SubBuildingName = l.SubBuildingName,
+                        BuildingNumber = l.BuildingNumber,
+                        Thoroughfare = l.Thoroughfare,
+                        DependentLocality = l.DependentLocality
+                    })
+                    .ToListAsync();
+
+                return postalAddressDto;
             }
             catch (Exception ex)
             {
