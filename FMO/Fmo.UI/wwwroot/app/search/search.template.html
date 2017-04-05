@@ -1,5 +1,6 @@
 <md-input-container md-no-float class="md-accent">
-<input ng-model="search" placeholder="Search" >
+<!--<input ng-model="search" placeholder="Search" >-->
+    <input type="text" ng-model="customSelected" placeholder="Custom template" uib-typeahead="state as state.name for state in statesWithFlags | filter:{name:$viewValue}" typeahead-template-url="customTemplate.html" class="form-control" typeahead-show-hint="true" typeahead-min-length="0">
 </md-input-container>
 
 
