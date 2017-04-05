@@ -71,12 +71,14 @@
     <Compile Include="Repositories\Interfaces\IDeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryPointsRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryUnitLocationRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IPostalAddressRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostCodeRepository.cs" />
     <Compile Include="Repositories\Interfaces\IReferenceDataCategoryRepository.cs" />
     <Compile Include="Repositories\Interfaces\IScenarioRepository.cs" />
     <Compile Include="Repositories\Interfaces\IRoadNameRepository.cs" />
     <Compile Include="Repositories\DeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IStreetNetworkRepository.cs" />
+    <Compile Include="Repositories\PostalAddressRepository.cs" />
     <Compile Include="Repositories\PostCodeRepository.cs" />
     <Compile Include="Repositories\ReferenceDataCategoryRepository.cs" />
     <Compile Include="Repositories\ScenarioRepository.cs" />

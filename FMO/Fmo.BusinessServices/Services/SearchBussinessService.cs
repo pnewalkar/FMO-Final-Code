@@ -10,33 +10,45 @@ namespace Fmo.BusinessServices.Services
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
         private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
+        private IPostalAddressRepository postalAddressRepository = default(IPostalAddressRepository);
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
 
-        public SearchBussinessService(IDeliveryPointsRepository deliveryPointsRepository, IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postCodeRepository, IStreetNetworkRepository streetNetworkRepository)
+        public SearchBussinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postCodeRepository, IPostalAddressRepository postalAddressRepository, IStreetNetworkRepository streetNetworkRepository)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
             this.postCodeRepository = postCodeRepository;
             this.streetNetworkRepository = streetNetworkRepository;
+            this.postalAddressRepository = postalAddressRepository;
         }
 
         public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText)
         {
-            int dataCount = 0;
-            SearchResultDTO searchResultDto = new SearchResultDTO();
-            searchResultDto.DeliveryRoute = await deliveryRouteRepository.FetchDeliveryRoute(searchText);
-            dataCount = await deliveryRouteRepository.GetDeliveryRouteUnitCount(searchText);
+            var deliveryRoutes = deliveryRouteRepository.FetchDeliveryRoute(searchText);
+            var deliveryRouteCount = deliveryRouteRepository.GetDeliveryRouteUnitCount(searchText);
 
-            searchResultDto.PostCode = await postCodeRepository.FetchPostCodeUnitforBasicSearch(searchText);
-            dataCount += await postCodeRepository.GetPostCodeUnitCount(searchText);
+            var postcodes = postCodeRepository.FetchPostCodeUnitforBasicSearch(searchText);
+            var postCodeCount = postCodeRepository.GetPostCodeUnitCount(searchText);
 
-            await streetNetworkRepository.FetchStreetNetwork(searchText);
-            return null;
+            var postalAddress = postalAddressRepository.FetchPostalAddressforBasicSearch(searchText);
+            var postalAddressCount = postalAddressRepository.GetPostalAddressCount(searchText);
+
+            var streetNames = streetNetworkRepository.FetchStreetNamesforBasicSearch(searchText);
+            var streetNetworkCount = streetNetworkRepository.GetStreetNameCount(searchText);
+
+            await Task.WhenAll(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, postalAddress, postalAddressCount, streetNames, streetNetworkCount);
+            return new SearchResultDTO
+            {
+                DeliveryRoute = await deliveryRoutes,
+                PostCode = await postcodes,
+                PostalAddress = await postalAddress,
+                StreetName = await streetNames,
+                TotalCount = await deliveryRouteCount + await postCodeCount + await postalAddressCount + await streetNetworkCount
+            };
         }
 
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
         {
             await postCodeRepository.FetchPostCodeUnit(searchText);
-            await streetNetworkRepository.FetchStreetNetwork(searchText);
             await deliveryRouteRepository.FetchDeliveryRoute(searchText);
             return null;
         }

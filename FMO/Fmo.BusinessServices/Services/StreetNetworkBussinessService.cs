@@ -17,10 +17,5 @@ namespace Fmo.BusinessServices.Services
         {
             this.streetNetworkRepository = streetNetworkRepository;
         }
-
-        public async Task<List<StreetNameDTO>> FetchStreetNetwork(string searchText)
-        {
-            return await streetNetworkRepository.FetchStreetNetwork(searchText);
-        }
     }
 }
