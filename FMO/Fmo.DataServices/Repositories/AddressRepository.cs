@@ -27,15 +27,15 @@
                     var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
                     if (lstAddress != null && lstUDPRN.Count > 0)
                     {
-                        lstAddress.ForEach(x =>
+                        lstAddress.ForEach(postalAddressEntity =>
                         {
-                            if (x.DeliveryPoints != null && x.DeliveryPoints.Count > 0)
+                            if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                             {
                                 // TO DO log error
                             }
                             else
                             {
-                                DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
+                                DataContext.PostalAddresses.Remove(postalAddressEntity);
                             }
                         });
                         DataContext.SaveChanges();
@@ -78,8 +78,6 @@
                         objAddress.PostcodeType = objPostalAddress.PostcodeType;
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                        DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
-
                     }
                     else
                     {
