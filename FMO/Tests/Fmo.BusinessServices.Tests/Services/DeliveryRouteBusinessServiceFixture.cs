@@ -20,7 +20,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private int operationalStateID = 0;
 
         [Test]
-        public void Test_RouteLogStatus()
+        public void TestRouteLogStatus()
         {
             List<ReferenceDataDTO> actualResult = testCandidate.FetchRouteLogStatus();
             Assert.NotNull(actualResult);
@@ -28,7 +28,7 @@ namespace Fmo.BusinessServices.Tests.Services
         }
 
         [Test]
-        public void Test_FetchDeliveryScenario()
+        public void TestFetchDeliveryScenario()
         {
             List<ScenarioDTO> actualResult = testCandidate.FetchDeliveryScenario(operationalStateID, deliveryUnitID);
             Assert.NotNull(actualResult);
@@ -36,7 +36,7 @@ namespace Fmo.BusinessServices.Tests.Services
         }
 
         [Test]
-        public void Test_FetchDeliveryRoute()
+        public void TestFetchDeliveryRoute()
         {
             List<DeliveryRouteDTO> actualResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryUnitID);
             mockDeliveryRouteRepository.Verify(x => x.FetchDeliveryRoute(operationalStateID, deliveryUnitID), Times.Once());
@@ -44,7 +44,7 @@ namespace Fmo.BusinessServices.Tests.Services
         }
 
         [Test]
-        public void Test_FetchDeliveryUnit()
+        public void TestFetchDeliveryUnit()
         {
             List<DeliveryUnitLocationDTO> actualResult = testCandidate.FetchDeliveryUnit();
             Assert.NotNull(actualResult);

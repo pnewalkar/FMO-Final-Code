@@ -34,8 +34,8 @@
 
         public FileLoader()
         {
-            //this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-            //this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
+            // this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
+            // this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
             kernal = new StandardKernel();
             Register(kernal);
             InitializeComponent();

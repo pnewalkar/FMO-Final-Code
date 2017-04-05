@@ -11,7 +11,6 @@ namespace Fmo.MessageBrokerCore.Messaging
         private DateTime _createdDate;
         private Guid _id;
         private long _priority;
-        private MessageType _messageType;
         private string _queueName;
         private string _queueRootpath;
 

@@ -168,7 +168,7 @@
             {
                 if (objPostalAddress != null)
                 {
-                    //.Include("DeliveryPoints")
+                    // .Include("DeliveryPoints")
                     var objAddress = DataContext.PostalAddresses.Where(n => n.Address_Id == objPostalAddress.Address_Id).SingleOrDefault();
                     if (objAddress != null)
                     {
@@ -189,17 +189,17 @@
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.UDPRN = objPostalAddress.UDPRN;
 
-                        //if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
-                        //{
+                        // if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        // {
                         //    foreach (var objDelPoint in objAddress.DeliveryPoints)
                         //    {
                         //        objDelPoint.UDPRN = objPostalAddress.UDPRN;
                         //    }
-                        //}
-                        //else
-                        //{
+                        // }
+                        // else
+                        // {
                         //    //To DO log error
-                        //}
+                        // }
                         DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
                     }
                     else

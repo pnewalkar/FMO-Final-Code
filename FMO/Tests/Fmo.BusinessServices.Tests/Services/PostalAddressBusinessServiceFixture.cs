@@ -29,6 +29,14 @@ namespace Fmo.BusinessServices.Tests.Services
         private IPAFLoader testCandidate;
         private IMessageBroker<PostalAddressDTO> msgBroaker;
 
+        [Test]
+        public void Test_LoadPAFDetailsFromCSV_Positive()
+        {
+            string strPath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.zip");
+
+            // testCandidate.LoadPAFDetailsFromCSV(strPath);
+        }
+
         protected override void OnSetup()
         {
             msgBroaker = new MessageBroker<PostalAddressDTO>();
@@ -45,13 +53,6 @@ namespace Fmo.BusinessServices.Tests.Services
                 mockDeliveryPointsRepository.Object,
                 mockAddressLocationRepository.Object
                 );*/
-        }
-
-        [Test]
-        public void Test_LoadPAFDetailsFromCSV_Positive()
-        {
-            string strPath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.zip");
-            //testCandidate.LoadPAFDetailsFromCSV(strPath);
-        }
+        } 
     }
 }
