@@ -9,7 +9,7 @@ namespace Fmo.MessageBrokerCore.Messaging
     internal class MessageAdapterFactory<T>
     {
         //provides an adapter for the queueing technology that we are currently using
-        internal IMessageAdapter GetAdapter(string queueName, string queueRootPath)
+        internal IMessageAdapter<T> GetAdapter(string queueName, string queueRootPath)
         {
             return new MessageAdapter<T>(queueName, queueRootPath);
         }

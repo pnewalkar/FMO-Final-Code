@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{10A130A3-105F-4DF9-9D74-00D252B5ACC7}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{35C95A09-A0E0-4533-86C5-538EC3C11B75}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Fmo.MessageBrokerCore</RootNamespace>
-    <AssemblyName>Fmo.MessageBrokerCore</AssemblyName>
+    <RootNamespace>Fmo.Receiver</RootNamespace>
+    <AssemblyName>Fmo.Receiver</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,34 +32,61 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.0.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Messaging" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messaging\IMessage.cs" />
-    <Compile Include="Messaging\IMessageAdapter.cs" />
-    <Compile Include="Messaging\IMessageBroker.cs" />
-    <Compile Include="Messaging\Message.cs" />
-    <Compile Include="Messaging\MessageAdapter.cs" />
-    <Compile Include="Messaging\MessageAdapterFactory.cs" />
-    <Compile Include="Messaging\MessageBroker.cs" />
-    <Compile Include="Messaging\MessageEventArgs.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Receiver.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Receiver.Designer.cs">
+      <DependentUpon>Receiver.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
+      <Project>{1D645C11-6570-4327-9E60-B6E7D676BA0D}</Project>
+      <Name>Fmo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj">
+      <Project>{43FC012E-5274-4CF4-8689-97B3CE067C11}</Project>
+      <Name>Fmo.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FMO.MessageBrokerCore\Fmo.MessageBrokerCore.csproj">
+      <Project>{10A130A3-105F-4DF9-9D74-00D252B5ACC7}</Project>
+      <Name>Fmo.MessageBrokerCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

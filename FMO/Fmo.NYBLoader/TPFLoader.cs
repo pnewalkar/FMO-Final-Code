@@ -47,19 +47,19 @@ namespace Fmo.NYBLoader
 
                 lstUSRInsertFiles.ForEach(addressLocation =>
                 {
-                    string xmlUSR = SerializeObject<AddressLocationUSRDTO>(addressLocation);
-                    IMessage USRMsg = msgBroker.CreateMessage(xmlUSR, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                    //string xmlUSR = SerializeObject<AddressLocationUSRDTO>(addressLocation);
+                    IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(USRMsg);
                 });
 
-                destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER, new FileInfo(strPath).Name);
+                //destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER, new FileInfo(strPath).Name);
 
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER));
-                }
+                //if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER)))
+                //{
+                //    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER));
+                //}
 
-                File.Move(strPath, destinationPath);
+                //File.Move(strPath, destinationPath);
 
                 //Code to be uncommented after confirmation
                 /*lstUSRUpdateFiles.ForEach(addressLocation =>
@@ -120,6 +120,9 @@ namespace Fmo.NYBLoader
                     {
                         xmlReader.MoveToContent();
                         lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));
+
+                        XmlDocument xDoc = new XmlDocument();                        
+
                     }
                 };
 

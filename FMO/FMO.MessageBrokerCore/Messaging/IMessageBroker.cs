@@ -24,9 +24,14 @@ namespace Fmo.MessageBrokerCore.Messaging
         void SendMessage(IMessage message);
 
         //Gets a message 
-        IMessage ReceiveMessage(string queueName, string queueRootPath);
+        T ReceiveMessage(string queueName, string queueRootPath);
+
+        void Start(string queueName, string queueRootPath, EventHandler<MessageEventArgs<T>> handler);
+
+        void Stop(string queueName, string queueRootPath, EventHandler<MessageEventArgs<T>> handler);
 
         bool HasMessage(string queueName, string queueRootPath);
+
 
     }
 }
