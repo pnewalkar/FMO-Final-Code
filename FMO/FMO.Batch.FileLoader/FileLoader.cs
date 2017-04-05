@@ -17,6 +17,9 @@
     using Ninject.Parameters;
     using System.IO.Compression;
     using System;
+    using Fmo.Common.Interface;
+    using Fmo.Common.LoggingManagement;
+    using Fmo.Common.ExceptionManagement;
 
     public partial class FileLoader : ServiceBase
     {
@@ -30,12 +33,27 @@
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
         private ITPFLoader tpfLoader = default(ITPFLoader);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IExceptionHelper exceptionHelper = default(IExceptionHelper);
+
         private IConfigurationHelper configurationHelper;
+
+        private static string AppendTimeStamp(string strfileName)
+        {
+            try
+            {
+                return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public FileLoader()
         {
-            //this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-            //this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
+            // this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
+            // this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
             kernal = new StandardKernel();
             Register(kernal);
             InitializeComponent();
@@ -56,13 +74,16 @@
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IHttpHandler>().To<HttpHandler>();
+            kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
+            kernel.Bind<IExceptionHelper>().To<ExceptionHelper>();
             kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
+            loggingHelper = kernel.Get<ILoggingHelper>();
             configurationHelper = kernel.Get<IConfigurationHelper>();
-    }
+        }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
         /// <param name="args">array of arguments</param>
@@ -247,52 +268,47 @@
                                 this.nybLoader.SaveNYBDetails(lstNYBDetails);
                             }
                         }
+                        else
+                        {
+                            loggingHelper.LogInfo("File Name :" + strfileName + " : Log Time :" + DateTime.Now.ToString());
+                        }
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                loggingHelper.LogError(ex);
             }
-        }
-
-        private static string AppendTimeStamp(string strfileName)
-        {
-            return string.Concat(
-                Path.GetFileNameWithoutExtension(strfileName),
-               string.Format(dateTimeFormat, DateTime.Now),
-                Path.GetExtension(strfileName)
-                );
         }
 
         /*
-        private string SerializeObject<T>(T toSerialize)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+         private string SerializeObject<T>(T toSerialize)
+         {
+             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
-            using (StringWriter textWriter = new StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, toSerialize);
-                return textWriter.ToString();
-            }
-        }
+             using (StringWriter textWriter = new StringWriter())
+             {
+                 xmlSerializer.Serialize(textWriter, toSerialize);
+                 return textWriter.ToString();
+             }
+         }
 
-        private T DeserializeXMLFileToObject<T>(string XmlFilename)
-        {
-            T returnObject = default(T);
-            if (string.IsNullOrEmpty(XmlFilename)) return default(T);
+         private T DeserializeXMLFileToObject<T>(string XmlFilename)
+         {
+             T returnObject = default(T);
+             if (string.IsNullOrEmpty(XmlFilename)) return default(T);
 
-            try
-            {
-                StreamReader xmlStream = new StreamReader(XmlFilename);
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                returnObject = (T)serializer.Deserialize(xmlStream);
-            }
-            catch (Exception ex)
-            {
-            }
-            return returnObject;
-        }
-        */
+             try
+             {
+                 StreamReader xmlStream = new StreamReader(XmlFilename);
+                 XmlSerializer serializer = new XmlSerializer(typeof(T));
+                 returnObject = (T)serializer.Deserialize(xmlStream);
+             }
+             catch (Exception ex)
+             {
+             }
+             return returnObject;
+         }
+         */
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Spatial;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Fmo.DTO
 
         public string OperationalStatus { get; set; }
 
-        public string LocationXY { get; set; }
+        public DbGeometry LocationXY { get; set; }
 
         public decimal? Latitude { get; set; }
 

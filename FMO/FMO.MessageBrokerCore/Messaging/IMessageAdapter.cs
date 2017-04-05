@@ -5,12 +5,19 @@ using System.Threading.Tasks;
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
-    public interface IMessageAdapter
+    public interface IMessageAdapter<T>
     {
-        IMessage PopMessage();
+        event EventHandler<MessageEventArgs<T>> MessageReceived;
+        T PopMessage();
 
         void PushMessage(IMessage message);
 
         bool HasMessage();
+
+        void Start(EventHandler<MessageEventArgs<T>> handler);
+
+        void Stop(EventHandler<MessageEventArgs<T>> handler);
     }
 }
+
+

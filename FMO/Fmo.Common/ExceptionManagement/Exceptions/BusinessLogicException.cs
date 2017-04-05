@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace Fmo.Common.ExceptionManagement
 {
@@ -28,6 +29,11 @@ namespace Fmo.Common.ExceptionManagement
         }
 
         protected BusinessLogicException()
+        {
+        }
+
+        protected BusinessLogicException(SerializationInfo info, StreamingContext context)
+           : base(info, context)
         {
         }
     }

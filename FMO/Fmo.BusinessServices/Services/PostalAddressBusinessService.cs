@@ -34,18 +34,19 @@ namespace Fmo.BusinessServices.Services
             {
                 int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
                 int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
-
-                foreach (var addEntity in lstPostalAddress)
+                List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
+                if (!lstUDPRNS.All(a => a == 0))
                 {
-                    addEntity.AddressStatus_Id = addressStatusId;
-                    addEntity.AddressType_Id = addressTypeId;
-                    addressRepository.SaveAddress(addEntity);
+                    foreach (var postalAddress in lstPostalAddress)
+                    {
+                        postalAddress.AddressStatus_Id = addressStatusId;
+                        postalAddress.AddressType_Id = addressTypeId;
+                        addressRepository.SaveAddress(postalAddress);
+                    }
+                    saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
                 }
-
-                List<int> lstUDPRNS = lstPostalAddress.Select(n => n.UDPRN.Value).ToList();
-                saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -89,7 +90,7 @@ namespace Fmo.BusinessServices.Services
                     }
                     else
                     {
-                        //error log entry
+                        // error log entry
                     }
                 }
                 else

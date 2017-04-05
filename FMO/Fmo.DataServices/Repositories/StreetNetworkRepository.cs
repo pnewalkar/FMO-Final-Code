@@ -40,7 +40,7 @@
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -53,7 +53,7 @@
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

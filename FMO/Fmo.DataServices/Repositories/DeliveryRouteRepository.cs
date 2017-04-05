@@ -57,7 +57,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -69,7 +69,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

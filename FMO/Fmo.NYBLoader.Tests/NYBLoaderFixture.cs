@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using NYB = Fmo.NYBLoader;
 using System.Linq;
+using Fmo.Common.Interface;
+using Fmo.Common.Enums;
 
 namespace Fmo.NYBLoader.Tests
 {
@@ -18,17 +20,23 @@ namespace Fmo.NYBLoader.Tests
     {
         private Mock<IHttpHandler> httpHandlerMock;
         private Mock<IConfigurationHelper> configurationHelperMock;
+        private Mock<ILoggingHelper> mockLoggingHelper;
+        private Mock<IExceptionHelper> mockExceptioHelper;
         private INYBLoader testCandidate;
 
         protected override void OnSetup()
         {
             httpHandlerMock = CreateMock<IHttpHandler>();
             configurationHelperMock = CreateMock<IConfigurationHelper>();
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockExceptioHelper = CreateMock<IExceptionHelper>();
+            mockLoggingHelper.Setup(n => n.LogError(It.IsAny<Exception>()));
+            mockExceptioHelper.Setup(n => n.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>())).Returns(true);
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ProcessedFilePath")).Returns("d:/processedfile/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ErrorFilePath")).Returns("d:/errorfile/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIURL")).Returns("http://dunnyURl.com/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIName")).Returns("api/SaveDetails");
-            testCandidate = new NYB.NYBLoader(httpHandlerMock.Object, configurationHelperMock.Object);
+            testCandidate = new NYB.NYBLoader(httpHandlerMock.Object, configurationHelperMock.Object, mockLoggingHelper.Object, mockExceptioHelper.Object);
         }
 
         [Test]

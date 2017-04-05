@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Fmo.Common.Enums
 {
-    public enum DeliveryPointSuffix
+    public enum AmmendmentType
     {
-        None = 0,
+        B,
+        C,
+        D,
+        I
     }
 }

@@ -8,6 +8,13 @@ namespace Fmo.DTO
 {
     public class PostalAddressDTO
     {
+        public string Date { get; set; }
+
+        public string Time { get; set; }
+
+        public string AmendmentType { get; set; }
+
+        public string AmendmentDesc { get; set; }
 
         public int Address_Id { get; set; }
 
@@ -51,13 +58,7 @@ namespace Fmo.DTO
 
         public bool IsValidData { get; set; }
 
-        public string Date { get; set; }
-
-        public string Time { get; set; }
-
-        public string AmendmentType { get; set; }
-
-        public string AmendmentDesc { get; set; }
+        public string InValidRemarks { get; set; }
 
     }
 }
