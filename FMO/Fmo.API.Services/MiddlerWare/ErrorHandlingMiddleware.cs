@@ -61,7 +61,8 @@ namespace Fmo.API.Services.MiddlerWare
 
             if (exception is EntityNotFoundException) code = HttpStatusCode.NotFound;
             else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
-            else code = HttpStatusCode.BadRequest;
+            else if (exception is NotImplementedException) code = HttpStatusCode.NotImplemented;
+            else code = HttpStatusCode.InternalServerError;
 
             var result = JsonConvert.SerializeObject(new { error = exception.Message });
             context.Response.ContentType = "application/json";
