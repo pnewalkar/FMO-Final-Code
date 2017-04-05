@@ -25,23 +25,23 @@
                 if (lstUDPRN != null && lstUDPRN.Count() > 0)
                 {
                     var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
-                    if (lstAddress != null && lstUDPRN.Count > 0)
+                    if (lstAddress != null && lstAddress.Count > 0)
                     {
                         lstAddress.ForEach(postalAddressEntity =>
                         {
                             if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                             {
+                                deleteFlag = false;
                                 // TO DO log error
                             }
                             else
                             {
                                 DataContext.PostalAddresses.Remove(postalAddressEntity);
+                                DataContext.SaveChanges();
+                                deleteFlag = true;
                             }
                         });
-                        DataContext.SaveChanges();
                     }
-
-                    deleteFlag = true;
                 }
             }
             catch (Exception)
