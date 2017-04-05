@@ -28,26 +28,43 @@ namespace Fmo.NYBLoader
             this.msgBroker = messageBroker;
         }
 
-
-        public void ProcessPAF(string strPath)
+        public List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-                using (ZipArchive zip = ZipFile.OpenRead(strPath))
+                string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
                 {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                }
+
+                if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
+                {
+                    lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
+
+                    if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
-                        lstAddressDetails = LoadPAFinMemory(entry);
-                        if (lstAddressDetails != null)
-                        {
 
-                        }
-                        else
-                        {
+                        //Validate PAF Details
+                        ValidatePAFDetails(lstAddressDetails);
 
-                        }
+                        //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+
+                        //Remove duplicate PAF events which have create and delete instance for same UDPRN
+                        lstAddressDetails = lstAddressDetails
+                                                .SkipWhile(n => (n.UDPRN.Equals("B")))
+                                                .GroupBy(x => x.UDPRN)
+                                                .Where(g => g.Count() == 1)
+                                                .SelectMany(g => g.Select(o => o))
+                                                .ToList();
                     }
+                }
+                else
+                {
+                    File.WriteAllText(Path.Combine("Error file", strFileName), strLine);
+                    //TO DO Log error... File validation error
                 }
             }
             catch (Exception)
@@ -55,23 +72,10 @@ namespace Fmo.NYBLoader
 
                 throw;
             }
+            return lstAddressDetails;            
         }
 
-        private List<PostalAddressDTO> LoadPAFinMemory(ZipArchiveEntry entry)
-        {
-            string strLine = string.Empty;
-            string strfileName = string.Empty;
-
-            Stream stream = entry.Open();
-            var reader = new StreamReader(stream);
-            strLine = reader.ReadToEnd();
-            strfileName = entry.Name;
-
-            List<PostalAddressDTO> obj = new List<PostalAddressDTO>();
-            return obj;
-        }
-
-        public void LoadPAFDetailsFromCSV(string strPath)
+        /*public void LoadPAFDetailsFromCSV(string strPath)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
@@ -91,7 +95,10 @@ namespace Fmo.NYBLoader
                         strfileName = entry.Name;
 
                         string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                        if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
+                        {
+                            Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                        }
 
                         if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                         {
@@ -143,19 +150,19 @@ namespace Fmo.NYBLoader
 
                 throw;
             }
-        }
+        }*/
 
-        private bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             bool saveflag = false;
             try
             {
                 saveflag = true;
                 /*
-                                    var lstPAFInsertEvents = lstAddressDetails.Where(insertFiles => insertFiles.AmendmentType == "I").ToList();//Constants.INSERT
-                                    var lstPAFUpdateEvents = lstAddressDetails.Where(updateFiles => updateFiles.AmendmentType == "U").ToList();//Constants.UPDATE
-                                    var lstPAFDeleteEvents = lstAddressDetails.Where(deleteFiles => deleteFiles.changeType == "D").ToList();//Constants.DELETE
-                                    Process each events seprately */
+                var lstPAFInsertEvents = lstAddressDetails.Where(insertFiles => insertFiles.AmendmentType == "I").ToList();//Constants.INSERT
+                var lstPAFUpdateEvents = lstAddressDetails.Where(updateFiles => updateFiles.AmendmentType == "C").ToList();//Constants.UPDATE
+                var lstPAFDeleteEvents = lstAddressDetails.Where(deleteFiles => deleteFiles.changeType == "D").ToList();//Constants.DELETE
+                Process each events seprately */
 
                 foreach (var addDetail in lstPostalAddress)
                 {
