@@ -201,7 +201,7 @@
                 switch (action_Args)
                 {
                     case "PAF":
-                        LoadPAFDetails(fileName);
+                        this.pafLoader.LoadPAF(fileName);
                         break;
 
                     case "NYB":
@@ -245,45 +245,6 @@
                             {
                                 File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 this.nybLoader.SaveNYBDetails(lstNYBDetails);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
-        }
-
-        private void LoadPAFDetails(string fileName)
-        {
-            try
-            {
-                using (ZipArchive zip = ZipFile.OpenRead(fileName))
-                {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
-                    {
-                        string strLine = string.Empty;
-                        string strfileName = string.Empty;
-                        Stream stream = entry.Open();
-                        var reader = new StreamReader(stream);
-                        strLine = reader.ReadToEnd();
-                        strfileName = entry.Name;
-
-                        List<PostalAddressDTO> lstPAFDetails = this.pafLoader.ProcessPAF(strLine, strfileName);
-                        if (lstPAFDetails != null && lstPAFDetails.Count > 0)
-                        {
-                            var invalidRecordsCount = lstPAFDetails.Where(n => n.IsValidData == false).ToList().Count;
-
-                            if (invalidRecordsCount > 0)
-                            {
-                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                            }
-                            else
-                            {
-                                this.pafLoader.SavePAFDetails(lstPAFDetails);
-                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                             }
                         }
                     }
