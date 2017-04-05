@@ -19,16 +19,31 @@
         {
         }
 
-        public async Task<List<StreetNameDTO>> FetchStreetNetwork(string searchText)
+        public async Task<List<StreetNameDTO>> FetchStreetNamesforBasicSearch(string searchText)
         {
             try
             {
-                var result = await DataContext.StreetNames.ToListAsync();
-                return GenericMapper.MapList<StreetName, StreetNameDTO>(result.ToList());
+                int takeCount = 5;
+                var streetNames = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+                    .Take(takeCount).ToListAsync();
+                return GenericMapper.MapList<StreetName, StreetNameDTO>(streetNames.ToList());
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
+            }
+        }
+
+        public async Task<int> GetStreetNameCount(string searchText)
+        {
+            try
+            {
+                return await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+                    .CountAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

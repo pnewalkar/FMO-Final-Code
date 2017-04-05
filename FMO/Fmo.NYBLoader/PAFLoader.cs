@@ -19,9 +19,8 @@ namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private static string strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-        private static string strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
-        //private readonly IKernel kernal;
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
 
         public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker)
@@ -29,7 +28,54 @@ namespace Fmo.NYBLoader
             this.msgBroker = messageBroker;
         }
 
-        public void LoadPAFDetailsFromCSV(string strPath)
+        public List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
+        {
+            List<PostalAddressDTO> lstAddressDetails = null;
+            try
+            {
+                string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
+                {
+                    Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                }
+
+                if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
+                {
+                    lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
+
+                    if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                    {
+
+                        //Validate PAF Details
+                        ValidatePAFDetails(lstAddressDetails);
+
+                        //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
+                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+
+                        //Remove duplicate PAF events which have create and delete instance for same UDPRN
+                        lstAddressDetails = lstAddressDetails
+                                                .SkipWhile(n => (n.UDPRN.Equals("B")))
+                                                .GroupBy(x => x.UDPRN)
+                                                .Where(g => g.Count() == 1)
+                                                .SelectMany(g => g.Select(o => o))
+                                                .ToList();
+                    }
+                }
+                else
+                {
+                    File.WriteAllText(Path.Combine("Error file", strFileName), strLine);
+                    //TO DO Log error... File validation error
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return lstAddressDetails;            
+        }
+
+        /*public void LoadPAFDetailsFromCSV(string strPath)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
@@ -40,30 +86,23 @@ namespace Fmo.NYBLoader
                     {
                         string strLine = string.Empty;
                         string strfileName = string.Empty;
+                        string destinationPath = string.Empty;
+                        string errorPath = string.Empty;
 
                         Stream stream = entry.Open();
                         var reader = new StreamReader(stream);
                         strLine = reader.ReadToEnd();
-
                         strfileName = entry.Name;
 
                         string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                        if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
+                        {
+                            Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
+                        }
 
                         if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                         {
-                            //lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
-                            lstAddressDetails = new List<PostalAddressDTO>
-                        {
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="A", AmendmentType="B"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="B", AmendmentType="C"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="C", AmendmentType="D"},
-                            new PostalAddressDTO() {UDPRN =1, DepartmentName="D", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =2, DepartmentName="E", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =3, DepartmentName="F", AmendmentType="I"},
-                            new PostalAddressDTO() {UDPRN =4, DepartmentName="G", AmendmentType="I"},
-                        };
-
+                            lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
 
                             if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                             {
@@ -90,12 +129,7 @@ namespace Fmo.NYBLoader
                                 }
                                 else
                                 {
-                                    foreach (var addDetail in lstAddressDetails)
-                                    {
-                                        string strXml = SerializeObject<PostalAddressDTO>(addDetail);
-                                        IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                                        msgBroker.SendMessage(msg);
-                                    }
+                                    SavePAFDetails(lstAddressDetails);
                                     File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                             }
@@ -116,6 +150,33 @@ namespace Fmo.NYBLoader
 
                 throw;
             }
+        }*/
+
+        public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        {
+            bool saveflag = false;
+            try
+            {
+                saveflag = true;
+                /*
+                var lstPAFInsertEvents = lstAddressDetails.Where(insertFiles => insertFiles.AmendmentType == "I").ToList();//Constants.INSERT
+                var lstPAFUpdateEvents = lstAddressDetails.Where(updateFiles => updateFiles.AmendmentType == "C").ToList();//Constants.UPDATE
+                var lstPAFDeleteEvents = lstAddressDetails.Where(deleteFiles => deleteFiles.changeType == "D").ToList();//Constants.DELETE
+                Process each events seprately */
+
+                foreach (var addDetail in lstPostalAddress)
+                {
+                    string strXml = SerializeObject<PostalAddressDTO>(addDetail);
+                    IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    msgBroker.SendMessage(msg);
+                }
+            }
+            catch (Exception)
+            {
+
+                saveflag = false;
+            }
+            return saveflag;
         }
 
         private static string AppendTimeStamp(string strfileName)

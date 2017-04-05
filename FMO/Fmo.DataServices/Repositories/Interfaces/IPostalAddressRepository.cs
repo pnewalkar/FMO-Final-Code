@@ -7,10 +7,10 @@ using Fmo.DTO;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
- public interface IStreetNetworkRepository
+    public interface IPostalAddressRepository
     {
-        Task<List<StreetNameDTO>> FetchStreetNamesforBasicSearch(string searchText);
+        Task<List<PostalAddressDTO>> FetchPostalAddressforBasicSearch(string searchText);
 
-        Task<int> GetStreetNameCount(string searchText);
+        Task<int> GetPostalAddressCount(string searchText);
     }
 }

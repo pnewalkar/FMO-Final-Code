@@ -15,21 +15,32 @@
     using Fmo.NYBLoader.Common;
     using Ninject;
     using Ninject.Parameters;
+    using System.IO.Compression;
+    using System;
 
     public partial class FileLoader : ServiceBase
     {
+
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;
+        private static string dateTimeFormat = "{0:-yyyy-MM-d-HH-mm-ss}";
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
         private ITPFLoader tpfLoader = default(ITPFLoader);
+        private IConfigurationHelper configurationHelper;
 
         public FileLoader()
         {
+            //this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
+            //this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
             kernal = new StandardKernel();
             Register(kernal);
             InitializeComponent();
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ProcessedFilePath");
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ErrorFilePath");
         }
 
         public void OnDebug()
@@ -50,7 +61,8 @@
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
-        }
+            configurationHelper = kernel.Get<IConfigurationHelper>();
+    }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
         /// <param name="args">array of arguments</param>
@@ -189,7 +201,7 @@
                 switch (action_Args)
                 {
                     case "PAF":
-                        this.pafLoader.LoadPAFDetailsFromCSV(fileName);
+                        LoadPAFDetails(fileName);
                         break;
 
                     case "NYB":
@@ -209,13 +221,32 @@
         {
             try
             {
-                List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(fileName);
-                if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                using (ZipArchive zip = ZipFile.OpenRead(fileName))
                 {
-                    var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
-                    if (invalidRecordsCount == 0)
+                    foreach (ZipArchiveEntry entry in zip.Entries)
                     {
-                        this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                        string strLine = string.Empty;
+                        string strfileName = string.Empty;
+
+                        Stream stream = entry.Open();
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
+                        strfileName = entry.Name;
+                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(strLine);
+                        if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                        {
+                            var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                            if (invalidRecordsCount > 0)
+                            {
+                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                            }
+                            else
+                            {
+                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                            }
+                        }
                     }
                 }
             }
@@ -223,6 +254,54 @@
             {
                 throw;
             }
+        }
+
+        private void LoadPAFDetails(string fileName)
+        {
+            try
+            {
+                using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                {
+                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    {
+                        string strLine = string.Empty;
+                        string strfileName = string.Empty;
+                        Stream stream = entry.Open();
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
+                        strfileName = entry.Name;
+
+                        List<PostalAddressDTO> lstPAFDetails = this.pafLoader.ProcessPAF(strLine, strfileName);
+                        if (lstPAFDetails != null && lstPAFDetails.Count > 0)
+                        {
+                            var invalidRecordsCount = lstPAFDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                            if (invalidRecordsCount > 0)
+                            {
+                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                            }
+                            else
+                            {
+                                this.pafLoader.SavePAFDetails(lstPAFDetails);
+                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        private static string AppendTimeStamp(string strfileName)
+        {
+            return string.Concat(
+                Path.GetFileNameWithoutExtension(strfileName),
+               string.Format(dateTimeFormat, DateTime.Now),
+                Path.GetExtension(strfileName)
+                );
         }
 
         /*

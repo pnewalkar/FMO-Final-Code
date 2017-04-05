@@ -127,11 +127,11 @@ namespace Fmo.NYBLoader
             }
             catch (Exception ex)
             {
-                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER, new FileInfo(strPath).Name);
+                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER, new FileInfo(strPath).Name);
 
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER)))
+                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER)))
                 {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.ERROR_FOLDER));
+                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER));
                 }
 
                 File.Move(strPath, destinationPath);

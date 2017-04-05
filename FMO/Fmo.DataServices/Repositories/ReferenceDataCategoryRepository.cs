@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
-using Entity = Fmo.Entities;
-using System.Collections.Generic;
-using Fmo.MappingConfiguration;
 using Fmo.DTO;
+using Fmo.MappingConfiguration;
+using Entity = Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
