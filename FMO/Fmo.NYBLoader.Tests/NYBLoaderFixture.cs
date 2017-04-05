@@ -64,8 +64,8 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_ValidRecords_Count()
         {
-            string strFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidNYB.zip");
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strFilePath);
+            string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,S, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strLine);
             Assert.IsNotNull(methodOutput);
             Assert.IsTrue(methodOutput.Count == 2);
         }
@@ -73,8 +73,8 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_ValidRecords_Data()
         {
-            string strFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidNYB.zip");
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strFilePath);
+            string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,S, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strLine);
             Assert.IsNotNull(methodOutput);
             Assert.IsNotNull(methodOutput[0].UDPRN);
         }
@@ -82,16 +82,16 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_InvalidRecords_Data()
         {
-            string strFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InValidFile\InValidNYB.zip");
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strFilePath);
+            string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,S, ,1A,,,,,,\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strLine);
             Assert.IsNull(methodOutput);
         }
 
         [Test]
         public void Test_InValidPostCodeType_Data()
         {
-            string strFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InValidFile\InValidPostCodeType.zip");
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strFilePath);
+            string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,G, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strLine);
             int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsNotNull(methodOutput);
             Assert.IsTrue(InValidReccount == 1);
@@ -100,8 +100,8 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_InValidPostCode_Data()
         {
-            string strFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InValidFile\InValidPostCode.zip");
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strFilePath);
+            string strLine = "1458 abc,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,l, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNYBDetailsFromCSV(strLine);
             int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsTrue(InValidReccount == 1);
         }

@@ -11,6 +11,11 @@ angular.module('FMOApp')
             url: "/routeSimulation",
             templateUrl: "/app/simulation/simulation.template.html",
             controller: "SimulationController as vm",
-            params: { selectedUnit : null, }
+            params: { selectedUnit: null, }
+            //resolve: {
+            //    selectedUnit: ['$stateParams', function ($stateParams) {
+            //        return $stateParams.selectedUnit;
+            //  }]
+        // }
         });
 });
