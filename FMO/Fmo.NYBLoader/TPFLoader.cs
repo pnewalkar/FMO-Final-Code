@@ -13,13 +13,16 @@ using System.Xml.Serialization;
 using Fmo.Common.Constants;
 using System.Xml;
 using System.Xml.Schema;
+using System.Configuration;
 
 namespace Fmo.NYBLoader
 {
     public class TPFLoader : ITPFLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
-        private const string XSD_LOCATION = @"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd";
+        private string XSD_LOCATION = ConfigurationSettings.AppSettings["XSDLocation"];
+        private string PROCESSED = ConfigurationSettings.AppSettings["ProcessedFilePath"];
+        private string ERROR = ConfigurationSettings.AppSettings["ErrorFilePath"];
 
 
         public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker)
@@ -47,17 +50,12 @@ namespace Fmo.NYBLoader
 
                 lstUSRInsertFiles.ForEach(addressLocation =>
                 {
-                    string xmlUSR = SerializeObject<AddressLocationUSRDTO>(addressLocation);
-                    IMessage USRMsg = msgBroker.CreateMessage(xmlUSR, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                    //string xmlUSR = SerializeObject<AddressLocationUSRDTO>(addressLocation);
+                    IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(USRMsg);
                 });
 
-                destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER, new FileInfo(strPath).Name);
-
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER));
-                }
+                destinationPath = Path.Combine(PROCESSED, new FileInfo(strPath).Name);
 
                 File.Move(strPath, destinationPath);
 
@@ -80,7 +78,7 @@ namespace Fmo.NYBLoader
 
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -120,6 +118,9 @@ namespace Fmo.NYBLoader
                     {
                         xmlReader.MoveToContent();
                         lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));
+
+                        XmlDocument xDoc = new XmlDocument();                        
+
                     }
                 };
 
@@ -127,12 +128,7 @@ namespace Fmo.NYBLoader
             }
             catch (Exception ex)
             {
-                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER, new FileInfo(strPath).Name);
-
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER));
-                }
+                string destinationPath = Path.Combine(ERROR, Constants.Error_FOLDER, new FileInfo(strPath).Name);
 
                 File.Move(strPath, destinationPath);
 

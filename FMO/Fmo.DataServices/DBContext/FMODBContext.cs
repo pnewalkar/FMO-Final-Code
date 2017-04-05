@@ -3,7 +3,7 @@ namespace Fmo.DataServices.DBContext
     using System.Data.Entity;
     using Fmo.Entities;
 
-    public partial class FMODBContext : AuditContext
+    public partial class FMODBContext : DbContext//AuditContext
     {
         public FMODBContext()
             : base("name=FMODBContext")

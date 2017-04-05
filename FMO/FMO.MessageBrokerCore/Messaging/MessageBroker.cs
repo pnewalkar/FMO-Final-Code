@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
+    public delegate void MessageEventHandler<T>(object sender, MessageEventArgs<T> e);
     public class MessageBroker<T> : IMessageBroker<T>
     {
         private MessageAdapterFactory<T> msgAdapterFactory;
@@ -26,15 +27,15 @@ namespace Fmo.MessageBrokerCore.Messaging
         public void SendMessage(IMessage message)
         {
 
-            IMessageAdapter adpt = msgAdapterFactory.GetAdapter(message.QueueName, message.QueueRootpath);
+            IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(message.QueueName, message.QueueRootpath);
 
             adpt.PushMessage(message);
 
         }
 
-        public IMessage ReceiveMessage(string queueName, string queueRootPath)
+        public T ReceiveMessage(string queueName, string queueRootPath)
         {
-            IMessageAdapter adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
+            IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
 
             return adpt.PopMessage();
         }
@@ -42,11 +43,23 @@ namespace Fmo.MessageBrokerCore.Messaging
         public bool HasMessage(string queueName, string queueRootPath)
         {
 
-            IMessageAdapter adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
+            IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
 
             return adpt.HasMessage();
         }
 
-       
+        public void Start(string queueName, string queueRootPath, EventHandler<MessageEventArgs<T>> handler)
+        {
+            IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
+
+            adpt.Start(handler);
+        }
+
+        public void Stop(string queueName, string queueRootPath, EventHandler<MessageEventArgs<T>> handler)
+        {
+            IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
+
+            adpt.Stop(handler);
+        }
     }
 }

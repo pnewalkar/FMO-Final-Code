@@ -6,5 +6,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
     public interface IAddressLocationRepository
     {
         AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN);
+
+        void SaveNewAddressLocation(AddressLocationDTO addressLocationDTO);
     }
 }

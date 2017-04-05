@@ -45,6 +45,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,6 +59,7 @@
     <Compile Include="Services\LoadThirdPartyFileBusinessServiceTestFixture.cs" />
     <Compile Include="Services\DeliveryRouteBusinessServiceFixture.cs" />
     <Compile Include="Services\PostalAddressBusinessServiceFixture.cs" />
+    <Compile Include="Services\SearchBusinessServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

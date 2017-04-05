@@ -23,22 +23,51 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsNotNull(actualResult);
         }
 
+        [Test]
+        public void Test_ValidGetReferenceDataId()
+        {
+            var actualResult = testCandidate.GetReferenceDataId("Postal Address Type", "PAF");
+            Assert.NotZero(actualResult);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult == 3);
+        }
+
+        [Test]
+        public void Test_InValidGetReferenceDataId()
+        {
+            var actualResult = testCandidate.GetReferenceDataId("Postal Address Type", "NYB");
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult == 0);
+        }
+
         protected override void OnSetup()
         {
             var referenceDataCategory = new List<ReferenceDataCategory>()
             {
-                new ReferenceDataCategory() { ReferenceDataCategory_Id = 1 }
+                new ReferenceDataCategory()
+                {
+                    ReferenceDataCategory_Id = 1,
+                    CategoryName = "Postal Address Type",
+                    ReferenceDatas= new List<ReferenceData>()
+                   {
+                        new ReferenceData()
+                        {
+                            ReferenceDataName = "PAF",
+                            ReferenceDataCategory_Id = 1,
+                            ReferenceData_Id = 3
+                        }
+                    }
+
+                }
             };
 
             var mockReferenceDataCategoryDBSet = MockDbSet(referenceDataCategory);
-
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFmoDbContext.Setup(x => x.Set<ReferenceDataCategory>()).Returns(mockReferenceDataCategoryDBSet.Object);
             mockFmoDbContext.Setup(x => x.ReferenceDataCategories).Returns(mockReferenceDataCategoryDBSet.Object);
-
+            mockReferenceDataCategoryDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockReferenceDataCategoryDBSet.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-
             testCandidate = new ReferenceDataCategoryRepository(mockDatabaseFactory.Object);
         }
     }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.SqlServer.Types;
+
 
 namespace Fmo.DTO
 {
@@ -11,7 +13,7 @@ namespace Fmo.DTO
 
         public int AccessLink_Id { get; set; }
 
-        //public DbGeometry OperationalObjectPoint { get; set; }
+        public Geometry OperationalObjectPoint { get; set; }
 
         //public DbGeometry NetworkIntersectionPoint { get; set; }
 
@@ -34,6 +36,10 @@ namespace Fmo.DTO
         public int OperationalObjectId { get; set; }
 
         public int OperationalObjectType_Id { get; set; }
+
+        public string type { get; set; }
+
+        public List<Feature> features { get; set; }
 
         //public virtual DeliveryGroup DeliveryGroup { get; set; }
 
