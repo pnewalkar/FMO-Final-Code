@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using System.Net.Http;
+using System.IO;
+using Fmo.DataServices.Repositories;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Web.Script.Serialization;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -16,6 +22,28 @@ namespace Fmo.BusinessServices.Services
         public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
+        }
+
+        public object GetDeliveryPoints()
+        {
+            //object[] bboxArr = bbox.Split(',');
+            //return searchDeliveryPointsRepository.GetDeliveryPoints(bboxArr);
+
+            string str = File.ReadAllText(@"D:\Richa\FMO-AD\FMO\Fmo.DataServices\TestData\deliveryPoint.json");
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            return js.Deserialize(str, typeof(object));
+
+            //MemoryStream deliveryPoints = this.deliveryPointsRepository.GetDeliveryPoints();
+
+            //var result = new HttpResponseMessage(HttpStatusCode.OK)
+            //{
+            //    Content = new StreamContent(deliveryPoints)
+            //};
+
+            //result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            //result.Content.Headers.ContentLength = deliveryPoints.Length;
+            //return result;
+
         }
     }
 }

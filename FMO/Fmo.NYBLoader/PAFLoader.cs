@@ -28,7 +28,53 @@ namespace Fmo.NYBLoader
             this.msgBroker = messageBroker;
         }
 
-        public List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
+        public void LoadPAF(string fileName)
+        {
+            try
+            {
+                using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                {
+                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    {
+                        string strLine = string.Empty;
+                        string strfileName = string.Empty;
+                        Stream stream = entry.Open();
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
+                        strfileName = entry.Name;
+
+                        List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine, strfileName);
+                        if (lstPAFDetails != null && lstPAFDetails.Count > 0)
+                        {
+                            var invalidRecordsCount = lstPAFDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                            if (invalidRecordsCount > 0)
+                            {
+                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                            }
+                            else
+                            {
+                                if (SavePAFDetails(lstPAFDetails))
+                                {
+                                    File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                }
+                                else
+                                {
+                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+
+        private List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
@@ -63,7 +109,7 @@ namespace Fmo.NYBLoader
                 }
                 else
                 {
-                    File.WriteAllText(Path.Combine("Error file", strFileName), strLine);
+                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strFileName)), strLine);
                     //TO DO Log error... File validation error
                 }
             }
@@ -152,7 +198,7 @@ namespace Fmo.NYBLoader
             }
         }*/
 
-        public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        private bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             bool saveflag = false;
             try
