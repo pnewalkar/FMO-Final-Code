@@ -53,6 +53,7 @@
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="Coordinates.cs" />
+    <Compile Include="NotificationDTO.cs" />
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />

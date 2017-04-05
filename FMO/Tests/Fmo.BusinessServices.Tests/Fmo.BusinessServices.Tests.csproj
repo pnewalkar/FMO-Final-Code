@@ -58,6 +58,7 @@
     <Compile Include="Services\LoadThirdPartyFileBusinessServiceTestFixture.cs" />
     <Compile Include="Services\DeliveryRouteBusinessServiceFixture.cs" />
     <Compile Include="Services\PostalAddressBusinessServiceFixture.cs" />
+    <Compile Include="Services\SearchBusinessServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

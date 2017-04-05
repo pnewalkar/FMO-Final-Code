@@ -28,12 +28,13 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public DeliveryPoint GetDeliveryPointByUDPRN(int uDPRN)
+        public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
         {
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-                return objDeliveryPoint;
+                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
+                DeliveryPoint objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                return deliveryPointDTO;
             }
             catch (Exception)
             {

@@ -8,7 +8,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryPointsRepository
     {
-        List<DeliveryPointDTO> SearchDeliveryPoints();
+     //   List<DeliveryPointDTO> SearchDeliveryPoints();
 
         DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN);
 
