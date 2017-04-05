@@ -13,13 +13,16 @@ using System.Xml.Serialization;
 using Fmo.Common.Constants;
 using System.Xml;
 using System.Xml.Schema;
+using System.Configuration;
 
 namespace Fmo.NYBLoader
 {
     public class TPFLoader : ITPFLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
-        private const string XSD_LOCATION = @"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd";
+        private string XSD_LOCATION = ConfigurationSettings.AppSettings["XSDLocation"];
+        private string PROCESSED = ConfigurationSettings.AppSettings["ProcessedFilePath"];
+        private string ERROR = ConfigurationSettings.AppSettings["ErrorFilePath"];
 
 
         public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker)
@@ -52,14 +55,9 @@ namespace Fmo.NYBLoader
                     msgBroker.SendMessage(USRMsg);
                 });
 
-                //destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER, new FileInfo(strPath).Name);
+                destinationPath = Path.Combine(PROCESSED, new FileInfo(strPath).Name);
 
-                //if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER)))
-                //{
-                //    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER));
-                //}
-
-                //File.Move(strPath, destinationPath);
+                File.Move(strPath, destinationPath);
 
                 //Code to be uncommented after confirmation
                 /*lstUSRUpdateFiles.ForEach(addressLocation =>
@@ -130,12 +128,7 @@ namespace Fmo.NYBLoader
             }
             catch (Exception ex)
             {
-                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER, new FileInfo(strPath).Name);
-
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER));
-                }
+                string destinationPath = Path.Combine(ERROR, Constants.Error_FOLDER, new FileInfo(strPath).Name);
 
                 File.Move(strPath, destinationPath);
 

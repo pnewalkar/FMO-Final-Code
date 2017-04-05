@@ -11,6 +11,8 @@
     using Moq;
 
     using NUnit.Framework;
+    using Common.Constants;
+    using System.Messaging;
 
     public class LoadThirdPartyFileBusinessServiceTestFixture : TestFixtureBase
     {
@@ -219,6 +221,27 @@
 
             List<AddressLocationUSRDTO> methodOutput = testCandidate.GetValidRecords(str);
             Assert.AreEqual(testLstAddressLoc[0].xCoordinate, methodOutput[0].xCoordinate);
+        }
+
+        [Test]
+        public void TestPushMessageToQueue()
+        {
+            //Mock<IMessageBroker<AddressLocationUSRDTO>> mockUSRMq = new Mock<IMessageBroker<AddressLocationUSRDTO>>();
+            //IMessage data = null;
+            //MessageQueue messageQueue = new MessageQueue(Constants.QUEUE_PATH + Constants.QUEUE_THIRD_PARTY);
+            //AddressLocationUSRDTO testAddressLoc = new AddressLocationUSRDTO {
+            //    udprn = 12345,
+            //    changeType = "I",
+            //    latitude = (decimal)23.57,
+            //    longitude = (decimal)24.32,
+            //    xCoordinate = 4567,
+            //    yCoordinate = 2347
+            //};
+
+            //mockUSRMq.Setup(x => x.CreateMessage(testAddressLoc, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH)).Returns(() => {
+
+            //    return data;
+            //});
         }
 
         protected override void OnSetup()
