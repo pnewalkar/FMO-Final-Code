@@ -20,9 +20,6 @@ namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private static int noOfCharacters = 19;
-        private static int maxCharacters = 534;
-
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
@@ -219,8 +216,7 @@ namespace Fmo.NYBLoader
 
                 foreach (var addDetail in lstPostalAddress)
                 {
-                    string strXml = SerializeObject<PostalAddressDTO>(addDetail);
-                    IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    IMessage msg = msgBroker.CreateMessage(addDetail, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(msg);
                 }
             }
@@ -241,7 +237,7 @@ namespace Fmo.NYBLoader
                 );
         }
 
-        private static string SerializeObject<T>(T toSerialize)
+        /*private static string SerializeObject<T>(T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
@@ -252,20 +248,20 @@ namespace Fmo.NYBLoader
             }
         }
 
-        //private static T DeserializeXMLFileToObject<T>(string xmlFilename)
-        //{
-        //    T returnObject = default(T);
-        //    if (string.IsNullOrEmpty(xmlFilename))
-        //    {
-        //        return default(T);
-        //    }
+        private static T DeserializeXMLFileToObject<T>(string xmlFilename)
+        {
+            T returnObject = default(T);
+            if (string.IsNullOrEmpty(xmlFilename))
+            {
+                return default(T);
+            }
 
-        //    StreamReader xmlStream = new StreamReader(xmlFilename);
-        //    XmlSerializer serializer = new XmlSerializer(typeof(T));
-        //    returnObject = (T)serializer.Deserialize(xmlStream);
+            StreamReader xmlStream = new StreamReader(xmlFilename);
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            returnObject = (T)serializer.Deserialize(xmlStream);
 
-        //    return returnObject;
-        //}
+            return returnObject;
+        }*/
 
         private static bool ValidateFile(string[] arrLines)
         {
@@ -274,12 +270,12 @@ namespace Fmo.NYBLoader
             {
                 foreach (string line in arrLines)
                 {
-                    if (line.Count(n => n == ',') != noOfCharacters)
+                    if (line.Count(n => n == ',') != Constants.noOfCharactersForPAF)
                     {
                         isFileValid = false;
                         break;
                     }
-                    if (line.ToCharArray().Count() > maxCharacters)
+                    if (line.ToCharArray().Count() > Constants.maxCharactersForPAF)
                     {
                         isFileValid = false;
                         break;

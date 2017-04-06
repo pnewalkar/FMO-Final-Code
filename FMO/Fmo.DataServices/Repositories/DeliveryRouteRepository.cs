@@ -30,7 +30,7 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 var result = await DataContext.DeliveryRoutes.ToListAsync();
-                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result);
             }
             catch (Exception ex)
             {

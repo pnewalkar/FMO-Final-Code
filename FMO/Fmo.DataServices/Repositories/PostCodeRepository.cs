@@ -58,10 +58,9 @@
         {
             try
             {
-                var postCodeDetails = DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).ToList();
+                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).ToListAsync();
 
-                var result = await DataContext.Postcodes.ToListAsync();
-                return GenericMapper.MapList<Postcode, PostCodeDTO>(result.ToList());
+                return GenericMapper.MapList<Postcode, PostCodeDTO>(postCodeDetails);
             }
             catch (Exception ex)
             {
