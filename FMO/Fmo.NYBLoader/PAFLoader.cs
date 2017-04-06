@@ -20,9 +20,6 @@ namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private static int noOfCharacters = 19;
-        private static int maxCharacters = 534;
-
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
@@ -220,7 +217,7 @@ namespace Fmo.NYBLoader
                 foreach (var addDetail in lstPostalAddress)
                 {
                     string strXml = SerializeObject<PostalAddressDTO>(addDetail);
-                    IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    IMessage msg = msgBroker.CreateMessage(addDetail, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(msg);
                 }
             }
@@ -274,12 +271,12 @@ namespace Fmo.NYBLoader
             {
                 foreach (string line in arrLines)
                 {
-                    if (line.Count(n => n == ',') != noOfCharacters)
+                    if (line.Count(n => n == ',') != Constants.noOfCharactersForPAF)
                     {
                         isFileValid = false;
                         break;
                     }
-                    if (line.ToCharArray().Count() > maxCharacters)
+                    if (line.ToCharArray().Count() > Constants.maxCharactersForPAF)
                     {
                         isFileValid = false;
                         break;

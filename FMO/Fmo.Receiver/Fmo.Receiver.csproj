@@ -87,6 +87,10 @@
       <Project>{10A130A3-105F-4DF9-9D74-00D252B5ACC7}</Project>
       <Name>Fmo.MessageBrokerCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fmo.NYBLoader\Fmo.NYBLoader.csproj">
+      <Project>{4E169F3D-90C8-4889-96AD-9C0D51C5C174}</Project>
+      <Name>Fmo.NYBLoader</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
