@@ -36,8 +36,14 @@
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IExceptionHelper exceptionHelper = default(IExceptionHelper);
 
+        private IFileMover fileMover = default(IFileMover);
         private IConfigurationHelper configurationHelper;
 
+        /// <summary>
+        /// Append timestamp to filename before writing the file to specified folder
+        /// </summary>
+        /// <param name="strfileName"></param>
+        /// <returns></returns>
         private static string AppendTimeStamp(string strfileName)
         {
             try
@@ -77,11 +83,13 @@
             kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
             kernel.Bind<IExceptionHelper>().To<ExceptionHelper>();
             kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
+            kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
             loggingHelper = kernel.Get<ILoggingHelper>();
+            fileMover = kernel.Get<IFileMover>();
             configurationHelper = kernel.Get<IConfigurationHelper>();
         }
 
@@ -238,6 +246,10 @@
             // ExecuteProcess(fileName);
         }
 
+        /// <summary>
+        /// Read files from zip file and call NYBLoader Assembly to validate and save records
+        /// </summary>
+        /// <param name="fileName"></param>
         private void LoadNYBDetails(string fileName)
         {
             try
@@ -270,7 +282,7 @@
                         }
                         else
                         {
-                            loggingHelper.LogInfo("File Name :" + strfileName + " : Log Time :" + DateTime.Now.ToString());
+                            this.loggingHelper.LogInfo("Load NYB Error Message : NYB File ins not valid File Name :" + strfileName + " : Log Time :" + DateTime.Now.ToString());
                         }
                     }
                 }

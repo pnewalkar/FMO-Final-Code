@@ -30,25 +30,19 @@ namespace Fmo.BusinessServices.Services
         public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress)
         {
             bool saveFlag = false;
-            try
+            int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
+            int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
+            List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
+            if (!lstUDPRNS.All(a => a == 0))
             {
-                int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
-                int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
-                List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
-                if (!lstUDPRNS.All(a => a == 0))
+                foreach (var postalAddress in lstPostalAddress)
                 {
-                    foreach (var postalAddress in lstPostalAddress)
-                    {
-                        postalAddress.AddressStatus_Id = addressStatusId;
-                        postalAddress.AddressType_Id = addressTypeId;
-                        addressRepository.SaveAddress(postalAddress);
-                    }
-                    saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                    postalAddress.AddressStatus_Id = addressStatusId;
+                    postalAddress.AddressType_Id = addressTypeId;
+                    addressRepository.SaveAddress(postalAddress);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
+
+                saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
             }
 
             return saveFlag;

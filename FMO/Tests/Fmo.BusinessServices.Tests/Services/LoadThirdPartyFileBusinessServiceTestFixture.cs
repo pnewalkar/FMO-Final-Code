@@ -17,12 +17,17 @@
     public class LoadThirdPartyFileBusinessServiceTestFixture : TestFixtureBase
     {
         private ITPFLoader testCandidate;
-        private IMessageBroker<AddressLocationUSRDTO> msgBroker;
+        private Mock<IFileMover> fileMoverMock;
+        private Mock<IMessageBroker<AddressLocationUSRDTO>> msgBrokerMock;
 
         [Test]
         public void TestValidRecords_Count()
         {
             string str = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
+
+            testCandidate.LoadTPFDetailsFromXML(str);
+            fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Once);
+
             List<AddressLocationUSRDTO> testLstAddressLoc = new List<AddressLocationUSRDTO>(new AddressLocationUSRDTO[]
             {
                 new AddressLocationUSRDTO
@@ -224,30 +229,22 @@
         }
 
         [Test]
-        public void TestPushMessageToQueue()
+        public void TestMessageQueueCreateMessage()
         {
-            //Mock<IMessageBroker<AddressLocationUSRDTO>> mockUSRMq = new Mock<IMessageBroker<AddressLocationUSRDTO>>();
-            //IMessage data = null;
-            //MessageQueue messageQueue = new MessageQueue(Constants.QUEUE_PATH + Constants.QUEUE_THIRD_PARTY);
-            //AddressLocationUSRDTO testAddressLoc = new AddressLocationUSRDTO {
-            //    udprn = 12345,
-            //    changeType = "I",
-            //    latitude = (decimal)23.57,
-            //    longitude = (decimal)24.32,
-            //    xCoordinate = 4567,
-            //    yCoordinate = 2347
-            //};
 
-            //mockUSRMq.Setup(x => x.CreateMessage(testAddressLoc, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH)).Returns(() => {
-
-            //    return data;
-            //});
+            testCandidate.LoadTPFDetailsFromXML("xyz");
+            msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<AddressLocationDTO>(), It.IsAny<string>(), It.IsAny<string>() ), Times.Exactly(1));
         }
 
         protected override void OnSetup()
         {
-            msgBroker = new MessageBroker<AddressLocationUSRDTO>();
-            testCandidate = new TPFLoader(msgBroker);
+
+            msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
+            fileMoverMock = CreateMock<IFileMover>();
+            fileMoverMock.Setup(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()));
+            msgBrokerMock.Setup(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
+            msgBrokerMock.Setup(x => x.SendMessage(It.IsAny<IMessage>()));
+            testCandidate = new TPFLoader(msgBrokerMock.Object, fileMoverMock.Object);
         }
     }
 }

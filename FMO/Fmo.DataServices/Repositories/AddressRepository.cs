@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using Common.Interface;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -12,41 +13,37 @@
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType)
         {
             bool deleteFlag = false;
-            try
+            if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                if (lstUDPRN != null && lstUDPRN.Count() > 0)
+                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
+                if (lstAddress != null && lstAddress.Count > 0)
                 {
-                    var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
-                    if (lstAddress != null && lstAddress.Count > 0)
+                    lstAddress.ForEach(postalAddressEntity =>
                     {
-                        lstAddress.ForEach(postalAddressEntity =>
+                        if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
-                            if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
-                            {
-                                deleteFlag = false;
-                                // TO DO log error
-                            }
-                            else
-                            {
-                                DataContext.PostalAddresses.Remove(postalAddressEntity);
-                                DataContext.SaveChanges();
-                                deleteFlag = true;
-                            }
-                        });
-                    }
+                            deleteFlag = false;
+                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
+                        }
+                        else
+                        {
+                            DataContext.PostalAddresses.Remove(postalAddressEntity);
+                            DataContext.SaveChanges();
+                            deleteFlag = true;
+                        }
+                    });
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return deleteFlag;
