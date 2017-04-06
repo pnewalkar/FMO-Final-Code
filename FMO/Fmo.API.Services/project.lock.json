@@ -1896,10 +1896,19 @@
         }
       },
       "Fmo.DTO/1.0.0": {
-        "type": "project"
+        "type": "project",
+        "dependencies": {
+          "Fmo.Common": "1.0.0"
+        }
       },
       "Fmo.Entities/1.0.0": {
         "type": "project"
+      },
+      "Fmo.Helpers/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Fmo.DTO": "1.0.0"
+        }
       },
       "Fmo.MappingConfiguration/1.0.0": {
         "type": "project",
@@ -5652,6 +5661,10 @@
       "type": "project",
       "msbuildProject": "../FMO.Entities/Fmo.Entities.csproj"
     },
+    "Fmo.Helpers/1.0.0": {
+      "type": "project",
+      "msbuildProject": "../Fmo.Helpers/Fmo.Helpers.csproj"
+    },
     "Fmo.MappingConfiguration/1.0.0": {
       "type": "project",
       "msbuildProject": "../Fmo.MappingConfiguration/Fmo.MappingConfiguration.csproj"
@@ -5690,6 +5703,7 @@
       "Fmo.Common",
       "Fmo.DTO",
       "Fmo.DataServices",
+      "Fmo.Helpers",
       "Fmo.MappingConfiguration"
     ]
   },

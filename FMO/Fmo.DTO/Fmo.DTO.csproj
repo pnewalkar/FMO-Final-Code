@@ -62,6 +62,7 @@
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="Coordinates.cs" />
     <Compile Include="NotificationDTO.cs" />
+    <Compile Include="OsRoadLinkDTO.cs" />
     <Compile Include="SearchCountDTO.cs" />
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
@@ -111,6 +112,10 @@
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
       <Project>{1D645C11-6570-4327-9E60-B6E7D676BA0D}</Project>
       <Name>Fmo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FMO.Entities\Fmo.Entities.csproj">
+      <Project>{355491A6-65FA-4145-BB68-74E0E1576433}</Project>
+      <Name>Fmo.Entities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
