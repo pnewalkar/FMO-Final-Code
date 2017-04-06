@@ -27,7 +27,6 @@ function MapKeyController($scope, mapStylesFactory, mapService) {
                 }
             }
         }
-
         return distinct.indexOf(id) != -1;
     }
 
@@ -46,9 +45,9 @@ function MapKeyController($scope, mapStylesFactory, mapService) {
             "style": activeStyle("accesslink")
         },
         {
-            "text": "Route",
-            "id": "route",
-            "style": activeStyle("route")
+            "text": "Road",
+            "id": "road",
+            "style": activeStyle("road")
         }
     ];
 };
