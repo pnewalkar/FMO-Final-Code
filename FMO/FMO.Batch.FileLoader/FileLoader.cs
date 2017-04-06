@@ -15,21 +15,56 @@
     using Fmo.NYBLoader.Common;
     using Ninject;
     using Ninject.Parameters;
+    using System.IO.Compression;
+    using System;
+    using Fmo.Common.Interface;
+    using Fmo.Common.LoggingManagement;
+    using Fmo.Common.ExceptionManagement;
 
     public partial class FileLoader : ServiceBase
     {
+
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;
+        private static string dateTimeFormat = "{0:-yyyy-MM-d-HH-mm-ss}";
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
         private ITPFLoader tpfLoader = default(ITPFLoader);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IExceptionHelper exceptionHelper = default(IExceptionHelper);
+
+        private IFileMover fileMover = default(IFileMover);
+        private IConfigurationHelper configurationHelper;
+
+        /// <summary>
+        /// Append timestamp to filename before writing the file to specified folder
+        /// </summary>
+        /// <param name="strfileName"></param>
+        /// <returns></returns>
+        private static string AppendTimeStamp(string strfileName)
+        {
+            try
+            {
+                return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public FileLoader()
         {
+            // this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
+            // this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
             kernal = new StandardKernel();
             Register(kernal);
             InitializeComponent();
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ProcessedFilePath");
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ErrorFilePath");
         }
 
         public void OnDebug()
@@ -45,11 +80,17 @@
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IHttpHandler>().To<HttpHandler>();
+            kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
+            kernel.Bind<IExceptionHelper>().To<ExceptionHelper>();
             kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
+            kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
+            loggingHelper = kernel.Get<ILoggingHelper>();
+            fileMover = kernel.Get<IFileMover>();
+            configurationHelper = kernel.Get<IConfigurationHelper>();
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -189,8 +230,7 @@
                 switch (action_Args)
                 {
                     case "PAF":
-                        this.pafLoader.LoadPAFDetailsFromCSV(fileName);
-                        //this.pafLoader.ProcessPAF(fileName);
+                        this.pafLoader.LoadPAF(fileName);
                         break;
 
                     case "NYB":
@@ -206,54 +246,81 @@
             // ExecuteProcess(fileName);
         }
 
+        /// <summary>
+        /// Read files from zip file and call NYBLoader Assembly to validate and save records
+        /// </summary>
+        /// <param name="fileName"></param>
         private void LoadNYBDetails(string fileName)
         {
             try
             {
-                List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(fileName);
-                if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                using (ZipArchive zip = ZipFile.OpenRead(fileName))
                 {
-                    var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
-                    if (invalidRecordsCount == 0)
+                    foreach (ZipArchiveEntry entry in zip.Entries)
                     {
-                        this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                        string strLine = string.Empty;
+                        string strfileName = string.Empty;
+
+                        Stream stream = entry.Open();
+                        var reader = new StreamReader(stream);
+                        strLine = reader.ReadToEnd();
+                        strfileName = entry.Name;
+                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(strLine);
+                        if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                        {
+                            var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                            if (invalidRecordsCount > 0)
+                            {
+                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                            }
+                            else
+                            {
+                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                            }
+                        }
+                        else
+                        {
+                            this.loggingHelper.LogInfo("Load NYB Error Message : NYB File ins not valid File Name :" + strfileName + " : Log Time :" + DateTime.Now.ToString());
+                        }
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                loggingHelper.LogError(ex);
             }
         }
 
         /*
-        private string SerializeObject<T>(T toSerialize)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+         private string SerializeObject<T>(T toSerialize)
+         {
+             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
-            using (StringWriter textWriter = new StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, toSerialize);
-                return textWriter.ToString();
-            }
-        }
+             using (StringWriter textWriter = new StringWriter())
+             {
+                 xmlSerializer.Serialize(textWriter, toSerialize);
+                 return textWriter.ToString();
+             }
+         }
 
-        private T DeserializeXMLFileToObject<T>(string XmlFilename)
-        {
-            T returnObject = default(T);
-            if (string.IsNullOrEmpty(XmlFilename)) return default(T);
+         private T DeserializeXMLFileToObject<T>(string XmlFilename)
+         {
+             T returnObject = default(T);
+             if (string.IsNullOrEmpty(XmlFilename)) return default(T);
 
-            try
-            {
-                StreamReader xmlStream = new StreamReader(XmlFilename);
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                returnObject = (T)serializer.Deserialize(xmlStream);
-            }
-            catch (Exception ex)
-            {
-            }
-            return returnObject;
-        }
-        */
+             try
+             {
+                 StreamReader xmlStream = new StreamReader(XmlFilename);
+                 XmlSerializer serializer = new XmlSerializer(typeof(T));
+                 returnObject = (T)serializer.Deserialize(xmlStream);
+             }
+             catch (Exception ex)
+             {
+             }
+             return returnObject;
+         }
+         */
     }
 }

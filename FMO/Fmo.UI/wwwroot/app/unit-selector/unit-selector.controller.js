@@ -12,8 +12,12 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
     vm.selectedUser = { id: 1, name: 'Bob' };
     
     function DeliveryUnit() {
-
-        $state.go('routeSimulation', { selectedUnit: vm.selectedUser });
+        //$state.transitionTo('routeSimulation', {
+        //    selectedUnit: vm.selectedUser
+        //});
+        $state.go("routeSimulation", { selectedUnit: vm.selectedUser }, {location: false, inherit: false
+    });
+        //$state.go('routeSimulation', { selectedUnit: vm.selectedUser });
         //unitSelectorAPIService.GetDeliveryUnit().then(function (response) {
         //    vm.deliveryUnit = response.data;
         //});

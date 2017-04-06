@@ -64,11 +64,18 @@ namespace Fmo.API.Services
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
             services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddScoped(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
-            services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
-            services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();    
+            services.AddTransient(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
+
+            //Infrastructure
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
             services.AddTransient<IDatabaseFactory<FMODBContext>, DatabaseFactory<FMODBContext>>();
+
+            //BusinessServices
+            services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
+            services.AddTransient<ISearchBussinessService, SearchBussinessService>();
+
+            //Repositories
+            services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();    
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IAddressRepository, AddressRepository>();
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
@@ -78,6 +85,9 @@ namespace Fmo.API.Services
             services.AddTransient<IDeliveryUnitLocationRepository, DeliveryUnitLocationRespository>();
             services.AddTransient<IAddressLocationRepository, AddressLocationRepository>();
             services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
+            services.AddTransient<IPostCodeRepository, PostCodeRepository>();
+            services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
+            services.AddTransient<ILoggingHelper, LoggingHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

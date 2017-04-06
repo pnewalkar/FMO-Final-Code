@@ -8,6 +8,11 @@ using Fmo.DTO;
 using Fmo.Common.Interface;
 using Fmo.Common.Enums;
 using Fmo.Common.ExceptionManagement;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net;
+using IO=System.IO;
+
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -36,6 +41,24 @@ namespace Fmo.API.Services.Controllers
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPoints()
         {
             throw new NotImplementedException();
+        }
+
+        [Route("GetDeliveryPoints")]
+        [HttpGet]
+        public object GetDeliveryPoints(string bbox)
+        {
+            //try
+            //{
+
+            return Json("");
+            //return businessService.GetDeliveryPoints();
+            //}
+
+            //catch (Exception ex)
+            //{
+
+            //}
+
         }
 
         //// GET: api/values

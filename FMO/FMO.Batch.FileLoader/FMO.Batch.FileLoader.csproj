@@ -42,6 +42,8 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -85,6 +87,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
+      <Project>{1d645c11-6570-4327-9e60-b6e7d676ba0d}</Project>
+      <Name>Fmo.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj">
       <Project>{43fc012e-5274-4cf4-8689-97b3ce067c11}</Project>
       <Name>Fmo.DTO</Name>

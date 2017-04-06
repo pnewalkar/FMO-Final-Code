@@ -17,7 +17,7 @@ function LayerSelectorController($scope, $rootScope, $http, mapService, mapStyle
         vm.groups = [];
         vm.ungrouped = [];
         vm.groupNames = {};
-        vm.layers = mapService.mapLayers;
+        vm.layers = mapService.mapLayers();
         vm.layers.forEach(function (layer) {
             if (!layer.group) {
                 vm.ungrouped.push(layer);
@@ -41,7 +41,7 @@ function LayerSelectorController($scope, $rootScope, $http, mapService, mapStyle
     function onChange(changedLayer) {
         debugger;
        // fetchDeliveryPoints();
-        fetchAccessLinks();
+      //  fetchAccessLinks();
         if (changedLayer.group) {
             var group = vm.groups[vm.groupNames[changedLayer.group]];
             var otherEnabled = false;
