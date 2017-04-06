@@ -21,7 +21,7 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpPost("SavePAFDetails")]
-        public void SavePAFDetails([FromBody]PostalAddressDTO postalAddress)
+        public async void SavePAFDetails([FromBody]PostalAddressDTO postalAddress)
         {
             try
             {
