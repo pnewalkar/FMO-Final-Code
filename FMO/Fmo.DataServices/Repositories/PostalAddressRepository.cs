@@ -20,6 +20,11 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
+        public Task<List<PostalAddressDTO>> FetchPostalAddressforAdvanceSearch(string searchText)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<PostalAddressDTO>> FetchPostalAddressforBasicSearch(string searchText)
         {
             try

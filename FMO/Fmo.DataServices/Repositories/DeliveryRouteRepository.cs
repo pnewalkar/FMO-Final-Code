@@ -25,7 +25,7 @@ namespace Fmo.DataServices.Repositories
             return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
         }
 
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             try
             {

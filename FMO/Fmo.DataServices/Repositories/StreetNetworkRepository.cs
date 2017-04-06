@@ -19,6 +19,11 @@
         {
         }
 
+        public Task<List<StreetNameDTO>> FetchStreetNamesforAdvanceSearch(string searchText)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<StreetNameDTO>> FetchStreetNamesforBasicSearch(string searchText)
         {
             try

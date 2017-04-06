@@ -37,14 +37,19 @@ namespace Fmo.BusinessServices.Services
             return scenarioRepository.FetchScenario(operationStateID, deliveryUnitID);
         }
 
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchPostCodeUnitforBasicSearch(string searchText)
         {
-            return await routeSimulationRespository.FetchDeliveryRoute(searchText);
+            return await routeSimulationRespository.FetchPostCodeUnitforBasicSearch(searchText);
         }
 
         public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
         {
             return deliveryUnitLocationRespository.FetchDeliveryUnit();
+        }
+
+        public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        {
+            throw new NotImplementedException();
         }
     }
 }

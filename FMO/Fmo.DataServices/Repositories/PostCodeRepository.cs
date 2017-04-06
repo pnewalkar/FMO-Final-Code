@@ -45,7 +45,7 @@
             }
         }
 
-        public async Task<List<PostCodeDTO>> FetchPostCodeUnit(string searchText)
+        public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText)
         {
             try
             {

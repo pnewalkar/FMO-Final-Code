@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
@@ -23,7 +22,7 @@ namespace Fmo.BusinessServices.Services
 
         public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText)
         {
-            var deliveryRoutes = deliveryRouteRepository.FetchDeliveryRoute(searchText);
+            var deliveryRoutes = deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
             var deliveryRouteCount = deliveryRouteRepository.GetDeliveryRouteUnitCount(searchText);
 
             var postcodes = postCodeRepository.FetchPostCodeUnitforBasicSearch(searchText);
@@ -48,9 +47,30 @@ namespace Fmo.BusinessServices.Services
 
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
         {
-            await postCodeRepository.FetchPostCodeUnit(searchText);
-            await deliveryRouteRepository.FetchDeliveryRoute(searchText);
-            return null;
+            //var postcodesTask =  postCodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
+            //var deliveryRoutesTask =  deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
+            //var streetNamesTask =  streetNetworkRepository.FetchStreetNamesforAdvanceSearch(searchText);
+            //var postalAddressTask =  postalAddressRepository.FetchPostalAddressforAdvanceSearch(searchText);
+
+            //Task.WaitAll(deliveryRoutesTask, postcodesTask, streetNamesTask, postalAddressTask);
+            //var postcodes = await postcodesTask ?? new List<PostCodeDTO>();
+            //var deliveryRoutes = await deliveryRoutesTask ?? new List<DeliveryRouteDTO>();
+            //var streetNames = await streetNamesTask ?? new List<StreetNameDTO>();
+            //var postalAddresses = await postalAddressTask ?? new List<PostalAddressDTO>();
+
+            var postcodes = await postCodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
+            var deliveryRoutes = await deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
+            var streetNames = await streetNetworkRepository.FetchStreetNamesforAdvanceSearch(searchText);
+            var postalAddresses = await postalAddressRepository.FetchPostalAddressforAdvanceSearch(searchText);
+
+            return new SearchResultDTO
+            {
+                DeliveryRoute = deliveryRoutes,
+                PostCode = postcodes,
+                PostalAddress = postalAddresses,
+                StreetName = streetNames,
+                TotalCount = deliveryRoutes.Count + postcodes.Count + streetNames.Count + postalAddresses.Count
+            };
         }
     }
 }
