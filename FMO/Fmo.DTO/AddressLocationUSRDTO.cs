@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace Fmo.DTO
 {
     [Serializable()]
-    [XmlRoot("USR"), XmlType("addressLocation")]
+    [XmlType("addressLocation")]
     public class AddressLocationUSRDTO
     {
         public int? udprn { get; set; }

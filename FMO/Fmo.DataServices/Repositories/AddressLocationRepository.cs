@@ -34,5 +34,23 @@
                 throw;
             }
         }
+
+        public void SaveNewAddressLocation(AddressLocationDTO addressLocationDTO)
+        {
+            try
+            {
+                var addressLocationEntity = new AddressLocation();
+
+                GenericMapper.Map(addressLocationDTO, addressLocationEntity);
+
+                DataContext.AddressLocations.Add(addressLocationEntity);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

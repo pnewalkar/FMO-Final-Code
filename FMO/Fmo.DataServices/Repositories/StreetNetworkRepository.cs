@@ -19,18 +19,33 @@
         {
         }
 
+        public Task<List<StreetNameDTO>> FetchStreetNamesforAdvanceSearch(string searchText)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<StreetNameDTO>> FetchStreetNamesforBasicSearch(string searchText)
         {
             try
             {
                 int takeCount = 5;
-                var streetNames = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
-                    .Take(takeCount).ToListAsync();
-                return GenericMapper.MapList<StreetName, StreetNameDTO>(streetNames.ToList());
+                var streetNamesDto = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+                    .Take(takeCount)
+                    .Select(l => new StreetNameDTO
+                    {
+                        StreetName_Id = l.StreetName_Id,
+                        StreetType = l.StreetType,
+                        NationalRoadCode = l.NationalRoadCode,
+                        DesignatedName = l.DesignatedName,
+                        Descriptor = l.Descriptor
+                    })
+                    .ToListAsync();
+
+                return streetNamesDto;
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -43,7 +58,7 @@
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

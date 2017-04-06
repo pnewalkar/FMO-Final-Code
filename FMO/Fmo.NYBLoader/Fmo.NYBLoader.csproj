@@ -58,7 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ConfigurationHelper.cs" />
+    <Compile Include="Common\FileMover.cs" />
     <Compile Include="Common\HttpHandler.cs" />
+    <Compile Include="Interfaces\IFileMover.cs" />
     <Compile Include="Interfaces\IHttpHandler.cs" />
     <Compile Include="Interfaces\IConfigurationHelper.cs" />
     <Compile Include="Interfaces\IPAFLoader.cs" />

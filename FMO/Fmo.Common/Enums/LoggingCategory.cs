@@ -9,6 +9,8 @@ namespace Fmo.Common.Enums
 {
     public enum LoggingCategory
     {
+        None = 0,
+
         /// <summary>
         /// The General
         /// </summary>

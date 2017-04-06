@@ -13,18 +13,23 @@ using System.Xml.Serialization;
 using Fmo.Common.Constants;
 using System.Xml;
 using System.Xml.Schema;
+using System.Configuration;
 
 namespace Fmo.NYBLoader
 {
     public class TPFLoader : ITPFLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
-        private const string XSD_LOCATION = @"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd";
+        private readonly IFileMover fileMover;
+        private string XSD_LOCATION = ConfigurationSettings.AppSettings["XSDLocation"];
+        private string PROCESSED = ConfigurationSettings.AppSettings["ProcessedFilePath"];
+        private string ERROR = ConfigurationSettings.AppSettings["ErrorFilePath"];
 
 
-        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker)
+        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker, IFileMover fileMover)
         {
             this.msgBroker = messageBroker;
+            this.fileMover = fileMover;
         }
 
 
@@ -47,19 +52,12 @@ namespace Fmo.NYBLoader
 
                 lstUSRInsertFiles.ForEach(addressLocation =>
                 {
-                    string xmlUSR = SerializeObject<AddressLocationUSRDTO>(addressLocation);
-                    IMessage USRMsg = msgBroker.CreateMessage(xmlUSR, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                    IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(USRMsg);
                 });
 
-                destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER, new FileInfo(strPath).Name);
 
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER));
-                }
-
-                File.Move(strPath, destinationPath);
+                fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, new FileInfo(strPath).Name });
 
                 //Code to be uncommented after confirmation
                 /*lstUSRUpdateFiles.ForEach(addressLocation =>
@@ -80,7 +78,7 @@ namespace Fmo.NYBLoader
 
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -119,7 +117,7 @@ namespace Fmo.NYBLoader
                     using (XmlReader xmlReader = XmlReader.Create(new StringReader(validXmlDocument.OuterXml)))
                     {
                         xmlReader.MoveToContent();
-                        lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));
+                        lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));    
                     }
                 };
 
@@ -127,14 +125,7 @@ namespace Fmo.NYBLoader
             }
             catch (Exception ex)
             {
-                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER, new FileInfo(strPath).Name);
-
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER));
-                }
-
-                File.Move(strPath, destinationPath);
+                fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, new FileInfo(strPath).Name });
 
                 throw ex;
             }
@@ -158,27 +149,6 @@ namespace Fmo.NYBLoader
                 });
 
                 return result;
-            }
-
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        private string SerializeObject<T>(T toSerialize)
-        {
-            try
-            {
-
-                XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-
-                using (StringWriter textWriter = new StringWriter())
-                {
-                    xmlSerializer.Serialize(textWriter, toSerialize);
-                    return textWriter.ToString();
-                }
-
             }
 
             catch (Exception ex)
