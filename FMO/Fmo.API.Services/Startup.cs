@@ -87,6 +87,7 @@ namespace Fmo.API.Services
             services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<ILoggingHelper, LoggingHelper>();
         }
 

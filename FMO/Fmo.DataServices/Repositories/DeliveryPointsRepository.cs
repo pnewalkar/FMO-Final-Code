@@ -15,8 +15,6 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using MappingConfiguration;
     using Entity = Fmo.Entities;
-
-
     using System.Linq;
     using System.Data.SqlTypes;
     using Microsoft.SqlServer.Types;
@@ -170,6 +168,7 @@ namespace Fmo.DataServices.Repositories
                               || x.PostalAddress.Thoroughfare.Contains(searchText)
                               || x.PostalAddress.DependentLocality.Contains(searchText));
         }
+
         public async Task<int> UpdateDeliveryPointLocationOnUDPRN(int uDPRN, decimal latitude, decimal longitude, DbGeometry locationXY)
         {
             try
@@ -194,7 +193,5 @@ namespace Fmo.DataServices.Repositories
                 throw;
             }
         }
-
-
     }
 }
