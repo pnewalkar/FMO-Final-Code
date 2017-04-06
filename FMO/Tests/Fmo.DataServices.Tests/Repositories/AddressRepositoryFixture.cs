@@ -9,6 +9,7 @@ using Moq;
 using NUnit.Framework;
 using System.Data.Entity;
 using Fmo.DTO;
+using Fmo.Common.Interface;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -16,6 +17,7 @@ namespace Fmo.DataServices.Tests.Repositories
     public class AddressRepositoryFixture : RepositoryFixtureBase
     {
         private Mock<FMODBContext> mockFmoDbContext;
+        private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAddressRepository testCandidate;
 
@@ -108,15 +110,15 @@ namespace Fmo.DataServices.Tests.Repositories
             };
 
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
-
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
-
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            testCandidate = new AddressRepository(mockDatabaseFactory.Object);
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
 
         private void SetUpdataWithOutDeliverypoints()
@@ -132,15 +134,15 @@ namespace Fmo.DataServices.Tests.Repositories
             };
 
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
-
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
-
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            testCandidate = new AddressRepository(mockDatabaseFactory.Object);
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

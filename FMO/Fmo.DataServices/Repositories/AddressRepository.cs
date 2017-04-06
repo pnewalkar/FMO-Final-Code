@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using Common.Interface;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -12,9 +13,12 @@
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType)
@@ -30,7 +34,7 @@
                         if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
                             deleteFlag = false;
-                            // TO DO log error
+                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
                         }
                         else
                         {
