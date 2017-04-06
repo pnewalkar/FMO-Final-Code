@@ -20,6 +20,8 @@ namespace Fmo.DataServices.Repositories
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
     using System.Text;
+    using System.Data.Entity.Spatial;
+    using Common.Constants;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -53,7 +55,7 @@ namespace Fmo.DataServices.Repositories
                     GenericMapper.Map(objDeliveryPoint, deliveryPoint);
 
                     DataContext.DeliveryPoints.Add(deliveryPoint);
-                    DataContext.SaveChanges();
+                    DataContext.SaveChangesAsync();
                     saveFlag = true;
                 }
             }
@@ -82,7 +84,6 @@ namespace Fmo.DataServices.Repositories
 
         public MemoryStream GetDeliveryPoints()
         {
-
             string json;
 
             using (StreamReader r = new StreamReader(@"D:\Richa\FMO-AD\FMO\Fmo.DataServices\TestData\deliveryPoint.json"))
@@ -132,9 +133,31 @@ namespace Fmo.DataServices.Repositories
 
 
             return new MemoryStream(resultBytes);*/
+        }
 
+        public async Task<int> UpdateDeliveryPointLocationOnUDPRN(int uDPRN, decimal latitude, decimal longitude, DbGeometry locationXY)
+        {
+            try
+            {
+                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
 
+                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(uDPRN)).SingleOrDefault();
 
+                GenericMapper.Map(deliveryPoint, deliveryPointDTO);
+
+                deliveryPointDTO.Longitude = longitude;
+                deliveryPointDTO.Latitude = latitude;
+                deliveryPointDTO.LocationXY = locationXY;
+                deliveryPointDTO.LocationProvider = Constants.USR_LOC_PROVIDER;
+
+                GenericMapper.Map(deliveryPointDTO, deliveryPoint);
+
+                return await DataContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

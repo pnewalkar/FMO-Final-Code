@@ -21,6 +21,8 @@ namespace Fmo.Common.Constants
         public const string Error_FOLDER = "Error";
         public const string DeliveryPointSuffix = "1A";
         public const int BNG_COORDINATE_SYSTEM = 27700;
+        public const string USR_LOC_PROVIDER = "<E>";
+        public const int TOLERANCE_DISTANCE_IN_METERS = 10;
     }
 }
 
