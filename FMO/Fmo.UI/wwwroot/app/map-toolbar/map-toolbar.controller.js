@@ -5,7 +5,7 @@ angular.module('mapToolbar')
     function mapToolbarController ($scope, $rootScope, $timeout, mapService) {
 
         var vm  = this;
-
+        vm.mapButtons = ["line", "point", "select"];
         vm.mapService = mapService;
         vm.setSelectedButton = setSelectedButton;
 		vm.deselectButton = deselectButton;
@@ -18,7 +18,7 @@ angular.module('mapToolbar')
 			          
 			var shape = getShapeForButton(button);
 
-			if (button == vm.selectedButton && mapService.mapButtons.length != 1) {
+			if (button == vm.selectedButton && vm.mapButtons.length != 1) {
 			    deselectButton(button);
 			}
 			else if (button != vm.selectedButton) {
@@ -30,7 +30,7 @@ angular.module('mapToolbar')
 		function deselectButton(button) {
 		    var shape = getShapeForButton(button);
 			if (button == vm.selectedButton) {
-				if (mapService.mapButtons.indexOf('select') >= 0){
+			    if (vm.mapButtons.indexOf('select') >= 0) {
 					vm.selectedButton = 'select';
 					$scope.$emit('mapToolChange', {"name": "select", "shape": shape, "enabled": true});
 				} else {
@@ -53,12 +53,12 @@ angular.module('mapToolbar')
 		}
 
 		function showButton(button) {
-			return mapService.mapButtons.indexOf(button) != -1;
+		    return vm.mapButtons.indexOf(button) != -1;
 		}
 
 		function autoSelect() {
-		    if (mapService.mapButtons.length == 1) {
-		        setSelectedButton(mapService.mapButtons[0]);
+		    if (vm.mapButtons.length == 1) {
+		        setSelectedButton(vm.mapButtons[0]);
 		    }
 		}
     }
