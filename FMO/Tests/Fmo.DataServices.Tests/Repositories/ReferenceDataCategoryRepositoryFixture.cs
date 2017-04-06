@@ -10,6 +10,7 @@ using NUnit.Framework;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
+    [TestFixture]
     public class ReferenceDataCategoryRepositoryFixture : RepositoryFixtureBase
     {
         private Mock<FMODBContext> mockFmoDbContext;
