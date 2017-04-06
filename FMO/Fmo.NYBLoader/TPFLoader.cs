@@ -14,6 +14,8 @@ using Fmo.Common.Constants;
 using System.Xml;
 using System.Xml.Schema;
 using System.Configuration;
+using Fmo.Common.Interface;
+using Fmo.Common.Enums;
 
 namespace Fmo.NYBLoader
 {
@@ -21,15 +23,24 @@ namespace Fmo.NYBLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
         private readonly IFileMover fileMover;
-        private string XSD_LOCATION = ConfigurationSettings.AppSettings["XSDLocation"];
-        private string PROCESSED = ConfigurationSettings.AppSettings["ProcessedFilePath"];
-        private string ERROR = ConfigurationSettings.AppSettings["ErrorFilePath"];
+        private readonly IExceptionHelper exceptionHelper;
+        private readonly ILoggingHelper loggingHelper;
+        private readonly IConfigurationHelper configHelper;
+        private string XSD_LOCATION;
+        private string PROCESSED;
+        private string ERROR;
 
 
-        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker, IFileMover fileMover)
+        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker, IFileMover fileMover, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper, IConfigurationHelper configHelper)
         {
             this.msgBroker = messageBroker;
             this.fileMover = fileMover;
+            this.exceptionHelper = exceptionHelper;
+            this.loggingHelper = loggingHelper;
+            this.configHelper = configHelper;
+            this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues("XSDLocation");
+            this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues("TPFProcessedFilePath");
+            this.ERROR = configHelper.ReadAppSettingsConfigurationValues("TPFErrorFilePath");
         }
 
 
@@ -78,7 +89,25 @@ namespace Fmo.NYBLoader
 
             catch (Exception ex)
             {
-                throw ex;
+                Exception newException;
+                exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                if (rethrow)
+                {
+                    if (newException == null)
+                    {
+                        throw;
+
+                    }
+                    else
+                    {
+                        throw newException;
+                    }
+                }
+                else
+                {
+                    throw;
+                }
             }
         }
 
@@ -123,11 +152,10 @@ namespace Fmo.NYBLoader
 
                 return lstUSRFiles;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, new FileInfo(strPath).Name });
-
-                throw ex;
+                throw ;
             }
 
         }
@@ -144,6 +172,14 @@ namespace Fmo.NYBLoader
 
                 xDoc.Validate(schemas, (o, e) =>
                 {
+                    if (e.Severity == XmlSeverityType.Warning)
+                    {
+                        loggingHelper.LogWarn(e.Message);
+                    }
+                    else if(e.Severity == XmlSeverityType.Error)
+                    {
+                        loggingHelper.LogError(e.Exception);
+                    }
                     //logger code to write schema mismatch exception 
                     result = false;
                 });
@@ -151,9 +187,9 @@ namespace Fmo.NYBLoader
                 return result;
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }
