@@ -38,6 +38,11 @@
 
         private IConfigurationHelper configurationHelper;
 
+        /// <summary>
+        /// Append timestamp to filename before writing the file to specified folder
+        /// </summary>
+        /// <param name="strfileName"></param>
+        /// <returns></returns>
         private static string AppendTimeStamp(string strfileName)
         {
             try
@@ -238,6 +243,10 @@
             // ExecuteProcess(fileName);
         }
 
+        /// <summary>
+        /// Read files from zip file and call NYBLoader Assembly to validate and save records
+        /// </summary>
+        /// <param name="fileName"></param>
         private void LoadNYBDetails(string fileName)
         {
             try

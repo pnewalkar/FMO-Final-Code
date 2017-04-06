@@ -36,6 +36,11 @@ namespace Fmo.NYBLoader
             this.exceptionHelper = exceptionHelper;
         }
         
+        /// <summary>
+        /// Reads data from CSV file and maps to postalAddressDTO object
+        /// </summary>
+        /// <param name="strLine"></param>
+        /// <returns></returns>
         public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
@@ -86,6 +91,11 @@ namespace Fmo.NYBLoader
             return lstAddressDetails;
         }
 
+        /// <summary>
+        /// Validates string i.e. no of comma's should be 15 and max characters per line should be 507
+        /// </summary>
+        /// <param name="arrLines"></param>
+        /// <returns></returns>
         private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
@@ -112,6 +122,11 @@ namespace Fmo.NYBLoader
             return isFileValid;
         }
 
+        /// <summary>
+        /// Mapping comma separated value to postalAddressDTO object
+        /// </summary>
+        /// <param name="csvLine"></param>
+        /// <returns></returns>
         private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
@@ -146,6 +161,10 @@ namespace Fmo.NYBLoader
             return objAddDTO;
         }
 
+        /// <summary>
+        /// Perform business validation on postalAddressDTO object
+        /// </summary>
+        /// <param name="lstAddress"></param>
         private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             try
@@ -203,6 +222,11 @@ namespace Fmo.NYBLoader
             }
         }
 
+        /// <summary>
+        /// PostCode validation i.e start and end character should be numeric , fourth last character should be whitespace etc.
+        /// </summary>
+        /// <param name="strPostCode"></param>
+        /// <returns></returns>
         private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
@@ -237,6 +261,11 @@ namespace Fmo.NYBLoader
             return isValid;
         }
 
+        /// <summary>
+        /// Web API call to save postalAddress to PostalAddress table
+        /// </summary>
+        /// <param name="lstAddress"></param>
+        /// <returns></returns>
         public bool SaveNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             bool saveflag = false;
