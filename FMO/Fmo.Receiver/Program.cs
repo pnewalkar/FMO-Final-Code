@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fmo.NYBLoader.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
@@ -26,12 +27,12 @@ namespace Fmo.Receiver
 #else
 
                 //In Release this section is used. This is the "normal" way.
-               ServiceBase[] ServicesToRun;
-                        ServicesToRun = new ServiceBase[]
-                        {
-                            new FileLoaderService()
-                        };
-                        ServiceBase.Run(ServicesToRun);
+                ServiceBase[] ServicesToRun;
+                ServicesToRun = new ServiceBase[]
+                {
+                    new FileLoaderService()
+                };
+                ServiceBase.Run(ServicesToRun);
 #endif
         }
     }
