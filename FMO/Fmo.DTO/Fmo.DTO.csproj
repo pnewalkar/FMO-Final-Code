@@ -55,6 +55,7 @@
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="Coordinates.cs" />
     <Compile Include="NotificationDTO.cs" />
+    <Compile Include="SearchCountDTO.cs" />
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="ResponseData.cs" />
     <Compile Include="RoadNameDTO.cs" />
     <Compile Include="ScenarioDTO.cs" />
+    <Compile Include="SearchResultItemDTO.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="StreetNameDTO.cs" />
     <Compile Include="AddressLocationUSRDTO.cs" />
@@ -94,6 +96,12 @@
     <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
+      <Project>{1D645C11-6570-4327-9E60-B6E7D676BA0D}</Project>
+      <Name>Fmo.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
