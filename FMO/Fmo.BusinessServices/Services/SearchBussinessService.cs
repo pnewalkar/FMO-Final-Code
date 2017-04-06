@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Enums;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
@@ -11,15 +13,15 @@ namespace Fmo.BusinessServices.Services
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
         private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
-        private IPostalAddressRepository postalAddressRepository = default(IPostalAddressRepository);
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
+        private IDeliveryPointsRepository deliveryPointRepository = default(IDeliveryPointsRepository);
 
-        public SearchBussinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postCodeRepository, IPostalAddressRepository postalAddressRepository, IStreetNetworkRepository streetNetworkRepository)
+        public SearchBussinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postCodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
             this.postCodeRepository = postCodeRepository;
             this.streetNetworkRepository = streetNetworkRepository;
-            this.postalAddressRepository = postalAddressRepository;
+            this.deliveryPointRepository = deliveryPointRepository;
         }
 
         public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText)
@@ -30,18 +32,44 @@ namespace Fmo.BusinessServices.Services
                 var deliveryRouteCount = await deliveryRouteRepository.GetDeliveryRouteCount(searchText).ConfigureAwait(false);
                 var postcodes = await postCodeRepository.FetchPostCodeUnitforBasicSearch(searchText).ConfigureAwait(false);
                 var postCodeCount = await postCodeRepository.GetPostCodeUnitCount(searchText).ConfigureAwait(false);
-                var postalAddress = await postalAddressRepository.FetchPostalAddressforBasicSearch(searchText).ConfigureAwait(false);
-                var postalAddressCount = await postalAddressRepository.GetPostalAddressCount(searchText).ConfigureAwait(false);
+                var deliveryPoints = await deliveryPointRepository.FetchDeliveryPointsForBasicSearch(searchText).ConfigureAwait(false);
+                var deliveryPointsCount = await deliveryPointRepository.GetDeliveryPointsCount(searchText).ConfigureAwait(false);
                 var streetNames = await streetNetworkRepository.FetchStreetNamesforBasicSearch(searchText).ConfigureAwait(false);
                 var streetNetworkCount = await streetNetworkRepository.GetStreetNameCount(searchText).ConfigureAwait(false);
 
-                return new SearchResultDTO
+                var searchResultDTO = new SearchResultDTO();
+
+                foreach (var postcode in postcodes)
                 {
-                    PostCode = postcodes,
-                    PostalAddress = postalAddress,
-                    StreetName = streetNames,
-                    TotalCount = deliveryRouteCount + postCodeCount + postalAddressCount + streetNetworkCount
-                };
+                    searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = postcode.PostcodeUnit, Type = SearchBusinessEntityType.Postcode });
+                }
+
+                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = postcodes.Count, Type = SearchBusinessEntityType.Postcode });
+
+                foreach (var streetName in streetNames)
+                {
+                    searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
+                }
+
+                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
+
+                foreach (var deliveryPoint in deliveryPoints)
+                {
+                    searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryPoint.UDPRN.ToString(), Type = SearchBusinessEntityType.DeliveryPoint });
+                }
+
+                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
+
+                foreach (var deliveryRoute in deliveryRoutes)
+                {
+                    searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryRoute.RouteName, Type = SearchBusinessEntityType.Route });
+                }
+
+                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRoutes.Count, Type = SearchBusinessEntityType.All });
+
+                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRouteCount + postCodeCount + deliveryPointsCount + streetNetworkCount, Type = SearchBusinessEntityType.All });
+
+                return searchResultDTO;
             }
             catch (Exception ex)
             {
@@ -51,30 +79,53 @@ namespace Fmo.BusinessServices.Services
 
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
         {
-            //var postcodesTask =  postCodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
-            //var deliveryRoutesTask =  deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
-            //var streetNamesTask =  streetNetworkRepository.FetchStreetNamesforAdvanceSearch(searchText);
-            //var postalAddressTask =  postalAddressRepository.FetchPostalAddressforAdvanceSearch(searchText);
+            var postcodesTask = postCodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
+            var deliveryRoutesTask = deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
+            var streetNamesTask = streetNetworkRepository.FetchStreetNamesforAdvanceSearch(searchText);
+            var deliveryPointsTask = deliveryPointRepository.FetchDeliveryPointsForAdvanceSearch(searchText);
 
-            //Task.WaitAll(deliveryRoutesTask, postcodesTask, streetNamesTask, postalAddressTask);
-            //var postcodes = await postcodesTask ?? new List<PostCodeDTO>();
-            //var deliveryRoutes = await deliveryRoutesTask ?? new List<DeliveryRouteDTO>();
-            //var streetNames = await streetNamesTask ?? new List<StreetNameDTO>();
-            //var postalAddresses = await postalAddressTask ?? new List<PostalAddressDTO>();
+            Task.WaitAll(deliveryRoutesTask, postcodesTask, streetNamesTask, deliveryPointsTask);
 
-            var postcodes = await postCodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
-            var deliveryRoutes = await deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
-            var streetNames = await streetNetworkRepository.FetchStreetNamesforAdvanceSearch(searchText);
-            var postalAddresses = await postalAddressRepository.FetchPostalAddressforAdvanceSearch(searchText);
+            var postcodes = await postcodesTask ?? new List<PostCodeDTO>();
+            var deliveryRoutes = await deliveryRoutesTask ?? new List<DeliveryRouteDTO>();
+            var streetNames = await streetNamesTask ?? new List<StreetNameDTO>();
+            var deliveryPoints = await deliveryPointsTask ?? new List<DeliveryPointDTO>();
 
-            return new SearchResultDTO
+            var searchResultDTO = new SearchResultDTO();
+
+            foreach (var postcode in postcodes)
             {
-                DeliveryRoute = deliveryRoutes,
-                PostCode = postcodes,
-                PostalAddress = postalAddresses,
-                StreetName = streetNames,
-                TotalCount = deliveryRoutes.Count + postcodes.Count + streetNames.Count + postalAddresses.Count
-            };
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = postcode.PostcodeUnit, Type = SearchBusinessEntityType.Postcode });
+            }
+
+            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = postcodes.Count, Type = SearchBusinessEntityType.Postcode });
+
+            foreach (var streetName in streetNames)
+            {
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
+            }
+
+            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
+
+            foreach (var deliveryPoint in deliveryPoints)
+            {
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryPoint.UDPRN.ToString(), Type = SearchBusinessEntityType.DeliveryPoint });
+            }
+
+            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
+
+            foreach (var deliveryRoute in deliveryRoutes)
+            {
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryRoute.RouteName, Type = SearchBusinessEntityType.Route });
+            }
+
+            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRoutes.Count, Type = SearchBusinessEntityType.Route });
+
+            int totalCount = searchResultDTO.SearchCounts.Sum(x => x.Count);
+
+            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = totalCount, Type = SearchBusinessEntityType.All });
+
+            return searchResultDTO;
         }
     }
 }

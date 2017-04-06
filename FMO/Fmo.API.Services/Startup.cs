@@ -64,7 +64,7 @@ namespace Fmo.API.Services
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
             services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddSingleton(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
+            services.AddTransient(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
 
             //Infrastructure
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();

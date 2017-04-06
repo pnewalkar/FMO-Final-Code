@@ -19,9 +19,19 @@
         {
         }
 
-        public Task<List<StreetNameDTO>> FetchStreetNamesforAdvanceSearch(string searchText)
+        public async Task<List<StreetNameDTO>> FetchStreetNamesforAdvanceSearch(string searchText)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var streetNames = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)).ToListAsync();
+
+                var result = await DataContext.StreetNames.ToListAsync();
+                return GenericMapper.MapList<StreetName, StreetNameDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<List<StreetNameDTO>> FetchStreetNamesforBasicSearch(string searchText)
