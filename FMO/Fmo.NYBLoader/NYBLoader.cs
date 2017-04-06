@@ -10,6 +10,7 @@ using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
 using Fmo.Common.Enums;
 using Fmo.Common.Constants;
+using Fmo.Common.Interface;
 
 namespace Fmo.NYBLoader
 {
@@ -22,15 +23,24 @@ namespace Fmo.NYBLoader
         private string strFMOWebAPIName = string.Empty;
         private IHttpHandler httpHandler;
         private IConfigurationHelper configurationHelper;
+        private ILoggingHelper loggingHelper;
+        private IExceptionHelper exceptionHelper;
 
-        public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
+        public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
             this.configurationHelper = configurationHelper;
             this.httpHandler = httpHandler;
             this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIURL").ToString();
             this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIName").ToString();
+            this.loggingHelper = loggingHelper;
+            this.exceptionHelper = exceptionHelper;
         }
-
+        
+        /// <summary>
+        /// Reads data from CSV file and maps to postalAddressDTO object
+        /// </summary>
+        /// <param name="strLine"></param>
+        /// <returns></returns>
         public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
@@ -56,19 +66,36 @@ namespace Fmo.NYBLoader
                         lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith(PostCodePrefix.GY.ToString()) || n.Postcode.StartsWith(PostCodePrefix.JE.ToString()) || n.Postcode.StartsWith(PostCodePrefix.IM.ToString()))).ToList();
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Exception newException;
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                if (rethrow)
+                {
+                    if (newException == null)
+                    {
+                        throw;
+
+                    }
+                    else
+                    {
+                        throw newException;
+                    }
+                }
                 else
                 {
-                    //TO DO
-                    //Log error
+                    throw;
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
             return lstAddressDetails;
         }
 
+        /// <summary>
+        /// Validates string i.e. no of comma's should be 15 and max characters per line should be 507
+        /// </summary>
+        /// <param name="arrLines"></param>
+        /// <returns></returns>
         private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
@@ -88,14 +115,18 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
-
             return isFileValid;
         }
 
+        /// <summary>
+        /// Mapping comma separated value to postalAddressDTO object
+        /// </summary>
+        /// <param name="csvLine"></param>
+        /// <returns></returns>
         private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
@@ -123,14 +154,17 @@ namespace Fmo.NYBLoader
                     objAddDTO.IsValidData = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
-
             return objAddDTO;
         }
 
+        /// <summary>
+        /// Perform business validation on postalAddressDTO object
+        /// </summary>
+        /// <param name="lstAddress"></param>
         private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             try
@@ -182,12 +216,17 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
+        /// <summary>
+        /// PostCode validation i.e start and end character should be numeric , fourth last character should be whitespace etc.
+        /// </summary>
+        /// <param name="strPostCode"></param>
+        /// <returns></returns>
         private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
@@ -215,13 +254,18 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
             return isValid;
         }
 
+        /// <summary>
+        /// Web API call to save postalAddress to PostalAddress table
+        /// </summary>
+        /// <param name="lstAddress"></param>
+        /// <returns></returns>
         public bool SaveNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             bool saveflag = false;
@@ -231,9 +275,9 @@ namespace Fmo.NYBLoader
                 httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
                 httpHandler.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                this.loggingHelper.LogError(ex);
                 saveflag = false;
             }
             return saveflag;

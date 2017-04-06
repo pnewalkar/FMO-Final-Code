@@ -9,14 +9,14 @@ namespace Fmo.BusinessServices.Services
 {
     public class DeliveryRouteBusinessService : IDeliveryRouteBusinessService
     {
-        private IDeliveryRouteRepository routeSimulationRespository;
+        private IDeliveryRouteRepository deliveryRouteRepository;
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IScenarioRepository scenarioRepository;
         private IDeliveryUnitLocationRepository deliveryUnitLocationRespository;
 
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository routeSimulationRespository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository, IDeliveryUnitLocationRepository deliveryUnitLocationRespository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository, IDeliveryUnitLocationRepository deliveryUnitLocationRespository)
         {
-            this.routeSimulationRespository = routeSimulationRespository;
+            this.deliveryRouteRepository = deliveryRouteRepository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.scenarioRepository = scenarioRepository;
             this.deliveryUnitLocationRespository = deliveryUnitLocationRespository;
@@ -24,7 +24,7 @@ namespace Fmo.BusinessServices.Services
 
         public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
         {
-            return routeSimulationRespository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
+            return deliveryRouteRepository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
         public List<ReferenceDataDTO> FetchRouteLogStatus()
@@ -37,14 +37,19 @@ namespace Fmo.BusinessServices.Services
             return scenarioRepository.FetchScenario(operationStateID, deliveryUnitID);
         }
 
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)
         {
-            return await routeSimulationRespository.FetchDeliveryRoute(searchText);
+            return await deliveryRouteRepository.FetchDeliveryRouteforBasicSearch(searchText);
         }
 
         public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
         {
             return deliveryUnitLocationRespository.FetchDeliveryUnit();
         }
+
+        public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        {
+            throw new NotImplementedException();
+        } 
     }
 }

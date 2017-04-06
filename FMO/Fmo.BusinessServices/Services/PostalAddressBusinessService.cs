@@ -37,11 +37,11 @@ namespace Fmo.BusinessServices.Services
                 List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
                 if (!lstUDPRNS.All(a => a == 0))
                 {
-                    foreach (var addEntity in lstPostalAddress)
+                    foreach (var postalAddress in lstPostalAddress)
                     {
-                        addEntity.AddressStatus_Id = addressStatusId;
-                        addEntity.AddressType_Id = addressTypeId;
-                        addressRepository.SaveAddress(addEntity);
+                        postalAddress.AddressStatus_Id = addressStatusId;
+                        postalAddress.AddressType_Id = addressTypeId;
+                        addressRepository.SaveAddress(postalAddress);
                     }
                     saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
                 }

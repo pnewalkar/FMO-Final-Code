@@ -62,6 +62,7 @@
     <Compile Include="Services\SearchBusinessServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="TestData\InvalidFile\InvalidPAF.zip" />
     <None Include="TestData\ValidFile\ValidPAF.zip" />
