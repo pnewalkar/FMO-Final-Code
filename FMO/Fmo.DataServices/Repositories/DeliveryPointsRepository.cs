@@ -161,5 +161,52 @@ namespace Fmo.DataServices.Repositories
                               || x.PostalAddress.Thoroughfare.Contains(searchText)
                               || x.PostalAddress.DependentLocality.Contains(searchText));
         }
+
+        public IEnumerable<DeliveryPoint> GetData(string coordinates)
+        {
+            //string x1 = Convert.ToString(parameters[0]);
+            //string y1 = Convert.ToString(parameters[1]);
+            //string x2 = Convert.ToString(parameters[2]);
+            //string y2 = Convert.ToString(parameters[3]);
+            //string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
+
+            System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
+
+            return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
+        }
+
+        public List<DeliveryPointDTO> GetDeliveryPoints1(string coordinates)
+        {
+            List<DeliveryPoint> result = this.GetData(coordinates).ToList();
+            var DeliveryPoint = GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result);
+            return DeliveryPoint;
+            //var geoJson = new GeoJson
+            //{
+            //    features = new List<Feature>()
+            //};
+
+            //foreach (var point in result)
+            //{
+            //    SqlGeometry sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
+            //    var feature = new Feature
+            //    {
+            //        id = point.DeliveryPoint_Id,
+            //        properties = new Dictionary<string, JToken>
+            //        {
+            //            { "name", point.PostalAddress.BuildingName },
+            //            { "number", point.PostalAddress.BuildingNumber },
+            //            { "postcode", point.PostalAddress.Postcode },
+            //            { "street_name", point.PostalAddress.BuildingName },
+            //            { "type", "deliverypoint" }
+            //        },
+            //        geometry = new Geometry
+            //        {
+            //            coordinates = new Coordinates(sqlGeo)
+            //        }
+            //    };
+            //    geoJson.features.Add(feature);
+            //var resultBytes = System.Text.Encoding.UTF8.GetBytes(geoJson.getJson().ToString());
+            //return new MemoryStream(resultBytes);
+        }
     }
 }

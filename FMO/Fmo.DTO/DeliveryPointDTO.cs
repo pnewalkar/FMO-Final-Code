@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fmo.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Spatial;
 using System.Linq;
@@ -41,6 +42,10 @@ namespace Fmo.DTO
         public int? DeliveryGroup_Id { get; set; }
 
         public bool IsUnit { get; set; }
+
+        public  PostalAddressDTO PostalAddress { get; set; }
+
+      
 
     }
 }

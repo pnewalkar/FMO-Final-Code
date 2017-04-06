@@ -12,6 +12,9 @@ using Fmo.DataServices.Repositories;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Web.Script.Serialization;
+using Microsoft.SqlServer.Types;
+using System.Data.SqlTypes;
+using Newtonsoft.Json.Linq;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -44,6 +47,70 @@ namespace Fmo.BusinessServices.Services
             //result.Content.Headers.ContentLength = deliveryPoints.Length;
             //return result;
 
+        }
+
+        public MemoryStream GetDeliveryPoints1(string bbox)
+        {
+            try
+            {
+                object[] bboxArr = bbox.Split(',');
+                var coordinates = GetData(null, bboxArr);
+                List<DeliveryPointDTO> lst = deliveryPointsRepository.GetDeliveryPoints1(coordinates);
+                var geoJson = new GeoJson
+                {
+                    features = new List<Feature>()
+                };
+
+                foreach (var point in lst)
+                {
+                    SqlGeometry sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
+
+                    var feature = new Feature
+                    {
+                        id = point.DeliveryPoint_Id,
+                        properties = new Dictionary<string, JToken>
+                    {
+                        { "name", point.PostalAddress.BuildingName },
+                        { "number", point.PostalAddress.BuildingNumber },
+                        { "postcode", point.PostalAddress.Postcode },
+                        { "street_name", point.PostalAddress.BuildingName },
+                        { "type", "deliverypoint" }
+                    },
+                        geometry = new Geometry
+                        {
+                            coordinates = new Coordinates(sqlGeo)
+                        }
+                    };
+                    geoJson.features.Add(feature);
+                }
+
+                var resultBytes = System.Text.Encoding.UTF8.GetBytes(geoJson.getJson().ToString());
+
+                MemoryStream mStream = new MemoryStream(resultBytes);
+                var result = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StreamContent(mStream)
+                };
+
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                result.Content.Headers.ContentLength = mStream.Length;
+                return mStream;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public string GetData(string query, params object[] parameters)
+        {
+            string x1 = Convert.ToString(parameters[0]);
+            string y1 = Convert.ToString(parameters[1]);
+            string x2 = Convert.ToString(parameters[2]);
+            string y2 = Convert.ToString(parameters[3]);
+            string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
+
+            return coordinates;
         }
     }
 }
