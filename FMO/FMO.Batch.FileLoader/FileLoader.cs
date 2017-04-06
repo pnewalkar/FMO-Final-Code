@@ -282,7 +282,7 @@
                         }
                         else
                         {
-                            loggingHelper.LogInfo("File Name :" + strfileName + " : Log Time :" + DateTime.Now.ToString());
+                            this.loggingHelper.LogInfo("Load NYB Error Message : NYB File ins not valid File Name :" + strfileName + " : Log Time :" + DateTime.Now.ToString());
                         }
                     }
                 }

@@ -87,6 +87,7 @@ namespace Fmo.API.Services
             services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
+            services.AddTransient<ILoggingHelper, LoggingHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
