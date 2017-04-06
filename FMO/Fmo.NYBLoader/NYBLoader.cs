@@ -99,25 +99,18 @@ namespace Fmo.NYBLoader
         private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
-            try
+            foreach (string line in arrLines)
             {
-                foreach (string line in arrLines)
+                if (line.Count(n => n == ',') != noOfCharacters)
                 {
-                    if (line.Count(n => n == ',') != noOfCharacters)
-                    {
-                        isFileValid = false;
-                        break;
-                    }
-                    if (line.ToCharArray().Count() > maxCharacters)
-                    {
-                        isFileValid = false;
-                        break;
-                    }
+                    isFileValid = false;
+                    break;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                if (line.ToCharArray().Count() > maxCharacters)
+                {
+                    isFileValid = false;
+                    break;
+                }
             }
             return isFileValid;
         }
@@ -130,33 +123,26 @@ namespace Fmo.NYBLoader
         private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
-            try
+            string[] values = csvLine.Split(',');
+            if (values.Count() == csvValues)
             {
-                string[] values = csvLine.Split(',');
-                if (values.Count() == csvValues)
-                {
-                    objAddDTO.Postcode = values[0];
-                    objAddDTO.PostTown = values[1];
-                    objAddDTO.DependentLocality = values[2];
-                    objAddDTO.DoubleDependentLocality = values[3];
-                    objAddDTO.Thoroughfare = values[4];
-                    objAddDTO.DependentThoroughfare = values[5];
-                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[6]) && !string.IsNullOrWhiteSpace(values[6]) ? Convert.ToInt16(values[6]) : Convert.ToInt16(0);
-                    objAddDTO.BuildingName = values[7];
-                    objAddDTO.SubBuildingName = values[8];
-                    objAddDTO.POBoxNumber = values[9];
-                    objAddDTO.DepartmentName = values[10];
-                    objAddDTO.OrganisationName = values[11];
-                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) && !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
-                    objAddDTO.PostcodeType = values[13];
-                    objAddDTO.SmallUserOrganisationIndicator = values[14];
-                    objAddDTO.DeliveryPointSuffix = values[15];
-                    objAddDTO.IsValidData = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                objAddDTO.Postcode = values[0];
+                objAddDTO.PostTown = values[1];
+                objAddDTO.DependentLocality = values[2];
+                objAddDTO.DoubleDependentLocality = values[3];
+                objAddDTO.Thoroughfare = values[4];
+                objAddDTO.DependentThoroughfare = values[5];
+                objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[6]) && !string.IsNullOrWhiteSpace(values[6]) ? Convert.ToInt16(values[6]) : Convert.ToInt16(0);
+                objAddDTO.BuildingName = values[7];
+                objAddDTO.SubBuildingName = values[8];
+                objAddDTO.POBoxNumber = values[9];
+                objAddDTO.DepartmentName = values[10];
+                objAddDTO.OrganisationName = values[11];
+                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) && !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
+                objAddDTO.PostcodeType = values[13];
+                objAddDTO.SmallUserOrganisationIndicator = values[14];
+                objAddDTO.DeliveryPointSuffix = values[15];
+                objAddDTO.IsValidData = true;
             }
             return objAddDTO;
         }
@@ -167,58 +153,51 @@ namespace Fmo.NYBLoader
         /// <param name="lstAddress"></param>
         private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
-            try
+            foreach (PostalAddressDTO objAdd in lstAddress)
             {
-                foreach (PostalAddressDTO objAdd in lstAddress)
+                if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
                 {
-                    if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(objAdd.PostTown))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN)))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                {
+                    char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
+                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostTown))
+                    if (characters.Count() != 2)
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    else if (characters.Count() == 2)
                     {
-                        objAdd.IsValidData = false;
-                    }
-                    if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN)))
-                    {
-                        objAdd.IsValidData = false;
-                    }
-                    if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
-                    {
-                        objAdd.IsValidData = false;
-                    }
-                    if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                    {
-                        objAdd.IsValidData = false;
-                    }
-                    if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                    {
-                        char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                        if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
+                        if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
                         {
                             objAdd.IsValidData = false;
-                        }
-                        if (characters.Count() != 2)
-                        {
-                            objAdd.IsValidData = false;
-                        }
-                        else if (characters.Count() == 2)
-                        {
-                            if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
-                            {
-                                objAdd.IsValidData = false;
-                            }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 
@@ -230,33 +209,26 @@ namespace Fmo.NYBLoader
         private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
-            try
+            if (!string.IsNullOrEmpty(strPostCode))
             {
-                if (!string.IsNullOrEmpty(strPostCode))
+                char[] chrCodes = strPostCode.ToCharArray();
+                if (chrCodes.Length > 6)
                 {
-                    char[] chrCodes = strPostCode.ToCharArray();
-                    if (chrCodes.Length > 6)
+                    int length = chrCodes.Length;
+                    if (!char.IsWhiteSpace(chrCodes[0]) && !char.IsNumber(chrCodes[0]) && char.IsLetter(chrCodes[0])
+                        && !char.IsNumber(chrCodes[length - 1]) && !char.IsNumber(chrCodes[length - 2]) && char.IsWhiteSpace(chrCodes[length - 4]))
                     {
-                        int length = chrCodes.Length;
-                        if (!char.IsWhiteSpace(chrCodes[0]) && !char.IsNumber(chrCodes[0]) && char.IsLetter(chrCodes[0])
-                            && !char.IsNumber(chrCodes[length - 1]) && !char.IsNumber(chrCodes[length - 2]) && char.IsWhiteSpace(chrCodes[length - 4]))
-                        {
-                            isValid = true;
-                        }
-                        else
-                        {
-                            isValid = false;
-                        }
+                        isValid = true;
                     }
                     else
                     {
                         isValid = false;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                else
+                {
+                    isValid = false;
+                }
             }
             return isValid;
         }
