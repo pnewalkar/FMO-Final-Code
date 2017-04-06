@@ -9,6 +9,7 @@ namespace Fmo.Common.Constants
     public static class Constants
     {
         public const string USR_XML_ROOT = "USR";
+        public const string ADDRESS_LOCATION_XML_ROOT = "addressLocation";
         public const string INSERT = "I";
         public const string UPDATE = "U";
         public const string DELETE = "D";
@@ -19,5 +20,7 @@ namespace Fmo.Common.Constants
         public const string PROCESSED_FOLDER = "Processed";
         public const string Error_FOLDER = "Error";
         public const string DeliveryPointSuffix = "1A";
+        public const int BNG_COORDINATE_SYSTEM = 27700;
     }
 }
+

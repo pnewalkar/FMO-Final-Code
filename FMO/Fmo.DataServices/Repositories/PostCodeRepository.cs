@@ -24,8 +24,17 @@
             try
             {
                 int takeCount = 5;
-                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).Take(takeCount).ToListAsync();
-                return GenericMapper.MapList<Postcode, PostCodeDTO>(postCodeDetails.ToList());
+                var postCodeDetailsDto = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText))
+                    .Take(takeCount)
+                    .Select(l => new PostCodeDTO
+                    {
+                        PostcodeUnit = l.PostcodeUnit,
+                        InwardCode = l.InwardCode,
+                        OutwardCode = l.OutwardCode,
+                        Sector = l.Sector
+                    }).ToListAsync();
+
+                return postCodeDetailsDto;
             }
             catch (Exception ex)
             {

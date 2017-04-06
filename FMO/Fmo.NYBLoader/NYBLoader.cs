@@ -10,6 +10,7 @@ using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
 using Fmo.Common.Enums;
 using Fmo.Common.Constants;
+using Fmo.Common.Interface;
 
 namespace Fmo.NYBLoader
 {
@@ -22,15 +23,19 @@ namespace Fmo.NYBLoader
         private string strFMOWebAPIName = string.Empty;
         private IHttpHandler httpHandler;
         private IConfigurationHelper configurationHelper;
+        private ILoggingHelper loggingHelper;
+        private IExceptionHelper exceptionHelper;
 
-        public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
+        public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
             this.configurationHelper = configurationHelper;
             this.httpHandler = httpHandler;
             this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIURL").ToString();
             this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIName").ToString();
+            this.loggingHelper = loggingHelper;
+            this.exceptionHelper = exceptionHelper;
         }
-
+        
         public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
@@ -56,15 +61,27 @@ namespace Fmo.NYBLoader
                         lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith(PostCodePrefix.GY.ToString()) || n.Postcode.StartsWith(PostCodePrefix.JE.ToString()) || n.Postcode.StartsWith(PostCodePrefix.IM.ToString()))).ToList();
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Exception newException;
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                if (rethrow)
+                {
+                    if (newException == null)
+                    {
+                        throw;
+
+                    }
+                    else
+                    {
+                        throw newException;
+                    }
+                }
                 else
                 {
-                    //TO DO
-                    //Log error
+                    throw;
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
             return lstAddressDetails;
         }
@@ -88,11 +105,10 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
-
             return isFileValid;
         }
 
@@ -123,11 +139,10 @@ namespace Fmo.NYBLoader
                     objAddDTO.IsValidData = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
-
             return objAddDTO;
         }
 
@@ -182,9 +197,9 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -215,9 +230,9 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
             return isValid;
         }
@@ -231,9 +246,9 @@ namespace Fmo.NYBLoader
                 httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
                 httpHandler.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                this.loggingHelper.LogError(ex);
                 saveflag = false;
             }
             return saveflag;

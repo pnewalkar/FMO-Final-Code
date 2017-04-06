@@ -11,6 +11,10 @@ namespace Fmo.Common.ExceptionManagement
     [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed.")]
     public class ExceptionHandlingConfiguration
     {
+        private ExceptionHandlingConfiguration()
+        {
+        }
+
         public static ExceptionManager BuildExceptionHandlingConfiguration(LogWriter logWriter)
         {
             var policies = new List<ExceptionPolicyDefinition>();

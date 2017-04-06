@@ -44,8 +44,8 @@ namespace Fmo.BusinessServices.Tests.Services
             List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
             var result = testCandidate.SavePostalAddress(lstPostalAddressDTO);
             mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
-            mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<int>()), Times.Once());
+            mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>()), Times.Never());
+            mockAddressRepository.Verify(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<int>()), Times.Never());
             Assert.IsNotNull(result);
             Assert.IsFalse(result);
         }
@@ -56,6 +56,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
             mockdeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
             mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
+
             mockrefDataRepository.Setup(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(2);
             mockAddressRepository.Setup(x => x.SaveAddress(It.IsAny<PostalAddressDTO>())).Returns(true);
             mockAddressRepository.Setup(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<int>())).Returns(true);
