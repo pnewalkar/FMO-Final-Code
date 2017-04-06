@@ -16,6 +16,15 @@ namespace Fmo.DataServices.Repositories
     using MappingConfiguration;
     using Entity = Fmo.Entities;
 
+
+    using System.Linq;
+    using System.Data.SqlTypes;
+    using Microsoft.SqlServer.Types;
+    using Newtonsoft.Json.Linq;
+    using System.Text;
+    using System.Data.Entity.Spatial;
+    using Common.Constants;
+
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
         public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -48,7 +57,7 @@ namespace Fmo.DataServices.Repositories
                     GenericMapper.Map(objDeliveryPoint, deliveryPoint);
 
                     DataContext.DeliveryPoints.Add(deliveryPoint);
-                    DataContext.SaveChanges();
+                    DataContext.SaveChangesAsync();
                     saveFlag = true;
                 }
             }
@@ -208,5 +217,31 @@ namespace Fmo.DataServices.Repositories
             //var resultBytes = System.Text.Encoding.UTF8.GetBytes(geoJson.getJson().ToString());
             //return new MemoryStream(resultBytes);
         }
+        public async Task<int> UpdateDeliveryPointLocationOnUDPRN(int uDPRN, decimal latitude, decimal longitude, DbGeometry locationXY)
+        {
+            try
+            {
+                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
+
+                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(uDPRN)).SingleOrDefault();
+
+                GenericMapper.Map(deliveryPoint, deliveryPointDTO);
+
+                deliveryPointDTO.Longitude = longitude;
+                deliveryPointDTO.Latitude = latitude;
+                deliveryPointDTO.LocationXY = locationXY;
+                deliveryPointDTO.LocationProvider = Constants.USR_LOC_PROVIDER;
+
+                GenericMapper.Map(deliveryPointDTO, deliveryPoint);
+
+                return await DataContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }
