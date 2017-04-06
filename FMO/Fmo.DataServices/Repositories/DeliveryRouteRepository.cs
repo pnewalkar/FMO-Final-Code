@@ -25,35 +25,43 @@ namespace Fmo.DataServices.Repositories
             return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
         }
 
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             try
             {
                 var result = await DataContext.DeliveryRoutes.ToListAsync();
-                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result);
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<List<DeliveryRouteDTO>> FetchPostCodeUnitforBasicSearch(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)
         {
             try
             {
                 int takeCount = 5;
-                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
-                    .Take(takeCount).ToListAsync();
-                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes.ToList());
+                var deliveryRoutesDto = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
+                    .Take(takeCount)
+                    .Select(l => new DeliveryRouteDTO
+                    {
+                        DeliveryRoute_Id = l.DeliveryRoute_Id,
+                        RouteName = l.RouteName,
+                        RouteNumber = l.RouteNumber
+                    })
+                    .ToListAsync();
+
+                return deliveryRoutesDto;
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
-        public async Task<int> GetDeliveryRouteUnitCount(string searchText)
+        public async Task<int> GetDeliveryRouteCount(string searchText)
         {
             try
             {
@@ -61,7 +69,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

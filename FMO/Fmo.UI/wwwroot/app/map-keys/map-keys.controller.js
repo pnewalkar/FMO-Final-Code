@@ -14,7 +14,7 @@ function MapKeyController($scope, mapStylesFactory, mapService) {
         if (id == "") {
             return true;
         }
-        var keys = mapService.mapLayers
+        var keys = mapService.mapLayers()
             .filter(function (l) { return l.selected; })
             .map(function (l) { return l.keys; });
 
@@ -27,7 +27,6 @@ function MapKeyController($scope, mapStylesFactory, mapService) {
                 }
             }
         }
-
         return distinct.indexOf(id) != -1;
     }
 
@@ -46,9 +45,9 @@ function MapKeyController($scope, mapStylesFactory, mapService) {
             "style": activeStyle("accesslink")
         },
         {
-            "text": "Route",
-            "id": "route",
-            "style": activeStyle("route")
+            "text": "Road",
+            "id": "road",
+            "style": activeStyle("road")
         }
     ];
 };

@@ -12,11 +12,9 @@ namespace Fmo.MappingConfiguration
 {
     public class GenericMapper
     {
-       
         public static TDestination Map<TSource, TDestination>(TSource source)
         {
-            Mapper.Initialize(cfg => cfg.CreateMap<TSource, TDestination>().IgnoreAllUnmapped());
-            
+            Mapper.Initialize(cfg => cfg.CreateMap<TSource, TDestination>());
 
             Mapper.Configuration.CreateMapper();
 
@@ -26,7 +24,7 @@ namespace Fmo.MappingConfiguration
 
         public static List<TDestination> MapList<TSource, TDestination>(List<TSource> source)
         {
-            Mapper.Initialize(cfg => cfg.CreateMap<TSource, TDestination>().IgnoreAllUnmapped());
+            Mapper.Initialize(cfg => cfg.CreateMap<TSource, TDestination>());
 
             Mapper.Configuration.CreateMapper();
 
@@ -37,21 +35,20 @@ namespace Fmo.MappingConfiguration
 
         public static void Map<TSource, TDestination>(TSource source, TDestination destination)
         {
-            Mapper.Initialize(cfg => cfg.CreateMap<TSource, TDestination>().IgnoreAllUnmapped());
+            Mapper.Initialize(cfg => cfg.CreateMap<TSource, TDestination>());
 
             Mapper.Configuration.CreateMapper();
 
             Mapper.Map<TSource, TDestination>(source,destination);
         }
-
     }
 
-    public static class MappingExpressionExtensions
-    {
-        public static IMappingExpression<TSource, TDestination> IgnoreAllUnmapped<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
-        {
-            expression.ForAllMembers(opt => opt.Ignore());
-            return expression;
-        }
-    }
+    //public static class MappingExpressionExtensions
+    //{
+    //    public static IMappingExpression<TSource, TDestination> IgnoreAllUnmapped<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
+    //    {
+    //        expression.ForAllMembers(opt => opt.Ignore());
+    //        return expression;
+    //    }
+    //}
 }

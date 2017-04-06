@@ -80,9 +80,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumExtensions.cs" />
+    <Compile Include="Enums\SearchBusinessEntityType.cs" />
     <Compile Include="Enums\ExceptionHandlingPolicy.cs" />
     <Compile Include="Enums\LoggingCategory.cs" />
     <Compile Include="Enums\PostCodePrefix.cs" />
+    <Compile Include="Enums\AmmendmentType.cs" />
     <Compile Include="ExceptionManagement\ExceptionHandlingConfiguration.cs" />
     <Compile Include="ExceptionManagement\ExceptionHelper.cs" />
     <Compile Include="ExceptionManagement\Exceptions\BusinessLogicException.cs" />

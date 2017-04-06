@@ -10,6 +10,7 @@ using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
 using Fmo.Common.Enums;
 using Fmo.Common.Constants;
+using Fmo.Common.Interface;
 
 namespace Fmo.NYBLoader
 {
@@ -22,15 +23,24 @@ namespace Fmo.NYBLoader
         private string strFMOWebAPIName = string.Empty;
         private IHttpHandler httpHandler;
         private IConfigurationHelper configurationHelper;
+        private ILoggingHelper loggingHelper;
+        private IExceptionHelper exceptionHelper;
 
-        public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
+        public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
             this.configurationHelper = configurationHelper;
             this.httpHandler = httpHandler;
             this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIURL").ToString();
             this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIName").ToString();
+            this.loggingHelper = loggingHelper;
+            this.exceptionHelper = exceptionHelper;
         }
-
+        
+        /// <summary>
+        /// Reads data from CSV file and maps to postalAddressDTO object
+        /// </summary>
+        /// <param name="strLine"></param>
+        /// <returns></returns>
         public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
@@ -56,172 +66,178 @@ namespace Fmo.NYBLoader
                         lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith(PostCodePrefix.GY.ToString()) || n.Postcode.StartsWith(PostCodePrefix.JE.ToString()) || n.Postcode.StartsWith(PostCodePrefix.IM.ToString()))).ToList();
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Exception newException;
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                if (rethrow)
+                {
+                    if (newException == null)
+                    {
+                        throw;
+
+                    }
+                    else
+                    {
+                        throw newException;
+                    }
+                }
                 else
                 {
-                    //TO DO
-                    //Log error
+                    throw;
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
             return lstAddressDetails;
         }
 
+        /// <summary>
+        /// Validates string i.e. no of comma's should be 15 and max characters per line should be 507
+        /// </summary>
+        /// <param name="arrLines"></param>
+        /// <returns></returns>
         private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
-            try
+            foreach (string line in arrLines)
             {
-                foreach (string line in arrLines)
+                if (line.Count(n => n == ',') != noOfCharacters)
                 {
-                    if (line.Count(n => n == ',') != noOfCharacters)
-                    {
-                        isFileValid = false;
-                        break;
-                    }
-                    if (line.ToCharArray().Count() > maxCharacters)
-                    {
-                        isFileValid = false;
-                        break;
-                    }
+                    isFileValid = false;
+                    break;
+                }
+                if (line.ToCharArray().Count() > maxCharacters)
+                {
+                    isFileValid = false;
+                    break;
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
-
             return isFileValid;
         }
 
+        /// <summary>
+        /// Mapping comma separated value to postalAddressDTO object
+        /// </summary>
+        /// <param name="csvLine"></param>
+        /// <returns></returns>
         private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
-            try
+            string[] values = csvLine.Split(',');
+            if (values.Count() == csvValues)
             {
-                string[] values = csvLine.Split(',');
-                if (values.Count() == csvValues)
-                {
-                    objAddDTO.Postcode = values[0];
-                    objAddDTO.PostTown = values[1];
-                    objAddDTO.DependentLocality = values[2];
-                    objAddDTO.DoubleDependentLocality = values[3];
-                    objAddDTO.Thoroughfare = values[4];
-                    objAddDTO.DependentThoroughfare = values[5];
-                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[6]) && !string.IsNullOrWhiteSpace(values[6]) ? Convert.ToInt16(values[6]) : Convert.ToInt16(0);
-                    objAddDTO.BuildingName = values[7];
-                    objAddDTO.SubBuildingName = values[8];
-                    objAddDTO.POBoxNumber = values[9];
-                    objAddDTO.DepartmentName = values[10];
-                    objAddDTO.OrganisationName = values[11];
-                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) && !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
-                    objAddDTO.PostcodeType = values[13];
-                    objAddDTO.SmallUserOrganisationIndicator = values[14];
-                    objAddDTO.DeliveryPointSuffix = values[15];
-                    objAddDTO.IsValidData = true;
-                }
+                objAddDTO.Postcode = values[0];
+                objAddDTO.PostTown = values[1];
+                objAddDTO.DependentLocality = values[2];
+                objAddDTO.DoubleDependentLocality = values[3];
+                objAddDTO.Thoroughfare = values[4];
+                objAddDTO.DependentThoroughfare = values[5];
+                objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[6]) && !string.IsNullOrWhiteSpace(values[6]) ? Convert.ToInt16(values[6]) : Convert.ToInt16(0);
+                objAddDTO.BuildingName = values[7];
+                objAddDTO.SubBuildingName = values[8];
+                objAddDTO.POBoxNumber = values[9];
+                objAddDTO.DepartmentName = values[10];
+                objAddDTO.OrganisationName = values[11];
+                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) && !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
+                objAddDTO.PostcodeType = values[13];
+                objAddDTO.SmallUserOrganisationIndicator = values[14];
+                objAddDTO.DeliveryPointSuffix = values[15];
+                objAddDTO.IsValidData = true;
             }
-            catch (Exception)
-            {
-                throw;
-            }
-
             return objAddDTO;
         }
 
+        /// <summary>
+        /// Perform business validation on postalAddressDTO object
+        /// </summary>
+        /// <param name="lstAddress"></param>
         private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
-            try
+            foreach (PostalAddressDTO objAdd in lstAddress)
             {
-                foreach (PostalAddressDTO objAdd in lstAddress)
+                if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
                 {
-                    if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(objAdd.PostTown))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN)))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                {
+                    objAdd.IsValidData = false;
+                }
+                if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                {
+                    char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
+                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostTown))
+                    if (characters.Count() != 2)
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    else if (characters.Count() == 2)
                     {
-                        objAdd.IsValidData = false;
-                    }
-                    if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN)))
-                    {
-                        objAdd.IsValidData = false;
-                    }
-                    if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
-                    {
-                        objAdd.IsValidData = false;
-                    }
-                    if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                    {
-                        objAdd.IsValidData = false;
-                    }
-                    if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                    {
-                        char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                        if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
+                        if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
                         {
                             objAdd.IsValidData = false;
-                        }
-                        if (characters.Count() != 2)
-                        {
-                            objAdd.IsValidData = false;
-                        }
-                        else if (characters.Count() == 2)
-                        {
-                            if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
-                            {
-                                objAdd.IsValidData = false;
-                            }
                         }
                     }
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
         }
 
+        /// <summary>
+        /// PostCode validation i.e start and end character should be numeric , fourth last character should be whitespace etc.
+        /// </summary>
+        /// <param name="strPostCode"></param>
+        /// <returns></returns>
         private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
-            try
+            if (!string.IsNullOrEmpty(strPostCode))
             {
-                if (!string.IsNullOrEmpty(strPostCode))
+                char[] chrCodes = strPostCode.ToCharArray();
+                if (chrCodes.Length > 6)
                 {
-                    char[] chrCodes = strPostCode.ToCharArray();
-                    if (chrCodes.Length > 6)
+                    int length = chrCodes.Length;
+                    if (!char.IsWhiteSpace(chrCodes[0]) && !char.IsNumber(chrCodes[0]) && char.IsLetter(chrCodes[0])
+                        && !char.IsNumber(chrCodes[length - 1]) && !char.IsNumber(chrCodes[length - 2]) && char.IsWhiteSpace(chrCodes[length - 4]))
                     {
-                        int length = chrCodes.Length;
-                        if (!char.IsWhiteSpace(chrCodes[0]) && !char.IsNumber(chrCodes[0]) && char.IsLetter(chrCodes[0])
-                            && !char.IsNumber(chrCodes[length - 1]) && !char.IsNumber(chrCodes[length - 2]) && char.IsWhiteSpace(chrCodes[length - 4]))
-                        {
-                            isValid = true;
-                        }
-                        else
-                        {
-                            isValid = false;
-                        }
+                        isValid = true;
                     }
                     else
                     {
                         isValid = false;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
+                else
+                {
+                    isValid = false;
+                }
             }
             return isValid;
         }
 
+        /// <summary>
+        /// Web API call to save postalAddress to PostalAddress table
+        /// </summary>
+        /// <param name="lstAddress"></param>
+        /// <returns></returns>
         public bool SaveNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             bool saveflag = false;
@@ -231,9 +247,9 @@ namespace Fmo.NYBLoader
                 httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
                 httpHandler.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                this.loggingHelper.LogError(ex);
                 saveflag = false;
             }
             return saveflag;

@@ -13,18 +13,34 @@ using System.Xml.Serialization;
 using Fmo.Common.Constants;
 using System.Xml;
 using System.Xml.Schema;
+using System.Configuration;
+using Fmo.Common.Interface;
+using Fmo.Common.Enums;
 
 namespace Fmo.NYBLoader
 {
     public class TPFLoader : ITPFLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
-        private const string XSD_LOCATION = @"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd";
+        private readonly IFileMover fileMover;
+        private readonly IExceptionHelper exceptionHelper;
+        private readonly ILoggingHelper loggingHelper;
+        private readonly IConfigurationHelper configHelper;
+        private string XSD_LOCATION;
+        private string PROCESSED;
+        private string ERROR;
 
 
-        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker)
+        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker, IFileMover fileMover, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper, IConfigurationHelper configHelper)
         {
             this.msgBroker = messageBroker;
+            this.fileMover = fileMover;
+            this.exceptionHelper = exceptionHelper;
+            this.loggingHelper = loggingHelper;
+            this.configHelper = configHelper;
+            this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues("XSDLocation");
+            this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues("TPFProcessedFilePath");
+            this.ERROR = configHelper.ReadAppSettingsConfigurationValues("TPFErrorFilePath");
         }
 
 
@@ -47,19 +63,12 @@ namespace Fmo.NYBLoader
 
                 lstUSRInsertFiles.ForEach(addressLocation =>
                 {
-                    string xmlUSR = SerializeObject<AddressLocationUSRDTO>(addressLocation);
-                    IMessage USRMsg = msgBroker.CreateMessage(xmlUSR, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                    IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(USRMsg);
                 });
 
-                destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER, new FileInfo(strPath).Name);
 
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.PROCESSED_FOLDER));
-                }
-
-                File.Move(strPath, destinationPath);
+                fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, new FileInfo(strPath).Name });
 
                 //Code to be uncommented after confirmation
                 /*lstUSRUpdateFiles.ForEach(addressLocation =>
@@ -80,7 +89,25 @@ namespace Fmo.NYBLoader
 
             catch (Exception ex)
             {
-                throw;
+                Exception newException;
+                exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                if (rethrow)
+                {
+                    if (newException == null)
+                    {
+                        throw;
+
+                    }
+                    else
+                    {
+                        throw newException;
+                    }
+                }
+                else
+                {
+                    throw;
+                }
             }
         }
 
@@ -119,24 +146,16 @@ namespace Fmo.NYBLoader
                     using (XmlReader xmlReader = XmlReader.Create(new StringReader(validXmlDocument.OuterXml)))
                     {
                         xmlReader.MoveToContent();
-                        lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));
+                        lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));    
                     }
                 };
 
                 return lstUSRFiles;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                string destinationPath = Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER, new FileInfo(strPath).Name);
-
-                if (!Directory.Exists(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER)))
-                {
-                    Directory.CreateDirectory(Path.Combine(new FileInfo(strPath).Directory.FullName, Constants.Error_FOLDER));
-                }
-
-                File.Move(strPath, destinationPath);
-
-                throw ex;
+                fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, new FileInfo(strPath).Name });
+                throw ;
             }
 
         }
@@ -153,6 +172,14 @@ namespace Fmo.NYBLoader
 
                 xDoc.Validate(schemas, (o, e) =>
                 {
+                    if (e.Severity == XmlSeverityType.Warning)
+                    {
+                        loggingHelper.LogWarn(e.Message);
+                    }
+                    else if(e.Severity == XmlSeverityType.Error)
+                    {
+                        loggingHelper.LogError(e.Exception);
+                    }
                     //logger code to write schema mismatch exception 
                     result = false;
                 });
@@ -160,30 +187,9 @@ namespace Fmo.NYBLoader
                 return result;
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
-            }
-        }
-
-        private string SerializeObject<T>(T toSerialize)
-        {
-            try
-            {
-
-                XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-
-                using (StringWriter textWriter = new StringWriter())
-                {
-                    xmlSerializer.Serialize(textWriter, toSerialize);
-                    return textWriter.ToString();
-                }
-
-            }
-
-            catch (Exception ex)
-            {
-                throw ex;
+                throw;
             }
         }
     }

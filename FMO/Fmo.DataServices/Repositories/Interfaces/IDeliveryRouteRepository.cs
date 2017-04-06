@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Fmo.DTO;
 
@@ -10,10 +8,10 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);
 
-        Task<List<DeliveryRouteDTO>> FetchDeliveryRoute(string searchText);
+        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText);
 
-        Task<List<DeliveryRouteDTO>> FetchPostCodeUnitforBasicSearch(string searchText);
+        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText);
 
-        Task<int> GetDeliveryRouteUnitCount(string searchText);
+        Task<int> GetDeliveryRouteCount(string searchText);
     }
 }

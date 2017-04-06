@@ -52,9 +52,12 @@
         "bin/Debug/Fmo.DataServices.dll": {}
       },
       "runtime": {
+        "../packages/DelegateDecompiler.0.23.0/lib/net40-client/DelegateDecompiler.dll": {},
+        "../packages/DelegateDecompiler.EntityFramework.0.23.0/lib/net45/DelegateDecompiler.EntityFramework.dll": {},
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
+        "../packages/Mono.Reflection.1.1.0.0/lib/Mono.Reflection.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "bin/Debug/Fmo.DataServices.dll": {}
       },
@@ -192,23 +195,6 @@
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x86/sqlserverspatial140.dll"
-        }
-      }
-    },
-    "Fmo.Helpers/1.0.0": {
-      "type": "project",
-      "framework": ".NETFramework,Version=v4.5.2",
-      "compile": {
-        "bin/Debug/Fmo.Helpers.dll": {}
-      },
-      "runtime": {
-        "bin/Debug/Fmo.Helpers.dll": {}
-      },
-      "contentFiles": {
-        "bin/Debug/Fmo.Helpers.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
         }
       }
     }

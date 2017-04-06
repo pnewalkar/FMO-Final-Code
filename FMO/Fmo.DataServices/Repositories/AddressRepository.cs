@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using Common.Interface;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -12,41 +13,37 @@
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType)
         {
             bool deleteFlag = false;
-            try
+            if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                if (lstUDPRN != null && lstUDPRN.Count() > 0)
+                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
+                if (lstAddress != null && lstAddress.Count > 0)
                 {
-                    var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
-                    if (lstAddress != null && lstUDPRN.Count > 0)
+                    lstAddress.ForEach(postalAddressEntity =>
                     {
-                        lstAddress.ForEach(x =>
+                        if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
-                            if (x.DeliveryPoints != null && x.DeliveryPoints.Count > 0)
-                            {
-                                // TO DO log error
-                            }
-                            else
-                            {
-                                DataContext.Entry(x).State = System.Data.Entity.EntityState.Deleted;
-                            }
-                        });
-                        DataContext.SaveChanges();
-                    }
-
-                    deleteFlag = true;
+                            deleteFlag = false;
+                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
+                        }
+                        else
+                        {
+                            DataContext.PostalAddresses.Remove(postalAddressEntity);
+                            DataContext.SaveChanges();
+                            deleteFlag = true;
+                        }
+                    });
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return deleteFlag;
@@ -78,8 +75,6 @@
                         objAddress.PostcodeType = objPostalAddress.PostcodeType;
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                        DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
-
                     }
                     else
                     {
@@ -91,7 +86,7 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -168,7 +163,7 @@
             {
                 if (objPostalAddress != null)
                 {
-                    //.Include("DeliveryPoints")
+                    // .Include("DeliveryPoints")
                     var objAddress = DataContext.PostalAddresses.Where(n => n.Address_Id == objPostalAddress.Address_Id).SingleOrDefault();
                     if (objAddress != null)
                     {
@@ -189,17 +184,17 @@
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.UDPRN = objPostalAddress.UDPRN;
 
-                        //if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
-                        //{
+                        // if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        // {
                         //    foreach (var objDelPoint in objAddress.DeliveryPoints)
                         //    {
                         //        objDelPoint.UDPRN = objPostalAddress.UDPRN;
                         //    }
-                        //}
-                        //else
-                        //{
+                        // }
+                        // else
+                        // {
                         //    //To DO log error
-                        //}
+                        // }
                         DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
                     }
                     else

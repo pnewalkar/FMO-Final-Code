@@ -8,5 +8,6 @@ namespace Fmo.Common.Enums
 {
     public enum DeliveryPointSuffix
     {
+        None = 0,
     }
 }

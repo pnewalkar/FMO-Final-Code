@@ -14,18 +14,23 @@ using System.Configuration;
 using Fmo.MessageBrokerCore;
 using Fmo.Common;
 using Fmo.Common.Constants;
+using Fmo.Common.Enums;
 
 namespace Fmo.NYBLoader
 {
     public class PAFLoader : IPAFLoader
     {
-        private string strProcessedFilePath = string.Empty;
-        private string strErrorFilePath = string.Empty;
+        private string strPAFProcessedFilePath = string.Empty;
+        private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
+        private IConfigurationHelper configurationHelper;
 
-        public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker)
+        public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper)
         {
             this.msgBroker = messageBroker;
+            this.configurationHelper = configurationHelper;
+            this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFProcessedFilePath");
+            this.strPAFErrorFilePath    = configurationHelper.ReadAppSettingsConfigurationValues("PAFErrorFilePath");
         }
 
         public void LoadPAF(string fileName)
@@ -50,19 +55,24 @@ namespace Fmo.NYBLoader
 
                             if (invalidRecordsCount > 0)
                             {
-                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
                             }
                             else
                             {
                                 if (SavePAFDetails(lstPAFDetails))
                                 {
-                                    File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                    File.WriteAllText(Path.Combine(strPAFProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                                 else
                                 {
-                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                    File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
                                 }
                             }
+                        }
+                        else
+                        {
+                            File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                            //TO DO Log error... File validation error
                         }
                     }
                 }
@@ -73,8 +83,7 @@ namespace Fmo.NYBLoader
             }
         }
 
-
-        private List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
+        public List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
@@ -106,11 +115,6 @@ namespace Fmo.NYBLoader
                                                 .SelectMany(g => g.Select(o => o))
                                                 .ToList();
                     }
-                }
-                else
-                {
-                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strFileName)), strLine);
-                    //TO DO Log error... File validation error
                 }
             }
             catch (Exception)
@@ -198,7 +202,7 @@ namespace Fmo.NYBLoader
             }
         }*/
 
-        private bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             bool saveflag = false;
             try
@@ -212,8 +216,7 @@ namespace Fmo.NYBLoader
 
                 foreach (var addDetail in lstPostalAddress)
                 {
-                    string strXml = SerializeObject<PostalAddressDTO>(addDetail);
-                    IMessage msg = msgBroker.CreateMessage(strXml, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    IMessage msg = msgBroker.CreateMessage(addDetail, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(msg);
                 }
             }
@@ -234,7 +237,7 @@ namespace Fmo.NYBLoader
                 );
         }
 
-        private static string SerializeObject<T>(T toSerialize)
+        /*private static string SerializeObject<T>(T toSerialize)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
 
@@ -245,20 +248,20 @@ namespace Fmo.NYBLoader
             }
         }
 
-        //private static T DeserializeXMLFileToObject<T>(string xmlFilename)
-        //{
-        //    T returnObject = default(T);
-        //    if (string.IsNullOrEmpty(xmlFilename))
-        //    {
-        //        return default(T);
-        //    }
+        private static T DeserializeXMLFileToObject<T>(string xmlFilename)
+        {
+            T returnObject = default(T);
+            if (string.IsNullOrEmpty(xmlFilename))
+            {
+                return default(T);
+            }
 
-        //    StreamReader xmlStream = new StreamReader(xmlFilename);
-        //    XmlSerializer serializer = new XmlSerializer(typeof(T));
-        //    returnObject = (T)serializer.Deserialize(xmlStream);
+            StreamReader xmlStream = new StreamReader(xmlFilename);
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            returnObject = (T)serializer.Deserialize(xmlStream);
 
-        //    return returnObject;
-        //}
+            return returnObject;
+        }*/
 
         private static bool ValidateFile(string[] arrLines)
         {
@@ -267,12 +270,12 @@ namespace Fmo.NYBLoader
             {
                 foreach (string line in arrLines)
                 {
-                    if (line.Count(n => n == ',') != 19)
+                    if (line.Count(n => n == ',') != Constants.noOfCharactersForPAF)
                     {
                         isFileValid = false;
                         break;
                     }
-                    if (line.ToCharArray().Count() > 534)
+                    if (line.ToCharArray().Count() > Constants.maxCharactersForPAF)
                     {
                         isFileValid = false;
                         break;
@@ -338,46 +341,65 @@ namespace Fmo.NYBLoader
             {
                 foreach (PostalAddressDTO objAdd in lstAddress)
                 {
-                    if ((string.IsNullOrEmpty(objAdd.Postcode)) && !ValidatePostCode(objAdd.Postcode))
+                    if (string.IsNullOrEmpty(objAdd.AmendmentType) || !(System.Enum.IsDefined(typeof(AmmendmentType),objAdd.AmendmentType)))
                     {
                         objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
                     if (string.IsNullOrEmpty(objAdd.PostTown))
                     {
                         objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) && (objAdd.PostcodeType != "S" || objAdd.PostcodeType != "L"))
+                    if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
                     {
                         objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
-                    if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN)))
+                    if (string.IsNullOrEmpty(objAdd.PostTown))
                     {
                         objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
-                    if (string.IsNullOrEmpty(objAdd.SmallUserOrganisationIndicator) && (objAdd.PostcodeType != "Y" || objAdd.PostcodeType != " "))
+                    if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
                     {
                         objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                    }
+                    if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN == 0 ? null : objAdd.UDPRN)))
+                    {
+                        objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                    }
+                    if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
+                    {
+                        objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
                     if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
                     {
                         objAdd.IsValidData = false;
+                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
                     if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
                     {
                         char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                        if (objAdd.PostcodeType == "L" && objAdd.DeliveryPointSuffix != "1A")
+                        if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                         {
                             objAdd.IsValidData = false;
+                            objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                         }
                         if (characters.Count() != 2)
                         {
                             objAdd.IsValidData = false;
+                            objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                         }
                         else if (characters.Count() == 2)
                         {
                             if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
                             {
                                 objAdd.IsValidData = false;
+                                objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                             }
                         }
                     }

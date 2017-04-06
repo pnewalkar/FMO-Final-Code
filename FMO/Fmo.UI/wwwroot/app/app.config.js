@@ -1,7 +1,7 @@
 angular.module('FMOApp')
 .config(function($mdThemingProvider){
      
-    /*FMO Primary Palette*/
+    /*FMO Primary Palette*/ 
     
     $mdThemingProvider.definePalette('royalMailPrimary', {
     '50': 'f4f4f3',

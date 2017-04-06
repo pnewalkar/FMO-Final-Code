@@ -30,24 +30,19 @@ namespace Fmo.BusinessServices.Services
         public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress)
         {
             bool saveFlag = false;
-            try
+            int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
+            int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
+            List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
+            if (!lstUDPRNS.All(a => a == 0))
             {
-                int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
-                int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
-
-                foreach (var addEntity in lstPostalAddress)
+                foreach (var postalAddress in lstPostalAddress)
                 {
-                    addEntity.AddressStatus_Id = addressStatusId;
-                    addEntity.AddressType_Id = addressTypeId;
-                    addressRepository.SaveAddress(addEntity);
+                    postalAddress.AddressStatus_Id = addressStatusId;
+                    postalAddress.AddressType_Id = addressTypeId;
+                    addressRepository.SaveAddress(postalAddress);
                 }
 
-                List<int> lstUDPRNS = lstPostalAddress.Select(n => n.UDPRN.Value).ToList();
                 saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return saveFlag;
@@ -89,7 +84,7 @@ namespace Fmo.BusinessServices.Services
                     }
                     else
                     {
-                        //error log entry
+                        // error log entry
                     }
                 }
                 else

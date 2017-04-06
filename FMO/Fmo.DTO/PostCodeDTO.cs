@@ -16,8 +16,5 @@ namespace Fmo.DTO
         public string InwardCode { get; set; }
 
         public string Sector { get; set; }
-
-        [NotMapped]
-        public int TotalCount { get; set; }
     }
 }

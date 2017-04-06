@@ -21,25 +21,17 @@ namespace Fmo.DataServices.Repositories
         public int GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
             int statusId = 0;
-            try
+            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName == strCategoryname).SingleOrDefault();
+            if (result != null)
             {
-                var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName == strCategoryname).SingleOrDefault();
-                if (result != null)
+                if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
                 {
-                    if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+                    var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault();
+                    if (referenceData != null)
                     {
-                        var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault();
-                        if (referenceData != null)
-                        {
-                            statusId = referenceData.ReferenceData_Id;
-                        }
+                        statusId = referenceData.ReferenceData_Id;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // TO DO implement logging
-                throw;
             }
 
             return statusId;
