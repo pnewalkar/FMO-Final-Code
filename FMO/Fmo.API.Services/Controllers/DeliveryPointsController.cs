@@ -49,9 +49,9 @@ namespace Fmo.API.Services.Controllers
         {
             //try
             //{
-           
 
-            return businessService.GetDeliveryPoints();
+            return Json("");
+            //return businessService.GetDeliveryPoints();
             //}
 
             //catch (Exception ex)

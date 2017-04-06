@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,8 +10,7 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class SearchController : Controller
     {
-
-        ISearchBussinessService searchBussinessService = default(ISearchBussinessService);
+        private ISearchBussinessService searchBussinessService = default(ISearchBussinessService);
 
         public SearchController(ISearchBussinessService _searchBussinessService)
         {
@@ -25,6 +21,12 @@ namespace Fmo.API.Services.Controllers
         public async Task<SearchResultDTO> BasicSearch(string searchText)
         {
             return await searchBussinessService.FetchBasicSearchDetails(searchText);
+        }
+
+        [HttpGet("AdvanceSearch")]
+        public async Task<SearchResultDTO> AdvanceSearch(string searchText)
+        {
+            return await searchBussinessService.FetchAdvanceSearchDetails(searchText);
         }
 
         // GET: api/values
