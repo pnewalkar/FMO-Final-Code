@@ -30,6 +30,7 @@
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
         private ITPFLoader tpfLoader = default(ITPFLoader);
+        private IFileMover fileMover = default(IFileMover);
         private IConfigurationHelper configurationHelper;
 
         public FileLoader()
@@ -57,10 +58,12 @@
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IHttpHandler>().To<HttpHandler>();
             kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
+            kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
 
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
+            fileMover = kernel.Get<IFileMover>();
             configurationHelper = kernel.Get<IConfigurationHelper>();
     }
 
