@@ -13,23 +13,18 @@ namespace Fmo.Entities
         public NetworkLink()
         {
             AccessLinks = new HashSet<AccessLink>();
-            NetworkReferences = new HashSet<NetworkReference>();
+            DeliveryRouteNetworkLinks = new HashSet<DeliveryRouteNetworkLink>();
             NetworkLinkReferences = new HashSet<NetworkLinkReference>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int NetworkLink_Id { get; set; }
+        public Guid Id { get; set; }
 
-        [Required]
-        [StringLength(1)]
-        public string NetworkLinkType { get; set; }
+        public int NetworkLinkType_Id { get; set; }
 
         [StringLength(20)]
-        public string ExternalTOID { get; set; }
+        public string TOID { get; set; }
 
-        [StringLength(1)]
-        public string DataProvider { get; set; }
+        public int DataProvider_Id { get; set; }
 
         public int? RoadName_Id { get; set; }
 
@@ -47,8 +42,23 @@ namespace Fmo.Entities
 
         public int? LinkGradientType { get; set; }
 
+        public Guid? NetworkLinkType_GUID { get; set; }
+
+        public Guid? DataProvider_GUID { get; set; }
+
+        public Guid? RoadName_GUID { get; set; }
+
+        public Guid? StreetName_GUID { get; set; }
+
+        public Guid? StartNode_GUID { get; set; }
+
+        public Guid? EndNode_GUID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryRouteNetworkLink> DeliveryRouteNetworkLinks { get; set; }
 
         public virtual NetworkNode NetworkNode { get; set; }
 
@@ -56,20 +66,13 @@ namespace Fmo.Entities
 
         public virtual StreetName StreetName { get; set; }
 
+        public virtual ReferenceData ReferenceData { get; set; }
+
+        public virtual ReferenceData ReferenceData1 { get; set; }
+
         public virtual RoadName RoadName { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NetworkReference> NetworkReferences { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkLinkReference> NetworkLinkReferences { get; set; }
-
-        public virtual OSConnectingLink OSConnectingLink { get; set; }
-
-        public virtual OSPathLink OSPathLink { get; set; }
-
-        public virtual OSRoadLink OSRoadLink { get; set; }
-
-        public virtual RMGLink RMGLink { get; set; }
     }
 }

@@ -5,22 +5,28 @@ namespace Fmo.Entities
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("FMO.PostcodeArea")]
-    public partial class PostcodeArea
+    [Table("FMO.User")]
+    public partial class User
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PostcodeArea()
+        public User()
         {
-            PostcodeDistricts = new HashSet<PostcodeDistrict>();
+            UserRoleUnits = new HashSet<UserRoleUnit>();
         }
-
-        [Required]
-        [StringLength(2)]
-        public string Area { get; set; }
 
         public Guid ID { get; set; }
 
+        [StringLength(50)]
+        public string FirstName { get; set; }
+
+        [StringLength(50)]
+        public string LastName { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string UserName { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PostcodeDistrict> PostcodeDistricts { get; set; }
+        public virtual ICollection<UserRoleUnit> UserRoleUnits { get; set; }
     }
 }

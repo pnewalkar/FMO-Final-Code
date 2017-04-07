@@ -5,12 +5,16 @@ namespace Fmo.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("FMO.OSConnectingNode")]
-    public partial class OSConnectingNode
+    [Table("FMO.OSConnectingNode_temp")]
+    public partial class OSConnectingNode_temp
     {
+        [Key]
+        [Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int NetworkNode_Id { get; set; }
 
-        [Required]
+        [Key]
+        [Column(Order = 1)]
         [StringLength(20)]
         public string TOID { get; set; }
 
@@ -20,12 +24,10 @@ namespace Fmo.Entities
         [StringLength(20)]
         public string RoadLinkTOID { get; set; }
 
+        [Key]
+        [Column(Order = 2)]
         public Guid ID { get; set; }
 
         public Guid? RoadLink_GUID { get; set; }
-
-        public virtual NetworkNode NetworkNode { get; set; }
-
-        public virtual OSRoadLink OSRoadLink { get; set; }
     }
 }

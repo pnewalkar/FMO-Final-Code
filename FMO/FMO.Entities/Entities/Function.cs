@@ -5,28 +5,30 @@ namespace Fmo.Entities
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("FMO.ReferenceDataCategory")]
-    public partial class ReferenceDataCategory
+    [Table("FMO.Function")]
+    public partial class Function
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ReferenceDataCategory()
+        public Function()
         {
-            ReferenceDatas = new HashSet<ReferenceData>();
+            RoleFunctions = new HashSet<RoleFunction>();
         }
-
-        public int ReferenceDataCategory_Id { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string CategoryName { get; set; }
-
-        public bool Maintainable { get; set; }
-
-        public int CategoryType { get; set; }
 
         public Guid ID { get; set; }
 
+        [Required]
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(1000)]
+        public string Description { get; set; }
+
+        public Guid ActionContextID { get; set; }
+
+        public virtual Action Action { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ReferenceData> ReferenceDatas { get; set; }
+        public virtual ICollection<RoleFunction> RoleFunctions { get; set; }
     }
 }

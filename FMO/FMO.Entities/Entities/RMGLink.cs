@@ -1,7 +1,6 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
@@ -9,8 +8,6 @@ namespace Fmo.Entities
     [Table("FMO.RMGLink")]
     public partial class RMGLink
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int NetworkLink_Id { get; set; }
 
         [StringLength(1)]
@@ -30,6 +27,6 @@ namespace Fmo.Entities
 
         public DbGeometry Geometry { get; set; }
 
-        public virtual NetworkLink NetworkLink { get; set; }
+        public Guid ID { get; set; }
     }
 }

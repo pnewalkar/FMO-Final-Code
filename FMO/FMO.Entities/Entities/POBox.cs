@@ -1,15 +1,12 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.POBox")]
     public partial class POBox
     {
-        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int POBox_Id { get; set; }
 
         [Column("UDPRN ")]
@@ -20,6 +17,12 @@ namespace Fmo.Entities
         public int? POBoxType_Id { get; set; }
 
         public int? POBoxLinkedAddress_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid? POBoxType_GUID { get; set; }
+
+        public Guid? POBoxLinkedAddress_GUID { get; set; }
 
         public virtual PostalAddress PostalAddress { get; set; }
 
