@@ -10,7 +10,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
 
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText);
 
-        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText);
+        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText);
 
         Task<int> GetDeliveryRouteCount(string searchText);
     }

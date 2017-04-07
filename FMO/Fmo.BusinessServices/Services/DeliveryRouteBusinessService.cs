@@ -39,7 +39,7 @@ namespace Fmo.BusinessServices.Services
 
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)
         {
-            return await deliveryRouteRepository.FetchDeliveryRouteforBasicSearch(searchText);
+            return await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText);
         }
 
         public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()

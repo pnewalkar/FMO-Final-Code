@@ -7,9 +7,8 @@ function MapToolbarController(mapToolbarService, $scope) {
     var vm = this;
     vm.setSelectedButton = setSelectedButton;
     vm.deselectButton = deselectButton;
-    vm.showButton = showButton;
+    vm.showButton = showButton();
     vm.selectedButton = null;
-    vm.autoSelect = autoSelect;
     vm.mapButtons = mapToolbarService.getMapButtons();
 
     function setSelectedButton(button) {
@@ -40,10 +39,6 @@ function MapToolbarController(mapToolbarService, $scope) {
 
     function showButton(button) {
         return mapToolbarService.showButton(button);
-    }
-
-    function autoSelect() {
-        mapToolbarService.autoSelect();
     }
 
 }
