@@ -20,6 +20,6 @@ namespace Fmo.DTO
         public string DesignatedName { get; set; }
 
         public string type { get; set; }
-        public List<Feature> features { get; set; }
+        public object features { get; set; }
     }
 }

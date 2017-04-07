@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Entity;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using System.IO;
-using Newtonsoft.Json;
-using Fmo.Helpers.Interface;
-
-namespace Fmo.BusinessServices.Services
+﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.Helpers;
+    using Fmo.Helpers.Interface;
+    using Newtonsoft.Json;
+
     public class AccessLinkBussinessService : IAccessLinkBussinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
@@ -30,7 +31,7 @@ namespace Fmo.BusinessServices.Services
             return accessLinkRepository.SearchAccessLink();
         }
 
-        public MemoryStream GetAccessLinks(string bbox)
+        public AccessLinkDTO GetAccessLinks(string bbox)
         {
             string[] bboxArr = bbox.Split(',');
             var coordinates = GetData(null, bboxArr);
@@ -51,23 +52,14 @@ namespace Fmo.BusinessServices.Services
 
                 geometry.coordinates = new object();
 
-                Feature features = createOtherLayersObjects.getAccessLinks(geometry, resultCoordinates);
+                var features = createOtherLayersObjects.GetAccessLinks(geometry, resultCoordinates);
                 lstFeatures.Add(features);
             }
+
             accessLinkDTOCollectionObj.features = lstFeatures;
             accessLinkDTOCollectionObj.type = "FeatureCollection";
-            json = JsonConvert.SerializeObject(
-                accessLinkDTOCollectionObj,
-                            Newtonsoft.Json.Formatting.None,
-                            new
-                            JsonSerializerSettings
-                            {
-                                NullValueHandling = NullValueHandling.Ignore
-                            });
 
-            var resultBytes = System.Text.Encoding.UTF8.GetBytes(json);
-
-            return new MemoryStream(resultBytes);
+            return accessLinkDTOCollectionObj;
         }
 
         public string GetData(string query, params object[] parameters)

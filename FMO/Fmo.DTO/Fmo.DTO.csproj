@@ -60,17 +60,12 @@
   <ItemGroup>
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
-    <Compile Include="Coordinates.cs" />
     <Compile Include="NotificationDTO.cs" />
     <Compile Include="OsRoadLinkDTO.cs" />
     <Compile Include="SearchCountDTO.cs" />
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />
-    <Compile Include="Feature.cs" />
-    <Compile Include="GeoJson.cs" />
-    <Compile Include="Geometry.cs" />
-    <Compile Include="Groups.cs" />
     <Compile Include="DeliveryUnitLocationDTO.cs" />
     <Compile Include="NetworkLinkDTO.cs" />
     <Compile Include="PostalAddressDTO.cs" />
@@ -83,7 +78,6 @@
     <Compile Include="RoadNameDTO.cs" />
     <Compile Include="ScenarioDTO.cs" />
     <Compile Include="SearchResultItemDTO.cs" />
-    <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="StreetNameDTO.cs" />
     <Compile Include="AddressLocationUSRDTO.cs" />
   </ItemGroup>
@@ -92,21 +86,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SqlServerTypes\readme.htm" />
-    <Content Include="SqlServerTypes\x64\msvcr120.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SqlServerTypes\x64\SqlServerSpatial140.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SqlServerTypes\x86\msvcr120.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SqlServerTypes\x86\SqlServerSpatial140.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
