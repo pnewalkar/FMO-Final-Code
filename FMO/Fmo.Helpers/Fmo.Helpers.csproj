@@ -56,7 +56,6 @@
   <ItemGroup>
     <Compile Include="CreateOtherLayersObject.cs" />
     <Compile Include="CreateSummaryObject.cs" />
-    <Compile Include="DummyClass.cs" />
     <Compile Include="Interface\ICreateOtherLayersObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
