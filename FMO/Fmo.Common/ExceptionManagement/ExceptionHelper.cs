@@ -23,20 +23,16 @@ namespace Fmo.Common.ExceptionManagement
         {
             if (!isInitialized)
             {
-                // IConfigurationSource config = ConfigurationSourceFactory.Create();
-                // ExceptionPolicyFactory factory = new ExceptionPolicyFactory(config);
-                // ExceptionManager exceptionManager = factory.CreateManager();
-                // ExceptionPolicy.SetExceptionManager(exceptionManager);
+                if (!Directory.Exists(ConfigurationManager.AppSettings["LogFilePath"]))
+                {
+                    Directory.CreateDirectory(ConfigurationManager.AppSettings["LogFilePath"]);
+                }
+
                 LoggingConfiguration loggingConfiguration = LoggingConfig.BuildProgrammaticConfig();
                 LogWriter logWriter = new LogWriter(loggingConfiguration);
                 ExceptionManager exceptionManager = ExceptionHandlingConfiguration.BuildExceptionHandlingConfiguration(logWriter);
                 ExceptionPolicy.SetExceptionManager(exceptionManager);
                 isInitialized = true;
-
-                if (!Directory.Exists(@"C:\Temp"))
-                {
-                    Directory.CreateDirectory(@"C:\Temp");
-                }
             }
         }
 
