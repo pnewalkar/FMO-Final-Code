@@ -1,7 +1,6 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
@@ -9,8 +8,6 @@ namespace Fmo.Entities
     [Table("FMO.OSConnectingNode")]
     public partial class OSConnectingNode
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int NetworkNode_Id { get; set; }
 
         [Required]
@@ -20,10 +17,15 @@ namespace Fmo.Entities
         [Required]
         public DbGeometry Location { get; set; }
 
-        [Required]
-        [StringLength(37)]
+        [StringLength(20)]
         public string RoadLinkTOID { get; set; }
 
+        public Guid ID { get; set; }
+
+        public Guid? RoadLink_GUID { get; set; }
+
         public virtual NetworkNode NetworkNode { get; set; }
+
+        public virtual OSRoadLink OSRoadLink { get; set; }
     }
 }

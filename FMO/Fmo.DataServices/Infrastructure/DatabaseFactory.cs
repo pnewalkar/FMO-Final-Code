@@ -8,10 +8,10 @@ namespace Fmo.DataServices.Infrastructure
     {
         private TContext dataContext;
 
-        public DatabaseFactory(TContext context)
-        {
-            dataContext = context;
-        }
+        //public DatabaseFactory(TContext context)
+        //{
+        //    dataContext = context;
+        //}
 
         public TContext Get()
         {

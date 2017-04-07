@@ -1,15 +1,13 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.AMUChangeRequest")]
     public partial class AMUChangeRequest
     {
-        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AMUChangeRequest_Id { get; set; }
 
         public int? ChangeRequestType_Id { get; set; }
@@ -39,6 +37,20 @@ namespace Fmo.Entities
 
         [StringLength(8)]
         public string RequestPostcode { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid? ChangeRequestType_GUID { get; set; }
+
+        public Guid? ChangeRequestStatus_GUID { get; set; }
+
+        public Guid? CurrentAddress_GUID { get; set; }
+
+        public Guid? NewAddress_GUID { get; set; }
+
+        public Guid? ChangeReasonCode_GUID { get; set; }
+
+        public Guid? RequestPostcode_GUID { get; set; }
 
         public virtual PostalAddress PostalAddress { get; set; }
 

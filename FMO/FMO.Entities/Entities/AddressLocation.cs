@@ -1,7 +1,6 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
@@ -9,8 +8,6 @@ namespace Fmo.Entities
     [Table("FMO.AddressLocation")]
     public partial class AddressLocation
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int UDPRN { get; set; }
 
         [Required]
@@ -21,5 +18,7 @@ namespace Fmo.Entities
 
         [Column(TypeName = "numeric")]
         public decimal Longitude { get; set; }
+
+        public Guid ID { get; set; }
     }
 }

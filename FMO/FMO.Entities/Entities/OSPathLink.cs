@@ -1,7 +1,6 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
@@ -9,10 +8,6 @@ namespace Fmo.Entities
     [Table("FMO.OSPathLink")]
     public partial class OSPathLink
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int NetworkLink_Id { get; set; }
-
         [Required]
         [StringLength(20)]
         public string TOID { get; set; }
@@ -47,6 +42,14 @@ namespace Fmo.Entities
         [StringLength(20)]
         public string FormPartOf { get; set; }
 
-        public virtual NetworkLink NetworkLink { get; set; }
+        public Guid ID { get; set; }
+
+        public Guid? StartNode_GUID { get; set; }
+
+        public Guid? EndNode_GUID { get; set; }
+
+        public virtual OSPathNode OSPathNode { get; set; }
+
+        public virtual OSPathNode OSPathNode1 { get; set; }
     }
 }

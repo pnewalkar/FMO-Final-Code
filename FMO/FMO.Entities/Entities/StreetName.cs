@@ -15,7 +15,7 @@ namespace Fmo.Entities
             NetworkLinks = new HashSet<NetworkLink>();
         }
 
-        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int StreetName_Id { get; set; }
 
         [StringLength(12)]
@@ -65,6 +65,8 @@ namespace Fmo.Entities
 
         [StringLength(30)]
         public string AdministrativeArea { get; set; }
+
+        public Guid ID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkLink> NetworkLinks { get; set; }

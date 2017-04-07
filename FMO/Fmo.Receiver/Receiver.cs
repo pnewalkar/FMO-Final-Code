@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fmo.MessageBrokerCore.Messaging;
 using Fmo.DTO;
+using Fmo.DTO.FileProcessing;
 using Ninject;
 using System.Threading;
 using Fmo.Common.Constants;

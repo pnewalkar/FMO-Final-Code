@@ -86,7 +86,7 @@
     <Compile Include="SearchResultItemDTO.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="StreetNameDTO.cs" />
-    <Compile Include="AddressLocationUSRDTO.cs" />
+    <Compile Include="FileProcessing\AddressLocationUSRDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

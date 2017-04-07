@@ -10,6 +10,7 @@
     using DataServices.Repositories.Interfaces;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DTO;
+    using Fmo.DTO.FileProcessing;
 
     public class USRBusinessService : IUSRBusinessService
     {
@@ -37,7 +38,6 @@
 
                 if (addressLocationDTO != null)
                 {
-
                 }
                 else
                 {
@@ -94,6 +94,7 @@
                                     NotificationSource = Constants.USR_NOTIFICATION_SOURCE,
                                     Notification_Heading = Constants.USR_ACTION
                                 };
+                                await notificationRepository.AddNewNotification(notificationDO);
                             }
                         }
                     }

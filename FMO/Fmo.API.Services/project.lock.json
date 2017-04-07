@@ -1876,6 +1876,7 @@
       "Fmo.BusinessServices/1.0.0": {
         "type": "project",
         "dependencies": {
+          "Fmo.Common": "1.0.0",
           "Fmo.DTO": "1.0.0",
           "Fmo.DataServices": "1.0.0",
           "Fmo.Entities": "1.0.0",
@@ -1904,10 +1905,7 @@
         "type": "project"
       },
       "Fmo.Helpers/1.0.0": {
-        "type": "project",
-        "dependencies": {
-          "Fmo.DTO": "1.0.0"
-        }
+        "type": "project"
       },
       "Fmo.MappingConfiguration/1.0.0": {
         "type": "project",
