@@ -68,7 +68,7 @@ namespace Fmo.BusinessServices.Tests.Services
         public void Test_SaveDeliveryPoint_ValidData()
         {
             PostalAddressDTO objPostalAddressDTO = new PostalAddressDTO() { UDPRN = 14856, Postcode = "AB10 1AB" };
-            var result = testCandidate.SaveDel(objPostalAddressDTO);
+            var result = testCandidate.SavePAFDetails(objPostalAddressDTO);
             mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
             mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<int?>()), Times.Once());
             mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
