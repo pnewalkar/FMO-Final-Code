@@ -4,7 +4,6 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.PostcodeSector")]
     public partial class PostcodeSector
@@ -16,12 +15,16 @@ namespace Fmo.Entities
             Postcodes = new HashSet<Postcode>();
         }
 
-        [Key]
+        [Required]
         [StringLength(5)]
         public string Sector { get; set; }
 
         [StringLength(4)]
         public string District { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid DistrictGUID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }

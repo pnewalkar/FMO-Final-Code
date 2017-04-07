@@ -9,6 +9,7 @@
     using System.Text;
     using System.Xml.Serialization;
     using Fmo.DTO;
+    using Fmo.DTO.FileProcessing;
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;

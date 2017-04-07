@@ -17,8 +17,6 @@ namespace Fmo.Entities
             NetworkReferences = new HashSet<NetworkReference>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int NetworkNode_Id { get; set; }
 
         [StringLength(1)]
@@ -30,11 +28,22 @@ namespace Fmo.Entities
         [Required]
         public DbGeometry NodeGeometry { get; set; }
 
+        [StringLength(20)]
+        public string TOID { get; set; }
+
+        public int NetworkNodeType_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid NetworkNodeType_GUID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkLink> NetworkLinks { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkLink> NetworkLinks1 { get; set; }
+
+        public virtual ReferenceData ReferenceData { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkReference> NetworkReferences { get; set; }
@@ -44,7 +53,5 @@ namespace Fmo.Entities
         public virtual OSPathNode OSPathNode { get; set; }
 
         public virtual OSRoadNode OSRoadNode { get; set; }
-
-        public virtual RMGNode RMGNode { get; set; }
     }
 }

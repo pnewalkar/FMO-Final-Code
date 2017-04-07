@@ -21,6 +21,13 @@
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
+        },
+        "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
+          "buildAction": "Content",
+        "bin/Debug/Fmo.BusinessServices.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
         }
       }
     },

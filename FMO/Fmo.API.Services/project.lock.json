@@ -1916,10 +1916,7 @@
         "type": "project"
       },
       "Fmo.Helpers/1.0.0": {
-        "type": "project",
-        "dependencies": {
-          "Fmo.DTO": "1.0.0"
-        }
+        "type": "project"
       },
       "Fmo.MappingConfiguration/1.0.0": {
         "type": "project",

@@ -60,6 +60,8 @@
   <ItemGroup>
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
+
+    <Compile Include="FileProcessingLogDTO.cs" />
     <Compile Include="NotificationDTO.cs" />
     <Compile Include="OsRoadLinkDTO.cs" />
     <Compile Include="SearchCountDTO.cs" />
@@ -79,7 +81,7 @@
     <Compile Include="ScenarioDTO.cs" />
     <Compile Include="SearchResultItemDTO.cs" />
     <Compile Include="StreetNameDTO.cs" />
-    <Compile Include="AddressLocationUSRDTO.cs" />
+    <Compile Include="FileProcessing\AddressLocationUSRDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -90,16 +90,19 @@
     <Compile Include="Repositories\AccessLinkRepository.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
     <Compile Include="Repositories\DeliveryUnitLocationRespository.cs" />
+    <Compile Include="Repositories\FileProcessingLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressLocationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAccessLinkRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryPointsRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryUnitLocationRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IFileProcessingLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\INotificationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostalAddressRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostCodeRepository.cs" />
     <Compile Include="Repositories\Interfaces\IReferenceDataCategoryRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IReferenceDataRepository.cs" />
     <Compile Include="Repositories\Interfaces\IScenarioRepository.cs" />
     <Compile Include="Repositories\Interfaces\IRoadNameRepository.cs" />
     <Compile Include="Repositories\DeliveryRouteRepository.cs" />
@@ -108,6 +111,7 @@
     <Compile Include="Repositories\PostalAddressRepository.cs" />
     <Compile Include="Repositories\PostCodeRepository.cs" />
     <Compile Include="Repositories\ReferenceDataCategoryRepository.cs" />
+    <Compile Include="Repositories\ReferenceDataRepository.cs" />
     <Compile Include="Repositories\ScenarioRepository.cs" />
     <Compile Include="Repositories\RoadNameRepository.cs" />
     <Compile Include="Repositories\DeliveryPointsRepository.cs" />

@@ -12,5 +12,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         NotificationDTO GetNotificationByUDPRN(int uDPRN);
 
         Task<int> DeleteNotificationbyUDPRN(int uDPRN);
+
+        Task<int> AddNewNotification(NotificationDTO notificationDTO);
     }
 }

@@ -27,7 +27,7 @@ namespace Fmo.BusinessServices.Services
             this.addressLocationRepository = addressLocationRepository;
         }
 
-        public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress)
+        public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
@@ -39,7 +39,7 @@ namespace Fmo.BusinessServices.Services
                 {
                     postalAddress.AddressStatus_Id = addressStatusId;
                     postalAddress.AddressType_Id = addressTypeId;
-                    addressRepository.SaveAddress(postalAddress);
+                    addressRepository.SaveAddress(postalAddress, strFileName);
                 }
 
                 saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
@@ -90,7 +90,7 @@ namespace Fmo.BusinessServices.Services
                 }
                 else
                 {
-                    addressRepository.SaveAddress(objPostalAddress); // insert postal address
+                    addressRepository.SaveAddress(objPostalAddress,string.Empty); // insert postal address
                     SaveDeliveryPointProcess(objPostalAddress);
                 }
                 /*
@@ -148,7 +148,7 @@ namespace Fmo.BusinessServices.Services
             return saveFlag;
         }
 
-        private void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
+        public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
         {
             var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
             var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
@@ -178,7 +178,7 @@ namespace Fmo.BusinessServices.Services
                     objTask.NotificationSource = "Source";
                     objTask.Notification_Heading = "Position new DP";
                     objTask.Notification_Message = "Please position the DP " + "a";
-                    objTask.PostcodeDistrict= objPostalAddress.Postcode;
+                    objTask.PostcodeDistrict = objPostalAddress.Postcode;
                     objTask.NotificationDueDate = DateTime.Now;
                     objTask.NotificationActionLink = ""; // Unique refn link
                 }

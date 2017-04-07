@@ -9,12 +9,15 @@ namespace Fmo.Entities
     [Table("FMO.OSRoadLink")]
     public partial class OSRoadLink
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int NetworkLink_Id { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public OSRoadLink()
+        {
+            NetworkLinkReferences = new HashSet<NetworkLinkReference>();
+            OSConnectingNodes = new HashSet<OSConnectingNode>();
+        }
 
         [Required]
-        [StringLength(37)]
+        [StringLength(20)]
         public string TOID { get; set; }
 
         [Required]
@@ -65,6 +68,20 @@ namespace Fmo.Entities
         [StringLength(19)]
         public string OperationalState { get; set; }
 
-        public virtual NetworkLink NetworkLink { get; set; }
+        public Guid ID { get; set; }
+
+        public Guid? StartNode_GUID { get; set; }
+
+        public Guid? EndNode_GUID { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NetworkLinkReference> NetworkLinkReferences { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OSConnectingNode> OSConnectingNodes { get; set; }
+
+        public virtual OSRoadNode OSRoadNode { get; set; }
+
+        public virtual OSRoadNode OSRoadNode1 { get; set; }
     }
 }
