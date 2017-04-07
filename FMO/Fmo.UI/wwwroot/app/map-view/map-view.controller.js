@@ -10,7 +10,8 @@ function MapController($scope,
     vm.initialiseMiniMap = initialiseMiniMap;
     vm.toggleActions = toggleActions;
     vm.oncollapse = oncollapse;
-    vm.dotStyle = getDotStyle(); 
+    vm.dotStyle = getDotStyle();
+    vm.selectedDeliveryUnit = null;
     $scope.$on('refreshLayers',mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
         mapService.mapToolChange(button);

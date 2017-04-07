@@ -2,6 +2,5 @@ angular.module('home', [      'sideNav',
                               'search',
                               'unitSelector',
                               'task',
-                              'mapView',
-                              'advanceSearch'
+                              'mapView'
                              ]);
