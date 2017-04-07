@@ -3,7 +3,7 @@ angular.module('unitSelector')
 function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService) {
     var vm = this;
     vm.DeliveryUnit = DeliveryUnit;
-   
+    vm.selectedDeliveryUnit = null;
     vm.deliveryUnit = [
        { id: 1, name: 'Unit One' },
        { id: 2, name: 'Unit Two' },
