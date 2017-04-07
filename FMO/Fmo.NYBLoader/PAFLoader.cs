@@ -125,83 +125,6 @@ namespace Fmo.NYBLoader
             return lstAddressDetails;            
         }
 
-        /*public void LoadPAFDetailsFromCSV(string strPath)
-        {
-            List<PostalAddressDTO> lstAddressDetails = null;
-            try
-            {
-                using (ZipArchive zip = ZipFile.OpenRead(strPath))
-                {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
-                    {
-                        string strLine = string.Empty;
-                        string strfileName = string.Empty;
-                        string destinationPath = string.Empty;
-                        string errorPath = string.Empty;
-
-                        Stream stream = entry.Open();
-                        var reader = new StreamReader(stream);
-                        strLine = reader.ReadToEnd();
-                        strfileName = entry.Name;
-
-                        string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
-                        {
-                            Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
-                        }
-
-                        if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
-                        {
-                            lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
-
-                            if (lstAddressDetails != null && lstAddressDetails.Count > 0)
-                            {
-
-                                //Validate PAF Details
-                                ValidatePAFDetails(lstAddressDetails);
-
-                                //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
-                                lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
-
-                                //Remove duplicate PAF events which have create and delete instance for same UDPRN
-                                lstAddressDetails = lstAddressDetails
-                                                        .SkipWhile(n => (n.UDPRN.Equals("B")))
-                                                        .GroupBy(x => x.UDPRN)
-                                                        .Where(g => g.Count() == 1)
-                                                        .SelectMany(g => g.Select(o => o))
-                                                        .ToList();
-
-                                var invalidRecordCount = lstAddressDetails.Where(n => n.IsValidData == false).ToList().Count;
-
-                                if (invalidRecordCount > 0)
-                                {
-                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                }
-                                else
-                                {
-                                    SavePAFDetails(lstAddressDetails);
-                                    File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            File.WriteAllText(Path.Combine("Error file", strfileName), strLine);
-                            //TO DO
-                            //Log error
-                        }
-                    }
-                }
-
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }*/
-
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             bool saveflag = false;
@@ -236,32 +159,6 @@ namespace Fmo.NYBLoader
                 Path.GetExtension(strfileName)
                 );
         }
-
-        /*private static string SerializeObject<T>(T toSerialize)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-
-            using (StringWriter textWriter = new StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, toSerialize);
-                return textWriter.ToString();
-            }
-        }
-
-        private static T DeserializeXMLFileToObject<T>(string xmlFilename)
-        {
-            T returnObject = default(T);
-            if (string.IsNullOrEmpty(xmlFilename))
-            {
-                return default(T);
-            }
-
-            StreamReader xmlStream = new StreamReader(xmlFilename);
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            returnObject = (T)serializer.Deserialize(xmlStream);
-
-            return returnObject;
-        }*/
 
         private static bool ValidateFile(string[] arrLines)
         {

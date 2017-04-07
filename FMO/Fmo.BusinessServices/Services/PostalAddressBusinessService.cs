@@ -48,8 +48,9 @@ namespace Fmo.BusinessServices.Services
             return saveFlag;
         }
 
-        public void SavePAFDetails(PostalAddressDTO objPostalAddress)
+        public bool SavePAFDetails(PostalAddressDTO objPostalAddress)
         {
+            bool saveFlag = false;
             try
             {
                 // var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
@@ -144,6 +145,7 @@ namespace Fmo.BusinessServices.Services
             {
                 throw;
             }
+            return saveFlag;
         }
 
         private void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
