@@ -9,8 +9,14 @@ namespace Fmo.Entities
     [Table("FMO.OSPathNode")]
     public partial class OSPathNode
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public OSPathNode()
+        {
+            OSConnectingLinks = new HashSet<OSConnectingLink>();
+            OSPathLinks = new HashSet<OSPathLink>();
+            OSPathLinks1 = new HashSet<OSPathLink>();
+        }
+
         public int NetworkNode_Id { get; set; }
 
         [Required]
@@ -28,6 +34,17 @@ namespace Fmo.Entities
         [StringLength(32)]
         public string ReasonForChange { get; set; }
 
+        public Guid ID { get; set; }
+
         public virtual NetworkNode NetworkNode { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OSConnectingLink> OSConnectingLinks { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OSPathLink> OSPathLinks { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OSPathLink> OSPathLinks1 { get; set; }
     }
 }

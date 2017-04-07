@@ -3,7 +3,7 @@ namespace Fmo.DataServices.DBContext
     using System.Data.Entity;
     using Fmo.Entities;
 
-    public partial class FMODBContext : DbContext//AuditContext
+    public partial class FMODBContext : DbContext
     {
         public FMODBContext()
             : base("name=FMODBContext")
@@ -11,11 +11,13 @@ namespace Fmo.DataServices.DBContext
         }
 
         public FMODBContext(string connString)
-            : base(connString)
+           : base(connString)
         {
         }
 
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
+
+        public virtual DbSet<Action> Actions { get; set; }
 
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
 
@@ -27,6 +29,8 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<BlockSequence> BlockSequences { get; set; }
 
+        public virtual DbSet<CollectionRoute> CollectionRoutes { get; set; }
+
         public virtual DbSet<DeliveryGroup> DeliveryGroups { get; set; }
 
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
@@ -35,9 +39,17 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }
 
+        public virtual DbSet<DeliveryRouteBlock> DeliveryRouteBlocks { get; set; }
+
+        public virtual DbSet<DeliveryRouteNetworkLink> DeliveryRouteNetworkLinks { get; set; }
+
         public virtual DbSet<DeliveryUnitLocation> DeliveryUnitLocations { get; set; }
 
+        public virtual DbSet<DeliveryUnitLocationPostcode> DeliveryUnitLocationPostcodes { get; set; }
+
         public virtual DbSet<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }
+
+        public virtual DbSet<Function> Functions { get; set; }
 
         public virtual DbSet<GroupHazard> GroupHazards { get; set; }
 
@@ -99,15 +111,30 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<RoadName> RoadNames { get; set; }
 
+        public virtual DbSet<Role> Roles { get; set; }
+
+        public virtual DbSet<RoleFunction> RoleFunctions { get; set; }
+
         public virtual DbSet<Scenario> Scenarios { get; set; }
 
         public virtual DbSet<SpecialInstruction> SpecialInstructions { get; set; }
 
         public virtual DbSet<StreetName> StreetNames { get; set; }
 
+        public virtual DbSet<StreetNameNetworkLink> StreetNameNetworkLinks { get; set; }
+
+        public virtual DbSet<User> Users { get; set; }
+
+        public virtual DbSet<UserRoleUnit> UserRoleUnits { get; set; }
+
+        public virtual DbSet<OSConnectingLink_Temp> OSConnectingLink_Temp { get; set; }
+
+        public virtual DbSet<OSConnectingNode_temp> OSConnectingNode_temp { get; set; }
+
+        public virtual DbSet<TempPostalAddress> TempPostalAddresses { get; set; }
+
         public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
 
-        // public virtual DbSet<AdvanceSearch> AdvanceSearch { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccessLink>()
@@ -117,6 +144,24 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<AccessLink>()
                 .Property(e => e.WorkloadLengthMeter)
                 .HasPrecision(18, 8);
+
+            modelBuilder.Entity<Action>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Action>()
+                .Property(e => e.Description)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Action>()
+                .Property(e => e.DisplayText)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Action>()
+                .HasMany(e => e.Functions)
+                .WithRequired(e => e.Action)
+                .HasForeignKey(e => e.ActionContextID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<AddressLocation>()
                 .Property(e => e.Lattitude)
@@ -155,21 +200,38 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<Block>()
                 .HasMany(e => e.Block1)
                 .WithOptional(e => e.Block2)
-                .HasForeignKey(e => e.PairedBlock_Id);
+                .HasForeignKey(e => e.PairedBlock_GUID);
 
             modelBuilder.Entity<Block>()
                 .HasMany(e => e.BlockSequences)
                 .WithRequired(e => e.Block)
+                .HasForeignKey(e => e.Block_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Block>()
-                .HasMany(e => e.DeliveryRoutes)
-                .WithMany(e => e.Blocks)
-                .Map(m => m.ToTable("DeliveryRouteBlock").MapLeftKey("Block_Id").MapRightKey("DeliveryRoute_Id"));
+                .HasMany(e => e.DeliveryRouteActivities)
+                .WithOptional(e => e.Block)
+                .HasForeignKey(e => e.Block_GUID);
+
+            modelBuilder.Entity<Block>()
+                .HasMany(e => e.DeliveryRouteBlocks)
+                .WithRequired(e => e.Block)
+                .HasForeignKey(e => e.Block_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<BlockSequence>()
                 .Property(e => e.OrderIndex)
                 .HasPrecision(8, 8);
+
+            modelBuilder.Entity<CollectionRoute>()
+                .Property(e => e.RouteName)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<CollectionRoute>()
+                .Property(e => e.RouteNumber)
+                .IsFixedLength()
+                .IsUnicode(false);
 
             modelBuilder.Entity<DeliveryGroup>()
                 .Property(e => e.Name)
@@ -184,19 +246,25 @@ namespace Fmo.DataServices.DBContext
                 .WithRequired(e => e.DeliveryGroup);
 
             modelBuilder.Entity<DeliveryGroup>()
+                .HasMany(e => e.BlockSequences)
+                .WithOptional(e => e.DeliveryGroup)
+                .HasForeignKey(e => e.DeliveryGroup_GUID);
+
+            modelBuilder.Entity<DeliveryGroup>()
+                .HasMany(e => e.DeliveryPoints)
+                .WithOptional(e => e.DeliveryGroup)
+                .HasForeignKey(e => e.DeliveryGroup_GUID);
+
+            modelBuilder.Entity<DeliveryGroup>()
+                .HasMany(e => e.DeliveryRouteActivities)
+                .WithOptional(e => e.DeliveryGroup)
+                .HasForeignKey(e => e.DeliveryGroup_GUID);
+
+            modelBuilder.Entity<DeliveryGroup>()
                 .HasMany(e => e.GroupHazards)
                 .WithRequired(e => e.DeliveryGroup)
+                .HasForeignKey(e => e.DeliveryGroup_GUID)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<DeliveryPoint>()
-                .Property(e => e.LocationProvider)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DeliveryPoint>()
-                .Property(e => e.OperationalStatus)
-                .IsFixedLength()
-                .IsUnicode(false);
 
             modelBuilder.Entity<DeliveryPoint>()
                 .Property(e => e.Latitude)
@@ -213,13 +281,13 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<DeliveryPoint>()
                 .HasMany(e => e.AccessLinks)
-                .WithRequired(e => e.DeliveryPoint)
-                .HasForeignKey(e => e.OperationalObjectId)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.DeliveryPoint)
+                .HasForeignKey(e => e.OperationalObject_GUID);
 
             modelBuilder.Entity<DeliveryPoint>()
                 .HasMany(e => e.RMGDeliveryPoints)
                 .WithRequired(e => e.DeliveryPoint)
+                .HasForeignKey(e => e.DeliveryPoint_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DeliveryRoute>()
@@ -249,8 +317,28 @@ namespace Fmo.DataServices.DBContext
                 .IsFixedLength()
                 .IsUnicode(false);
 
+            modelBuilder.Entity<DeliveryRoute>()
+                .HasMany(e => e.DeliveryRouteBlocks)
+                .WithRequired(e => e.DeliveryRoute)
+                .HasForeignKey(e => e.DeliveryRoute_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<DeliveryRoute>()
+                .HasMany(e => e.DeliveryRouteActivities)
+                .WithOptional(e => e.DeliveryRoute)
+                .HasForeignKey(e => e.DeliveryRoute_GUID);
+
             modelBuilder.Entity<DeliveryRouteActivity>()
                 .Property(e => e.RouteActivityOrderIndex)
+                .HasPrecision(8, 8);
+
+            modelBuilder.Entity<DeliveryRouteActivity>()
+                .HasMany(e => e.DeliveryRouteNetworkLinks)
+                .WithOptional(e => e.DeliveryRouteActivity)
+                .HasForeignKey(e => e.DeliveryRouteActivity_GUID);
+
+            modelBuilder.Entity<DeliveryRouteNetworkLink>()
+                .Property(e => e.LinkOrderIndex)
                 .HasPrecision(8, 8);
 
             modelBuilder.Entity<DeliveryUnitLocation>()
@@ -262,12 +350,30 @@ namespace Fmo.DataServices.DBContext
                 .IsUnicode(false);
 
             modelBuilder.Entity<DeliveryUnitLocation>()
-                .HasMany(e => e.DeliveryUnitPostcodeSectors)
+                .HasMany(e => e.Scenarios)
+                .WithOptional(e => e.DeliveryUnitLocation)
+                .HasForeignKey(e => e.DeliveryUnit_GUID);
+
+            modelBuilder.Entity<DeliveryUnitLocation>()
+                .HasMany(e => e.DeliveryUnitLocationPostcodes)
                 .WithRequired(e => e.DeliveryUnitLocation)
+                .HasForeignKey(e => e.DeliveryUnit_GUID)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<DeliveryUnitPostcodeSector>()
-                .Property(e => e.DeliveryUnitStatus)
+            modelBuilder.Entity<DeliveryUnitLocation>()
+                .HasMany(e => e.DeliveryUnitPostcodeSectors)
+                .WithRequired(e => e.DeliveryUnitLocation)
+                .HasForeignKey(e => e.DeliveryUnit_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<DeliveryUnitLocation>()
+                .HasMany(e => e.UserRoleUnits)
+                .WithRequired(e => e.DeliveryUnitLocation)
+                .HasForeignKey(e => e.UnitID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<DeliveryUnitLocationPostcode>()
+                .Property(e => e.PostcodeUnit)
                 .IsFixedLength()
                 .IsUnicode(false);
 
@@ -276,22 +382,25 @@ namespace Fmo.DataServices.DBContext
                 .IsFixedLength()
                 .IsUnicode(false);
 
+            modelBuilder.Entity<Function>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Function>()
+                .Property(e => e.Description)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Function>()
+                .HasMany(e => e.RoleFunctions)
+                .WithRequired(e => e.Function)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<GroupHazard>()
                 .Property(e => e.Description)
                 .IsUnicode(false);
 
             modelBuilder.Entity<NetworkLink>()
-                .Property(e => e.NetworkLinkType)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<NetworkLink>()
-                .Property(e => e.ExternalTOID)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<NetworkLink>()
-                .Property(e => e.DataProvider)
+                .Property(e => e.TOID)
                 .IsFixedLength()
                 .IsUnicode(false);
 
@@ -302,33 +411,19 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<NetworkLink>()
                 .HasMany(e => e.AccessLinks)
                 .WithRequired(e => e.NetworkLink)
+                .HasForeignKey(e => e.NetworkLink_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<NetworkLink>()
-                .HasMany(e => e.NetworkReferences)
+                .HasMany(e => e.DeliveryRouteNetworkLinks)
                 .WithOptional(e => e.NetworkLink)
-                .HasForeignKey(e => e.PointReferenceNetworkLink_Id);
+                .HasForeignKey(e => e.NetworkLink_GUID);
 
             modelBuilder.Entity<NetworkLink>()
                 .HasMany(e => e.NetworkLinkReferences)
                 .WithRequired(e => e.NetworkLink)
+                .HasForeignKey(e => e.NetworkLink_GUID)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<NetworkLink>()
-                .HasOptional(e => e.OSConnectingLink)
-                .WithRequired(e => e.NetworkLink);
-
-            modelBuilder.Entity<NetworkLink>()
-                .HasOptional(e => e.OSPathLink)
-                .WithRequired(e => e.NetworkLink);
-
-            modelBuilder.Entity<NetworkLink>()
-                .HasOptional(e => e.OSRoadLink)
-                .WithRequired(e => e.NetworkLink);
-
-            modelBuilder.Entity<NetworkLink>()
-                .HasOptional(e => e.RMGLink)
-                .WithRequired(e => e.NetworkLink);
 
             modelBuilder.Entity<NetworkLinkReference>()
                 .Property(e => e.OSRoadLinkTOID)
@@ -346,21 +441,24 @@ namespace Fmo.DataServices.DBContext
                 .IsUnicode(false);
 
             modelBuilder.Entity<NetworkNode>()
+                .Property(e => e.TOID)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<NetworkNode>()
                 .HasMany(e => e.NetworkLinks)
-                .WithRequired(e => e.NetworkNode)
-                .HasForeignKey(e => e.StartNode_Id)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.NetworkNode)
+                .HasForeignKey(e => e.StartNode_GUID);
 
             modelBuilder.Entity<NetworkNode>()
                 .HasMany(e => e.NetworkLinks1)
-                .WithRequired(e => e.NetworkNode1)
-                .HasForeignKey(e => e.EndNode_Id)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.NetworkNode1)
+                .HasForeignKey(e => e.EndNode_GUID);
 
             modelBuilder.Entity<NetworkNode>()
                 .HasMany(e => e.NetworkReferences)
                 .WithOptional(e => e.NetworkNode)
-                .HasForeignKey(e => e.NodeReferenceNetworkNode_Id);
+                .HasForeignKey(e => e.NetworkNode_GUID);
 
             modelBuilder.Entity<NetworkNode>()
                 .HasOptional(e => e.OSConnectingNode)
@@ -372,10 +470,6 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<NetworkNode>()
                 .HasOptional(e => e.OSRoadNode)
-                .WithRequired(e => e.NetworkNode);
-
-            modelBuilder.Entity<NetworkNode>()
-                .HasOptional(e => e.RMGNode)
                 .WithRequired(e => e.NetworkNode);
 
             modelBuilder.Entity<NetworkReference>()
@@ -400,7 +494,23 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<NetworkReference>()
                 .HasMany(e => e.NetworkLinkReferences)
                 .WithRequired(e => e.NetworkReference)
+                .HasForeignKey(e => e.NetworkReference_GUID)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<NetworkReference>()
+                .HasMany(e => e.OSAccessRestrictions)
+                .WithOptional(e => e.NetworkReference)
+                .HasForeignKey(e => e.NetworkReference_GUID);
+
+            modelBuilder.Entity<NetworkReference>()
+                .HasMany(e => e.OSRestrictionForVehicles)
+                .WithOptional(e => e.NetworkReference)
+                .HasForeignKey(e => e.NetworkReference_GUID);
+
+            modelBuilder.Entity<NetworkReference>()
+                .HasMany(e => e.OSTurnRestrictions)
+                .WithOptional(e => e.NetworkReference)
+                .HasForeignKey(e => e.NetworkReference_GUID);
 
             modelBuilder.Entity<Notification>()
                 .Property(e => e.Notification_Heading)
@@ -515,6 +625,21 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.ReasonForChange)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<OSPathNode>()
+                .HasMany(e => e.OSConnectingLinks)
+                .WithOptional(e => e.OSPathNode)
+                .HasForeignKey(e => e.PathNode_GUID);
+
+            modelBuilder.Entity<OSPathNode>()
+                .HasMany(e => e.OSPathLinks)
+                .WithOptional(e => e.OSPathNode)
+                .HasForeignKey(e => e.StartNode_GUID);
+
+            modelBuilder.Entity<OSPathNode>()
+                .HasMany(e => e.OSPathLinks1)
+                .WithOptional(e => e.OSPathNode1)
+                .HasForeignKey(e => e.EndNode_GUID);
+
             modelBuilder.Entity<OSRestrictionForVehicle>()
                 .Property(e => e.TOID)
                 .IsFixedLength()
@@ -593,6 +718,16 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.OperationalState)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<OSRoadLink>()
+                .HasMany(e => e.NetworkLinkReferences)
+                .WithOptional(e => e.OSRoadLink)
+                .HasForeignKey(e => e.OSRoadLink_GUID);
+
+            modelBuilder.Entity<OSRoadLink>()
+                .HasMany(e => e.OSConnectingNodes)
+                .WithOptional(e => e.OSRoadLink)
+                .HasForeignKey(e => e.RoadLink_GUID);
+
             modelBuilder.Entity<OSRoadNode>()
                 .Property(e => e.TOID)
                 .IsFixedLength()
@@ -623,6 +758,16 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.ReasonForChange)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<OSRoadNode>()
+                .HasMany(e => e.OSRoadLinks)
+                .WithOptional(e => e.OSRoadNode)
+                .HasForeignKey(e => e.StartNode_GUID);
+
+            modelBuilder.Entity<OSRoadNode>()
+                .HasMany(e => e.OSRoadLinks1)
+                .WithOptional(e => e.OSRoadNode1)
+                .HasForeignKey(e => e.EndNode_GUID);
+
             modelBuilder.Entity<OSTurnRestriction>()
                 .Property(e => e.TOID)
                 .IsFixedLength()
@@ -651,16 +796,19 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<Polygon>()
                 .HasMany(e => e.AreaHazards)
                 .WithRequired(e => e.Polygon)
+                .HasForeignKey(e => e.Polygon_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Polygon>()
                 .HasMany(e => e.DeliveryGroups)
                 .WithRequired(e => e.Polygon)
+                .HasForeignKey(e => e.Polygon_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Polygon>()
                 .HasMany(e => e.PolygonObjects)
                 .WithRequired(e => e.Polygon)
+                .HasForeignKey(e => e.Polygon_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PolygonObject>()
@@ -731,22 +879,23 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<PostalAddress>()
                 .HasMany(e => e.AMUChangeRequests)
                 .WithOptional(e => e.PostalAddress)
-                .HasForeignKey(e => e.CurrentAddress_Id);
+                .HasForeignKey(e => e.CurrentAddress_GUID);
 
             modelBuilder.Entity<PostalAddress>()
                 .HasMany(e => e.AMUChangeRequests1)
                 .WithOptional(e => e.PostalAddress1)
-                .HasForeignKey(e => e.NewAddress_Id);
+                .HasForeignKey(e => e.NewAddress_GUID);
 
             modelBuilder.Entity<PostalAddress>()
                 .HasMany(e => e.DeliveryPoints)
                 .WithRequired(e => e.PostalAddress)
+                .HasForeignKey(e => e.Address_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostalAddress>()
                 .HasMany(e => e.POBoxes)
                 .WithOptional(e => e.PostalAddress)
-                .HasForeignKey(e => e.POBoxLinkedAddress_Id);
+                .HasForeignKey(e => e.POBoxLinkedAddress_GUID);
 
             modelBuilder.Entity<Postcode>()
                 .Property(e => e.PostcodeUnit)
@@ -771,18 +920,30 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<Postcode>()
                 .HasMany(e => e.AMUChangeRequests)
                 .WithOptional(e => e.Postcode)
-                .HasForeignKey(e => e.RequestPostcode);
+                .HasForeignKey(e => e.RequestPostcode_GUID);
+
+            modelBuilder.Entity<Postcode>()
+                .HasMany(e => e.DeliveryUnitLocationPostcodes)
+                .WithRequired(e => e.Postcode)
+                .HasForeignKey(e => e.PoscodeUnit_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Postcode>()
                 .HasMany(e => e.PostalAddresses)
                 .WithRequired(e => e.Postcode1)
-                .HasForeignKey(e => e.Postcode)
+                .HasForeignKey(e => e.PostCodeGUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostcodeArea>()
                 .Property(e => e.Area)
                 .IsFixedLength()
                 .IsUnicode(false);
+
+            modelBuilder.Entity<PostcodeArea>()
+                .HasMany(e => e.PostcodeDistricts)
+                .WithRequired(e => e.PostcodeArea)
+                .HasForeignKey(e => e.AreaGUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostcodeDistrict>()
                 .Property(e => e.District)
@@ -793,6 +954,12 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.Area)
                 .IsFixedLength()
                 .IsUnicode(false);
+
+            modelBuilder.Entity<PostcodeDistrict>()
+                .HasMany(e => e.PostcodeSectors)
+                .WithRequired(e => e.PostcodeDistrict)
+                .HasForeignKey(e => e.DistrictGUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostcodeSector>()
                 .Property(e => e.Sector)
@@ -807,12 +974,13 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<PostcodeSector>()
                 .HasMany(e => e.DeliveryUnitPostcodeSectors)
                 .WithRequired(e => e.PostcodeSector1)
-                .HasForeignKey(e => e.PostcodeSector)
+                .HasForeignKey(e => e.PostcodeSector_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostcodeSector>()
                 .HasMany(e => e.Postcodes)
                 .WithRequired(e => e.PostcodeSector)
+                .HasForeignKey(e => e.SectorGUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
@@ -833,195 +1001,219 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AccessLinks)
-                .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.LinkStatus_Id)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.ReferenceData)
+                .HasForeignKey(e => e.LinkStatus_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AccessLinks1)
-                .WithRequired(e => e.ReferenceData1)
-                .HasForeignKey(e => e.AccessLinkType_Id)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.ReferenceData1)
+                .HasForeignKey(e => e.AccessLinkType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AccessLinks2)
-                .WithRequired(e => e.ReferenceData2)
-                .HasForeignKey(e => e.LinkDirection_Id)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.ReferenceData2)
+                .HasForeignKey(e => e.LinkDirection_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AccessLinks3)
-                .WithRequired(e => e.ReferenceData3)
-                .HasForeignKey(e => e.OperationalObjectType_Id)
-                .WillCascadeOnDelete(false);
+                .WithOptional(e => e.ReferenceData3)
+                .HasForeignKey(e => e.OperationalObjectType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AMUChangeRequests)
                 .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.ChangeRequestType_Id);
+                .HasForeignKey(e => e.ChangeRequestType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AMUChangeRequests1)
                 .WithOptional(e => e.ReferenceData1)
-                .HasForeignKey(e => e.ChangeRequestStatus_Id);
+                .HasForeignKey(e => e.ChangeRequestStatus_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AMUChangeRequests2)
                 .WithOptional(e => e.ReferenceData2)
-                .HasForeignKey(e => e.ChangeReasonCode_Id);
+                .HasForeignKey(e => e.ChangeReasonCode_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AreaHazards)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.Category_Id)
+                .HasForeignKey(e => e.Category_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.AreaHazards1)
                 .WithRequired(e => e.ReferenceData1)
-                .HasForeignKey(e => e.SubCategory_Id)
+                .HasForeignKey(e => e.SubCategory_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.BlockSequences)
                 .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.OperationalObjectType_Id);
+                .HasForeignKey(e => e.OperationalObjectType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryGroups)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.GroupType_Id)
+                .HasForeignKey(e => e.GroupType_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryGroups1)
                 .WithOptional(e => e.ReferenceData1)
-                .HasForeignKey(e => e.ServicePointType_Id);
+                .HasForeignKey(e => e.ServicePointType_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.DeliveryPoints)
+                .WithOptional(e => e.ReferenceData)
+                .HasForeignKey(e => e.LocationProvider_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.DeliveryPoints1)
+                .WithOptional(e => e.ReferenceData1)
+                .HasForeignKey(e => e.OperationalStatus_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryRoutes)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.OperationalStatus_Id)
+                .HasForeignKey(e => e.OperationalStatus_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryRoutes1)
                 .WithRequired(e => e.ReferenceData1)
-                .HasForeignKey(e => e.RouteMethodType_Id)
+                .HasForeignKey(e => e.RouteMethodType_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryRoutes2)
                 .WithOptional(e => e.ReferenceData2)
-                .HasForeignKey(e => e.TravelOutTransportType_Id);
+                .HasForeignKey(e => e.TravelOutTransportType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryRoutes3)
                 .WithOptional(e => e.ReferenceData3)
-                .HasForeignKey(e => e.TravelInTransportType_Id);
+                .HasForeignKey(e => e.TravelInTransportType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryRouteActivities)
                 .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.OperationalObjectType_Id);
+                .HasForeignKey(e => e.OperationalObjectType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryRouteActivities1)
                 .WithOptional(e => e.ReferenceData1)
-                .HasForeignKey(e => e.ActivityType_Id);
+                .HasForeignKey(e => e.ActivityType_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.DeliveryUnitPostcodeSectors)
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.DeliveryUnitStatus_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.GroupHazards)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.Category_Id)
+                .HasForeignKey(e => e.Category_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.GroupHazards1)
                 .WithRequired(e => e.ReferenceData1)
-                .HasForeignKey(e => e.SubCategory_Id)
+                .HasForeignKey(e => e.SubCategory_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.NetworkLinks)
+                .WithOptional(e => e.ReferenceData)
+                .HasForeignKey(e => e.NetworkLinkType_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.NetworkLinks1)
+                .WithOptional(e => e.ReferenceData1)
+                .HasForeignKey(e => e.DataProvider_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.NetworkNodes)
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.NetworkNodeType_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.Notifications)
                 .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.NotificationType_Id);
+                .HasForeignKey(e => e.NotificationType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.Notifications1)
                 .WithOptional(e => e.ReferenceData1)
-                .HasForeignKey(e => e.NotificationPriority_Id);
+                .HasForeignKey(e => e.NotificationPriority_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.POBoxes)
                 .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.POBoxType_Id);
+                .HasForeignKey(e => e.POBoxType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.PointHazards)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.Category_Id)
+                .HasForeignKey(e => e.Category_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.PointHazards1)
                 .WithRequired(e => e.ReferenceData1)
-                .HasForeignKey(e => e.SubCategory_Id)
+                .HasForeignKey(e => e.SubCategory_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.PointHazards2)
                 .WithRequired(e => e.ReferenceData2)
-                .HasForeignKey(e => e.OperationalObjectType_Id)
+                .HasForeignKey(e => e.OperationalObjectType_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.Polygons)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.PolygonType_Id)
+                .HasForeignKey(e => e.PolygonType_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.PolygonObjects)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.OperationalObjectType_Id)
+                .HasForeignKey(e => e.OperationalObjectType_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.PostalAddresses)
                 .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.AddressStatus_Id);
+                .HasForeignKey(e => e.AddressStatus_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.PostalAddresses1)
-                .WithOptional(e => e.ReferenceData1)
-                .HasForeignKey(e => e.AddressType_Id);
+                .WithRequired(e => e.ReferenceData1)
+                .HasForeignKey(e => e.AddressType_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.Scenarios)
                 .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.OperationalState_Id);
+                .HasForeignKey(e => e.OperationalState_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.ReferenceData1)
                 .WithOptional(e => e.ReferenceData2)
-                .HasForeignKey(e => e.DataParentId);
-
-            modelBuilder.Entity<ReferenceData>()
-                .HasMany(e => e.Scenarios1)
-                .WithOptional(e => e.ReferenceData1)
-                .HasForeignKey(e => e.ScenarioUnitType_Id);
+                .HasForeignKey(e => e.DataParent_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.SpecialInstructions)
                 .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.OperationalObjectType_Id)
+                .HasForeignKey(e => e.OperationalObjectType_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.SpecialInstructions1)
                 .WithOptional(e => e.ReferenceData1)
-                .HasForeignKey(e => e.InstructionType_Id);
+                .HasForeignKey(e => e.InstructionType_GUID);
 
             modelBuilder.Entity<ReferenceDataCategory>()
                 .Property(e => e.CategoryName)
@@ -1030,6 +1222,7 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<ReferenceDataCategory>()
                 .HasMany(e => e.ReferenceDatas)
                 .WithRequired(e => e.ReferenceDataCategory)
+                .HasForeignKey(e => e.ReferenceDataCategory_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<RMGDeliveryPoint>()
@@ -1098,9 +1291,33 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.DesignatedName)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<RoadName>()
+                .HasMany(e => e.NetworkLinks)
+                .WithOptional(e => e.RoadName)
+                .HasForeignKey(e => e.RoadName_GUID);
+
+            modelBuilder.Entity<Role>()
+                .Property(e => e.RoleName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Role>()
+                .HasMany(e => e.RoleFunctions)
+                .WithRequired(e => e.Role)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Role>()
+                .HasMany(e => e.UserRoleUnits)
+                .WithRequired(e => e.Role)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Scenario>()
                 .Property(e => e.ScenarioName)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Scenario>()
+                .HasMany(e => e.DeliveryRoutes)
+                .WithOptional(e => e.Scenario)
+                .HasForeignKey(e => e.DeliveryScenario_GUID);
 
             modelBuilder.Entity<SpecialInstruction>()
                 .Property(e => e.InstructionText)
@@ -1162,25 +1379,61 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.AdministrativeArea)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<FileProcessingLog>()
-                .Property(e => e.FileType)
-                .IsUnicode(false);
+            modelBuilder.Entity<StreetName>()
+                .HasMany(e => e.NetworkLinks)
+                .WithOptional(e => e.StreetName)
+                .HasForeignKey(e => e.StreetName_GUID);
 
-            modelBuilder.Entity<FileProcessingLog>()
-                .Property(e => e.FileName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<FileProcessingLog>()
-                .Property(e => e.NatureOfError)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<FileProcessingLog>()
-                .Property(e => e.AmendmentType)
+            modelBuilder.Entity<StreetNameNetworkLink>()
+                .Property(e => e.USRN)
                 .IsFixedLength()
                 .IsUnicode(false);
 
-            modelBuilder.Entity<FileProcessingLog>()
-                .Property(e => e.Comments)
+            modelBuilder.Entity<StreetNameNetworkLink>()
+                .Property(e => e.RoadLinkTOID)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.FirstName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.LastName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.UserName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.UserRoleUnits)
+                .WithRequired(e => e.User)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<OSConnectingLink_Temp>()
+                .Property(e => e.TOID)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<OSConnectingLink_Temp>()
+                .Property(e => e.ConnectingNodeTOID)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<OSConnectingLink_Temp>()
+                .Property(e => e.PathNodeTOID)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<OSConnectingNode_temp>()
+                .Property(e => e.TOID)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<OSConnectingNode_temp>()
+                .Property(e => e.RoadLinkTOID)
+                .IsFixedLength()
                 .IsUnicode(false);
         }
     }
