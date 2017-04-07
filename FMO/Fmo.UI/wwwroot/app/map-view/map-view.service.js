@@ -55,7 +55,8 @@ function mapService(mapFactory,
         removeCurrentInteractions: removeCurrentInteractions,
         syncMinimapAnimation: syncMinimapAnimation,
         oncollapse: oncollapse,
-        mapToolChange: mapToolChange
+        mapToolChange: mapToolChange,
+        refreshLayers:refreshLayers
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
