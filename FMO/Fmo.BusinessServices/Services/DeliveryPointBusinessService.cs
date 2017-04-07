@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using System.Net.Http;
 using System.IO;
-using Fmo.DataServices.Repositories;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Web.Script.Serialization;
