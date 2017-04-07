@@ -18,6 +18,8 @@ namespace Fmo.DataServices.Tests.Repositories
     {
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<ILoggingHelper> mockLoggingHelper;
+        private Mock<IFileProcessingLogRepository> mockFileProcessingLog;
+
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAddressRepository testCandidate;
 
@@ -26,7 +28,7 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             SetUpdataWithDeliverypoints();
             PostalAddressDTO objstPostalAddressDTO = new PostalAddressDTO() { Address_Id = 28, UDPRN = 14856 };
-            var result = testCandidate.SaveAddress(objstPostalAddressDTO,"NYB.CSV");
+            var result = testCandidate.SaveAddress(objstPostalAddressDTO, "NYB.CSV");
             mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Once);
             Assert.NotNull(result);
             Assert.IsTrue(result);
@@ -112,13 +114,14 @@ namespace Fmo.DataServices.Tests.Repositories
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFileProcessingLog = CreateMock<IFileProcessingLogRepository>();
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
         }
 
         private void SetUpdataWithOutDeliverypoints()
@@ -136,13 +139,14 @@ namespace Fmo.DataServices.Tests.Repositories
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFileProcessingLog = CreateMock<IFileProcessingLogRepository>();
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
         }
     }
 }

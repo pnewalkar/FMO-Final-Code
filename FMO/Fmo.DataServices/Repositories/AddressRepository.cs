@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using Common.Enums;
     using Common.Interface;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -14,11 +15,13 @@
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IFileProcessingLogRepository fileProcessingLog = default(IFileProcessingLogRepository);
 
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper)
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
+            this.fileProcessingLog = fileProcessingLog;
         }
 
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType)
@@ -52,36 +55,44 @@
         public bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
-            if (objPostalAddress != null)
+            try
             {
-                var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
-                if (objAddress != null)
+                if (objPostalAddress != null)
                 {
-                    objAddress.Postcode = objPostalAddress.Postcode;
-                    objAddress.PostTown = objPostalAddress.PostTown;
-                    objAddress.DependentLocality = objPostalAddress.DependentLocality;
-                    objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
-                    objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
-                    objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
-                    objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
-                    objAddress.BuildingName = objPostalAddress.BuildingName;
-                    objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
-                    objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
-                    objAddress.DepartmentName = objPostalAddress.DepartmentName;
-                    objAddress.OrganisationName = objPostalAddress.OrganisationName;
-                    objAddress.UDPRN = objPostalAddress.UDPRN;
-                    objAddress.PostcodeType = objPostalAddress.PostcodeType;
-                    objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
-                    objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                }
-                else
-                {
-                    var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
-                    DataContext.PostalAddresses.Add(entity);
-                }
+                    var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    if (objAddress != null)
+                    {
+                        objAddress.Postcode = objPostalAddress.Postcode;
+                        objAddress.PostTown = objPostalAddress.PostTown;
+                        objAddress.DependentLocality = objPostalAddress.DependentLocality;
+                        objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
+                        objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
+                        objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
+                        objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
+                        objAddress.BuildingName = objPostalAddress.BuildingName;
+                        objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
+                        objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
+                        objAddress.DepartmentName = objPostalAddress.DepartmentName;
+                        objAddress.OrganisationName = objPostalAddress.OrganisationName;
+                        objAddress.UDPRN = objPostalAddress.UDPRN;
+                        objAddress.PostcodeType = objPostalAddress.PostcodeType;
+                        objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
+                        objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
+                    }
+                    else
+                    {
+                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        DataContext.PostalAddresses.Add(entity);
+                    }
 
-                DataContext.SaveChanges();
-                saveFlag = true;
+                    DataContext.SaveChanges();
+                    saveFlag = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                throw ex;
             }
 
             return saveFlag;
@@ -205,6 +216,19 @@
             }
 
             return saveFlag;
+        }
+
+        private bool LogFileException(int uDPRN, string strFileName, string fileType, string strException)
+        {
+            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+            objFileProcessingLog.FileID = Guid.NewGuid();
+            objFileProcessingLog.UDPRN = uDPRN;
+            objFileProcessingLog.AmendmentType = "I";
+            objFileProcessingLog.FileName = strFileName;
+            objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
+            objFileProcessingLog.FileType = fileType;
+            objFileProcessingLog.NatureOfError = strException;
+            return fileProcessingLog.LogFileException(objFileProcessingLog);
         }
     }
 }

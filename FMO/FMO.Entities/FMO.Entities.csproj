@@ -67,6 +67,7 @@
     <Compile Include="Entities\DeliveryRouteActivity.cs" />
     <Compile Include="Entities\DeliveryUnitLocation.cs" />
     <Compile Include="Entities\DeliveryUnitPostcodeSector.cs" />
+    <Compile Include="Entities\FileProcessingLog.cs" />
     <Compile Include="Entities\GroupHazard.cs" />
     <Compile Include="Entities\NetworkLink.cs" />
     <Compile Include="Entities\NetworkLinkReference.cs" />
