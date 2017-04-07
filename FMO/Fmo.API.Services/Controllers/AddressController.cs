@@ -21,13 +21,13 @@ namespace Fmo.API.Services.Controllers
             loggingHelper = _loggingHelper;
         }
 
-        [HttpPost("SaveAddressdetails")]
-        public bool SaveAddressdetails([FromBody]List<PostalAddressDTO> lstAddressDetails)
+        [HttpPost("SaveAddressdetails/{strFileName}")]
+        public bool SaveAddressdetails(string strFileName, [FromBody]List<PostalAddressDTO> lstAddressDetails)
         {
             bool saveFlag = false;
             try
             {
-                saveFlag = businessService.SavePostalAddress(lstAddressDetails);
+                saveFlag = businessService.SavePostalAddress(lstAddressDetails, strFileName);
             }
             catch (Exception ex)
             {
@@ -36,6 +36,7 @@ namespace Fmo.API.Services.Controllers
             }
             return saveFlag;
         }
+
 
         [HttpGet("getSample")]
         public string GetSample()

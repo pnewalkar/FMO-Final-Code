@@ -105,6 +105,8 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<StreetName> StreetNames { get; set; }
 
+        public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
+
         // public virtual DbSet<AdvanceSearch> AdvanceSearch { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -1158,6 +1160,27 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<StreetName>()
                 .Property(e => e.AdministrativeArea)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.FileType)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.FileName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.NatureOfError)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.AmendmentType)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.Comments)
                 .IsUnicode(false);
         }
     }
