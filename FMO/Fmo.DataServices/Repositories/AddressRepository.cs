@@ -49,46 +49,39 @@
             return deleteFlag;
         }
 
-        public bool SaveAddress(PostalAddressDTO objPostalAddress)
+        public bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
-            try
+            if (objPostalAddress != null)
             {
-                if (objPostalAddress != null)
+                var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                if (objAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
-                    if (objAddress != null)
-                    {
-                        objAddress.Postcode = objPostalAddress.Postcode;
-                        objAddress.PostTown = objPostalAddress.PostTown;
-                        objAddress.DependentLocality = objPostalAddress.DependentLocality;
-                        objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
-                        objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
-                        objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
-                        objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
-                        objAddress.BuildingName = objPostalAddress.BuildingName;
-                        objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
-                        objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
-                        objAddress.DepartmentName = objPostalAddress.DepartmentName;
-                        objAddress.OrganisationName = objPostalAddress.OrganisationName;
-                        objAddress.UDPRN = objPostalAddress.UDPRN;
-                        objAddress.PostcodeType = objPostalAddress.PostcodeType;
-                        objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
-                        objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                    }
-                    else
-                    {
-                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
-                        DataContext.PostalAddresses.Add(entity);
-                    }
-
-                    DataContext.SaveChanges();
-                    saveFlag = true;
+                    objAddress.Postcode = objPostalAddress.Postcode;
+                    objAddress.PostTown = objPostalAddress.PostTown;
+                    objAddress.DependentLocality = objPostalAddress.DependentLocality;
+                    objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
+                    objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
+                    objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
+                    objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
+                    objAddress.BuildingName = objPostalAddress.BuildingName;
+                    objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
+                    objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
+                    objAddress.DepartmentName = objPostalAddress.DepartmentName;
+                    objAddress.OrganisationName = objPostalAddress.OrganisationName;
+                    objAddress.UDPRN = objPostalAddress.UDPRN;
+                    objAddress.PostcodeType = objPostalAddress.PostcodeType;
+                    objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
+                    objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                else
+                {
+                    var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                    DataContext.PostalAddresses.Add(entity);
+                }
+
+                DataContext.SaveChanges();
+                saveFlag = true;
             }
 
             return saveFlag;
