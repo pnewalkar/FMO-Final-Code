@@ -9,6 +9,6 @@
 
     public interface IUSRBusinessService
     {
-        bool SaveUSRDetails(AddressLocationUSRDTO addressLocationDTO);
+        Task SaveUSRDetails(AddressLocationUSRDTO addressLocationDTO);
     }
 }

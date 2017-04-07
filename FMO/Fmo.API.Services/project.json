@@ -47,6 +47,9 @@
         "Fmo.DTO": {
           "target": "project"
         },
+        "Fmo.Helpers": {
+          "target": "project"
+        },
         "Fmo.MappingConfiguration": {
           "target": "project"
         }

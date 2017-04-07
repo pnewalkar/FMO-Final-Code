@@ -35,7 +35,7 @@ namespace Fmo.NYBLoader
             this.loggingHelper = loggingHelper;
             this.exceptionHelper = exceptionHelper;
         }
-        
+
         /// <summary>
         /// Reads data from CSV file and maps to postalAddressDTO object
         /// </summary>
@@ -138,7 +138,7 @@ namespace Fmo.NYBLoader
                 objAddDTO.POBoxNumber = values[9];
                 objAddDTO.DepartmentName = values[10];
                 objAddDTO.OrganisationName = values[11];
-                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) && !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
+                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) || !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
                 objAddDTO.PostcodeType = values[13];
                 objAddDTO.SmallUserOrganisationIndicator = values[14];
                 objAddDTO.DeliveryPointSuffix = values[15];
@@ -167,7 +167,7 @@ namespace Fmo.NYBLoader
                 {
                     objAdd.IsValidData = false;
                 }
-                if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN)))
+                if (objAdd.UDPRN == 0)
                 {
                     objAdd.IsValidData = false;
                 }
@@ -192,7 +192,7 @@ namespace Fmo.NYBLoader
                     }
                     else if (characters.Count() == 2)
                     {
-                        if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
+                        if (!char.IsLetter(characters[1]) || !char.IsNumber(characters[0]))
                         {
                             objAdd.IsValidData = false;
                         }
@@ -212,11 +212,10 @@ namespace Fmo.NYBLoader
             if (!string.IsNullOrEmpty(strPostCode))
             {
                 char[] chrCodes = strPostCode.ToCharArray();
-                if (chrCodes.Length > 6)
+                if (chrCodes.Length >= 5)
                 {
                     int length = chrCodes.Length;
-                    if (!char.IsWhiteSpace(chrCodes[0]) && !char.IsNumber(chrCodes[0]) && char.IsLetter(chrCodes[0])
-                        && !char.IsNumber(chrCodes[length - 1]) && !char.IsNumber(chrCodes[length - 2]) && char.IsWhiteSpace(chrCodes[length - 4]))
+                    if (char.IsLetter(chrCodes[0]) && char.IsLetter(chrCodes[length - 1]) && char.IsLetter(chrCodes[length - 2]) && char.IsNumber(chrCodes[length - 3]) && char.IsWhiteSpace(chrCodes[length - 4]))
                     {
                         isValid = true;
                     }
