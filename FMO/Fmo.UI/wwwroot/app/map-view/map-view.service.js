@@ -9,7 +9,7 @@ function mapService(mapFactory,
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["line", "point", "select"];
+    vm.mapButtons = [ "select", "point","line"];
     vm.interactions = {};
     vm.layersForContext = [];
     vm.activeSelection = null;
@@ -55,7 +55,8 @@ function mapService(mapFactory,
         removeCurrentInteractions: removeCurrentInteractions,
         syncMinimapAnimation: syncMinimapAnimation,
         oncollapse: oncollapse,
-        mapToolChange: mapToolChange
+        mapToolChange: mapToolChange,
+        refreshLayers:refreshLayers
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -119,14 +120,7 @@ function mapService(mapFactory,
             source: mockGroupsVector
         });
 
-        var satelliteSelector = new MapFactory.LayerSelector();
-        satelliteSelector.layerName = "Satellite";
-        satelliteSelector.layer = digitalGlobeTiles;
-        //satelliteSelector.layer = bingMapsSatelliteTiles;
-        satelliteSelector.group = "Base Map";
-        satelliteSelector.onMiniMap = true;
-        satelliteSelector.selectorVisible = false;
-        //var satelliteLayer = mapFactory.addLayer(satelliteSelector);
+        
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
@@ -138,51 +132,14 @@ function mapService(mapFactory,
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "AccessLinks";
+        drawingLayerSelector.layerName = "Drawing";
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
-        drawingLayerSelector.selectorVisible = true;
+        drawingLayerSelector.selectorVisible = false;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
 
-        var routesSelector = new MapFactory.LayerSelector();
-        routesSelector.layerName = "Routes";
-        routesSelector.layerUrl = "data/json/mock_routes.json";
-        routesSelector.group = "Routes";
-        routesSelector.zIndex = 4;
-        routesSelector.selected = true;
-        routesSelector.onMiniMap = true;
-        routesSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
-        routesSelector.keys = ["route"];
-        mapFactory.createLayerAsync(routesSelector).then(refreshLayers);
-        var deliveryPointsSelector = new MapFactory.LayerSelector();
-        deliveryPointsSelector.layerName = "Delivery Points";
-        deliveryPointsSelector.layerUrl = "data/json/mock_points.json";
-        deliveryPointsSelector.group = "";
-        deliveryPointsSelector.zIndex = 5;
-        deliveryPointsSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
-        deliveryPointsSelector.keys = ["deliverypoint"]
-        mapFactory.createLayerAsync(deliveryPointsSelector).then(refreshLayers);
-        var rmgPointsSelector = new MapFactory.LayerSelector();
-        rmgPointsSelector.layerName = "RMG Points";
-        rmgPointsSelector.layerUrl = "data/json/rmg_points.json";
-        rmgPointsSelector.group = "";
-        rmgPointsSelector.zIndex = 6;
-        rmgPointsSelector.selected = false;
-        rmgPointsSelector.onMiniMap = false;
-        rmgPointsSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
-        rmgPointsSelector.keys = ["rmgpoint", "accessLink"];
-        mapFactory.createLayerAsync(rmgPointsSelector).then(refreshLayers);
-        var groupsSelector = new MapFactory.LayerSelector();
-        groupsSelector.layerName = "Groups";
-        groupsSelector.layerUrl = "http://localhost:47467/home/getgroupsdata";
-        groupsSelector.group = "";
-        groupsSelector.zIndex = 7;
-        groupsSelector.selected = false;
-        groupsSelector.onMiniMap = false;
-        groupsSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
-        groupsSelector.keys = ["deliverypoint", "group"];
-        mapFactory.createLayerAsync(groupsSelector).then(refreshLayers);
+      
         var mockWFSLayerSelector = new MapFactory.LayerSelector();
         mockWFSLayerSelector.layerName = "Delivery Points";
         mockWFSLayerSelector.layer = mockWFSLayer;

@@ -38,7 +38,7 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
         {
             try
             {

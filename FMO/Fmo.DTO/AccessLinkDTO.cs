@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-
+using System.Data.Entity.Spatial;
 
 namespace Fmo.DTO
 {
@@ -15,9 +15,9 @@ namespace Fmo.DTO
 
         public Geometry OperationalObjectPoint { get; set; }
 
-        //public DbGeometry NetworkIntersectionPoint { get; set; }
+        public DbGeometry NetworkIntersectionPoint { get; set; }
 
-        //public DbGeometry AccessLinkLine { get; set; }
+        public DbGeometry AccessLinkLine { get; set; }
 
         public int AccessLinkType_Id { get; set; }
 

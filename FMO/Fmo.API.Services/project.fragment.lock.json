@@ -8,6 +8,10 @@
         "bin/Debug/Fmo.BusinessServices.dll": {}
       },
       "runtime": {
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
+        "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
+        "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "../packages/System.ValueTuple.4.3.0/lib/netstandard1.0/System.ValueTuple.dll": {},
         "bin/Debug/Fmo.BusinessServices.dll": {}
       },
@@ -16,6 +20,30 @@
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
+        },
+        "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x64/msvcr120.dll"
+        },
+        "bin/Debug/sqlservertypes/x64/sqlserverspatial140.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x64/sqlserverspatial140.dll"
+        },
+        "bin/Debug/sqlservertypes/x86/msvcr120.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x86/msvcr120.dll"
+        },
+        "bin/Debug/sqlservertypes/x86/sqlserverspatial140.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x86/sqlserverspatial140.dll"
         }
       }
     },
@@ -100,12 +128,58 @@
         "bin/Debug/Fmo.DTO.dll": {}
       },
       "runtime": {
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "bin/Debug/Fmo.DTO.dll": {}
       },
       "contentFiles": {
         "bin/Debug/Fmo.DTO.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        },
+        "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x64/msvcr120.dll"
+        },
+        "bin/Debug/sqlservertypes/x64/sqlserverspatial140.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x64/sqlserverspatial140.dll"
+        },
+        "bin/Debug/sqlservertypes/x86/msvcr120.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x86/msvcr120.dll"
+        },
+        "bin/Debug/sqlservertypes/x86/sqlserverspatial140.dll": {
+          "buildAction": "Content",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "sqlservertypes/x86/sqlserverspatial140.dll"
+        }
+      }
+    },
+    "Fmo.Helpers/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.2",
+      "compile": {
+        "bin/Debug/Fmo.Helpers.dll": {}
+      },
+      "runtime": {
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
+        "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
+        "bin/Debug/Fmo.Helpers.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Fmo.Helpers.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true

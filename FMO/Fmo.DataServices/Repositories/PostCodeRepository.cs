@@ -19,7 +19,7 @@
         {
         }
 
-        public async Task<List<PostCodeDTO>> FetchPostCodeUnitforBasicSearch(string searchText)
+        public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText)
         {
             try
             {

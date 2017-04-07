@@ -15,5 +15,9 @@
         //   Task<List<DeliveryPointDTO>> SearchDelievryPoints();
 
         object GetDeliveryPoints();
+
+        MemoryStream GetDeliveryPoints1(string bbox);
+
+        string GetData(string query, params object[] parameters);
     }
 }

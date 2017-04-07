@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Spatial;
+    using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -15,17 +15,19 @@
     {
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
+        private INotificationRepository notificationRepository = default(INotificationRepository);
 
 
-        public USRBusinessService(IAddressLocationRepository addressLocationRepository, IDeliveryPointsRepository deliveryPointsRepository)
+        public USRBusinessService(IAddressLocationRepository addressLocationRepository, IDeliveryPointsRepository deliveryPointsRepository, INotificationRepository notificationRepository)
         {
             this.addressLocationRepository = addressLocationRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
+            this.notificationRepository = notificationRepository;
         }
 
-        public bool SaveUSRDetails(AddressLocationUSRDTO addressLocationUSRDTO)
+        public async Task SaveUSRDetails(AddressLocationUSRDTO addressLocationUSRDTO)
         {
-            bool saveFlag = false;
+            //bool saveFlag = false;
             int fileUdprn;
             try
             {
@@ -39,8 +41,7 @@
                 }
                 else
                 {
-
-                    DeliveryPointDTO deliveryPointDTO; //= deliveryPointsRepository.GetDeliveryPointByUDPRN((int)fileUdprn);
+                    DeliveryPointDTO deliveryPointDTO = deliveryPointsRepository.GetDeliveryPointByUDPRN((int)fileUdprn);
 
                     StringBuilder sbLocationXY = new StringBuilder();
                     sbLocationXY.Append("POINT");
@@ -62,17 +63,46 @@
 
                     addressLocationRepository.SaveNewAddressLocation(newAddressLocationDTO);
 
-                    //if (deliveryPointDTO != null)
-                    //{
-                        
-                    //}
+                    if (deliveryPointDTO != null)
+                    {
+                        if (deliveryPointDTO.LocationXY == null)
+                        {
+                            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRDTO.latitude, (decimal)addressLocationUSRDTO.longitude, spatialLocationXY);
+                            NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
+                            if (notificationDTO != null)
+                            {
+                               await notificationRepository.DeleteNotificationbyUDPRN(fileUdprn);
+                            }
+                        }
+                        else
+                        {
+                           double straightLineDistance = (double)deliveryPointDTO.LocationXY.Distance(spatialLocationXY);
+                            if (straightLineDistance < Constants.TOLERANCE_DISTANCE_IN_METERS)
+                            {
+                                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRDTO.latitude, (decimal)addressLocationUSRDTO.longitude, spatialLocationXY);
+                                NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
+                                if (notificationDTO != null)
+                                {
+                                    await notificationRepository.DeleteNotificationbyUDPRN(fileUdprn);
+                                }
+                            }
+                            else
+                            {
+                                NotificationDTO notificationDO = new NotificationDTO
+                                {
+                                    NotificationDueDate = DateTime.Now,
+                                    NotificationSource = Constants.USR_NOTIFICATION_SOURCE,
+                                    Notification_Heading = Constants.USR_ACTION
+                                };
+                            }
+                        }
+                    }
                 }
-                return saveFlag;
             }
 
             catch (Exception ex)
             {
-                return saveFlag;
+                //return saveFlag;
             }
         }
     }

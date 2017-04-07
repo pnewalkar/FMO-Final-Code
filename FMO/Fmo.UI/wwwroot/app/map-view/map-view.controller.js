@@ -1,6 +1,5 @@
 'use strict';
 angular.module('mapView')
-	.run(['$route', function () { }])
 	.controller('MapController', ['$scope',                                                               
                                   'mapService',                                 
                                   MapController])
