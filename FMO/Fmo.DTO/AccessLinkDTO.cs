@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-using System.Data.Entity.Spatial;
+using System.Data.Spatial;
 
 namespace Fmo.DTO
 {
