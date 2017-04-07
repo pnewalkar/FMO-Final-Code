@@ -19,7 +19,7 @@
         {
         }
 
-        public async Task<List<StreetNameDTO>> FetchStreetNamesforAdvanceSearch(string searchText)
+        public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText)
         {
             try
             {
@@ -34,7 +34,7 @@
             }
         }
 
-        public async Task<List<StreetNameDTO>> FetchStreetNamesforBasicSearch(string searchText)
+        public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText)
         {
             try
             {
