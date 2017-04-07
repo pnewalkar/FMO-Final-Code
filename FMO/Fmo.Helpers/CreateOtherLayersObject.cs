@@ -7,7 +7,7 @@ using Fmo.DTO;
 using Microsoft.SqlServer.Types;
 using System.Data.SqlTypes;
 using Fmo.Helpers.Interface;
-using System.Data.Spatial;
+using System.Data.Entity.Spatial;
 
 namespace Fmo.Helpers
 {
