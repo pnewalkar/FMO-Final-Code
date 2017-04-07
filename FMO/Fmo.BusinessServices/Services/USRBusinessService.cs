@@ -10,6 +10,7 @@
     using DataServices.Repositories.Interfaces;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DTO;
+    using Fmo.DTO.FileProcessing;
 
     public class USRBusinessService : IUSRBusinessService
     {
