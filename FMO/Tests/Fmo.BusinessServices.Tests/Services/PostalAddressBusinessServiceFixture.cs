@@ -50,6 +50,34 @@ namespace Fmo.BusinessServices.Tests.Services
             Assert.IsFalse(result);
         }
 
+        [Test]
+        public void Test_SavePAFDetails_ValidData()
+        {
+            PostalAddressDTO objPostalAddressDTO = new PostalAddressDTO() { UDPRN = 14856, Postcode = "AB10 1AB" };
+            var result = testCandidate.SavePAFDetails(objPostalAddressDTO);
+            mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
+            mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<int?>()), Times.Once());
+            mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            mockAddressRepository.Verify(x => x.UpdateAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void Test_SaveDeliveryPoint_ValidData()
+        {
+            PostalAddressDTO objPostalAddressDTO = new PostalAddressDTO() { UDPRN = 14856, Postcode = "AB10 1AB" };
+            var result = testCandidate.SaveDel(objPostalAddressDTO);
+            mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
+            mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<int?>()), Times.Once());
+            mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            mockAddressRepository.Verify(x => x.UpdateAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result);
+        }
+
         protected override void OnSetup()
         {
             mockAddressRepository = CreateMock<IAddressRepository>();
