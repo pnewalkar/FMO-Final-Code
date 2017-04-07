@@ -16,11 +16,6 @@
         "bin/Debug/Fmo.BusinessServices.dll": {}
       },
       "contentFiles": {
-        "bin/Debug/Fmo.BusinessServices.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        },
         "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
@@ -90,11 +85,6 @@
         "bin/Debug/Fmo.DataServices.dll": {}
       },
       "contentFiles": {
-        "bin/Debug/Fmo.DataServices.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        },
         "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
@@ -135,11 +125,6 @@
         "bin/Debug/Fmo.DTO.dll": {}
       },
       "contentFiles": {
-        "bin/Debug/Fmo.DTO.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        },
         "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
@@ -177,11 +162,6 @@
         "bin/Debug/Fmo.Helpers.dll": {}
       },
       "contentFiles": {
-        "bin/Debug/Fmo.Helpers.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        },
         "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
@@ -217,13 +197,6 @@
       "runtime": {
         "../packages/AutoMapper.6.0.2/lib/net45/AutoMapper.dll": {},
         "bin/Debug/Fmo.MappingConfiguration.dll": {}
-      },
-      "contentFiles": {
-        "bin/Debug/Fmo.MappingConfiguration.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        }
       }
     },
     "Fmo.Entities/1.0.0": {
