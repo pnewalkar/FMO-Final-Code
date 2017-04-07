@@ -1,16 +1,12 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.Notification")]
     public partial class Notification
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Notification_Id { get; set; }
 
         public int? NotificationType_Id { get; set; }
@@ -39,6 +35,12 @@ namespace Fmo.Entities
 
         [StringLength(6)]
         public string PostcodeSector { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid? NotificationType_GUID { get; set; }
+
+        public Guid? NotificationPriority_GUID { get; set; }
 
         public virtual ReferenceData ReferenceData { get; set; }
 

@@ -37,7 +37,6 @@
 
                 if (addressLocationDTO != null)
                 {
-
                 }
                 else
                 {
@@ -94,6 +93,7 @@
                                     NotificationSource = Constants.USR_NOTIFICATION_SOURCE,
                                     Notification_Heading = Constants.USR_ACTION
                                 };
+                                await notificationRepository.AddNewNotification(notificationDO);
                             }
                         }
                     }

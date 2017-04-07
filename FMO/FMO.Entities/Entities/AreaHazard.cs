@@ -1,16 +1,11 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.AreaHazard")]
     public partial class AreaHazard
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Hazard_Id { get; set; }
 
         public int Category_Id { get; set; }
@@ -21,6 +16,14 @@ namespace Fmo.Entities
         public DateTime? ValidUntilDate { get; set; }
 
         public int Polygon_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid Category_GUID { get; set; }
+
+        public Guid SubCategory_GUID { get; set; }
+
+        public Guid Polygon_GUID { get; set; }
 
         public virtual Polygon Polygon { get; set; }
 

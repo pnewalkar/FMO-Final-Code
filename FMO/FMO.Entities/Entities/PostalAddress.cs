@@ -4,7 +4,6 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.PostalAddress")]
     public partial class PostalAddress
@@ -18,7 +17,7 @@ namespace Fmo.Entities
             POBoxes = new HashSet<POBox>();
         }
 
-        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Address_Id { get; set; }
 
         [Required]
@@ -75,6 +74,14 @@ namespace Fmo.Entities
 
         [StringLength(6)]
         public string POBoxNumber { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid PostCodeGUID { get; set; }
+
+        public Guid AddressType_GUID { get; set; }
+
+        public Guid? AddressStatus_GUID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AMUChangeRequest> AMUChangeRequests { get; set; }
