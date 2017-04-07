@@ -158,6 +158,8 @@
         "bin/Debug/Fmo.Helpers.dll": {}
       },
       "runtime": {
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "bin/Debug/Fmo.Helpers.dll": {}
       },
