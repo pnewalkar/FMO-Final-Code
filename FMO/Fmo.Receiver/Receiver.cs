@@ -63,8 +63,9 @@ namespace Fmo.Receiver
             Thread threadAddressUSRDTO = new Thread(StartUSR);
             threadAddressUSRDTO.Start();
 
-            Thread threadAddressPAFDTO = new Thread(StartPAF);
-            threadAddressPAFDTO.Start();
+            msgPAF.Start(Constants.QUEUE_PAF, Constants.QUEUE_PATH, PAFMessageReceived);
+            //Thread threadAddressPAFDTO = new Thread(StartPAF);
+            //threadAddressPAFDTO.Start();
         }
 
         public void StartUSR()
@@ -93,27 +94,27 @@ namespace Fmo.Receiver
             PostalAddressDTO a = e.MessageBody;
             if (a != null)
             {
-                SavePAFDetails(a);
+                SavePAFDetails(a).Wait();
             }
 
-            /*while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
+            while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
             {
                 PostalAddressDTO b = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
                 if (b != null)
                 {
-                    SavePAFDetails(b);
+                    SavePAFDetails(b).Wait();
                 }
-            }*/
+            }
 
         }
 
-        public bool SavePAFDetails(PostalAddressDTO postalAddress)
+        private async Task SavePAFDetails(PostalAddressDTO postalAddress)
         {
             bool saveFlag = false;
             try
             {
                 httpHandler.SetBaseAddress(new Uri(PAFWebApiurl));
-                httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
+                await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
                 saveFlag = true;
             }
             catch (Exception)
@@ -121,7 +122,7 @@ namespace Fmo.Receiver
                 saveFlag = false;
                 throw;
             }
-            return saveFlag;
+            
         }
 
 

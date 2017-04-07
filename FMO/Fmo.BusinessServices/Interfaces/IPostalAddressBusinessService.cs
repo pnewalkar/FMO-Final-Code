@@ -7,6 +7,6 @@ namespace Fmo.BusinessServices.Interfaces
     {
         bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress);
 
-        void SavePAFDetails(PostalAddressDTO postalAddress);
+        bool SavePAFDetails(PostalAddressDTO postalAddress);
     }
 }

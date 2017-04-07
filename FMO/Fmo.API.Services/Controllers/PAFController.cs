@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
+using Fmo.Common.Interface;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,24 +14,29 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class PAFController : Controller
     {
-        IPostalAddressBusinessService postalAddressBusinessService = default(IPostalAddressBusinessService);
+        private IPostalAddressBusinessService postalAddressBusinessService = default(IPostalAddressBusinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public PAFController(IPostalAddressBusinessService postalAddressBusinessService)
+        public PAFController(IPostalAddressBusinessService postalAddressBusinessService, ILoggingHelper loggingHelper)
         {
             this.postalAddressBusinessService = postalAddressBusinessService;
+            this.loggingHelper = loggingHelper;
         }
 
         [HttpPost("SavePAFDetails")]
-        public async void SavePAFDetails([FromBody]PostalAddressDTO postalAddress)
+        public bool SavePAFDetails([FromBody]PostalAddressDTO postalAddress)
         {
+            bool saveFlag = false;
             try
             {
-                postalAddressBusinessService.SavePAFDetails(postalAddress);
+                saveFlag = postalAddressBusinessService.SavePAFDetails(postalAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                saveFlag = false;
+                loggingHelper.LogError(ex);
             }
+            return saveFlag;
         }
 
         // GET: api/values
