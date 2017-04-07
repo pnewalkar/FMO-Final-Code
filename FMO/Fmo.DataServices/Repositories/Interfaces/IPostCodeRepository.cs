@@ -6,7 +6,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IPostCodeRepository
     {
-        Task<List<PostCodeDTO>> FetchPostCodeUnitforBasicSearch(string searchText);
+        Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText);
 
         Task<int> GetPostCodeUnitCount(string searchText);
 
