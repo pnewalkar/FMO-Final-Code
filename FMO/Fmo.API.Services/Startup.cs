@@ -18,6 +18,8 @@ using Fmo.Common.ExceptionManagement;
 using Fmo.Common.LoggingManagement;
 using Fmo.Common.Interface;
 using Fmo.API.Services.MiddlerWare;
+using Fmo.Helpers;
+using Fmo.Helpers.Interface;
 
 namespace Fmo.API.Services
 {
@@ -87,7 +89,9 @@ namespace Fmo.API.Services
             services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<ILoggingHelper, LoggingHelper>();
+            services.AddTransient<ICreateOtherLayersObjects, CreateOtherLayerObjects>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

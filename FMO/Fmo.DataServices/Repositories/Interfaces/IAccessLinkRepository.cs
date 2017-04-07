@@ -12,6 +12,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         List<AccessLinkDTO> SearchAccessLink();
 
-        MemoryStream GetAccessLinks(string[] parameters);
+        List<AccessLinkDTO> GetAccessLinks(string coordinates);
     }
 }

@@ -15,12 +15,14 @@
     {
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
+        private INotificationRepository notificationRepository = default(INotificationRepository);
 
 
-        public USRBusinessService(IAddressLocationRepository addressLocationRepository, IDeliveryPointsRepository deliveryPointsRepository)
+        public USRBusinessService(IAddressLocationRepository addressLocationRepository, IDeliveryPointsRepository deliveryPointsRepository, INotificationRepository notificationRepository)
         {
             this.addressLocationRepository = addressLocationRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
+            this.notificationRepository = notificationRepository;
         }
 
         public async Task SaveUSRDetails(AddressLocationUSRDTO addressLocationUSRDTO)
@@ -66,7 +68,11 @@
                         if (deliveryPointDTO.LocationXY == null)
                         {
                             await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRDTO.latitude, (decimal)addressLocationUSRDTO.longitude, spatialLocationXY);
-
+                            NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
+                            if (notificationDTO != null)
+                            {
+                               await notificationRepository.DeleteNotificationbyUDPRN(fileUdprn);
+                            }
                         }
                         else
                         {
@@ -74,10 +80,20 @@
                             if (straightLineDistance < Constants.TOLERANCE_DISTANCE_IN_METERS)
                             {
                                 await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRDTO.latitude, (decimal)addressLocationUSRDTO.longitude, spatialLocationXY);
+                                NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
+                                if (notificationDTO != null)
+                                {
+                                    await notificationRepository.DeleteNotificationbyUDPRN(fileUdprn);
+                                }
                             }
                             else
                             {
-
+                                NotificationDTO notificationDO = new NotificationDTO
+                                {
+                                    NotificationDueDate = DateTime.Now,
+                                    NotificationSource = Constants.USR_NOTIFICATION_SOURCE,
+                                    Notification_Heading = Constants.USR_ACTION
+                                };
                             }
                         }
                     }

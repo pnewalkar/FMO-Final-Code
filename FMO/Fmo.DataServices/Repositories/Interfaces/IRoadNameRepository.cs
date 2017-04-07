@@ -12,6 +12,8 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         Task<List<RoadNameDTO>> FetchRoadName();
 
-        MemoryStream GetRoadRoutes(string[] parameters);
+        List<OsRoadLinkDTO> GetRoadRoutes(string coordinates);
+
+
     }
 }

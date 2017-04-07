@@ -25,6 +25,8 @@ namespace Fmo.Common.Constants
         public const int maxCharactersForPAF = 534;
         public const string USR_LOC_PROVIDER = "<E>";
         public const int TOLERANCE_DISTANCE_IN_METERS = 10;
+        public const string USR_NOTIFICATION_SOURCE = "SYSTEM";
+        public const string USR_ACTION = "Check updated DP Location";
     }
 }
 

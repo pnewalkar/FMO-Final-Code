@@ -39,83 +39,84 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        public IEnumerable<OSRoadLink> GetData(string query, params object[] parameters)
+        public IEnumerable<OSRoadLink> GetData(string coordinates)
         {
-            string x1 = Convert.ToString(parameters[0]);
-            string y1 = Convert.ToString(parameters[1]);
-            string x2 = Convert.ToString(parameters[2]);
-            string y2 = Convert.ToString(parameters[3]);
+            //string x1 = Convert.ToString(parameters[0]);
+            //string y1 = Convert.ToString(parameters[1]);
+            //string x2 = Convert.ToString(parameters[2]);
+            //string y2 = Convert.ToString(parameters[3]);
 
 
-            string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
+            //string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
 
             System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
 
             return DataContext.OSRoadLinks.Where(dp => dp.CentreLineGeometry != null && dp.CentreLineGeometry.Intersects(extent)).ToList();
         }
 
-        public MemoryStream GetRoadRoutes(string[] parameters)
+        public List<OsRoadLinkDTO> GetRoadRoutes(string coordinates)
         {
             //GenericRepository gUoW = new GenericRepository();
+            List<OSRoadLink> result = GetData(coordinates).ToList();
+            var oSRoadLink = GenericMapper.MapList<OSRoadLink, OsRoadLinkDTO>(result);
+            return oSRoadLink;
+            //            List<OSRoadLink> osRoadLinkList = GetData(coordinates).ToList();
+            //List<Feature> lstFeatures = new List<Feature>();
 
-            RoadName routeLinkFeatureCollections = new RoadName();
-            List<OSRoadLink> osRoadLinkList = GetData(null, parameters).ToList();
-List<Feature> lstFeatures = new List<Feature>();
+            //            string json = string.Empty;
 
-            string json = string.Empty;
+            //            foreach (var res in osRoadLinkList)
+            //            {
+            //               Geometry geometry = new Geometry();
 
-            foreach (var res in osRoadLinkList)
-            {
-               Geometry geometry = new Geometry();
+            //                geometry.type = res.CentreLineGeometry.SpatialTypeName;
 
-                geometry.type = res.CentreLineGeometry.SpatialTypeName;
+            //                var resultCoordinates = res.CentreLineGeometry;
 
-                var resultCoordinates = res.CentreLineGeometry;
+            //                geometry.coordinates = new object();
 
-                geometry.coordinates = new object();
+            //                SqlGeometry sqlGeo = null;
+            //                if (geometry.type == "LineString")
+            //                {
+            //                    sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
 
-                SqlGeometry sqlGeo = null;
-                if (geometry.type == "LineString")
-                {
-                    sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+            //                    List<double[]> cords = new List<double[]>();
 
-                    List<double[]> cords = new List<double[]>();
+            //                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
+            //                    {
+            //                        double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
+            //                        cords.Add(coordinates);
+            //                    }
 
-                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
-                    {
-                        double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-                        cords.Add(coordinates);
-                    }
+            //                    geometry.coordinates = cords;
+            //                }
+            //                else
+            //                {
+            //                    sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+            //                    double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
+            //                    geometry.coordinates = coordinates;
+            //                }
 
-                    geometry.coordinates = cords;
-                }
-                else
-                {
-                    sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-                    double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
-                    geometry.coordinates = coordinates;
-                }
+            //             Feature features = new Feature();
+            //                features.geometry = geometry;
 
-             Feature features = new Feature();
-                features.geometry = geometry;
+            //                features.type = "Feature";
+            //              //  features.properties = new Properties { type = "roadlink" };
 
-                features.type = "Feature";
-              //  features.properties = new Properties { type = "roadlink" };
+            //                lstFeatures.Add(features);
+            //            }
 
-                lstFeatures.Add(features);
-            }
+            //            //routeLinkFeatureCollections.features = lstFeatures;
+            //            //routeLinkFeatureCollections.type = "FeatureCollection";
+            //            json = JsonConvert.SerializeObject(routeLinkFeatureCollections,
+            //                            Newtonsoft.Json.Formatting.None,
+            //                            new JsonSerializerSettings
+            //                            {
+            //                                NullValueHandling = NullValueHandling.Ignore
+            //                            });
 
-            //routeLinkFeatureCollections.features = lstFeatures;
-            //routeLinkFeatureCollections.type = "FeatureCollection";
-            json = JsonConvert.SerializeObject(routeLinkFeatureCollections,
-                            Newtonsoft.Json.Formatting.None,
-                            new JsonSerializerSettings
-                            {
-                                NullValueHandling = NullValueHandling.Ignore
-                            });
-
-            var resultBytes = Encoding.UTF8.GetBytes(json);
-            return new MemoryStream(resultBytes);
+            //            var resultBytes = Encoding.UTF8.GetBytes(json);
+            //            return new MemoryStream(resultBytes);
         }
 
     }

@@ -25,5 +25,9 @@ namespace Fmo.DataServices.Repositories.Interfaces
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText);
 
         Task<int> GetDeliveryPointsCount(string searchText);
+
+        List<DeliveryPointDTO> GetDeliveryPoints1(string coordinates);
+
+        IEnumerable<DeliveryPoint> GetData(string coordinates);
     }
 }
