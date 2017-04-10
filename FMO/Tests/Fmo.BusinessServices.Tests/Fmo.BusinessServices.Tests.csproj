@@ -35,6 +35,7 @@
       <HintPath>..\..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <Reference Include="Moq, Version=4.7.1.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Moq.4.7.1\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
@@ -89,6 +90,10 @@
     <ProjectReference Include="..\..\FMO.Entities\Fmo.Entities.csproj">
       <Project>{355491A6-65FA-4145-BB68-74E0E1576433}</Project>
       <Name>Fmo.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Fmo.Helpers\Fmo.Helpers.csproj">
+      <Project>{F74212F1-1312-415B-9D38-F51C6F340956}</Project>
+      <Name>Fmo.Helpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\FMO.MessageBrokerCore\Fmo.MessageBrokerCore.csproj">
       <Project>{10A130A3-105F-4DF9-9D74-00D252B5ACC7}</Project>

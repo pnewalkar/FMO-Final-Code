@@ -20,13 +20,20 @@ namespace Fmo.DataServices.Tests.Repositories
         private string coordinates;
 
         [Test]
-        public void Test_Get()
+        public void Test_GetRoadRoutes()
         {
             coordinates = "1234.87";
             var actualResult = testCandidate.GetRoadRoutes(coordinates);
             Assert.IsNotNull(actualResult);
         }
 
+        [Test]
+        public void Test_GetData()
+        {
+            coordinates = "1234.87";
+            var actualResult = testCandidate.GetData(coordinates);
+            Assert.IsNotNull(actualResult);
+        }
 
         protected override void OnSetup()
         {
