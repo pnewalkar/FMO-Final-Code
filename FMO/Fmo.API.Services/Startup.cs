@@ -21,6 +21,7 @@ using Fmo.API.Services.MiddlerWare;
 using Fmo.Helpers;
 using Fmo.Helpers.Interface;
 
+
 namespace Fmo.API.Services
 {
     public partial class Startup
@@ -40,6 +41,12 @@ namespace Fmo.API.Services
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+
+#if DEBUG
+           SqlServerTypes.Utilities.LoadNativeAssemblies(System.IO.Path.Combine(env.ContentRootPath, "bin"));
+#else
+ SqlServerTypes.Utilities.LoadNativeAssemblies( env.ContentRootPath);
+#endif
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -75,7 +82,8 @@ namespace Fmo.API.Services
             //BusinessServices
             services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
             services.AddTransient<ISearchBussinessService, SearchBussinessService>();
-
+            services.AddTransient<IAccessLinkBussinessService, AccessLinkBussinessService>();
+            services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             //Repositories
             services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();

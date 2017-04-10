@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fmo.DTO
+namespace Fmo.Helpers
 {
     public class Feature
     {
@@ -16,7 +16,7 @@ namespace Fmo.DTO
         public Dictionary<string, JToken> properties { get; set; }
         public Geometry geometry { get; set; }
 
-      
+
         public JObject getJson()
         {
             var obj = new JObject();

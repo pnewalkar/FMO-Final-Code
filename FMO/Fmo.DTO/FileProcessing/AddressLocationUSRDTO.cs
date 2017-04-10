@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Fmo.DTO
+namespace Fmo.DTO.FileProcessing
 {
     [Serializable()]
     [XmlType("addressLocation")]

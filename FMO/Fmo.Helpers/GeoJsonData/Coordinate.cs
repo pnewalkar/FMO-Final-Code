@@ -1,15 +1,11 @@
 ﻿using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Fmo.DTO
+namespace Fmo.Helpers
 {
-  
+
     public class Coordinates
     {
         private double[][] coordinates;
