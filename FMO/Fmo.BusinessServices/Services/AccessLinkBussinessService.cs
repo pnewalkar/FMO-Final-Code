@@ -36,24 +36,27 @@
             string[] bboxArr = bbox.Split(',');
             var coordinates = GetData(null, bboxArr);
             AccessLinkDTO accessLinkDTOCollectionObj = new AccessLinkDTO();
-            List<AccessLinkDTO> AccessLinkDTO = accessLinkRepository.GetAccessLinks(coordinates);
+            List<AccessLinkDTO> accessLinkDTO = accessLinkRepository.GetAccessLinks(coordinates);
 
             List<Feature> lstFeatures = new List<Feature>();
 
             string json = string.Empty;
 
-            foreach (var res in AccessLinkDTO)
+            if (accessLinkDTO != null && accessLinkDTO.Count > 0)
             {
-                Geometry geometry = new Geometry();
+                foreach (var res in accessLinkDTO)
+                {
+                    Geometry geometry = new Geometry();
 
-                geometry.type = res.AccessLinkLine.SpatialTypeName;
+                    geometry.type = res.AccessLinkLine.SpatialTypeName;
 
-                var resultCoordinates = res.AccessLinkLine;
+                    var resultCoordinates = res.AccessLinkLine;
 
-                geometry.coordinates = new object();
+                    geometry.coordinates = new object();
 
-                var features = createOtherLayersObjects.GetAccessLinks(geometry, resultCoordinates);
-                lstFeatures.Add(features);
+                    var features = createOtherLayersObjects.GetAccessLinks(geometry, resultCoordinates);
+                    lstFeatures.Add(features);
+                } 
             }
 
             accessLinkDTOCollectionObj.features = lstFeatures;

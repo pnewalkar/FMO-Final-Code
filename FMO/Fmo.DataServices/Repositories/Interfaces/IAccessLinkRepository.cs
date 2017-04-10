@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fmo.DTO;
-using System.IO;
-
-namespace Fmo.DataServices.Repositories.Interfaces
+﻿namespace Fmo.DataServices.Repositories.Interfaces
 {
-   public interface IAccessLinkRepository
+    using System.Collections.Generic;
+    using Fmo.DTO;
+    using Fmo.Entities;
+
+    public interface IAccessLinkRepository
     {
         List<AccessLinkDTO> SearchAccessLink();
 
         List<AccessLinkDTO> GetAccessLinks(string coordinates);
+
+        IEnumerable<AccessLink> GetData(string coordinates);
     }
 }
