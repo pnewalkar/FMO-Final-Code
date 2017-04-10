@@ -15,6 +15,13 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
     var layers = [];
 
+    var units = null;
+    var dpi = 25.4 / 0.28;
+    var mpu = null;
+
+    var definedResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
+    var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
+
     return {
         initialiseMap: initialiseMap,
         getMap: getMap,
@@ -30,7 +37,11 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         createLayerAsync: createLayerAsync,
         convertGeoJsonToOl: convertGeoJsonToOl,
         deleteAllFeaturesFromLayer: deleteAllFeaturesFromLayer,
-        addFeaturesToMap: addFeaturesToMap
+        addFeaturesToMap: addFeaturesToMap,
+        definedResolutions: definedResolutions,
+        definedScales: definedScales,
+        getResolutionFromScale: getResolutionFromScale,
+        getScaleFromResolution: getScaleFromResolution
     };
 
     function initialiseMap() {
@@ -44,16 +55,13 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         //    maxZoom: 19
         //});
 
-
-        var definedResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
-        var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
-      
+       
         view = new ol.View({
             projection: 'EPSG:27700',
             center: [400000, 650000],
             // zoom: 4,
             resolutions: definedResolutions,
-            resolution: 0.5600011200022402
+            resolution: definedResolutions[11]
         });
 
 
@@ -65,70 +73,9 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             source: vectorSource,
             style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE),
             renderBuffer: 1000
-        });
+        });        
 
-        function getResolutionFromScale(scale) {
-            var units = map.getView().getProjection().getUnits();
-            var dpi = 25.4 / 0.28;
-            var mpu = ol.proj.METERS_PER_UNIT[units];
-            var resolution = scale / (mpu * 39.37 * dpi);
-            return resolution;
-        }
-
-        function getScaleFromResolution(resolution) {
-            var units = map.getView().getProjection().getUnits();
-            var dpi = 25.4 / 0.28;
-            var mpu = ol.proj.METERS_PER_UNIT[units];
-            var scale = resolution * (mpu * 39.37 * dpi);
-            return scale;
-        }
-
-        customScaleLine = function (opt_options) {
-
-            var options = opt_options ? opt_options : {};
-
-            var className = options.className !== undefined ? options.className : 'ol-scale-line';
-
-            this.element_ = document.createElement('DIV');
-
-            this.renderedVisible_ = false;           
-
-            this.viewState_ = null;
-
-            this.renderedHTML_ = '';
-
-            var render = options.render ? options.render : ol.control.ScaleLine.render;
-
-            ol.control.Control.call(this, {
-                element: this.element_,
-                render: render,
-                target: options.target
-            });
-
-        };
-
-        customScaleLine.render = function (mapEvent) {
-         
-            var resolution = map.getView().getResolution();
-
-            var scale = Math.round(getScaleFromResolution(resolution));
-
-            if (definedScales.indexOf(scale) > -1) {
-                var html = 1 + ': ' + scale;
-
-                if (this.renderedHTML_ != html) {
-                    this.element_.innerHTML = html;
-                    this.renderedHTML_ = html;
-                }
-
-                if (!this.renderedVisible_) {
-                    this.element_.style.display = '';
-                    this.renderedVisible_ = true;
-                }
-            }
-        };
-              
-        ol.inherits(customScaleLine, ol.control.ScaleLine);
+       
 
         map = new ol.Map({
             layers: layers.map(function (a) { return a.layer }),
@@ -137,17 +84,16 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
             controls: ol.control.defaults().extend([
-                new customScaleLine({
-                    render: customScaleLine.render,
-                    className: 'zoom-scale',
-                    target: document.getElementById('zoom-scale')
-                })
+                getCustomScaleLine()               
             ])
         });
         var external_control = new ol.control.Zoom({
             target: document.getElementById('zoom-control')
         });
         map.addControl(external_control);
+
+        units = map.getView().getProjection().getUnits();
+        mpu = ol.proj.METERS_PER_UNIT[units];
     }
 
     function initialiseMiniMap() {
@@ -353,6 +299,60 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         return $http.get(url).success(function (result) {
             return result;
         });
+    }
+
+    function getCustomScaleLine() {
+        customScaleLine = function (opt_options) {
+            var options = opt_options ? opt_options : {};
+            var className = options.className !== undefined ? options.className : 'ol-scale-line';
+            this.element_ = document.createElement('DIV');
+            this.renderedVisible_ = false;
+            this.viewState_ = null;
+            this.renderedHTML_ = '';
+            var render = options.render ? options.render : ol.control.ScaleLine.render;
+            ol.control.Control.call(this, {
+                element: this.element_,
+                render: render,
+                target: options.target
+            });
+        };
+
+        customScaleLine.render = function (mapEvent) {
+
+            var resolution = map.getView().getResolution();
+            var scale = Math.round(getScaleFromResolution(resolution));
+            if (definedScales.indexOf(scale) > -1) {
+                var html = 1 + ': ' + scale;
+
+                if (this.renderedHTML_ != html) {
+                    this.element_.innerHTML = html;
+                    this.renderedHTML_ = html;
+                }
+
+                if (!this.renderedVisible_) {
+                    this.element_.style.display = '';
+                    this.renderedVisible_ = true;
+                }
+            }
+        };
+
+        ol.inherits(customScaleLine, ol.control.ScaleLine);
+
+        return new customScaleLine({
+            render: customScaleLine.render,
+            className: 'zoom-scale',
+            target: document.getElementById('zoom-scale')
+        });
+    }
+
+    function getResolutionFromScale(scale) {
+        var resolution = scale / (mpu * 39.37 * dpi);
+        return resolution;
+    }
+
+    function getScaleFromResolution(resolution) {
+        var scale = resolution * (mpu * 39.37 * dpi);
+        return scale;
     }
 }
 
