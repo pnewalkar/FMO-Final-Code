@@ -1,8 +1,10 @@
 angular.module('sideNav')
   .component('sideNav', {
-    restrict: 'E',
-    scope: {},
-    templateUrl: './side-nav/side-nav.template.html'
+      bindings: {
+          selectedDeliveryUnit: "="
+      },
+      templateUrl: './side-nav/side-nav.template.html',
+      controller: 'sideNavController as vm'
   });
 
 

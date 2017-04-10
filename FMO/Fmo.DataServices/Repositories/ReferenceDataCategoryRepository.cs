@@ -39,8 +39,8 @@ namespace Fmo.DataServices.Repositories
 
         public List<ReferenceDataDTO> RouteLogStatus()
         {
-            var query = DataContext.ReferenceDatas.Join(DataContext.ReferenceDataCategories, r => r.ReferenceDataCategory_Id, p => p.ReferenceDataCategory_Id, (r, p) => new { r.ReferenceDataName, r.ReferenceDataValue })
-                .Select(a => new Entity.ReferenceData { ReferenceDataName = a.ReferenceDataName });
+            var query = DataContext.ReferenceDatas.Join(DataContext.ReferenceDataCategories, r => r.ReferenceDataCategory_GUID, p => p.ID, (r, p) => new { r.ReferenceDataCategory_GUID, r.DataDescription, r.DisplayText })
+                .Select(a => new Entity.ReferenceData { DataDescription = a.DataDescription, DisplayText = a.DisplayText, ReferenceDataCategory_GUID = a.ReferenceDataCategory_GUID });
             return GenericMapper.MapList<Entity.ReferenceData, DTO.ReferenceDataDTO>(query.ToList());
         }
     }

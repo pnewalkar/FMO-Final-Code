@@ -1,12 +1,15 @@
 
-<md-radio-group layout="row" ng-model="vm.data.group1" layout-align="space-around center">
-    <md-radio-button  class="center-text" value="live" >
-        Live
+<md-radio-group layout="row" ng-model="vm.data.group1" ng-change="vm.selectedStatus()" layout-align="space-around center">
+    <md-radio-button ng-repeat="d in vm.radioData" ng-value="d.value">
+        {{ d.label }}<br>
     </md-radio-button>
-    
-    <md-radio-button class="center-text" value="planned">
-            Planned
-    </md-radio-button>
+    <!--<md-radio-button  class="center-text" value="live" >
+                Live
+            </md-radio-button>
+
+            <md-radio-button class="center-text" value="planned">
+                    Planned
+            </md-radio-button>-->
 </md-radio-group>   
 
 <div layout="column" flex>
