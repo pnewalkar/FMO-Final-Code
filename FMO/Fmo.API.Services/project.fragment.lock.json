@@ -179,6 +179,11 @@
         "bin/Debug/Fmo.Helpers.dll": {}
       },
       "contentFiles": {
+        "bin/Debug/Fmo.Helpers.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        },
         "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
