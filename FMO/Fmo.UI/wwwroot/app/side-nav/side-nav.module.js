@@ -1,3 +1,3 @@
-angular.module('sideNav',['advanceSearch',
+angular.module('sideNav',[
                           'simulation','routeLog'
 ]);
