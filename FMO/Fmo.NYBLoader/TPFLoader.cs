@@ -1,4 +1,4 @@
-﻿using Fmo.DTO;
+﻿using Fmo.DTO.FileProcessing;
 using Fmo.MessageBrokerCore.Messaging;
 using Fmo.NYBLoader.Interfaces;
 using Ninject;
@@ -43,7 +43,10 @@ namespace Fmo.NYBLoader
             this.ERROR = configHelper.ReadAppSettingsConfigurationValues("TPFErrorFilePath");
         }
 
-
+        /// <summary>
+        /// Load the XML data from file to Message Queue.
+        /// </summary>
+        /// <param name="strPath"></param>
         public void LoadTPFDetailsFromXML(string strPath)
         {
             string destinationPath = string.Empty;
@@ -111,7 +114,12 @@ namespace Fmo.NYBLoader
             }
         }
 
-        public List<AddressLocationUSRDTO> GetValidRecords(string strPath)
+        /// <summary>
+        /// Return the valid records after file validation.
+        /// </summary>
+        /// <param name="strPath"></param>
+        /// <returns></returns>
+        private List<AddressLocationUSRDTO> GetValidRecords(string strPath)
         {
 
             try
@@ -160,6 +168,12 @@ namespace Fmo.NYBLoader
 
         }
 
+        /// <summary>
+        /// Validate the XML file against the XSD file to check the sequence and data type.
+        /// </summary>
+        /// <param name="xsdFile"></param>
+        /// <param name="xNode"></param>
+        /// <returns></returns>
         private bool IsXmlValid(string xsdFile, XmlNode xNode)
         {
 

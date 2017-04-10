@@ -16,16 +16,10 @@ namespace Fmo.Entities
             RMGDeliveryPoints = new HashSet<RMGDeliveryPoint>();
         }
 
-        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DeliveryPoint_Id { get; set; }
 
         public int Address_Id { get; set; }
-
-        [StringLength(1)]
-        public string LocationProvider { get; set; }
-
-        [StringLength(1)]
-        public string OperationalStatus { get; set; }
 
         public DbGeometry LocationXY { get; set; }
 
@@ -54,10 +48,25 @@ namespace Fmo.Entities
 
         public bool IsUnit { get; set; }
 
-        [Column(TypeName = "timestamp")]
-        [MaxLength(8)]
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
+        public int? LocationProviderId { get; set; }
+
+        public int? OperationalStatusId { get; set; }
+
+        public int? Temp_DeliveryGroup_Id { get; set; }
+
+        public int? LocationProvider_Id { get; set; }
+
+        public int? OperationalStatus_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid Address_GUID { get; set; }
+
+        public Guid? LocationProvider_GUID { get; set; }
+
+        public Guid? OperationalStatus_GUID { get; set; }
+
+        public Guid? DeliveryGroup_GUID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }
@@ -65,6 +74,10 @@ namespace Fmo.Entities
         public virtual DeliveryGroup DeliveryGroup { get; set; }
 
         public virtual PostalAddress PostalAddress { get; set; }
+
+        public virtual ReferenceData ReferenceData { get; set; }
+
+        public virtual ReferenceData ReferenceData1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RMGDeliveryPoint> RMGDeliveryPoints { get; set; }

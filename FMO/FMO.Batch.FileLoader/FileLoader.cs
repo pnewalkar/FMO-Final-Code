@@ -9,6 +9,7 @@
     using System.Text;
     using System.Xml.Serialization;
     using Fmo.DTO;
+    using Fmo.DTO.FileProcessing;
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;
@@ -265,7 +266,7 @@
                         var reader = new StreamReader(stream);
                         strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
-                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(strLine);
+                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(strLine.Trim());
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                         {
                             var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;

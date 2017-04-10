@@ -1328,6 +1328,15 @@
           "lib/netstandard1.0/_._": {}
         }
       },
+      "Microsoft.SqlServer.Types/14.0.314.76": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Microsoft.SqlServer.Types.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Microsoft.SqlServer.Types.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -1876,9 +1885,11 @@
       "Fmo.BusinessServices/1.0.0": {
         "type": "project",
         "dependencies": {
+          "Fmo.Common": "1.0.0",
           "Fmo.DTO": "1.0.0",
           "Fmo.DataServices": "1.0.0",
           "Fmo.Entities": "1.0.0",
+          "Fmo.Helpers": "1.0.0",
           "Fmo.MappingConfiguration": "1.0.0"
         }
       },
@@ -1897,7 +1908,8 @@
       "Fmo.DTO/1.0.0": {
         "type": "project",
         "dependencies": {
-          "Fmo.Common": "1.0.0"
+          "Fmo.Common": "1.0.0",
+          "Fmo.Entities": "1.0.0"
         }
       },
       "Fmo.Entities/1.0.0": {
@@ -3126,6 +3138,25 @@
         "dotnet_library_license.txt",
         "lib/netstandard1.0/_._",
         "runtime.json"
+      ]
+    },
+    "Microsoft.SqlServer.Types/14.0.314.76": {
+      "sha512": "gAekCmSfjtRBaiuuRIqJJV6cfEsEbYY5vI7Ssoc5sYI04JcyPrZ4C8RC3z7K9xfpr9ejQAQ1AtfvtgqEnjmwOw==",
+      "type": "package",
+      "path": "Microsoft.SqlServer.Types/14.0.314.76",
+      "files": [
+        "Microsoft.SqlServer.Types.14.0.314.76.nupkg.sha512",
+        "Microsoft.SqlServer.Types.nuspec",
+        "content/SqlServerTypes/Loader.cs",
+        "content/SqlServerTypes/readme.htm",
+        "lib/net40/Microsoft.SqlServer.Types.dll",
+        "license/license_SysClrTypes.rtf",
+        "nativeBinaries/x64/SqlServerSpatial140.dll",
+        "nativeBinaries/x64/msvcr120.dll",
+        "nativeBinaries/x86/SqlServerSpatial140.dll",
+        "nativeBinaries/x86/msvcr120.dll",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
       ]
     },
     "NETStandard.Library/1.6.1": {
@@ -5693,6 +5724,7 @@
       "Microsoft.Extensions.Options >= 1.1.1",
       "Microsoft.Extensions.Options.ConfigurationExtensions >= 1.1.1",
       "Microsoft.IdentityModel.Tokens >= 5.1.3",
+      "Microsoft.SqlServer.Types >= 14.0.314.76",
       "Newtonsoft.Json >= 10.0.1-beta1",
       "System.IdentityModel.Tokens.Jwt >= 5.1.3",
       "System.Net.Http >= 4.3.0"
@@ -5703,7 +5735,9 @@
       "Fmo.DTO",
       "Fmo.DataServices",
       "Fmo.Helpers",
-      "Fmo.MappingConfiguration"
+      "Fmo.MappingConfiguration",
+      "System.Data >= 4.0.0",
+      "System.Data.Entity >= 4.0.0"
     ]
   },
   "tools": {

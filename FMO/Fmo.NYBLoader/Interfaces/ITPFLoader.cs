@@ -1,4 +1,4 @@
-﻿using Fmo.DTO;
+﻿using Fmo.DTO.FileProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,5 @@ namespace Fmo.NYBLoader.Interfaces
     public interface ITPFLoader
     {
         void LoadTPFDetailsFromXML(string strPath);
-        List<AddressLocationUSRDTO> GetValidRecords(string strPath);
     }
 }

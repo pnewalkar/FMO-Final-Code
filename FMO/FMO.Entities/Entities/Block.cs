@@ -4,7 +4,6 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.Block")]
     public partial class Block
@@ -15,11 +14,9 @@ namespace Fmo.Entities
             Block1 = new HashSet<Block>();
             BlockSequences = new HashSet<BlockSequence>();
             DeliveryRouteActivities = new HashSet<DeliveryRouteActivity>();
-            DeliveryRoutes = new HashSet<DeliveryRoute>();
+            DeliveryRouteBlocks = new HashSet<DeliveryRouteBlock>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Block_Id { get; set; }
 
         public int DeliveryRoute_Id { get; set; }
@@ -31,6 +28,10 @@ namespace Fmo.Entities
 
         [Column(TypeName = "numeric")]
         public decimal? BlockSpanInMinutes { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid? PairedBlock_GUID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Block> Block1 { get; set; }
@@ -44,6 +45,6 @@ namespace Fmo.Entities
         public virtual ICollection<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryRoute> DeliveryRoutes { get; set; }
+        public virtual ICollection<DeliveryRouteBlock> DeliveryRouteBlocks { get; set; }
     }
 }

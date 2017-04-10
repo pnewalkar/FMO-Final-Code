@@ -116,11 +116,27 @@ function mapService(mapFactory,
             strategy: ol.loadingstrategy.bbox
         });
 
+        var mockAccessLinkVector = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            // url: function (extent) { return 'http://localhost:47467/home/getdata?bbox=' + extent.join(','); },
+            url: function (extent) { return 'http://localhost:34583/api/accessLinks/GetAccessLinks?bbox=' + extent.join(','); },
+            strategy: ol.loadingstrategy.bbox
+        });
+
+        //var mockAccessLinkLayer = new ol.layer.Vector({
+        //    source: mockAccessLinkVector
+        //});
         var mockGroupsLayer = new ol.layer.Vector({
             source: mockGroupsVector
         });
 
-        
+        var mockAccessLinkLayer = new ol.layer.Vector({
+            source: mockAccessLinkVector
+        });
+
+        var mockRoadLinkLayer = new ol.layer.Vector({
+            source: mockRoadLinkLayer
+        });
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
@@ -150,6 +166,30 @@ function mapService(mapFactory,
         mockWFSLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
         mockWFSLayerSelector.keys = ["deliverypoint"];
         mapFactory.addLayer(mockWFSLayerSelector);
+
+        var mockAccessLinksLayerSelector = new MapFactory.LayerSelector();
+        mockAccessLinksLayerSelector.layerName = "Access Links";
+        mockAccessLinksLayerSelector.layer = mockAccessLinkLayer;
+        mockAccessLinksLayerSelector.group = "";
+        mockAccessLinksLayerSelector.zIndex = 8;
+        mockAccessLinksLayerSelector.selected = false;
+        mockAccessLinksLayerSelector.onMiniMap = false;
+        mockAccessLinksLayerSelector.selectorVisible = true;
+        mockAccessLinksLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
+        mockAccessLinksLayerSelector.keys = ["accesslink"];
+        mapFactory.addLayer(mockAccessLinksLayerSelector);
+
+        var mockRoadsLayerSelector = new MapFactory.LayerSelector();
+        mockRoadsLayerSelector.layerName = "Road Links";
+        mockRoadsLayerSelector.layer = mockRoadLinkLayer;
+        mockRoadsLayerSelector.group = "";
+        mockRoadsLayerSelector.zIndex = 8;
+        mockRoadsLayerSelector.selected = false;
+        mockRoadsLayerSelector.onMiniMap = false;
+        mockRoadsLayerSelector.selectorVisible = true;
+        mockRoadsLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
+        mockRoadsLayerSelector.keys = ["roadlink"];
+        mapFactory.addLayer(mockRoadsLayerSelector);
 
         roadsLayer.selected = true;
         vm.map.on('pointermove', vm.pointerMoveHandler);

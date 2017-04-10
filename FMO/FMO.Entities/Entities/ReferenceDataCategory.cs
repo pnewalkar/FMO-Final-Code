@@ -4,7 +4,6 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.ReferenceDataCategory")]
     public partial class ReferenceDataCategory
@@ -15,8 +14,6 @@ namespace Fmo.Entities
             ReferenceDatas = new HashSet<ReferenceData>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int ReferenceDataCategory_Id { get; set; }
 
         [Required]
@@ -26,6 +23,8 @@ namespace Fmo.Entities
         public bool Maintainable { get; set; }
 
         public int CategoryType { get; set; }
+
+        public Guid ID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReferenceData> ReferenceDatas { get; set; }

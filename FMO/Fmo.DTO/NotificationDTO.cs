@@ -27,6 +27,12 @@ namespace Fmo.DTO
         public string PostcodeDistrict { get; set; }
 
         public string PostcodeSector { get; set; }
+        
+        public Guid ID { get; set; }
+
+        public Guid? NotificationType_GUID { get; set; }
+
+        public Guid? NotificationPriority_GUID { get; set; }
 
     }
 }

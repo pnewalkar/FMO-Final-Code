@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "EntityFramework": "6.1.3",
-     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
+    "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.1",
     "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
     "Microsoft.AspNetCore.Cors": "1.1.1",
@@ -25,7 +25,8 @@
     "Newtonsoft.Json": "10.0.1-beta1",
     "System.IdentityModel.Tokens.Jwt": "5.1.3",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.1",
-    "System.Net.Http": "4.3.0"
+    "System.Net.Http": "4.3.0",
+    "Microsoft.SqlServer.Types": "14.0.314.76"
   },
 
   "tools": {
@@ -53,6 +54,10 @@
         "Fmo.MappingConfiguration": {
           "target": "project"
         }
+      },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
+        "System.Data.Entity": "4.0.0.0"
       }
     }
   },

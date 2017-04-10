@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Fmo.DTO;
+    using Fmo.DTO.FileProcessing;
 
     public interface IUSRBusinessService
     {

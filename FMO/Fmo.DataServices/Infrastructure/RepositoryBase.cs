@@ -39,7 +39,7 @@
         public virtual void Update(T entity)
         {
             dbset.Attach(entity);
-            dataContext.Entry(entity).State = EntityState.Modified;
+            dataContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
         }
 
         public virtual void Delete(T entity)

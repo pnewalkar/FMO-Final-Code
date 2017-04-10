@@ -8,14 +8,6 @@ namespace Fmo.DTO
 {
     public class PostalAddressDTO
     {
-        public string Date { get; set; }
-
-        public string Time { get; set; }
-
-        public string AmendmentType { get; set; }
-
-        public string AmendmentDesc { get; set; }
-
         public int Address_Id { get; set; }
 
         public string PostcodeType { get; set; }
@@ -56,9 +48,24 @@ namespace Fmo.DTO
 
         public string POBoxNumber { get; set; }
 
+        public Guid ID { get; set; }
+
+        public Guid PostCodeGUID { get; set; }
+
+        public Guid AddressType_GUID { get; set; }
+
+        public Guid? AddressStatus_GUID { get; set; }
+
         public bool IsValidData { get; set; }
 
         public string InValidRemarks { get; set; }
 
+        public string Date { get; set; }
+
+        public string Time { get; set; }
+
+        public string AmendmentType { get; set; }
+
+        public string AmendmentDesc { get; set; }
     }
 }
