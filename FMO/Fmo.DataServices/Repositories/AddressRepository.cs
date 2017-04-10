@@ -16,20 +16,22 @@
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogRepository fileProcessingLog = default(IFileProcessingLogRepository);
+        private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
 
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog)
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog, IPostCodeRepository postCodeRepository)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
             this.fileProcessingLog = fileProcessingLog;
+            this.postCodeRepository = postCodeRepository;
         }
 
-        public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType)
+        public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             bool deleteFlag = false;
             if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
+                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
                 if (lstAddress != null && lstAddress.Count > 0)
                 {
                     lstAddress.ForEach(postalAddressEntity =>
@@ -82,6 +84,7 @@
                     else
                     {
                         var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        entity.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                         DataContext.PostalAddresses.Add(entity);
                     }
 

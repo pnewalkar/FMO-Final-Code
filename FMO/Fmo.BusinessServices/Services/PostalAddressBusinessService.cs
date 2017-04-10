@@ -6,6 +6,8 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.MappingConfiguration;
 using Entity = Fmo.Entities;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -36,15 +38,15 @@ namespace Fmo.BusinessServices.Services
         public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress, string strFileName)
         {
             bool saveFlag = false;
-            int addressTypeId = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
-            int addressStatusId = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
+            Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Nyb.ToString());
+            Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, "Live");
             List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
             if (!lstUDPRNS.All(a => a == 0))
             {
                 foreach (var postalAddress in lstPostalAddress)
                 {
-                    postalAddress.AddressStatus_Id = addressStatusId;
-                    postalAddress.AddressType_Id = addressTypeId;
+                    postalAddress.AddressStatus_GUID = addressStatusId;
+                    postalAddress.AddressStatus_GUID = addressTypeId;
                     addressRepository.SaveAddress(postalAddress, strFileName);
                 }
 
@@ -60,18 +62,18 @@ namespace Fmo.BusinessServices.Services
             try
             {
                 // var postalAddressEntities = GenericMapper.Map<DTO.PostalAddressDTO, Entity.PostalAddress>(postalAddress);
-                int addressTypeUSR = refDataRepository.GetReferenceDataId("Postal Address Type", "USR");
-                int addressTypePAF = refDataRepository.GetReferenceDataId("Postal Address Type", "PAF");
-                int addressTypeNYB = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
+                Guid addressTypeUSR = refDataRepository.GetReferenceDataId("Postal Address Type", "USR");
+                Guid addressTypePAF = refDataRepository.GetReferenceDataId("Postal Address Type", "PAF");
+                Guid addressTypeNYB = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
 
                 var objPostalAddressMatchedUDPRN = addressRepository.GetPostalAddress(objPostalAddress.UDPRN);
                 var objPostalAddressMatchedAddress = addressRepository.GetPostalAddress(objPostalAddress);
                 if (objPostalAddressMatchedUDPRN != null)
                 {
-                    if (objPostalAddressMatchedUDPRN.AddressType_Id == addressTypeNYB)
+                    if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypeNYB)
                     {
-                        objPostalAddress.AddressType_Id = addressTypePAF;
-                        objPostalAddress.AddressStatus_Id = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
+                        objPostalAddress.AddressType_GUID = addressTypePAF;
+                        objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
                         addressRepository.UpdateAddress(objPostalAddress);// remove addressTypeNYB later
 
                         SaveDeliveryPointProcess(objPostalAddress);
@@ -83,10 +85,10 @@ namespace Fmo.BusinessServices.Services
                 }
                 else if (objPostalAddressMatchedAddress != null)
                 {
-                    if (objPostalAddressMatchedAddress.AddressType_Id == addressTypeUSR)
+                    if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
                     {
-                        objPostalAddress.AddressType_Id = addressTypePAF;
-                        objPostalAddress.AddressStatus_Id = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
+                        objPostalAddress.AddressType_GUID = addressTypePAF;
+                        objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
                         addressRepository.UpdateAddress(objPostalAddress);// removed addressTypeNYB later
                     }
                     else
@@ -96,7 +98,7 @@ namespace Fmo.BusinessServices.Services
                 }
                 else
                 {
-                    addressRepository.SaveAddress(objPostalAddress,string.Empty); // insert postal address
+                    addressRepository.SaveAddress(objPostalAddress, string.Empty); // insert postal address
                     SaveDeliveryPointProcess(objPostalAddress);
                 }
                 /*
@@ -178,9 +180,9 @@ namespace Fmo.BusinessServices.Services
                     deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
 
                     // Create task
-                    int tasktypeId = refDataRepository.GetReferenceDataId("Notification type", "Task type");
+                    Guid tasktypeId = refDataRepository.GetReferenceDataId("Notification type", "Task type");
                     var objTask = new NotificationDTO();
-                    objTask.NotificationType_Id = tasktypeId;
+                    objTask.NotificationType_GUID = tasktypeId;
                     objTask.NotificationSource = "Source";
                     objTask.Notification_Heading = "Position new DP";
                     objTask.Notification_Message = "Please position the DP " + "a";

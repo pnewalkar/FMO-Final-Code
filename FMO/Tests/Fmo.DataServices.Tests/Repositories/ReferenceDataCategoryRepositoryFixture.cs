@@ -28,9 +28,7 @@ namespace Fmo.DataServices.Tests.Repositories
         public void Test_ValidGetReferenceDataId()
         {
             var actualResult = testCandidate.GetReferenceDataId("Postal Address Type", "PAF");
-            Assert.NotZero(actualResult);
             Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult == 3);
         }
 
         [Test]
@@ -38,7 +36,6 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             var actualResult = testCandidate.GetReferenceDataId("Postal Address Type", "NYB");
             Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult == 0);
         }
 
         protected override void OnSetup()
