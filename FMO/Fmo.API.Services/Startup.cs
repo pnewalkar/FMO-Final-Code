@@ -20,7 +20,7 @@ using Fmo.Common.Interface;
 using Fmo.API.Services.MiddlerWare;
 using Fmo.Helpers;
 using Fmo.Helpers.Interface;
-
+using Fmo.Common.EmailManagement;
 
 namespace Fmo.API.Services
 {
@@ -73,6 +73,7 @@ namespace Fmo.API.Services
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
             services.AddSingleton<ILoggingHelper, LoggingHelper>();
+            services.AddSingleton<IEmailHelper, EmailHelper>();
             services.AddTransient(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
 
             //Infrastructure
@@ -102,6 +103,7 @@ namespace Fmo.API.Services
             services.AddTransient<ICreateOtherLayersObjects, CreateOtherLayerObjects>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
+            services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

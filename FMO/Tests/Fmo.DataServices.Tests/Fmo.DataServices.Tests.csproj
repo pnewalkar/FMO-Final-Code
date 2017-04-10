@@ -63,6 +63,7 @@
     <Compile Include="Repositories\ReferenceDataCategoryRepositoryFixture.cs" />
     <Compile Include="Repositories\ScenarioRepositoryFixture.cs" />
     <Compile Include="Repositories\SerarchDeliveryPointsRepositoryFixture.cs" />
+    <Compile Include="Repositories\USRFileLoadRepositoryFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
