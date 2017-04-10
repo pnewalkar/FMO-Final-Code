@@ -20,7 +20,7 @@ using Fmo.Common.Interface;
 using Fmo.API.Services.MiddlerWare;
 using Fmo.Helpers;
 using Fmo.Helpers.Interface;
-
+using Fmo.Common.EmailManagement;
 
 namespace Fmo.API.Services
 {
@@ -73,7 +73,7 @@ namespace Fmo.API.Services
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
             services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddTransient(_ => new FMODBContext(Configuration.GetConnectionString("FMODBContext")));
+            services.AddSingleton<IEmailHelper, EmailHelper>();
 
             //Infrastructure
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();
@@ -82,14 +82,14 @@ namespace Fmo.API.Services
             //BusinessServices
             services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
             services.AddTransient<ISearchBussinessService, SearchBussinessService>();
+            services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
+            services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddTransient<IAccessLinkBussinessService, AccessLinkBussinessService>();
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             //Repositories
             services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
-            services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IAddressRepository, AddressRepository>();
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
-            services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddTransient<IDeliveryRouteRepository, DeliveryRouteRepository>();
             services.AddTransient<IScenarioRepository, ScenarioRepository>();
             services.AddTransient<IDeliveryUnitLocationRepository, DeliveryUnitLocationRespository>();
@@ -98,10 +98,14 @@ namespace Fmo.API.Services
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
+            services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
+            services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
+
+            //Others - Helper, Utils etc
             services.AddTransient<ILoggingHelper, LoggingHelper>();
             services.AddTransient<ICreateOtherLayersObjects, CreateOtherLayerObjects>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
-            services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -109,7 +113,7 @@ namespace Fmo.API.Services
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            ConfigureAuth(app);
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();

@@ -21,12 +21,12 @@ namespace Fmo.DataServices.Repositories
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
             Guid statusId = Guid.Empty;
-            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => string.Equals(n.CategoryName, strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (result != null)
             {
                 if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
                 {
-                    var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault();
+                    var referenceData = result.ReferenceDatas.Where(n => n.DataDescription.Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                     if (referenceData != null)
                     {
                         statusId = referenceData.ID;
@@ -39,9 +39,14 @@ namespace Fmo.DataServices.Repositories
 
         public List<ReferenceDataDTO> RouteLogStatus()
         {
-            var query = DataContext.ReferenceDatas.Join(DataContext.ReferenceDataCategories, r => r.ReferenceDataCategory_Id, p => p.ReferenceDataCategory_Id, (r, p) => new { r.ReferenceDataName, r.ReferenceDataValue })
-                .Select(a => new Entity.ReferenceData { ReferenceDataName = a.ReferenceDataName });
-            return GenericMapper.MapList<Entity.ReferenceData, DTO.ReferenceDataDTO>(query.ToList());
+            List<ReferenceDataDTO> lstReferenceDt = null;
+            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals("Delivery Unit Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+            {
+                lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
+            }
+
+            return lstReferenceDt;
         }
     }
 }

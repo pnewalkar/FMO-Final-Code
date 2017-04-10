@@ -1,4 +1,4 @@
-﻿using Fmo.NYBLoader.Interfaces;
+﻿using Fmo.Common.Interface;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

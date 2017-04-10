@@ -1,21 +1,28 @@
 ﻿angular.module('simulation')
-.controller('SimulationController', ['$scope', '$state', '$stateParams', SimulationController])
-function SimulationController($scope, $state, $stateParams) {
+.controller('SimulationController', ['$scope', '$state', '$stateParams', 'simulationBusinessService', SimulationController])
+function SimulationController($scope, $state, $stateParams, simulationBusinessService) {
     debugger;
     var vm = this;
-    vm.data = {
-        group1: 'live',
-        group2: '2'
-    };
+    vm.loadRouteLogStatus = loadRouteLogStatus();
+    vm.loadScenario = loadScenario;
+    vm.selectedRouteStatus = selectedRouteStatus; 
+    //vm.selectedDeliveryUnitObj= $stateParams;
+    //vm.selectedRouteStatusObj = null;
 
-    $scope.$state = $state;
-    $scope.$stateParams = $stateParams;
-    
-     function RouteLogStatus() {
-      //  alert('Jitu');
+    function selectedRouteStatus() {
+        debugger;      
+       // loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
+       
+    }
+    function loadRouteLogStatus() {
+        simulationBusinessService.loadRouteLogStatus();
     }
 
-
-
+    function loadScenario() {
+        simulationBusinessService.loadScenario();
+    }
+    function loadDeliveryRoute() {
+        simulationBusinessService.loadDeliveryRoute();
+    }
 
 }

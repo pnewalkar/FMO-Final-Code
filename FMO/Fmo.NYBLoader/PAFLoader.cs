@@ -15,6 +15,7 @@ using Fmo.MessageBrokerCore;
 using Fmo.Common;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
+using Fmo.Common.Interface;
 
 namespace Fmo.NYBLoader
 {

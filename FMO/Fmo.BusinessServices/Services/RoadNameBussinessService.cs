@@ -28,7 +28,7 @@ namespace Fmo.BusinessServices.Services
             return await roadNameRepository.FetchRoadName();
         }
 
-        public MemoryStream GetRoadRoutes(string bbox)
+        public OsRoadLinkDTO GetRoadRoutes(string bbox)
         {
             OsRoadLinkDTO routeLinkFeatureCollections = new OsRoadLinkDTO();
             string[] bboxArr = bbox.Split(',');
@@ -91,7 +91,8 @@ namespace Fmo.BusinessServices.Services
                             });
 
             var resultBytes = Encoding.UTF8.GetBytes(json);
-            return new MemoryStream(resultBytes);
+            // return new MemoryStream(resultBytes);
+            return routeLinkFeatureCollections;
         }
 
         public string GetData(string query, params object[] parameters)

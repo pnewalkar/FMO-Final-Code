@@ -1,1 +1,43 @@
-<span>Route Log</span>
+<md-dialog aria-label="Route Log" class=routeLogDialog>
+
+<div layout="column" class="md-padding">
+		<h1>Search</h1>
+		<section layout="row" flex="100">
+       		<md-input-container flex="20">
+       			<label>Selection Type</label>
+	          	<md-select name="type" ng-model="project1">
+	            	<md-option value="single">Single</md-option>
+	            	<md-option value="multiple">Multiple</md-option>
+	          	</md-select>
+        	</md-input-container>
+        	<md-input-container flex="20">
+	        	<label>Status</label>
+		        <md-select name="type" ng-model="project2">
+		           	<md-option value="live">Live</md-option>
+		           	<md-option value="planned">Planned</md-option>
+		        </md-select>
+	        </md-input-container>
+	        <md-input-container flex="20">
+	        	<label>Scenario</label>
+		        <md-select name="type" ng-model="project3">
+		           	<md-option value="scenario1">Scenario A</md-option>
+		           	<md-option value="scenario2">Scenario B</md-option>
+		        </md-select>
+	        </md-input-container>
+
+
+	        <md-input-container flex="40">
+          		<label>Route</label>
+          		<md-select ng-model="none"  class="routeSelect">
+            		<md-select-header >
+					<input ng-model="searchTerm" type="text" placeholder="Search" class="routeSelectSearch md-text">
+            	</md-select-header>
+              	<md-option ng-value="route" ng-repeat="route in routes |
+                filter:searchTerm">{{route}}</md-option>	
+          		</md-select>
+        	</md-input-container>
+	    </section>	  
+	</div>
+
+
+</md-dialog>

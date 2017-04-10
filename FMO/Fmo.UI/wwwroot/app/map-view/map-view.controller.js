@@ -11,7 +11,8 @@ function MapController($scope,
     vm.toggleActions = toggleActions;
     vm.oncollapse = oncollapse;
     vm.dotStyle = getDotStyle();
-    vm.selectedDeliveryUnit = null;
+    var unit = vm.selectedDeliveryUnit;
+    vm.selectedDeliveryUnit = unit;
     $scope.$on('refreshLayers',mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
         mapService.mapToolChange(button);

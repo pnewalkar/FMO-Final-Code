@@ -60,10 +60,10 @@
   <ItemGroup>
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
-
     <Compile Include="FileProcessingLogDTO.cs" />
     <Compile Include="NotificationDTO.cs" />
     <Compile Include="OsRoadLinkDTO.cs" />
+    <Compile Include="PostCodeSectorDTO.cs" />
     <Compile Include="SearchCountDTO.cs" />
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
