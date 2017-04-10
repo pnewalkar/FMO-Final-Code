@@ -5,34 +5,24 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     var vm = this;
     vm.loadRouteLogStatus = loadRouteLogStatus();
     vm.loadScenario = loadScenario;
-    vm.selectedStatus = selectedStatus; 
-    $scope.$state = $state;
-    $scope.$stateParams = $stateParams;
-
+    vm.selectedRouteStatus = selectedRouteStatus; 
+    vm.selectedDeliveryUnitObj= $stateParams;
+    vm.selectedRouteStatusObj = null;
 
     function selectedRouteStatus() {
-        debugger;
-         vm.data.group1;
+        debugger;      
+        loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
+       
     }
-    function  loadRouteLogStatus()
-    {
-        vm.data = {
-            group1: '1',
-            group2: '2'
-        };
-        vm.radioData = [
-          { label: 'Live', value: 1 },
-          { label: 'Planned', value: 2 }
-        ];
-    simulationBusinessService.loadRouteLogStatus();
+    function loadRouteLogStatus(selectedRouteStatusObj, selectedDeliveryUnitObj) {
+        simulationBusinessService.loadRouteLogStatus();
     }
 
-    function loadScenario()
-    {
+    function loadScenario() {
         simulationBusinessService.loadScenario();
     }
     function loadDeliveryRoute() {
         simulationBusinessService.loadDeliveryRoute();
     }
-   
+
 }

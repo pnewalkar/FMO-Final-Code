@@ -4,6 +4,7 @@ angular.module('simulation')
                                                 simulationBusinessService])
 function simulationBusinessService(simulationAPIService) {
     var vm = this;
+    vm.RouteStatusObj = null;
     return {
         loadRouteLogStatus: loadRouteLogStatus,
         loadScenario: loadScenario,
@@ -13,7 +14,17 @@ function simulationBusinessService(simulationAPIService) {
     function loadRouteLogStatus()
     {
         simulationAPIService.getStatus().then(function (response) {
+
             debugger;
+            vm.RouteStatusObj = response.data;
+            vm.data = {
+                group1: '1',
+                group2: '2'
+            };
+            vm.radioData = [
+              { label: 'Live', value: 1 },
+              { label: 'Planned', value: 2 }
+            ];
         });
     }
 
