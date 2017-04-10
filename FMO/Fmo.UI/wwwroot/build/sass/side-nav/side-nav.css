@@ -1,0 +1,19 @@
+.routeLogDialog {
+    width: 60%;
+    height: 100%;
+}
+
+md-select {
+    width: 110px;
+}
+
+.routeSelect{
+    width: 100%;
+}
+
+.routeSelectSearch {
+    width: 97%;
+    background: none;
+    outline: none;
+    height: 100%;
+    padding: 0; }
