@@ -21,12 +21,12 @@ namespace Fmo.DataServices.Repositories
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
             Guid statusId = Guid.Empty;
-            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => string.Equals(n.CategoryName, strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (result != null)
             {
                 if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
                 {
-                    var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataName == strRefDataName).SingleOrDefault();
+                    var referenceData = result.ReferenceDatas.Where(n => n.DataDescription.Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                     if (referenceData != null)
                     {
                         statusId = referenceData.ID;
