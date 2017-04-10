@@ -62,6 +62,7 @@
                 if (objPostalAddress != null)
                 {
                     var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -80,11 +81,12 @@
                         objAddress.PostcodeType = objPostalAddress.PostcodeType;
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
+                        objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
                     }
                     else
                     {
+                        objPostalAddress.ID = Guid.NewGuid();
                         var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
-                        entity.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                         DataContext.PostalAddresses.Add(entity);
                     }
 

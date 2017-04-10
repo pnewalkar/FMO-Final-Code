@@ -10,10 +10,6 @@ namespace Fmo.DataServices.DBContext
         {
         }
 
-        public FMODBContext(string connString)
-           : base(connString)
-        {
-        }
 
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
 

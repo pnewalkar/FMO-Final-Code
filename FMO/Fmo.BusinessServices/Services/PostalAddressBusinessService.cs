@@ -45,14 +45,14 @@ namespace Fmo.BusinessServices.Services
         {
             bool saveFlag = false;
             Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Nyb.ToString());
-            Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, "Live");
+            Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Status, "Live");
             List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
             if (!lstUDPRNS.All(a => a == 0))
             {
                 foreach (var postalAddress in lstPostalAddress)
                 {
                     postalAddress.AddressStatus_GUID = addressStatusId;
-                    postalAddress.AddressStatus_GUID = addressTypeId;
+                    postalAddress.AddressType_GUID = addressTypeId;
                     addressRepository.SaveAddress(postalAddress, strFileName);
                 }
 
