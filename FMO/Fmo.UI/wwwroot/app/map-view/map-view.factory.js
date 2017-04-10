@@ -11,6 +11,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     var vectorLayer = null;
     var vectorSource = null;
     var viewMiniMap = null;
+    var customScaleLine = null;
 
     var layers = [];
 
@@ -28,8 +29,8 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         getLayer: getLayer,
         createLayerAsync: createLayerAsync,
         convertGeoJsonToOl: convertGeoJsonToOl,
-        deleteAllFeaturesFromLayer:deleteAllFeaturesFromLayer,
-        addFeaturesToMap:addFeaturesToMap
+        deleteAllFeaturesFromLayer: deleteAllFeaturesFromLayer,
+        addFeaturesToMap: addFeaturesToMap
     };
 
     function initialiseMap() {
@@ -43,10 +44,16 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         //    maxZoom: 19
         //});
 
+
+        var definedResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
+        var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
+      
         view = new ol.View({
             projection: 'EPSG:27700',
             center: [400000, 650000],
-            zoom: 4
+            // zoom: 4,
+            resolutions: definedResolutions,
+            resolution: 0.5600011200022402
         });
 
 
@@ -60,6 +67,69 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             renderBuffer: 1000
         });
 
+        function getResolutionFromScale(scale) {
+            var units = map.getView().getProjection().getUnits();
+            var dpi = 25.4 / 0.28;
+            var mpu = ol.proj.METERS_PER_UNIT[units];
+            var resolution = scale / (mpu * 39.37 * dpi);
+            return resolution;
+        }
+
+        function getScaleFromResolution(resolution) {
+            var units = map.getView().getProjection().getUnits();
+            var dpi = 25.4 / 0.28;
+            var mpu = ol.proj.METERS_PER_UNIT[units];
+            var scale = resolution * (mpu * 39.37 * dpi);
+            return scale;
+        }
+
+        customScaleLine = function (opt_options) {
+
+            var options = opt_options ? opt_options : {};
+
+            var className = options.className !== undefined ? options.className : 'ol-scale-line';
+
+            this.element_ = document.createElement('DIV');
+
+            this.renderedVisible_ = false;           
+
+            this.viewState_ = null;
+
+            this.renderedHTML_ = '';
+
+            var render = options.render ? options.render : ol.control.ScaleLine.render;
+
+            ol.control.Control.call(this, {
+                element: this.element_,
+                render: render,
+                target: options.target
+            });
+
+        };
+
+        customScaleLine.render = function (mapEvent) {
+         
+            var resolution = map.getView().getResolution();
+
+            var scale = Math.round(getScaleFromResolution(resolution));
+
+            if (definedScales.indexOf(scale) > -1) {
+                var html = 1 + ': ' + scale;
+
+                if (this.renderedHTML_ != html) {
+                    this.element_.innerHTML = html;
+                    this.renderedHTML_ = html;
+                }
+
+                if (!this.renderedVisible_) {
+                    this.element_.style.display = '';
+                    this.renderedVisible_ = true;
+                }
+            }
+        };
+              
+        ol.inherits(customScaleLine, ol.control.ScaleLine);
+
         map = new ol.Map({
             layers: layers.map(function (a) { return a.layer }),
             target: 'map',
@@ -67,7 +137,11 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
             controls: ol.control.defaults().extend([
-                new ol.control.ScaleLine()
+                new customScaleLine({
+                    render: customScaleLine.render,
+                    className: 'zoom-scale',
+                    target: document.getElementById('zoom-scale')
+                })
             ])
         });
         var external_control = new ol.control.Zoom({
@@ -81,8 +155,9 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             initialiseMap();
 
         viewMiniMap = new ol.View({
+            projection: 'EPSG:27700',
             center: view.getCenter(),
-            zoom: 12
+            zoom: view.getZoom() - 5
         });
 
         miniMap = new ol.Map({
@@ -99,7 +174,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         view.on('change:center', updateMiniMap);
     }
 
-    function updateMiniMap(){
+    function updateMiniMap() {
         viewMiniMap.setCenter(view.getCenter());
         viewMiniMap.setZoom(view.getZoom() - 5);
     }
@@ -126,8 +201,8 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
     function getLayer(layerName) {
         var actualLayer;
-        angular.forEach(layers, function(layer, index) {
-            if(layer.layerName === layerName) {
+        angular.forEach(layers, function (layer, index) {
+            if (layer.layerName === layerName) {
                 actualLayer = layer;
             }
         });
@@ -136,8 +211,8 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     }
 
     function removeLayer(layerName) {
-        angular.forEach(layers, function(layer, index) {
-            if(layer.layerName === layerName) {
+        angular.forEach(layers, function (layer, index) {
+            if (layer.layerName === layerName) {
                 map.removeLayer(layer.layer);
                 delete layers[index];
             }
@@ -145,17 +220,17 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     }
 
     function deleteAllFeaturesFromLayer(layerName) {
-        angular.forEach(layers, function(layer, index) {
-            if(layer.layerName === layerName) {
+        angular.forEach(layers, function (layer, index) {
+            if (layer.layerName === layerName) {
                 layer.layer.getSource().clear();
             }
         });
     }
 
-    function getLayerDataFromUrl(url){
+    function getLayerDataFromUrl(url) {
         var shapePromise = getShapeAsync(url);
         return shapePromise
-            .then(function(result){
+            .then(function (result) {
                 return createLayerFromFeatures(convertGeoJsonToOl(result.data));
             });
     }
@@ -163,7 +238,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     function convertGeoJsonToOl(featureData, formatOptions) {
         var format = new ol.format.GeoJSON();
 
-        if(!formatOptions) {
+        if (!formatOptions) {
             formatOptions = {
                 featureProjection: map.getView().getProjection()
             };
@@ -183,8 +258,8 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
     function getLayer(layerName) {
         var actualLayer;
-        angular.forEach(layers, function(layer, index) {
-            if(layer.layerName === layerName) {
+        angular.forEach(layers, function (layer, index) {
+            if (layer.layerName === layerName) {
                 actualLayer = layer;
             }
         });
@@ -193,17 +268,17 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     }
 
     function deleteAllFeaturesFromLayer(layerName) {
-        angular.forEach(layers, function(layer, index) {
-            if(layer.layerName === layerName) {
+        angular.forEach(layers, function (layer, index) {
+            if (layer.layerName === layerName) {
                 layer.layer.getSource().clear();
             }
         });
     }
 
-    function getLayerDataFromUrl(url){
+    function getLayerDataFromUrl(url) {
         var shapePromise = getShapeAsync(url);
         return shapePromise
-            .then(function(result){
+            .then(function (result) {
                 return createLayerFromFeatures(convertGeoJsonToOl(result.data));
             });
     }
@@ -211,7 +286,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     function convertGeoJsonToOl(featureData, formatOptions) {
         var format = new ol.format.GeoJSON();
 
-        if(!formatOptions) {
+        if (!formatOptions) {
             formatOptions = {
                 featureProjection: map.getView().getProjection()
             };

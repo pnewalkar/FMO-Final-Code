@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Fmo.DTO;
 using Fmo.Entities;
+using System;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
@@ -16,6 +17,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
 
         bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName);
 
-        bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType);
+        bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
     }
 }
