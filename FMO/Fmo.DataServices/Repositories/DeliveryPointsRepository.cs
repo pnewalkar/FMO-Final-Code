@@ -146,17 +146,24 @@ namespace Fmo.DataServices.Repositories
 
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText)
         {
-            int takeCount = 5;
-            var result = await DataContext.DeliveryPoints.Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
-                                || x.PostalAddress.BuildingName.Contains(searchText)
-                                || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
-                                || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                || x.PostalAddress.DependentLocality.Contains(searchText))
-                .Take(takeCount)
-                .ToListAsync();
+            try
+            {
+                int takeCount = 5;
+                var result = await DataContext.DeliveryPoints.Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
+                                    || x.PostalAddress.BuildingName.Contains(searchText)
+                                    || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                    || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
+                                    || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                    || x.PostalAddress.DependentLocality.Contains(searchText))
+                    .Take(takeCount)
+                    .ToListAsync();
 
-            return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result);
+                return GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<int> GetDeliveryPointsCount(string searchText)

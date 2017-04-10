@@ -1,2 +1,8 @@
 input {
   background: red; }
+
+
+i.fa.fa-map-marker {
+    margin-right: 5px;
+    color: red;
+}
