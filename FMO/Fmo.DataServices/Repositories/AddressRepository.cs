@@ -218,16 +218,27 @@
             return saveFlag;
         }
 
+        /// <summary>
+        /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
+        /// </summary>
+        /// <param name="uDPRN"></param>
+        /// <param name="strFileName"></param>
+        /// <param name="fileType"></param>
+        /// <param name="strException"></param>
+        /// <returns></returns>
         private bool LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
-            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
-            objFileProcessingLog.FileID = Guid.NewGuid();
-            objFileProcessingLog.UDPRN = uDPRN;
-            objFileProcessingLog.AmendmentType = "I";
-            objFileProcessingLog.FileName = strFileName;
-            objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
-            objFileProcessingLog.FileType = fileType;
-            objFileProcessingLog.NatureOfError = strException;
+            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
+            {
+                FileID = Guid.NewGuid(),
+                UDPRN = uDPRN,
+                AmendmentType = "I",
+                FileName = strFileName,
+                FileProcessing_TimeStamp = DateTime.Now,
+                FileType = fileType,
+                NatureOfError = strException
+            };
+
             return fileProcessingLog.LogFileException(objFileProcessingLog);
         }
     }

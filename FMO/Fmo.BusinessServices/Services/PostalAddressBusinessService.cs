@@ -27,6 +27,12 @@ namespace Fmo.BusinessServices.Services
             this.addressLocationRepository = addressLocationRepository;
         }
 
+        /// <summary>
+        /// Save list of NYB details into database.
+        /// </summary>
+        /// <param name="lstPostalAddress"></param>
+        /// <param name="strFileName"></param>
+        /// <returns></returns>
         public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress, string strFileName)
         {
             bool saveFlag = false;
