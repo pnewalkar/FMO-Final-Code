@@ -1,4 +1,3 @@
-angular.module('sideNav',[
-                          'simulation',
-                          'advanceSearch'
+angular.module('sideNav',['advanceSearch',
+                          'simulation','routeLog'
 ]);
