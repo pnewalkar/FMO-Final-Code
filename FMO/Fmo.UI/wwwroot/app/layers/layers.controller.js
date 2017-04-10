@@ -1,84 +1,42 @@
 'use strict';
 angular.module('layers')
-    .controller('LayerSelectorController', ['$scope', '$rootScope', '$http', 'mapService', 'mapStylesFactory', 'layersApiService', LayerSelectorController]);
+    .controller('LayerSelectorController', ['$scope', 'layersService', LayerSelectorController]);
 
-function LayerSelectorController($scope, $rootScope, $http, mapService, mapStylesFactory, layersApiService) {
+function LayerSelectorController($scope, layersService) {
     var vm = this;
-
     vm.showUngrouped = showUngrouped;
     vm.getLayerData = getLayerData;
     vm.onChange = onChange;
-    vm.mapService = mapService;
-    $scope.active = true;
-
+    vm.groups = [];
+    vm.ungrouped = [];
+    vm.groupData;
 
     function getLayerData() {
-        vm.layers = [];
-        vm.groups = [];
-        vm.ungrouped = [];
-        vm.groupNames = {};
-        vm.layers = mapService.mapLayers();
-        vm.layers.forEach(function (layer) {
-            if (!layer.group) {
-                vm.ungrouped.push(layer);
-            } else {
-                if (vm.groupNames[layer.group.toString()] === undefined) {
-                    var id = vm.groups.length;
-                    vm.groupNames[layer.group.toString()] = id;
-                    vm.groups[id] = { name: layer.group.toString(), layers: [] };
-                } else {
-                    id = vm.groupNames[layer.group.toString()];
-                }
-                vm.groups[id].layers.push(layer);
-            }
-        });
-        console.log(vm.ungrouped);
+        vm.groupData = layersService.getLayerData();
+        vm.groups = vm.groupData.groups;
+        vm.ungrouped = vm.groupData.ungroup;
     }
 
     function refreshLayer() {
-        mapService.refreshLayers();
+        layersService.refreshLayer();
     }
     function onChange(changedLayer) {
-        debugger;
-       // fetchDeliveryPoints();
-      //  fetchAccessLinks();
-        if (changedLayer.group) {
-            var group = vm.groups[vm.groupNames[changedLayer.group]];
-            var otherEnabled = false;
-            group.layers.forEach(function (layer) {
-                if (layer !== changedLayer && !layer.disabled && layer.selectorVisible) {
-                    layer.selected = false;
-                    otherEnabled = true;
-                }
-            });
-            if (otherEnabled)
-                changedLayer.selected = true;
-        }
-        refreshLayer();
-  
-        //$rootScope.$emit('refreshLayers');
+        layersService.onChange(changedLayer);
     }
 
     function showUngrouped() {
-        var showGrouped = false;
-        vm.ungrouped.forEach(function (layer) {
-            showGrouped = layer.selectorVisible;
-        })
-        return showGrouped;
-    }
-    function fetchDeliveryPoints() {
-        var data ;
-       var data= layersApiService.fetchDeliveryPoints();
-        return showGrouped;
+        return layersService.showUngrouped();
     }
 
+    function fetchDeliveryPoints() {
+        return layersService.fetchDeliveryPoints();
+    }
 
     function fetchAccessLinks() {
-        var data;
-        var data = layersApiService.fetchAccessLinks();
-        return showGrouped;
+        return layersService.fetchAccessLinks();
     }
+
     vm.getLayerData();
 
-    $scope.$on("updateLayerControl", getLayerData);
+    $scope.$on("updateLayerControl", vm.getLayerData);
 };

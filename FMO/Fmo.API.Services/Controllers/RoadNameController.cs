@@ -27,21 +27,22 @@ namespace Fmo.API.Services.Controllers
 
         [Route("GetRouteLinks")]
         [HttpGet]
-        public HttpResponseMessage GetRoouteData(string bbox)
+        public OsRoadLinkDTO GetRoouteData(string bbox)
         {
             //try
             //{
-                string[] bboxArr = bbox.Split(',');
-                MemoryStream memoryStream = roadNameBussinessService.GetRoadRoutes(bbox);
+            string[] bboxArr = bbox.Split(',');
 
-                var result = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StreamContent(memoryStream)
-                };
+            return roadNameBussinessService.GetRoadRoutes(bbox);
 
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                result.Content.Headers.ContentLength = memoryStream.Length;
-                return result;
+            //var result = new HttpResponseMessage(HttpStatusCode.OK)
+            //{
+            //    Content = new StreamContent(memoryStream)
+            //};
+
+            //result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            //result.Content.Headers.ContentLength = memoryStream.Length;
+            //return result;
             //}
             //catch (Exception ex)
             //{
