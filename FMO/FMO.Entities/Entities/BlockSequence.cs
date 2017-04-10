@@ -1,16 +1,11 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.BlockSequence")]
     public partial class BlockSequence
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int BlockSequence_Id { get; set; }
 
         public int Block_Id { get; set; }
@@ -23,6 +18,14 @@ namespace Fmo.Entities
         public int? OperationalObjectType_Id { get; set; }
 
         public int? DeliveryGroup_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid Block_GUID { get; set; }
+
+        public Guid? OperationalObjectType_GUID { get; set; }
+
+        public Guid? DeliveryGroup_GUID { get; set; }
 
         public virtual Block Block { get; set; }
 

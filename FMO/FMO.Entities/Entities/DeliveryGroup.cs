@@ -4,7 +4,6 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.DeliveryGroup")]
     public partial class DeliveryGroup
@@ -18,7 +17,7 @@ namespace Fmo.Entities
             GroupHazards = new HashSet<GroupHazard>();
         }
 
-        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DeliveryGroup_Id { get; set; }
 
         [Required]
@@ -43,6 +42,14 @@ namespace Fmo.Entities
         public int? ServicePointType_Id { get; set; }
 
         public int Polygon_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid GroupType_GUID { get; set; }
+
+        public Guid? ServicePointType_GUID { get; set; }
+
+        public Guid Polygon_GUID { get; set; }
 
         public virtual AccessLink AccessLink { get; set; }
 

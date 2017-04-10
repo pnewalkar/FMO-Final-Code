@@ -8,7 +8,7 @@
     using Common.Constants;
     using Common.Enums;
     using Common.Interface;
-    using DTO;
+    using DTO.FileProcessing;
     using Fmo.Common.TestSupport;
     using Fmo.NYBLoader;
     using Fmo.NYBLoader.Interfaces;

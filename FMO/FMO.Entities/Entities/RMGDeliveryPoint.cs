@@ -1,15 +1,13 @@
 namespace Fmo.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
     [Table("FMO.RMGDeliveryPoint")]
     public partial class RMGDeliveryPoint
     {
-        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RMGDeliveryPoint_Id { get; set; }
 
         public DbGeometry LocationXY { get; set; }
@@ -21,6 +19,10 @@ namespace Fmo.Entities
         public decimal? Longitude { get; set; }
 
         public int DeliveryPoint_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid DeliveryPoint_GUID { get; set; }
 
         public virtual AccessLink AccessLink { get; set; }
 

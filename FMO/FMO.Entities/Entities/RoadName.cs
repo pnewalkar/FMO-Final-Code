@@ -4,7 +4,6 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.RoadName")]
     public partial class RoadName
@@ -15,8 +14,6 @@ namespace Fmo.Entities
             NetworkLinks = new HashSet<NetworkLink>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int RoadName_Id { get; set; }
 
         [StringLength(20)]
@@ -30,6 +27,8 @@ namespace Fmo.Entities
 
         [StringLength(255)]
         public string DesignatedName { get; set; }
+
+        public Guid ID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkLink> NetworkLinks { get; set; }

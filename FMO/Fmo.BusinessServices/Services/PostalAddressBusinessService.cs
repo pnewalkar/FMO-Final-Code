@@ -148,7 +148,7 @@ namespace Fmo.BusinessServices.Services
             return saveFlag;
         }
 
-        private void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
+        public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
         {
             var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
             var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);

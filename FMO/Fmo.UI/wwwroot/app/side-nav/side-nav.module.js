@@ -1,4 +1,4 @@
 angular.module('sideNav',[
-                          'simulation',
-                          'advanceSearch'
+                          'simulation'
+                         
 ]);

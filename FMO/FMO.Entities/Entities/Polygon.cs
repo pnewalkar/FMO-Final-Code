@@ -17,8 +17,6 @@ namespace Fmo.Entities
             PolygonObjects = new HashSet<PolygonObject>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Polygon_Id { get; set; }
 
         public int PolygonType_Id { get; set; }
@@ -28,6 +26,10 @@ namespace Fmo.Entities
 
         [Required]
         public DbGeometry PolygonCentroid { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid PolygonType_GUID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AreaHazard> AreaHazards { get; set; }

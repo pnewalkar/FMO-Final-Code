@@ -4,7 +4,6 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.Scenario")]
     public partial class Scenario
@@ -15,8 +14,6 @@ namespace Fmo.Entities
             DeliveryRoutes = new HashSet<DeliveryRoute>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DeliveryScenario_Id { get; set; }
 
         [StringLength(50)]
@@ -26,7 +23,11 @@ namespace Fmo.Entities
 
         public int? OperationalState_Id { get; set; }
 
-        public int? ScenarioUnitType_Id { get; set; }
+        public Guid ID { get; set; }
+
+        public Guid? DeliveryUnit_GUID { get; set; }
+
+        public Guid? OperationalState_GUID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryRoute> DeliveryRoutes { get; set; }
@@ -34,7 +35,5 @@ namespace Fmo.Entities
         public virtual DeliveryUnitLocation DeliveryUnitLocation { get; set; }
 
         public virtual ReferenceData ReferenceData { get; set; }
-
-        public virtual ReferenceData ReferenceData1 { get; set; }
     }
 }

@@ -13,11 +13,11 @@ namespace Fmo.Entities
         public DeliveryUnitLocation()
         {
             Scenarios = new HashSet<Scenario>();
+            DeliveryUnitLocationPostcodes = new HashSet<DeliveryUnitLocationPostcode>();
             DeliveryUnitPostcodeSectors = new HashSet<DeliveryUnitPostcodeSector>();
+            UserRoleUnits = new HashSet<UserRoleUnit>();
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DeliveryUnit_Id { get; set; }
 
         [Required]
@@ -31,10 +31,18 @@ namespace Fmo.Entities
 
         public DbGeometry UnitBoundryPolygon { get; set; }
 
+        public Guid ID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Scenario> Scenarios { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryUnitLocationPostcode> DeliveryUnitLocationPostcodes { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserRoleUnit> UserRoleUnits { get; set; }
     }
 }
