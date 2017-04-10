@@ -47,10 +47,6 @@ namespace Fmo.NYBLoader
             try
             {
                 string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
-                {
-                    Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
-                }
 
                 if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {

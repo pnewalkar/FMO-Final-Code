@@ -16,20 +16,22 @@
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogRepository fileProcessingLog = default(IFileProcessingLogRepository);
+        private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
 
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog)
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog, IPostCodeRepository postCodeRepository)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
             this.fileProcessingLog = fileProcessingLog;
+            this.postCodeRepository = postCodeRepository;
         }
 
-        public bool DeleteNYBPostalAddress(List<int> lstUDPRN, int addressType)
+        public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             bool deleteFlag = false;
             if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_Id == addressType).ToList();
+                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
                 if (lstAddress != null && lstAddress.Count > 0)
                 {
                     lstAddress.ForEach(postalAddressEntity =>
@@ -82,6 +84,7 @@
                     else
                     {
                         var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        entity.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                         DataContext.PostalAddresses.Add(entity);
                     }
 
@@ -98,7 +101,7 @@
             return saveFlag;
         }
 
-        public bool InsertAddress(PostalAddressDTO objPostalAddress)
+        public bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
@@ -112,9 +115,10 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
+                throw ex;
             }
 
             return saveFlag;
@@ -128,14 +132,14 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TO DO implement logging
-                throw;
+                this.loggingHelper.LogInfo("Error in GetPostalAddress(int? uDPRN) :" + ex.ToString());
+                throw ex;
             }
         }
 
-        public PostalAddressDTO GetPostalAddress(DTO.PostalAddressDTO objPostalAddress)
+        public PostalAddressDTO GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
             try
             {
@@ -153,14 +157,14 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TO DO implement logging
-                throw;
+                this.loggingHelper.LogInfo("Error in GetPostalAddress(PostalAddressDTO objPostalAddress) :" + ex.ToString());
+                throw ex;
             }
         }
 
-        public bool UpdateAddress(PostalAddressDTO objPostalAddress)// , int addressType)&& n.AddressType_Id == addressType
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
@@ -199,7 +203,6 @@
                         // {
                         //    //To DO log error
                         // }
-                        DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
                     }
                     else
                     {
@@ -210,24 +213,36 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
+                throw ex;
             }
 
             return saveFlag;
         }
 
+        /// <summary>
+        /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
+        /// </summary>
+        /// <param name="uDPRN"></param>
+        /// <param name="strFileName"></param>
+        /// <param name="fileType"></param>
+        /// <param name="strException"></param>
+        /// <returns></returns>
         private bool LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
-            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
-            objFileProcessingLog.FileID = Guid.NewGuid();
-            objFileProcessingLog.UDPRN = uDPRN;
-            objFileProcessingLog.AmendmentType = "I";
-            objFileProcessingLog.FileName = strFileName;
-            objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
-            objFileProcessingLog.FileType = fileType;
-            objFileProcessingLog.NatureOfError = strException;
+            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
+            {
+                FileID = Guid.NewGuid(),
+                UDPRN = uDPRN,
+                AmendmentType = "I",
+                FileName = strFileName,
+                FileProcessing_TimeStamp = DateTime.Now,
+                FileType = fileType,
+                NatureOfError = strException
+            };
+
             return fileProcessingLog.LogFileException(objFileProcessingLog);
         }
     }

@@ -21,6 +21,7 @@ using Fmo.API.Services.MiddlerWare;
 using Fmo.Helpers;
 using Fmo.Helpers.Interface;
 
+
 namespace Fmo.API.Services
 {
     public partial class Startup
@@ -40,6 +41,12 @@ namespace Fmo.API.Services
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+
+#if DEBUG
+           SqlServerTypes.Utilities.LoadNativeAssemblies(System.IO.Path.Combine(env.ContentRootPath, "bin"));
+#else
+ SqlServerTypes.Utilities.LoadNativeAssemblies( env.ContentRootPath);
+#endif
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -76,7 +83,8 @@ namespace Fmo.API.Services
             services.AddTransient<ISearchBussinessService, SearchBussinessService>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
-
+            services.AddTransient<IAccessLinkBussinessService, AccessLinkBussinessService>();
+            services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             //Repositories
             services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
             services.AddTransient<IAddressRepository, AddressRepository>();
@@ -90,6 +98,7 @@ namespace Fmo.API.Services
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
+            services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
 
             //Others - Helper, Utils etc
             services.AddTransient<ILoggingHelper, LoggingHelper>();

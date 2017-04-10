@@ -10,6 +10,7 @@ using NUnit.Framework;
 using System.Data.Entity;
 using Fmo.DTO;
 using Fmo.Common.Interface;
+using System;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -19,6 +20,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IFileProcessingLogRepository> mockFileProcessingLog;
+        private Mock<IPostCodeRepository> mockPostCodeRepository;
 
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAddressRepository testCandidate;
@@ -61,7 +63,7 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             SetUpdataWithDeliverypoints();
             List<int> lstUDPRNS = new List<int>() { 158623, 85963 };
-            var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, 2);
+            var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
             mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Never);
             Assert.NotNull(result);
             Assert.IsFalse(result);
@@ -72,7 +74,7 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             SetUpdataWithOutDeliverypoints();
             List<int> lstUDPRNS = new List<int>() { 158623, 85963 };
-            var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, 2);
+            var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
             mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Once);
             Assert.NotNull(result);
             Assert.IsTrue(result);
@@ -83,7 +85,7 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             SetUpdataWithOutDeliverypoints();
             List<int> lstUDPRNS = new List<int>() { 14856 };
-            var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, 2);
+            var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
             mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Never);
             Assert.NotNull(result);
             Assert.IsFalse(result);
@@ -101,7 +103,7 @@ namespace Fmo.DataServices.Tests.Repositories
                 new PostalAddress()
                 {
                     Address_Id = 10,
-                    AddressType_Id=2,
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     UDPRN = 14856,
                     DeliveryPoints = new List<DeliveryPoint>()
                {
@@ -116,12 +118,14 @@ namespace Fmo.DataServices.Tests.Repositories
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFileProcessingLog = CreateMock<IFileProcessingLogRepository>();
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockPostCodeRepository = CreateMock<IPostCodeRepository>();
             mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
+            mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object);
         }
 
         private void SetUpdataWithOutDeliverypoints()
@@ -141,12 +145,14 @@ namespace Fmo.DataServices.Tests.Repositories
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFileProcessingLog = CreateMock<IFileProcessingLogRepository>();
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockPostCodeRepository = CreateMock<IPostCodeRepository>();
             mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
+            mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object);
         }
     }
 }

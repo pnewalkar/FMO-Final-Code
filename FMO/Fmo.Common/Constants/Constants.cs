@@ -27,6 +27,8 @@ namespace Fmo.Common.Constants
         public const int TOLERANCE_DISTANCE_IN_METERS = 10;
         public const string USR_NOTIFICATION_SOURCE = "SYSTEM";
         public const string USR_ACTION = "Check updated DP Location";
+        public const string Postal_Address_Status = "Postal Address Status";
+        public const string Postal_Address_Type = "Postal Address Type";
     }
 }
 

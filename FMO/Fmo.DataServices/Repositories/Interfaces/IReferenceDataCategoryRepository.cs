@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Fmo.DTO;
+using System;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IReferenceDataCategoryRepository
     {
-        int GetReferenceDataId(string strCategoryname, string strRefDataName);
+        Guid GetReferenceDataId(string strCategoryname, string strRefDataName);
 
-        List<DTO.ReferenceDataDTO> RouteLogStatus();
+        List<ReferenceDataDTO> RouteLogStatus();
     }
 }

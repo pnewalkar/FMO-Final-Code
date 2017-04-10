@@ -10,6 +10,7 @@ using System.IO;
 using Microsoft.SqlServer.Types;
 using System.Data.SqlTypes;
 using Newtonsoft.Json;
+using Fmo.Helpers;
 
 namespace Fmo.BusinessServices.Services
 {

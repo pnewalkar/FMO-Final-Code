@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using System.Net.Http;
-using System.IO;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Web.Script.Serialization;
-using Microsoft.SqlServer.Types;
-using System.Data.SqlTypes;
-using Newtonsoft.Json.Linq;
-
-namespace Fmo.BusinessServices.Services
+﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.SqlTypes;
+    using System.IO;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Web.Script.Serialization;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.Helpers;
+    using Microsoft.SqlServer.Types;
+    using Newtonsoft.Json.Linq;
+
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);

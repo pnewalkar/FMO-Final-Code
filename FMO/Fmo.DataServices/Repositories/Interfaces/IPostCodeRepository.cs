@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using System;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
@@ -11,5 +12,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         Task<int> GetPostCodeUnitCount(string searchText);
 
         Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText);
+
+        Guid GetPostCodeID(string postCode);
     }
 }
