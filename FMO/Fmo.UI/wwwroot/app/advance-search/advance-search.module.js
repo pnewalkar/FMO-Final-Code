@@ -1,1 +1,1 @@
-﻿
+angular.module('advanceSearch',[]);
