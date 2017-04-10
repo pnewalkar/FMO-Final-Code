@@ -12,6 +12,6 @@ namespace Fmo.BusinessServices.Interfaces
     {
         Task<List<RoadNameDTO>> FetchRoadName();
 
-        MemoryStream GetRoadRoutes(string bbox);
+        OsRoadLinkDTO GetRoadRoutes(string bbox);
     }
 }

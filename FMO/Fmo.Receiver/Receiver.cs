@@ -15,6 +15,7 @@ using System.Threading;
 using Fmo.Common.Constants;
 using Fmo.NYBLoader.Interfaces;
 using Fmo.NYBLoader.Common;
+using Fmo.Common.Interface;
 
 namespace Fmo.Receiver
 {

@@ -34,14 +34,13 @@
             }
         }
 
-        public async Task<int> DeleteNotificationbyUDPRN(int uDPRN)
+        public async Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action)
         {
             try
             {
-                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN).SingleOrDefault();
+                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id.Equals(uDPRN) && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
                 DataContext.Notifications.Remove(notification);
                 return await DataContext.SaveChangesAsync();
-
             }
             catch (Exception)
             {

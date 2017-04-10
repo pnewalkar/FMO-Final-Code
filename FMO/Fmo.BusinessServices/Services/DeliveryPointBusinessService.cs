@@ -46,13 +46,14 @@
 
         }
 
-        public MemoryStream GetDeliveryPoints1(string bbox)
+        public DeliveryPointDTO GetDeliveryPoints1(string bbox)
         {
             try
             {
                 object[] bboxArr = bbox.Split(',');
                 var coordinates = GetData(null, bboxArr);
                 List<DeliveryPointDTO> lst = deliveryPointsRepository.GetDeliveryPoints1(coordinates);
+                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
                 var geoJson = new GeoJson
                 {
                     features = new List<Feature>()
@@ -91,7 +92,7 @@
 
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 result.Content.Headers.ContentLength = mStream.Length;
-                return mStream;
+                return deliveryPointDTO;
             }
             catch (Exception)
             {

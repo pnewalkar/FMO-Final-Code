@@ -3,4 +3,5 @@ angular.module('home', [      'sideNav',
                               'unitSelector',
                               'task',
                               'mapView'
+                             
                              ]);

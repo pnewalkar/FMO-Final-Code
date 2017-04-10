@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fmo.NYBLoader.Interfaces
+namespace Fmo.Common.Interface
 {
     public interface IConfigurationHelper
     {
