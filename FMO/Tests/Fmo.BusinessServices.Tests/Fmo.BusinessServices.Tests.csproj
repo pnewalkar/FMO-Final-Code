@@ -54,11 +54,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\AccessLinkBussinessServiceFixture.cs" />
     <Compile Include="Services\DeliveryPointBusinessServiceFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LoadThirdPartyFileBusinessServiceTestFixture.cs" />
     <Compile Include="Services\DeliveryRouteBusinessServiceFixture.cs" />
     <Compile Include="Services\PostalAddressBusinessServiceFixture.cs" />
+    <Compile Include="Services\RoadNameBussinessServiceFixture.cs" />
     <Compile Include="Services\SearchBusinessServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +85,10 @@
     <ProjectReference Include="..\..\Fmo.DTO\Fmo.DTO.csproj">
       <Project>{43fc012e-5274-4cf4-8689-97b3ce067c11}</Project>
       <Name>Fmo.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FMO.Entities\Fmo.Entities.csproj">
+      <Project>{355491A6-65FA-4145-BB68-74E0E1576433}</Project>
+      <Name>Fmo.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\FMO.MessageBrokerCore\Fmo.MessageBrokerCore.csproj">
       <Project>{10A130A3-105F-4DF9-9D74-00D252B5ACC7}</Project>
