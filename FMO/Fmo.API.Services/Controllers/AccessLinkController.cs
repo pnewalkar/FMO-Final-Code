@@ -18,6 +18,11 @@ namespace Fmo.API.Services.Controllers
        IAccessLinkBussinessService accessLinkBussinessService = default(IAccessLinkBussinessService);
 
 
+        public AccessLinkController(IAccessLinkBussinessService businessService)
+        {
+            this.accessLinkBussinessService = businessService;
+        }
+
         [Route("fetchAccessLink")]
         [HttpGet]
         public List<AccessLinkDTO> FetchAccessLink(List<AccessLinkDTO> AccessLinkDTO)
@@ -27,21 +32,14 @@ namespace Fmo.API.Services.Controllers
 
         [Route("GetAccessLinks")]
         [HttpGet]
-        public HttpResponseMessage GetAccessLinks(string bbox)
+        public AccessLinkDTO GetAccessLinks(string bbox)
         {
             //try
             //{
                 //string[] bboxArr = bbox.Split(',');
-                MemoryStream memoryStream = accessLinkBussinessService.GetAccessLinks(bbox);
+                return accessLinkBussinessService.GetAccessLinks(bbox);
 
-                var result = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StreamContent(memoryStream)
-                };
-
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                result.Content.Headers.ContentLength = memoryStream.Length;
-                return result;
+             
             //}
             //catch (Exception ex)
             //{

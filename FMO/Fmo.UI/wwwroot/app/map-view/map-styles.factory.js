@@ -224,6 +224,15 @@ function MapStylesFactory() {
         })
     });
 
+    var selectedLinkStyle = new ol.style.Style({
+        fill: whiteFill,
+        stroke: new ol.style.Stroke({
+            color: '#62a531',
+            width: 2
+        })
+    });
+
+
     var inactiveDefaultStyle = new ol.style.Style({
         image: new ol.style.Circle({
             fill: whiteFill,
@@ -470,6 +479,8 @@ function MapStylesFactory() {
             case "deliverypoint":
             case "rmgpoint":
                 return selectedPointStyle;
+            case "accesslink":
+                return selectedLinkStyle;
             default:
                 return defaultStyle;
         }

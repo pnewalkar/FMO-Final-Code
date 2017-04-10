@@ -31,7 +31,7 @@ namespace Fmo.BusinessServices.Tests.Services
         {
             List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10, UDPRN = 14856 } };
             var result = testCandidate.SavePostalAddress(lstPostalAddressDTO, "NYB.CSV");
-            mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
+            mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
             mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
             mockAddressRepository.Verify(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<int>()), Times.Once());
             Assert.IsNotNull(result);
@@ -53,7 +53,33 @@ namespace Fmo.BusinessServices.Tests.Services
         [Test]
         public void Test_SavePAFDetails_ValidData()
         {
-            PostalAddressDTO objPostalAddressDTO = new PostalAddressDTO() { UDPRN = 14856, Postcode = "AB10 1AB" };
+            PostalAddressDTO objPostalAddressDTO = new PostalAddressDTO()
+                    {
+                        Time = "7/19/2016",
+                        Date = "8:37:00",
+                        AmendmentType = "I",
+                        AmendmentDesc = "new insert",
+                        Postcode = "YO23 1DQ",
+                        PostTown = "York",
+                        //DependentLocality = "",
+                        //DoubleDependentLocality = "",
+                        //Thoroughfare = "",
+                        DependentThoroughfare = "Bishopthorpe Road",
+                        //BuildingNumber = "",
+                        BuildingName = "The Residence",
+                        //SubBuildingName,
+                        //POBoxNumber,
+                        //DepartmentName,
+                        //OrganisationName,
+                        UDPRN = 54162429,
+                        //PostcodeType,//S
+                        SmallUserOrganisationIndicator = "",
+                        DeliveryPointSuffix = "1A",
+                        //Address_Id,
+                        AddressType_Id = 1, // "PAF",
+                        //AMUApproved,
+                        AddressStatus_Id = 4 // "L"
+            };
             var result = testCandidate.SavePAFDetails(objPostalAddressDTO);
             mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
             mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<int?>()), Times.Once());
@@ -68,14 +94,12 @@ namespace Fmo.BusinessServices.Tests.Services
         public void Test_SaveDeliveryPoint_ValidData()
         {
             PostalAddressDTO objPostalAddressDTO = new PostalAddressDTO() { UDPRN = 14856, Postcode = "AB10 1AB" };
-            var result = testCandidate.SavePAFDetails(objPostalAddressDTO);
+            testCandidate.SaveDeliveryPointProcess(objPostalAddressDTO);
             mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
             mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<int?>()), Times.Once());
             mockAddressRepository.Verify(x => x.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(x => x.UpdateAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            Assert.IsNotNull(result);
-            Assert.IsFalse(result);
         }
 
         protected override void OnSetup()

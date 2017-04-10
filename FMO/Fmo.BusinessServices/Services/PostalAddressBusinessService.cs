@@ -27,6 +27,12 @@ namespace Fmo.BusinessServices.Services
             this.addressLocationRepository = addressLocationRepository;
         }
 
+        /// <summary>
+        /// Save list of NYB details into database.
+        /// </summary>
+        /// <param name="lstPostalAddress"></param>
+        /// <param name="strFileName"></param>
+        /// <returns></returns>
         public bool SavePostalAddress(List<DTO.PostalAddressDTO> lstPostalAddress, string strFileName)
         {
             bool saveFlag = false;
@@ -148,7 +154,7 @@ namespace Fmo.BusinessServices.Services
             return saveFlag;
         }
 
-        private void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
+        public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
         {
             var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
             var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);

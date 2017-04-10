@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Dynamic;
-using System.IO;
-using Fmo.DTO;
+﻿using System.Collections.Generic;
 using Microsoft.SqlServer.Types;
 using System.Data.SqlTypes;
 using Fmo.Helpers.Interface;
@@ -14,10 +9,8 @@ namespace Fmo.Helpers
     public class CreateOtherLayerObjects : ICreateOtherLayersObjects
     {
 
-        public Feature getAccessLinks(Geometry geometry, DbGeometry resultCoordinates)
+        public Feature GetAccessLinks(Geometry geometry, DbGeometry resultCoordinates)
         {
-
-            List<Feature> lstFeatures = new List<Feature>();
             SqlGeometry sqlGeo = null;
             if (geometry.type == "LineString")
             {
