@@ -25,6 +25,9 @@
         private Mock<ILoggingHelper> loggingHelperMock;
         private Mock<IConfigurationHelper> configHelperMock;
 
+        /// <summary>
+        /// Test the method with the valid file data.
+        /// </summary>
         [Test]
         public void Test_Valid_FileData()
         {
@@ -39,6 +42,9 @@
             fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Exactly(1));
         }
 
+        /// <summary>
+        /// Test the method with the invalid file data.
+        /// </summary>
         [Test]
         public void Test_InValid_FileData()
         {
@@ -53,6 +59,9 @@
             fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Exactly(1));
         }
 
+        /// <summary>
+        /// Setup the mock objects to be available for testing.
+        /// </summary>
         protected override void OnSetup()
         {
             msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
