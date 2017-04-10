@@ -18,37 +18,40 @@ angular.module('search')
 function SearchController($timeout, $q, $log, searchApiService,$scope) {
     var self = this;
 
-    //self.states = loadAll();
     self.resultSet = resultSet;
     self.presEnter = presEnter;
 
     function querySearch(query) {
         searchApiService.basicSearch(query).then(function (response) {
-            self.states = response.data;
-
-            var results = query ? self.states.filter(createFilterFor(query)) : self.states,
-            deferred;
-            if (self.simulateQuery) {
-                var deferred = $q.defer();
-                deferred = $q.defer();
-                $timeout(function () { deferred.resolve(results); }, Math.random() * 1000, false);
-                return deferred.promise;
-            } else {
-                return results;
+           // self.states = response.data;
+            self.resultscount = response.data.searchCounts;
+            self.results = response.data.searchResultItems
+            if (self.results.length > 0) {
+                var results = query ? self.results.filter(createFilterFor(query)) : self.results,
+                deferred;
+                if (self.simulateQuery) {
+                    var deferred = $q.defer();
+                    deferred = $q.defer();
+                    $timeout(function () { deferred.resolve(results); }, Math.random() * 1000, false);
+                    return deferred.promise;
+                } else {
+                    return results;
+                }
             }
         });
         //var results = loadAll(query);
     }
 
     function resultSet(query) {
-        var result = querySearch(query);
-        if (result.length > 5) {
+        querySearch(query);
+        //var result = querySearch(query);
+        //if (result.length > 5) {
             
-        }
-        else {
+        //}
+        //else {
             
-        }
-        self.results = result;
+        //}
+        //self.results = result;
        // return result;
     }
 

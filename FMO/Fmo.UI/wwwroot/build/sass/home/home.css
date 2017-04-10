@@ -13,4 +13,8 @@ h2 span {
   background: none; }
 
 .md-toolbar-tools span {
-  margin-right: 10px; }
+  margin-right: 25px; }
+
+span.flex-5 {
+    margin-right: 0px;
+}

@@ -1,13 +1,18 @@
-<md-autocomplete
-                 md-selected-item="vm.selectedItem"
+<md-autocomplete md-selected-item="vm.selectedItem"
                  md-search-text="vm.searchText"
                  md-items="item in vm.results | limitTo:5"
                  md-search-text-change="vm.resultSet(vm.searchText)"
-                 md-item-text="item.display"
-                 md-min-length="1"
+                 md-item-text="item.displayText"
+                 md-min-length="3"
                  placeholder="Search" ng-enter="vm.presEnter()">
     <md-item-template>
-        <span ng-class="{}"><i class="fa fa-map-marker" aria-hidden="true"></i></span><span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
+        <span ng-switch on="item.type">
+            <i class="fa fa-map-marker" aria-hidden="true" ng-switch-when="DeliveryPoint"></i>
+            <i class="" aria-hidden="true" ng-switch-when="Postcode"></i>
+            <i class="" aria-hidden="true" ng-switch-when="StreetNetwork"></i>
+            <i class="" aria-hidden="true" ng-switch-when="Route"></i>
+        </span>
+        <span md-highlight-text="vm.searchText" md-highlight-flags="^i" style="margin-bottom:-10px">{{item.displayText}}</span>
     </md-item-template>
     <md-not-found>
         No Results Found
