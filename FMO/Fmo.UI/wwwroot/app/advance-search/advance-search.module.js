@@ -1,2 +1,1 @@
-﻿angular.module('advanceSearch', [
-]);
+angular.module('advanceSearch',[]);

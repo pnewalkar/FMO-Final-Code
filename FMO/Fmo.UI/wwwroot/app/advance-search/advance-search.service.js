@@ -1,6 +1,8 @@
-﻿angular.module('advanceSearch')
-        .service('advanceSearchService', ['mapService', 'mapStylesFactory', 'advanceSearchService'])
+angular.module('advanceSearch')
+        .service('advanceSearchService', [advanceSearchService])
 
-function advanceSearchService(mapService, mapStylesFactory) {
+function advanceSearchService() {
     var vm = this;
-}
+
+    return{}
+    }

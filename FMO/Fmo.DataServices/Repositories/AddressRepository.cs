@@ -62,6 +62,7 @@
                 if (objPostalAddress != null)
                 {
                     var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -80,11 +81,12 @@
                         objAddress.PostcodeType = objPostalAddress.PostcodeType;
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
+                        objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
                     }
                     else
                     {
+                        objPostalAddress.ID = Guid.NewGuid();
                         var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
-                        entity.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                         DataContext.PostalAddresses.Add(entity);
                     }
 
@@ -101,7 +103,7 @@
             return saveFlag;
         }
 
-        public bool InsertAddress(PostalAddressDTO objPostalAddress)
+        public bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
@@ -115,9 +117,10 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
+                throw ex;
             }
 
             return saveFlag;
@@ -131,14 +134,14 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TO DO implement logging
-                throw;
+                this.loggingHelper.LogInfo("Error in GetPostalAddress(int? uDPRN) :" + ex.ToString());
+                throw ex;
             }
         }
 
-        public PostalAddressDTO GetPostalAddress(DTO.PostalAddressDTO objPostalAddress)
+        public PostalAddressDTO GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
             try
             {
@@ -156,14 +159,14 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TO DO implement logging
-                throw;
+                this.loggingHelper.LogInfo("Error in GetPostalAddress(PostalAddressDTO objPostalAddress) :" + ex.ToString());
+                throw ex;
             }
         }
 
-        public bool UpdateAddress(PostalAddressDTO objPostalAddress)// , int addressType)&& n.AddressType_Id == addressType
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
@@ -202,7 +205,6 @@
                         // {
                         //    //To DO log error
                         // }
-                        DataContext.Entry(objAddress).State = System.Data.Entity.EntityState.Modified;
                     }
                     else
                     {
@@ -213,9 +215,10 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
+                throw ex;
             }
 
             return saveFlag;
