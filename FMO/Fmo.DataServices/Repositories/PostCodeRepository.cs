@@ -70,7 +70,7 @@
 
         public Guid GetPostCodeID(string postCode)
         {
-            var postCodeDetail = DataContext.Postcodes.Where(l => string.Equals(l.PostcodeUnit, postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var postCodeDetail = DataContext.Postcodes.Where(l => l.PostcodeUnit.Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (postCodeDetail != null)
             {
                 return postCodeDetail.ID;
