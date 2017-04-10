@@ -6,15 +6,15 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.loadRouteLogStatus = loadRouteLogStatus();
     vm.loadScenario = loadScenario;
     vm.selectedRouteStatus = selectedRouteStatus; 
-    vm.selectedDeliveryUnitObj= $stateParams;
-    vm.selectedRouteStatusObj = null;
+    //vm.selectedDeliveryUnitObj= $stateParams;
+    //vm.selectedRouteStatusObj = null;
 
     function selectedRouteStatus() {
         debugger;      
-        loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
+       // loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
        
     }
-    function loadRouteLogStatus(selectedRouteStatusObj, selectedDeliveryUnitObj) {
+    function loadRouteLogStatus() {
         simulationBusinessService.loadRouteLogStatus();
     }
 
