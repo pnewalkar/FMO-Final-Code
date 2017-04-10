@@ -31,8 +31,20 @@
         [Test]
         public void Test_Valid_FileData()
         {
+
             string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
+
             Exception mockException = It.IsAny<Exception>();
+            fileMoverMock.Setup(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()));
+            msgBrokerMock.Setup(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
+            msgBrokerMock.Setup(x => x.SendMessage(It.IsAny<IMessage>()));
+            exceptionHelperMock.Setup(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException));
+            loggingHelperMock.Setup(x => x.LogError(It.IsAny<Exception>()));
+            loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
+
             testCandidate.LoadTPFDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Exactly(2));
@@ -49,7 +61,18 @@
         public void Test_InValid_FileData()
         {
             string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
+
             Exception mockException = It.IsAny<Exception>();
+            fileMoverMock.Setup(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()));
+            msgBrokerMock.Setup(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
+            msgBrokerMock.Setup(x => x.SendMessage(It.IsAny<IMessage>()));
+            exceptionHelperMock.Setup(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException));
+            loggingHelperMock.Setup(x => x.LogError(It.IsAny<Exception>()));
+            loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
+
             testCandidate.LoadTPFDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(1));
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Exactly(1));
@@ -69,18 +92,12 @@
             exceptionHelperMock = CreateMock<IExceptionHelper>();
             loggingHelperMock = CreateMock<ILoggingHelper>();
             configHelperMock = CreateMock<IConfigurationHelper>();
-
-            Exception mockException = It.IsAny<Exception>();
-            fileMoverMock.Setup(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()));
-            msgBrokerMock.Setup(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
-            msgBrokerMock.Setup(x => x.SendMessage(It.IsAny<IMessage>()));
-            exceptionHelperMock.Setup(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException));
-            loggingHelperMock.Setup(x => x.LogError(It.IsAny<Exception>()));
-            loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
-            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
-            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
-            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
-            testCandidate = new TPFLoader(msgBrokerMock.Object, fileMoverMock.Object, exceptionHelperMock.Object, loggingHelperMock.Object, configHelperMock.Object);
+            testCandidate = new TPFLoader(
+                                            msgBrokerMock.Object,
+                                            fileMoverMock.Object,
+                                            exceptionHelperMock.Object,
+                                            loggingHelperMock.Object,
+                                            configHelperMock.Object);
         }
     }
 }

@@ -104,12 +104,12 @@
                             else
                             {
                                 PostCodeSectorDTO postCodeSectorDTO = postCodeSectorRepository.GetPostCodeSectorByUDPRN(fileUdprn);
-                                int notificationTypeId = referenceDataCategoryRepository.GetReferenceDataId(Constants.USR_CATEGORY, Constants.USR_REFERENCE_DATA_NAME);
+                                Guid notificationTypeId_GUID = referenceDataCategoryRepository.GetReferenceDataId(Constants.USR_CATEGORY, Constants.USR_REFERENCE_DATA_NAME);
 
                                 NotificationDTO notificationDO = new NotificationDTO
                                 {
                                     Notification_Id = fileUdprn,
-                                    NotificationType_Id = notificationTypeId,
+                                    NotificationType_GUID = notificationTypeId_GUID,
                                     NotificationDueDate = DateTime.Now.AddHours(24),
                                     NotificationSource = Constants.USR_NOTIFICATION_SOURCE,
                                     Notification_Heading = Constants.USR_ACTION,

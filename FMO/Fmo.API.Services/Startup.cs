@@ -100,13 +100,12 @@ namespace Fmo.API.Services
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
+            services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
 
             //Others - Helper, Utils etc
             services.AddTransient<ILoggingHelper, LoggingHelper>();
             services.AddTransient<ICreateOtherLayersObjects, CreateOtherLayerObjects>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
-            services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
-            services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
