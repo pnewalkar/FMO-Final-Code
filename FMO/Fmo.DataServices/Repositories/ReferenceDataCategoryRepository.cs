@@ -40,7 +40,7 @@ namespace Fmo.DataServices.Repositories
         public List<ReferenceDataDTO> RouteLogStatus()
         {
             List<ReferenceDataDTO> lstReferenceDt = null;
-            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals("Delivery Unit Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals("Delivery Point Operational Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
             {
                 lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
