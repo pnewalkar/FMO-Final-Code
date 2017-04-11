@@ -50,6 +50,14 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
+        public async Task Test_FetchDeliveryRouteForBasicSearch_null()
+        {
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch(null);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult.Count == 5);
+        }
+
+        [Test]
         public async Task Test_GetDeliveryRouteCount_Valid()
         {
             var actualResultCount = await testCandidate.GetDeliveryRouteCount("testsearch");
@@ -63,6 +71,14 @@ namespace Fmo.DataServices.Tests.Repositories
             var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch");
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
+        }
+
+        [Test]
+        public async Task Test_GetDeliveryRouteCount_null()
+        {
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount(null);
+            Assert.IsNotNull(actualResultCount);
+            Assert.IsTrue(actualResultCount == 7);
         }
 
         protected override void OnSetup()
