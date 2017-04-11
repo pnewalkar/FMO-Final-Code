@@ -1,20 +1,29 @@
-<md-autocomplete md-selected-item="vm.selectedItem"
-                 md-search-text="vm.searchText"
-                 md-items="item in vm.results | limitTo:5"
-                 md-search-text-change="vm.resultSet(vm.searchText)"
-                 md-item-text="item.displayText"
-                 md-min-length="3"
-                 placeholder="Search" ng-enter="vm.presEnter()">
-    <md-item-template>
-        <span ng-switch on="item.type">
-            <i class="fa fa-map-marker" aria-hidden="true" ng-switch-when="DeliveryPoint"></i>
-            <i class="" aria-hidden="true" ng-switch-when="Postcode"></i>
-            <i class="" aria-hidden="true" ng-switch-when="StreetNetwork"></i>
-            <i class="" aria-hidden="true" ng-switch-when="Route"></i>
-        </span>
-        <span md-highlight-text="vm.searchText" md-highlight-flags="^i" style="margin-bottom:-10px">{{item.displayText}}</span>
-    </md-item-template>
-    <md-not-found>
-        No Results Found
-    </md-not-found>
-</md-autocomplete>
+<div class="searchBox">
+    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.presEnter(vm.searchText)" />
+    <div class="searchContent" md-whiteframe="3dp">
+        <ul ng-repeat="item in vm.results | limitTo:5">
+            <li class="searchData">
+                <a ng-click="vm.OnChangeItem(item)" style="cursor:pointer;">
+                    <span ng-switch on="item.type" ng-if="item.type">
+                        <i class="fa fa-map-marker delivery" aria-hidden="true" ng-switch-when="DeliveryPoint"></i>
+                        <i class="fa fa-map-marker postcode" aria-hidden="true" ng-switch-when="Postcode"></i>
+                        <i class="fa fa-map-marker street" aria-hidden="true" ng-switch-when="StreetNetwork"></i>
+                        <i class="fa fa-map-marker route" aria-hidden="true" ng-switch-when="Route"></i>
+                    </span>
+                    <span ng-show="item.type!='Warning'"> {{ item.displayText | limitTo: 30 }}{{item.displayText.length >= 30 ? ' > ' : ''}}</span>
+                    <span ng-show="item.type=='Warning'"> {{ item.displayText }}</span>
+                </a>
+            </li>
+        </ul>
+        <ul>
+            <li ng-show="vm.results.length >= 5" style="color: black; font-size: 15px; padding-left: 7px;">
+                <a ng-click="">{{vm.results.length}}  View More Results   >></a>
+            </li>
+        </ul>
+        <ul>
+            <li ng-show="vm.results.length == 0" style="color: black; font-size: 15px; padding-left: 7px;">
+                <a>No Results Found</a>
+            </li>
+        </ul>
+    </div>
+</div>
