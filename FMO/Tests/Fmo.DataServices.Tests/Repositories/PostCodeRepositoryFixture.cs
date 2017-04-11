@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 using System.Threading.Tasks;
+using Fmo.Common.AsyncEnumerator;
 using Fmo.Common.TestSupport;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
@@ -8,9 +11,6 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
-using System.Linq;
-using System.Data.Entity.Infrastructure;
-using Fmo.Common.AsyncEnumerator;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
