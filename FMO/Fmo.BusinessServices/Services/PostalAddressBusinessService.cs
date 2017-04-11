@@ -96,9 +96,22 @@ namespace Fmo.BusinessServices.Services
                     {
                         objPostalAddress.AddressType_GUID = addressTypePAF;
                         objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
-                        addressRepository.UpdateAddress(objPostalAddress, null); // 2nd param FileName for db logging
-
-                        SaveDeliveryPointProcess(objPostalAddress);
+                        if (addressRepository.UpdateAddress(objPostalAddress, null)) // 2nd param FileName for db logging
+                        {
+                            SaveDeliveryPointProcess(objPostalAddress);
+                        }
+                        else
+                        {
+                            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+                            objFileProcessingLog.FileID = Guid.NewGuid();
+                            objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
+                            objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
+                            objFileProcessingLog.FileName = null; // 2nd param FileName for db logging
+                            objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
+                            objFileProcessingLog.FileType = FileType.Paf.ToString();
+                            objFileProcessingLog.NatureOfError = "Postal Address for Selected UDPRN not updated";
+                            fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                        }
                     }
                     else
                     {
@@ -109,7 +122,7 @@ namespace Fmo.BusinessServices.Services
                         objFileProcessingLog.FileName = null; // 2nd param FileName for db logging
                         objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
                         objFileProcessingLog.FileType = FileType.Paf.ToString();
-                        objFileProcessingLog.NatureOfError = "RFMO 258 : Scenerio 1b";
+                        objFileProcessingLog.NatureOfError = "Address Type of the selected Postal Address record is not <NYB>";//"RFMO 258 : Scenerio 1b";
                         fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                     }
                 }
@@ -149,7 +162,7 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        /// private methods to save delivery point and 
+        /// private methods to save delivery point and Task for notification
         /// </summary>
         /// <param name="objPostalAddress"></param>
         public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
@@ -158,7 +171,7 @@ namespace Fmo.BusinessServices.Services
             {
                 var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
                 var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
-                if (objDeliveryPoint == null)
+                if (objDeliveryPoint == null && objAddressLocation != null)
                 {
                     if (objAddressLocation.UDPRN == objPostalAddress.UDPRN)
                     {
