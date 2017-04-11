@@ -68,7 +68,7 @@ namespace Fmo.BusinessServices.Services
                     searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                     {
                         DisplayText = string.Format(
-                        "{0},{1},{2},{3},{4},{5}",
+                        "{0},{1},{3},{4},{5}",
                         deliveryPoint.PostalAddress.OrganisationName,
                         deliveryPoint.PostalAddress.BuildingName,
                         deliveryPoint.PostalAddress.SubBuildingName,
@@ -87,12 +87,10 @@ namespace Fmo.BusinessServices.Services
                     searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryRoute.RouteName, Type = SearchBusinessEntityType.Route });
                 }
 
-                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRoutes.Count, Type = SearchBusinessEntityType.Route });
+                // searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRoutes.Count, Type = SearchBusinessEntityType.Route });
 
                 // Total Counts
-                int totalCount = searchResultDTO.SearchCounts.Sum(x => x.Count);
-
-                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = totalCount, Type = SearchBusinessEntityType.All });
+                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRouteCount + postCodeCount + deliveryPointsCount + streetNetworkCount, Type = SearchBusinessEntityType.All });
 
                 return searchResultDTO;
             }
@@ -118,7 +116,6 @@ namespace Fmo.BusinessServices.Services
 
             var searchResultDTO = new SearchResultDTO();
 
-            // postcodes
             foreach (var postcode in postcodes)
             {
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = postcode.PostcodeUnit, Type = SearchBusinessEntityType.Postcode });
@@ -126,41 +123,20 @@ namespace Fmo.BusinessServices.Services
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = postcodes.Count, Type = SearchBusinessEntityType.Postcode });
 
-            // streetNames
             foreach (var streetName in streetNames)
             {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
-                {
-                    DisplayText = string.Format(
-                    "{0},{1}",
-                    streetName.NationalRoadCode,
-                    streetName.DesignatedName),
-                    Type = SearchBusinessEntityType.StreetNetwork
-                });
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
             }
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
 
-            // deliveryPoints
             foreach (var deliveryPoint in deliveryPoints)
             {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
-                {
-                    DisplayText = string.Format(
-                    "{0},{1},{2},{3},{4},{5}",
-                    deliveryPoint.PostalAddress.OrganisationName,
-                    deliveryPoint.PostalAddress.BuildingName,
-                    deliveryPoint.PostalAddress.SubBuildingName,
-                    deliveryPoint.PostalAddress.BuildingNumber,
-                    deliveryPoint.PostalAddress.Thoroughfare,
-                    deliveryPoint.PostalAddress.DependentLocality),
-                    Type = SearchBusinessEntityType.DeliveryPoint
-                });
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryPoint.UDPRN.ToString(), Type = SearchBusinessEntityType.DeliveryPoint });
             }
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
 
-            // deliveryRoutes
             foreach (var deliveryRoute in deliveryRoutes)
             {
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryRoute.RouteName, Type = SearchBusinessEntityType.Route });
@@ -168,7 +144,6 @@ namespace Fmo.BusinessServices.Services
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRoutes.Count, Type = SearchBusinessEntityType.Route });
 
-            // Total Counts
             int totalCount = searchResultDTO.SearchCounts.Sum(x => x.Count);
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = totalCount, Type = SearchBusinessEntityType.All });

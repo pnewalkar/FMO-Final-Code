@@ -18,5 +18,10 @@ angular.module('FMOApp')
             //        return $stateParams.selectedUnit;
             //  }]
         // }
-        });
+        })
+     .state("searchDetails", {
+         templateUrl: "/app/search/context.template.html",
+         controller: "ContextController as vm",
+         params: { selectedItem: null, }
+     });
 });
