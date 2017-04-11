@@ -32,15 +32,23 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task Test_FetchDeliveryPointsForBasicSearch_inValid()
         {
-            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("xcvdfgdfhdthOrg");
+            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("invalid_org");
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 0);
         }
 
         [Test]
+        public async Task Test_FetchDeliveryPointsForBasicSearch_null()
+        {
+            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch(null);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult.Count == 5);
+        }
+
+        [Test]
         public async Task Test_GetDeliveryPointsCount_Valid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryPointsCount("hfkdf");
+            var actualResultCount = await testCandidate.GetDeliveryPointsCount("Org");
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }
@@ -53,6 +61,14 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsTrue(actualResultCount == 0);
         }
 
+        [Test]
+        public async Task Test_GetDeliveryPointsCount_null()
+        {
+            var actualResultCount = await testCandidate.GetDeliveryPointsCount(null);
+            Assert.IsNotNull(actualResultCount);
+            Assert.IsTrue(actualResultCount == 7);
+        }
+
         protected override void OnSetup()
         {
             var deliveryPoint = new List<DeliveryPoint>()
@@ -61,28 +77,28 @@ namespace Fmo.DataServices.Tests.Repositories
                {
                    PostalAddress = new PostalAddress()
                     {
-                        OrganisationName = "MyOrg1", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber =1, Thoroughfare = "ABC", DependentLocality = "XYZ"
+                        OrganisationName = "MyOrg1", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber = 1, Thoroughfare = "ABC", DependentLocality = "XYZ"
                     }
                },
                new DeliveryPoint()
                {
                    PostalAddress = new PostalAddress()
                     {
-                        OrganisationName = "MyOrg2", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber =1, Thoroughfare = "ABC", DependentLocality = "XYZ"
+                        OrganisationName = "MyOrg2", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber = 2, Thoroughfare = "ABC", DependentLocality = "XYZ"
                     }
                },
                new DeliveryPoint()
                {
                    PostalAddress = new PostalAddress()
                     {
-                        OrganisationName = "MyOrg3", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber =1, Thoroughfare = "ABC", DependentLocality = "XYZ"
+                        OrganisationName = "MyOrg3", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber = 3, Thoroughfare = "ABC", DependentLocality = "XYZ"
                     }
                },
                new DeliveryPoint()
                {
                    PostalAddress = new PostalAddress()
                     {
-                        OrganisationName = "MyOrg4", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber =1, Thoroughfare = "ABC", DependentLocality = "XYZ"
+                        OrganisationName = "MyOrg4", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber = 4862, Thoroughfare = "ABC", DependentLocality = "XYZ"
                     }
                },
                new DeliveryPoint()
