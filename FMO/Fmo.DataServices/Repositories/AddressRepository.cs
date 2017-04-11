@@ -134,10 +134,9 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                this.loggingHelper.LogInfo("Error in GetPostalAddress(int? uDPRN) :" + ex.ToString());
-                throw ex;
+                throw;
             }
         }
 
@@ -159,10 +158,9 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                this.loggingHelper.LogInfo("Error in GetPostalAddress(PostalAddressDTO objPostalAddress) :" + ex.ToString());
-                throw ex;
+                throw;
             }
         }
 
@@ -215,10 +213,9 @@
                     saveFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
-                throw ex;
+                throw;
             }
 
             return saveFlag;
