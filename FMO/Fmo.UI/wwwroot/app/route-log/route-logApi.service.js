@@ -2,23 +2,22 @@
 // Just for reference
 angular.module('routeLog')
     .factory('routeLogAPIService', ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
-    var routeLogAPIService = {};
-    var getStatus = function () {
-        return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
-    };
 
-    var getScenario = function (operationStateID, deliveryUnitID) {
-        return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryScenario?deliveryUnitID=' + deliveryUnitID + '&deliveryUnitID=' + deliveryUnitID);
-    };
+        return {
+            getStatus: getStatus,
+            getScenario: getScenario,
+            getRoutes: getRoutes
+        }
 
-    var getRoutes = function (objEmployee) {
-        return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryRoute?deliveryUnitID=' + deliveryUnitID + '&deliveryUnitID=' + deliveryUnitID);
-    };
+        function getStatus() {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
+        };
 
-    routeLogAPIService.GetStatus = getStatus;
-    routeLogAPIService.GetScenario = getScenario;
-    routeLogAPIService.GetRoutes = getRoutes;
+        function getScenario(operationStateID, deliveryUnitID) {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID);
+        };
 
-    return routeLogAPIService;
-  
-}]);
+        function getRoutes(operationStateID, deliveryScenarioID) {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID);
+        };
+    }]);

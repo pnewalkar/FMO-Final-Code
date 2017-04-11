@@ -15,7 +15,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.deliveryRoute = null;
     function selectedRouteStatus() {
         debugger;
-        // loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
+        //loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
     }
     function loadRouteLogStatus() {
         simulationAPIService.getStatus().then(function (response) {
@@ -25,10 +25,10 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
                 group1: vm.RouteStatusObj[0].id,
                 group2: vm.RouteStatusObj[1].id
             };
+           
             loadScenario(vm.selectedRouteStatusObj.group1, vm.selectedDeliveryUnitObj.selectedUnit.id);
         });
     }
-
     function scenarioChange()
     {
         loadDeliveryRoute(vm.selectedRouteStatusObj.group1, vm.selectedRouteScenario.id);
@@ -41,7 +41,6 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
         });
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
-
         simulationAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
             vm.deliveryRoute = response.data;
         });
