@@ -38,6 +38,14 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
+        public async Task Test_FetchStreetNamesForBasicSearch_null()
+        {
+            var actualResult = await testCandidate.FetchStreetNamesForBasicSearch(null);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult.Count == 5);
+        }
+
+        [Test]
         public async Task Test_GetStreetNameCount_Valid()
         {
             var actualResultCount = await testCandidate.GetStreetNameCount("Test");
@@ -51,6 +59,14 @@ namespace Fmo.DataServices.Tests.Repositories
             var actualResultCount = await testCandidate.GetStreetNameCount("invalid_Test");
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
+        }
+
+        [Test]
+        public async Task Test_GetStreetNameCount_null()
+        {
+            var actualResultCount = await testCandidate.GetStreetNameCount(null);
+            Assert.IsNotNull(actualResultCount);
+            Assert.IsTrue(actualResultCount == 7);
         }
 
         protected override void OnSetup()
