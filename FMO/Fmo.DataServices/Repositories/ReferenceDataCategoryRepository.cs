@@ -18,6 +18,12 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
+        /// <summary>
+        ///  Retreive GUID for specified category
+        /// </summary>
+        /// <param name="strCategoryname">categoryname</param>
+        /// <param name="strRefDataName">Reference data Name</param>
+        /// <returns>GUID</returns>
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
             Guid statusId = Guid.Empty;

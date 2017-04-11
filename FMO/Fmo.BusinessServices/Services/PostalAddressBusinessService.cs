@@ -23,16 +23,17 @@ namespace Fmo.BusinessServices.Services
         private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public PostalAddressBusinessService(IAddressRepository _addressRepository,
-            IReferenceDataCategoryRepository _refDataRepository,
+        public PostalAddressBusinessService(
+            IAddressRepository addressRepository,
+            IReferenceDataCategoryRepository refDataRepository,
             IDeliveryPointsRepository deliveryPointsRepository,
             IAddressLocationRepository addressLocationRepository,
             INotificationRepository notificationRepository,
             IFileProcessingLogRepository fileProcessingLogRepository,
             ILoggingHelper loggingHelper)
         {
-            this.addressRepository = _addressRepository;
-            this.refDataRepository = _refDataRepository;
+            this.addressRepository = addressRepository;
+            this.refDataRepository = refDataRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.addressLocationRepository = addressLocationRepository;
             this.notificationRepository = notificationRepository;
@@ -43,9 +44,9 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Save list of NYB details into database.
         /// </summary>
-        /// <param name="lstPostalAddress"></param>
-        /// <param name="strFileName"></param>
-        /// <returns></returns>
+        /// <param name="lstPostalAddress">List Of address DTO</param>
+        /// <param name="strFileName">CSV filename</param>
+        /// <returns>returns true or false</returns>
         public bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress, string strFileName)
         {
             bool saveFlag = false;
@@ -77,8 +78,8 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Business rules for PAF details
         /// </summary>
-        /// <param name="objPostalAddress"></param>
-        /// <returns></returns>
+        /// <param name="objPostalAddress">address DTO</param>
+        /// <returns>returns true or false</returns>
         public bool SavePAFDetails(PostalAddressDTO objPostalAddress)
         {
             bool saveFlag = false;

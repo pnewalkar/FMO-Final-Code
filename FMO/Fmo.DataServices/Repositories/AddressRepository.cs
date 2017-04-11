@@ -29,9 +29,9 @@
         /// <summary>
         /// Delete postal Address records do not have an associated Delivery Point
         /// </summary>
-        /// <param name="lstUDPRN"></param>
-        /// <param name="addressType"></param>
-        /// <returns></returns>
+        /// <param name="lstUDPRN">List of UDPRN</param>
+        /// <param name="addressType">NYB</param>
+        /// <returns>true or false</returns>
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             bool deleteFlag = false;
@@ -70,9 +70,9 @@
         /// <summary>
         /// Create or update NYB details depending on the UDPRN
         /// </summary>
-        /// <param name="objPostalAddress"></param>
-        /// <param name="strFileName"></param>
-        /// <returns></returns>
+        /// <param name="objPostalAddress">NYB details DTO</param>
+        /// <param name="strFileName">CSV Filename</param>
+        /// <returns>true or false</returns>
         public bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
