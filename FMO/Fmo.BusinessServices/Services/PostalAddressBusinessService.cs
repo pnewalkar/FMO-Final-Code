@@ -9,6 +9,7 @@ using Entity = Fmo.Entities;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
+using Fmo.Common;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -51,14 +52,14 @@ namespace Fmo.BusinessServices.Services
             try
             {
                 Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Nyb.ToString());
-                Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Status, "Live");
+                Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Status, PostCodeStatus.Live.GetDescription());
                 List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
                 if (!lstUDPRNS.All(a => a == 0))
                 {
                     foreach (var postalAddress in lstPostalAddress)
                     {
                         postalAddress.AddressStatus_GUID = addressStatusId;
-                        postalAddress.AddressStatus_GUID = addressTypeId;
+                        postalAddress.AddressType_GUID = addressTypeId;
                         addressRepository.SaveAddress(postalAddress, strFileName);
                     }
 
