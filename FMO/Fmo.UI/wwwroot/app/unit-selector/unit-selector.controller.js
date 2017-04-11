@@ -1,35 +1,25 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$scope', '$stateParams', '$state' ,'unitSelectorAPIService', UnitSelectorController])
+.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', 'unitSelectorAPIService', UnitSelectorController])
 function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService) {
     var vm = this;
+    vm.BindData = BindData;
     vm.DeliveryUnit = DeliveryUnit;
     vm.selectedDeliveryUnit = null;
-    vm.deliveryUnit = [
-       { id: 1, name: 'Unit One' },
-       { id: 2, name: 'Unit Two' },
-       { id: 3, name: 'Unit Three' }
-    ];
-    vm.selectedUser = { id: 1, name: 'Bob' };
-    DeliveryUnit();
+    vm.deliveryRouteUnit = [];
+    BindData();
     function DeliveryUnit() {
-        
-        unitSelectorAPIService.getDeliveryUnit().then(function(response)
-        {
+        vm.selectedDeliveryUnit = vm.selectedUser;
+    }
+
+    function BindData() {
+        unitSelectorAPIService.getDeliveryUnit().then(function (response) {
             debugger;
+            if (response.data)
+            vm.deliveryRouteUnit = response.data;
+            vm.selectedUser = vm.deliveryRouteUnit[0];
+            vm.selectedDeliveryUnit = vm.selectedUser;
 
-        })
-        
-        //$state.transitionTo('routeSimulation', {
-        //    selectedUnit: vm.selectedUser
-        //});
-
-
-       // $state.go("routeSimulation", { selectedUnit: vm.selectedUser }, {location: false, inherit: false
-   // });
-        //$state.go('routeSimulation', { selectedUnit: vm.selectedUser });
-        //unitSelectorAPIService.GetDeliveryUnit().then(function (response) {
-        //    vm.deliveryUnit = response.data;
-        //});
+        });
     }
 
 }

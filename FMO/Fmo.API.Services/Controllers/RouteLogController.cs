@@ -13,30 +13,35 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class RouteLogController : Controller
     {
-        protected IDeliveryRouteBusinessService deliveryRouteBusinessService;
+        protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 
-        [HttpGet]
+        public RouteLogController(IDeliveryRouteBusinessService _deliveryRouteBusinessService)
+        {
+            deliveryRouteBusinessService = _deliveryRouteBusinessService;
+        }
+
+        [HttpGet("DeliveryUnit")]
         public List<DeliveryUnitLocationDTO> DeliveryUnit()
         {
             return deliveryRouteBusinessService.FetchDeliveryUnit();
         }
 
-        [HttpGet]
-        public List<DeliveryRouteDTO> ListOfRouteLogs(int operationStateID, int deliveryScenarioID)
+        [HttpGet("ListOfRouteLogs")]
+        public List<DeliveryRouteDTO> ListOfRouteLogs(Guid operationStateID, Guid deliveryScenarioID)
         {
             return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
-        [HttpGet]
+        [HttpGet("RouteLogsStatus")]
         public List<ReferenceDataDTO> RouteLogsStatus()
         {
             return deliveryRouteBusinessService.FetchRouteLogStatus();
         }
 
-        [HttpGet]
-        public List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID)
+        [HttpGet("FetchDeliveryScenario")]
+        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID)
         {
-            return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
+            return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryScenarioID);
         }
     }
 }

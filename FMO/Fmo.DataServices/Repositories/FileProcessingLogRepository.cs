@@ -20,14 +20,26 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
+        /// <summary>
+        /// Log exception if the NYB record insertion fails
+        /// </summary>
+        /// <param name="_fileProcessingLogDTO"></param>
+        /// <returns></returns>
         public bool LogFileException(FileProcessingLogDTO _fileProcessingLogDTO)
         {
-            bool saveFlag = false;
-            var entity = GenericMapper.Map<FileProcessingLogDTO, FileProcessingLog>(_fileProcessingLogDTO);
-            DataContext.FileProcessingLogs.Add(entity);
-            DataContext.SaveChanges();
-            saveFlag = true;
-            return saveFlag;
+            try
+            {
+                bool saveFlag = false;
+                var entity = GenericMapper.Map<FileProcessingLogDTO, FileProcessingLog>(_fileProcessingLogDTO);
+                DataContext.FileProcessingLogs.Add(entity);
+                DataContext.SaveChanges();
+                saveFlag = true;
+                return saveFlag;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
