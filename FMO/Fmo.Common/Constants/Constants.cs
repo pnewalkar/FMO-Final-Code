@@ -34,6 +34,11 @@ namespace Fmo.Common.Constants
         public const string USR_CATEGORY = "Notification Type";
         public const string USR_REFERENCE_DATA_NAME = "Action required";
 
+        public const string PAFNOACTION = "B";
+        public const string PAFINSERT = "I";
+        public const string PAFUPDATE = "C";
+        public const string PAFDELETE = "D";
+
     }
 }
 
