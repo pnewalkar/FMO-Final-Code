@@ -21,12 +21,12 @@ function simulationBusinessService(simulationAPIService) {
         simulationAPIService.getStatus().then(function (response) {
             debugger;
             vm.RouteStatusObj = response.data;
-         
             vm.selectedRouteStatusObj = {
-                group1: vm.RouteStatusObj[0].value,
-                group2: vm.RouteStatusObj[1].value
+                group1: vm.RouteStatusObj[0].id,
+                group2: vm.RouteStatusObj[1].id
             };
             return vm.RouteStatusObj;
+           // loadScenario(vm.selectedRouteStatusObj.group1, vm.selectedDeliveryUnitObj.selectedUnit.id);
         });
        
     }

@@ -26,8 +26,8 @@ namespace Fmo.API.Services.Controllers
             return deliveryRouteBusinessService.FetchDeliveryUnit();
         }
 
-        [HttpGet("ListOfRouteLogs")]
-        public List<DeliveryRouteDTO> ListOfRouteLogs(Guid operationStateID, Guid deliveryScenarioID)
+        [HttpGet("FetchDeliveryRoute")]
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
@@ -39,9 +39,9 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpGet("FetchDeliveryScenario")]
-        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID)
+        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {
-            return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryScenarioID);
+            return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
         }
     }
 }
