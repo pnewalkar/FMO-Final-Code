@@ -5,7 +5,8 @@ angular.module('FMOApp')
         .state("routeLog", {
             url: "/routeLog",
             templateUrl: "/app/route-log/route-log.template.html",
-            controller: "RouteLogController as vm"
+            controller: "RouteLogController as vm",
+            params: { selectedUnit: null, }
         })
         .state("routeSimulation", {
             url: "/routeSimulation",

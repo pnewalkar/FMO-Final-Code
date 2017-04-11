@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using System;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -10,9 +11,9 @@ namespace Fmo.BusinessServices.Interfaces
 
         List<ReferenceDataDTO> FetchRouteLogStatus();
 
-        List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);
+        List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID);
 
-        List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID);
+        List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID);
 
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText);
 

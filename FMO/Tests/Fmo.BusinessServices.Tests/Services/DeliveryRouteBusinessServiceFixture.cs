@@ -6,6 +6,7 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Fmo.BusinessServices.Tests.Services
 {
@@ -20,8 +21,8 @@ namespace Fmo.BusinessServices.Tests.Services
         private List<ReferenceDataDTO> actualReferenceDataCategoryResult = null;
         private List<ScenarioDTO> actualScenarioResult = null;
         private List<DeliveryUnitLocationDTO> actualDeliveryUnitResult = null;
-        private int deliveryUnitID = 0;
-        private int operationalStateID = 0;
+        private Guid deliveryUnitID = System.Guid.NewGuid();
+        private Guid operationalStateID = System.Guid.NewGuid();
 
         [Test]
         public void TestRouteLogStatus()
@@ -61,20 +62,20 @@ namespace Fmo.BusinessServices.Tests.Services
 
         protected override void OnSetup()
         {
-            deliveryUnitID = 1;
-            operationalStateID = 1;
+            deliveryUnitID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
+            operationalStateID = System.Guid.Parse("9C1E56D7-5397-4984-9CF0-CD9EE7093C88"); 
 
             actualDeliveryRouteResult = new List<DeliveryRouteDTO>() { new DeliveryRouteDTO() { DeliveryRouteBarcode = "D0001", DeliveryRoute_Id = 1, DeliveryScenario_Id = 1, ExternalId = 1, OperationalStatus_Id = 1, RouteMethodType_Id = 1, RouteName = "RouteOne", RouteNumber = "R004341" } };
             mockDeliveryRouteRepository = CreateMock<IDeliveryRouteRepository>();
-            mockDeliveryRouteRepository.Setup(n => n.FetchDeliveryRoute(It.IsAny<int>(), It.IsAny<int>())).Returns(actualDeliveryRouteResult);
+            mockDeliveryRouteRepository.Setup(n => n.FetchDeliveryRoute(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(actualDeliveryRouteResult);
 
             actualReferenceDataCategoryResult = new List<ReferenceDataDTO>() { new ReferenceDataDTO() { DataDescription = "Live", DisplayText = "Live", ReferenceDataName = "Live" } };
             mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
             mockReferenceDataCategoryRepository.Setup(n => n.RouteLogStatus()).Returns(actualReferenceDataCategoryResult);
 
-            actualScenarioResult = new List<ScenarioDTO>() { new ScenarioDTO() { ScenarioName = "ScenarioOne", DeliveryScenario_Id = 1, DeliveryUnit_Id = 1, OperationalState_Id = 1, ScenarioUnitType_Id = 1 } };
+            actualScenarioResult = new List<ScenarioDTO>() { new ScenarioDTO() { ScenarioName = "ScenarioOne", DeliveryScenario_Id = 1, DeliveryUnit_Id = 1, OperationalState_Id = 1 } };
             mockScenarioRepository = CreateMock<IScenarioRepository>();
-            mockScenarioRepository.Setup(n => n.FetchScenario(It.IsAny<int>(), It.IsAny<int>())).Returns(actualScenarioResult);
+            mockScenarioRepository.Setup(n => n.FetchScenario(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(actualScenarioResult);
 
             actualDeliveryUnitResult = new List<DeliveryUnitLocationDTO>() { new DeliveryUnitLocationDTO() { DeliveryUnit_Id = 1, ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne" } };
             mockIDeliveryUnitLocationRepository = CreateMock<IDeliveryUnitLocationRepository>();

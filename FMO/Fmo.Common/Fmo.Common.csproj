@@ -85,7 +85,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncEnumerator\DbAsyncEnumerable.cs" />
+    <Compile Include="AsyncEnumerator\DbAsyncEnumerator.cs" />
+    <Compile Include="AsyncEnumerator\DbAsyncQueryProvider.cs" />
+    <Compile Include="ConfigurationManagement\ConfigurationHelper.cs" />
+    <Compile Include="EmailManagement\EmailHelper.cs" />
     <Compile Include="EnumExtensions.cs" />
+    <Compile Include="Enums\PostCodeStatus.cs" />
     <Compile Include="Enums\SearchBusinessEntityType.cs" />
     <Compile Include="Enums\ExceptionHandlingPolicy.cs" />
     <Compile Include="Enums\LoggingCategory.cs" />
@@ -101,6 +107,8 @@
     <Compile Include="ExceptionManagement\Exceptions\MailSendException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\ServiceException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\WebServiceException.cs" />
+    <Compile Include="Interface\IConfigurationHelper.cs" />
+    <Compile Include="Interface\IEmailHelper.cs" />
     <Compile Include="Interface\IExceptionHelper.cs" />
     <Compile Include="Interface\ILoggingHelper.cs" />
     <Compile Include="LoggingManagement\LoggingHelper.cs" />
@@ -141,6 +149,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

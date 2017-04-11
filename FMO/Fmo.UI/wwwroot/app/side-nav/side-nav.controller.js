@@ -1,28 +1,28 @@
 angular
     .module('sideNav')
-    .controller("sideNavController",['$scope','routeLogService','$mdSidenav','$mdDialog', sideNavController])
+    .controller("sideNavController", ['$stateParams', '$state', '$scope', 'routeLogService', '$mdSidenav', '$mdDialog', sideNavController])
 
-    function sideNavController ($scope, routeLogService,$mdSidenav,$mdDialog) {
-        vm = this;
-        vm.routeLog =routeLog;
-        vm.openModalPopup=openModalPopup;
-        
-        
-        $scope.toggleSideNav = function() {
-        $mdSidenav('left').toggle();
-                }
-        
-    function routeLog(){
-        var setting =routeLogService.routeLog(); 
-        vm.openModalPopup(setting);
-         ///vm.openModalPopup("Test");
+function sideNavController($stateParams, $state, $scope, routeLogService, $mdSidenav, $mdDialog) {
+    vm = this;
+    vm.routeLog = routeLog;
+    vm.openModalPopup = openModalPopup;
+
+    vm.routeSimulation = routeSimulation;
+    function routeSimulation(selectedDeliveryUnit) {
+        debugger;
+        $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
     }
-        
-        function openModalPopup(modalSetting) {
-        var popupSetting = modalSetting;
-      $mdDialog.show(popupSetting)
-    };
-        
+    $scope.toggleSideNav = function () {
+        $mdSidenav('left').toggle();
+    }
 
-          
+    function routeLog() {
+        var setting = routeLogService.routeLog();
+        vm.openModalPopup(setting);
+    }
+
+    function openModalPopup(modalSetting) {
+        var popupSetting = modalSetting;
+        $mdDialog.show(popupSetting)
+    };
 };
