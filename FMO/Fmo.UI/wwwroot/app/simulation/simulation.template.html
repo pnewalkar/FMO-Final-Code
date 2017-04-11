@@ -1,11 +1,7 @@
 
-<md-radio-group layout="row" ng-model="vm.data.group1" layout-align="space-around center">
-    <md-radio-button  class="center-text" value="live" >
-        Live
-    </md-radio-button>
-    
-    <md-radio-button class="center-text" value="planned">
-            Planned
+<md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj.group1" ng-change="vm.selectedRouteStatus()" layout-align="space-around center">
+    <md-radio-button ng-repeat="status in vm.RouteStatusObj" ng-value="status.id">
+        {{ status.displaytext }}<br>
     </md-radio-button>
 </md-radio-group>   
 

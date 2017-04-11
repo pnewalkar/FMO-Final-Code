@@ -15,5 +15,8 @@ namespace Fmo.DTO
         public string UnitName { get; set; }
 
         public int UnitAddressUDPRN { get; set; }
+
+        public Guid ID { get; set; }
+
     }
 }
