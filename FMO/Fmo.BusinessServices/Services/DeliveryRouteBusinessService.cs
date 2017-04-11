@@ -22,7 +22,7 @@ namespace Fmo.BusinessServices.Services
             this.deliveryUnitLocationRespository = deliveryUnitLocationRespository;
         }
 
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             return deliveryRouteRepository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
@@ -32,9 +32,9 @@ namespace Fmo.BusinessServices.Services
             return referenceDataCategoryRepository.RouteLogStatus();
         }
 
-        public List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID)
+        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID)
         {
-            return scenarioRepository.FetchScenario(operationStateID, deliveryUnitID);
+            return scenarioRepository.FetchScenario(operationStateID, deliveryScenarioID);
         }
 
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)

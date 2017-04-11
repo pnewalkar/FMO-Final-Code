@@ -8,6 +8,7 @@ function sideNavController($stateParams, $state, $scope, routeLogService, $mdSid
     vm.openModalPopup = openModalPopup;
 
     vm.routeSimulation = routeSimulation;
+    vm.selectedUnit = $stateParams;
     function routeSimulation(selectedDeliveryUnit) {
         debugger;
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
@@ -16,8 +17,9 @@ function sideNavController($stateParams, $state, $scope, routeLogService, $mdSid
         $mdSidenav('left').toggle();
     }
 
-    function routeLog() {
-        var setting = routeLogService.routeLog();
+    function routeLog(selectedUnit) {
+        var state = $stateParams;
+        var setting = routeLogService.routeLog(selectedUnit);
         vm.openModalPopup(setting);
     }
 
