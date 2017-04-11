@@ -1,2 +1,52 @@
 input {
   background: red; }
+
+
+i.fa.fa-map-marker {
+    
+
+}
+
+
+
+.delivery{
+        color: red;
+        margin-right: -20px;
+}
+.postcode{
+        color: green;
+        margin-right: -20px;
+}
+.street{
+        color: yellow;
+        margin-right: -20px;
+}
+.route{
+        color: blue;
+        margin-right: -20px;
+}
+
+.searchBox{
+    position:absolute;
+    margin-top:-18px;
+}
+
+.searchInput{
+    background:white;
+    width:80%;
+    padding:8px;
+    font-size:15px;
+}
+
+.searchContent{
+       background:white;
+       width:80%;
+}
+
+.searchData{
+    background:white;
+    color: rgb(117,117,117);
+    font-size:14px;
+    margin-bottom:5px;
+    padding:5px 5px;
+}

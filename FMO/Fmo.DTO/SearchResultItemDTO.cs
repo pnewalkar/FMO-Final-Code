@@ -1,4 +1,6 @@
 ﻿using Fmo.Common.Enums;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Fmo.DTO
 {
@@ -20,6 +22,7 @@ namespace Fmo.DTO
         /// <summary>
         /// The <see cref="SearchBusinessEntityType"/>.
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public SearchBusinessEntityType Type { get; set; }
     }
 }

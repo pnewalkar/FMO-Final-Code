@@ -1,7 +1,4 @@
-.md-toolbar-tools .fa {
-  font-size: 18px;
-  color: white;
-  margin-top: 4px; }
+
 
 i.fa.fa-inbox {
   margin-left: 20px; }
@@ -14,8 +11,3 @@ h2 span {
 
 .md-toolbar-tools span {
   margin-right: 10px; }
-
-
-.homeContainer{
-    height: 89.5%;
-}
