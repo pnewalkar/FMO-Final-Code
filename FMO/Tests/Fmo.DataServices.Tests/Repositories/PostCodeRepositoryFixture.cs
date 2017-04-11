@@ -38,6 +38,14 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
+        public async Task Test_FetchPostCodeUnitForBasicSearch_null()
+        {
+            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch(null);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult.Count == 5);
+        }
+
+        [Test]
         public async Task Test_GetPostCodeUnitCount_Valid()
         {
             var actualResultCount = await testCandidate.GetPostCodeUnitCount("search");
@@ -52,6 +60,15 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
         }
+
+        [Test]
+        public async Task Test_GetPostCodeUnitCount_null()
+        {
+            var actualResultCount = await testCandidate.GetPostCodeUnitCount(null);
+            Assert.IsNotNull(actualResultCount);
+            Assert.IsTrue(actualResultCount == 7);
+        }
+
 
         protected override void OnSetup()
         {
