@@ -1,14 +1,15 @@
 'use strict';
 angular.module('mapKey')
-    .controller('MapKeyController', ['$scope', 'mapStylesFactory', 'mapService', MapKeyController]);
+    .controller('MapKeyController', ['mapStylesFactory', 'mapService', MapKeyController]);
 
-function MapKeyController($scope, mapStylesFactory, mapService) {
+function MapKeyController(mapStylesFactory, mapService) {
 
     var vm = this;
 
+    vm.initialize = initialize;
     vm.showKey = showKey;
 
-    var activeStyle = mapStylesFactory.getStyle();
+    initialize();
 
     function showKey(id) {
         if (id == "") {
@@ -30,24 +31,28 @@ function MapKeyController($scope, mapStylesFactory, mapService) {
         return distinct.indexOf(id) != -1;
     }
 
-    vm.pointTypes = [
-        {
-            "text": "Delivery Point",
-            "id": "deliverypoint",
-            "style": activeStyle("deliverypoint")
-        }
-    ];
+    function initialize() {
+        var activeStyle = mapStylesFactory.getStyle();
 
-    vm.lineTypes = [
-        {
-            "text": "Access Link",
-            "id": "accessLink",
-            "style": activeStyle("accesslink")
-        },
-        {
-            "text": "Road",
-            "id": "road",
-            "style": activeStyle("road")
-        }
-    ];
+        vm.pointTypes = [
+            {
+                "text": "Delivery Point",
+                "id": "deliverypoint",
+                "style": activeStyle("deliverypoint")
+            }
+        ];
+
+        vm.lineTypes = [
+            {
+                "text": "Access Link",
+                "id": "accesslink",
+                "style": activeStyle("accesslink")
+            },
+            {
+                "text": "Road",
+                "id": "roadlink",
+                "style": activeStyle("roadlink")
+            }
+        ];
+    }
 };
