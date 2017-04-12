@@ -1,33 +1,44 @@
-.mapContainer{
-    width: 100%;
+@import './app/variables';
+
+.mapContainer {
+    width: width-percent(1);
     height: 100%;
 }
+
 .miniMap{
-    margin-bottom: 20px;
+    @include margin(0px 0px 20px 0px);
 }
 
 .layers{
-    margin-bottom: 20px;
+     @include margin(0px 0px 20px 0px);
 }
 
-#leftPanel {
-    left:15px;
+
+#leftPanel{
+    @include position(absolute);
+    left: 15px;
     top: 75px;
-    position: absolute;
 }
 
-#rightPanel {
+#rightPanel{
+    @include position(absolute);
     right: 15px;
     top: 75px;
-    position: absolute;
 }
 
-.zoom-control{
-    position: absolute;
+.zoom-control {
+    @include position(absolute);
     left: -50px;
     top: 0;
 }
 
-.ol-zoom.ol-unselectable.ol-control {
-    display: none;
+
+.zoom-scale {
+    @include position(absolute);
+    @include background($white);
+    width: width-percent(2.86);
+    @include padding(3px 10px 3px 10px);
+    text-align: center;
+    left: -155px;
+    top: 10px;
 }
