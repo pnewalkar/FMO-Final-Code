@@ -3,5 +3,5 @@ angular.module('advanceSearch')
     restrict: 'E',
     scope: {},
     templateUrl: './advance-search/advance-search.template.html',
-    controller: 'AdvanceSearchController as vm'
+    controller: 'advanceSearchController1 as vm'
   });

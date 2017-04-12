@@ -16,7 +16,6 @@ namespace Fmo.Helpers
         public Dictionary<string, JToken> properties { get; set; }
         public Geometry geometry { get; set; }
 
-
         public JObject getJson()
         {
             var obj = new JObject();
