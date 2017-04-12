@@ -12,12 +12,6 @@
 
     public interface IDeliveryPointBusinessService
     {
-        //   Task<List<DeliveryPointDTO>> SearchDelievryPoints();
-
-        object GetDeliveryPoints();
-
-        DeliveryPointDTO GetDeliveryPoints1(string bbox);
-
-        string GetData(string query, params object[] parameters);
+        string GetDeliveryPoints(string boundarybox);
     }
 }

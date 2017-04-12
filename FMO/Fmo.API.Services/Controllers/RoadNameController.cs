@@ -20,6 +20,11 @@ namespace Fmo.API.Services.Controllers
 
         IRoadNameBussinessService roadNameBussinessService = default(IRoadNameBussinessService);
 
+        public RoadNameController(IRoadNameBussinessService businessService)
+        {
+            this.roadNameBussinessService = businessService;
+        }
+
         public async Task<List<RoadNameDTO>> FetchRoadName(List<RoadNameDTO> RoadNameDTO)
         {
             return await roadNameBussinessService.FetchRoadName();
@@ -27,33 +32,9 @@ namespace Fmo.API.Services.Controllers
 
         [Route("GetRouteLinks")]
         [HttpGet]
-        public OsRoadLinkDTO GetRoouteData(string bbox)
+        public string GetRoouteData(string bbox)
         {
-            //try
-            //{
-            string[] bboxArr = bbox.Split(',');
-
             return roadNameBussinessService.GetRoadRoutes(bbox);
-
-            //var result = new HttpResponseMessage(HttpStatusCode.OK)
-            //{
-            //    Content = new StreamContent(memoryStream)
-            //};
-
-            //result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            //result.Content.Headers.ContentLength = memoryStream.Length;
-            //return result;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Logger.LogError(ex, ex.Message);
-            //    var result = new HttpResponseMessage(HttpStatusCode.BadRequest)
-            //    {
-            //        ReasonPhrase = ex.Message
-            //    };
-            //    result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            //    return result;
-            //}
         }
         //// GET: api/values
         //[HttpGet]

@@ -39,7 +39,8 @@
         {
             System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
 
-            return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine != null && dp.AccessLinkLine.Intersects(extent)).ToList();
+            //return DataContext.AccessLinks.Take(100);
+            return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
         }
 
         public List<AccessLinkDTO> GetAccessLinks(string coordinates)

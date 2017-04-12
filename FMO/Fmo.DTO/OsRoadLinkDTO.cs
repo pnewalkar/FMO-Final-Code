@@ -47,6 +47,10 @@ namespace Fmo.DTO
 
         public string OperationalState { get; set; }
 
+        public string type { get; set; }
+
+        public object features { get; set; }
+
         //public virtual NetworkLink NetworkLink { get; set; }
     }
 }

@@ -13,6 +13,8 @@
     using Fmo.Helpers;
     using Fmo.Helpers.Interface;
     using Newtonsoft.Json;
+    using Microsoft.SqlServer.Types;
+    using System.Data.SqlTypes;
 
     public class AccessLinkBussinessService : IAccessLinkBussinessService
     {
@@ -31,48 +33,105 @@
             return accessLinkRepository.SearchAccessLink();
         }
 
-        public AccessLinkDTO GetAccessLinks(string bbox)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="boundaryBox"></param>
+        /// <returns></returns>
+        public string GetAccessLinks(string boundaryBox)
         {
-            string[] bboxArr = bbox.Split(',');
-            var coordinates = GetData(null, bboxArr);
-            AccessLinkDTO accessLinkDTOCollectionObj = new AccessLinkDTO();
-            List<AccessLinkDTO> accessLinkDTO = accessLinkRepository.GetAccessLinks(coordinates);
-
-            List<Feature> lstFeatures = new List<Feature>();
-
-            string json = string.Empty;
-
-            if (accessLinkDTO != null && accessLinkDTO.Count > 0)
+            try
             {
-                foreach (var res in accessLinkDTO)
-                {
-                    Geometry geometry = new Geometry();
-
-                    geometry.type = res.AccessLinkLine.SpatialTypeName;
-
-                    var resultCoordinates = res.AccessLinkLine;
-
-                    geometry.coordinates = new object();
-
-                    var features = createOtherLayersObjects.GetAccessLinks(geometry, resultCoordinates);
-                    lstFeatures.Add(features);
-                } 
+                var accessLinkCoordinates = GetData(null, boundaryBox.Split(','));
+                return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
             }
-
-            accessLinkDTOCollectionObj.features = lstFeatures;
-            accessLinkDTOCollectionObj.type = "FeatureCollection";
-
-            return accessLinkDTOCollectionObj;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public string GetData(string query, params object[] parameters)
-        {
-            string x1 = Convert.ToString(parameters[0]);
-            string y1 = Convert.ToString(parameters[1]);
-            string x2 = Convert.ToString(parameters[2]);
-            string y2 = Convert.ToString(parameters[3]);
-            string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lstAccessLinkDTO"></param>
+        /// <returns></returns>
+        private string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
+        {            
+            AccessLinkDTO accessLinkDTOCollectionObj = new AccessLinkDTO();
+            string json = string.Empty;
 
+            var geoJson = new GeoJson
+            {
+                features = new List<Feature>()
+            };
+
+            foreach (var res in lstAccessLinkDTO)
+            {
+                Geometry geometry = new Geometry();
+
+                geometry.type = res.AccessLinkLine.SpatialTypeName;
+
+                var resultCoordinates = res.AccessLinkLine;
+
+                SqlGeometry sqlGeo = null;
+                if (geometry.type == "LineString")
+                {
+                    sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+
+                    double[][] cords = new double[2][];
+
+                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
+                    {
+                        double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
+                        cords[pt - 1] = coordinates;
+                        //cords.Add(coordinates);
+                    }
+
+                    geometry.coordinates = new Coordinates(cords);
+                }
+                else
+                {
+                    sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
+                    geometry.coordinates = new Coordinates(coordinates);
+                }
+
+                Feature feature = new Feature();
+                feature.geometry = geometry;
+
+                feature.type = "Feature";
+                feature.id = res.AccessLink_Id;
+                feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+
+                geoJson.features.Add(feature);
+            }
+
+            //accessLinkDTOCollectionObj.features = lstFeatures;
+            //accessLinkDTOCollectionObj.type = "FeatureCollection";
+
+            //json = JsonConvert.SerializeObject(accessLinkDTOCollectionObj, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            return geoJson.getJson().ToString();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private string GetData(string query, params object[] parameters)
+        {
+            string coordinates = string.Empty;
+
+            if (parameters != null && parameters.Length == 4)
+            {
+                coordinates = "POLYGON((" + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + ", "
+                                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[3]) + ", "
+                                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[3]) + ", "
+                                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[1]) + ", "
+                                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + "))";
+            }
             return coordinates;
         }
     }

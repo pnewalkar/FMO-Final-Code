@@ -12,7 +12,7 @@ using System.Net;
 
 namespace Fmo.API.Services.Controllers
 {
-    [Route("api/accessLinks")]
+    [Route("api/[controller]")]
     public class AccessLinkController : Controller
     {
        IAccessLinkBussinessService accessLinkBussinessService = default(IAccessLinkBussinessService);
@@ -32,25 +32,11 @@ namespace Fmo.API.Services.Controllers
 
         [Route("GetAccessLinks")]
         [HttpGet]
-        public AccessLinkDTO GetAccessLinks(string bbox)
+        public string GetAccessLinks(string bbox)
         {
-            //try
-            //{
-                //string[] bboxArr = bbox.Split(',');
+           
                 return accessLinkBussinessService.GetAccessLinks(bbox);
 
-             
-            //}
-            //catch (Exception ex)
-            //{
-                //Logger.Logger.LogError(ex, ex.Message);
-                //var result = new HttpResponseMessage(HttpStatusCode.BadRequest)
-                //{
-                //    ReasonPhrase = ex.Message
-                //};
-                //result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                //return result;
-            //}
         }
         //// GET: api/values
         //[HttpGet]
