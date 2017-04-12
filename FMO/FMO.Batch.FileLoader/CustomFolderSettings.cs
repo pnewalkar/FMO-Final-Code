@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace FMO.Batch.FileLoader
+namespace Fmo.Batch.FileLoader
 {
     public class CustomFolderSettings
     {

@@ -39,8 +39,8 @@ namespace Fmo.NYBLoader
         /// <summary>
         /// Reads data from CSV file and maps to postalAddressDTO object
         /// </summary>
-        /// <param name="strLine"></param>
-        /// <returns></returns>
+        /// <param name="strLine">Line read from CSV File</param>
+        /// <returns>Postal Address DTO</returns>
         public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
@@ -90,8 +90,8 @@ namespace Fmo.NYBLoader
         /// <summary>
         /// Validates string i.e. no of comma's should be 15 and max characters per line should be 507
         /// </summary>
-        /// <param name="arrLines"></param>
-        /// <returns></returns>
+        /// <param name="arrLines">Array of string read from CSV file</param>
+        /// <returns>boolean value after validating all the lines</returns>
         private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
@@ -114,8 +114,8 @@ namespace Fmo.NYBLoader
         /// <summary>
         /// Mapping comma separated value to postalAddressDTO object
         /// </summary>
-        /// <param name="csvLine"></param>
-        /// <returns></returns>
+        /// <param name="csvLine">Line read from CSV File</param>
+        /// <returns>Returns mapped DTO</returns>
         private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
@@ -146,7 +146,7 @@ namespace Fmo.NYBLoader
         /// <summary>
         /// Perform business validation on postalAddressDTO object
         /// </summary>
-        /// <param name="lstAddress"></param>
+        /// <param name="lstAddress">List of mapped address dto to validate each records</param>
         private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             foreach (PostalAddressDTO objAdd in lstAddress)
@@ -200,7 +200,7 @@ namespace Fmo.NYBLoader
         /// <summary>
         /// PostCode validation i.e start and end character should be numeric , fourth last character should be whitespace etc.
         /// </summary>
-        /// <param name="strPostCode"></param>
+        /// <param name="strPostCode">Postcode read from csv file</param>
         /// <returns></returns>
         private static bool ValidatePostCode(string strPostCode)
         {
@@ -231,8 +231,8 @@ namespace Fmo.NYBLoader
         /// <summary>
         /// Web API call to save postalAddress to PostalAddress table
         /// </summary>
-        /// <param name="lstAddress"></param>
-        /// <returns></returns>
+        /// <param name="lstAddress">List of mapped address dto to validate each records</param>
+        /// <returns>If success returns true else returns false</returns>
         public bool SaveNYBDetails(List<PostalAddressDTO> lstAddress)
         {
             bool saveflag = false;

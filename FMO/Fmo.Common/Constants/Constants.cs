@@ -23,12 +23,22 @@ namespace Fmo.Common.Constants
         public const int BNG_COORDINATE_SYSTEM = 27700;
         public const int noOfCharactersForPAF = 19;
         public const int maxCharactersForPAF = 534;
-        public const string USR_LOC_PROVIDER = "<E>";
+        public const string USR_LOC_PROVIDER = "E";
         public const int TOLERANCE_DISTANCE_IN_METERS = 10;
         public const string USR_NOTIFICATION_SOURCE = "SYSTEM";
         public const string USR_ACTION = "Check updated DP Location";
         public const string Postal_Address_Status = "Postal Address Status";
         public const string Postal_Address_Type = "Postal Address Type";
+        public const string USR_BODY = "Please check the proposed new Location of the DP Latitude: {0}, Longitude: {1}, X: {2}, Y: {3}";
+        public const string USR_GEOMETRY_POINT = "POINT({0},{1})";
+        public const string USR_CATEGORY = "Notification Type";
+        public const string USR_REFERENCE_DATA_NAME = "Action required";
+
+        public const string PAFNOACTION = "B";
+        public const string PAFINSERT = "I";
+        public const string PAFUPDATE = "C";
+        public const string PAFDELETE = "D";
+
     }
 }
 

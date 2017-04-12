@@ -107,6 +107,7 @@ namespace Fmo.DataServices.Repositories
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText)
         {
             int takeCount = 5;
+            searchText = searchText ?? string.Empty;
             var result = await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
                 .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
@@ -135,12 +136,17 @@ namespace Fmo.DataServices.Repositories
 
         public async Task<int> GetDeliveryPointsCount(string searchText)
         {
-            return await DataContext.DeliveryPoints.CountAsync(x => x.PostalAddress.OrganisationName.Contains(searchText)
+            searchText = searchText ?? string.Empty;
+            var result = await DataContext.DeliveryPoints.AsNoTracking()
+              .Include(l => l.PostalAddress)
+              .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
                               || x.PostalAddress.BuildingName.Contains(searchText)
                               || x.PostalAddress.SubBuildingName.Contains(searchText)
                               || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                               || x.PostalAddress.Thoroughfare.Contains(searchText)
-                              || x.PostalAddress.DependentLocality.Contains(searchText));
+                              || x.PostalAddress.DependentLocality.Contains(searchText)).CountAsync();
+
+            return result;
         }
 
         public IEnumerable<DeliveryPoint> GetData(string coordinates)

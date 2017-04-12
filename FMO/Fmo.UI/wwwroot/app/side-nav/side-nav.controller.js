@@ -9,20 +9,25 @@ function sideNavController($scope, routeLogService, $mdSidenav, $mdDialog, advan
         vm.advanceSearch = advanceSearch;
         vm.openAdvanceSearchPopup = openAdvanceSearchPopup;
         vm.closeSideNav = closeSideNav;
-        
+        vm.routeSimulation = routeSimulation;
+        vm.selectedUnit = $stateParams;
+        function routeSimulation(selectedDeliveryUnit) {
+            debugger;
+            $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
+        }
         $scope.toggleSideNav = function() {
         $mdSidenav('left').toggle();
-                }
-        
-    function routeLog(){
-        var setting =routeLogService.routeLog(); 
-        vm.openModalPopup(setting);
-         ///vm.openModalPopup("Test");
     }
-        
-        function openModalPopup(modalSetting) {
+
+    function routeLog(selectedUnit) {
+        var state = $stateParams;
+        var setting = routeLogService.routeLog(selectedUnit);
+        vm.openModalPopup(setting);
+    }
+
+    function openModalPopup(modalSetting) {
         var popupSetting = modalSetting;
-      $mdDialog.show(popupSetting)
+        $mdDialog.show(popupSetting)
     };
         
         function advanceSearch() {

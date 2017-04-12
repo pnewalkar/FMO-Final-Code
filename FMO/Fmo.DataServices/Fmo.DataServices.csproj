@@ -103,6 +103,7 @@
     <Compile Include="Repositories\Interfaces\IDeliveryUnitLocationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IFileProcessingLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\INotificationRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IPostCodeSectorRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostalAddressRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostCodeRepository.cs" />
     <Compile Include="Repositories\Interfaces\IReferenceDataCategoryRepository.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Repositories\NotificationRepository.cs" />
     <Compile Include="Repositories\PostalAddressRepository.cs" />
     <Compile Include="Repositories\PostCodeRepository.cs" />
+    <Compile Include="Repositories\PostCodeSectorRepository.cs" />
     <Compile Include="Repositories\ReferenceDataCategoryRepository.cs" />
     <Compile Include="Repositories\ReferenceDataRepository.cs" />
     <Compile Include="Repositories\ScenarioRepository.cs" />

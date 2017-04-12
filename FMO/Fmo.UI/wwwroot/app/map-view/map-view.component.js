@@ -1,10 +1,9 @@
 angular.
 module('mapView').
 component('mapView', {
-    restrict: 'E',
-    scope: {
+    bindings: {
         selectedDeliveryUnit: "="
     },
     templateUrl: './map-view/map-view.template.html',
-	controller: 'MapController as vm'
+    controller: 'MapController as vm'
 });

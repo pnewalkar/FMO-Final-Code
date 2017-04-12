@@ -35,18 +35,17 @@
                 
             <md-divider></md-divider>
 
-            <md-list-item ng-click="vm.routeLog()" >
+            <md-list-item ng-click="vm.routeLog(vm.selectedDeliveryUnit)" >
                 <span>Route Log</span>
             </md-list-item>
             
             <md-divider></md-divider>
             
             <md-list-item>
-                <p ui-sref="routeSimulation" > Simulation</p>
+                <p  ng-click="vm.routeSimulation(vm.selectedDeliveryUnit)" > Simulation</p>
             </md-list-item>
             
             <md-divider></md-divider>
-
 
             </md-list>
     </md-content> 

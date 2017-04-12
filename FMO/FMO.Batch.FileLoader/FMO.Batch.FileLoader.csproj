@@ -7,8 +7,8 @@
     <ProjectGuid>{899723CB-0C54-4D8A-8F2C-966D28D511C6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FMO.Batch.FileLoader</RootNamespace>
-    <AssemblyName>FMO.Batch.FileLoader</AssemblyName>
+    <RootNamespace>Fmo.Batch.FileLoader</RootNamespace>
+    <AssemblyName>Fmo.Batch.FileLoader</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
