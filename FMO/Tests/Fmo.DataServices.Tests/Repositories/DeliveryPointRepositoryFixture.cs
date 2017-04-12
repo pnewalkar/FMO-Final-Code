@@ -22,7 +22,7 @@
         public void Test_GetDeliveryPoints()
         {
             coordinates = "1234.87";
-            var actualResult = testCandidate.GetDeliveryPoints1(coordinates);
+            var actualResult = testCandidate.GetDeliveryPoints(coordinates);
             Assert.IsNotNull(actualResult);
         }
 

@@ -1,28 +1,28 @@
+@import './app/variables';
+
+.maptoolBarText{
+    font-family: $secondary-font;
+    font-size: $seondary-font-size;
+}
+
 .map-toolbar {
-    top: 70px;
-    min-width: 100%;
-    position:absolute;
+    @include top(70px);
+    @include position(absolute);
+    min-width: minWidth(1);
 }
-.map-toolbar .button{
-    padding:0;
-    padding-right:10px;
-    margin:0;
-    border-radius: 0;
-    min-width:40px;
-}
-.button-small{
-    padding:0;
-    margin:0;
-    border-radius: 0;
-    width: 40px;
-    min-width: 40px;
+
+.map-toolbar .button {
+  @include padding(0px 10px 0px 0px);
+  @include margin(0px 0px 0px 0px);
+  @include border-radius(0px);
+  min-width: minWidth(40);
 }
 
 .pad-icon {
-    margin-right:5px;
-    margin-left:10px;
+    @include margin(0px 5px 0px 10px);
+    font-size: $seondary-font-size;
 }
 
 .map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button:hover {
-    background-color: #aadaea;
+    @include background($clear-blue);
 }

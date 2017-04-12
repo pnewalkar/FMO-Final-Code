@@ -14,21 +14,6 @@
     <span flex></span>
     {{pointType.text}}
 </div>
-
-<div layout="row"
-     layout-align="center start" ng-show="vm.showKey(areaType.id)"
-     ng-repeat="areaType in vm.areaTypes">
-     
-    <md-icon class="fa fa-square-o" ng-style="{'font-size': '24px',
-                                               'text-shadow': '-1px 0 ' + areaType.style.stroke_.color_ + ',' +
-                                                            '0 1px ' + areaType.style.stroke_.color_ + ',' +
-                                                            '1px 0 ' + areaType.style.stroke_.color_ + ',' +
-                                                            '0 -1px ' + areaType.style.stroke_.color_,
-                                               'color': areaType.style.fill_.color_}"></md-icon>
-    <span flex></span>
-    {{areaType.text}}
-</div>
-
 <div layout="row"
      layout-align="center start" ng-show="vm.showKey(lineType.id)"
      ng-repeat="lineType in vm.lineTypes">

@@ -1,21 +1,14 @@
-
-
-i.fa.fa-inbox {
-  margin-left: 20px; }
-
 h2 span {
-  color: white;
+  color: #ffffff;
   font-family: Chevin;
+  font-size: 18px; }
+
+.md-toolbar-tools .fa {
   font-size: 18px;
-  background: none; }
+  color: #ffffff; }
+
+.fa-inbox .fa-bars {
+  margin: 0px 0px 0px 10px; }
 
 .md-toolbar-tools span {
-  margin-right: 25px; }
-
-span.flex-5 {
-    margin-right: 0px;
-}
-
-.homeContainer{
-    height: 89.5%;
-}
+  margin: 0px 10px 0px 0px; }

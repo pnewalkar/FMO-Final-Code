@@ -1,4 +1,4 @@
-﻿namespace FMO.Batch.FileLoader
+﻿namespace Fmo.Batch.FileLoader
 {
     internal static class Program
     {

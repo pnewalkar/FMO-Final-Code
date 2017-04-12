@@ -97,7 +97,7 @@ namespace Fmo.DataServices.DBContext
                 {
                     auditLogs.Add(new AuditLog()
                     {
-                        Id = Guid.NewGuid(),
+                        AuditLog_Id = Guid.NewGuid(),
                         UserId = userId,
                         EventTimeStamp = changeTime,
                         EventType = EntityState.Added.ToString(),    // Added
@@ -113,7 +113,7 @@ namespace Fmo.DataServices.DBContext
             {
                 auditLogs.Add(new AuditLog()
                 {
-                    Id = Guid.NewGuid(),
+                    AuditLog_Id = Guid.NewGuid(),
                     UserId = userId,
                     EventTimeStamp = changeTime,
                     EventType = EntityState.Deleted.ToString(), // Deleted
@@ -133,7 +133,7 @@ namespace Fmo.DataServices.DBContext
                     {
                         auditLogs.Add(new AuditLog()
                         {
-                            Id = Guid.NewGuid(),
+                            AuditLog_Id = Guid.NewGuid(),
                             UserId = userId,
                             EventTimeStamp = changeTime,
                             EventType = EntityState.Modified.ToString(),    // Modified

@@ -1,23 +1,18 @@
-$font-stack: Chevin;
-$font-size: 18px;
+@import './app/variables';
+
+h2 span {
+ @extend %header-content;
+}
 
 .md-toolbar-tools .fa{
-    font-size: 18px; 
-    color: white;
-    margin-top: 4px;
+    font-size: $primary-font-size; 
+    color: $white;
 }
 
-i.fa.fa-inbox{
-    margin-left: 20px;
+.fa-inbox .fa-bars{
+    @include margin(0px 0px 0px 10px);
 }
 
-h2 span{
-  color: white;
-  font-family: Chevin;
-  font-size: 18px;  
-  background: none;
-}
-
-.md-toolbar-tools span{
-    margin-right: 10px;
+.md-toolbar-tools span { 
+    @include margin(0px 10px 0px 0px);
 }

@@ -12,8 +12,7 @@ namespace Fmo.BusinessServices.Interfaces
     {
         List<AccessLinkDTO> SearchAccessLink();
 
-        AccessLinkDTO GetAccessLinks(string bbox);
-
-        string GetData(string query, params object[] parameters);
+        string GetAccessLinks(string boundaryBox);
+        
     }
 }
