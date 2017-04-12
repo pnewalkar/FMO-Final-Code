@@ -25,3 +25,13 @@
 
 .ol-zoom.ol-unselectable.ol-control {
   display: none; }
+
+.zoom-scale {
+    position: absolute;
+    left: -155px;
+    top: 10px;
+    width: 35%;
+    background: white;
+    padding: 3px 10px 3px 10px;
+    text-align: center;
+}
