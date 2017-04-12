@@ -1,8 +1,8 @@
 angular
     .module('sideNav')
-    .controller("sideNavController",['$scope','routeLogService','$mdSidenav','$mdDialog','advanceSearchService', sideNavController])
+    .controller("sideNavController",['$scope','$state','$stateParams','routeLogService','$mdSidenav','$mdDialog','advanceSearchService', sideNavController])
 
-function sideNavController($scope, routeLogService, $mdSidenav, $mdDialog, advanceSearchService) {
+function sideNavController($scope, $state, $stateParams,routeLogService, $mdSidenav, $mdDialog, advanceSearchService) {
         vm = this;
         vm.routeLog =routeLog;
         vm.openModalPopup=openModalPopup;
