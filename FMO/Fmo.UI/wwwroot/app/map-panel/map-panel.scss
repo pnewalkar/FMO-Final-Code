@@ -1,66 +1,64 @@
+@import './app/variables';
+
 map-panel {
-    position: relative;
-    border-radius: 3px;
-    margin-bottom: 10px;
+    @include position(relative);
+    @include border-radius(3px);
+    @include margin(0px 0px 10px 0px); 
 }
-
-.hide-panel {
-   /* display: inline-block; */
-}
-
 
 .show-panel {
-    width: 250px;
+    @include width(250px);
 }
 
 .show-left-panel {
-    width: 350px;
+    @include width(350px);
 }
 
 .map-panel {
-    background-color: white;
+    @include background($white);
 }
 
 .map-panel ul {
-    margin: 0;
-    padding: 0;
+    @include margin(0px 0px 0px 0px);
+    @include padding(0px 0px 0px 0px);
     list-style: none;
 }
 
 .map-panel li {
-    padding: 10px;
-    border-bottom: 1px solid #f1f1f1;
+    @extend %body-content;
+    @include padding(10px 10px 10px 10px);
+    @include border-bottom(1px solid $white-smoke);
 }
 
 .map-panel li:hover {
-    cursor: pointer;
+    @include cursor(pointer);
 }
 
 .map-panel .panel-header {
     pointer-events: auto;
-    background-color: whitesmoke;
+    @include background($white-smoke);
 }
 
 .map-panel .fa {
-    color: gray;
+    @include font-color($strong-grey);
 }
 
 .map-panel .map-panel-content {
-    padding: 3px;
+    @include padding(3px 3px 3px 3px);
     overflow: auto;
     height: calc(100% - 50px);
     pointer-events: auto;
 }
 
 .map-panel .map-panel-summary {
-    padding: 5px;
-    border-bottom: 1px solid #f1f1f1;
+    @include padding(5px 5px 5px 5px);
+    @include border-bottom(1px solid $white-smoke);
 }
 
 .search-panel .map-panel-content {
-    padding: 10px;
+    @include padding(10px 10px 10px 10px);
 }
 
 .right-panel {
-    float: right;
+    @include float(right);
 }
