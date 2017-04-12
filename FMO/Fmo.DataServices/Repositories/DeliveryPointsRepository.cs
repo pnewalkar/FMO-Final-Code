@@ -163,7 +163,7 @@ namespace Fmo.DataServices.Repositories
                 .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
                                 || x.PostalAddress.BuildingName.Contains(searchText)
                                 || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                || Convert.ToString(x.PostalAddress.BuildingNumber).StartsWith(searchText)
+                                || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                                 || x.PostalAddress.Thoroughfare.Contains(searchText)
                                 || x.PostalAddress.DependentLocality.Contains(searchText))
                 .Select(l => new DeliveryPointDTO
@@ -192,7 +192,7 @@ namespace Fmo.DataServices.Repositories
               .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
                               || x.PostalAddress.BuildingName.Contains(searchText)
                               || x.PostalAddress.SubBuildingName.Contains(searchText)
-                              || Convert.ToString(x.PostalAddress.BuildingNumber).StartsWith(searchText)
+                              || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                               || x.PostalAddress.Thoroughfare.Contains(searchText)
                               || x.PostalAddress.DependentLocality.Contains(searchText)).CountAsync();
 
