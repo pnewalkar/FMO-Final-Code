@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
-
     <Compile Include="FileProcessingLogDTO.cs" />
     <Compile Include="NotificationDTO.cs" />
     <Compile Include="OsRoadLinkDTO.cs" />
