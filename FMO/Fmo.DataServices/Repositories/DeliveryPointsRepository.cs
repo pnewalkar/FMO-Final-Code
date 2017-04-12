@@ -17,6 +17,7 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using MappingConfiguration;
     using Entity = Fmo.Entities;
+    using AutoMapper;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -29,9 +30,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
-                DeliveryPoint objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-                return deliveryPointDTO;
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
             }
             catch (Exception)
             {
@@ -46,17 +46,23 @@ namespace Fmo.DataServices.Repositories
             {
                 if (objDeliveryPoint != null)
                 {
-                    var deliveryPoint = new DeliveryPoint();
-                    GenericMapper.Map(objDeliveryPoint, deliveryPoint);
-
-                    DataContext.DeliveryPoints.Add(deliveryPoint);
+                    DeliveryPoint newDeliveryPoint = new DeliveryPoint();
+                    newDeliveryPoint.ID = objDeliveryPoint.ID;
+                    newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
+                    newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
+                    newDeliveryPoint.Address_Id = objDeliveryPoint.Address_Id;
+                    newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
+                    newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
+                    newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
+                    //newDeliveryPoint.LocationProvider = "E"; // Update in Enum as well as reference data category
+                    DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     DataContext.SaveChangesAsync();
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
 
             return saveFlag;
