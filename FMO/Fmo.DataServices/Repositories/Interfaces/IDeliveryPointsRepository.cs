@@ -18,17 +18,17 @@ namespace Fmo.DataServices.Repositories.Interfaces
 
         Task<int> UpdateDeliveryPointLocationOnUDPRN(int uDPRN, decimal latitude, decimal longitude, DbGeometry locationXY);
 
-        MemoryStream GetDeliveryPoints();
-
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText);
 
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText);
 
         Task<int> GetDeliveryPointsCount(string searchText);
 
-        List<DeliveryPointDTO> GetDeliveryPoints1(string coordinates);
+        List<DeliveryPointDTO> GetDeliveryPoints(string coordinates);
 
         IEnumerable<DeliveryPoint> GetData(string coordinates);
+
+        List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
 
         bool DeliveryPointExists(int uDPRN);
 

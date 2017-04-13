@@ -19,10 +19,23 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
+        /// <summary>
+        /// Fetch the Delivery Route.
+        /// </summary>
+        /// <param name="operationStateID">Guid</param>
+        /// <param name="deliveryScenarioID">Guid</param>
+        /// <returns>List</returns>
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
-            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.Where(x => x.DeliveryScenario_Id == deliveryScenarioID && x.OperationalStatus_Id == operationStateID).ToList();
-            return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+            try
+            {
+                IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.Where(x => x.DeliveryScenario_GUID == deliveryScenarioID && x.Scenario.OperationalState_GUID == operationStateID).ToList();
+                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
@@ -43,6 +56,7 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 int takeCount = 5;
+                searchText = searchText ?? string.Empty;
                 var deliveryRoutesDto = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
                     .Take(takeCount)
                     .Select(l => new DeliveryRouteDTO
@@ -65,6 +79,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
+                searchText = searchText ?? string.Empty;
                 return await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).CountAsync();
             }
             catch (Exception ex)

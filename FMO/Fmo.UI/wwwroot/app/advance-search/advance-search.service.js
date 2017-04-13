@@ -1,8 +1,14 @@
-angular.module('advanceSearch')
-        .service('advanceSearchService', [advanceSearchService])
+﻿
 
-function advanceSearchService() {
-    var vm = this;
 
-    return{}
-    }
+angular.module('advanceSearch').service('advanceSearchService', function () {
+
+    this.advanceSearch = function () {
+        return {
+            templateUrl: './advance-search/advance-search.template.html',
+            clickOutsideToClose: true,
+            controller: 'advanceSearchController as vm'
+        }
+    };
+});
+

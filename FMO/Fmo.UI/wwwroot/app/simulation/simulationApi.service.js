@@ -10,14 +10,14 @@ angular.module('simulation')
         };
 
         function getStatus() {
-            return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
+            return $http.get(GlobalSettings.apiUrl + '/RouteSimulation/RouteLogsStatus');
         };
 
          function getScenario(operationStateID, deliveryUnitID) {
-            return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryScenario?deliveryUnitID=' + deliveryUnitID + '&deliveryUnitID=' + deliveryUnitID);
+             return $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID);
         };
 
-          function getRoutes(objEmployee) {
-            return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryRoute?deliveryUnitID=' + deliveryUnitID + '&deliveryUnitID=' + deliveryUnitID);
+         function getRoutes(operationStateID,deliveryScenarioID) {
+             return $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID);
         };
     }]);

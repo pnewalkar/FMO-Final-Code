@@ -26,34 +26,53 @@
             this.postCodeRepository = postCodeRepository;
         }
 
+        /// <summary>
+        /// Delete postal Address records do not have an associated Delivery Point
+        /// </summary>
+        /// <param name="lstUDPRN">List of UDPRN</param>
+        /// <param name="addressType">NYB</param>
+        /// <returns>true or false</returns>
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             bool deleteFlag = false;
-            if (lstUDPRN != null && lstUDPRN.Count() > 0)
+            try
             {
-                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
-                if (lstAddress != null && lstAddress.Count > 0)
+                if (lstUDPRN != null && lstUDPRN.Count() > 0)
                 {
-                    lstAddress.ForEach(postalAddressEntity =>
+                    var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
+                    if (lstAddress != null && lstAddress.Count > 0)
                     {
-                        if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
+                        lstAddress.ForEach(postalAddressEntity =>
                         {
-                            deleteFlag = false;
-                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
-                        }
-                        else
-                        {
-                            DataContext.PostalAddresses.Remove(postalAddressEntity);
-                            DataContext.SaveChanges();
-                            deleteFlag = true;
-                        }
-                    });
+                            if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
+                            {
+                                deleteFlag = false;
+                                this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
+                            }
+                            else
+                            {
+                                DataContext.PostalAddresses.Remove(postalAddressEntity);
+                                DataContext.SaveChanges();
+                                deleteFlag = true;
+                            }
+                        });
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return deleteFlag;
         }
 
+        /// <summary>
+        /// Create or update NYB details depending on the UDPRN
+        /// </summary>
+        /// <param name="objPostalAddress">NYB details DTO</param>
+        /// <param name="strFileName">CSV Filename</param>
+        /// <returns>true or false</returns>
         public bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
@@ -110,6 +129,7 @@
             {
                 if (objPostalAddress != null)
                 {
+                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     var objAddress = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
                     DataContext.PostalAddresses.Add(objAddress);
 
@@ -136,7 +156,6 @@
             }
             catch (Exception ex)
             {
-                this.loggingHelper.LogInfo("Error in GetPostalAddress(int? uDPRN) :" + ex.ToString());
                 throw ex;
             }
         }
@@ -161,7 +180,6 @@
             }
             catch (Exception ex)
             {
-                this.loggingHelper.LogInfo("Error in GetPostalAddress(PostalAddressDTO objPostalAddress) :" + ex.ToString());
                 throw ex;
             }
         }
@@ -217,7 +235,6 @@
             }
             catch (Exception ex)
             {
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
                 throw ex;
             }
 
@@ -234,18 +251,25 @@
         /// <returns></returns>
         private bool LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
-            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
+            try
             {
-                FileID = Guid.NewGuid(),
-                UDPRN = uDPRN,
-                AmendmentType = "I",
-                FileName = strFileName,
-                FileProcessing_TimeStamp = DateTime.Now,
-                FileType = fileType,
-                NatureOfError = strException
-            };
+                FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
+                {
+                    FileID = Guid.NewGuid(),
+                    UDPRN = uDPRN,
+                    AmendmentType = "I",
+                    FileName = strFileName,
+                    FileProcessing_TimeStamp = DateTime.Now,
+                    FileType = fileType,
+                    NatureOfError = strException
+                };
 
-            return fileProcessingLog.LogFileException(objFileProcessingLog);
+                return fileProcessingLog.LogFileException(objFileProcessingLog);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

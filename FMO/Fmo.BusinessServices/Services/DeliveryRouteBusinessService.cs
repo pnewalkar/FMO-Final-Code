@@ -22,19 +22,44 @@ namespace Fmo.BusinessServices.Services
             this.deliveryUnitLocationRespository = deliveryUnitLocationRespository;
         }
 
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
+        /// <summary>
+        /// Fetch the Delivery Route by passing operationStateID and deliveryScenarioID.
+        /// </summary>
+        /// <param name="operationStateID">Guid</param>
+        /// <param name="deliveryScenarioID">Guid</param>
+        /// <returns>List</returns>
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             return deliveryRouteRepository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
+        /// <summary>
+        /// Fetch the Route Log Status.
+        /// </summary>
+        /// <returns>List</returns>
         public List<ReferenceDataDTO> FetchRouteLogStatus()
         {
             return referenceDataCategoryRepository.RouteLogStatus();
         }
 
-        public List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID)
+        /// <summary>
+        /// Fetch the Route Log Selection Type.
+        /// </summary>
+        /// <returns>List</returns>
+        public List<ReferenceDataDTO> FetchRouteLogSelectionType()
         {
-            return scenarioRepository.FetchScenario(operationStateID, deliveryUnitID);
+            return referenceDataCategoryRepository.RouteLogSelectionType();
+        }
+
+        /// <summary>
+        /// Fetch the Delivery Scenario.
+        /// </summary>
+        /// <param name="operationStateID">Guid</param>
+        /// <param name="deliveryScenarioID">Guid</param>
+        /// <returns>List</returns>
+        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID)
+        {
+            return scenarioRepository.FetchScenario(operationStateID, deliveryScenarioID);
         }
 
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)
@@ -42,6 +67,10 @@ namespace Fmo.BusinessServices.Services
             return await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText);
         }
 
+        /// <summary>
+        /// Fetch the Delivery unit.
+        /// </summary>
+        /// <returns>List</returns>
         public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
         {
             return deliveryUnitLocationRespository.FetchDeliveryUnit();
@@ -50,6 +79,6 @@ namespace Fmo.BusinessServices.Services
         public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             throw new NotImplementedException();
-        } 
+        }
     }
 }

@@ -16,10 +16,21 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
+        /// <summary>
+        /// Fetch the delivery unit.
+        /// </summary>
+        /// <returns>List</returns>
         public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
         {
-            var result = DataContext.DeliveryUnitLocations.ToList();
-            return GenericMapper.MapList<DeliveryUnitLocation, DeliveryUnitLocationDTO>(result.ToList());
+            try
+            {
+                var result = DataContext.DeliveryUnitLocations.ToList();
+                return GenericMapper.MapList<DeliveryUnitLocation, DeliveryUnitLocationDTO>(result.ToList());
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

@@ -68,13 +68,14 @@ namespace Fmo.BusinessServices.Services
                     searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                     {
                         DisplayText = string.Format(
-                        "{0},{1},{3},{4},{5},{6}",
+                        "{0},{1},{3},{4},{5}",
                         deliveryPoint.PostalAddress.OrganisationName,
                         deliveryPoint.PostalAddress.BuildingName,
                         deliveryPoint.PostalAddress.SubBuildingName,
                         deliveryPoint.PostalAddress.BuildingNumber,
                         deliveryPoint.PostalAddress.Thoroughfare,
                         deliveryPoint.PostalAddress.DependentLocality),
+                        UDPRN = deliveryPoint.PostalAddress.UDPRN,
                         Type = SearchBusinessEntityType.DeliveryPoint
                     });
                 }

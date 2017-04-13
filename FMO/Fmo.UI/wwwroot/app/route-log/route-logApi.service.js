@@ -2,23 +2,27 @@
 // Just for reference
 angular.module('routeLog')
     .factory('routeLogAPIService', ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
-    var routeLogAPIService = {};
-    var getStatus = function () {
-        return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
-    };
 
-    var getScenario = function (operationStateID, deliveryUnitID) {
-        return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryScenario?deliveryUnitID=' + deliveryUnitID + '&deliveryUnitID=' + deliveryUnitID);
-    };
+        return {
+            getSelectionType:getSelectionType,
+            getStatus: getStatus,
+            getScenario: getScenario,
+            getRoutes: getRoutes
+        }
 
-    var getRoutes = function (objEmployee) {
-        return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryRoute?deliveryUnitID=' + deliveryUnitID + '&deliveryUnitID=' + deliveryUnitID);
-    };
+        function getSelectionType() {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsSelectionType');
+        };
 
-    routeLogAPIService.GetStatus = getStatus;
-    routeLogAPIService.GetScenario = getScenario;
-    routeLogAPIService.GetRoutes = getRoutes;
+        function getStatus() {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
+        };
 
-    return routeLogAPIService;
-  
-}]);
+        function getScenario(operationStateID, deliveryUnitID) {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID);
+        };
+
+        function getRoutes(operationStateID, deliveryScenarioID) {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID);
+        };
+    }]);

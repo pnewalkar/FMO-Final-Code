@@ -42,12 +42,8 @@
             {
                 var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
 
-                var addressLocationDTO = new AddressLocationDTO();
-
-                GenericMapper.Map(addressLocationDTO, objAddressLocation);
-
                 // return context.Students.Find(id);
-                return addressLocationDTO;
+                return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
             }
             catch (Exception)
             {

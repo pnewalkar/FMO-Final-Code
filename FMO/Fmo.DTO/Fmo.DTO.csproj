@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionManager\RoleAccessDTO.cs" />
+    <Compile Include="ActionManager\UserUnitInfoDTO.cs" />
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="FileProcessingLogDTO.cs" />

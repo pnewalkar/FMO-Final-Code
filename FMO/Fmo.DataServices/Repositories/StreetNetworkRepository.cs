@@ -39,6 +39,7 @@
             try
             {
                 int takeCount = 5;
+                searchText = searchText ?? string.Empty;
                 var streetNamesDto = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
                     .Take(takeCount)
                     .Select(l => new StreetNameDTO
@@ -63,6 +64,7 @@
         {
             try
             {
+                searchText = searchText ?? string.Empty;
                 return await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
                     .CountAsync();
             }

@@ -17,6 +17,7 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using MappingConfiguration;
     using Entity = Fmo.Entities;
+    using AutoMapper;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -29,9 +30,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
-                DeliveryPoint objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-                return deliveryPointDTO;
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
             }
             catch (Exception)
             {
@@ -46,17 +46,23 @@ namespace Fmo.DataServices.Repositories
             {
                 if (objDeliveryPoint != null)
                 {
-                    var deliveryPoint = new DeliveryPoint();
-                    GenericMapper.Map(objDeliveryPoint, deliveryPoint);
-
-                    DataContext.DeliveryPoints.Add(deliveryPoint);
+                    DeliveryPoint newDeliveryPoint = new DeliveryPoint();
+                    newDeliveryPoint.ID = objDeliveryPoint.ID;
+                    newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
+                    newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
+                    newDeliveryPoint.Address_Id = objDeliveryPoint.Address_Id;
+                    newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
+                    newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
+                    newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
+                    //newDeliveryPoint.LocationProvider = "E"; // Update in Enum as well as reference data category
+                    DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     DataContext.SaveChangesAsync();
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
 
             return saveFlag;
@@ -74,57 +80,6 @@ namespace Fmo.DataServices.Repositories
             System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
 
             return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
-        }
-
-        public MemoryStream GetDeliveryPoints()
-        {
-            string json;
-
-            using (StreamReader r = new StreamReader(@"D:\Richa\FMO-AD\FMO\Fmo.DataServices\TestData\deliveryPoint.json"))
-            {
-                json = r.ReadToEnd();
-            }
-
-            var resultBytes = Encoding.UTF8.GetBytes(json);
-            return new MemoryStream(resultBytes);
-
-            // GenericRepository gUoW = new GenericRepository();
-
-            /*List<DeliveryPoint> result = GetData(null, parameters).ToList();
-
-            //gUoW.DpRep.GetData().ToList<OpenLayersWebAPI.ViewModels.deliveryPoint>();
-
-            var geoJson = new GeoJson
-            {
-                features = new List<Feature>()
-            };
-
-            foreach (var point in result)
-            {
-                SqlGeometry sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
-
-                var feature = new Feature
-                {
-                    id = point.DeliveryPoint_Id,
-                    properties = new Dictionary<string, JToken>
-                    {
-                        { "name", point.PostalAddress.BuildingName },
-                        { "number", point.PostalAddress.BuildingNumber },
-                        { "postcode", point.PostalAddress.Postcode },
-                        { "street_name", point.PostalAddress.BuildingName },
-                        { "type", "deliverypoint" }
-                    },
-                    geometry = new Geometry
-                    {
-                        coordinates = new Coordinates(sqlGeo)
-                    }
-                };
-                geoJson.features.Add(feature);
-            }
-
-            var resultBytes = System.Text.Encoding.UTF8.GetBytes(geoJson.getJson().ToString());
-
-            return new MemoryStream(resultBytes);*/
         }
 
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText)
@@ -157,6 +112,7 @@ namespace Fmo.DataServices.Repositories
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText)
         {
             int takeCount = 5;
+            searchText = searchText ?? string.Empty;
             var result = await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
                 .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
@@ -174,7 +130,8 @@ namespace Fmo.DataServices.Repositories
                         SubBuildingName = l.PostalAddress.SubBuildingName,
                         BuildingNumber = l.PostalAddress.BuildingNumber,
                         Thoroughfare = l.PostalAddress.Thoroughfare,
-                        DependentLocality = l.PostalAddress.DependentLocality
+                        DependentLocality = l.PostalAddress.DependentLocality,
+                        UDPRN = l.UDPRN
                     }
                 })
                 .Take(takeCount)
@@ -185,59 +142,40 @@ namespace Fmo.DataServices.Repositories
 
         public async Task<int> GetDeliveryPointsCount(string searchText)
         {
-            return await DataContext.DeliveryPoints.CountAsync(x => x.PostalAddress.OrganisationName.Contains(searchText)
+            searchText = searchText ?? string.Empty;
+            var result = await DataContext.DeliveryPoints.AsNoTracking()
+              .Include(l => l.PostalAddress)
+              .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
                               || x.PostalAddress.BuildingName.Contains(searchText)
                               || x.PostalAddress.SubBuildingName.Contains(searchText)
                               || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                               || x.PostalAddress.Thoroughfare.Contains(searchText)
-                              || x.PostalAddress.DependentLocality.Contains(searchText));
+                              || x.PostalAddress.DependentLocality.Contains(searchText)).CountAsync();
+
+            return result;
         }
 
         public IEnumerable<DeliveryPoint> GetData(string coordinates)
         {
-            // string x1 = Convert.ToString(parameters[0]);
-            // string y1 = Convert.ToString(parameters[1]);
-            // string x2 = Convert.ToString(parameters[2]);
-            // string y2 = Convert.ToString(parameters[3]);
-            // string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
             System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
 
             return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
         }
 
-        public List<DeliveryPointDTO> GetDeliveryPoints1(string coordinates)
+        public List<DeliveryPointDTO> GetDeliveryPoints(string coordinates)
         {
-            List<DeliveryPoint> result = this.GetData(coordinates).ToList();
-            var deliveryPoint = GenericMapper.MapList<DeliveryPoint, DeliveryPointDTO>(result);
-            return deliveryPoint;
+            List<DeliveryPoint> deliveryPoints = this.GetData(coordinates).ToList();
 
-            // var geoJson = new GeoJson
-            // {
-            //    features = new List<Feature>()
-            // };
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+            });
 
-            // foreach (var point in result)
-            // {
-            //    SqlGeometry sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
-            //    var feature = new Feature
-            //    {
-            //        id = point.DeliveryPoint_Id,
-            //        properties = new Dictionary<string, JToken>
-            //        {
-            //            { "name", point.PostalAddress.BuildingName },
-            //            { "number", point.PostalAddress.BuildingNumber },
-            //            { "postcode", point.PostalAddress.Postcode },
-            //            { "street_name", point.PostalAddress.BuildingName },
-            //            { "type", "deliverypoint" }
-            //        },
-            //        geometry = new Geometry
-            //        {
-            //            coordinates = new Coordinates(sqlGeo)
-            //        }
-            //    };
-            //    geoJson.features.Add(feature);
-            // var resultBytes = System.Text.Encoding.UTF8.GetBytes(geoJson.getJson().ToString());
-            // return new MemoryStream(resultBytes);
+            Mapper.Configuration.CreateMapper();
+            var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+
+            return deliveryPointDto;
         }
 
         public async Task<int> UpdateDeliveryPointLocationOnUDPRN(int uDPRN, decimal latitude, decimal longitude, DbGeometry locationXY)
@@ -263,6 +201,32 @@ namespace Fmo.DataServices.Repositories
             {
                 throw;
             }
+        }
+
+        public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
+        {
+            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+
+            return deliveryPointDto;
+        }
+
+    }
+
+    public static class MappingExpressionExtensions
+    {
+        public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
+        {
+            expression.ForAllMembers(opt => opt.Ignore());
+            return expression;
         }
 
         public bool DeliveryPointExists(int uDPRN)

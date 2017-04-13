@@ -1,4 +1,4 @@
-﻿namespace FMO.Batch.FileLoader
+﻿namespace Fmo.Batch.FileLoader
 {
     using System.Collections.Generic;
     using System.Configuration;
@@ -295,7 +295,7 @@
                             else
                             {
                                 File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                                this.nybLoader.SaveNYBDetails(lstNYBDetails, strfileName);
                             }
                         }
                         else
