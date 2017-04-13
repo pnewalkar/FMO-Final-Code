@@ -65,46 +65,48 @@
             {
                 features = new List<Feature>()
             };
-
-            foreach (var res in lstAccessLinkDTO)
+            if (lstAccessLinkDTO != null && lstAccessLinkDTO.Count > 0)
             {
-                Geometry geometry = new Geometry();
-
-                geometry.type = res.AccessLinkLine.SpatialTypeName;
-
-                var resultCoordinates = res.AccessLinkLine;
-
-                SqlGeometry sqlGeo = null;
-                if (geometry.type == "LineString")
+                foreach (var res in lstAccessLinkDTO)
                 {
-                    sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    Geometry geometry = new Geometry();
 
-                    double[][] cords = new double[2][];
+                    geometry.type = res.AccessLinkLine.SpatialTypeName;
 
-                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
+                    var resultCoordinates = res.AccessLinkLine;
+
+                    SqlGeometry sqlGeo = null;
+                    if (geometry.type == "LineString")
                     {
-                        double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-                        cords[pt - 1] = coordinates;
-                        //cords.Add(coordinates);
+                        sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+
+                        double[][] cords = new double[2][];
+
+                        for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
+                        {
+                            double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
+                            cords[pt - 1] = coordinates;
+                            //cords.Add(coordinates);
+                        }
+
+                        geometry.coordinates = new Coordinates(cords);
+                    }
+                    else
+                    {
+                        sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
+                        geometry.coordinates = new Coordinates(coordinates);
                     }
 
-                    geometry.coordinates = new Coordinates(cords);
+                    Feature feature = new Feature();
+                    feature.geometry = geometry;
+
+                    feature.type = "Feature";
+                    feature.id = res.AccessLink_Id;
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+
+                    geoJson.features.Add(feature);
                 }
-                else
-                {
-                    sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-                    double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
-                    geometry.coordinates = new Coordinates(coordinates);
-                }
-
-                Feature feature = new Feature();
-                feature.geometry = geometry;
-
-                feature.type = "Feature";
-                feature.id = res.AccessLink_Id;
-                feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
-
-                geoJson.features.Add(feature);
             }
 
             //accessLinkDTOCollectionObj.features = lstFeatures;

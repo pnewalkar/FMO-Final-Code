@@ -29,8 +29,9 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var result = await DataContext.DeliveryRoutes.ToListAsync();
-                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result);
+                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).Take(10).ToListAsync();
+             //   var result = await DataContext.DeliveryRoutes.Take(10).ToListAsync();
+                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes);
             }
             catch (Exception ex)
             {

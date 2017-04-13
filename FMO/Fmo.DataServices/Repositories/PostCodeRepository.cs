@@ -60,7 +60,7 @@
         {
             try
             {
-                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).ToListAsync();
+                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).Take(10).ToListAsync();
 
                 return GenericMapper.MapList<Postcode, PostCodeDTO>(postCodeDetails);
             }

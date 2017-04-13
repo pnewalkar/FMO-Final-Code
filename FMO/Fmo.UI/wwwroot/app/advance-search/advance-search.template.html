@@ -2,7 +2,7 @@
     <div layout="column" class="advanceSearch">
         <section layout="row">
             <input type="text" placeholder="search" class="searchbox md-text">
-            <md-button class="md-raised md-primary" flex="10">search</md-button>
+            <md-button class="md-raised md-primary" flex="10" ng-click="vm.queryAdvanceSearch()">search</md-button>
         </section>
         <section>
             <md-checkbox ng-model="ck1" aria-label="Checkbox 1">
@@ -14,7 +14,7 @@
             <md-checkbox ng-model="ck3" aria-label="Checkbox 1">
                 Delivery Point
             </md-checkbox>
-            <md-checkbox ng-model="ck4" aria-label="Checkbox 1">
+            <md-checkbox ng-model="ck4"  aria-label="Checkbox 1">
                 Collection Point
             </md-checkbox>
             <md-checkbox ng-model="ck5" aria-label="Checkbox 1">
@@ -38,15 +38,15 @@
                 <md-button class="md-raised md-primary">Deselect All</md-button>
             </div>
         </section>
-        <section ng-repeat="route in routes">
-            <div ng-click="show = !show">
+        <section ng-repeat="route in vm.results">
+            <div ng-click="show = !show" ng-if="route.searchCounts.count!=0">
                 <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
                 <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
-                {{route.type}} ({{route.name.length}})
+                {{route.searchResultItems.type}} ({{vm.results.searchResultItems.length}})
             </div>
 
-            <ul ng-repeat="subitem in route.name" ng-show="show">
-                <li> {{subitem.type_name}}</li>
+            <ul ng-repeat="subitem in route.searchResultItems.type">
+                <li ng-show="subitem.type!=0"> {{subitem.type_name}}</li>
             </ul>
         </section>
     </div>

@@ -96,9 +96,10 @@ namespace Fmo.DataServices.Repositories
                                         SubBuildingName = l.PostalAddress.SubBuildingName,
                                         BuildingNumber = l.PostalAddress.BuildingNumber,
                                         Thoroughfare = l.PostalAddress.Thoroughfare,
-                                        DependentLocality = l.PostalAddress.DependentLocality
+                                        DependentLocality = l.PostalAddress.DependentLocality,
+                                        UDPRN = l.PostalAddress.UDPRN
                                     }
-                                })
+                                }).Take(10)
                                 .ToListAsync();
 
             return result;
