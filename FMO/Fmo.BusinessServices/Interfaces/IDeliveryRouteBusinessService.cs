@@ -20,6 +20,12 @@ namespace Fmo.BusinessServices.Interfaces
         List<ReferenceDataDTO> FetchRouteLogStatus();
 
         /// <summary>
+        /// Fetch the Delivery Route Selection Type.
+        /// </summary>
+        /// <returns>List</returns>
+        List<ReferenceDataDTO> FetchRouteLogSelectionType();
+
+        /// <summary>
         /// Fetch the Delivery Route by passing operationStateID and deliveryScenarioID.
         /// </summary>
         /// <param name="operationStateID">Guid</param>
