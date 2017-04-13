@@ -24,7 +24,10 @@ namespace Fmo.API.Services.Controllers
         [HttpPost("SaveAddressdetails/{strFileName}")]
         public bool SaveAddressdetails(string strFileName, [FromBody]List<PostalAddressDTO> lstAddressDetails)
         {
-            return businessService.SavePostalAddress(lstAddressDetails, strFileName);
+            if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                return businessService.SavePostalAddress(lstAddressDetails, strFileName);
+            else
+                return false;
         }
 
 
