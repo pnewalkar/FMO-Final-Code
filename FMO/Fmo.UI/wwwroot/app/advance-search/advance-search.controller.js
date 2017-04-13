@@ -4,7 +4,13 @@ angular.module('advanceSearch')
 
 function AdvanceSearchController($scope, searchApiService) {
     var vm = this;
+    vm.chkRoute = true;
+    vm.chkPostCode = true;
+    vm.chkDeliveryPoint = true;
+    vm.chkStreetNetwork = true;
     vm.queryAdvanceSearch = queryAdvanceSearch;
+    vm.selectAll = selectAll;
+    vm.deSelectAll = deSelectAll;
     var results = [];
     vm.query = "roa";
     vm.routeval = [];
@@ -24,27 +30,41 @@ function AdvanceSearchController($scope, searchApiService) {
            // vm.searchCount.remove('seven');
             console.log(vm.results.searchCounts);
             vm.searchItem=results.searchResultItems;
-            for (var i = 0; i < vm.results.searchResultItems.length; i++)
+            for (var i = 0; i < vm.results.searchCounts.length; i++)
             {
-                //if (vm.results.searchResultItems[i].count > 0)
-                //{
-                    if (vm.results.searchResultItems[i].type == "Postcode")
+                if (vm.results.searchCounts[i].count > 0)
+                {
+                    if (vm.results.searchCounts[i].type == "0")
                     {
 
                     }
-                    if (vm.results.searchResultItems[i].type == "StreetNetwork") {
+                    if (vm.results.searchCounts[i].type == "1") {
 
                     }
-                    if (vm.results.searchResultItems[i].type == "DeliveryPoint") {
-                        vm.routeval.push(vm.results.searchResultItems[i]);
+                    if (vm.results.searchCounts[i].type == "2") {
+                        vm.routeval.push(vm.results.searchCounts[i]);
                         console.log(vm.routeval);
                     }
-                    if (vm.results.searchResultItems[i].type == "Route") {
+                    if (vm.results.searchCounts[i].type == "3") {
 
                     }
-               // }
+                }
             }
         });
+    }
+
+    function selectAll() {
+        vm.chkRoute = true;
+        vm.chkPostCode = true;
+        vm.chkDeliveryPoint = true;
+        vm.chkStreetNetwork = true;
+    }
+
+    function deSelectAll() {
+        vm.chkRoute = false;
+        vm.chkPostCode = false;
+        vm.chkDeliveryPoint = false;
+        vm.chkStreetNetwork = false;
     }
     $scope.routes = [
                        {

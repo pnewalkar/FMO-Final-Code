@@ -2,12 +2,13 @@
 angular.module('search')
    .controller('SearchController', SearchController);
 
-function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory) {
+function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService) {
     var self = this;
 
     self.resultSet = resultSet;
     self.presEnter = presEnter;
     self.OnChangeItem = OnChangeItem;
+    self.advanceSearch = advanceSearch;
 
     function querySearch(query) {
         searchApiService.basicSearch(query).then(function (response) {
@@ -70,5 +71,11 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
             });
             $state.go('searchDetails', { selectedItem: selectedItem });
         }
+    }
+
+    function advanceSearch(query) {
+        var advaceSearchTemplate = advanceSearchService.advanceSearch(query);
+        vm.openAdvanceSearchPopup(advaceSearchTemplate);
+        ///vm.openModalPopup("Test");
     }
 }

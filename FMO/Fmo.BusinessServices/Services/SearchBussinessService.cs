@@ -126,14 +126,28 @@ namespace Fmo.BusinessServices.Services
 
             foreach (var streetName in streetNames)
             {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
+               searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
             }
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
 
             foreach (var deliveryPoint in deliveryPoints)
             {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryPoint.UDPRN.ToString(), Type = SearchBusinessEntityType.DeliveryPoint });
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
+                {
+                    DisplayText = string.Format(
+                       "{0},{1},{3},{4},{5}",
+                       deliveryPoint.PostalAddress.OrganisationName,
+                       deliveryPoint.PostalAddress.BuildingName,
+                       deliveryPoint.PostalAddress.SubBuildingName,
+                       deliveryPoint.PostalAddress.BuildingNumber,
+                       deliveryPoint.PostalAddress.Thoroughfare,
+                       deliveryPoint.PostalAddress.DependentLocality),
+                    UDPRN = deliveryPoint.PostalAddress.UDPRN,
+                    Type = SearchBusinessEntityType.DeliveryPoint
+                });
+
+              //  searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryPoint.UDPRN.ToString(), Type = SearchBusinessEntityType.DeliveryPoint });
             }
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
