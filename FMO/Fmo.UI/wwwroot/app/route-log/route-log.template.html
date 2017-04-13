@@ -1,42 +1,65 @@
 <md-dialog aria-label="Route Log" class=routeLogDialog>
 <div layout="column" class="md-padding">
-		<h1>Search</h1>
+		<h2>Search</h2>
 		<section layout="row" flex="100">
        		<md-input-container flex="20">
        			<label>Selection Type</label>
-	          	<md-select name="type" ng-model="project1">                   
-	            	<md-option value="single">Single</md-option>
-	            	<md-option value="multiple">Multiple</md-option>
+	          	<md-select name="type" ng-model="vm.selectedRouteSelectionObj" ng-change="vm.selectionTypeChange()">   
+                    <md-select-label>{{ vm.RouteselectionTypeObj.displayText }}</md-select-label>                
+                    <md-option ng-repeat="type in vm.RouteselectionTypeObj" ng-value="type" selected="{{ type.displayText === vm.RouteselectionTypeObj.displayText ? 'selected' : '' }}">
+                      {{type.displayText}}
+                    </md-option>
 	          	</md-select>
         	</md-input-container>
 
         	<md-input-container flex="20">
 	        	<label>Status</label>
-		        <md-select name="type" ng-model="vm.selectedRouteStatusObj.group1">
-                    <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status">{{status.displayText}}</md-option>
+		        <md-select name="type" ng-model="vm.selectedRouteStatusObj">
+                    <md-select-label>{{ vm.RouteStatusObj.displayText }}</md-select-label>      
+                    <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status" selected="{{ status.displayText === vm.RouteStatusObj.displayText ? 'selected' : '' }}">{{status.displayText}}</md-option>
 		        </md-select>
 	        </md-input-container>
-
-
 	        <md-input-container flex="20">
 	        	<label>Scenario</label>
                 <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
                     <md-option value="empty"><em>No Scenario</em></md-option>
                     <md-option ng-repeat="scenario in vm.RouteScenario" ng-value="scenario">{{scenario.scenarioName}}</md-option>
-                </md-select>
-
+                </md-select>           
 	        </md-input-container>
-
+            
 	        <md-input-container flex="40">
           		<label>Route</label>
-          		<md-select ng-model="vm.selectedDeliveryRoute"  ng-disabled="vm.isDeliveryRouteDisabled" class="routeSelect" >
+          		<md-select ng-model="vm.selectedDeliveryRoute"  ng-disabled="vm.isDeliveryRouteDisabled"  class="routeSelect" >
             		<md-select-header >
-					<!--<input ng-model="searchTerm" type="text" placeholder="Search" class="routeSelectSearch md-text">-->
-                        <input ng-model="searchTerm" type="search" placeholder="Search" class="demo-header-searchbox md-text">
+                        <input ng-model="searchTerm" type="search" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="demo-header-searchbox md-text">
             	</md-select-header>
               	<md-option ng-value="route" ng-repeat="routeType in vm.deliveryRoute | filter:searchTerm">{{routeType.routeName}} ({{routeType.routeNumber}})</md-option>	
           		</md-select>
         	</md-input-container>
-	    </section>	  
+	    </section>
+    <div ng-show="vm.isShowMultiSelectionRoute" >
+        <div flex>
+            <h2>Selected Routes</h2>
+        </div>
+        <section layout="row" flex="100">
+            <div id="table_wrapper">
+                <div id="header">
+                    <div id="head1">Route Name</div>
+                    <div id="head2">Route Number</div>
+                    <div id="head3">Select</div>
+                </div>
+                <div id="tbody">
+                    <table>
+                        <tr ng-repeat="routeType in vm.deliveryRoute">
+                            <td class="td1">{{routeType.routeName}}</td>
+                            <td class="td2">{{routeType.routeNumber}}</td>
+                            <td class="td3"><input type="checkbox" name=""></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
 	</div>
 </md-dialog>    

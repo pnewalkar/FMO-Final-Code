@@ -1,4 +1,6 @@
-﻿namespace Fmo.Batch.FileLoader
+﻿using System.ServiceProcess;
+
+namespace Fmo.Batch.FileLoader
 {
     internal static class Program
     {
@@ -22,7 +24,7 @@
                ServiceBase[] ServicesToRun;
                         ServicesToRun = new ServiceBase[]
                         {
-                            new FileLoaderService()
+                            new FileLoader()
                         };
                         ServiceBase.Run(ServicesToRun);
 #endif

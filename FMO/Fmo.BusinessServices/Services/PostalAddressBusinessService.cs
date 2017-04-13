@@ -10,6 +10,7 @@ using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.Common;
+using System.Web.Script.Serialization;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -50,26 +51,31 @@ namespace Fmo.BusinessServices.Services
         public bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress, string strFileName)
         {
             bool saveFlag = false;
+            string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
             try
             {
                 Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Nyb.ToString());
                 Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Status, PostCodeStatus.Live.GetDescription());
-                List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
-                if (!lstUDPRNS.All(a => a == 0))
+                if (lstPostalAddress != null && lstPostalAddress.Count > 0)
                 {
-                    foreach (var postalAddress in lstPostalAddress)
+                    List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
+                    if (!lstUDPRNS.All(a => a == 0))
                     {
-                        postalAddress.AddressStatus_GUID = addressStatusId;
-                        postalAddress.AddressType_GUID = addressTypeId;
-                        addressRepository.SaveAddress(postalAddress, strFileName);
-                    }
+                        foreach (var postalAddress in lstPostalAddress)
+                        {
+                            postalAddress.AddressStatus_GUID = addressStatusId;
+                            postalAddress.AddressType_GUID = addressTypeId;
+                            addressRepository.SaveAddress(postalAddress, strFileName);
+                        }
 
-                    saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                        saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
+                this.loggingHelper.LogInfo(postalAddressList);
             }
 
             return saveFlag;
@@ -89,15 +95,14 @@ namespace Fmo.BusinessServices.Services
                 Guid addressTypeUSR = refDataRepository.GetReferenceDataId("Postal Address Type", "USR");
                 Guid addressTypePAF = refDataRepository.GetReferenceDataId("Postal Address Type", "PAF");
                 Guid addressTypeNYB = refDataRepository.GetReferenceDataId("Postal Address Type", "NYB");
-
+                objPostalAddress.AddressType_GUID = addressTypePAF;
+                objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId("Postal Address Status", "Live");
                 var objPostalAddressMatchedUDPRN = addressRepository.GetPostalAddress(objPostalAddress.UDPRN);
                 var objPostalAddressMatchedAddress = addressRepository.GetPostalAddress(objPostalAddress);
                 if (objPostalAddressMatchedUDPRN != null)
                 {
                     if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypeNYB)
                     {
-                        objPostalAddress.AddressType_GUID = addressTypePAF;
-                        objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
                         if (addressRepository.UpdateAddress(objPostalAddress, null)) // 2nd param FileName for db logging
                         {
                             SaveDeliveryPointProcess(objPostalAddress);
@@ -132,8 +137,6 @@ namespace Fmo.BusinessServices.Services
                 {
                     if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
                     {
-                        objPostalAddress.AddressType_GUID = addressTypePAF;
-                        objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId("Postal Address Status", "L");
                         addressRepository.UpdateAddress(objPostalAddress, null); // 2nd param FileName for db logging
                     }
                     else
@@ -151,6 +154,7 @@ namespace Fmo.BusinessServices.Services
                 }
                 else
                 {
+                    objPostalAddress.ID = Guid.NewGuid();
                     addressRepository.InsertAddress(objPostalAddress, string.Empty);
                     SaveDeliveryPointProcess(objPostalAddress);
                 }
@@ -171,45 +175,65 @@ namespace Fmo.BusinessServices.Services
         {
             try
             {
-                var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
                 var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
-                if (objDeliveryPoint == null && objAddressLocation != null)
-                {
-                    if (objAddressLocation.UDPRN == objPostalAddress.UDPRN)
-                    {
-                        var newDeliveryPoint = new DeliveryPointDTO();
-                        newDeliveryPoint.UDPRN = objAddressLocation.UDPRN;
-                        newDeliveryPoint.Address_Id = objPostalAddress.Address_Id;
-                        newDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
-                        newDeliveryPoint.Latitude = objAddressLocation.Latitude;
-                        newDeliveryPoint.Longitude = objAddressLocation.Longitude;
-                        newDeliveryPoint.LocationProvider = "E"; // Update in Enum
-                        deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
-                    }
-                    else
-                    {
-                        var newDeliveryPoint = new DeliveryPointDTO();
-                        newDeliveryPoint.UDPRN = objAddressLocation.UDPRN;
-                        deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
+                Guid tasktypeId = refDataRepository.GetReferenceDataId("Notification type", "Action required");
+                string postCodeDistrict = objPostalAddress.Postcode.Substring(0, objPostalAddress.Postcode.Length - 4);
 
-                        // Create task
-                        Guid tasktypeId = refDataRepository.GetReferenceDataId("Notification type", "Task type");
-                        var objTask = new NotificationDTO();
-                        objTask.NotificationType_GUID = tasktypeId;
-                        objTask.NotificationSource = "Source";
-                        objTask.Notification_Heading = "Position new DP";
-                        objTask.Notification_Message = "Please position the DP " + "a";
-                        objTask.PostcodeDistrict = objPostalAddress.Postcode;
-                        objTask.NotificationDueDate = DateTime.Now;
-                        objTask.NotificationActionLink = ""; // Unique refn link
-                        notificationRepository.AddNewNotification(objTask);
-                    }
+                if (objAddressLocation == null)
+                {
+                    var newDeliveryPoint = new DeliveryPointDTO();
+                    newDeliveryPoint.ID = Guid.NewGuid();
+                    newDeliveryPoint.Address_GUID = objPostalAddress.ID;
+                    newDeliveryPoint.UDPRN = objPostalAddress.UDPRN;
+                    deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
+
+                    // Create task
+                    var objTask = new NotificationDTO();
+                    objTask.ID = Guid.NewGuid();
+                    objTask.NotificationType_GUID = tasktypeId;
+                    objTask.NotificationPriority_GUID = null;
+                    objTask.NotificationSource = "SYSTEM";
+                    objTask.Notification_Heading = "Position new DP";
+                    objTask.Notification_Message = AddressFields(objPostalAddress);
+                    objTask.PostcodeDistrict = postCodeDistrict;
+                    objTask.NotificationDueDate = DateTime.Now;
+                    objTask.NotificationActionLink = ""; // Unique refn link
+                    notificationRepository.AddNewNotification(objTask);
+                }
+                else
+                {
+                    var newDeliveryPoint = new DeliveryPointDTO();
+                    newDeliveryPoint.ID = Guid.NewGuid();
+                    newDeliveryPoint.Address_GUID = objPostalAddress.ID;
+                    newDeliveryPoint.UDPRN = objAddressLocation.UDPRN;
+                    newDeliveryPoint.Address_Id = objPostalAddress.Address_Id;
+                    newDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
+                    newDeliveryPoint.Latitude = objAddressLocation.Lattitude;
+                    newDeliveryPoint.Longitude = objAddressLocation.Longitude;
+                    newDeliveryPoint.LocationProvider = "E"; // Update in Enum as well as reference data category
+                    deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
                 }
             }
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
             }
+        }
+
+        private string AddressFields(PostalAddressDTO objPostalAddress)
+        {
+            return "Please position the DP " +
+                        objPostalAddress.OrganisationName + ", " +
+                        objPostalAddress.DepartmentName + ", " +
+                        objPostalAddress.BuildingName + ", " +
+                        objPostalAddress.BuildingNumber + ", " +
+                        objPostalAddress.SubBuildingName + ", " +
+                        objPostalAddress.Thoroughfare + ", " +
+                        objPostalAddress.DependentThoroughfare + ", " +
+                        objPostalAddress.DependentLocality + ", " +
+                        objPostalAddress.DoubleDependentLocality + ", " +
+                        objPostalAddress.PostTown + ", " +
+                        objPostalAddress.Postcode;
         }
     }
 }

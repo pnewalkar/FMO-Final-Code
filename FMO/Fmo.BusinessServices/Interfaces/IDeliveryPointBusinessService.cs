@@ -2,6 +2,8 @@
 {
     public interface IDeliveryPointBusinessService
     {
-        object GetDeliveryPoints(string boundarybox);
+        object GetDeliveryPoints(string boundarybox);       
+
+        string GetDeliveryPointByUDPRN(int udprn);
     }
 }

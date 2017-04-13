@@ -1,5 +1,6 @@
 <div class="searchBox">
     <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.presEnter(vm.searchText)" />
+    <i class="fa fa-search" aria-hidden="true"></i>
     <div class="searchContent" md-whiteframe="3dp">
         <ul ng-repeat="item in vm.results | limitTo:5">
             <li class="searchData">

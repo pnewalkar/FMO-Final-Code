@@ -27,5 +27,10 @@ namespace Fmo.DataServices.Repositories.Interfaces
         List<DeliveryPointDTO> GetDeliveryPoints(string coordinates);
 
         IEnumerable<DeliveryPoint> GetData(string coordinates);
+
+        List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
+
+        bool DeliveryPointExists(int uDPRN);
+
     }
 }

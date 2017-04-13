@@ -1,0 +1,62 @@
+@import './app/variables';
+
+#table_wrapper{
+    @include background($recess-grey);
+    @include border($black);
+    @include float(right);
+}
+
+#tbody{
+    @include background($white);
+    @include width(400px);
+    height:80px;
+    overflow-y:auto;
+}
+
+table{
+    width: width-percent(1);
+    border-collapse:collapse;
+}
+
+td{
+    @include border-bottom(1px solid $black);
+    @include padding(1px 5px 1px 5px);
+    border-right:1px solid black;
+} 
+.td1{
+    @extend %body-content;
+    @include width(100px);
+}
+.td2{
+    @extend %body-content;
+    @include width(140px);
+}
+#header{
+    @include width(400px);
+    @include background($recess-grey);
+    @include border-bottom(1px solid $recess-grey);
+}
+#header div{
+    @include padding(1px 5px 1px 5px);
+    @include float(left);
+    border-right:1px solid black;
+}
+#header #head1{
+    @extend %header-content;
+    @include width(100px);
+} /* the same as td1 */
+#header #head2{
+    @extend %header-content;
+    @include width(140px);
+} /* the same as td2 */
+#header #head3{
+    @extend %header-content;
+    @include float(none);
+    border-right-width:0
+}
+
+md-dialog h2{
+    @extend %header-content;
+    color: $black;
+    @include margin(10px 0px 20px 0px);
+}

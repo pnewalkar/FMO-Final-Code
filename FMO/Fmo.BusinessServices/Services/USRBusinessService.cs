@@ -35,16 +35,14 @@
             this.configurationHelper = configurationHelper;
         }
 
-        public async Task SaveUSRDetails(AddressLocationUSRDTO addressLocationUSRDTO)
+        public async Task SaveUSRDetails(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
         {
             int fileUdprn;
             try
             {
-                fileUdprn = (int)addressLocationUSRDTO.udprn;
+                fileUdprn = (int)addressLocationUSRPOSTDTO.udprn;
 
-                AddressLocationDTO addressLocationDTO = addressLocationRepository.GetAddressLocationByUDPRN(fileUdprn);
-
-                if (addressLocationDTO != null)
+                if (addressLocationRepository.AddressLocationExists(fileUdprn))
                 {
                     MailMessage message = new MailMessage()
                     {
@@ -61,28 +59,29 @@
                 {
                     string sbLocationXY = string.Format(
                                                         Constants.USR_GEOMETRY_POINT,
-                                                        Convert.ToString(addressLocationUSRDTO.xCoordinate),
-                                                        Convert.ToString(addressLocationUSRDTO.yCoordinate));
+                                                        Convert.ToString(addressLocationUSRPOSTDTO.xCoordinate),
+                                                        Convert.ToString(addressLocationUSRPOSTDTO.yCoordinate));
 
                     DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNG_COORDINATE_SYSTEM);
 
                     AddressLocationDTO newAddressLocationDTO = new AddressLocationDTO()
                     {
-                        UDPRN = addressLocationUSRDTO.udprn,
+                        UDPRN = addressLocationUSRPOSTDTO.udprn,
                         LocationXY = spatialLocationXY,
-                        Latitude = addressLocationUSRDTO.latitude,
-                        Longitude = addressLocationUSRDTO.longitude
+                        Lattitude = addressLocationUSRPOSTDTO.latitude,
+                        Longitude = addressLocationUSRPOSTDTO.longitude
                     };
 
-                    addressLocationRepository.SaveNewAddressLocation(newAddressLocationDTO);
+                    await addressLocationRepository.SaveNewAddressLocation(newAddressLocationDTO);
 
-                    DeliveryPointDTO deliveryPointDTO = deliveryPointsRepository.GetDeliveryPointByUDPRN((int)fileUdprn);
-
-                    if (deliveryPointDTO != null)
+                    if (!deliveryPointsRepository.DeliveryPointExists((int)fileUdprn))
                     {
+
+                        DeliveryPointDTO deliveryPointDTO = deliveryPointsRepository.GetDeliveryPointByUDPRN((int)fileUdprn);
+
                         if (deliveryPointDTO.LocationXY == null)
                         {
-                            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRDTO.latitude, (decimal)addressLocationUSRDTO.longitude, spatialLocationXY);
+                            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRPOSTDTO.latitude, (decimal)addressLocationUSRPOSTDTO.longitude, spatialLocationXY);
                             NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
                             if (notificationDTO != null)
                             {
@@ -94,7 +93,7 @@
                            double straightLineDistance = (double)deliveryPointDTO.LocationXY.Distance(spatialLocationXY);
                             if (straightLineDistance < Constants.TOLERANCE_DISTANCE_IN_METERS)
                             {
-                                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRDTO.latitude, (decimal)addressLocationUSRDTO.longitude, spatialLocationXY);
+                                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRPOSTDTO.latitude, (decimal)addressLocationUSRPOSTDTO.longitude, spatialLocationXY);
                                 NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
                                 if (notificationDTO != null)
                                 {
@@ -113,7 +112,7 @@
                                     NotificationDueDate = DateTime.Now.AddHours(24),
                                     NotificationSource = Constants.USR_NOTIFICATION_SOURCE,
                                     Notification_Heading = Constants.USR_ACTION,
-                                    Notification_Message = string.Format(Constants.USR_BODY, addressLocationUSRDTO.latitude.ToString(), addressLocationUSRDTO.longitude.ToString(), addressLocationUSRDTO.xCoordinate.ToString(), addressLocationUSRDTO.yCoordinate.ToString()),
+                                    Notification_Message = string.Format(Constants.USR_BODY, addressLocationUSRPOSTDTO.latitude.ToString(), addressLocationUSRPOSTDTO.longitude.ToString(), addressLocationUSRPOSTDTO.xCoordinate.ToString(), addressLocationUSRPOSTDTO.yCoordinate.ToString()),
                                     PostcodeDistrict = postCodeSectorDTO.District,
                                     PostcodeSector = postCodeSectorDTO.Sector,
                                 };

@@ -21,6 +21,12 @@
     using Fmo.Common.Interface;
     using Fmo.Common.LoggingManagement;
     using Fmo.Common.ExceptionManagement;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DataServices.Repositories;
+    using Fmo.Common.EmailManagement;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.DBContext;
+    using Fmo.Common.ConfigurationManagement;
 
     public partial class FileLoader : ServiceBase
     {
@@ -36,6 +42,9 @@
         private ITPFLoader tpfLoader = default(ITPFLoader);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IExceptionHelper exceptionHelper = default(IExceptionHelper);
+        private IEmailHelper emailHelper = default(IEmailHelper);
+        private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
+        private IDatabaseFactory<FMODBContext> databaseFactory = default(IDatabaseFactory<FMODBContext>);
 
         private IFileMover fileMover = default(IFileMover);
         private IConfigurationHelper configurationHelper;
@@ -78,6 +87,7 @@
             kernel.Bind<INYBLoader>().To<NYBLoader>();
             kernel.Bind<IPAFLoader>().To<PAFLoader>();
             kernel.Bind<ITPFLoader>().To<TPFLoader>();
+            kernel.Bind<IFileProcessingLogRepository>().To<FileProcessingLogRepository>();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IHttpHandler>().To<HttpHandler>();
@@ -85,13 +95,20 @@
             kernel.Bind<IExceptionHelper>().To<ExceptionHelper>();
             kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
             kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
+            kernel.Bind<IEmailHelper>().To<EmailHelper>();
+            kernel.Bind<IDatabaseFactory<FMODBContext>>().To<DatabaseFactory<FMODBContext>>();
 
+            databaseFactory = kernel.Get<IDatabaseFactory<FMODBContext>>();
+            fileProcessingLogRepository = kernel.Get<IFileProcessingLogRepository>();
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
             tpfLoader = kernel.Get<ITPFLoader>();
             loggingHelper = kernel.Get<ILoggingHelper>();
             fileMover = kernel.Get<IFileMover>();
+            exceptionHelper = kernal.Get<IExceptionHelper>();
+            emailHelper = kernal.Get<IEmailHelper>();
             configurationHelper = kernel.Get<IConfigurationHelper>();
+
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -278,7 +295,7 @@
                             else
                             {
                                 File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                                this.nybLoader.SaveNYBDetails(lstNYBDetails, strfileName);
                             }
                         }
                         else

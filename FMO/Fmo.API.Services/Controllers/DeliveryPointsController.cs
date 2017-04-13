@@ -38,7 +38,15 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public JsonResult GetDeliveryPoints(string bbox)
         {
-            return Json(businessService.GetDeliveryPoints(bbox));
+            return Json(businessService.GetDeliveryPoints(bbox));           
         }
-    }
+
+        [Route("GetDeliveryPointByUDPRN")]
+        [HttpGet]
+        public string GetDeliveryPointByUDPRN(int udprn)
+        {
+            return businessService.GetDeliveryPointByUDPRN(udprn);
+        }
+
+    }   
 }

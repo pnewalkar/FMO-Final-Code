@@ -8,6 +8,7 @@
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
     using MappingConfiguration;
+    using System.Threading.Tasks;
 
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository
     {
@@ -16,18 +17,18 @@
         {
         }
 
-        public AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN)
+        public bool AddressLocationExists(int uDPRN)
         {
             try
             {
-                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-
-                var addressLocationDTO = new AddressLocationDTO();
-
-                GenericMapper.Map(addressLocationDTO, objAddressLocation);
-
-                // return context.Students.Find(id);
-                return addressLocationDTO;
+                if (DataContext.AddressLocations.Where(n => n.UDPRN == uDPRN).Any())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {
@@ -35,7 +36,22 @@
             }
         }
 
-        public void SaveNewAddressLocation(AddressLocationDTO addressLocationDTO)
+        public AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN)
+        {
+            try
+            {
+                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+
+                // return context.Students.Find(id);
+                return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<int> SaveNewAddressLocation(AddressLocationDTO addressLocationDTO)
         {
             try
             {
@@ -43,16 +59,14 @@
 
                 GenericMapper.Map(addressLocationDTO, addressLocationEntity);
 
-                
-
                 DataContext.AddressLocations.Add(addressLocationEntity);
+
+                return await DataContext.SaveChangesAsync();
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
-
     }
 }

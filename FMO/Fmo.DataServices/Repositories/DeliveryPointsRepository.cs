@@ -30,9 +30,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
-                DeliveryPoint objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-                return deliveryPointDTO;
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
             }
             catch (Exception)
             {
@@ -47,17 +46,23 @@ namespace Fmo.DataServices.Repositories
             {
                 if (objDeliveryPoint != null)
                 {
-                    var deliveryPoint = new DeliveryPoint();
-                    GenericMapper.Map(objDeliveryPoint, deliveryPoint);
-
-                    DataContext.DeliveryPoints.Add(deliveryPoint);
+                    DeliveryPoint newDeliveryPoint = new DeliveryPoint();
+                    newDeliveryPoint.ID = objDeliveryPoint.ID;
+                    newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
+                    newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
+                    newDeliveryPoint.Address_Id = objDeliveryPoint.Address_Id;
+                    newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
+                    newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
+                    newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
+                    //newDeliveryPoint.LocationProvider = "E"; // Update in Enum as well as reference data category
+                    DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     DataContext.SaveChangesAsync();
                     saveFlag = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
 
             return saveFlag;
@@ -125,7 +130,8 @@ namespace Fmo.DataServices.Repositories
                         SubBuildingName = l.PostalAddress.SubBuildingName,
                         BuildingNumber = l.PostalAddress.BuildingNumber,
                         Thoroughfare = l.PostalAddress.Thoroughfare,
-                        DependentLocality = l.PostalAddress.DependentLocality
+                        DependentLocality = l.PostalAddress.DependentLocality,
+                        UDPRN = l.UDPRN
                     }
                 })
                 .Take(takeCount)
@@ -190,6 +196,41 @@ namespace Fmo.DataServices.Repositories
                 GenericMapper.Map(deliveryPointDTO, deliveryPoint);
 
                 return await DataContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
+        {
+            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+
+            return deliveryPointDto;
+        }
+
+        public bool DeliveryPointExists(int uDPRN)
+        {
+            try
+            {
+                if (DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(uDPRN)).Any())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {

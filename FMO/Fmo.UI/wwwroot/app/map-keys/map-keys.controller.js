@@ -36,14 +36,15 @@ function MapKeyController(mapStylesFactory, mapService) {
 
         vm.pointTypes = [
             {
+                "text": "Selected",
+                "id": "",
+                "style": mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)("deliverypoint")
+            },             {
                 "text": "Delivery Point",
                 "id": "deliverypoint",
                 "style": activeStyle("deliverypoint")
-            }
-        ];
-
-        vm.lineTypes = [
-            {
+            },
+             {
                 "text": "Access Link",
                 "id": "accesslink",
                 "style": activeStyle("accesslink")
@@ -54,5 +55,18 @@ function MapKeyController(mapStylesFactory, mapService) {
                 "style": activeStyle("roadlink")
             }
         ];
+
+       /* vm.lineTypes = [
+            {
+                "text": "Access Link",
+                "id": "accesslink",
+                "style": activeStyle("accesslink")
+            },
+            {
+                "text": "Road",
+                "id": "roadlink",
+                "style": activeStyle("roadlink")
+            }
+        ];*/
     }
 };

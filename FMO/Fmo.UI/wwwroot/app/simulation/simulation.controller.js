@@ -13,6 +13,10 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.isDeliveryRouteDisabled = true;
     vm.selectedDeliveryRoute = null;
     vm.deliveryRoute = null;
+    vm.selectedVegetables;
+   
+
+    vm.searchTerm;
     function selectedRouteStatus() {
         debugger;
         //loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);

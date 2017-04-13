@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.2.0.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
@@ -67,7 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">
@@ -82,6 +88,10 @@
     <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj">
       <Project>{43FC012E-5274-4CF4-8689-97B3CE067C11}</Project>
       <Name>Fmo.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fmo.MappingConfiguration\Fmo.MappingConfiguration.csproj">
+      <Project>{348FE78C-1051-4D06-B29E-2E1EFF30CC7A}</Project>
+      <Name>Fmo.MappingConfiguration</Name>
     </ProjectReference>
     <ProjectReference Include="..\FMO.MessageBrokerCore\Fmo.MessageBrokerCore.csproj">
       <Project>{10A130A3-105F-4DF9-9D74-00D252B5ACC7}</Project>

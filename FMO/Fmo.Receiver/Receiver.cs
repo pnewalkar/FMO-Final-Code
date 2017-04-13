@@ -16,6 +16,8 @@ using Fmo.Common.Constants;
 using Fmo.NYBLoader.Interfaces;
 using Fmo.NYBLoader.Common;
 using Fmo.Common.Interface;
+using Fmo.Common.ConfigurationManagement;
+using Fmo.MappingConfiguration;
 
 namespace Fmo.Receiver
 {
@@ -23,6 +25,8 @@ namespace Fmo.Receiver
     {
         private string PAFWebApiurl = string.Empty;
         private string PAFWebApiName = string.Empty;
+        private string USRWebApiurl = string.Empty;
+        private string USRWebApiName = string.Empty;
 
         private readonly IKernel kernal;
         private IMessageBroker<AddressLocationUSRDTO> msgUSR = default(IMessageBroker<AddressLocationUSRDTO>);
@@ -53,6 +57,8 @@ namespace Fmo.Receiver
 
             this.PAFWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues("PAFWebApiurl").ToString();
             this.PAFWebApiName = configurationHelper.ReadAppSettingsConfigurationValues("PAFWebApiName").ToString();
+            this.USRWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues("USRWebApiurl").ToString();
+            this.USRWebApiName = configurationHelper.ReadAppSettingsConfigurationValues("USRWebApiName").ToString();
         }
 
         protected override void OnStart(string[] args)
@@ -82,11 +88,20 @@ namespace Fmo.Receiver
 
         public void USRMessageReceived(object sender, MessageEventArgs<AddressLocationUSRDTO> e)
         {
-            AddressLocationUSRDTO a = e.MessageBody;
+            AddressLocationUSRDTO addressLocationUSRDTO = e.MessageBody;
 
-            if (msgUSR.HasMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH))
+            if (addressLocationUSRDTO != null)
             {
-                AddressLocationUSRDTO b = msgUSR.ReceiveMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                SaveUSRDetails(addressLocationUSRDTO).Wait();
+            }
+
+            while (msgUSR.HasMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH))
+            {
+                AddressLocationUSRDTO addressLocationUSRDTOPending = msgUSR.ReceiveMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                if (addressLocationUSRDTOPending != null)
+                {
+                    SaveUSRDetails(addressLocationUSRDTOPending).Wait();
+                }
             }
 
         }
@@ -126,6 +141,21 @@ namespace Fmo.Receiver
             }
             
         }
+        private async Task SaveUSRDetails(AddressLocationUSRDTO addressLocationUSRDTO)
+        {
+            try
+            {
+                httpHandler.SetBaseAddress(new Uri(USRWebApiurl));
+                var addressLocationUSRPOSTDTO = GenericMapper.Map<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
+                await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
+            }
+            catch (Exception ex)
+            {                
+                throw;
+            }
+
+        }
+
 
 
         protected override void OnStop()

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fmo.NYBLoader.Common
+namespace Fmo.Common.ConfigurationManagement
 {
     public class ConfigurationHelper : IConfigurationHelper
     {
