@@ -12,7 +12,7 @@ namespace Fmo.DTO
         /// <summary>
         /// Gets or sets the Id of the underlying entity.
         /// </summary>
-        public string Id { get; set; }
+        public int? UDPRN { get; set; }
 
         /// <summary>
         /// Gets or sets the display text to render in the UI

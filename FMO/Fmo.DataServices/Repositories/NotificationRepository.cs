@@ -28,7 +28,7 @@
                 DataContext.Notifications.Add(newNotification);
                 return await DataContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }

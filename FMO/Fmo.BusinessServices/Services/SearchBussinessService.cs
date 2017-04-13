@@ -75,6 +75,7 @@ namespace Fmo.BusinessServices.Services
                         deliveryPoint.PostalAddress.BuildingNumber,
                         deliveryPoint.PostalAddress.Thoroughfare,
                         deliveryPoint.PostalAddress.DependentLocality),
+                        UDPRN = deliveryPoint.PostalAddress.UDPRN,
                         Type = SearchBusinessEntityType.DeliveryPoint
                     });
                 }

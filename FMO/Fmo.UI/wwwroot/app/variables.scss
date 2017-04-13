@@ -1,9 +1,116 @@
-$font-stack: Chevin;
-$font-size: 18px;
+ //for header & action menu
+$primary-font: Chevin;
+$primary-font-size: 18px;
 
-h2 span{
-  color: white;
-  font-family: Chevin;
-  font-size: 18px;  
-  background: none;
+
+//for body content & others
+$secondary-font: PF DIN; 
+$seondary-font-size: 16px;
+
+//colors combo:-
+
+//royal mail red
+$red: #da202a;
+
+//grey palette
+$background-grey: #f4f4f3;
+$recess-grey: #c1c6c8;
+$strong-grey: #53535a;
+$dark-grey: #404044;
+$black: #2a2a2d;
+
+//mixed palette
+$positive-blue: #0892cb;
+$go-green: #62a531;
+$deep-green: #088578;
+$dynamic-yellow: #fdda24;
+$clear-blue: #aadaea;
+
+//others colors
+$white: #ffffff;
+$white-smoke: #f5f5f5;
+$grey: #808080;
+$red:red;
+
+//styles:-
+
+//margin
+@mixin margin($margin) {
+    margin: $margin;
+}
+
+//padding
+@mixin padding($padding) {
+    padding: $padding;
+}
+//top
+@mixin top($top) {
+    top: $top;
+}
+
+//position
+@mixin position($position) {
+    position: $position;
+}
+
+//border-radius
+@mixin border-radius($radius) {
+    border-radius: $radius;
+}
+
+//background
+@mixin background($background) {
+      background-color: $background;
+    }
+//font-color
+@mixin font-color($color) {
+    color: $color;
+    }
+
+//cursor
+@mixin cursor($cursor) {
+    cursor: $cursor;
+    }
+
+//border-bottom
+@mixin border-bottom($border) {
+    border-bottom: $border;
+    }
+
+//float
+@mixin float($float) {
+    float: $float;
+    }
+
+//width
+@mixin width($width) {
+    width: $width;
+    }
+
+//functions:-
+
+//min-width function
+@function minWidth($width) {
+    @return 100% / $width;
+}
+
+//width
+@function width-percent($width) {
+    @return 100% / $width;
+}
+
+//placeholders:-
+
+//header-content
+%header-content{
+    color: $white;
+    font-family: $primary-font;
+    font-size: $primary-font-size;
+}
+
+//body-content
+%body-content{
+    color: $black;
+    font-family: $secondary-font;
+    font-size: $seondary-font-size;
 }

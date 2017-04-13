@@ -10,7 +10,6 @@ namespace Fmo.DataServices.DBContext
         {
         }
 
-
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
 
         public virtual DbSet<Action> Actions { get; set; }
@@ -130,6 +129,8 @@ namespace Fmo.DataServices.DBContext
         public virtual DbSet<TempPostalAddress> TempPostalAddresses { get; set; }
 
         public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
+
+        public virtual DbSet<AccessFunction> AccessFunctions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -1430,6 +1431,18 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<OSConnectingNode_temp>()
                 .Property(e => e.RoadLinkTOID)
                 .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AccessFunction>()
+                .Property(e => e.FunctionName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AccessFunction>()
+                .Property(e => e.ActionName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AccessFunction>()
+                .Property(e => e.RoleName)
                 .IsUnicode(false);
         }
     }
