@@ -178,22 +178,17 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDto;
         }
 
-        public async Task<int> UpdateDeliveryPointLocationOnUDPRN(int uDPRN, decimal latitude, decimal longitude, DbGeometry locationXY)
+        public async Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO)
         {
             try
             {
-                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
 
-                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(uDPRN)).SingleOrDefault();
+                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(deliveryPointDTO.UDPRN)).SingleOrDefault();
 
-                GenericMapper.Map(deliveryPoint, deliveryPointDTO);
-
-                deliveryPointDTO.Longitude = longitude;
-                deliveryPointDTO.Latitude = latitude;
-                deliveryPointDTO.LocationXY = locationXY;
-                deliveryPointDTO.LocationProvider = Constants.USR_LOC_PROVIDER;
-
-                GenericMapper.Map(deliveryPointDTO, deliveryPoint);
+                deliveryPoint.Longitude = deliveryPointDTO.Longitude;
+                deliveryPoint.Latitude = deliveryPointDTO.Latitude;
+                deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
+                deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
 
                 return await DataContext.SaveChangesAsync();
             }

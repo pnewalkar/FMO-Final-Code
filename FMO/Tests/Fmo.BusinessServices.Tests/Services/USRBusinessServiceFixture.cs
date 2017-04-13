@@ -29,6 +29,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IReferenceDataCategoryRepository> referenceDataCategoryRepositoryMock;
         private Mock<IEmailHelper> emailHelperMock;
         private Mock<IConfigurationHelper> configurationHelperMock;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Null_Location_Existing_Notification()
@@ -53,7 +54,7 @@ namespace Fmo.BusinessServices.Tests.Services
 
             emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
-            deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<int>(), It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<DbGeometry>()), Times.Once);
+            deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
             notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
         }
 
@@ -81,7 +82,7 @@ namespace Fmo.BusinessServices.Tests.Services
 
             emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
-            deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<int>(), It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<DbGeometry>()), Times.Once);
+            deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
             notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
@@ -121,6 +122,7 @@ namespace Fmo.BusinessServices.Tests.Services
             referenceDataCategoryRepositoryMock = CreateMock<IReferenceDataCategoryRepository>();
             emailHelperMock = CreateMock<IEmailHelper>();
             configurationHelperMock = CreateMock<IConfigurationHelper>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
             testCandidate = new USRBusinessService(
                                             addressLocationRepositoryMock.Object,
                                             deliveryPointsRepositoryMock.Object,
@@ -128,7 +130,9 @@ namespace Fmo.BusinessServices.Tests.Services
                                             postCodeSectorRepositoryMock.Object,
                                             referenceDataCategoryRepositoryMock.Object,
                                             emailHelperMock.Object,
-                                            configurationHelperMock.Object);
+                                            configurationHelperMock.Object,
+                                            loggingHelperMock.Object
+                                            );
         }
 
     }

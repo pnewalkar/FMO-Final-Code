@@ -23,8 +23,17 @@
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public USRBusinessService(IAddressLocationRepository addressLocationRepository, IDeliveryPointsRepository deliveryPointsRepository, INotificationRepository notificationRepository, IPostCodeSectorRepository postCodeSectorRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IEmailHelper emailHelper, IConfigurationHelper configurationHelper)
+        public USRBusinessService(
+            IAddressLocationRepository addressLocationRepository,
+            IDeliveryPointsRepository deliveryPointsRepository,
+            INotificationRepository notificationRepository,
+            IPostCodeSectorRepository postCodeSectorRepository,
+            IReferenceDataCategoryRepository referenceDataCategoryRepository,
+            IEmailHelper emailHelper,
+            IConfigurationHelper configurationHelper,
+            ILoggingHelper loggingHelper)
         {
             this.addressLocationRepository = addressLocationRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
@@ -33,6 +42,7 @@
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.emailHelper = emailHelper;
             this.configurationHelper = configurationHelper;
+            this.loggingHelper = loggingHelper;
         }
 
         public async Task SaveUSRDetails(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
@@ -81,7 +91,18 @@
 
                         if (deliveryPointDTO.LocationXY == null)
                         {
-                            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRPOSTDTO.latitude, (decimal)addressLocationUSRPOSTDTO.longitude, spatialLocationXY);
+
+                            Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORK_LINK_DATA_PROVIDER, Constants.EXTERNAL);
+
+                            DeliveryPointDTO newDeliveryPoint = new DeliveryPointDTO
+                            {
+                               Latitude = addressLocationUSRPOSTDTO.latitude,
+                               Longitude = addressLocationUSRPOSTDTO.longitude,
+                               LocationXY = spatialLocationXY,
+                               LocationProvider_GUID = locationProviderId
+                            };
+
+                            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
                             NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
                             if (notificationDTO != null)
                             {
@@ -93,7 +114,17 @@
                            double straightLineDistance = (double)deliveryPointDTO.LocationXY.Distance(spatialLocationXY);
                             if (straightLineDistance < Constants.TOLERANCE_DISTANCE_IN_METERS)
                             {
-                                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(fileUdprn, (decimal)addressLocationUSRPOSTDTO.latitude, (decimal)addressLocationUSRPOSTDTO.longitude, spatialLocationXY);
+                                Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORK_LINK_DATA_PROVIDER, Constants.EXTERNAL);
+
+                                DeliveryPointDTO newDeliveryPoint = new DeliveryPointDTO
+                                {
+                                    Latitude = addressLocationUSRPOSTDTO.latitude,
+                                    Longitude = addressLocationUSRPOSTDTO.longitude,
+                                    LocationXY = spatialLocationXY,
+                                    LocationProvider_GUID = locationProviderId
+                                };
+
+                                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
                                 NotificationDTO notificationDTO = notificationRepository.GetNotificationByUDPRN(fileUdprn);
                                 if (notificationDTO != null)
                                 {
@@ -126,7 +157,7 @@
 
             catch (Exception ex)
             {
-                //return saveFlag;
+                this.loggingHelper.LogError(ex);
             }
         }
     }
