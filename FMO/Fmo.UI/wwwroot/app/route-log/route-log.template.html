@@ -1,6 +1,6 @@
 <md-dialog aria-label="Route Log" class=routeLogDialog>
 <div layout="column" class="md-padding">
-		<h1>Search</h1>
+		<h2>Search</h2>
 		<section layout="row" flex="100">
        		<md-input-container flex="20">
        			<label>Selection Type</label>
@@ -23,34 +23,22 @@
                 <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
                     <md-option value="empty"><em>No Scenario</em></md-option>
                     <md-option ng-repeat="scenario in vm.RouteScenario" ng-value="scenario">{{scenario.scenarioName}}</md-option>
-                </md-select>
-              
+                </md-select>           
 	        </md-input-container>
-
-            <md-input-container>
-                <label>Route</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" data-md-container-class="selectdemoSelectHeader" >
-                    <md-select-header class="demo-select-header">
-                        <input  type="search"  ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()"  class="demo-header-searchbox md-text">
-                    </md-select-header>
-                    <md-optgroup label="vegetables">
-                        <md-option ng-value="vegetable" ng-repeat="vegetable in vm.deliveryRoute | filter:vm.searchTerm | orderBy : 'routeName' ">{{vegetable.routeName}}</md-option>
-                    </md-optgroup>
-                </md-select>
-            </md-input-container>
-	    </section>	  
+            
 	        <md-input-container flex="40">
           		<label>Route</label>
           		<md-select ng-model="vm.selectedDeliveryRoute"  ng-disabled="vm.isDeliveryRouteDisabled" class="routeSelect" >
             		<md-select-header >
-					<!--<input ng-model="searchTerm" type="text" placeholder="Search" class="routeSelectSearch md-text">-->
                         <input ng-model="searchTerm" type="search" placeholder="Search" class="demo-header-searchbox md-text">
             	</md-select-header>
               	<md-option ng-value="route" ng-repeat="routeType in vm.deliveryRoute | filter:searchTerm">{{routeType.routeName}} ({{routeType.routeNumber}})</md-option>	
           		</md-select>
         	</md-input-container>
 	    </section>
-    <div flex><h1>Selected Routes</h1></div>
+    <div flex>
+        <h2>Selected Routes</h2>
+    </div>
         <section layout="row" flex="100">
             <div id="table_wrapper">
 
@@ -62,46 +50,6 @@
 
   <div id="tbody">
     <table>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
-      <tr>
-        <td class="td1">1</td>
-        <td class="td2">2</td>
-        <td class="td3"><input type="checkbox" name=""></td>
-      </tr>
       <tr>
         <td class="td1">1</td>
         <td class="td2">2</td>
