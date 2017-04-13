@@ -4,16 +4,19 @@
 		<section layout="row" flex="100">
        		<md-input-container flex="20">
        			<label>Selection Type</label>
-	          	<md-select name="type" ng-model="project1">                   
-	            	<md-option value="single">Single</md-option>
-	            	<md-option value="multiple">Multiple</md-option>
+	          	<md-select name="type" ng-model="vm.selectedRouteSelectionObj">   
+                    <md-select-label>{{ vm.RouteselectionTypeObj.displayText }}</md-select-label>                
+                    <md-option ng-repeat="type in vm.RouteselectionTypeObj" ng-value="type" selected="{{ type.displayText === vm.RouteselectionTypeObj.displayText ? 'selected' : '' }}">
+                      {{type.displayText}}
+                    </md-option>
 	          	</md-select>
         	</md-input-container>
 
         	<md-input-container flex="20">
 	        	<label>Status</label>
-		        <md-select name="type" ng-model="vm.selectedRouteStatusObj.group1">
-                    <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status">{{status.displayText}}</md-option>
+		        <md-select name="type" ng-model="vm.selectedRouteStatusObj">
+                    <md-select-label>{{ vm.RouteStatusObj.displayText }}</md-select-label>      
+                    <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status" selected="{{ status.displayText === vm.RouteStatusObj.displayText ? 'selected' : '' }}">{{status.displayText}}</md-option>
 		        </md-select>
 	        </md-input-container>
 

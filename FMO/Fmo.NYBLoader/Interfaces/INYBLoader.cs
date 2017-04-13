@@ -11,6 +11,6 @@ namespace Fmo.NYBLoader.Interfaces
     {
         List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine);
 
-        bool SaveNYBDetails(List<PostalAddressDTO> lstAddress);
+        Task<bool> SaveNYBDetails(List<PostalAddressDTO> lstAddress, string fileName);
     }
 }

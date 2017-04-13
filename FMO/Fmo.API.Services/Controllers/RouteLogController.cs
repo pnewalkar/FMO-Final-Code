@@ -26,6 +26,8 @@ namespace Fmo.API.Services.Controllers
             return deliveryRouteBusinessService.FetchDeliveryUnit();
         }
 
+
+
         [HttpGet("FetchDeliveryRoute")]
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
@@ -36,6 +38,12 @@ namespace Fmo.API.Services.Controllers
         public List<ReferenceDataDTO> RouteLogsStatus()
         {
             return deliveryRouteBusinessService.FetchRouteLogStatus();
+        }
+
+        [HttpGet("RouteLogsSelectionType")]
+        public List<ReferenceDataDTO> RouteLogsSelectionType()
+        {
+            return deliveryRouteBusinessService.FetchRouteLogSelectionType();
         }
 
         [HttpGet("FetchDeliveryScenario")]
