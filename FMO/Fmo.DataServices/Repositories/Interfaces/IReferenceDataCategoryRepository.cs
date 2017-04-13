@@ -9,5 +9,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         Guid GetReferenceDataId(string strCategoryname, string strRefDataName);
 
         List<ReferenceDataDTO> RouteLogStatus();
+
+        List<ReferenceDataDTO> RouteLogSelectionType();
     }
 }
