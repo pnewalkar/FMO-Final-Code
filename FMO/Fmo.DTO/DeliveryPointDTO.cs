@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
-  public  class DeliveryPointDTO
+    public class DeliveryPointDTO
     {
         public int DeliveryPoint_Id { get; set; }
 
@@ -43,9 +43,27 @@ namespace Fmo.DTO
 
         public bool IsUnit { get; set; }
 
-        public  PostalAddressDTO PostalAddress { get; set; }
+        public PostalAddressDTO PostalAddress { get; set; }
 
-      
+        public int? LocationProviderId { get; set; }
+
+        public int? OperationalStatusId { get; set; }
+
+        public int? Temp_DeliveryGroup_Id { get; set; }
+
+        public int? LocationProvider_Id { get; set; }
+
+        public int? OperationalStatus_Id { get; set; }
+
+        public Guid ID { get; set; }
+
+        public Guid Address_GUID { get; set; }
+
+        public Guid? LocationProvider_GUID { get; set; }
+
+        public Guid? OperationalStatus_GUID { get; set; }
+
+        public Guid? DeliveryGroup_GUID { get; set; }
 
     }
 }

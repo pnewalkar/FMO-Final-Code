@@ -1,17 +1,22 @@
 ﻿angular.module('routeLog')
-.controller('RouteLogController', ['$scope', '$state', '$stateParams','routeLogAPIService', RouteLogController])
+.controller('RouteLogController', ['$scope', '$state', '$stateParams','routeLogAPIService','routeLogService', RouteLogController])
 function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService) {
     var vm = this;
     vm.loadRouteLogStatus = loadRouteLogStatus();
     vm.loadScenario = loadScenario;
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
+    vm.clearSearchTerm = clearSearchTerm;
+    vm.routeChange = routeChange;
     vm.selectedDeliveryUnitObj = $stateParams;
     vm.selectedRouteStatusObj = null;
     vm.selectedRouteScenario = null;
     vm.isDeliveryRouteDisabled = true;
-    vm.selectedDeliveryRoute = null;
+    vm.selectedDeliveryRoute;
     vm.deliveryRoute = null;
+    vm.selectedVegetables;
+    vm.searchTerm;
+
     function selectedRouteStatus() {
         debugger;
         //loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
@@ -43,4 +48,14 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         });
         //simulationBusinessService.loadDeliveryRoute(selectedRouteStatusObj, selectedRouteScenario);
     }
+    function routeChange()
+    {
+        vm.selectedDeliveryRoute;
+        debugger;
+        vm.searchTerm = '';
+
+    }
+    function clearSearchTerm () {
+        vm.searchTerm = '';
+    };
 }

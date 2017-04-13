@@ -90,6 +90,9 @@
     <Compile Include="Infrastructure\RepositoryBase.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AccessManager\ActionManagerRepository.cs" />
+    <Compile Include="Repositories\AccessManager\UserRoleUnitRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IActionManagerRepository.cs" />
     <Compile Include="Repositories\AddressLocationRepository.cs" />
     <Compile Include="Repositories\AccessLinkRepository.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
@@ -112,6 +115,7 @@
     <Compile Include="Repositories\Interfaces\IRoadNameRepository.cs" />
     <Compile Include="Repositories\DeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IStreetNetworkRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IUserRoleUnitRepository.cs" />
     <Compile Include="Repositories\NotificationRepository.cs" />
     <Compile Include="Repositories\PostalAddressRepository.cs" />
     <Compile Include="Repositories\PostCodeRepository.cs" />

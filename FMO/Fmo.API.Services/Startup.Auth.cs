@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
 using Fmo.API.Services.Authentication;
+using System.Collections.Generic;
 
 namespace Fmo.API.Services
 {
@@ -73,7 +74,9 @@ namespace Fmo.API.Services
         private Task<ClaimsIdentity> GetIdentity(string username, string password)
         {
             // Don't do this in production, obviously!
-            if (username == "TEST" && password == "TEST123")
+            //if (username == "TEST" && password == "TEST123")
+            List<string> userList = new List<string> { "amol.patil", "shobharam.katiya" };
+            if (userList.Contains(username))
             {
                 return Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
             }
