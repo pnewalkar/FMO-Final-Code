@@ -1,52 +1,39 @@
-input {
-  background: red; }
+.searchInput, .searchData {
+  color: #2a2a2d;
+  font-family: PF DIN;
+  font-size: 16px; }
 
+.delivery {
+  color: red;
+  margin: 0px -20px 0px 0px; }
 
-i.fa.fa-map-marker {
-    
+.postcode {
+  color: #62a531;
+  margin: 0px -20px 0px 0px; }
 
-}
+.street {
+  color: #fdda24;
+  margin: 0px -20px 0px 0px; }
 
+.route {
+  color: #aadaea;
+  margin: 0px -20px 0px 0px; }
 
+.searchBox {
+  position: absolute;
+  margin: -18px 0px 0px 0px; }
 
-.delivery{
-        color: red;
-        margin-right: -20px;
-}
-.postcode{
-        color: green;
-        margin-right: -20px;
-}
-.street{
-        color: yellow;
-        margin-right: -20px;
-}
-.route{
-        color: blue;
-        margin-right: -20px;
-}
+.searchInput {
+  background-color: #ffffff;
+  width: 80%;
+  padding: 8px 8px 8px 8px; }
 
-.searchBox{
-    position:absolute;
-    margin-top:-18px;
-}
+.searchContent {
+  background-color: #ffffff;
+  width: 80%; }
 
-.searchInput{
-    background:white;
-    width:80%;
-    padding:8px;
-    font-size:15px;
-}
-
-.searchContent{
-       background:white;
-       width:80%;
-}
-
-.searchData{
-    background:white;
-    color: rgb(117,117,117);
-    font-size:14px;
-    margin-bottom:5px;
-    padding:5px 5px;
-}
+.searchData {
+  background-color: #ffffff;
+  color: #53535a;
+  margin: 0px 0px 5px 0px;
+  padding: 5px 5px 5px 5px; }

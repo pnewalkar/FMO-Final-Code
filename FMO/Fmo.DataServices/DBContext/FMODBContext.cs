@@ -10,7 +10,6 @@ namespace Fmo.DataServices.DBContext
         {
         }
 
-
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
 
         public virtual DbSet<Action> Actions { get; set; }

@@ -129,6 +129,7 @@
             {
                 if (objPostalAddress != null)
                 {
+                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     var objAddress = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
                     DataContext.PostalAddresses.Add(objAddress);
 
