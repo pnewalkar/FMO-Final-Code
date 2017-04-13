@@ -1,4 +1,4 @@
- //for header & action menu
+//for header & action menu
 $primary-font: Chevin;
 $primary-font-size: 18px;
 
@@ -70,6 +70,11 @@ $red:red;
 //cursor
 @mixin cursor($cursor) {
     cursor: $cursor;
+    }
+
+//borde
+@mixin border($border) {
+    border: $border;
     }
 
 //border-bottom
