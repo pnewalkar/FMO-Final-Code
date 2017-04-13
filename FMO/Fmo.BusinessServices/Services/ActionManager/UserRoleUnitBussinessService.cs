@@ -7,7 +7,7 @@ using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
-namespace Fmo.BusinessServices.Services.ActionManager
+namespace Fmo.BusinessServices.Services
 {
     public class UserRoleUnitBussinessService : IUserRoleUnitBussinessService
     {
