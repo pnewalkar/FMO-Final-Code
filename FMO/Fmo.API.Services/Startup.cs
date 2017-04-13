@@ -22,6 +22,8 @@ using Fmo.Helpers;
 using Fmo.Helpers.Interface;
 using Fmo.Common.EmailManagement;
 
+using Fmo.Common.ConfigurationManagement;
+
 namespace Fmo.API.Services
 {
     public partial class Startup
@@ -85,6 +87,7 @@ namespace Fmo.API.Services
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddTransient<IAccessLinkBussinessService, AccessLinkBussinessService>();
+            services.AddTransient<IUSRBusinessService, USRBusinessService>();
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             //Repositories
             services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
@@ -98,7 +101,7 @@ namespace Fmo.API.Services
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
-            services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
+            //services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
             services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
 
@@ -106,6 +109,7 @@ namespace Fmo.API.Services
             services.AddTransient<ILoggingHelper, LoggingHelper>();
             services.AddTransient<ICreateOtherLayersObjects, CreateOtherLayerObjects>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
+            services.AddTransient<IConfigurationHelper, ConfigurationHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
