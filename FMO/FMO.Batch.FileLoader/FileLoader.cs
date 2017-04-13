@@ -278,7 +278,7 @@
                             else
                             {
                                 File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.nybLoader.SaveNYBDetails(lstNYBDetails);
+                                this.nybLoader.SaveNYBDetails(lstNYBDetails, strfileName);
                             }
                         }
                         else

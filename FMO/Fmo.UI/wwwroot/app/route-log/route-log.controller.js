@@ -2,6 +2,7 @@
 .controller('RouteLogController', ['$scope', '$state', '$stateParams','routeLogAPIService','routeLogService', RouteLogController])
 function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService) {
     var vm = this;
+    vm.loadSelectionType = loadSelectionType();
     vm.loadRouteLogStatus = loadRouteLogStatus();
     vm.loadScenario = loadScenario;
     vm.scenarioChange = scenarioChange;
@@ -14,9 +15,22 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.isDeliveryRouteDisabled = true;
     vm.selectedDeliveryRoute;
     vm.deliveryRoute = null;
+   
     vm.selectedVegetables;
     vm.searchTerm;
+   
+    function selectionTypeChange()
+    {
 
+    }
+    function loadSelectionType()
+    {
+        routeLogAPIService.getSelectionType().then(function (response) {
+            debugger;
+            vm.RouteselectionTypeObj = response.data;
+            vm.selectedRouteSelectionObj = vm.RouteselectionTypeObj[0];
+        });
+    }
     function selectedRouteStatus() {
         debugger;
         //loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
@@ -25,15 +39,12 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         routeLogAPIService.getStatus().then(function (response) {
             debugger;
             vm.RouteStatusObj = response.data;
-            vm.selectedRouteStatusObj = {
-                group1: vm.RouteStatusObj[0].id,
-                group2: vm.RouteStatusObj[1].id
-            };
-            loadScenario(vm.selectedRouteStatusObj.group1, vm.selectedDeliveryUnitObj.selectedUnit.id);
+            vm.selectedRouteStatusObj = vm.RouteStatusObj[0];
+            loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.selectedUnit.id);
         });
     }
     function scenarioChange() {
-        loadDeliveryRoute(vm.selectedRouteStatusObj.group1.id, vm.selectedRouteScenario.id);
+        loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
         vm.isDeliveryRouteDisabled = false;
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
@@ -58,4 +69,5 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     function clearSearchTerm () {
         vm.searchTerm = '';
     };
+    
 }

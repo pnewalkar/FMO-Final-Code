@@ -43,6 +43,15 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
+        /// Fetch the Route Log Selection Type.
+        /// </summary>
+        /// <returns>List</returns>
+        public List<ReferenceDataDTO> FetchRouteLogSelectionType()
+        {
+            return referenceDataCategoryRepository.RouteLogSelectionType();
+        }
+
+        /// <summary>
         /// Fetch the Delivery Scenario.
         /// </summary>
         /// <param name="operationStateID">Guid</param>

@@ -4,10 +4,15 @@ angular.module('routeLog')
     .factory('routeLogAPIService', ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
 
         return {
+            getSelectionType:getSelectionType,
             getStatus: getStatus,
             getScenario: getScenario,
             getRoutes: getRoutes
         }
+
+        function getSelectionType() {
+            return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsSelectionType');
+        };
 
         function getStatus() {
             return $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus');
