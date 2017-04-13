@@ -3,6 +3,11 @@
   font-family: Chevin;
   font-size: 18px; }
 
+.td1, .td2 {
+  color: #2a2a2d;
+  font-family: PF DIN;
+  font-size: 16px; }
+
 #table_wrapper {
   background-color: #c1c6c8;
   border: #2a2a2d;

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Spatial;
 
 namespace Fmo.DTO
 {
-  public class DeliveryUnitLocationDTO
+    public class DeliveryUnitLocationDTO
     {
         public int DeliveryUnit_Id { get; set; }
-        
+
         public string ExternalId { get; set; }
 
         public string UnitName { get; set; }
@@ -18,5 +16,15 @@ namespace Fmo.DTO
 
         public Guid ID { get; set; }
 
+        public DbGeometry UnitBoundryPolygon { get; set; }
+
+        [NotMapped]
+        public string UnitBoundaryGeoJSONData { get; set; }
+
+        [NotMapped]
+        public string BoundingBox { get; set; }
+
+        [NotMapped]
+        public string BoundingBoxCenter { get; set; }
     }
 }

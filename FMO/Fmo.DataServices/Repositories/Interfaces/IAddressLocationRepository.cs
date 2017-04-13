@@ -1,5 +1,6 @@
 ﻿using Fmo.DTO;
 using Fmo.Entities;
+using System.Threading.Tasks;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
@@ -7,6 +8,8 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN);
 
-        void SaveNewAddressLocation(AddressLocationDTO addressLocationDTO);
+        Task<int> SaveNewAddressLocation(AddressLocationDTO addressLocationDTO);
+
+        bool AddressLocationExists(int uDPRN);
     }
 }

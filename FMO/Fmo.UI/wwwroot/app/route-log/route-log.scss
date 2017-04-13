@@ -24,11 +24,11 @@ td{
     border-right:1px solid black;
 } 
 .td1{
-    %body-content;
+    @extend %body-content;
     @include width(100px);
 }
 .td2{
-    %body-content;
+    @extend %body-content;
     @include width(140px);
 }
 #header{

@@ -2,19 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using System.Data.SqlTypes;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Helpers;
     using Fmo.Helpers.Interface;
-    using Newtonsoft.Json;
     using Microsoft.SqlServer.Types;
-    using System.Data.SqlTypes;
+    using Newtonsoft.Json;
 
     public class AccessLinkBussinessService : IAccessLinkBussinessService
     {
@@ -34,7 +29,7 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="boundaryBox"></param>
         /// <returns></returns>
@@ -52,12 +47,12 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="lstAccessLinkDTO"></param>
         /// <returns></returns>
         private string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
-        {            
+        {
             AccessLinkDTO accessLinkDTOCollectionObj = new AccessLinkDTO();
             string json = string.Empty;
 
@@ -80,23 +75,23 @@
                     {
                         sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
 
-                        double[][] cords = new double[2][];
+                    List<List<double>> cords = new List<List<double>>();
 
-                        for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
-                        {
-                            double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-                            cords[pt - 1] = coordinates;
-                            //cords.Add(coordinates);
-                        }
-
-                        geometry.coordinates = new Coordinates(cords);
-                    }
-                    else
+                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
                     {
-                        sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-                        double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
-                        geometry.coordinates = new Coordinates(coordinates);
+                        List<double> coordinates = new List<double> { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
+                        cords.Add(coordinates);
+
+                        //cords.Add(coordinates);
                     }
+
+                    geometry.coordinates = cords;
+                }
+                else
+                {
+                    sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    geometry.coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
+                }
 
                     Feature feature = new Feature();
                     feature.geometry = geometry;
@@ -113,11 +108,11 @@
             //accessLinkDTOCollectionObj.type = "FeatureCollection";
 
             //json = JsonConvert.SerializeObject(accessLinkDTOCollectionObj, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            return geoJson.getJson().ToString();
+            return JsonConvert.SerializeObject(geoJson);
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="query"></param>
         /// <param name="parameters"></param>
