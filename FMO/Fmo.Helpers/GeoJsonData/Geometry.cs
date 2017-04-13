@@ -1,26 +1,19 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fmo.Helpers
+﻿namespace Fmo.Helpers
 {
     public class Geometry
     {
         public string type { get; set; } = "Point";
-        public Coordinates coordinates { get; set; }
 
-        public JObject getJson()
-        {
-            var obj = new JObject();
+        public object coordinates { get; set; }
 
-            obj.Add("type", type);
-            obj.Add("coordinates", coordinates.getJson());
+        //public JObject getJson()
+        //{
+        //    var obj = new JObject();
 
-            return obj;
-        }
+        //    obj.Add("type", type);
+        //    obj.Add("coordinates", coordinates);
+
+        //    return obj;
+        //}
     }
 }
