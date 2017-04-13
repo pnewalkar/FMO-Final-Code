@@ -117,6 +117,7 @@
     <Compile Include="Entities\TempPostalAddress.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\UserRoleUnit.cs" />
+    <Compile Include="Entities\Views\AccessFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
