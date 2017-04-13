@@ -219,16 +219,6 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDto;
         }
 
-    }
-
-    public static class MappingExpressionExtensions
-    {
-        public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
-        {
-            expression.ForAllMembers(opt => opt.Ignore());
-            return expression;
-        }
-
         public bool DeliveryPointExists(int uDPRN)
         {
             try
@@ -246,6 +236,16 @@ namespace Fmo.DataServices.Repositories
             {
                 throw;
             }
+        }
+
+    }
+
+    public static class MappingExpressionExtensions
+    {
+        public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
+        {
+            expression.ForAllMembers(opt => opt.Ignore());
+            return expression;
         }
     }
 }
