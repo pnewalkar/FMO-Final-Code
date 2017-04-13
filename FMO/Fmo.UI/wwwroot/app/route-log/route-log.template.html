@@ -4,7 +4,7 @@
 		<section layout="row" flex="100">
        		<md-input-container flex="20">
        			<label>Selection Type</label>
-	          	<md-select name="type" ng-model="vm.selectedRouteSelectionObj">   
+	          	<md-select name="type" ng-model="vm.selectedRouteSelectionObj" ng-change="vm.selectionTypeChange()">   
                     <md-select-label>{{ vm.RouteselectionTypeObj.displayText }}</md-select-label>                
                     <md-option ng-repeat="type in vm.RouteselectionTypeObj" ng-value="type" selected="{{ type.displayText === vm.RouteselectionTypeObj.displayText ? 'selected' : '' }}">
                       {{type.displayText}}
@@ -19,8 +19,6 @@
                     <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status" selected="{{ status.displayText === vm.RouteStatusObj.displayText ? 'selected' : '' }}">{{status.displayText}}</md-option>
 		        </md-select>
 	        </md-input-container>
-
-
 	        <md-input-container flex="20">
 	        	<label>Scenario</label>
                 <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
@@ -48,10 +46,10 @@
 	 <div id="header">
     <div id="head1">Route Name</div>
     <div id="head2">Route Number</div>
-    <div id="head3">Select</div>
-  </div>
+     <div id="head3">Select</div>
+     </div>
 
-  <div id="tbody">
+   <div id="tbody">
     <table>
       <tr>
         <td class="td1">1</td>
