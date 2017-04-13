@@ -43,19 +43,32 @@ function MapStylesFactory() {
     });
 
     var roadLinkStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'green',
-            lineDash: [10, 10],
-            width: 2
+        text: new ol.style.Text({
+            text: '\uf018',
+            font: 'normal 16px FontAwesome',
+            textBaseline: 'Bottom',
+            fill: new ol.style.Fill({
+                color: '#c1c6c8',
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#000',
+                width: 2
+            })
         })
     });
 
     var accessLinkStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'DeepPink',
-            width: 2
+        text: new ol.style.Text({
+            text: '\uf178',
+            font: 'normal 16px FontAwesome',
+            textBaseline: 'Bottom',
+            fill: new ol.style.Fill({
+                color: '#2a2a2d',
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#000',
+                width: 2
+            })
         })
     });
 
@@ -78,7 +91,7 @@ function MapStylesFactory() {
     var deliveryPointStyle = new ol.style.Style({
         text: new ol.style.Text({
             text: '\uf041',
-            font: 'normal 18px FontAwesome',
+            font: 'normal 16px FontAwesome',
             textBaseline: 'Bottom',
             fill: new ol.style.Fill({
                 color: '#da202a',
