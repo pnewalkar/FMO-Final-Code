@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
@@ -90,6 +91,10 @@
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
       <Project>{1d645c11-6570-4327-9e60-b6e7d676ba0d}</Project>
       <Name>Fmo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fmo.DataServices\Fmo.DataServices.csproj">
+      <Project>{245B42EE-7F97-4077-9695-84871B70BD6A}</Project>
+      <Name>Fmo.DataServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\Fmo.DTO\Fmo.DTO.csproj">
       <Project>{43fc012e-5274-4cf4-8689-97b3ce067c11}</Project>

@@ -208,7 +208,7 @@ namespace Fmo.BusinessServices.Services
                     newDeliveryPoint.UDPRN = objAddressLocation.UDPRN;
                     newDeliveryPoint.Address_Id = objPostalAddress.Address_Id;
                     newDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
-                    newDeliveryPoint.Latitude = objAddressLocation.Latitude;
+                    newDeliveryPoint.Latitude = objAddressLocation.Lattitude;
                     newDeliveryPoint.Longitude = objAddressLocation.Longitude;
                     newDeliveryPoint.LocationProvider = "E"; // Update in Enum as well as reference data category
                     deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);

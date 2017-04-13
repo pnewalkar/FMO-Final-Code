@@ -63,6 +63,7 @@
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="FileProcessingLogDTO.cs" />
+    <Compile Include="FileProcessing\AddressLocationUSRPOSTDTO.cs" />
     <Compile Include="NotificationDTO.cs" />
     <Compile Include="OsRoadLinkDTO.cs" />
     <Compile Include="PostCodeSectorDTO.cs" />

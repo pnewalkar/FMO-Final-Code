@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
-using System.IO;
-using Microsoft.SqlServer.Types;
-using System.Data.SqlTypes;
-using Newtonsoft.Json;
 using Fmo.Helpers;
+using Microsoft.SqlServer.Types;
+using Newtonsoft.Json;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -29,7 +26,7 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="boundarybox"></param>
         /// <returns></returns>
@@ -47,7 +44,7 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="query"></param>
         /// <param name="parameters"></param>
@@ -69,7 +66,7 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="osRoadLinkDTO"></param>
         /// <returns></returns>
@@ -83,13 +80,11 @@ namespace Fmo.BusinessServices.Services
                 features = new List<Feature>()
             };
 
-
             if (osRoadLinkDTO != null && osRoadLinkDTO.Count > 0)
             {
                 int i = 1;
                 foreach (var res in osRoadLinkDTO)
                 {
-
                     Geometry geometry = new Geometry();
 
                     geometry.type = res.CentreLineGeometry.SpatialTypeName;
@@ -101,21 +96,20 @@ namespace Fmo.BusinessServices.Services
                     {
                         sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
 
-                        List<double[]> cords = new List<double[]>();
+                        List<List<double>> cords = new List<List<double>>();
 
                         for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
                         {
-                            double[] coordinatesval = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
+                            List<double> coordinatesval = new List<double> { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
                             cords.Add(coordinatesval);
                         }
 
-                        geometry.coordinates = new Coordinates(cords);
+                        geometry.coordinates = cords;
                     }
                     else
                     {
                         sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-                        double[] coordinatesval = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
-                        geometry.coordinates = new Coordinates(coordinatesval);
+                        geometry.coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
                     }
 
                     Feature feature = new Feature();
@@ -127,7 +121,8 @@ namespace Fmo.BusinessServices.Services
                     i++;
                 }
             }
-            return geoJson.getJson().ToString();
+
+            return JsonConvert.SerializeObject(geoJson);
         }
     }
 }

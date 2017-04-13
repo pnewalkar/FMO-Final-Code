@@ -26,7 +26,8 @@
 .searchInput {
   background-color: #ffffff;
   width: 80%;
-  padding: 8px 8px 8px 8px; }
+  padding: 8px 8px 8px 8px;
+  border-radius: 35px; }
 
 .searchContent {
   background-color: #ffffff;
@@ -37,3 +38,6 @@
   color: #53535a;
   margin: 0px 0px 5px 0px;
   padding: 5px 5px 5px 5px; }
+
+i.fa.fa-search {
+  font-size: 25px; }

@@ -219,6 +219,25 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDto;
         }
 
+        public bool DeliveryPointExists(int uDPRN)
+        {
+            try
+            {
+                if (DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(uDPRN)).Any())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 
     public static class MappingExpressionExtensions
