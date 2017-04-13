@@ -2,9 +2,13 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -24,11 +28,15 @@ namespace Fmo.API.Services.Authentication
         private readonly TokenProviderOptions _options;
         private readonly ILogger _logger;
         private readonly JsonSerializerSettings _serializerSettings;
+        private IActionManagerBussinessService actionManagerBussinessService = default(IActionManagerBussinessService);
+        private IUserRoleUnitBussinessService userRoleUnitBussinessService = default(IUserRoleUnitBussinessService);
 
         public TokenProviderMiddleware(
             RequestDelegate next,
             IOptions<TokenProviderOptions> options,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IActionManagerBussinessService actionManagerBussinessService,
+            IUserRoleUnitBussinessService userRoleUnitBussinessService)
         {
             _next = next;
             _logger = loggerFactory.CreateLogger<TokenProviderMiddleware>();
@@ -40,6 +48,9 @@ namespace Fmo.API.Services.Authentication
             {
                 Formatting = Formatting.Indented
             };
+
+            this.actionManagerBussinessService = actionManagerBussinessService;
+            this.userRoleUnitBussinessService = userRoleUnitBussinessService;
         }
 
         public Task Invoke(HttpContext context)
@@ -66,15 +77,29 @@ namespace Fmo.API.Services.Authentication
         private async Task GenerateToken(HttpContext context)
         {
             var username = context.Request.Form["username"];
-            var password = context.Request.Form["password"];
+            Guid unitGuid;
+            bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
 
-            var identity = await _options.IdentityResolver(username, password);
+            var identity = await _options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
             if (identity == null)
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Invalid username or password.");
                 return;
             }
+
+            if (unitGuid == Guid.Empty)
+            {
+                unitGuid = await userRoleUnitBussinessService.GetUserUnitInfo(username);
+            }
+
+            UserUnitInfoDTO userUnitInfoDto = new UserUnitInfoDTO
+            {
+                UserName = username,
+                UnitGuid = unitGuid
+            };
+
+            var roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
 
             var now = DateTime.UtcNow;
 
@@ -85,8 +110,7 @@ namespace Fmo.API.Services.Authentication
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.Role, "Admin"),
-                new Claim(ClaimTypes.Role, "UnitManager")
+                new Claim(ClaimTypes.Role,string.Join(",", roleAccessDto.Select(x => x.FunctionName).ToList()))
             };
 
             // Create the JWT and write it to a string
@@ -102,7 +126,8 @@ namespace Fmo.API.Services.Authentication
             var response = new
             {
                 access_token = encodedJwt,
-                expires_in = (int)_options.Expiration.TotalSeconds
+                expires_in = (int)_options.Expiration.TotalSeconds,
+                roleActions = roleAccessDto
             };
 
             // Serialize and return the response

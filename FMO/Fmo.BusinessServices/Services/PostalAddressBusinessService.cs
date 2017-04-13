@@ -10,6 +10,7 @@ using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.Common;
+using System.Web.Script.Serialization;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -50,26 +51,31 @@ namespace Fmo.BusinessServices.Services
         public bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress, string strFileName)
         {
             bool saveFlag = false;
+            string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
             try
             {
                 Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Nyb.ToString());
                 Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Status, PostCodeStatus.Live.GetDescription());
-                List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
-                if (!lstUDPRNS.All(a => a == 0))
+                if (lstPostalAddress != null && lstPostalAddress.Count > 0)
                 {
-                    foreach (var postalAddress in lstPostalAddress)
+                    List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
+                    if (!lstUDPRNS.All(a => a == 0))
                     {
-                        postalAddress.AddressStatus_GUID = addressStatusId;
-                        postalAddress.AddressType_GUID = addressTypeId;
-                        addressRepository.SaveAddress(postalAddress, strFileName);
-                    }
+                        foreach (var postalAddress in lstPostalAddress)
+                        {
+                            postalAddress.AddressStatus_GUID = addressStatusId;
+                            postalAddress.AddressType_GUID = addressTypeId;
+                            addressRepository.SaveAddress(postalAddress, strFileName);
+                        }
 
-                    saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                        saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
+                this.loggingHelper.LogInfo(postalAddressList);
             }
 
             return saveFlag;

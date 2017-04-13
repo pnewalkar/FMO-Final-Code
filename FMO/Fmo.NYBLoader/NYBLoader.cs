@@ -233,14 +233,14 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
         /// <returns>If success returns true else returns false</returns>
-        public bool SaveNYBDetails(List<PostalAddressDTO> lstAddress)
+        public async Task<bool> SaveNYBDetails(List<PostalAddressDTO> lstAddress, string fileName)
         {
             bool saveflag = false;
             try
             {
                 saveflag = true;
                 httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
-                httpHandler.PostAsJsonAsync(strFMOWebAPIName, lstAddress);
+                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName + "/", lstAddress);
             }
             catch (Exception ex)
             {
