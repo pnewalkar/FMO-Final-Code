@@ -43,7 +43,7 @@ namespace Fmo.API.Services.Controllers
 
         [Route("GetDeliveryPointByUDPRN")]
         [HttpGet]
-        public string GetDeliveryPointByUDPRN(int udprn)
+        public object GetDeliveryPointByUDPRN(int udprn)
         {
             return businessService.GetDeliveryPointByUDPRN(udprn);
         }

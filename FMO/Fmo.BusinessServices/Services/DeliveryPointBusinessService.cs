@@ -42,7 +42,7 @@
         /// </summary>
         /// <param name="udprn"></param>
         /// <returns></returns>
-        public string GetDeliveryPointByUDPRN(int udprn)
+        public object GetDeliveryPointByUDPRN(int udprn)
         {
             try
             {
