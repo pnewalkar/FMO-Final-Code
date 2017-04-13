@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using System;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
     public interface IDeliveryRouteRepository
     {
-        List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID);
+        List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID);
 
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText);
 

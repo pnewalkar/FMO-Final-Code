@@ -1,1 +1,53 @@
-﻿advance
+﻿<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
+    <div layout="column" class="advanceSearch">
+        <section layout="row">
+            <input type="text" placeholder="search" class="searchbox md-text">
+            <md-button class="md-raised md-primary" flex="10">search</md-button>
+        </section>
+        <section>
+            <md-checkbox ng-model="ck1" aria-label="Checkbox 1">
+                Route
+            </md-checkbox>
+            <md-checkbox ng-model="ck2" aria-label="Checkbox 1">
+                Postcode
+            </md-checkbox>
+            <md-checkbox ng-model="ck3" aria-label="Checkbox 1">
+                Delivery Point
+            </md-checkbox>
+            <md-checkbox ng-model="ck4" aria-label="Checkbox 1">
+                Collection Point
+            </md-checkbox>
+            <md-checkbox ng-model="ck5" aria-label="Checkbox 1">
+                Street Network
+            </md-checkbox>
+            <md-checkbox ng-model="ck6" aria-label="Checkbox 1">
+                Group
+            </md-checkbox>
+            <md-checkbox ng-model="ck7" aria-label="Checkbox 1">
+                Hazard
+            </md-checkbox>
+        </section>
+        <section layout="row">
+            <div layout-align="start start">
+                <md-button class="md-raised md-primary">Collapse All</md-button>
+                <md-button class="md-raised md-primary">Expand All</md-button>
+            </div>
+            <span flex></span>
+            <div layout-align="end start">
+                <md-button class="md-raised md-primary">Select All</md-button>
+                <md-button class="md-raised md-primary">Deselect All</md-button>
+            </div>
+        </section>
+        <section ng-repeat="route in routes">
+            <div ng-click="show = !show">
+                <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
+                <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
+                {{route.type}} ({{route.name.length}})
+            </div>
+
+            <ul ng-repeat="subitem in route.name" ng-show="show">
+                <li> {{subitem.type_name}}</li>
+            </ul>
+        </section>
+    </div>
+</md-dialog>

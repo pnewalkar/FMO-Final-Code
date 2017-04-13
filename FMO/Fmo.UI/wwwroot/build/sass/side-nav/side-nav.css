@@ -1,19 +1,24 @@
+p {
+  color: #2a2a2d;
+  font-family: PF DIN;
+  font-size: 16px; }
+
 .routeLogDialog {
-    width: 60%;
-    height: 100%;
-}
+  width: 59.88024%;
+  height: 100%; }
 
 md-select {
-    width: 110px;
-}
+  width: 110px; }
 
-.routeSelect{
-    width: 100%;
-}
+.routeSelect {
+  width: 100%; }
 
 .routeSelectSearch {
-    width: 97%;
-    background: none;
-    outline: none;
-    height: 100%;
-    padding: 0; }
+  width: 97.08738%;
+  background-color: none;
+  padding: 0px 0px 0px 0px;
+  outline: none;
+  height: 100%; }
+
+p {
+  color: #2a2a2d; }

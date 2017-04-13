@@ -13,10 +13,16 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class RouteSimulationController : Controller
     {
-        protected IDeliveryRouteBusinessService deliveryRouteBusinessService;
+      
+        protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
+
+        public RouteSimulationController(IDeliveryRouteBusinessService _deliveryRouteBusinessService)
+        {
+            deliveryRouteBusinessService = _deliveryRouteBusinessService;
+        }
 
         [HttpGet("FetchDeliveryRoute")]
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(int operationStateID, int deliveryScenarioID)
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
@@ -28,7 +34,7 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpGet("FetchDeliveryScenario")]
-        public List<ScenarioDTO> FetchDeliveryScenario(int operationStateID, int deliveryUnitID)
+        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {
             return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
         }

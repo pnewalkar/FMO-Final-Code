@@ -110,7 +110,7 @@ namespace Fmo.NYBLoader
 
                         //Remove duplicate PAF events which have create and delete instance for same UDPRN
                         lstAddressDetails = lstAddressDetails
-                                                .SkipWhile(n => (n.UDPRN.Equals("B")))
+                                                .SkipWhile(n => (n.UDPRN.Equals(Constants.PAFNOACTION)))
                                                 .GroupBy(x => x.UDPRN)
                                                 .Where(g => g.Count() == 1)
                                                 .SelectMany(g => g.Select(o => o))
@@ -132,17 +132,30 @@ namespace Fmo.NYBLoader
             try
             {
                 saveflag = true;
-                /*
-                var lstPAFInsertEvents = lstAddressDetails.Where(insertFiles => insertFiles.AmendmentType == "I").ToList();//Constants.INSERT
-                var lstPAFUpdateEvents = lstAddressDetails.Where(updateFiles => updateFiles.AmendmentType == "C").ToList();//Constants.UPDATE
-                var lstPAFDeleteEvents = lstAddressDetails.Where(deleteFiles => deleteFiles.changeType == "D").ToList();//Constants.DELETE
-                Process each events seprately */
+                
+                var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == Constants.PAFINSERT).ToList();  
+                var lstPAFUpdateEvents = lstPostalAddress.Where(updateFiles => updateFiles.AmendmentType == Constants.PAFUPDATE).ToList();
+                var lstPAFDeleteEvents = lstPostalAddress.Where(deleteFiles => deleteFiles.AmendmentType == Constants.PAFDELETE).ToList();
 
-                foreach (var addDetail in lstPostalAddress)
+                lstPAFInsertEvents.ForEach(postalAddress =>
+                    {
+                        IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                        msgBroker.SendMessage(msg);
+                    });
+
+                //Sprint 1- Only create events has to be executed
+                /*
+                lstPAFUpdateEvents.ForEach(postalAddress =>
                 {
-                    IMessage msg = msgBroker.CreateMessage(addDetail, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
                     msgBroker.SendMessage(msg);
-                }
+                });
+
+                lstPAFDeleteEvents.ForEach(postalAddress =>
+                {
+                    IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    msgBroker.SendMessage(msg);
+                });*/
             }
             catch (Exception)
             {

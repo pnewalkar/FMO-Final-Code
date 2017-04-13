@@ -1,3 +1,43 @@
-input{
-    background: red;
+@import './app/variables';
+
+.delivery{
+    @include font-color($red);
+    @include margin(0px -20px 0px 0px);
+}
+.postcode{
+    @include font-color($go-green);
+    @include margin(0px -20px 0px 0px);
+}
+.street{
+    @include font-color($dynamic-yellow);
+    @include margin(0px -20px 0px 0px);
+}
+.route{
+    @include font-color($clear-blue);
+    @include margin(0px -20px 0px 0px);
+}
+
+.searchBox{
+    @include position(absolute);
+    @include margin(-18px 0px 0px 0px);
+}
+
+.searchInput{
+    @extend %body-content;
+    @include background($white);
+    width: width-percent(1.25);
+    @include padding(8px 8px 8px 8px);
+}
+
+.searchContent{
+    @include background($white);
+    width: width-percent(1.25);
+}
+
+.searchData{
+    @extend %body-content;
+    @include background($white);
+    @include font-color($strong-grey);
+    @include margin(0px 0px 5px 0px);
+    @include padding(5px 5px 5px 5px);
 }

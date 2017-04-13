@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Fmo.DataServices.DBContext;
@@ -15,10 +16,23 @@
         {
         }
 
-        public List<DTO.ScenarioDTO> FetchScenario(int operationStateID, int deliveryUnitID)
+        /// <summary>
+        /// Fetch the Delivery Scenario by passing the operationstateID and deliveryUnitID.
+        /// </summary>
+        /// <param name="operationStateID">Guid</param>
+        /// <param name="deliveryUnitID">Guid</param>
+        /// <returns>List</returns>
+        public List<DTO.ScenarioDTO> FetchScenario(Guid operationStateID, Guid deliveryUnitID)
         {
-            IEnumerable<Scenario> result = DataContext.Scenarios.ToList().Where(x => x.OperationalState_Id == operationStateID && x.DeliveryUnit_Id == deliveryUnitID);
-            return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
+            try
+            {
+                IEnumerable<Scenario> result = DataContext.Scenarios.ToList().Where(x => x.OperationalState_GUID == operationStateID && x.DeliveryUnit_GUID == deliveryUnitID);
+                return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

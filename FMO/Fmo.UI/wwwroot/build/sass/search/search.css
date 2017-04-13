@@ -1,2 +1,39 @@
-input {
-  background: red; }
+.searchInput, .searchData {
+  color: #2a2a2d;
+  font-family: PF DIN;
+  font-size: 16px; }
+
+.delivery {
+  color: red;
+  margin: 0px -20px 0px 0px; }
+
+.postcode {
+  color: #62a531;
+  margin: 0px -20px 0px 0px; }
+
+.street {
+  color: #fdda24;
+  margin: 0px -20px 0px 0px; }
+
+.route {
+  color: #aadaea;
+  margin: 0px -20px 0px 0px; }
+
+.searchBox {
+  position: absolute;
+  margin: -18px 0px 0px 0px; }
+
+.searchInput {
+  background-color: #ffffff;
+  width: 80%;
+  padding: 8px 8px 8px 8px; }
+
+.searchContent {
+  background-color: #ffffff;
+  width: 80%; }
+
+.searchData {
+  background-color: #ffffff;
+  color: #53535a;
+  margin: 0px 0px 5px 0px;
+  padding: 5px 5px 5px 5px; }

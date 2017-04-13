@@ -1,6 +1,7 @@
 ﻿using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Fmo.Helpers
@@ -22,6 +23,17 @@ namespace Fmo.Helpers
                 throw new ArgumentException("Coordinates must have exactly 2 values");
             }
             coordinates = new double[][] { coords };
+        }
+
+        public Coordinates(List<double[]> coords)
+        {
+            double[][] newCoord = new double[coords.Count][];
+            for (int i = 0; i < coords.Count; i++)
+            {
+                newCoord[i] = coords[i];
+            }
+
+            coordinates = newCoord;
         }
 
         public Coordinates(double[][] coords)

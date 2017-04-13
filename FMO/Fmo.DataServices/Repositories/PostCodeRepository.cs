@@ -24,6 +24,7 @@
             try
             {
                 int takeCount = 5;
+                searchText = searchText ?? string.Empty;
                 var postCodeDetailsDto = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText))
                     .Take(takeCount)
                     .Select(l => new PostCodeDTO
@@ -46,6 +47,7 @@
         {
             try
             {
+                searchText = searchText ?? string.Empty;
                 return await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).CountAsync();
             }
             catch (Exception ex)

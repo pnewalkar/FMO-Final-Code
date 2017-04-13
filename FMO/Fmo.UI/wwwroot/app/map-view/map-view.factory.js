@@ -184,11 +184,11 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     function convertGeoJsonToOl(featureData, formatOptions) {
         var format = new ol.format.GeoJSON();
 
-        if (!formatOptions) {
-            formatOptions = {
-                featureProjection: map.getView().getProjection()
-            };
-        }
+        //if (!formatOptions) {
+        //    formatOptions = {
+        //        featureProjection: map.getView().getProjection()
+        //    };
+        //}
 
         return format.readFeatures(featureData, formatOptions);
     }
@@ -232,11 +232,11 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     function convertGeoJsonToOl(featureData, formatOptions) {
         var format = new ol.format.GeoJSON();
 
-        if (!formatOptions) {
-            formatOptions = {
-                featureProjection: map.getView().getProjection()
-            };
-        }
+        //if (!formatOptions) {
+        //    formatOptions = {
+        //        featureProjection: map.getView().getProjection()
+        //    };
+        //}
 
         return format.readFeatures(featureData, formatOptions);
     }

@@ -11,14 +11,14 @@ namespace Fmo.Helpers
     public class Geometry
     {
         public string type { get; set; } = "Point";
-        public object coordinates { get; set; }
+        public Coordinates coordinates { get; set; }
 
         public JObject getJson()
         {
             var obj = new JObject();
 
             obj.Add("type", type);
-            //obj.Add("coordinates", coordinates());
+            obj.Add("coordinates", coordinates.getJson());
 
             return obj;
         }

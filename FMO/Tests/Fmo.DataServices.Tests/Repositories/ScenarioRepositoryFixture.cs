@@ -7,6 +7,7 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -15,11 +16,13 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IScenarioRepository testCandidate;
+        private Guid deliveryUnitID = System.Guid.NewGuid();
+        private Guid operationalStateID = System.Guid.NewGuid();
 
         [Test]
         public void Test_FetchDeliveryScenario()
         {
-            var actualResult = testCandidate.FetchScenario(1, 1);
+            var actualResult = testCandidate.FetchScenario(operationalStateID, deliveryUnitID);
             Assert.IsNotNull(actualResult);
         }
 

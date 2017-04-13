@@ -24,42 +24,57 @@
             this.deliveryPointsRepository = deliveryPointsRepository;
         }
 
-        public object GetDeliveryPoints()
-        {
-            //object[] bboxArr = bbox.Split(',');
-            //return searchDeliveryPointsRepository.GetDeliveryPoints(bboxArr);
-
-            string str = File.ReadAllText(@"D:\Richa\FMO-AD\FMO\Fmo.DataServices\TestData\deliveryPoint.json");
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            return js.Deserialize(str, typeof(object));
-
-            //MemoryStream deliveryPoints = this.deliveryPointsRepository.GetDeliveryPoints();
-
-            //var result = new HttpResponseMessage(HttpStatusCode.OK)
-            //{
-            //    Content = new StreamContent(deliveryPoints)
-            //};
-
-            //result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            //result.Content.Headers.ContentLength = deliveryPoints.Length;
-            //return result;
-
-        }
-
-        public DeliveryPointDTO GetDeliveryPoints1(string bbox)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="boundarybox"></param>
+        /// <returns></returns>
+        public string GetDeliveryPoints(string boundarybox)
         {
             try
             {
-                object[] bboxArr = bbox.Split(',');
-                var coordinates = GetData(null, bboxArr);
-                List<DeliveryPointDTO> lst = deliveryPointsRepository.GetDeliveryPoints1(coordinates);
-                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
+                var coordinates = GetData(null, boundarybox.Split(','));
+                return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="udprn"></param>
+        /// <returns></returns>
+        public string GetDeliveryPointByUDPRN(int udprn)
+        {
+            try
+            {
+                return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPointListByUDPRN(udprn));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lstDeliveryPointDTO"></param>
+        /// <returns></returns>
+        private string GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
+        {
+            string jsonData = string.Empty;
+            if (lstDeliveryPointDTO != null && lstDeliveryPointDTO.Count > 0)
+            {
                 var geoJson = new GeoJson
                 {
                     features = new List<Feature>()
                 };
 
-                foreach (var point in lst)
+                foreach (var point in lstDeliveryPointDTO)
                 {
                     SqlGeometry sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
 
@@ -82,31 +97,30 @@
                     geoJson.features.Add(feature);
                 }
 
-                var resultBytes = System.Text.Encoding.UTF8.GetBytes(geoJson.getJson().ToString());
-
-                MemoryStream mStream = new MemoryStream(resultBytes);
-                var result = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StreamContent(mStream)
-                };
-
-                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                result.Content.Headers.ContentLength = mStream.Length;
-                return deliveryPointDTO;
+                jsonData = geoJson.getJson().ToString();
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return jsonData;
         }
 
-        public string GetData(string query, params object[] parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private string GetData(string query, params object[] parameters)
         {
-            string x1 = Convert.ToString(parameters[0]);
-            string y1 = Convert.ToString(parameters[1]);
-            string x2 = Convert.ToString(parameters[2]);
-            string y2 = Convert.ToString(parameters[3]);
-            string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
+            string coordinates = string.Empty;
+
+            if (parameters != null && parameters.Length == 4)
+            {
+                coordinates = "POLYGON((" + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + ", "
+                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[3]) + ", "
+                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[3]) + ", "
+                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[1]) + ", "
+                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + "))";
+            }
 
             return coordinates;
         }

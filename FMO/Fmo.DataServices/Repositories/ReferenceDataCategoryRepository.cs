@@ -18,15 +18,21 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
+        /// <summary>
+        ///  Retreive GUID for specified category
+        /// </summary>
+        /// <param name="strCategoryname">categoryname</param>
+        /// <param name="strRefDataName">Reference data Name</param>
+        /// <returns>GUID</returns>
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
             Guid statusId = Guid.Empty;
-            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (result != null)
             {
                 if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
                 {
-                    var referenceData = result.ReferenceDatas.Where(n => n.DataDescription.Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    var referenceData = result.ReferenceDatas.Where(n => n.DataDescription.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                     if (referenceData != null)
                     {
                         statusId = referenceData.ID;
@@ -37,16 +43,27 @@ namespace Fmo.DataServices.Repositories
             return statusId;
         }
 
+        /// <summary>
+        /// Fetch the Route log status.
+        /// </summary>
+        /// <returns>List</returns>
         public List<ReferenceDataDTO> RouteLogStatus()
         {
-            List<ReferenceDataDTO> lstReferenceDt = null;
-            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals("Delivery Unit Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-            if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+            try
             {
-                lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
-            }
+                List<ReferenceDataDTO> lstReferenceDt = null;
+                var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals("Delivery Point Operational Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+                {
+                    lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
+                }
 
-            return lstReferenceDt;
+                return lstReferenceDt;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
