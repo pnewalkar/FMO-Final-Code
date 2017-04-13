@@ -15,9 +15,14 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.isDeliveryRouteDisabled = true;
     vm.selectedDeliveryRoute;
     vm.deliveryRoute = null;
+   
     vm.selectedVegetables;
     vm.searchTerm;
+   
+    function selectionTypeChange()
+    {
 
+    }
     function loadSelectionType()
     {
         routeLogAPIService.getSelectionType().then(function (response) {
@@ -64,4 +69,5 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     function clearSearchTerm () {
         vm.searchTerm = '';
     };
+    
 }
