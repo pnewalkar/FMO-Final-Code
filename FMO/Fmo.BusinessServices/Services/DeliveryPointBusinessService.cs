@@ -45,6 +45,23 @@
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="udprn"></param>
+        /// <returns></returns>
+        public string GetDeliveryPointByUDPRN(int udprn)
+        {
+            try
+            {
+                return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPointListByUDPRN(udprn));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="lstDeliveryPointDTO"></param>
         /// <returns></returns>
         private string GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)

@@ -125,7 +125,8 @@ namespace Fmo.DataServices.Repositories
                         SubBuildingName = l.PostalAddress.SubBuildingName,
                         BuildingNumber = l.PostalAddress.BuildingNumber,
                         Thoroughfare = l.PostalAddress.Thoroughfare,
-                        DependentLocality = l.PostalAddress.DependentLocality
+                        DependentLocality = l.PostalAddress.DependentLocality,
+                        UDPRN = l.UDPRN
                     }
                 })
                 .Take(takeCount)
@@ -195,6 +196,22 @@ namespace Fmo.DataServices.Repositories
             {
                 throw;
             }
+        }
+
+        public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
+        {
+            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+
+            return deliveryPointDto;
         }
 
     }

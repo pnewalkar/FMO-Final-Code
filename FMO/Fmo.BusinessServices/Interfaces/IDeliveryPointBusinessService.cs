@@ -13,5 +13,7 @@
     public interface IDeliveryPointBusinessService
     {
         string GetDeliveryPoints(string boundarybox);
+
+        string GetDeliveryPointByUDPRN(int udprn);
     }
 }
