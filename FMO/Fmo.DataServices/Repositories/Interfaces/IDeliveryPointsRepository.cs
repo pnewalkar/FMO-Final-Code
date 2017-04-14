@@ -32,5 +32,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
 
         bool DeliveryPointExists(int uDPRN);
 
+        double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint);
+
     }
 }
