@@ -60,9 +60,9 @@ md-dialog h2 {
   color: #2a2a2d;
   margin: 10px 0px 20px 0px; }
 
-md-select {
-  width: 110px; }
-
+/*md-select {
+  @include width(110px);
+}*/
 .routeLogDialog {
   width: 58.82353%;
   height: 100%; }
