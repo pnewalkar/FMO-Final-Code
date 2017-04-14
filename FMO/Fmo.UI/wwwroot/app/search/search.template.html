@@ -1,6 +1,6 @@
 <div class="searchBox">
-    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" placeholder="Search" ng-enter="vm.presEnter(vm.searchText)" />
-    <i class="fa fa-search" aria-hidden="true" ng-click="vm.presEnter(vm.searchText)"></i>
+    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.onEnterKeypress(vm.searchText)" />
+    <i class="fa fa-search" aria-hidden="true" ng-click="vm.onEnterKeypress(vm.searchText)"></i>
     <div class="searchContent" md-whiteframe="3dp">
         <ul ng-repeat="item in vm.results | limitTo:5">
             <li class="searchData">
@@ -13,7 +13,7 @@
                     </span>
                     <span ng-show="item.type!='Warning'">
                         {{ item.displayText | limitTo: 30 }}
-                        <i ng-show="item.displayText.length >= 30" class="fa fa-angle-right" aria-hidden="true"></i>
+                        <i ng-show="item.displayText.length >= 30" class="fa fa-angle-right searchRight" aria-hidden="true"></i>
                     </span>
                     <span ng-show="item.type=='Warning'"> {{ item.displayText }}</span>
                 </a>
