@@ -13,7 +13,7 @@
                     </span>
                     <span ng-show="item.type!='Warning'">
                         {{ item.displayText | limitTo: 30 }}
-                        <i ng-show="item.displayText.length >= 30" class="fa fa-angle-right" aria-hidden="true"></i>
+                        <i ng-show="item.displayText.length >= 30" class="fa fa-angle-right searchRight" aria-hidden="true"></i>
                     </span>
                     <span ng-show="item.type=='Warning'"> {{ item.displayText }}</span>
                 </a>
