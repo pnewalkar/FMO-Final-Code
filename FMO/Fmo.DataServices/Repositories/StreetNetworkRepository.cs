@@ -23,10 +23,10 @@
         {
             try
             {
-                var streetNames = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)).ToListAsync();
+                var streetNames = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)).Take(10).ToListAsync();
 
-                var result = await DataContext.StreetNames.ToListAsync();
-                return GenericMapper.MapList<StreetName, StreetNameDTO>(result);
+              //  var result = await DataContext.StreetNames.ToListAsync();
+                return GenericMapper.MapList<StreetName, StreetNameDTO>(streetNames);
             }
             catch (Exception ex)
             {

@@ -60,19 +60,20 @@
             {
                 features = new List<Feature>()
             };
-
-            foreach (var res in lstAccessLinkDTO)
+            if (lstAccessLinkDTO != null && lstAccessLinkDTO.Count > 0)
             {
-                Geometry geometry = new Geometry();
-
-                geometry.type = res.AccessLinkLine.SpatialTypeName;
-
-                var resultCoordinates = res.AccessLinkLine;
-
-                SqlGeometry sqlGeo = null;
-                if (geometry.type == "LineString")
+                foreach (var res in lstAccessLinkDTO)
                 {
-                    sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    Geometry geometry = new Geometry();
+
+                    geometry.type = res.AccessLinkLine.SpatialTypeName;
+
+                    var resultCoordinates = res.AccessLinkLine;
+
+                    SqlGeometry sqlGeo = null;
+                    if (geometry.type == "LineString")
+                    {
+                        sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
 
                     List<List<double>> cords = new List<List<double>>();
 
@@ -92,14 +93,15 @@
                     geometry.coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
                 }
 
-                Feature feature = new Feature();
-                feature.geometry = geometry;
+                    Feature feature = new Feature();
+                    feature.geometry = geometry;
 
-                feature.type = "Feature";
-                feature.id = res.AccessLink_Id;
-                feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+                    feature.type = "Feature";
+                    feature.id = res.AccessLink_Id;
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
 
-                geoJson.features.Add(feature);
+                    geoJson.features.Add(feature);
+                }
             }
 
             //accessLinkDTOCollectionObj.features = lstFeatures;

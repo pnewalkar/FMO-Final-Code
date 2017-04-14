@@ -2,12 +2,14 @@
 angular.module('search')
    .controller('SearchController', SearchController);
 
-function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory) {
+function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService, $mdDialog, $stateParams) {
     var vm = this;
 
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
     vm.OnChangeItem = OnChangeItem;
+    vm.advanceSearch = advanceSearch;
+    vm.openModalPopup = openModalPopup;
 
     function querySearch(query) {
         searchApiService.basicSearch(query).then(function (response) {
@@ -45,4 +47,24 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
             $state.go('searchDetails', { selectedItem: selectedItem });
         }
     }
+
+    function advanceSearch(query) {
+        debugger;
+        $stateParams.data = query;
+        var state = $stateParams;
+        var advaceSearchTemplate = advanceSearchService.advanceSearch(query);
+        vm.openModalPopup(advaceSearchTemplate);
+      //  vm.openModalPopup("Test");
+    }
+
+    function openModalPopup(modalSetting) {
+        //var state = $stateParams;
+        //var setting = routeLogService.routeLog(selectedUnit);
+        //debugger;
+        var popupSetting = modalSetting;
+        $mdDialog.show(popupSetting);
+      
+    };
+
+    
 }

@@ -23,7 +23,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("DeliveryUnit")]
         public List<DeliveryUnitLocationDTO> DeliveryUnit()
         {
-            return deliveryRouteBusinessService.FetchDeliveryUnit();
+            return new List<DeliveryUnitLocationDTO>();//deliveryRouteBusinessService.FetchDeliveryUnit();
         }
 
 
