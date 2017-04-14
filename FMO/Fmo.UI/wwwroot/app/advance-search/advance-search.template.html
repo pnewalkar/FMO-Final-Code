@@ -1,10 +1,10 @@
-﻿<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
-    <div layout="column" class="advanceSearch">
-        <section layout="row">
+<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
+    <div layout="column" class="md-padding">
+        <section layout="row" class="advSection">
             <input type="text" placeholder="vm.searchText" ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text">
             <md-button class="md-raised md-primary" flex="10" ng-click="vm.queryAdvanceSearch(vm.searchText)">search</md-button>
         </section>
-        <section>
+        <section class="advSection">
             <md-checkbox ng-model="ck1" ng-checked="vm.chkRoute" aria-label="Checkbox 1">
                 Route
             </md-checkbox>
@@ -27,7 +27,7 @@
                 Hazard
             </md-checkbox>
         </section>
-        <section layout="row">
+        <section layout="row" class="advSection">
             <div layout-align="start start">
                 <md-button class="md-raised md-primary" ng-click="toggleList(false)">Collapse All</md-button>
                 <md-button class="md-raised md-primary" ng-click="toggleList(true)">Expand All</md-button>

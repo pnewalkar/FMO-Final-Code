@@ -4,12 +4,13 @@
     @include background($recess-grey);
     @include border($black);
     @include float(right);
+    border:1px solid black;
 }
 
 #tbody{
     @include background($white);
-    @include width(400px);
-    height:80px;
+    @include width(550px);
+    height:150px;
     overflow-y:auto;
 }
 
@@ -25,14 +26,14 @@ td{
 } 
 .td1{
     @extend %body-content;
-    @include width(100px);
+    @include width(250px);
 }
 .td2{
     @extend %body-content;
     @include width(140px);
 }
 #header{
-    @include width(400px);
+    @include width(550px);
     @include background($recess-grey);
     @include border-bottom(1px solid $recess-grey);
 }
@@ -43,7 +44,7 @@ td{
 }
 #header #head1{
     @extend %header-content;
-    @include width(100px);
+    @include width(250px);
 } /* the same as td1 */
 #header #head2{
     @extend %header-content;
@@ -59,4 +60,41 @@ md-dialog h2{
     @extend %header-content;
     color: $black;
     @include margin(10px 0px 20px 0px);
+}
+
+/*md-select {
+  @include width(110px);
+}*/
+
+.routeLogDialog {
+  width: width-percent(1.7);
+  height: 100%;
+}
+
+.routeSelect {
+  width: width-percent(1);
+  }
+
+.routeSelectSearch {
+    width: width-percent(1.03);
+    @include background(none);
+    @include padding(0px 0px 0px 0px);
+    outline: none;
+    height: 100%;
+}
+
+md-switch.md-checked .md-bar {
+    background-color: rgb(209,98,104);
+}
+
+md-switch.md-checked .md-thumb {
+    background-color: rgb(218,32,42);
+}
+
+.md-text, label{
+    @extend %body-content;
+}
+
+.routeSearch{
+    width:97%;
 }

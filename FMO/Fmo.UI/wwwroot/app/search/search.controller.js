@@ -15,7 +15,6 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
         searchApiService.basicSearch(query).then(function (response) {
             self.resultscount = response.data.searchCounts;
             self.results = response.data.searchResultItems
-            $state.go('searchDetails', { selectedItem: self.results });
         });
     }
 
@@ -41,35 +40,10 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
 
     function OnChangeItem(selectedItem) {
         if (selectedItem.type === "DeliveryPoint") {
-            mapFactory.getShapeAsync('http://localhost:34583/api/deliveryPoints/GetDeliveryPointByUDPRN?udprn=' + selectedItem.udprn)
-                .then(function (response) {
-                    var data = response.data;
-
-                    //var vectorSource = new ol.source.Vector({});
-                    //var map = new ol.Map({
-                    //    layers: [
-                             
-                    //        new ol.layer.Vector({
-                    //            source: vectorSource
-                    //        })
-                    //    ],
-                    //    target: 'map',
-                    //    view: new ol.View({
-                    //        center: [-11000000, 4600000],
-                    //        zoom: 4
-                    //    })
-                    //});
-                    //var thing = new ol.geom.Polygon(ol.proj.transform([-16, -22], 'EPSG:4326', 'EPSG:3857'),
-                    //                                ol.proj.transform([-44, -55], 'EPSG:4326', 'EPSG:3857'),
-                    //                                ol.proj.transform([-88, 75], 'EPSG:4326', 'EPSG:3857'));
-
-                    //var featurething = new ol.Feature({
-                    //    name: "Thing",
-                    //    geometry: thing
-                    //});
-
-                    //vectorSource.addFeature(featurething);
-            });
+            //mapFactory.getShapeAsync('http://localhost:34583/api/deliveryPoints/GetDeliveryPointByUDPRN?udprn=' + selectedItem.udprn)
+            //    .then(function (response) {
+            //        var data = response.data;
+            //});
             $state.go('searchDetails', { selectedItem: selectedItem });
         }
     }

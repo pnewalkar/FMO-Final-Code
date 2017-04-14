@@ -48,7 +48,7 @@ namespace Fmo.BusinessServices.Services
                     searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = postcode.PostcodeUnit, Type = SearchBusinessEntityType.Postcode });
                 }
 
-                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = postcodes.Count, Type = SearchBusinessEntityType.Postcode });
+                // searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = postcodes.Count, Type = SearchBusinessEntityType.Postcode });
 
                 // streetNames
                 foreach (var streetName in streetNames)
@@ -63,7 +63,7 @@ namespace Fmo.BusinessServices.Services
                     });
                 }
 
-                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
+                // searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
 
                 // deliveryPoints
                 foreach (var deliveryPoint in deliveryPoints)
@@ -83,7 +83,7 @@ namespace Fmo.BusinessServices.Services
                     });
                 }
 
-                searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
+                // searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
 
                 // deliveryRoutes
                 foreach (var deliveryRoute in deliveryRoutes)
