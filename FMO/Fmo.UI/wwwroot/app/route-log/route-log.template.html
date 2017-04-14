@@ -31,7 +31,7 @@
           		<label>Route</label>
           		<md-select ng-model="vm.selectedDeliveryRoute"  ng-disabled="vm.isDeliveryRouteDisabled"  class="routeSelect" >
             		<md-select-header >
-                        <input ng-model="searchTerm" type="search" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="demo-header-searchbox md-text">
+                        <input ng-model="searchTerm" type="search" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="md-text routeSearch">
             	</md-select-header>
               	<md-option ng-value="route" ng-repeat="routeType in vm.deliveryRoute | filter:searchTerm">{{routeType.routeName}} ({{routeType.routeNumber}})</md-option>	
           		</md-select>

@@ -16,11 +16,11 @@
 
     <md-input-container>
         <label>Route</label>
-        <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" data-md-container-class="selectdemoSelectHeader">
-            <md-select-header class="demo-select-header">
-                <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="demo-header-searchbox md-text">
+        <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables">
+            <md-select-header>
+                <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
             </md-select-header>
-            <md-optgroup label="vegetables">
+            <md-optgroup>
                 <md-option ng-value="route" ng-repeat="route in vm.deliveryRoute | filter:vm.searchTerm | orderBy : 'routeName' ">{{route.routeName}}</md-option>
             </md-optgroup>
         </md-select>
