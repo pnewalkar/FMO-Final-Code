@@ -1,4 +1,4 @@
-<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
+﻿<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
     <div layout="column" class="md-padding">
         <section layout="row" class="advSection">
             <input type="text" placeholder="vm.searchText" ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text">
@@ -40,6 +40,18 @@
         </section>
 
 
+        <!--<section ng-repeat="route in vm.arrRoutes"  class="advSecList">
+            <div   class="advSecItem">
+                <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
+                <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
+                {{route.type}} ({{route.name.length}})
+            </div>
+
+            <ul ng-repeat="subitem in route.name" ng-show="show">
+                <li> <a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></li>
+            </ul>
+        </section>--> 
+
         <section ng-repeat="route in vm.arrRoutes" class="advSecList">
             <div ng-click="show = !show" class="advSecItem">
                 <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
@@ -51,41 +63,6 @@
                 <li> <a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></li>
             </ul>
         </section> 
-        <!--<section>
-            <div ng-repeat="route in vm.results.searchCounts" ng-click="show = !show" ng-if="route.count!=0">
-                <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
-                <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
-                <span>({{vm.results.searchResultItems.length}})</span>
-
-                <ul ng-repeat="subitem in  vm.results.searchResultItems">
-                    <li> {{subitem.displayText}}</li>
-                </ul>
-            </div>
-
-
-        </section>-->
-        <!--<section ng-repeat="route in vm.arrRoutes">
-            <div ng-click="show = !show">
-                <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
-                <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
-                {{route.type}} ({{vm.arrRoutes.length}})
-            </div>
-
-            <ul ng-repeat="subitem in route.name">
-                <li ng-show="subitem.type!=0"> {{subitem.name}}</li>
-            </ul>
-        </section>-->
+     
     </div>
 </md-dialog>
-<!--<section ng-repeat="(key, value) in vm.results.searchResultItems | groupBy: 'vm.results.searchResultItems.type'">
-    <div ng-click="show = !show">
-        <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
-        <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
-        <span>Group name: {{ key }}</span>
-        
-    </div>
-
-    <ul ng-repeat="subitem in value">
-        <li ng-show="subitem.type!=0"> {{subitem.displayText}}</li>
-    </ul>
-</section>-->
