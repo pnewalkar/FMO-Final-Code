@@ -84,7 +84,7 @@
 
                     await addressLocationRepository.SaveNewAddressLocation(newAddressLocationDTO);
 
-                    if (!deliveryPointsRepository.DeliveryPointExists((int)fileUdprn))
+                    if (deliveryPointsRepository.DeliveryPointExists((int)fileUdprn))
                     {
 
                         DeliveryPointDTO deliveryPointDTO = deliveryPointsRepository.GetDeliveryPointByUDPRN((int)fileUdprn);
@@ -111,13 +111,14 @@
                         }
                         else
                         {
-                           double straightLineDistance = (double)deliveryPointDTO.LocationXY.Distance(spatialLocationXY);
+                           var straightLineDistance = deliveryPointsRepository.GetDeliveryPointDistance(deliveryPointDTO, spatialLocationXY);
                             if (straightLineDistance < Constants.TOLERANCE_DISTANCE_IN_METERS)
                             {
                                 Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORK_LINK_DATA_PROVIDER, Constants.EXTERNAL);
 
                                 DeliveryPointDTO newDeliveryPoint = new DeliveryPointDTO
                                 {
+                                    UDPRN = fileUdprn,
                                     Latitude = addressLocationUSRPOSTDTO.latitude,
                                     Longitude = addressLocationUSRPOSTDTO.longitude,
                                     LocationXY = spatialLocationXY,

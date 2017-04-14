@@ -44,5 +44,5 @@
 }
 
 .levelDanger{
-    @include background($red);
+    @include background(rgba(255, 0, 0, 0.61));
 }

@@ -164,7 +164,7 @@ namespace Fmo.NYBLoader
 
                 return lstUSRFiles;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
                 throw ;
