@@ -60,3 +60,32 @@ md-dialog h2{
     color: $black;
     @include margin(10px 0px 20px 0px);
 }
+
+md-select {
+  @include width(110px);
+}
+
+.routeLogDialog {
+  width: width-percent(1.7);
+  height: 100%;
+}
+
+.routeSelect {
+  width: width-percent(1);
+}
+
+.routeSelectSearch {
+    width: width-percent(1.03);
+    @include background(none);
+    @include padding(0px 0px 0px 0px);
+    outline: none;
+    height: 100%;
+}
+
+md-switch.md-checked .md-bar {
+    background-color: rgb(209,98,104);
+}
+
+md-switch.md-checked .md-thumb {
+    background-color: rgb(218,32,42);
+}

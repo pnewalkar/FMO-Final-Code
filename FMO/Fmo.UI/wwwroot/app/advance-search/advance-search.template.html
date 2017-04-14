@@ -1,33 +1,33 @@
-﻿<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
-    <div layout="column" class="advanceSearch">
-        <section layout="row">
+<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
+    <div layout="column" class="md-padding">
+        <section layout="row" class="advSection">
             <input type="text" placeholder="search" class="searchbox md-text">
             <md-button class="md-raised md-primary" flex="10">search</md-button>
         </section>
-        <section>
+        <section class="advSection">
             <md-checkbox ng-model="ck1" aria-label="Checkbox 1">
-                Route
+                <span>Route</span>
             </md-checkbox>
             <md-checkbox ng-model="ck2" aria-label="Checkbox 1">
-                Postcode
+                <span>Postcode</span>
             </md-checkbox>
             <md-checkbox ng-model="ck3" aria-label="Checkbox 1">
-                Delivery Point
+                <span>Delivery Point</span>
             </md-checkbox>
             <md-checkbox ng-model="ck4" aria-label="Checkbox 1">
-                Collection Point
+                <span>Collection Point</span>
             </md-checkbox>
             <md-checkbox ng-model="ck5" aria-label="Checkbox 1">
-                Street Network
+                <span>Street Network</span>
             </md-checkbox>
             <md-checkbox ng-model="ck6" aria-label="Checkbox 1">
-                Group
+                <span>Group</span>
             </md-checkbox>
             <md-checkbox ng-model="ck7" aria-label="Checkbox 1">
-                Hazard
+                <span>Hazard</span>
             </md-checkbox>
         </section>
-        <section layout="row">
+        <section layout="row" class="advSection">
             <div layout-align="start start">
                 <md-button class="md-raised md-primary">Collapse All</md-button>
                 <md-button class="md-raised md-primary">Expand All</md-button>
@@ -38,8 +38,8 @@
                 <md-button class="md-raised md-primary">Deselect All</md-button>
             </div>
         </section>
-        <section ng-repeat="route in routes">
-            <div ng-click="show = !show">
+        <section ng-repeat="route in routes" class="advSecList">
+            <div ng-click="show = !show" class="advSecItem">
                 <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
                 <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
                 {{route.type}} ({{route.name.length}})
