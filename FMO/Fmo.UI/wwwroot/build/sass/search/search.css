@@ -1,23 +1,19 @@
-.searchInput, .searchData {
+.searchInput, .searchData span, button.viewResult, button.noResult, .viewResult a, .searchContext h1, .searchContext span {
   color: #2a2a2d;
   font-family: PF DIN;
   font-size: 16px; }
 
-.delivery {
-  color: red;
-  margin: 0px -20px 0px 0px; }
+i.fa.fa-map-marker.delivery {
+  color: red; }
 
-.postcode {
-  color: #62a531;
-  margin: 0px -20px 0px 0px; }
+i.fa.fa-map-marker.postcode {
+  color: #62a531; }
 
-.street {
-  color: #fdda24;
-  margin: 0px -20px 0px 0px; }
+i.fa.fa-map-marker.street {
+  color: #fdda24; }
 
-.route {
-  color: #aadaea;
-  margin: 0px -20px 0px 0px; }
+i.fa.fa-map-marker.route {
+  color: #aadaea; }
 
 .searchBox {
   position: absolute;
@@ -25,19 +21,50 @@
 
 .searchInput {
   background-color: #ffffff;
-  width: 80%;
+  width: 235px;
   padding: 8px 8px 8px 8px;
-  border-radius: 35px; }
+  border-radius: 35px;
+  border: none; }
 
 .searchContent {
   background-color: #ffffff;
-  width: 80%; }
+  /*width: width-percent(1.05);*/
+  margin-top: 16px; }
 
 .searchData {
   background-color: #ffffff;
   color: #53535a;
   margin: 0px 0px 5px 0px;
-  padding: 5px 5px 5px 5px; }
+  padding: 5px 5px 5px 5px;
+  border-bottom: 1px solid grey; }
 
 i.fa.fa-search {
   font-size: 25px; }
+
+button.viewResult {
+  width: 264px;
+  padding: 3px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  margin-top: -5px; }
+
+button.noResult {
+  width: 264px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  margin-top: -5px; }
+
+i.fa.fa-angle-double-right {
+  color: black;
+  margin-left: 102px; }
+
+.viewResult a {
+  float: left; }
+
+i.fa.fa-angle-right {
+  color: black;
+  float: right;
+  margin-right: 10px; }
+
+.searchContext span {
+  margin: 15px 0px 10px 15px; }
