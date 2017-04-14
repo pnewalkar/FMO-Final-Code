@@ -9,7 +9,7 @@ using Fmo.MappingConfiguration;
 
 namespace Fmo.DataServices.Repositories
 {
-    public class DeliveryUnitLocationRespository : RepositoryBase<DeliveryUnitLocation, FMODBContext>, IDeliveryUnitLocationRepository
+    public class DeliveryUnitLocationRespository : RepositoryBase<UnitLocation, FMODBContext>, IDeliveryUnitLocationRepository
     {
         public DeliveryUnitLocationRespository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
@@ -24,8 +24,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var result = DataContext.DeliveryUnitLocations.ToList();
-                return GenericMapper.MapList<DeliveryUnitLocation, DeliveryUnitLocationDTO>(result.ToList());
+                var result = DataContext.UnitLocations.ToList();
+                return GenericMapper.MapList<UnitLocation, DeliveryUnitLocationDTO>(result.ToList());
             }
             catch (System.Exception ex)
             {

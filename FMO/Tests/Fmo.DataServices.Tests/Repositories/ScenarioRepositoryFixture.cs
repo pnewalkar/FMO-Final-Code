@@ -30,7 +30,7 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             var deliveryScenario = new List<Scenario>()
             {
-                new Scenario() { OperationalState_Id = 1, DeliveryScenario_Id = 1 }
+                new Scenario() { OperationalState_Id = 1, ID = Guid.NewGuid() }
             };
 
             var mocdeliveryScenarioDBSet = MockDbSet(deliveryScenario);

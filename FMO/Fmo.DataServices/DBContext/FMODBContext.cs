@@ -11,126 +11,66 @@ namespace Fmo.DataServices.DBContext
         }
 
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
-
         public virtual DbSet<Action> Actions { get; set; }
-
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
-
         public virtual DbSet<AMUChangeRequest> AMUChangeRequests { get; set; }
-
         public virtual DbSet<AreaHazard> AreaHazards { get; set; }
-
         public virtual DbSet<Block> Blocks { get; set; }
-
         public virtual DbSet<BlockSequence> BlockSequences { get; set; }
-
         public virtual DbSet<CollectionRoute> CollectionRoutes { get; set; }
-
         public virtual DbSet<DeliveryGroup> DeliveryGroups { get; set; }
-
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
-
         public virtual DbSet<DeliveryRoute> DeliveryRoutes { get; set; }
-
         public virtual DbSet<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }
-
         public virtual DbSet<DeliveryRouteBlock> DeliveryRouteBlocks { get; set; }
-
         public virtual DbSet<DeliveryRouteNetworkLink> DeliveryRouteNetworkLinks { get; set; }
-
-        public virtual DbSet<DeliveryUnitLocation> DeliveryUnitLocations { get; set; }
-
-        public virtual DbSet<DeliveryUnitLocationPostcode> DeliveryUnitLocationPostcodes { get; set; }
-
-        public virtual DbSet<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }
-
         public virtual DbSet<Function> Functions { get; set; }
-
         public virtual DbSet<GroupHazard> GroupHazards { get; set; }
-
         public virtual DbSet<NetworkLink> NetworkLinks { get; set; }
-
         public virtual DbSet<NetworkLinkReference> NetworkLinkReferences { get; set; }
-
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
-
         public virtual DbSet<NetworkReference> NetworkReferences { get; set; }
-
         public virtual DbSet<Notification> Notifications { get; set; }
-
         public virtual DbSet<OSAccessRestriction> OSAccessRestrictions { get; set; }
-
         public virtual DbSet<OSConnectingLink> OSConnectingLinks { get; set; }
-
         public virtual DbSet<OSConnectingNode> OSConnectingNodes { get; set; }
-
         public virtual DbSet<OSPathLink> OSPathLinks { get; set; }
-
         public virtual DbSet<OSPathNode> OSPathNodes { get; set; }
-
         public virtual DbSet<OSRestrictionForVehicle> OSRestrictionForVehicles { get; set; }
-
         public virtual DbSet<OSRoadLink> OSRoadLinks { get; set; }
-
         public virtual DbSet<OSRoadNode> OSRoadNodes { get; set; }
-
         public virtual DbSet<OSTurnRestriction> OSTurnRestrictions { get; set; }
-
         public virtual DbSet<POBox> POBoxes { get; set; }
-
         public virtual DbSet<PointHazard> PointHazards { get; set; }
-
         public virtual DbSet<Polygon> Polygons { get; set; }
-
         public virtual DbSet<PolygonObject> PolygonObjects { get; set; }
-
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
-
         public virtual DbSet<Postcode> Postcodes { get; set; }
-
         public virtual DbSet<PostcodeArea> PostcodeAreas { get; set; }
-
         public virtual DbSet<PostcodeDistrict> PostcodeDistricts { get; set; }
-
         public virtual DbSet<PostcodeSector> PostcodeSectors { get; set; }
-
         public virtual DbSet<ReferenceData> ReferenceDatas { get; set; }
-
         public virtual DbSet<ReferenceDataCategory> ReferenceDataCategories { get; set; }
-
         public virtual DbSet<RMGDeliveryPoint> RMGDeliveryPoints { get; set; }
-
         public virtual DbSet<RMGLink> RMGLinks { get; set; }
-
         public virtual DbSet<RMGNode> RMGNodes { get; set; }
-
         public virtual DbSet<RoadName> RoadNames { get; set; }
-
         public virtual DbSet<Role> Roles { get; set; }
-
         public virtual DbSet<RoleFunction> RoleFunctions { get; set; }
-
         public virtual DbSet<Scenario> Scenarios { get; set; }
-
         public virtual DbSet<SpecialInstruction> SpecialInstructions { get; set; }
-
         public virtual DbSet<StreetName> StreetNames { get; set; }
-
         public virtual DbSet<StreetNameNetworkLink> StreetNameNetworkLinks { get; set; }
-
+        public virtual DbSet<UnitLocation> UnitLocations { get; set; }
+        public virtual DbSet<UnitLocationPostcode> UnitLocationPostcodes { get; set; }
+        public virtual DbSet<UnitPostcodeSector> UnitPostcodeSectors { get; set; }
         public virtual DbSet<User> Users { get; set; }
-
         public virtual DbSet<UserRoleUnit> UserRoleUnits { get; set; }
-
-        public virtual DbSet<OSConnectingLink_Temp> OSConnectingLink_Temp { get; set; }
-
-        public virtual DbSet<OSConnectingNode_temp> OSConnectingNode_temp { get; set; }
-
         public virtual DbSet<TempPostalAddress> TempPostalAddresses { get; set; }
 
-        public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
-
         public virtual DbSet<AccessFunction> AccessFunctions { get; set; }
+
+        public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -157,7 +97,7 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<Action>()
                 .HasMany(e => e.Functions)
                 .WithRequired(e => e.Action)
-                .HasForeignKey(e => e.ActionContextID)
+                .HasForeignKey(e => e.Action_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<AddressLocation>()
@@ -218,7 +158,7 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<BlockSequence>()
                 .Property(e => e.OrderIndex)
-                .HasPrecision(8, 8);
+                .HasPrecision(16, 8);
 
             modelBuilder.Entity<CollectionRoute>()
                 .Property(e => e.RouteName)
@@ -338,47 +278,6 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.LinkOrderIndex)
                 .HasPrecision(8, 8);
 
-            modelBuilder.Entity<DeliveryUnitLocation>()
-                .Property(e => e.ExternalId)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DeliveryUnitLocation>()
-                .Property(e => e.UnitName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DeliveryUnitLocation>()
-                .HasMany(e => e.Scenarios)
-                .WithOptional(e => e.DeliveryUnitLocation)
-                .HasForeignKey(e => e.DeliveryUnit_GUID);
-
-            modelBuilder.Entity<DeliveryUnitLocation>()
-                .HasMany(e => e.DeliveryUnitLocationPostcodes)
-                .WithRequired(e => e.DeliveryUnitLocation)
-                .HasForeignKey(e => e.DeliveryUnit_GUID)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<DeliveryUnitLocation>()
-                .HasMany(e => e.DeliveryUnitPostcodeSectors)
-                .WithRequired(e => e.DeliveryUnitLocation)
-                .HasForeignKey(e => e.DeliveryUnit_GUID)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<DeliveryUnitLocation>()
-                .HasMany(e => e.UserRoleUnits)
-                .WithRequired(e => e.DeliveryUnitLocation)
-                .HasForeignKey(e => e.UnitID)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<DeliveryUnitLocationPostcode>()
-                .Property(e => e.PostcodeUnit)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DeliveryUnitPostcodeSector>()
-                .Property(e => e.PostcodeSector)
-                .IsFixedLength()
-                .IsUnicode(false);
-
             modelBuilder.Entity<Function>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -390,6 +289,7 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<Function>()
                 .HasMany(e => e.RoleFunctions)
                 .WithRequired(e => e.Function)
+                .HasForeignKey(e => e.Function_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<GroupHazard>()
@@ -920,15 +820,15 @@ namespace Fmo.DataServices.DBContext
                 .HasForeignKey(e => e.RequestPostcode_GUID);
 
             modelBuilder.Entity<Postcode>()
-                .HasMany(e => e.DeliveryUnitLocationPostcodes)
-                .WithRequired(e => e.Postcode)
-                .HasForeignKey(e => e.PoscodeUnit_GUID)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Postcode>()
                 .HasMany(e => e.PostalAddresses)
                 .WithRequired(e => e.Postcode1)
                 .HasForeignKey(e => e.PostCodeGUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Postcode>()
+                .HasMany(e => e.UnitLocationPostcodes)
+                .WithRequired(e => e.Postcode)
+                .HasForeignKey(e => e.PoscodeUnit_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostcodeArea>()
@@ -969,15 +869,15 @@ namespace Fmo.DataServices.DBContext
                 .IsUnicode(false);
 
             modelBuilder.Entity<PostcodeSector>()
-                .HasMany(e => e.DeliveryUnitPostcodeSectors)
-                .WithRequired(e => e.PostcodeSector1)
-                .HasForeignKey(e => e.PostcodeSector_GUID)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<PostcodeSector>()
                 .HasMany(e => e.Postcodes)
                 .WithRequired(e => e.PostcodeSector)
                 .HasForeignKey(e => e.SectorGUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostcodeSector>()
+                .HasMany(e => e.UnitPostcodeSectors)
+                .WithRequired(e => e.PostcodeSector1)
+                .HasForeignKey(e => e.PostcodeSector_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
@@ -1102,12 +1002,6 @@ namespace Fmo.DataServices.DBContext
                 .HasForeignKey(e => e.ActivityType_GUID);
 
             modelBuilder.Entity<ReferenceData>()
-                .HasMany(e => e.DeliveryUnitPostcodeSectors)
-                .WithRequired(e => e.ReferenceData)
-                .HasForeignKey(e => e.DeliveryUnitStatus_GUID)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.GroupHazards)
                 .WithRequired(e => e.ReferenceData)
                 .HasForeignKey(e => e.Category_GUID)
@@ -1192,14 +1086,14 @@ namespace Fmo.DataServices.DBContext
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
-                .HasMany(e => e.Scenarios)
-                .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.OperationalState_GUID);
-
-            modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.ReferenceData1)
                 .WithOptional(e => e.ReferenceData2)
                 .HasForeignKey(e => e.DataParent_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.Scenarios)
+                .WithOptional(e => e.ReferenceData)
+                .HasForeignKey(e => e.OperationalState_GUID);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.SpecialInstructions)
@@ -1211,6 +1105,17 @@ namespace Fmo.DataServices.DBContext
                 .HasMany(e => e.SpecialInstructions1)
                 .WithOptional(e => e.ReferenceData1)
                 .HasForeignKey(e => e.InstructionType_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.UnitLocations)
+                .WithOptional(e => e.ReferenceData)
+                .HasForeignKey(e => e.LocationType_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.UnitPostcodeSectors)
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.UnitStatus_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceDataCategory>()
                 .Property(e => e.CategoryName)
@@ -1300,11 +1205,13 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<Role>()
                 .HasMany(e => e.RoleFunctions)
                 .WithRequired(e => e.Role)
+                .HasForeignKey(e => e.Role_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Role>()
                 .HasMany(e => e.UserRoleUnits)
                 .WithRequired(e => e.Role)
+                .HasForeignKey(e => e.Role_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Scenario>()
@@ -1391,6 +1298,47 @@ namespace Fmo.DataServices.DBContext
                 .IsFixedLength()
                 .IsUnicode(false);
 
+            modelBuilder.Entity<UnitLocation>()
+                .Property(e => e.ExternalId)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<UnitLocation>()
+                .Property(e => e.UnitName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<UnitLocation>()
+                .HasMany(e => e.Scenarios)
+                .WithOptional(e => e.UnitLocation)
+                .HasForeignKey(e => e.Unit_GUID);
+
+            modelBuilder.Entity<UnitLocation>()
+                .HasMany(e => e.UnitLocationPostcodes)
+                .WithRequired(e => e.UnitLocation)
+                .HasForeignKey(e => e.Unit_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<UnitLocation>()
+                .HasMany(e => e.UnitPostcodeSectors)
+                .WithRequired(e => e.UnitLocation)
+                .HasForeignKey(e => e.Unit_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<UnitLocation>()
+                .HasMany(e => e.UserRoleUnits)
+                .WithRequired(e => e.UnitLocation)
+                .HasForeignKey(e => e.Unit_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<UnitLocationPostcode>()
+                .Property(e => e.PostcodeUnit)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<UnitPostcodeSector>()
+                .Property(e => e.PostcodeSector)
+                .IsFixedLength()
+                .IsUnicode(false);
+
             modelBuilder.Entity<User>()
                 .Property(e => e.FirstName)
                 .IsUnicode(false);
@@ -1406,44 +1354,21 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<User>()
                 .HasMany(e => e.UserRoleUnits)
                 .WithRequired(e => e.User)
+                .HasForeignKey(e => e.User_GUID)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<OSConnectingLink_Temp>()
-                .Property(e => e.TOID)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<OSConnectingLink_Temp>()
-                .Property(e => e.ConnectingNodeTOID)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<OSConnectingLink_Temp>()
-                .Property(e => e.PathNodeTOID)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<OSConnectingNode_temp>()
-                .Property(e => e.TOID)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<OSConnectingNode_temp>()
-                .Property(e => e.RoadLinkTOID)
-                .IsFixedLength()
-                .IsUnicode(false);
+            modelBuilder.Entity<AccessFunction>()
+                    .Property(e => e.FunctionName)
+                    .IsUnicode(false);
 
             modelBuilder.Entity<AccessFunction>()
-                .Property(e => e.FunctionName)
-                .IsUnicode(false);
+                    .Property(e => e.ActionName)
+                    .IsUnicode(false);
 
             modelBuilder.Entity<AccessFunction>()
-                .Property(e => e.ActionName)
-                .IsUnicode(false);
+                    .Property(e => e.RoleName)
+                    .IsUnicode(false);
 
-            modelBuilder.Entity<AccessFunction>()
-                .Property(e => e.RoleName)
-                .IsUnicode(false);
         }
     }
 }
