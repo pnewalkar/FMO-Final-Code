@@ -3,11 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlTypes;
-    using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Web.Script.Serialization;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
@@ -25,11 +20,11 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="boundarybox"></param>
         /// <returns></returns>
-        public string GetDeliveryPoints(string boundarybox)
+        public object GetDeliveryPoints(string boundarybox)
         {
             try
             {
@@ -43,11 +38,11 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="udprn"></param>
         /// <returns></returns>
-        public string GetDeliveryPointByUDPRN(int udprn)
+        public object GetDeliveryPointByUDPRN(int udprn)
         {
             try
             {
@@ -64,16 +59,16 @@
         /// </summary>
         /// <param name="lstDeliveryPointDTO"></param>
         /// <returns></returns>
-        private string GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
+        private object GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
         {
             string jsonData = string.Empty;
+            var geoJson = new GeoJson
+            {
+                features = new List<Feature>()
+            };
+
             if (lstDeliveryPointDTO != null && lstDeliveryPointDTO.Count > 0)
             {
-                var geoJson = new GeoJson
-                {
-                    features = new List<Feature>()
-                };
-
                 foreach (var point in lstDeliveryPointDTO)
                 {
                     SqlGeometry sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
@@ -91,20 +86,18 @@
                     },
                         geometry = new Geometry
                         {
-                            coordinates = new Coordinates(sqlGeo)
+                            coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value }
                         }
                     };
                     geoJson.features.Add(feature);
                 }
-
-                jsonData = geoJson.getJson().ToString();
             }
 
-            return jsonData;
+            return geoJson;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="query"></param>
         /// <param name="parameters"></param>
