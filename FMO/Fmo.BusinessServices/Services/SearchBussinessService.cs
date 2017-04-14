@@ -27,6 +27,9 @@ namespace Fmo.BusinessServices.Services
         public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText)
         {
             try
+
+
+
             {
                 var deliveryRoutes = await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText).ConfigureAwait(false);
                 var deliveryRouteCount = await deliveryRouteRepository.GetDeliveryRouteCount(searchText).ConfigureAwait(false);

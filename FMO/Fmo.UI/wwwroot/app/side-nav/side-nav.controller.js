@@ -2,12 +2,12 @@ angular
     .module('sideNav')
     .controller("sideNavController",['$scope','$state','$stateParams','routeLogService','$mdSidenav','$mdDialog','advanceSearchService', sideNavController])
 
-function sideNavController($scope, $state, $stateParams,routeLogService, $mdSidenav, $mdDialog, advanceSearchService) {
+function sideNavController($scope, $state, $stateParams, routeLogService, $mdSidenav, $mdDialog, advanceSearchService) {
         vm = this;
         vm.routeLog =routeLog;
         vm.openModalPopup=openModalPopup;
-        vm.advanceSearch = advanceSearch;
-        vm.openAdvanceSearchPopup = openAdvanceSearchPopup;
+        //vm.advanceSearch = advanceSearch;
+        //vm.openAdvanceSearchPopup = openAdvanceSearchPopup;
         vm.closeSideNav = closeSideNav;
         vm.routeSimulation = routeSimulation;
         vm.selectedUnit = $stateParams;
@@ -30,16 +30,8 @@ function sideNavController($scope, $state, $stateParams,routeLogService, $mdSide
         $mdDialog.show(popupSetting)
     };
         
-        function advanceSearch() {
-            var advaceSearchTemplate = advanceSearchService.advanceSearch();
-            vm.openAdvanceSearchPopup(advaceSearchTemplate);
-            ///vm.openModalPopup("Test");
-        }
-
-        function openAdvanceSearchPopup(modalSetting) {
-            var popupSetting = modalSetting;
-            $mdDialog.show(popupSetting)
-        };
+     
+       
 
         function closeSideNav() {
             $mdSidenav('left').close();
