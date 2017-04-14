@@ -12,7 +12,8 @@ function AdvanceSearchController($scope, searchApiService) {
     vm.selectAll = selectAll;
     vm.deSelectAll = deSelectAll;
     var results = [];
-    vm.query = "roa";
+    vm.searchText;
+    vm.query = "road";
     vm.routeval = [];
     var searchCount = [];
     vm.searchCount = searchCount;
@@ -22,33 +23,22 @@ function AdvanceSearchController($scope, searchApiService) {
         debugger;
         console.log(vm.query);
         searchApiService.advanceSearch(vm.query).then(function (response) {
-           
+
             vm.results = response.data;
             vm.searchCount = vm.results.searchCounts;
-          
+
             vm.results.searchCounts.splice(-1, 1)
-           // vm.searchCount.remove('seven');
+            // vm.searchCount.remove('seven');
             console.log(vm.results.searchCounts);
-            vm.searchItem=results.searchResultItems;
-            for (var i = 0; i < vm.results.searchCounts.length; i++)
-            {
-                if (vm.results.searchCounts[i].count > 0)
-                {
-                    if (vm.results.searchCounts[i].type == "0")
-                    {
-
-                    }
-                    if (vm.results.searchCounts[i].type == "1") {
-
-                    }
-                    if (vm.results.searchCounts[i].type == "2") {
-                        vm.routeval.push(vm.results.searchCounts[i]);
-                        console.log(vm.routeval);
-                    }
-                    if (vm.results.searchCounts[i].type == "3") {
-
-                    }
-                }
+            vm.searchItem = results.searchResultItems;
+            vm.arrRoutes = [];
+            for (var i = 0; i < vm.results.searchResultItems.length; i++) {
+                var route = vm.results.searchResultItems[i];
+                var routeItem = { 'name': route.displayText }
+                var routeArray = [];
+                routeArray.push(routeItem);
+                var routeobj = { 'type': route.type, 'name': routeArray };
+                vm.arrRoutes.push(routeobj);
             }
         });
     }
@@ -68,36 +58,36 @@ function AdvanceSearchController($scope, searchApiService) {
     }
     $scope.routes = [
                        {
-                           
-                           "type": "Route1",
+
+                           "type": "Route1", "open": false,
                            "name": [
                              { "type_name": "Route 1" },
                              { "type_name": "Route 2" }]
-                         
+
                        },
                        {
-                          
-                           "type": "Route2",
+
+                           "type": "Route2", "open": false,
                            "name": [
                              { "type_name": "Route 10" },
                              { "type_name": "Route 20" },
                              { "type_name": "Route 30" }]
-                          
+
                        }
                        ,
                        {
-                        
-                           "type": "Route3",
+
+                           "type": "Route3", "open": false,
                            "name": [
                              { "type_name": "Route 100" },
                              { "type_name": "Route 200" },
                              { "type_name": "Route 300" },
                              { "type_name": "Route 400" }]
-                          
+
                        },
                         {
 
-                            "type": "Route4",
+                            "type": "Route4", "open": false,
                             "name": [
                               { "type_name": "Route 100" },
                               { "type_name": "Route 200" },
@@ -106,4 +96,11 @@ function AdvanceSearchController($scope, searchApiService) {
 
                         }
     ]
+
+    $scope.toggle = function (state) {
+        debugger;
+        $scope.routes.forEach(function (e) {
+            e.open = state;
+        });
+    }
 }

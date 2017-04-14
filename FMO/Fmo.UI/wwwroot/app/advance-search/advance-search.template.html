@@ -1,7 +1,7 @@
 ﻿<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
     <div layout="column" class="advanceSearch">
         <section layout="row">
-            <input type="text" placeholder="vm.searchText"  ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text">
+            <input type="text" placeholder="vm.searchText" ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text">
             <md-button class="md-raised md-primary" flex="10" ng-click="vm.queryAdvanceSearch()">search</md-button>
         </section>
         <section>
@@ -14,7 +14,7 @@
             <md-checkbox ng-model="ck3" ng-checked="vm.chkDeliveryPoint" aria-label="Checkbox 1">
                 Delivery Point
             </md-checkbox>
-            <md-checkbox ng-model="ck4" ng-disabled="true"  aria-label="Checkbox 1">
+            <md-checkbox ng-model="ck4" ng-disabled="true" aria-label="Checkbox 1">
                 Collection Point
             </md-checkbox>
             <md-checkbox ng-model="ck5" ng-checked="vm.chkStreetNetwork" aria-label="Checkbox 1">
@@ -29,8 +29,8 @@
         </section>
         <section layout="row">
             <div layout-align="start start">
-                <md-button class="md-raised md-primary">Collapse All</md-button>
-                <md-button class="md-raised md-primary">Expand All</md-button>
+                <md-button class="md-raised md-primary" ng-click="toggle(false)">Collapse All</md-button>
+                <md-button class="md-raised md-primary" ng-click="toggle(false)">Expand All</md-button>
             </div>
             <span flex></span>
             <div layout-align="end start">
@@ -38,9 +38,20 @@
                 <md-button class="md-raised md-primary" ng-click="vm.deSelectAll()">Deselect All</md-button>
             </div>
         </section>
-        
 
-        <section>
+
+        <section ng-repeat="route in routes" class="advSecList">
+            <div ng-click="show = !show"  class="advSecItem">
+                <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
+                <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
+                {{route.type}} ({{route.name.length}})
+            </div>
+
+            <ul ng-repeat="subitem in route.name" >
+                <li> {{subitem.type_name}}</li>
+            </ul>
+        </section>
+        <!--<section>
             <div ng-repeat="route in vm.results.searchCounts" ng-click="show = !show" ng-if="route.count!=0">
                 <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
                 <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
@@ -51,8 +62,19 @@
                 </ul>
             </div>
 
-           
-        </section>
+
+        </section>-->
+        <!--<section ng-repeat="route in vm.arrRoutes">
+            <div ng-click="show = !show">
+                <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
+                <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
+                {{route.type}} ({{vm.arrRoutes.length}})
+            </div>
+
+            <ul ng-repeat="subitem in route.name">
+                <li ng-show="subitem.type!=0"> {{subitem.name}}</li>
+            </ul>
+        </section>-->
     </div>
 </md-dialog>
 <!--<section ng-repeat="(key, value) in vm.results.searchResultItems | groupBy: 'vm.results.searchResultItems.type'">

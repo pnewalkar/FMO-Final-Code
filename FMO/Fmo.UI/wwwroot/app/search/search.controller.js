@@ -74,6 +74,8 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     }
 
     function advanceSearch(query) {
+      
+      //  console.log($state.searchText);
         var advaceSearchTemplate = advanceSearchService.advanceSearch(query);
         vm.openAdvanceSearchPopup(advaceSearchTemplate);
         ///vm.openModalPopup("Test");
