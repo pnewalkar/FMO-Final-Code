@@ -72,7 +72,7 @@ namespace Fmo.BusinessServices.Tests.Services
         [Test]
         public void SavePAFDetails_Check_MatchPostalAddressOnUDPRN_WithAddressLocationNull()
         {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            var objPostalAddress = new PostalAddressDTO()
             {
                 Time = "7/19/2016",
                 Date = "8:37:00",
@@ -84,6 +84,10 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+
             DeliveryPointDTO objDeliveryPoint = null;
             AddressLocationDTO objAddressLocation = null;
 
@@ -96,7 +100,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -123,6 +127,9 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+
             DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
@@ -138,7 +145,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -165,6 +172,8 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
             DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
@@ -180,7 +189,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -210,6 +219,8 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
             DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
@@ -225,7 +236,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -255,6 +266,9 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
+
             DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
@@ -270,7 +284,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -297,6 +311,8 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
             DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
@@ -312,7 +328,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -339,6 +355,8 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
             DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
@@ -354,7 +372,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -381,6 +399,8 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            lstPostalAddress.Add(objPostalAddress);
             DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
@@ -396,7 +416,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
 
-            var result = testCandidate.SavePAFDetails(objPostalAddress, "D:/paf.zip");
+            var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
@@ -407,14 +427,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
-
-        /*
-        SavePAFDetails_Check_MatchPostalAddressOnAddress
-        SavePAFDetails_Check_NoMatchPostalAddress
-        SavePAFDetails_Check_Exception
-        SaveDeliveryPoint_Check_MatchAddressLocationOnUDPRN
-        SaveDeliveryPoint_Check_MatchPostalAddressOnAddress
-        SaveDeliveryPoint_Check_Exception*/
         private void SetUpdata(PostalAddressDTO objPostalAddress, DeliveryPointDTO objDeliveryPoint, AddressLocationDTO objAddressLocation)
         {
             mockAddressRepository = CreateMock<IAddressRepository>();

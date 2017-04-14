@@ -25,11 +25,13 @@ namespace Fmo.NYBLoader
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
         private IConfigurationHelper configurationHelper;
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper)
+        public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
             this.configurationHelper = configurationHelper;
+            this.loggingHelper = loggingHelper;
             this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFProcessedFilePath");
             this.strPAFErrorFilePath    = configurationHelper.ReadAppSettingsConfigurationValues("PAFErrorFilePath");
         }
@@ -97,7 +99,7 @@ namespace Fmo.NYBLoader
 
                 if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {
-                    lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v)).ToList();
+                    lstAddressDetails = arrPAFDetails.Select(v => MapPAFDetailsToDTO(v, strFileName)).ToList();
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
@@ -118,10 +120,9 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                loggingHelper.LogError(ex);
             }
             return lstAddressDetails;            
         }
@@ -159,7 +160,6 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
-
                 saveflag = false;
             }
             return saveflag;
@@ -177,184 +177,147 @@ namespace Fmo.NYBLoader
         private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
-            try
+            foreach (string line in arrLines)
             {
-                foreach (string line in arrLines)
+                if (line.Count(n => n == ',') != Constants.noOfCharactersForPAF)
                 {
-                    if (line.Count(n => n == ',') != Constants.noOfCharactersForPAF)
-                    {
-                        isFileValid = false;
-                        break;
-                    }
-                    if (line.ToCharArray().Count() > Constants.maxCharactersForPAF)
-                    {
-                        isFileValid = false;
-                        break;
-                    }
+                    isFileValid = false;
+                    break;
+                }
+                if (line.ToCharArray().Count() > Constants.maxCharactersForPAF)
+                {
+                    isFileValid = false;
+                    break;
                 }
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
             return isFileValid;
         }
 
-        private static PostalAddressDTO MapPAFDetailsToDTO(string csvLine)
+        private static PostalAddressDTO MapPAFDetailsToDTO(string csvLine, string FileName)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
-            try
+            string[] values = csvLine.Split(',');
+            if (values.Count() == Constants.csvPAFValues)
             {
-                string[] values = csvLine.Split(',');
-                if (values.Count() == 20)
-                {
-                    objAddDTO.Date = values[0];
-                    objAddDTO.Time = values[1];
-                    objAddDTO.AmendmentType = values[2];
-                    objAddDTO.AmendmentDesc = values[3];
-                    objAddDTO.Postcode = values[4];
-                    objAddDTO.PostTown = values[5];
-                    objAddDTO.DependentLocality = values[6];
-                    objAddDTO.DoubleDependentLocality = values[7];
-                    objAddDTO.Thoroughfare = values[8];
-                    objAddDTO.DependentThoroughfare = values[9];
-                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[10]) && !string.IsNullOrWhiteSpace(values[10]) ? Convert.ToInt16(values[10]) : Convert.ToInt16(0);
-                    objAddDTO.BuildingName = values[11];
-                    objAddDTO.SubBuildingName = values[12];
-                    objAddDTO.POBoxNumber = values[13];
-                    objAddDTO.DepartmentName = values[14];
-                    objAddDTO.OrganisationName = values[15];
-                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[16]) && !string.IsNullOrWhiteSpace(values[16]) ? Convert.ToInt32(values[16]) : 0;
-                    objAddDTO.PostcodeType = values[17];
-                    objAddDTO.SmallUserOrganisationIndicator = values[18];
-                    objAddDTO.DeliveryPointSuffix = values[19];
-                    objAddDTO.IsValidData = true;
-                }
-
+                objAddDTO.Date = values[0];
+                objAddDTO.Time = values[1];
+                objAddDTO.AmendmentType = values[2];
+                objAddDTO.AmendmentDesc = values[3];
+                objAddDTO.Postcode = values[4];
+                objAddDTO.PostTown = values[5];
+                objAddDTO.DependentLocality = values[6];
+                objAddDTO.DoubleDependentLocality = values[7];
+                objAddDTO.Thoroughfare = values[8];
+                objAddDTO.DependentThoroughfare = values[9];
+                objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[10]) && !string.IsNullOrWhiteSpace(values[10]) ? Convert.ToInt16(values[10]) : Convert.ToInt16(0);
+                objAddDTO.BuildingName = values[11];
+                objAddDTO.SubBuildingName = values[12];
+                objAddDTO.POBoxNumber = values[13];
+                objAddDTO.DepartmentName = values[14];
+                objAddDTO.OrganisationName = values[15];
+                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[16]) && !string.IsNullOrWhiteSpace(values[16]) ? Convert.ToInt32(values[16]) : 0;
+                objAddDTO.PostcodeType = values[17];
+                objAddDTO.SmallUserOrganisationIndicator = values[18];
+                objAddDTO.DeliveryPointSuffix = values[19];
+                objAddDTO.IsValidData = true;
+                objAddDTO.FileName = FileName;
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-
-
             return objAddDTO;
         }
 
         private static void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
-
-            try
+            foreach (PostalAddressDTO objAdd in lstAddress)
             {
-                foreach (PostalAddressDTO objAdd in lstAddress)
+                if (string.IsNullOrEmpty(objAdd.AmendmentType) || !(System.Enum.IsDefined(typeof(AmmendmentType), objAdd.AmendmentType)))
                 {
-                    if (string.IsNullOrEmpty(objAdd.AmendmentType) || !(System.Enum.IsDefined(typeof(AmmendmentType),objAdd.AmendmentType)))
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                }
+                if (string.IsNullOrEmpty(objAdd.PostTown))
+                {
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "PostTown is " + ",";
+                }
+                if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
+                {
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                }
+                if (string.IsNullOrEmpty(objAdd.PostTown))
+                {
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                }
+                if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                }
+                if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN == 0 ? null : objAdd.UDPRN)))
+                {
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                }
+                if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
+                {
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                }
+                if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                {
+                    objAdd.IsValidData = false;
+                    objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
+                }
+                if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                {
+                    char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
+                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                     {
                         objAdd.IsValidData = false;
                         objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
-                    if (string.IsNullOrEmpty(objAdd.PostTown))
+                    if (characters.Count() != 2)
                     {
                         objAdd.IsValidData = false;
                         objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
                     }
-                    if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
+                    else if (characters.Count() == 2)
                     {
-                        objAdd.IsValidData = false;
-                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                    }
-                    if (string.IsNullOrEmpty(objAdd.PostTown))
-                    {
-                        objAdd.IsValidData = false;
-                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                    }
-                    if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
-                    {
-                        objAdd.IsValidData = false;
-                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                    }
-                    if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN == 0 ? null : objAdd.UDPRN)))
-                    {
-                        objAdd.IsValidData = false;
-                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                    }
-                    if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
-                    {
-                        objAdd.IsValidData = false;
-                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                    }
-                    if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                    {
-                        objAdd.IsValidData = false;
-                        objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                    }
-                    if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                    {
-                        char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                        if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
+                        if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
                         {
                             objAdd.IsValidData = false;
                             objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                        }
-                        if (characters.Count() != 2)
-                        {
-                            objAdd.IsValidData = false;
-                            objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                        }
-                        else if (characters.Count() == 2)
-                        {
-                            if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
-                            {
-                                objAdd.IsValidData = false;
-                                objAdd.InValidRemarks = objAdd.InValidRemarks + "" + ",";
-                            }
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-
-                throw;
             }
         }
 
         private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
-            try
+            if (!string.IsNullOrEmpty(strPostCode))
             {
-                if (!string.IsNullOrEmpty(strPostCode))
+                char[] chrCodes = strPostCode.ToCharArray();
+                if (chrCodes.Length >= 5)
                 {
-                    char[] chrCodes = strPostCode.ToCharArray();
-                    if (chrCodes.Length > 6)
-                    {
-                        int length = chrCodes.Length;
-                        if (!char.IsWhiteSpace(chrCodes[0]) && !char.IsNumber(chrCodes[0]) && char.IsLetter(chrCodes[0])
-                            && !char.IsNumber(chrCodes[length - 1]) && !char.IsNumber(chrCodes[length - 2]) && char.IsWhiteSpace(chrCodes[length - 4]))
+                    int length = chrCodes.Length;
+                    if (char.IsLetter(chrCodes[0]) && char.IsLetter(chrCodes[length - 1]) && char.IsLetter(chrCodes[length - 2]) 
+                            && char.IsNumber(chrCodes[length - 3]) && char.IsWhiteSpace(chrCodes[length - 4]))
                         {
-                            isValid = true;
-                        }
-                        else
-                        {
-                            isValid = false;
-                        }
-
+                        isValid = true;
                     }
                     else
                     {
                         isValid = false;
                     }
-                }
-            }
-            catch (Exception)
-            {
 
-                throw;
+                }
+                else
+                {
+                    isValid = false;
+                }
             }
             return isValid;
         }
