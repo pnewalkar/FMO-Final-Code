@@ -31,7 +31,17 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
-                return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+                });
+
+                Mapper.Configuration.CreateMapper();
+                //var deliveryPointDto = 
+
+                return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
             }
             catch (Exception)
             {
@@ -101,9 +111,10 @@ namespace Fmo.DataServices.Repositories
                                         SubBuildingName = l.PostalAddress.SubBuildingName,
                                         BuildingNumber = l.PostalAddress.BuildingNumber,
                                         Thoroughfare = l.PostalAddress.Thoroughfare,
-                                        DependentLocality = l.PostalAddress.DependentLocality
+                                        DependentLocality = l.PostalAddress.DependentLocality,
+                                        UDPRN = l.PostalAddress.UDPRN
                                     }
-                                })
+                                }).Take(10)
                                 .ToListAsync();
 
             return result;
@@ -183,7 +194,7 @@ namespace Fmo.DataServices.Repositories
             try
             {
 
-                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(deliveryPointDTO.UDPRN)).SingleOrDefault();
+                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN) == deliveryPointDTO.UDPRN).SingleOrDefault();
 
                 deliveryPoint.Longitude = deliveryPointDTO.Longitude;
                 deliveryPoint.Latitude = deliveryPointDTO.Latitude;
@@ -226,6 +237,18 @@ namespace Fmo.DataServices.Repositories
                 {
                     return false;
                 }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint)
+        {
+            try
+            {
+                return deliveryPointDTO.LocationXY.Distance(newPoint);
             }
             catch (Exception)
             {
