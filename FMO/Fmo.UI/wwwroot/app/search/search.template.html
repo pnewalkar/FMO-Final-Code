@@ -1,10 +1,10 @@
 <div class="searchBox">
-    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.presEnter(vm.searchText)" />
+    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" placeholder="Search" ng-enter="vm.presEnter(vm.searchText)" />
     <i class="fa fa-search" aria-hidden="true" ng-click="vm.presEnter(vm.searchText)"></i>
     <div class="searchContent" md-whiteframe="3dp">
         <ul ng-repeat="item in vm.results | limitTo:5">
             <li class="searchData">
-                <a ng-click="vm.OnChangeItem(item)" style="cursor:pointer;">
+                <a ng-click="vm.OnChangeItem(item)">
                     <span ng-switch on="item.type" ng-if="item.type">
                         <i class="fa fa-map-marker delivery" aria-hidden="true" ng-switch-when="DeliveryPoint"></i>
                         <i class="fa fa-map-marker postcode" aria-hidden="true" ng-switch-when="Postcode"></i>
