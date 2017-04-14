@@ -184,7 +184,7 @@
             }
         }
 
-        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
+        /*public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
@@ -192,7 +192,7 @@
                 if (objPostalAddress != null)
                 {
                     // .Include("DeliveryPoints")
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.Address_Id == objPostalAddress.Address_Id).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -239,7 +239,7 @@
             }
 
             return saveFlag;
-        }
+        }*/
 
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
