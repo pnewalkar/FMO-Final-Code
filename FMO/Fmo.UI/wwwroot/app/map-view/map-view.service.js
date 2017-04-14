@@ -186,7 +186,7 @@ function mapService(mapFactory,
         mapFactory.addLayer(accessLinksLayerSelector);
 
         var roadLinkLayerSelector = new MapFactory.LayerSelector();
-        roadLinkLayerSelector.layerName = "Road Links";
+        roadLinkLayerSelector.layerName = "Roads";
         roadLinkLayerSelector.layer = roadLinkLayer;
         roadLinkLayerSelector.group = "";
         roadLinkLayerSelector.zIndex = 8;
