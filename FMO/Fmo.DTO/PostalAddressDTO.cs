@@ -67,5 +67,7 @@ namespace Fmo.DTO
         public string AmendmentType { get; set; }
 
         public string AmendmentDesc { get; set; }
+
+        public string FileName { get; set; }
     }
 }
