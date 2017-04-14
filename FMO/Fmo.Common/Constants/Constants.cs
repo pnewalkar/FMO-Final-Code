@@ -39,6 +39,7 @@ namespace Fmo.Common.Constants
         public const string TASK_ACTION = "Action required";
         public const string TASK_SOURCE = "SYSTEM";
         public const string TASK_PAF_ACTION = "Position new DP";
+        public const int csvPAFValues = 20;
 
         public const string PAFNOACTION = "B";
         public const string PAFINSERT = "I";

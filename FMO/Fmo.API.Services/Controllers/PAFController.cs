@@ -24,12 +24,13 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpPost("SavePAFDetails")]
-        public bool SavePAFDetails([FromBody]PostalAddressDTO postalAddress)
+        public bool SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
         {
-            if (postalAddress != null)
-                return postalAddressBusinessService.SavePAFDetails(postalAddress, "abc.zip");
+            if (postalAddress != null && postalAddress.Count > 0)
+                return postalAddressBusinessService.SavePAFDetails(postalAddress);
             else
                 return false;
+
         }
 
         // GET: api/values

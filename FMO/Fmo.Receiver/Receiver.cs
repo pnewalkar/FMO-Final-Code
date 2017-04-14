@@ -18,6 +18,7 @@ using Fmo.NYBLoader.Common;
 using Fmo.Common.Interface;
 using Fmo.Common.ConfigurationManagement;
 using Fmo.MappingConfiguration;
+using System.Timers;
 
 namespace Fmo.Receiver
 {
@@ -27,6 +28,9 @@ namespace Fmo.Receiver
         private string PAFWebApiName = string.Empty;
         private string USRWebApiurl = string.Empty;
         private string USRWebApiName = string.Empty;
+
+        private System.Timers.Timer m_mainTimer;
+        private bool m_timerTaskSuccess;
 
         private readonly IKernel kernal;
         private IMessageBroker<AddressLocationUSRDTO> msgUSR = default(IMessageBroker<AddressLocationUSRDTO>);
@@ -40,7 +44,7 @@ namespace Fmo.Receiver
             Register(kernal);
             //this.httpHandler = httpHandler;
             //this.configurationHelper = configurationHelper;
-            
+
 
             InitializeComponent();
         }
@@ -52,7 +56,7 @@ namespace Fmo.Receiver
             kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
             msgUSR = kernel.Get<IMessageBroker<AddressLocationUSRDTO>>();
             msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
-            httpHandler= kernel.Get<IHttpHandler>();
+            httpHandler = kernel.Get<IHttpHandler>();
             configurationHelper = kernal.Get<IConfigurationHelper>();
 
             this.PAFWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues("PAFWebApiurl").ToString();
@@ -63,7 +67,16 @@ namespace Fmo.Receiver
 
         protected override void OnStart(string[] args)
         {
-            Start();
+            double interval = 15000.0;
+            m_mainTimer = new System.Timers.Timer(interval);
+
+            // Hook up the event handler for the Elapsed event.
+            m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
+
+            // Only raise the event the first time Interval elapses.
+            m_mainTimer.AutoReset = true;
+            m_mainTimer.Enabled = true;
+            // Start();
         }
 
         private void Start()
@@ -108,38 +121,41 @@ namespace Fmo.Receiver
 
         public void PAFMessageReceived(object sender, MessageEventArgs<PostalAddressDTO> e)
         {
-            PostalAddressDTO a = e.MessageBody;
-            if (a != null)
-            {
-                SavePAFDetails(a).Wait();
-            }
+            //PostalAddressDTO a = e.MessageBody;
+            //if (a != null)
+            //{
+            //    SavePAFDetails(a).Wait();
+            //}
 
-            while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
-            {
-                PostalAddressDTO b = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                if (b != null)
-                {
-                    SavePAFDetails(b).Wait();
-                }
-            }
+            //while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
+            //{
+            //    PostalAddressDTO b = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+            //    if (b != null)
+            //    {
+            //        SavePAFDetails(b).Wait();
+            //    }
+            //}
 
         }
 
-        private async Task SavePAFDetails(PostalAddressDTO postalAddress)
+        private async Task SavePAFDetails(List<PostalAddressDTO> postalAddress)
         {
             bool saveFlag = false;
             try
             {
-                httpHandler.SetBaseAddress(new Uri(PAFWebApiurl));
-                await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
-                saveFlag = true;
+                if (postalAddress != null && postalAddress.Count > 0)
+                {
+                    httpHandler.SetBaseAddress(new Uri(PAFWebApiurl));
+                    await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
+                    saveFlag = true;
+                }
             }
             catch (Exception)
             {
                 saveFlag = false;
                 throw;
             }
-            
+
         }
         private async Task SaveUSRDetails(AddressLocationUSRDTO addressLocationUSRDTO)
         {
@@ -150,16 +166,43 @@ namespace Fmo.Receiver
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
             }
             catch (Exception ex)
-            {                
+            {
                 throw;
             }
 
         }
 
+        public void PAFMessageReceived()
+        {
+            List<PostalAddressDTO> lst = new List<PostalAddressDTO>();
 
+            while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
+            {
+                PostalAddressDTO b = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                if (b != null)
+                {
+                    lst.Add(b);
+                }
+            }
+            SavePAFDetails(lst);
+
+        }
+
+        void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                // do some work
+                PAFMessageReceived();
+            }
+            catch (Exception ex)
+            {
+            }
+            
+        }
 
         protected override void OnStop()
-        {
+        {           
         }
 
         public void OnDebug()
