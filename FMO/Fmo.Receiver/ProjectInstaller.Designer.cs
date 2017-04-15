@@ -33,6 +33,7 @@
             // 
             // ReceiverInstaller
             // 
+            this.ReceiverInstaller.Account = System.ServiceProcess.ServiceAccount.LocalService;
             this.ReceiverInstaller.Password = null;
             this.ReceiverInstaller.Username = null;
             // 

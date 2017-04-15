@@ -67,16 +67,23 @@ namespace Fmo.Receiver
 
         protected override void OnStart(string[] args)
         {
-            double interval = 15000.0;
-            m_mainTimer = new System.Timers.Timer(interval);
-
-            // Hook up the event handler for the Elapsed event.
-            m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
-
-            // Only raise the event the first time Interval elapses.
-            m_mainTimer.AutoReset = true;
-            m_mainTimer.Enabled = true;
+            //instantiate timer
+            Thread t = new Thread(new ThreadStart(this.InitTimer));
+            t.Start();
             // Start();
+        }
+
+        private void InitTimer()
+        {
+            m_mainTimer = new System.Timers.Timer();
+            //wire up the timer event 
+            m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
+            //set timer interval   
+            //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]); 
+            double timeInSeconds = 3.0;
+            m_mainTimer.Interval = (timeInSeconds * 1000);
+            // timer.Interval is in milliseconds, so times above by 1000 
+            m_mainTimer.Enabled = true;
         }
 
         private void Start()
@@ -202,7 +209,8 @@ namespace Fmo.Receiver
         }
 
         protected override void OnStop()
-        {           
+        {
+            m_mainTimer.Enabled = false;
         }
 
         public void OnDebug()
