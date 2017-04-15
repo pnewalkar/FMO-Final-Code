@@ -4,6 +4,7 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
 
     [Table("FMO.Block")]
     public partial class Block
@@ -18,8 +19,6 @@ namespace Fmo.Entities
         }
 
         public int Block_Id { get; set; }
-
-        public int DeliveryRoute_Id { get; set; }
 
         [StringLength(1)]
         public string BlockType { get; set; }

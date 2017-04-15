@@ -4,6 +4,7 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
 
     [Table("FMO.Function")]
     public partial class Function
@@ -24,7 +25,7 @@ namespace Fmo.Entities
         [StringLength(1000)]
         public string Description { get; set; }
 
-        public Guid ActionContextID { get; set; }
+        public Guid Action_GUID { get; set; }
 
         public virtual Action Action { get; set; }
 
