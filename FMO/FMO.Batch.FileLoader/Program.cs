@@ -9,8 +9,8 @@ namespace Fmo.Batch.FileLoader
         /// </summary>
         private static void Main()
         {
-            //ServiceBase[] servicesToRun = new ServiceBase[] { new FileLoader() };
-            //ServiceBase.Run(servicesToRun);
+            /*ServiceBase[] servicesToRun = new ServiceBase[] { new FileLoader() };
+            ServiceBase.Run(servicesToRun); */
             using (FileLoader myService = new FileLoader())
             {
                 myService.OnDebug();

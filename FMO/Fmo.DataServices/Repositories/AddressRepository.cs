@@ -116,7 +116,6 @@
             catch (Exception ex)
             {
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
-                throw ex;
             }
 
             return saveFlag;

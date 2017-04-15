@@ -47,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DBScripts", "DBScripts", "{
 		DBScripts\DB_20170404160654_AddRowVersionColumnToAccessLinkTable .sql = DBScripts\DB_20170404160654_AddRowVersionColumnToAccessLinkTable .sql
 		DB_20170407155252_CreateFileProcessingLogTable.sql = DB_20170407155252_CreateFileProcessingLogTable.sql
 		DB_20170412202000_CreateAuditLogTable.sql = DB_20170412202000_CreateAuditLogTable.sql
+		DBScripts\DB_20170414155500_CreateViewGetAccessFunction.sql = DBScripts\DB_20170414155500_CreateViewGetAccessFunction.sql
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fmo.Receiver", "Fmo.Receiver\Fmo.Receiver.csproj", "{35C95A09-A0E0-4533-86C5-538EC3C11B75}"
