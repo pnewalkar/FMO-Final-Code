@@ -33,11 +33,11 @@ namespace Fmo.Common.LoggingManagement
             string errorMessage = default(string);
             if (exception.InnerException != null)
             {
-                errorMessage += "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+                errorMessage = "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
             }
             else
             {
-                errorMessage += "Exception: " + exception.Message;
+                errorMessage = "Exception: " + exception.Message;
             }
 
             Logger.Write(errorMessage, LoggingCategory.General.GetDescription(), 0, 0, TraceEventType.Error);
@@ -48,11 +48,11 @@ namespace Fmo.Common.LoggingManagement
             string errorMessage = default(string);
             if (exception.InnerException != null)
             {
-                errorMessage += message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
             }
             else
             {
-                errorMessage += message + Environment.NewLine + "Exception: " + exception.Message;
+                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message;
             }
 
             Logger.Write(errorMessage, LoggingCategory.General.GetDescription(), 0, 0, TraceEventType.Error);
