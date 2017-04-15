@@ -76,11 +76,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ProjectInstaller.resx">
-      <DependentUpon>ProjectInstaller.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Fmo.Common\Fmo.Common.csproj">
       <Project>{1D645C11-6570-4327-9E60-B6E7D676BA0D}</Project>
       <Name>Fmo.Common</Name>
@@ -101,6 +96,11 @@
       <Project>{4E169F3D-90C8-4889-96AD-9C0D51C5C174}</Project>
       <Name>Fmo.NYBLoader</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

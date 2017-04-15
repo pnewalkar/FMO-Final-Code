@@ -25,11 +25,11 @@ namespace Fmo.API.Services.Controllers
         }
 
         [HttpPost("SaveUSRDetails")]
-        public async Task SaveUSRDetails([FromBody]AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
+        public async Task SaveUSRDetails([FromBody]List<AddressLocationUSRPOSTDTO> lstAddressLocationUSRPOSTDTO)
         {
             try
             {
-                await usrBusinessService.SaveUSRDetails(addressLocationUSRPOSTDTO);
+                await usrBusinessService.SaveUSRDetails(lstAddressLocationUSRPOSTDTO);
             }
             catch (Exception ex)
             {

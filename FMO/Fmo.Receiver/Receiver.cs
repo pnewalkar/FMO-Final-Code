@@ -19,6 +19,7 @@ using Fmo.Common.Interface;
 using Fmo.Common.ConfigurationManagement;
 using Fmo.MappingConfiguration;
 using System.Timers;
+using Fmo.Common.LoggingManagement;
 
 namespace Fmo.Receiver
 {
@@ -35,8 +36,10 @@ namespace Fmo.Receiver
         private readonly IKernel kernal;
         private IMessageBroker<AddressLocationUSRDTO> msgUSR = default(IMessageBroker<AddressLocationUSRDTO>);
         private IMessageBroker<PostalAddressDTO> msgPAF = default(IMessageBroker<PostalAddressDTO>);
-        private IHttpHandler httpHandler = default(IHttpHandler);
+        //private IHttpHandler httpHandler = default(IHttpHandler);
+        private IHttpHandler httpHandler;
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public Receiver()
         {
@@ -52,12 +55,14 @@ namespace Fmo.Receiver
         {
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            kernal.Bind<IHttpHandler>().To<HttpHandler>().InSingletonScope();
+            //kernal.Bind<IHttpHandler>().To<HttpHandler>().InTransientScope();
             kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
+            kernal.Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
             msgUSR = kernel.Get<IMessageBroker<AddressLocationUSRDTO>>();
             msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
-            httpHandler = kernel.Get<IHttpHandler>();
+            //httpHandler = kernel.Get<IHttpHandler>();
             configurationHelper = kernal.Get<IConfigurationHelper>();
+            loggingHelper = kernal.Get<ILoggingHelper>();
 
             this.PAFWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues("PAFWebApiurl").ToString();
             this.PAFWebApiName = configurationHelper.ReadAppSettingsConfigurationValues("PAFWebApiName").ToString();
@@ -101,7 +106,7 @@ namespace Fmo.Receiver
 
         public void USRMessageReceived(object sender, MessageEventArgs<AddressLocationUSRDTO> e)
         {
-            AddressLocationUSRDTO addressLocationUSRDTO = e.MessageBody;
+            /*AddressLocationUSRDTO addressLocationUSRDTO = e.MessageBody;
 
             if (addressLocationUSRDTO != null)
             {
@@ -115,7 +120,7 @@ namespace Fmo.Receiver
                 {
                     SaveUSRDetails(addressLocationUSRDTOPending).Wait();
                 }
-            }
+            }*/
 
         }
 
@@ -145,6 +150,7 @@ namespace Fmo.Receiver
             {
                 if (postalAddress != null && postalAddress.Count > 0)
                 {
+                    httpHandler = new HttpHandler();
                     httpHandler.SetBaseAddress(new Uri(PAFWebApiurl));
                     await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
                     saveFlag = true;
@@ -157,12 +163,13 @@ namespace Fmo.Receiver
             }
 
         }
-        private async Task SaveUSRDetails(AddressLocationUSRDTO addressLocationUSRDTO)
+        private async Task SaveUSRDetails(List<AddressLocationUSRDTO> addressLocationUSRDTO)
         {
             try
             {
+                httpHandler = new HttpHandler();
                 httpHandler.SetBaseAddress(new Uri(USRWebApiurl));
-                var addressLocationUSRPOSTDTO = GenericMapper.Map<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
+                var addressLocationUSRPOSTDTO = GenericMapper.MapList<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
             }
             catch (Exception ex)
@@ -174,18 +181,51 @@ namespace Fmo.Receiver
 
         public void PAFMessageReceived()
         {
-            List<PostalAddressDTO> lst = new List<PostalAddressDTO>();
+            try
+            {                
+                List<PostalAddressDTO> lst = new List<PostalAddressDTO>();
 
-            while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
-            {
-                PostalAddressDTO b = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                if (b != null)
+                while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
                 {
-                    lst.Add(b);
+                    PostalAddressDTO b = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    if (b != null)
+                    {
+                        lst.Add(b);
+                    }
                 }
-            }
-            SavePAFDetails(lst);
+                if (lst != null && lst.Count > 0)
+                    SavePAFDetails(lst);
 
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void USRMessageReceived()
+        {
+            try
+            {
+                List<AddressLocationUSRDTO> lst = new List<AddressLocationUSRDTO>();
+
+                while (msgUSR.HasMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH))
+                {
+                    AddressLocationUSRDTO b = msgUSR.ReceiveMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                    if (b != null)
+                    {
+                        lst.Add(b);
+                    }
+                }
+
+                if(lst != null && lst.Count > 0)
+                    SaveUSRDetails(lst);
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -193,10 +233,16 @@ namespace Fmo.Receiver
             try
             {
                 // do some work
+                USRMessageReceived();
                 PAFMessageReceived();
             }
             catch (Exception ex)
             {
+                loggingHelper.LogInfo(ex.Message);
+
+                if(ex.InnerException != null)
+                    loggingHelper.LogInfo(ex.InnerException.Message);
+
             }
             
         }

@@ -35,8 +35,12 @@ namespace Fmo.Common.LoggingManagement
             {
                 errorMessage += "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
             }
+            else
+            {
+                errorMessage += "Exception: " + exception.Message;
+            }
 
-            Logger.Write(errorMessage, LoggingCategory.Exception.GetDescription(), 0, 0, TraceEventType.Error);
+            Logger.Write(errorMessage, LoggingCategory.General.GetDescription(), 0, 0, TraceEventType.Error);
         }
 
         public void LogError(string message, Exception exception)
@@ -46,8 +50,12 @@ namespace Fmo.Common.LoggingManagement
             {
                 errorMessage += message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
             }
+            else
+            {
+                errorMessage += message + Environment.NewLine + "Exception: " + exception.Message;
+            }
 
-            Logger.Write(errorMessage, LoggingCategory.Exception.GetDescription(), 0, 0, TraceEventType.Error);
+            Logger.Write(errorMessage, LoggingCategory.General.GetDescription(), 0, 0, TraceEventType.Error);
         }
 
         public void LogInfo(string message)
