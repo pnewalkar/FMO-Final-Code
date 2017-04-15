@@ -158,7 +158,7 @@ namespace Fmo.Receiver
                 if (postalAddress != null && postalAddress.Count > 0)
                 {
                     httpHandler = new HttpHandler();
-                    httpHandler.SetBaseAddress(new Uri(PAFWebApiurl));
+                    //httpHandler.SetBaseAddress(new Uri(PAFWebApiurl));
                     await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
                     saveFlag = true;
                 }
@@ -175,7 +175,7 @@ namespace Fmo.Receiver
             try
             {
                 httpHandler = new HttpHandler();
-                httpHandler.SetBaseAddress(new Uri(USRWebApiurl));
+                //httpHandler.SetBaseAddress(new Uri(USRWebApiurl));
                 var addressLocationUSRPOSTDTO = GenericMapper.MapList<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
             }
