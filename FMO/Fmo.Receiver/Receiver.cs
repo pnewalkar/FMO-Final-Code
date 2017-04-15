@@ -190,18 +190,18 @@ namespace Fmo.Receiver
         {
             try
             {                
-                List<PostalAddressDTO> lst = new List<PostalAddressDTO>();
+                List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
 
                 while (msgPAF.HasMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH))
                 {
-                    PostalAddressDTO b = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                    if (b != null)
+                    PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                    if (objPostalAddress != null)
                     {
-                        lst.Add(b);
+                        lstPostalAddress.Add(objPostalAddress);
                     }
                 }
-                if (lst != null && lst.Count > 0)
-                    SavePAFDetails(lst);
+                if (lstPostalAddress != null && lstPostalAddress.Count > 0)
+                    SavePAFDetails(lstPostalAddress);
 
             }
             catch (Exception)
@@ -214,19 +214,19 @@ namespace Fmo.Receiver
         {
             try
             {
-                List<AddressLocationUSRDTO> lst = new List<AddressLocationUSRDTO>();
+                List<AddressLocationUSRDTO> lstAddressLocationUSR = new List<AddressLocationUSRDTO>();
 
                 while (msgUSR.HasMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH))
                 {
-                    AddressLocationUSRDTO b = msgUSR.ReceiveMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
-                    if (b != null)
+                    AddressLocationUSRDTO objAddressLocationUSR = msgUSR.ReceiveMessage(Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                    if (objAddressLocationUSR != null)
                     {
-                        lst.Add(b);
+                        lstAddressLocationUSR.Add(objAddressLocationUSR);
                     }
                 }
 
-                if(lst != null && lst.Count > 0)
-                    SaveUSRDetails(lst);
+                if(lstAddressLocationUSR != null && lstAddressLocationUSR.Count > 0)
+                    SaveUSRDetails(lstAddressLocationUSR);
 
             }
             catch (Exception)
