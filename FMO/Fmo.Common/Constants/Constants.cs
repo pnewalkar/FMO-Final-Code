@@ -30,9 +30,16 @@ namespace Fmo.Common.Constants
         public const string Postal_Address_Status = "Postal Address Status";
         public const string Postal_Address_Type = "Postal Address Type";
         public const string USR_BODY = "Please check the proposed new Location of the DP Latitude: {0}, Longitude: {1}, X: {2}, Y: {3}";
-        public const string USR_GEOMETRY_POINT = "POINT({0},{1})";
+        public const string USR_GEOMETRY_POINT = "POINT({0} {1})";
         public const string USR_CATEGORY = "Notification Type";
         public const string USR_REFERENCE_DATA_NAME = "Action required";
+        public const string NETWORK_LINK_DATA_PROVIDER = "Network Link Data Provider";
+        public const string EXTERNAL = "External";
+        public const string TASK_NOTIFICATION = "Notification Type";
+        public const string TASK_ACTION = "Action required";
+        public const string TASK_SOURCE = "SYSTEM";
+        public const string TASK_PAF_ACTION = "Position new DP";
+        public const int csvPAFValues = 20;
 
         public const string PAFNOACTION = "B";
         public const string PAFINSERT = "I";

@@ -58,11 +58,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessActionDTO.cs" />
     <Compile Include="ActionManager\RoleAccessDTO.cs" />
     <Compile Include="ActionManager\UserUnitInfoDTO.cs" />
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="FileProcessingLogDTO.cs" />
+    <Compile Include="FileProcessing\AddressLocationUSRPOSTDTO.cs" />
     <Compile Include="NotificationDTO.cs" />
     <Compile Include="OsRoadLinkDTO.cs" />
     <Compile Include="PostCodeSectorDTO.cs" />

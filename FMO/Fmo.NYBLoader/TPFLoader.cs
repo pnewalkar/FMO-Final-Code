@@ -16,6 +16,8 @@ using System.Xml.Schema;
 using System.Configuration;
 using Fmo.Common.Interface;
 using Fmo.Common.Enums;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
 
 namespace Fmo.NYBLoader
 {
@@ -26,18 +28,20 @@ namespace Fmo.NYBLoader
         private readonly IExceptionHelper exceptionHelper;
         private readonly ILoggingHelper loggingHelper;
         private readonly IConfigurationHelper configHelper;
+        private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
         private string XSD_LOCATION;
         private string PROCESSED;
         private string ERROR;
 
 
-        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker, IFileMover fileMover, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper, IConfigurationHelper configHelper)
+        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker, IFileMover fileMover, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper, IConfigurationHelper configHelper, IFileProcessingLogRepository fileProcessingLogRepository)
         {
             this.msgBroker = messageBroker;
             this.fileMover = fileMover;
             this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
             this.configHelper = configHelper;
+            this.fileProcessingLogRepository = fileProcessingLogRepository;
             this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues("XSDLocation");
             this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues("TPFProcessedFilePath");
             this.ERROR = configHelper.ReadAppSettingsConfigurationValues("TPFErrorFilePath");
@@ -71,7 +75,7 @@ namespace Fmo.NYBLoader
                 });
 
 
-                fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, new FileInfo(strPath).Name });
+                fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
 
                 //Code to be uncommented after confirmation
                 /*lstUSRUpdateFiles.ForEach(addressLocation =>
@@ -139,7 +143,7 @@ namespace Fmo.NYBLoader
 
                     xmlNodes.ForEach(xmlNode =>
                     {
-                        if (IsXmlValid(XSD_LOCATION, xmlNode))
+                        if (IsXmlValid(new FileInfo(strPath).Name, XSD_LOCATION, xmlNode))
                         {
                             validXmlNodes.Add(xmlNode);
                         }
@@ -160,9 +164,9 @@ namespace Fmo.NYBLoader
 
                 return lstUSRFiles;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, new FileInfo(strPath).Name });
+                fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
                 throw ;
             }
 
@@ -174,7 +178,7 @@ namespace Fmo.NYBLoader
         /// <param name="xsdFile"></param>
         /// <param name="xNode"></param>
         /// <returns></returns>
-        private bool IsXmlValid(string xsdFile, XmlNode xNode)
+        private bool IsXmlValid(string fileName, string xsdFile, XmlNode xNode)
         {
 
             try
@@ -186,14 +190,24 @@ namespace Fmo.NYBLoader
 
                 xDoc.Validate(schemas, (o, e) =>
                 {
+                    FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+                    objFileProcessingLog.FileID = Guid.NewGuid();
+                    objFileProcessingLog.UDPRN = Convert.ToInt32(xDoc.Element(XName.Get("addressLocation")).Element(XName.Get("udprn")).Value);
+                    objFileProcessingLog.AmendmentType = xDoc.Element(XName.Get("addressLocation")).Element(XName.Get("changeType")).Value;
+                    objFileProcessingLog.FileName = fileName;
+                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
+                    objFileProcessingLog.FileType = FileType.Usr.ToString();
+
                     if (e.Severity == XmlSeverityType.Warning)
                     {
-                        loggingHelper.LogWarn(e.Message);
+                        objFileProcessingLog.NatureOfError = e.Message;
                     }
                     else if(e.Severity == XmlSeverityType.Error)
                     {
-                        loggingHelper.LogError(e.Exception);
+                        objFileProcessingLog.NatureOfError = e.Message;
                     }
+
+                    fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                     //logger code to write schema mismatch exception 
                     result = false;
                 });
@@ -205,6 +219,15 @@ namespace Fmo.NYBLoader
             {
                 throw;
             }
+        }
+
+        private string AppendTimeStamp(string strfileName)
+        {
+            return string.Concat(
+                Path.GetFileNameWithoutExtension(strfileName),
+               string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
+                Path.GetExtension(strfileName)
+                );
         }
     }
 }

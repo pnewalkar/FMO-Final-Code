@@ -40,6 +40,7 @@ namespace Fmo.MessageBrokerCore.Messaging
                 // Create the Queue
                 MessageQueue.Create(queueBuilder.ToString());
                 messageQueue = new MessageQueue(queueBuilder.ToString());
+                messageQueue.SetPermissions("Everyone", MessageQueueAccessRights.FullControl);
                 messageQueue.Label = queueName;
             }
         }

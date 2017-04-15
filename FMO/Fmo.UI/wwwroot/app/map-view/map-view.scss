@@ -42,3 +42,7 @@
     left: -155px;
     top: 10px;
 }
+
+.levelDanger{
+    @include background(rgba(255, 0, 0, 0.61));
+}

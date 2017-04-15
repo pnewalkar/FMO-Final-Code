@@ -16,7 +16,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
 
         bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
-        Task<int> UpdateDeliveryPointLocationOnUDPRN(int uDPRN, decimal latitude, decimal longitude, DbGeometry locationXY);
+        Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO);
 
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText);
 
@@ -29,5 +29,10 @@ namespace Fmo.DataServices.Repositories.Interfaces
         IEnumerable<DeliveryPoint> GetData(string coordinates);
 
         List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
+
+        bool DeliveryPointExists(int uDPRN);
+
+        double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint);
+
     }
 }

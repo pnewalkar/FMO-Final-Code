@@ -31,3 +31,6 @@
   text-align: center;
   left: -155px;
   top: 10px; }
+
+.levelDanger {
+  background-color: rgba(255, 0, 0, 0.61); }

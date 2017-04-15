@@ -15,6 +15,8 @@
     using MessageBrokerCore.Messaging;
     using Moq;
     using NUnit.Framework;
+    using DataServices.Repositories.Interfaces;
+    using DTO;
 
     public class LoadThirdPartyFileBusinessServiceTestFixture : TestFixtureBase
     {
@@ -24,6 +26,7 @@
         private Mock<IExceptionHelper> exceptionHelperMock;
         private Mock<ILoggingHelper> loggingHelperMock;
         private Mock<IConfigurationHelper> configHelperMock;
+        private Mock<IFileProcessingLogRepository> fileProcessingLogRepositoryMock;
 
         /// <summary>
         /// Test the method with the valid file data.
@@ -44,6 +47,15 @@
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
+            fileProcessingLogRepositoryMock.Setup(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()));
+
+            testCandidate = new TPFLoader(
+                                            msgBrokerMock.Object,
+                                            fileMoverMock.Object,
+                                            exceptionHelperMock.Object,
+                                            loggingHelperMock.Object,
+                                            configHelperMock.Object,
+                                            fileProcessingLogRepositoryMock.Object);
 
             testCandidate.LoadTPFDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
@@ -52,6 +64,7 @@
             loggingHelperMock.Verify(x => x.LogError(It.IsAny<Exception>()), Times.Never);
             loggingHelperMock.Verify(x => x.LogWarn(It.IsAny<string>()), Times.Never);
             fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Exactly(1));
+            fileProcessingLogRepositoryMock.Verify(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()), Times.Never);
         }
 
         /// <summary>
@@ -73,13 +86,20 @@
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
 
+            testCandidate = new TPFLoader(
+                                            msgBrokerMock.Object,
+                                            fileMoverMock.Object,
+                                            exceptionHelperMock.Object,
+                                            loggingHelperMock.Object,
+                                            configHelperMock.Object,
+                                            fileProcessingLogRepositoryMock.Object);
+
             testCandidate.LoadTPFDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(1));
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Exactly(1));
             exceptionHelperMock.Verify(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException), Times.Never);
-            loggingHelperMock.Verify(x => x.LogError(It.IsAny<Exception>()), Times.Once);
-            loggingHelperMock.Verify(x => x.LogWarn(It.IsAny<string>()), Times.Never);
             fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Exactly(1));
+            fileProcessingLogRepositoryMock.Verify(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()), Times.Once);
         }
 
         /// <summary>
@@ -92,12 +112,7 @@
             exceptionHelperMock = CreateMock<IExceptionHelper>();
             loggingHelperMock = CreateMock<ILoggingHelper>();
             configHelperMock = CreateMock<IConfigurationHelper>();
-            testCandidate = new TPFLoader(
-                                            msgBrokerMock.Object,
-                                            fileMoverMock.Object,
-                                            exceptionHelperMock.Object,
-                                            loggingHelperMock.Object,
-                                            configHelperMock.Object);
+            fileProcessingLogRepositoryMock = CreateMock<IFileProcessingLogRepository>();
         }
     }
 }

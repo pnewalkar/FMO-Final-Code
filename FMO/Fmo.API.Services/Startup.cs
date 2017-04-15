@@ -22,6 +22,8 @@ using Fmo.Helpers;
 using Fmo.Helpers.Interface;
 using Fmo.Common.EmailManagement;
 
+using Fmo.Common.ConfigurationManagement;
+
 namespace Fmo.API.Services
 {
     public partial class Startup
@@ -87,8 +89,10 @@ namespace Fmo.API.Services
             services.AddTransient<IAccessLinkBussinessService, AccessLinkBussinessService>();
             services.AddTransient<IActionManagerBussinessService, ActionManagerBussinessService>();
             services.AddTransient<IUserRoleUnitBussinessService, UserRoleUnitBussinessService>();
-
+            services.AddTransient<IUSRBusinessService, USRBusinessService>();
+            services.AddTransient<IAccessActionBussinessService, AccessActionBussinessService>();
             //Repositories
+            services.AddTransient<IAccessActionRepository, AccessActionRepository>();
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             services.AddTransient<IRoadNameBussinessService, RoadNameBussinessService>();
             services.AddTransient<IRoadNameRepository, RoadNameRepository>();
@@ -104,7 +108,7 @@ namespace Fmo.API.Services
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
-            services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
+            //services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
             services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
             services.AddTransient<IActionManagerRepository, ActionManagerRepository>();
@@ -114,6 +118,7 @@ namespace Fmo.API.Services
             services.AddTransient<ILoggingHelper, LoggingHelper>();
             services.AddTransient<ICreateOtherLayersObjects, CreateOtherLayerObjects>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
+            services.AddTransient<IConfigurationHelper, ConfigurationHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

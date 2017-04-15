@@ -4,6 +4,7 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
 
     [Table("FMO.PostcodeSector")]
     public partial class PostcodeSector
@@ -11,8 +12,8 @@ namespace Fmo.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PostcodeSector()
         {
-            DeliveryUnitPostcodeSectors = new HashSet<DeliveryUnitPostcodeSector>();
             Postcodes = new HashSet<Postcode>();
+            UnitPostcodeSectors = new HashSet<UnitPostcodeSector>();
         }
 
         [Required]
@@ -27,11 +28,11 @@ namespace Fmo.Entities
         public Guid DistrictGUID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Postcode> Postcodes { get; set; }
 
         public virtual PostcodeDistrict PostcodeDistrict { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UnitPostcodeSector> UnitPostcodeSectors { get; set; }
     }
 }

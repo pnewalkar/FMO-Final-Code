@@ -4,6 +4,7 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
 
     [Table("FMO.Postcode")]
     public partial class Postcode
@@ -12,8 +13,8 @@ namespace Fmo.Entities
         public Postcode()
         {
             AMUChangeRequests = new HashSet<AMUChangeRequest>();
-            DeliveryUnitLocationPostcodes = new HashSet<DeliveryUnitLocationPostcode>();
             PostalAddresses = new HashSet<PostalAddress>();
+            UnitLocationPostcodes = new HashSet<UnitLocationPostcode>();
         }
 
         [Required]
@@ -40,11 +41,11 @@ namespace Fmo.Entities
         public virtual ICollection<AMUChangeRequest> AMUChangeRequests { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryUnitLocationPostcode> DeliveryUnitLocationPostcodes { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PostalAddress> PostalAddresses { get; set; }
 
         public virtual PostcodeSector PostcodeSector { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UnitLocationPostcode> UnitLocationPostcodes { get; set; }
     }
 }

@@ -6,19 +6,19 @@ namespace Fmo.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("FMO.DeliveryUnitLocation")]
-    public partial class DeliveryUnitLocation
+    [Table("FMO.UnitLocation")]
+    public partial class UnitLocation
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public DeliveryUnitLocation()
+        public UnitLocation()
         {
             Scenarios = new HashSet<Scenario>();
-            DeliveryUnitLocationPostcodes = new HashSet<DeliveryUnitLocationPostcode>();
-            DeliveryUnitPostcodeSectors = new HashSet<DeliveryUnitPostcodeSector>();
+            UnitLocationPostcodes = new HashSet<UnitLocationPostcode>();
+            UnitPostcodeSectors = new HashSet<UnitPostcodeSector>();
             UserRoleUnits = new HashSet<UserRoleUnit>();
         }
 
-        public int DeliveryUnit_Id { get; set; }
+        public int Unit_Id { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -33,14 +33,18 @@ namespace Fmo.Entities
 
         public Guid ID { get; set; }
 
+        public Guid? LocationType_GUID { get; set; }
+
+        public virtual ReferenceData ReferenceData { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Scenario> Scenarios { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryUnitLocationPostcode> DeliveryUnitLocationPostcodes { get; set; }
+        public virtual ICollection<UnitLocationPostcode> UnitLocationPostcodes { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }
+        public virtual ICollection<UnitPostcodeSector> UnitPostcodeSectors { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserRoleUnit> UserRoleUnits { get; set; }

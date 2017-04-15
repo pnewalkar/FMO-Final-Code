@@ -116,7 +116,6 @@
             catch (Exception ex)
             {
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
-                throw ex;
             }
 
             return saveFlag;
@@ -166,14 +165,14 @@
             {
                 var postalAddress = DataContext.PostalAddresses
                                .Where(
-                                n => n.Postcode == objPostalAddress.Postcode &&
-                                      n.BuildingName == objPostalAddress.BuildingName &&
-                                      n.BuildingNumber == objPostalAddress.BuildingNumber &&
-                                      n.SubBuildingName == objPostalAddress.SubBuildingName &&
-                                      n.OrganisationName == objPostalAddress.OrganisationName &&
-                                      n.DepartmentName == objPostalAddress.DepartmentName &&
-                                      n.Thoroughfare == objPostalAddress.Thoroughfare &&
-                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).SingleOrDefault();
+                                n => n.Postcode == objPostalAddress.Postcode ||
+                                      n.BuildingName == objPostalAddress.BuildingName ||
+                                      n.BuildingNumber == objPostalAddress.BuildingNumber ||
+                                      n.SubBuildingName == objPostalAddress.SubBuildingName ||
+                                      n.OrganisationName == objPostalAddress.OrganisationName ||
+                                      n.DepartmentName == objPostalAddress.DepartmentName ||
+                                      n.Thoroughfare == objPostalAddress.Thoroughfare ||
+                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).FirstOrDefault();
 
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
@@ -184,7 +183,7 @@
             }
         }
 
-        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
+        /*public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
@@ -192,7 +191,7 @@
                 if (objPostalAddress != null)
                 {
                     // .Include("DeliveryPoints")
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.Address_Id == objPostalAddress.Address_Id).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -239,7 +238,7 @@
             }
 
             return saveFlag;
-        }
+        }*/
 
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB

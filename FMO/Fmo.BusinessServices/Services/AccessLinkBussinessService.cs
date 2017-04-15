@@ -2,19 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using System.Data.SqlTypes;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Helpers;
     using Fmo.Helpers.Interface;
-    using Newtonsoft.Json;
     using Microsoft.SqlServer.Types;
-    using System.Data.SqlTypes;
+    using Newtonsoft.Json;
 
     public class AccessLinkBussinessService : IAccessLinkBussinessService
     {
@@ -34,7 +29,7 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="boundaryBox"></param>
         /// <returns></returns>
@@ -52,12 +47,12 @@
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="lstAccessLinkDTO"></param>
         /// <returns></returns>
         private string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
-        {            
+        {
             AccessLinkDTO accessLinkDTOCollectionObj = new AccessLinkDTO();
             string json = string.Empty;
 
@@ -65,57 +60,59 @@
             {
                 features = new List<Feature>()
             };
-
-            foreach (var res in lstAccessLinkDTO)
+            if (lstAccessLinkDTO != null && lstAccessLinkDTO.Count > 0)
             {
-                Geometry geometry = new Geometry();
-
-                geometry.type = res.AccessLinkLine.SpatialTypeName;
-
-                var resultCoordinates = res.AccessLinkLine;
-
-                SqlGeometry sqlGeo = null;
-                if (geometry.type == "LineString")
+                foreach (var res in lstAccessLinkDTO)
                 {
-                    sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    Geometry geometry = new Geometry();
 
-                    double[][] cords = new double[2][];
+                    geometry.type = res.AccessLinkLine.SpatialTypeName;
+
+                    var resultCoordinates = res.AccessLinkLine;
+
+                    SqlGeometry sqlGeo = null;
+                    if (geometry.type == "LineString")
+                    {
+                        sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+
+                    List<List<double>> cords = new List<List<double>>();
 
                     for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
                     {
-                        double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-                        cords[pt - 1] = coordinates;
+                        List<double> coordinates = new List<double> { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
+                        cords.Add(coordinates);
+
                         //cords.Add(coordinates);
                     }
 
-                    geometry.coordinates = new Coordinates(cords);
+                    geometry.coordinates = cords;
                 }
                 else
                 {
                     sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-                    double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
-                    geometry.coordinates = new Coordinates(coordinates);
+                    geometry.coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
                 }
 
-                Feature feature = new Feature();
-                feature.geometry = geometry;
+                    Feature feature = new Feature();
+                    feature.geometry = geometry;
 
-                feature.type = "Feature";
-                feature.id = res.AccessLink_Id;
-                feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+                    feature.type = "Feature";
+                    feature.id = res.AccessLink_Id;
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
 
-                geoJson.features.Add(feature);
+                    geoJson.features.Add(feature);
+                }
             }
 
             //accessLinkDTOCollectionObj.features = lstFeatures;
             //accessLinkDTOCollectionObj.type = "FeatureCollection";
 
             //json = JsonConvert.SerializeObject(accessLinkDTOCollectionObj, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            return geoJson.getJson().ToString();
+            return JsonConvert.SerializeObject(geoJson);
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="query"></param>
         /// <param name="parameters"></param>

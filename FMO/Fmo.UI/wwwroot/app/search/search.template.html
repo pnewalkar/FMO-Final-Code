@@ -1,28 +1,32 @@
 <div class="searchBox">
-    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.presEnter(vm.searchText)" />
+    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.onEnterKeypress(vm.searchText)" />
+    <i class="fa fa-search" aria-hidden="true" ng-click="vm.onEnterKeypress(vm.searchText)"></i>
     <div class="searchContent" md-whiteframe="3dp">
         <ul ng-repeat="item in vm.results | limitTo:5">
             <li class="searchData">
-                <a ng-click="vm.OnChangeItem(item)" style="cursor:pointer;">
+                <a ng-click="vm.OnChangeItem(item)">
                     <span ng-switch on="item.type" ng-if="item.type">
                         <i class="fa fa-map-marker delivery" aria-hidden="true" ng-switch-when="DeliveryPoint"></i>
                         <i class="fa fa-map-marker postcode" aria-hidden="true" ng-switch-when="Postcode"></i>
                         <i class="fa fa-map-marker street" aria-hidden="true" ng-switch-when="StreetNetwork"></i>
                         <i class="fa fa-map-marker route" aria-hidden="true" ng-switch-when="Route"></i>
                     </span>
-                    <span ng-show="item.type!='Warning'"> {{ item.displayText | limitTo: 30 }}{{item.displayText.length >= 30 ? ' > ' : ''}}</span>
+                    <span ng-show="item.type!='Warning'">
+                        {{ item.displayText | limitTo: 30 }}
+                        <i ng-show="item.displayText.length >= 30" class="fa fa-angle-right searchRight" aria-hidden="true"></i>
+                    </span>
                     <span ng-show="item.type=='Warning'"> {{ item.displayText }}</span>
                 </a>
             </li>
         </ul>
         <ul>
-            <li ng-show="vm.results.length >= 5" style="color: black; font-size: 15px; padding-left: 7px;">
-                <a ng-click="">{{vm.results.length}}  View More Results   >></a>
+            <li ng-show="vm.results.length >= 5">
+                <button class="viewResult"><a ng-click="vm.advanceSearch(vm.searchText)">{{vm.resultscount[0].count}} View More Results<i class="fa fa-angle-double-right" aria-hidden="true"></i></a></button>
             </li>
         </ul>
         <ul>
-            <li ng-show="vm.results.length == 0" style="color: black; font-size: 15px; padding-left: 7px;">
-                <a>No Results Found</a>
+            <li ng-show="vm.results.length == 0">
+                <button class="noResult">No Results Found</button>
             </li>
         </ul>
     </div>

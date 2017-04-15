@@ -60,7 +60,7 @@
         {
             try
             {
-                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).ToListAsync();
+                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).Take(10).ToListAsync();
 
                 return GenericMapper.MapList<Postcode, PostCodeDTO>(postCodeDetails);
             }
@@ -72,7 +72,7 @@
 
         public Guid GetPostCodeID(string postCode)
         {
-            var postCodeDetail = DataContext.Postcodes.Where(l => l.PostcodeUnit.Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var postCodeDetail = DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (postCodeDetail != null)
             {
                 return postCodeDetail.ID;

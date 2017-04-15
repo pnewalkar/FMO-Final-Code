@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
-using Fmo.DTO;
 using Fmo.Common.Interface;
-using Fmo.Common.Enums;
-using Fmo.Common.ExceptionManagement;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net;
-using IO=System.IO;
-
+using Fmo.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Fmo.API.Services.Controllers
 {
-    
     [Route("api/deliveryPoints")]
     public class DeliveryPointsController : Controller
     {
-        IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
-        ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public DeliveryPointsController(IDeliveryPointBusinessService businessService, ILoggingHelper loggingHelper)
         {
@@ -33,7 +24,7 @@ namespace Fmo.API.Services.Controllers
 
         public JsonResult Get()
         {
-           return Json("");   
+            return Json("");
         }
 
         [Route("fetchDeliveryPoint")]
@@ -45,16 +36,17 @@ namespace Fmo.API.Services.Controllers
 
         [Route("GetDeliveryPoints")]
         [HttpGet]
-        public string GetDeliveryPoints(string bbox)
+        public JsonResult GetDeliveryPoints(string bbox)
         {
-            return businessService.GetDeliveryPoints(bbox);
+            return Json(businessService.GetDeliveryPoints(bbox));           
         }
 
         [Route("GetDeliveryPointByUDPRN")]
         [HttpGet]
-        public string GetDeliveryPointByUDPRN(int udprn)
+        public object GetDeliveryPointByUDPRN(int udprn)
         {
             return businessService.GetDeliveryPointByUDPRN(udprn);
         }
+
     }   
 }

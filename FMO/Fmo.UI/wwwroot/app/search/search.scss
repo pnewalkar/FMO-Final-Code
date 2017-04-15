@@ -1,20 +1,16 @@
 @import './app/variables';
 
-.delivery{
+i.fa.fa-map-marker.delivery{
     @include font-color($red);
-    @include margin(0px -20px 0px 0px);
 }
-.postcode{
+i.fa.fa-map-marker.postcode{
     @include font-color($go-green);
-    @include margin(0px -20px 0px 0px);
 }
-.street{
+i.fa.fa-map-marker.street{
     @include font-color($dynamic-yellow);
-    @include margin(0px -20px 0px 0px);
 }
-.route{
+i.fa.fa-map-marker.route{
     @include font-color($clear-blue);
-    @include margin(0px -20px 0px 0px);
 }
 
 .searchBox{
@@ -25,19 +21,73 @@
 .searchInput{
     @extend %body-content;
     @include background($white);
-    width: width-percent(1.25);
+    width: 235px;
     @include padding(8px 8px 8px 8px);
+    border-radius: 35px;
+    border: none;
 }
 
 .searchContent{
     @include background($white);
-    width: width-percent(1.25);
+    /*width: width-percent(1.05);*/
+    margin-top:16px;
 }
 
 .searchData{
-    @extend %body-content;
     @include background($white);
     @include font-color($strong-grey);
     @include margin(0px 0px 5px 0px);
     @include padding(5px 5px 5px 5px);
+    border-bottom: 1px solid grey;
+    cursor: pointer;
+
+    & span{
+        @extend %body-content;
+    }
+}
+
+i.fa.fa-search {
+    font-size: 25px;
+}
+
+button.viewResult {
+    @extend %body-content;
+    width: 264px;
+    padding: 3px;
+    background: white;
+    border: 1px solid rgb(224,224,224);
+    margin-top:-5px;
+    cursor: pointer;
+}
+button.noResult {
+    @extend %body-content;
+    width: 264px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    margin-top: -5px;
+}
+
+i.fa.fa-angle-double-right {
+    color: black;
+    margin-left: 65px;
+}
+
+.viewResult a {
+    @extend %body-content;
+    float:left;
+}
+
+i.fa.fa-angle-right.searchRight {
+    color:black;
+    float:right;
+    margin-right:10px;
+}
+
+.searchContext h1 {
+    @extend %body-content;
+    }
+
+.searchContext span{
+    @extend %body-content;
+    @include margin(15px 0px 10px 15px);
 }
