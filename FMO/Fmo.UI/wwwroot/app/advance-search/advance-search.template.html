@@ -40,8 +40,8 @@
         </section>
 
 
-        <!--<section ng-repeat="route in vm.arrRoutes"  class="advSecList">
-            <div   class="advSecItem">
+        <!--<section ng-repeat="route in vm.arrRoutes" is-open ="route.open"class="advSecList">
+            <div ng-show="show = !show" class="advSecItem">
                 <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
                 <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
                 {{route.type}} ({{route.name.length}})
@@ -52,7 +52,7 @@
             </ul>
         </section>--> 
 
-        <section ng-repeat="route in vm.arrRoutes" class="advSecList">
+        <section ng-repeat="route in vm.arrRoutes"  class="advSecList">
             <div ng-click="show = !show" class="advSecItem">
                 <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
                 <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>

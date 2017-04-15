@@ -139,7 +139,7 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
 
     $scope.toggleList = function (state) {
         debugger;
-        $scope.routes.forEach(function (e) {
+        vm.arrRoutes.forEach(function (e) {
             e.open = state;
         });
     }
