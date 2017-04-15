@@ -9,6 +9,6 @@
 
     public interface IUSRBusinessService
     {
-        Task SaveUSRDetails(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO);
+        Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> lstAddressLocationUSRPOSTDTO);
     }
 }

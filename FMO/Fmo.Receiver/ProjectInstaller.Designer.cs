@@ -28,29 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ReceiverInstaller = new System.ServiceProcess.ServiceProcessInstaller();
+            this.serviceProcessInstaller1 = new System.ServiceProcess.ServiceProcessInstaller();
             this.serviceInstaller1 = new System.ServiceProcess.ServiceInstaller();
             // 
-            // ReceiverInstaller
+            // serviceProcessInstaller1
             // 
-            this.ReceiverInstaller.Password = null;
-            this.ReceiverInstaller.Username = null;
+            this.serviceProcessInstaller1.Account = System.ServiceProcess.ServiceAccount.LocalService;
+            this.serviceProcessInstaller1.Password = null;
+            this.serviceProcessInstaller1.Username = null;
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.ServiceName = "Service1";
+            this.serviceInstaller1.ServiceName = "Receiver";
             // 
             // ProjectInstaller
             // 
             this.Installers.AddRange(new System.Configuration.Install.Installer[] {
-            this.ReceiverInstaller,
+            this.serviceProcessInstaller1,
             this.serviceInstaller1});
 
         }
 
         #endregion
 
-        private System.ServiceProcess.ServiceProcessInstaller ReceiverInstaller;
+        private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller1;
         private System.ServiceProcess.ServiceInstaller serviceInstaller1;
     }
 }
