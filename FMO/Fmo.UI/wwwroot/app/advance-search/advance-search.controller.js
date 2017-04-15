@@ -4,7 +4,7 @@ angular.module('advanceSearch')
 
 function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $mdDialog, advanceSearchService, $stateParams) {
     var vm = this;
-    
+    $scope.toggle;
     vm.chkRoute = true;
     vm.chkPostCode = true;
     vm.chkDeliveryPoint = true;
@@ -61,8 +61,10 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
                     arrDeliveryRoutes.push(obj);
                 }
             }
-            var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open':false };
-            var postCodeObj = { 'type': 'PostCode', 'name': arrPostCodes, 'open': false };
+            var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': false };
+            var postCodeObj = {
+                'type': 'PostCode', 'name': arrPostCodes, 'open': false
+        };
             var streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open': false };
             var deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': false };
 
@@ -99,7 +101,7 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
     $scope.routes = [
                        {
 
-                           "type": "Route1", "open": false,
+                           "type": "Route1", "open": true,
                            "name": [
                              { "type_name": "Route 1" },
                              { "type_name": "Route 2" }]
@@ -107,7 +109,7 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
                        },
                        {
 
-                           "type": "Route2", "open": false,
+                           "type": "Route2", "open": true,
                            "name": [
                              { "type_name": "Route 10" },
                              { "type_name": "Route 20" },
@@ -117,7 +119,7 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
                        ,
                        {
 
-                           "type": "Route3", "open": false,
+                           "type": "Route3", "open": true,
                            "name": [
                              { "type_name": "Route 100" },
                              { "type_name": "Route 200" },
@@ -127,7 +129,7 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
                        },
                         {
 
-                            "type": "Route4", "open": false,
+                            "type": "Route4", "open": true,
                             "name": [
                               { "type_name": "Route 100" },
                               { "type_name": "Route 200" },
@@ -139,17 +141,23 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
 
     $scope.toggleList = function (state) {
         debugger;
-        vm.arrRoutes.forEach(function (e) {
-            e.open = state;
-        });
+       
+
+            vm.arrRoutes.forEach(function (e) {
+                e.open = state;
+            });
+           
+       
+       
     }
 
     function OnChangeItem(selectedItem) {
         debugger;
 
         if (selectedItem.type === "DeliveryPoint") {
-           
-            $state.go('searchDetails', { selectedItem: selectedItem});
+
+            $state.go('searchDetails', { selectedItem: selectedItem
+        });
         }
         $mdDialog.cancel();
     }
