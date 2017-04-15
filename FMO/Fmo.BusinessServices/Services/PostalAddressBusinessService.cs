@@ -75,6 +75,7 @@ namespace Fmo.BusinessServices.Services
             {
                 this.loggingHelper.LogError(ex);
                 this.loggingHelper.LogInfo(postalAddressList);
+                this.loggingHelper.LogInfo(ex.ToString());
             }
 
             return saveFlag;
