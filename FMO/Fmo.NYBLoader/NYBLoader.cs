@@ -239,8 +239,8 @@ namespace Fmo.NYBLoader
             try
             {
                 saveflag = true;
-                httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
-                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName + "/", lstAddress);
+                //httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
+                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress);
             }
             catch (Exception ex)
             {

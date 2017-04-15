@@ -5,7 +5,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/Fmo.BusinessServices.dll": {}
+        "bin/Debug/Fmo.BusinessServices.dll": {}
       },
       "runtime": {
         "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
@@ -13,11 +13,11 @@
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "../packages/System.ValueTuple.4.3.0/lib/netstandard1.0/System.ValueTuple.dll": {},
-        "bin/Release/Fmo.BusinessServices.dll": {},
-        "bin/Release/system.data.dll": {}
+        "bin/Debug/Fmo.BusinessServices.dll": {},
+        "bin/Debug/system.data.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Fmo.BusinessServices.pdb": {
+        "bin/Debug/Fmo.BusinessServices.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -28,7 +28,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/Fmo.Common.dll": {}
+        "bin/Debug/Fmo.Common.dll": {}
       },
       "runtime": {
         "../packages/Castle.Core.4.0.0/lib/net45/Castle.Core.dll": {},
@@ -41,34 +41,34 @@
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Moq.4.7.1/lib/net45/Moq.dll": {},
         "../packages/NUnit.3.6.1/lib/net45/nunit.framework.dll": {},
-        "bin/Release/Fmo.Common.dll": {},
-        "bin/Release/system.data.dll": {}
+        "bin/Debug/Fmo.Common.dll": {},
+        "bin/Debug/system.data.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Fmo.Common.pdb": {
+        "bin/Debug/Fmo.Common.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
         },
-        "bin/Release/sqlservertypes/x64/msvcr120.dll": {
+        "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x64/msvcr120.dll"
         },
-        "bin/Release/sqlservertypes/x64/sqlserverspatial140.dll": {
+        "bin/Debug/sqlservertypes/x64/sqlserverspatial140.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x64/sqlserverspatial140.dll"
         },
-        "bin/Release/sqlservertypes/x86/msvcr120.dll": {
+        "bin/Debug/sqlservertypes/x86/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x86/msvcr120.dll"
         },
-        "bin/Release/sqlservertypes/x86/sqlserverspatial140.dll": {
+        "bin/Debug/sqlservertypes/x86/sqlserverspatial140.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",
           "copyToOutput": true,
@@ -80,7 +80,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/Fmo.DataServices.dll": {}
+        "bin/Debug/Fmo.DataServices.dll": {}
       },
       "runtime": {
         "../packages/AutoMapper.6.0.2/lib/net45/AutoMapper.dll": {},
@@ -91,12 +91,12 @@
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Mono.Reflection.1.1.0.0/lib/Mono.Reflection.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
-        "bin/Release/Fmo.DataServices.dll": {},
-        "bin/Release/system.data.dll": {},
-        "bin/Release/system.data.entity.dll": {}
+        "bin/Debug/Fmo.DataServices.dll": {},
+        "bin/Debug/system.data.dll": {},
+        "bin/Debug/system.data.entity.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Fmo.DataServices.pdb": {
+        "bin/Debug/Fmo.DataServices.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -107,17 +107,17 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/Fmo.DTO.dll": {}
+        "bin/Debug/Fmo.DTO.dll": {}
       },
       "runtime": {
         "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
         "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
-        "bin/Release/Fmo.DTO.dll": {}
+        "bin/Debug/Fmo.DTO.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Fmo.DTO.pdb": {
+        "bin/Debug/Fmo.DTO.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -128,18 +128,18 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/Fmo.Helpers.dll": {}
+        "bin/Debug/Fmo.Helpers.dll": {}
       },
       "runtime": {
         "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
         "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
-        "bin/Release/Fmo.Helpers.dll": {},
-        "bin/Release/system.data.dll": {}
+        "bin/Debug/Fmo.Helpers.dll": {},
+        "bin/Debug/system.data.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Fmo.Helpers.pdb": {
+        "bin/Debug/Fmo.Helpers.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -150,14 +150,14 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/Fmo.MappingConfiguration.dll": {}
+        "bin/Debug/Fmo.MappingConfiguration.dll": {}
       },
       "runtime": {
         "../packages/AutoMapper.6.0.2/lib/net45/AutoMapper.dll": {},
-        "bin/Release/Fmo.MappingConfiguration.dll": {}
+        "bin/Debug/Fmo.MappingConfiguration.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Fmo.MappingConfiguration.pdb": {
+        "bin/Debug/Fmo.MappingConfiguration.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -168,17 +168,17 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
       "compile": {
-        "bin/Release/Fmo.Entities.dll": {}
+        "bin/Debug/Fmo.Entities.dll": {}
       },
       "runtime": {
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
-        "bin/Release/Fmo.Entities.dll": {},
-        "bin/Release/system.data.dll": {}
+        "bin/Debug/Fmo.Entities.dll": {},
+        "bin/Debug/system.data.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Fmo.Entities.pdb": {
+        "bin/Debug/Fmo.Entities.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
