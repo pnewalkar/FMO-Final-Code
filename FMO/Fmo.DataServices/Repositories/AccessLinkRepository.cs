@@ -10,10 +10,7 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
     using System.IO;
-    
- 
     using System.Data.SqlTypes;
-
 
     public class AccessLinkRepository : RepositoryBase<AccessLink, FMODBContext>, IAccessLinkRepository
     {

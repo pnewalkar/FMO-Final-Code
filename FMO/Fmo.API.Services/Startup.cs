@@ -90,7 +90,9 @@ namespace Fmo.API.Services
             services.AddTransient<IActionManagerBussinessService, ActionManagerBussinessService>();
             services.AddTransient<IUserRoleUnitBussinessService, UserRoleUnitBussinessService>();
             services.AddTransient<IUSRBusinessService, USRBusinessService>();
+            services.AddTransient<IAccessActionBussinessService, AccessActionBussinessService>();
             //Repositories
+            services.AddTransient<IAccessActionRepository, AccessActionRepository>();
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             services.AddTransient<IRoadNameBussinessService, RoadNameBussinessService>();
             services.AddTransient<IRoadNameRepository, RoadNameRepository>();
