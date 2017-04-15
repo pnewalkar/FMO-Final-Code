@@ -19,16 +19,17 @@ namespace Fmo.NYBLoader.Tests
     {
         private Mock<IMessageBroker<PostalAddressDTO>> msgBrokerMock;
         private Mock<IConfigurationHelper> configurationHelperMock;
+        private Mock<ILoggingHelper> loggingHelperMock;
         private IPAFLoader testCandidate;
 
         protected override void OnSetup()
         {
             msgBrokerMock = CreateMock<IMessageBroker<PostalAddressDTO>>();
-
+            loggingHelperMock = CreateMock<ILoggingHelper>();
             configurationHelperMock = CreateMock<IConfigurationHelper>();
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFProcessedFilePath")).Returns("d:/processedfile/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFErrorFilePath")).Returns("d:/errorfile/");
-            testCandidate = new PAFLoader(msgBrokerMock.Object,configurationHelperMock.Object);
+            testCandidate = new PAFLoader(msgBrokerMock.Object,configurationHelperMock.Object, loggingHelperMock.Object);
         }
 
         [Test]

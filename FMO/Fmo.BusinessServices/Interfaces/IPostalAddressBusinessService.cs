@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Fmo.DTO;
+using System.Threading.Tasks;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -7,7 +8,7 @@ namespace Fmo.BusinessServices.Interfaces
     {
         bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress, string strFileName);
 
-        bool SavePAFDetails(PostalAddressDTO postalAddress, string strFileName);
+        bool SavePAFDetails(List<PostalAddressDTO> postalAddress);
         void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress);
     }
 }

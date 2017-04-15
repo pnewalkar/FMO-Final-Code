@@ -4,6 +4,7 @@ namespace Fmo.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
 
     [Table("FMO.ReferenceData")]
     public partial class ReferenceData
@@ -31,7 +32,6 @@ namespace Fmo.Entities
             DeliveryRoutes3 = new HashSet<DeliveryRoute>();
             DeliveryRouteActivities = new HashSet<DeliveryRouteActivity>();
             DeliveryRouteActivities1 = new HashSet<DeliveryRouteActivity>();
-            DeliveryUnitPostcodeSectors = new HashSet<DeliveryUnitPostcodeSector>();
             GroupHazards = new HashSet<GroupHazard>();
             GroupHazards1 = new HashSet<GroupHazard>();
             NetworkLinks = new HashSet<NetworkLink>();
@@ -47,10 +47,12 @@ namespace Fmo.Entities
             PolygonObjects = new HashSet<PolygonObject>();
             PostalAddresses = new HashSet<PostalAddress>();
             PostalAddresses1 = new HashSet<PostalAddress>();
-            Scenarios = new HashSet<Scenario>();
             ReferenceData1 = new HashSet<ReferenceData>();
+            Scenarios = new HashSet<Scenario>();
             SpecialInstructions = new HashSet<SpecialInstruction>();
             SpecialInstructions1 = new HashSet<SpecialInstruction>();
+            UnitLocations = new HashSet<UnitLocation>();
+            UnitPostcodeSectors = new HashSet<UnitPostcodeSector>();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -139,9 +141,6 @@ namespace Fmo.Entities
         public virtual ICollection<DeliveryRouteActivity> DeliveryRouteActivities1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryUnitPostcodeSector> DeliveryUnitPostcodeSectors { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GroupHazard> GroupHazards { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -187,9 +186,6 @@ namespace Fmo.Entities
         public virtual ICollection<PostalAddress> PostalAddresses1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Scenario> Scenarios { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReferenceData> ReferenceData1 { get; set; }
 
         public virtual ReferenceData ReferenceData2 { get; set; }
@@ -197,9 +193,18 @@ namespace Fmo.Entities
         public virtual ReferenceDataCategory ReferenceDataCategory { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Scenario> Scenarios { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SpecialInstruction> SpecialInstructions { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SpecialInstruction> SpecialInstructions1 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UnitLocation> UnitLocations { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UnitPostcodeSector> UnitPostcodeSectors { get; set; }
     }
 }
