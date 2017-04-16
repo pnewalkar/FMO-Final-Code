@@ -13,27 +13,15 @@ namespace Fmo.Receiver
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        private static void Main()
         {
-#if DEBUG
-
-            // While debugging this section is used.
-            using (Receiver receiverService = new Receiver())
+            ServiceBase[] servicesToRun = new ServiceBase[] { new Receiver() };
+            ServiceBase.Run(servicesToRun);
+            /*using (Receiver myService = new Receiver())
             {
-                receiverService.OnDebug();
+                myService.OnDebug();
                 System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-            }
-
-#else
-
-                //In Release this section is used. This is the "normal" way.
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[]
-                {
-                    new FileLoaderService()
-                };
-                ServiceBase.Run(ServicesToRun);
-#endif
+            }*/
         }
     }
 }

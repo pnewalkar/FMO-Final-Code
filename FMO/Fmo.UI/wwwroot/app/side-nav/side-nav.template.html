@@ -10,6 +10,16 @@
     
     <md-content layout-padding="">
         <md-list>
+
+      <md-list-item  ng-repeat="Item in results">
+    <p ng-click="vm.fetchActions(Item.displayText,vm.selectedDeliveryUnit)">{{Item.displayText}}</p>
+      </md-list-item>
+
+      <md-divider></md-divider>
+
+      </md-list>
+
+        <!--<md-list>
             
             <md-list-item  ng-click="vm.advanceSearch()">
                 <p>Advance Search</p>
@@ -47,7 +57,7 @@
             
             <md-divider></md-divider>
 
-            </md-list>
+            </md-list>-->
     </md-content> 
     
 </md-sidenav>

@@ -30,34 +30,42 @@ namespace Fmo.Common.LoggingManagement
 
         public void LogError(Exception exception)
         {
-            string errorMessage = default(string);
+            string errorMessage = string.Empty;
             if (exception.InnerException != null)
             {
-                errorMessage += "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+                errorMessage = "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+            }
+            else
+            {
+                errorMessage = "Exception: " + exception.Message;
             }
 
-            Logger.Write(errorMessage, LoggingCategory.Exception.GetDescription(), 0, 0, TraceEventType.Error);
+            Logger.Write(errorMessage, "General", 0, 0, TraceEventType.Error);
         }
 
         public void LogError(string message, Exception exception)
         {
-            string errorMessage = default(string);
+            string errorMessage = string.Empty;
             if (exception.InnerException != null)
             {
-                errorMessage += message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+            }
+            else
+            {
+                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message;
             }
 
-            Logger.Write(errorMessage, LoggingCategory.Exception.GetDescription(), 0, 0, TraceEventType.Error);
+            Logger.Write(errorMessage, "General", 0, 0, TraceEventType.Error);
         }
 
         public void LogInfo(string message)
         {
-            Logger.Write(message, LoggingCategory.General.GetDescription(), 0, 0, TraceEventType.Warning);
+            Logger.Write(message, "General", 0, 0, TraceEventType.Warning);
         }
 
         public void LogWarn(string message)
         {
-            Logger.Write(message, LoggingCategory.General.GetDescription(), 0, 0, TraceEventType.Information);
+            Logger.Write(message, "General", 0, 0, TraceEventType.Information);
         }
     }
 }

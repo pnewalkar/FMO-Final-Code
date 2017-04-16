@@ -6,7 +6,7 @@
       Files in format PAF corresponding to the example project
     </FolderDescription>
     <FolderFilter>*.zip</FolderFilter>
-    <FolderPath>D:\Project\SourceFiles\ConsoleApplication1\TestData\PAF\</FolderPath>
+    <FolderPath>D:\TestFile\PAF\</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the
@@ -32,7 +32,7 @@
       Files in format TPF corresponding to the example project
     </FolderDescription>
     <FolderFilter>*</FolderFilter>
-    <FolderPath>D:\Projects\SourceFiles\TPF\</FolderPath>
+    <FolderPath>D:\TestFile\TPF\</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the

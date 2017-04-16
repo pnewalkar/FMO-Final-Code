@@ -1,0 +1,22 @@
+@import './app/variables';
+
+.advanceSearchDialog{
+    width: width-percent(1.7);
+    height: 100%;
+}
+
+.searchbox{
+    width: width-percent(1);
+    height: 25px;
+    @include margin(8px 0px 0px 0px);
+}
+
+.advSection{
+    @include margin(0px 0px 15px 0px);
+    @extend %body-content;
+}
+
+.advSecList{
+    @extend %body-content;
+    overflow-y: auto;        
+}

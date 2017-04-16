@@ -25,16 +25,16 @@
 
         protected override void OnSetup()
         {
-            var deliveryUnitLocation = new List<DeliveryUnitLocation>()
+            var deliveryUnitLocation = new List<UnitLocation>()
             {
-                new DeliveryUnitLocation() { UnitName = "unitone", ExternalId = "unitone" }
+                new UnitLocation() { UnitName = "unitone", ExternalId = "unitone" }
             };
 
             var mockDeliveryUnitLocationDBSet = MockDbSet(deliveryUnitLocation);
 
             mockFmoDbContext = CreateMock<FMODBContext>();
-            mockFmoDbContext.Setup(x => x.Set<DeliveryUnitLocation>()).Returns(mockDeliveryUnitLocationDBSet.Object);
-            mockFmoDbContext.Setup(x => x.DeliveryUnitLocations).Returns(mockDeliveryUnitLocationDBSet.Object);
+            mockFmoDbContext.Setup(x => x.Set<UnitLocation>()).Returns(mockDeliveryUnitLocationDBSet.Object);
+            mockFmoDbContext.Setup(x => x.UnitLocations).Returns(mockDeliveryUnitLocationDBSet.Object);
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);

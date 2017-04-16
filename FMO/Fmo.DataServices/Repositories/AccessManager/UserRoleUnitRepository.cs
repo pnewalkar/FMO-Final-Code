@@ -22,7 +22,7 @@ namespace Fmo.DataServices.Repositories
         public async Task<Guid> GetUserUnitInfo(string userName)
         {
             return await DataContext.UserRoleUnits
-                .Where(x => x.User.UserName == userName).Select(x => x.UnitID).FirstOrDefaultAsync();
+                .Where(x => x.User.UserName == userName).Select(x => x.Unit_GUID).FirstOrDefaultAsync();
         }
     }
 }

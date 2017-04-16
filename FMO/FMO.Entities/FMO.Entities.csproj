@@ -71,9 +71,6 @@
     <Compile Include="Entities\DeliveryRouteActivity.cs" />
     <Compile Include="Entities\DeliveryRouteBlock.cs" />
     <Compile Include="Entities\DeliveryRouteNetworkLink.cs" />
-    <Compile Include="Entities\DeliveryUnitLocation.cs" />
-    <Compile Include="Entities\DeliveryUnitLocationPostcode.cs" />
-    <Compile Include="Entities\DeliveryUnitPostcodeSector.cs" />
     <Compile Include="Entities\FileProcessingLog.cs" />
     <Compile Include="Entities\Function.cs" />
     <Compile Include="Entities\GroupHazard.cs" />
@@ -115,6 +112,9 @@
     <Compile Include="Entities\StreetName.cs" />
     <Compile Include="Entities\StreetNameNetworkLink.cs" />
     <Compile Include="Entities\TempPostalAddress.cs" />
+    <Compile Include="Entities\UnitLocation.cs" />
+    <Compile Include="Entities\UnitLocationPostcode.cs" />
+    <Compile Include="Entities\UnitPostcodeSector.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\UserRoleUnit.cs" />
     <Compile Include="Entities\Views\AccessFunction.cs" />

@@ -75,7 +75,7 @@ namespace Fmo.NYBLoader
                 });
 
 
-                fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, new FileInfo(strPath).Name });
+                fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
 
                 //Code to be uncommented after confirmation
                 /*lstUSRUpdateFiles.ForEach(addressLocation =>
@@ -164,9 +164,9 @@ namespace Fmo.NYBLoader
 
                 return lstUSRFiles;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, new FileInfo(strPath).Name });
+                fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
                 throw ;
             }
 
@@ -219,6 +219,15 @@ namespace Fmo.NYBLoader
             {
                 throw;
             }
+        }
+
+        private string AppendTimeStamp(string strfileName)
+        {
+            return string.Concat(
+                Path.GetFileNameWithoutExtension(strfileName),
+               string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
+                Path.GetExtension(strfileName)
+                );
         }
     }
 }
