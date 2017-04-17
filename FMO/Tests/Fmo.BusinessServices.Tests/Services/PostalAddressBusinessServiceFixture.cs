@@ -95,7 +95,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -106,10 +105,9 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
-            mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
+            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Once());
+            mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Once());
         }
 
         [Test]
@@ -140,7 +138,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -151,9 +148,8 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
+            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Once());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
 
@@ -184,7 +180,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -195,9 +190,8 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
+            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Once());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
 
@@ -231,7 +225,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -242,8 +235,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
-            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
+            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Never());
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
@@ -279,7 +271,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -289,8 +280,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
+            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Never());
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
@@ -323,7 +313,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(objPostalAddress);
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -334,8 +323,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
-            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
+            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Never());
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
@@ -367,7 +355,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(objPostalAddress);
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -378,7 +365,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
@@ -411,7 +397,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
             mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
@@ -422,7 +407,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>()), Times.Once());
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());

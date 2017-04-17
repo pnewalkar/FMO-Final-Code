@@ -85,15 +85,15 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_SavePAFDetails_Valid()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             msgBrokerMock.Setup(n => n.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
             msgBrokerMock.Setup(n => n.SendMessage(It.IsAny<IMessage>()));
 
             bool flag = testCandidate.SavePAFDetails(methodOutput);
-            msgBrokerMock.Verify(m => m.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
-            msgBrokerMock.Verify(m => m.SendMessage(It.IsAny<IMessage>()), Times.Exactly(2));
+            msgBrokerMock.Verify(m => m.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            msgBrokerMock.Verify(m => m.SendMessage(It.IsAny<IMessage>()), Times.AtLeastOnce);
 
             Assert.IsTrue(flag);
         }
@@ -101,15 +101,15 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_SavePAFDetails_InValid()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
-            msgBrokerMock.Setup(n => n.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
-            msgBrokerMock.Setup(n => n.SendMessage(It.IsAny<IMessage>()));
+            msgBrokerMock.Setup(n => n.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
+            msgBrokerMock.Setup(n => n.SendMessage(It.IsAny<IMessage>())).Throws<Exception>();
 
             bool flag = testCandidate.SavePAFDetails(methodOutput);
-            msgBrokerMock.Verify(m => m.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(1));
-            msgBrokerMock.Verify(m => m.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(1));
+            msgBrokerMock.Verify(m => m.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            msgBrokerMock.Verify(m => m.SendMessage(It.IsAny<IMessage>()), Times.AtLeastOnce);
 
             Assert.IsFalse(flag);
         }
