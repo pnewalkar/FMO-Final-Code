@@ -1,4 +1,4 @@
-.searchInput, .searchData span, button.viewResult button.noResult, .viewResult a, .searchContext h1, .searchContext span {
+.searchInput, .searchData span, .viewResult, .noResult, .viewResult a, .searchContext h1, .searchContext span {
   color: #2a2a2d;
   font-family: PF DIN;
   font-size: 16px; }
@@ -33,7 +33,7 @@ i.fa.fa-map-marker.route {
 .searchData {
   background-color: #ffffff;
   color: #53535a;
-  margin: 0px 0px 5px 0px;
+  margin: 0px 0px 4px 0px;
   padding: 5px 5px 5px 5px;
   border-bottom: 1px solid #808080;
   cursor: pointer; }
@@ -42,14 +42,20 @@ i.fa.fa-search {
   color: #ffffff;
   font-size: 25px; }
 
-button.viewResult {
-  padding: 3px 3px 3px 3px; }
-  button.viewResult button.noResult {
-    cursor: pointer;
-    width: 264px;
-    background-color: #ffffff;
-    border: 1px solid #c1c6c8;
-    margin: -5px 0px 0px 0px; }
+.viewResult {
+  padding: 3px 3px 3px 3px;
+  cursor: pointer;
+  width: 264px;
+  background-color: #ffffff;
+  border: 1px solid #c1c6c8;
+  margin: -5px 0px 0px 0px; }
+
+.noResult {
+  cursor: pointer;
+  width: 264px;
+  background-color: #ffffff;
+  border: 1px solid #c1c6c8;
+  margin: -5px 0px 0px 0px; }
 
 i.fa.fa-angle-double-right {
   color: #2a2a2d;

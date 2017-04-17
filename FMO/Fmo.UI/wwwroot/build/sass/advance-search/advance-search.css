@@ -1,4 +1,4 @@
-.advSection, .advSecList, .searchTable, .searchTh .searchTd {
+.advSection, .advSecList, .searchTable, .searchTh, .searchTd {
   color: #2a2a2d;
   font-family: PF DIN;
   font-size: 16px; }
@@ -22,9 +22,10 @@
   width: 100%;
   border-collapse: collapse; }
 
+.searchTh, .searchTd {
+  padding: 8px 8px 8px 8px;
+  border: 1px solid #c1c6c8;
+  text-align: left; }
+
 .searchTh {
   font-weight: bold; }
-  .searchTh .searchTd {
-    padding: 8px 8px 8px 8px;
-    border: 1px solid #c1c6c8;
-    text-align: left; }

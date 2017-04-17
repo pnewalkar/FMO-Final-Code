@@ -40,8 +40,8 @@
         </section>
 
 
-        <section ng-repeat="route in vm.arrRoutes" ng-click="route.open = !route.open" class="advSecList"> 
-             <table class="searchTable">
+        <section > 
+             <table ng-repeat="route in vm.arrRoutes" ng-click="route.open = !route.open" class="advSecList searchTable">
   				<tr is-open ="route.open" class="advSecItem">
     				<th class="searchTh">
                         <i class="fa fa-angle-right" ng-show="route.open = !route.open" aria-hidden="true"></i>

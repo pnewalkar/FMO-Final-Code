@@ -35,7 +35,7 @@ i.fa.fa-map-marker.route{
 .searchData{
     @include background($white);
     @include font-color($strong-grey);
-    @include margin(0px 0px 5px 0px);
+    @include margin(0px 0px 4px 0px);
     @include padding(5px 5px 5px 5px);
     @include border-bottom(1px solid $grey);
     @include cursor(pointer);
@@ -50,17 +50,22 @@ i.fa.fa-search {
     font-size: 25px;
 }
 
-button.viewResult {
+.viewResult {
     @include padding(3px 3px 3px 3px);
-   
-button.noResult {
     @extend %body-content;
     @include cursor(pointer);
     @include width(264px);
     @include background($white);
     @include border(1px solid $recess-grey);
     @include margin(-5px 0px 0px 0px);
-}
+   }
+.noResult {
+    @extend %body-content;
+    @include cursor(pointer);
+    @include width(264px);
+    @include background($white);
+    @include border(1px solid $recess-grey);
+    @include margin(-5px 0px 0px 0px);
     }
 
 i.fa.fa-angle-double-right {
