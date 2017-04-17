@@ -28,9 +28,9 @@
 
     public partial class FileLoader : ServiceBase
     {
-        private string strProcessedFilePath = string.Empty;
-        private string strErrorFilePath = string.Empty;
         private static string dateTimeFormat = "{0:-yyyy-MM-d-HH-mm-ss}";
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;        
         private readonly IKernel kernal;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
@@ -38,7 +38,6 @@
         private IPAFLoader pafLoader = default(IPAFLoader);
         private ITPFLoader tpfLoader = default(ITPFLoader);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IExceptionHelper exceptionHelper = default(IExceptionHelper);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
         private IDatabaseFactory<FMODBContext> databaseFactory = default(IDatabaseFactory<FMODBContext>);
@@ -89,7 +88,6 @@
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IHttpHandler>().To<HttpHandler>();
             kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
-            kernel.Bind<IExceptionHelper>().To<ExceptionHelper>();
             kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
             kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
             kernel.Bind<IEmailHelper>().To<EmailHelper>();
@@ -102,7 +100,6 @@
             tpfLoader = kernel.Get<ITPFLoader>();
             loggingHelper = kernel.Get<ILoggingHelper>();
             fileMover = kernel.Get<IFileMover>();
-            exceptionHelper = kernal.Get<IExceptionHelper>();
             emailHelper = kernal.Get<IEmailHelper>();
             configurationHelper = kernel.Get<IConfigurationHelper>();
         }
