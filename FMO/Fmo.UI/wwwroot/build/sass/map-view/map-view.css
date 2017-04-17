@@ -10,27 +10,27 @@
 
 #leftPanel {
   position: absolute;
-  left: 15px;
-  top: 75px; }
+  top: 75px;
+  left: 15px; }
 
 #rightPanel {
   position: absolute;
-  right: 15px;
-  top: 75px; }
+  top: 75px;
+  right: 15px; }
 
 .zoom-control {
   position: absolute;
-  left: -50px;
-  top: 0; }
+  top: 0px;
+  left: -50px; }
 
 .zoom-scale {
   position: absolute;
   background-color: #ffffff;
   width: 34.96503%;
   padding: 3px 10px 3px 10px;
+  top: 10px;
   text-align: center;
-  left: -155px;
-  top: 10px; }
+  left: -155px; }
 
 .levelDanger {
   background-color: rgba(255, 0, 0, 0.61); }

@@ -16,20 +16,20 @@
 
 #leftPanel{
     @include position(absolute);
+    @include top(75px);
     left: 15px;
-    top: 75px;
 }
 
 #rightPanel{
     @include position(absolute);
+    @include top(75px);
     right: 15px;
-    top: 75px;
 }
 
 .zoom-control {
     @include position(absolute);
+    @include top(0px);
     left: -50px;
-    top: 0;
 }
 
 
@@ -38,9 +38,9 @@
     @include background($white);
     width: width-percent(2.86);
     @include padding(3px 10px 3px 10px);
+    @include top(10px);
     text-align: center;
     left: -155px;
-    top: 10px;
 }
 
 .levelDanger{

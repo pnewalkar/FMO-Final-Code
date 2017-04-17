@@ -30,16 +30,16 @@ map-panel {
   cursor: pointer; }
 
 .map-panel .panel-header {
-  pointer-events: auto;
-  background-color: #f5f5f5; }
+  background-color: #f5f5f5;
+  pointer-events: auto; }
 
 .map-panel .fa {
   color: #53535a; }
 
 .map-panel .map-panel-content {
   padding: 3px 3px 3px 3px;
-  overflow: auto;
   height: calc(100% - 50px);
+  overflow: auto;
   pointer-events: auto; }
 
 .map-panel .map-panel-summary {

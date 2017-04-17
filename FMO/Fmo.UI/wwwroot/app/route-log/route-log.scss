@@ -4,13 +4,13 @@
     @include background($recess-grey);
     @include border($black);
     @include float(right);
-    border:1px solid black;
+    @include border(1px solid $black);
 }
 
 #tbody{
     @include background($white);
     @include width(550px);
-    height:150px;
+    @include height(150px);
     overflow-y:auto;
 }
 
@@ -58,17 +58,14 @@ td{
 
 md-dialog h2{
     @extend %header-content;
-    color: $black;
+    @include font-color($black);
     @include margin(10px 0px 20px 0px);
 }
 
-/*md-select {
-  @include width(110px);
-}*/
 
 .routeLogDialog {
-  width: width-percent(1.7);
-  height: 100%;
+    width: width-percent(1.7);
+    height: height-percent(1);
 }
 
 .routeSelect {
@@ -79,16 +76,16 @@ md-dialog h2{
     width: width-percent(1.03);
     @include background(none);
     @include padding(0px 0px 0px 0px);
+    height: height-percent(1);
     outline: none;
-    height: 100%;
 }
 
 md-switch.md-checked .md-bar {
-    background-color: rgb(209,98,104);
+    @include background(rgb(209,98,104));
 }
 
 md-switch.md-checked .md-thumb {
-    background-color: rgb(218,32,42);
+    @include background(rgb(218,32,42));
 }
 
 .md-text, label{
@@ -96,5 +93,5 @@ md-switch.md-checked .md-thumb {
 }
 
 .routeSearch{
-    width:97%;
+    width: width-percent(1.030);
 }

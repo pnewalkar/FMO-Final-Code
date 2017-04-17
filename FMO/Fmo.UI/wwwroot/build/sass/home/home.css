@@ -3,12 +3,9 @@ h2 span {
   font-family: Chevin;
   font-size: 18px; }
 
-.md-toolbar-tools .fa {
-  font-size: 18px;
-  color: #ffffff; }
+.fa-bars, .fa-inbox {
+  color: #ffffff;
+  font-size: 18px; }
 
-.fa-inbox .fa-bars {
-  margin: 0px 0px 0px 10px; }
-
-.md-toolbar-tools span {
+.homeContainer span {
   margin: 0px 10px 0px 0px; }
