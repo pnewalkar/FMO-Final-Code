@@ -33,7 +33,6 @@ i.fa.fa-map-marker.route {
 .searchData {
   background-color: #ffffff;
   color: #53535a;
-  margin: 0px 0px 4px 0px;
   padding: 5px 5px 5px 5px;
   border-bottom: 1px solid #808080;
   cursor: pointer; }
@@ -45,14 +44,14 @@ i.fa.fa-search {
 .viewResult {
   padding: 3px 3px 3px 3px;
   cursor: pointer;
-  width: 264px;
+  width: 100%;
   background-color: #ffffff;
   border: 1px solid #c1c6c8;
   margin: -5px 0px 0px 0px; }
 
 .noResult {
   cursor: pointer;
-  width: 264px;
+  width: 100%;
   background-color: #ffffff;
   border: 1px solid #c1c6c8;
   margin: -5px 0px 0px 0px; }
