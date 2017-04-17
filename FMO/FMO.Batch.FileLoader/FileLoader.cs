@@ -1,36 +1,33 @@
 ﻿namespace Fmo.Batch.FileLoader
 {
+    using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.IO;
+    using System.IO.Compression;
     using System.Linq;
-    using System.Net.Http;
     using System.ServiceProcess;
     using System.Text;
     using System.Xml.Serialization;
+    using Fmo.Common.ConfigurationManagement;
+    using Fmo.Common.EmailManagement;
+    using Fmo.Common.ExceptionManagement;
+    using Fmo.Common.Interface;
+    using Fmo.Common.LoggingManagement;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories;
+    using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.DTO.FileProcessing;
     using Fmo.MessageBrokerCore.Messaging;
     using Fmo.NYBLoader;
-    using Fmo.NYBLoader.Interfaces;
     using Fmo.NYBLoader.Common;
+    using Fmo.NYBLoader.Interfaces;
     using Ninject;
-    using Ninject.Parameters;
-    using System.IO.Compression;
-    using System;
-    using Fmo.Common.Interface;
-    using Fmo.Common.LoggingManagement;
-    using Fmo.Common.ExceptionManagement;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DataServices.Repositories;
-    using Fmo.Common.EmailManagement;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.DBContext;
-    using Fmo.Common.ConfigurationManagement;
 
     public partial class FileLoader : ServiceBase
     {
-
         private string strProcessedFilePath = string.Empty;
         private string strErrorFilePath = string.Empty;
         private static string dateTimeFormat = "{0:-yyyy-MM-d-HH-mm-ss}";
@@ -108,7 +105,6 @@
             exceptionHelper = kernal.Get<IExceptionHelper>();
             emailHelper = kernal.Get<IEmailHelper>();
             configurationHelper = kernel.Get<IConfigurationHelper>();
-
         }
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
@@ -206,7 +202,7 @@
                     // is added to the monitored folder, using a lambda expression
                     // fileSWatch.Created += (senderObj, fileSysArgs) =>
                     //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
-                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
+                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
                     fileSWatch.Error += OnFileSystemWatcherError;
 
                     // Begin watching
@@ -240,7 +236,7 @@
         /// <param name="e">List of arguments - FileSystemEventArgs</param>
         /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
         /// <param name="action_Args">arguments to be passed to the executable (action)</param>
-        private void fileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
+        private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
         {
             string fileName = e.FullPath;
             if (!string.IsNullOrEmpty(action_Args))
@@ -267,7 +263,7 @@
         /// <summary>
         /// Read files from zip file and call NYBLoader Assembly to validate and save records
         /// </summary>
-        /// <param name="fileName"></param>
+        /// <param name="fileName">Input file name as a param</param>
         private void LoadNYBDetails(string fileName)
         {
             try
@@ -310,35 +306,5 @@
                 loggingHelper.LogError(ex);
             }
         }
-
-        /*
-         private string SerializeObject<T>(T toSerialize)
-         {
-             XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-
-             using (StringWriter textWriter = new StringWriter())
-             {
-                 xmlSerializer.Serialize(textWriter, toSerialize);
-                 return textWriter.ToString();
-             }
-         }
-
-         private T DeserializeXMLFileToObject<T>(string XmlFilename)
-         {
-             T returnObject = default(T);
-             if (string.IsNullOrEmpty(XmlFilename)) return default(T);
-
-             try
-             {
-                 StreamReader xmlStream = new StreamReader(XmlFilename);
-                 XmlSerializer serializer = new XmlSerializer(typeof(T));
-                 returnObject = (T)serializer.Deserialize(xmlStream);
-             }
-             catch (Exception ex)
-             {
-             }
-             return returnObject;
-         }
-         */
     }
 }
