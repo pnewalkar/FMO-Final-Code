@@ -5,7 +5,7 @@
 .map-toolbar {
   top: 70px;
   position: absolute;
-  min-width: 100%; }
+  left: 450px; }
 
 .map-toolbar .button {
   padding: 0px 10px 0px 0px;
