@@ -2,12 +2,12 @@
 
 .advanceSearchDialog{
     width: width-percent(1.7);
-    height: 100%;
+    height: height-percent(1);
 }
 
 .searchbox{
     width: width-percent(1);
-    height: 25px;
+    @include height(25px);
     @include margin(8px 0px 0px 0px);
 }
 
@@ -19,4 +19,20 @@
 .advSecList{
     @extend %body-content;
     overflow-y: auto;        
+}
+
+.searchTable {
+    @extend %body-content;
+    width: width-percent(1);
+    border-collapse: collapse;
+}
+
+.searchTh {
+    font-weight: bold;
+    .searchTd{
+    @extend %body-content;
+    @include padding(8px 8px 8px 8px);
+    @include border(1px solid $recess-grey);
+    text-align: left;
+        }
 }
