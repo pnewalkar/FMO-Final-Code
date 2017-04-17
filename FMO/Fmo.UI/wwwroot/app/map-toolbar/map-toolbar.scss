@@ -8,7 +8,7 @@
 .map-toolbar {
     @include top(70px);
     @include position(absolute);
-    left: 450px;
+    min-width: minWidth(1);
 }
 
 .map-toolbar .button {
