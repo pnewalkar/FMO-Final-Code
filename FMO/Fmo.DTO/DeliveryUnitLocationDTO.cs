@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Spatial;
 
@@ -22,9 +23,9 @@ namespace Fmo.DTO
         public string UnitBoundaryGeoJSONData { get; set; }
 
         [NotMapped]
-        public string BoundingBox { get; set; }
+        public List<string> BoundingBox { get; set; }
 
         [NotMapped]
-        public string BoundingBoxCenter { get; set; }
+        public List<string> BoundingBoxCenter { get; set; }
     }
 }
