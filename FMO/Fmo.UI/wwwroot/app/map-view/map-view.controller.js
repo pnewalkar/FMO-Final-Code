@@ -1,11 +1,12 @@
 'use strict';
 angular.module('mapView')
-	.controller('MapController', ['$scope',                                                               
-                                  'mapService',                                 
+	.controller('MapController', ['$scope',
+                                  'mapService',
+                                  'mapFactory',
                                   MapController])
 function MapController($scope,
-                       mapService) {
-    var vm = this;    
+                       mapService, mapFactory) {
+    var vm = this;
     vm.initialise = initialise();
     vm.initialiseMiniMap = initialiseMiniMap;
     vm.toggleActions = toggleActions;
@@ -13,13 +14,14 @@ function MapController($scope,
     vm.dotStyle = getDotStyle();
     var unit = vm.selectedDeliveryUnit;
     vm.selectedDeliveryUnit = unit;
-    $scope.$on('refreshLayers',mapService.refreshLayers);
+
+    $scope.$on('refreshLayers', mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
         mapService.mapToolChange(button);
     });
     $scope.$on("deleteSelectedFeature", function (event) {
         mapService.deleteSelectedFeature();
-    }); 
+    });
     function initialise() {
         mapService.initialise();
     }
@@ -38,4 +40,9 @@ function MapController($scope,
     function getDotStyle() {
         mapService.getDotStyle();
     }
+
+    $scope.$on('zommLevelchanged', function (event, data) {
+        //console.log(data); // 'Data to send'
+        $scope.zoomLimitReached = data;
+    });
 }

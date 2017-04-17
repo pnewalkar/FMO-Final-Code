@@ -84,9 +84,9 @@ namespace Fmo.BusinessServices.Services
                 // take the unit boundry plus 1 mile envelope
                 var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(deliveryUnitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), 27700).MakeValid();
 
-                deliveryUnitLocationDTO.BoundingBoxCenter = unitBoundary.STCentroid().STPointN(1).STX + "," + unitBoundary.STCentroid().STPointN(1).STY;
+                deliveryUnitLocationDTO.BoundingBoxCenter = new List<string> { unitBoundary.STCentroid().STPointN(1).STX.ToString(), unitBoundary.STCentroid().STPointN(1).STY.ToString() };
 
-                deliveryUnitLocationDTO.BoundingBox = unitBoundary.STPointN(1).STX.Value + "," + unitBoundary.STPointN(1).STY.Value + "," + unitBoundary.STPointN(3).STX.Value + "," + unitBoundary.STPointN(3).STY.Value;
+                deliveryUnitLocationDTO.BoundingBox = new List<string> { unitBoundary.STPointN(1).STX.Value.ToString(), unitBoundary.STPointN(1).STY.Value.ToString(), unitBoundary.STPointN(3).STX.Value.ToString(), unitBoundary.STPointN(3).STY.Value.ToString() };
 
                 deliveryUnitLocationDTO.UnitBoundaryGeoJSONData = GeUnitBoundaryJsonData(deliveryUnitLocationDTO);
             }
@@ -108,14 +108,14 @@ namespace Fmo.BusinessServices.Services
 
                 Geometry geometry = new Geometry();
 
-                geometry.type = OpenGisGeometryType.Polygon.ToString();
-
                 var resultCoordinates = deliveryUnitLocationDTO.UnitBoundryPolygon;
 
                 geometry.coordinates = new object();
 
                 if (deliveryUnitLocationDTO.UnitBoundryPolygon.SpatialTypeName == OpenGisGeometryType.Polygon.ToString())
                 {
+                    geometry.type = OpenGisGeometryType.Polygon.ToString();
+
                     sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
                     List<List<double[]>> listCords = new List<List<double[]>>();
                     List<double[]> cords = new List<double[]>();
@@ -132,6 +132,8 @@ namespace Fmo.BusinessServices.Services
                 }
                 else if (deliveryUnitLocationDTO.UnitBoundryPolygon.SpatialTypeName == OpenGisGeometryType.MultiPolygon.ToString())
                 {
+                    geometry.type = OpenGisGeometryType.MultiPolygon.ToString();
+
                     sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
                     List<List<List<double[]>>> listCords = new List<List<List<double[]>>>();
 

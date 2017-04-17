@@ -165,13 +165,13 @@
             {
                 var postalAddress = DataContext.PostalAddresses
                                .Where(
-                                n => n.Postcode == objPostalAddress.Postcode ||
-                                      n.BuildingName == objPostalAddress.BuildingName ||
-                                      n.BuildingNumber == objPostalAddress.BuildingNumber ||
-                                      n.SubBuildingName == objPostalAddress.SubBuildingName ||
-                                      n.OrganisationName == objPostalAddress.OrganisationName ||
-                                      n.DepartmentName == objPostalAddress.DepartmentName ||
-                                      n.Thoroughfare == objPostalAddress.Thoroughfare ||
+                                n => n.Postcode == objPostalAddress.Postcode &&
+                                      n.BuildingName == objPostalAddress.BuildingName &&
+                                      n.BuildingNumber == objPostalAddress.BuildingNumber &&
+                                      n.SubBuildingName == objPostalAddress.SubBuildingName &&
+                                      n.OrganisationName == objPostalAddress.OrganisationName &&
+                                      n.DepartmentName == objPostalAddress.DepartmentName &&
+                                      n.Thoroughfare == objPostalAddress.Thoroughfare &&
                                       n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).FirstOrDefault();
 
 
