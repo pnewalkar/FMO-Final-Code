@@ -129,6 +129,7 @@ function mapService(mapFactory,
             url: function (extent) { return 'http://localhost:34583/api/roadName/GetRouteLinks?bbox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
+
         //var mockAccessLinkLayer = new ol.layer.Vector({
         //    source: mockAccessLinkVector
         //});
@@ -142,6 +143,11 @@ function mapService(mapFactory,
 
         var roadLinkLayer = new ol.layer.Vector({
             source: roadLinkVector
+        });
+
+
+        var unitBoundaryLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({})
         });
 
         var roadsSelector = new MapFactory.LayerSelector();
@@ -196,6 +202,18 @@ function mapService(mapFactory,
         roadLinkLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
         roadLinkLayerSelector.keys = ["roadlink"];
         mapFactory.addLayer(roadLinkLayerSelector);
+
+        var unitBoundaryLayerSelector = new MapFactory.LayerSelector();
+        unitBoundaryLayerSelector.layerName = "Unit Boundary";
+        unitBoundaryLayerSelector.layer = unitBoundaryLayer;
+        unitBoundaryLayerSelector.group = "";
+        unitBoundaryLayerSelector.zIndex = 8;
+        unitBoundaryLayerSelector.selected = false;
+        unitBoundaryLayerSelector.onMiniMap = false;
+        unitBoundaryLayerSelector.selectorVisible = true;
+        unitBoundaryLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
+        unitBoundaryLayerSelector.keys = ["unitBoundary"];
+        mapFactory.addLayer(unitBoundaryLayerSelector);
 
         
 
@@ -274,8 +292,9 @@ function mapService(mapFactory,
         })
     }
     function refreshLayers() {        
-        mapLayers().forEach(function (layer) {
+        mapLayers().forEach(function (layer) {         
             layer.layer.setVisible(layer.selected);
+            layer.layer.changed();            
         });
         vm.layerSummary = getLayerSummary();
     }
