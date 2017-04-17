@@ -22,6 +22,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     var definedResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
     var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
     var zoomLimitReached = false;
+  
     return {
         initialiseMap: initialiseMap,
         getMap: getMap,
@@ -76,8 +77,6 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE),
             renderBuffer: 1000
         });
-
-
 
         map = new ol.Map({
             layers: layers.map(function (a) { return a.layer }),
@@ -327,7 +326,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             if (index > -1) {
 
                 if (index == 0 || index == definedScales.length - 1) {
-                    zoomLimitReached = true;                   
+                    zoomLimitReached = true;
                 }
 
                 var html = 1 + ': ' + scale;
@@ -366,23 +365,30 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     }
 
     function setUnitBoundaries(bbox, center) {
-        //  debugger;
         // var bbox = [505058.162109375, 100281.562988281, 518986.837890625, 114158.741943359];
-        // var center = [512022.5, 107220.15246582034];
-
-        //view = new ol.View({
-        //    projection: 'EPSG:27700',
-        //    extent: [505058.162109375, 100281.562988281, 518986.837890625, 114158.741943359],          
-        //    center: [512022.5, 107220.15246582034]            
-        //});
-
-        //map.setView(view);
-        //map.getView().fit(bbox, map.getSize());          
-
+        //var center= [512022.5, 107220.15246582034];
+      
         map.getView().fit(bbox, map.getSize());
-        // map.getView().getProjection().setExtent(bbox);
-        //  map.getView().setCenter(center);
-        map.getView().setResolution(0.5600011200022402);
+
+        var maxRes = map.getView().getResolution();
+
+        for (var i = 0; i < definedResolutions.length; i++) {
+            if (maxRes > definedResolutions[i]) {
+                maxRes = definedResolutions[i];
+                break;
+            }
+        }
+
+        view = new ol.View({
+            projection: 'EPSG:27700',
+            extent: bbox,
+            center: center,
+            resolutions: definedResolutions,
+            resolution: getResolutionFromScale(2000),
+            maxResolution: maxRes
+        });
+
+        map.setView(view);
     }
 
     function setDeliveryPoint(long, lat) {

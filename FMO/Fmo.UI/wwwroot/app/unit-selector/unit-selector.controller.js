@@ -8,65 +8,33 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
     vm.deliveryRouteUnit = [];
     BindData();
 
-    function DeliveryUnit() {        
+    function DeliveryUnit() {
         vm.selectedDeliveryUnit = vm.selectedUser;
-      
-        updateMapAfterUnitChange(vm.selectedDeliveryUnit);          
+
+        updateMapAfterUnitChange(vm.selectedDeliveryUnit);
 
     }
 
     function BindData() {
-        unitSelectorAPIService.getDeliveryUnit().then(function (response) {           
+        unitSelectorAPIService.getDeliveryUnit().then(function (response) {
             if (response.data)
                 vm.deliveryRouteUnit = response.data;
             vm.selectedUser = vm.deliveryRouteUnit[0];
             vm.selectedDeliveryUnit = vm.selectedUser;
 
             updateMapAfterUnitChange(vm.selectedDeliveryUnit);
-               
-          
-            //var deliveryUnitVectorLayer = new ol.layer.Vector({       
-            //    source:  new ol.source.Vector({
-            //        format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            //        features: (new ol.format.GeoJSON()).readFeatures(vm.selectedDeliveryUnit.unitBoundaryGeoJSONData)
-            //    })
-            //});
-
-            //deliveryUnitVectorLayer.set('name', 'deliveryUnitVectorLayer')
-            //mapFactory.getMap().addLayer(deliveryUnitVectorLayer);
-
         });
     }
 
-    function updateMapAfterUnitChange(selectedUnit)
-    {       
+    function updateMapAfterUnitChange(selectedUnit) {
+
         mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter);
+        
+        var unitBoundaryLayer = mapFactory.getLayer("Unit Boundary");
       
-        var map = mapFactory.getMap();
-        var layerToRemove;
-        map.getLayers().forEach(function (el) {
-            if (el.get('name') == 'deliveryUnitVectorLayer');
-            {
-                layerToRemove = el;
-            }
-            
-        })
-     
-        if (layerToRemove) {
-            console.log(layerToRemove.get('name'));
-            mapFactory.getMap().removeLayer(layerToRemove);
-        }
+        unitBoundaryLayer.layer.getSource().clear();
 
-        var deliveryUnitVectorLayer = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-                features: (new ol.format.GeoJSON()).readFeatures(selectedUnit.unitBoundaryGeoJSONData)
-            })
-        });
-
-        deliveryUnitVectorLayer.set('name', 'deliveryUnitVectorLayer')
-        mapFactory.getMap().addLayer(deliveryUnitVectorLayer);
-
+        unitBoundaryLayer.layer.getSource().addFeatures((new ol.format.GeoJSON()).readFeatures(selectedUnit.unitBoundaryGeoJSONData));
     }
 }
 

@@ -134,8 +134,7 @@
                 saveflag = true;
 
                 var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == Constants.PAFINSERT).ToList();
-                var lstPAFUpdateEvents = lstPostalAddress.Where(updateFiles => updateFiles.AmendmentType == Constants.PAFUPDATE).ToList();
-                var lstPAFDeleteEvents = lstPostalAddress.Where(deleteFiles => deleteFiles.AmendmentType == Constants.PAFDELETE).ToList();
+                
 
                 lstPAFInsertEvents.ForEach(postalAddress =>
                     {
@@ -145,6 +144,8 @@
 
                 //Sprint 1- Only create events has to be executed
                 /*
+                var lstPAFUpdateEvents = lstPostalAddress.Where(updateFiles => updateFiles.AmendmentType == Constants.PAFUPDATE).ToList();
+                var lstPAFDeleteEvents = lstPostalAddress.Where(deleteFiles => deleteFiles.AmendmentType == Constants.PAFDELETE).ToList();
                 lstPAFUpdateEvents.ForEach(postalAddress =>
                 {
                     IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
@@ -160,6 +161,7 @@
             catch (Exception)
             {
                 saveflag = false;
+                throw;
             }
             return saveflag;
         }
