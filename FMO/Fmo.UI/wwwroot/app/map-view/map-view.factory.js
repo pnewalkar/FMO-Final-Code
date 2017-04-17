@@ -42,7 +42,8 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         definedScales: definedScales,
         getResolutionFromScale: getResolutionFromScale,
         getScaleFromResolution: getScaleFromResolution,
-        setUnitBoundaries: setUnitBoundaries       
+        setUnitBoundaries: setUnitBoundaries,
+        setDeliveryPoint: setDeliveryPoint
     };
 
     function initialiseMap() {
@@ -382,6 +383,22 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         // map.getView().getProjection().setExtent(bbox);
         //  map.getView().setCenter(center);
         map.getView().setResolution(0.5600011200022402);
+    }
+
+    function setDeliveryPoint(long, lat) {
+        var point_feature = new ol.Feature({});
+
+        var point_geom = new ol.geom.Point([long, lat]);
+        point_feature.setGeometry(point_geom);
+
+        var vector_layer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [point_feature]
+            })
+        });
+        vector_layer.setStyle(mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)("deliverypoint"));
+        map.addLayer(vector_layer);
+        map.getView().setCenter([long, lat]);
     }
 }
 
