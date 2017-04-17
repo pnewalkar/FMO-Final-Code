@@ -27,12 +27,13 @@
     border-collapse: collapse;
 }
 
-.searchTh {
-    font-weight: bold;
-    .searchTd{
+.searchTh, .searchTd{
     @extend %body-content;
     @include padding(8px 8px 8px 8px);
     @include border(1px solid $recess-grey);
-    text-align: left;
-        }
+    text-align: left;      
+}
+
+.searchTh{
+    font-weight: bold;
 }
