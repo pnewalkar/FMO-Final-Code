@@ -1,16 +1,14 @@
 angular
     .module('sideNav')
-    .controller("sideNavController",['$scope','$state','$stateParams','routeLogService','$mdSidenav','$mdDialog','advanceSearchService','sideNavApiService', sideNavController])
+    .controller("sideNavController",['$scope','$state','$stateParams','routeLogService','$mdSidenav','$mdDialog','sideNavApiService', sideNavController])
 
-function sideNavController($scope, $state, $stateParams, routeLogService, $mdSidenav, $mdDialog, advanceSearchService, sideNavApiService) {
+function sideNavController($scope, $state, $stateParams, routeLogService, $mdSidenav, $mdDialog, sideNavApiService) {
         vm = this;
         vm.routeLog =routeLog;
         vm.openModalPopup = openModalPopup;
         vm.fetchActionItems = fetchActionItems;
         $scope.results;
         vm.fetchActions = fetchActions;
-        //vm.advanceSearch = advanceSearch;
-        //vm.openAdvanceSearchPopup = openAdvanceSearchPopup;
         vm.closeSideNav = closeSideNav;
         vm.routeSimulation = routeSimulation;
         vm.selectedUnit = $stateParams;
@@ -20,8 +18,7 @@ function sideNavController($scope, $state, $stateParams, routeLogService, $mdSid
         }
         $scope.toggleSideNav = function() {
             $mdSidenav('left').toggle();
-            vm.fetchActionItems();
-            
+            vm.fetchActionItems();           
     }
 
 
@@ -38,11 +35,8 @@ function sideNavController($scope, $state, $stateParams, routeLogService, $mdSid
         
     function fetchActionItems()
     {
-     
         sideNavApiService.fetchActionItems().then(function (response) {
-
             $scope.results = response.data;
-  
     });
     }
 
@@ -50,8 +44,7 @@ function sideNavController($scope, $state, $stateParams, routeLogService, $mdSid
             $mdSidenav('left').close();
         };
 
-        function fetchActions(query, selectedUnit) {
-          
+        function fetchActions(query, selectedUnit) { 
             if(query=="Route Log")
             {
                 vm.routeLog(selectedUnit);
