@@ -1,6 +1,5 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
-
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -175,7 +174,6 @@
                                       n.Thoroughfare == objPostalAddress.Thoroughfare &&
                                       n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).FirstOrDefault();
 
-
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
             catch (Exception ex)
@@ -244,12 +242,11 @@
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
-        /// <param name="uDPRN"></param>
-        /// <param name="strFileName"></param>
-        /// <param name="fileType"></param>
-        /// <param name="strException"></param>
-        /// <returns></returns>
-        private bool LogFileException(int uDPRN, string strFileName, string fileType, string strException)
+        /// <param name="uDPRN">UDPRN</param>
+        /// <param name="strFileName">FileName</param>
+        /// <param name="fileType">Filetype</param>
+        /// <param name="strException">Exception</param>
+        private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
             try
             {
@@ -263,8 +260,7 @@
                     FileType = fileType,
                     NatureOfError = strException
                 };
-
-                return fileProcessingLog.LogFileException(objFileProcessingLog);
+                fileProcessingLog.LogFileException(objFileProcessingLog);
             }
             catch (Exception ex)
             {
