@@ -29,8 +29,8 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Fetch the Delivery Route by passing operationStateID and deliveryScenarioID.
         /// </summary>
-        /// <param name="operationStateID">Guid</param>
-        /// <param name="deliveryScenarioID">Guid</param>
+        /// <param name="operationStateID">The operationstate id.</param>
+        /// <param name="deliveryScenarioID">The delivery scenario id.</param>
         /// <returns>List</returns>
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
@@ -58,8 +58,8 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Fetch the Delivery Scenario.
         /// </summary>
-        /// <param name="operationStateID">Guid</param>
-        /// <param name="deliveryScenarioID">Guid</param>
+        /// <param name="operationStateID">The operationstate id.</param>
+        /// <param name="deliveryScenarioID">The delivery scenario id.</param>
         /// <returns>List</returns>
         public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID)
         {
@@ -74,7 +74,7 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Fetch the Delivery unit.
         /// </summary>
-        /// <returns>List</returns>
+        /// <returns>List of <see cref="DeliveryUnitLocationDTO"/>.</returns>
         public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
         {
             var deliveryUnitLocationDTOList = deliveryUnitLocationRespository.FetchDeliveryUnit();
@@ -84,9 +84,9 @@ namespace Fmo.BusinessServices.Services
                 // take the unit boundry plus 1 mile envelope
                 var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(deliveryUnitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), 27700).MakeValid();
 
-                deliveryUnitLocationDTO.BoundingBoxCenter = new List<string> { unitBoundary.STCentroid().STPointN(1).STX.ToString(), unitBoundary.STCentroid().STPointN(1).STY.ToString() };
+                deliveryUnitLocationDTO.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
 
-                deliveryUnitLocationDTO.BoundingBox = new List<string> { unitBoundary.STPointN(1).STX.Value.ToString(), unitBoundary.STPointN(1).STY.Value.ToString(), unitBoundary.STPointN(3).STX.Value.ToString(), unitBoundary.STPointN(3).STY.Value.ToString() };
+                deliveryUnitLocationDTO.BoundingBox = new List<double> { unitBoundary.STPointN(1).STX.Value, unitBoundary.STPointN(1).STY.Value, unitBoundary.STPointN(3).STX.Value, unitBoundary.STPointN(3).STY.Value };
 
                 deliveryUnitLocationDTO.UnitBoundaryGeoJSONData = GeUnitBoundaryJsonData(deliveryUnitLocationDTO);
             }
@@ -94,6 +94,16 @@ namespace Fmo.BusinessServices.Services
             return deliveryUnitLocationDTOList;
         }
 
+        public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets the boundary for an unit.
+        /// </summary>
+        /// <param name="deliveryUnitLocationDTO">The <see cref="DeliveryUnitLocationDTO"/>.</param>
+        /// <returns>Json object containing boundary.</returns>
         private string GeUnitBoundaryJsonData(DeliveryUnitLocationDTO deliveryUnitLocationDTO)
         {
             string jsonData = string.Empty;
@@ -167,11 +177,6 @@ namespace Fmo.BusinessServices.Services
             }
 
             return jsonData;
-        }
-
-        public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
-        {
-            throw new NotImplementedException();
         }
     }
 }

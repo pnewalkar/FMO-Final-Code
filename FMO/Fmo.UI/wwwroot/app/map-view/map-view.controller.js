@@ -52,5 +52,6 @@ function MapController($scope,
     $scope.$on('zommLevelchanged', function (event, data) {
         //console.log(data); // 'Data to send'
         $scope.zoomLimitReached = data;
+        $scope.$apply();
     });
 }

@@ -21,7 +21,7 @@
         </ul>
         <ul>
             <li ng-show="vm.results.length >= 5">
-                <button class="viewResult"><a ng-click="vm.advanceSearch(vm.searchText)">{{vm.resultscount[0].count}} View More Results<i class="fa fa-angle-double-right" aria-hidden="true"></i></a></button>
+                <button class="viewResult" ng-click="vm.advanceSearch(vm.searchText)"> <span class="searchCount">{{vm.resultscount[0].count}}</span> View More Results<i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
             </li>
         </ul>
         <ul>

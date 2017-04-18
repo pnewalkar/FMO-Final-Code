@@ -1,6 +1,8 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
-    using Common.Constants;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Common.Enums;
     using Common.Interface;
     using Fmo.DataServices.DBContext;
@@ -9,9 +11,6 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -81,8 +80,7 @@
             {
                 if (objPostalAddress != null)
                 {
-                    //var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
-                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
@@ -103,14 +101,6 @@
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
-                        objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
-                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0 && objAddress.OrganisationName.Length > 0)
-                        {
-                            foreach (var objDelPoint in objAddress.DeliveryPoints)
-                            {
-                                objDelPoint.DeliveryPointUseIndicator = Constants.DeliveryPointUseIndicatorPAF;
-                            }
-                        }
                     }
                     else
                     {
@@ -184,7 +174,6 @@
                                       n.Thoroughfare == objPostalAddress.Thoroughfare &&
                                       n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).FirstOrDefault();
 
-
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
             catch (Exception ex)
@@ -257,12 +246,11 @@
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
-        /// <param name="uDPRN"></param>
-        /// <param name="strFileName"></param>
-        /// <param name="fileType"></param>
-        /// <param name="strException"></param>
-        /// <returns></returns>
-        private bool LogFileException(int uDPRN, string strFileName, string fileType, string strException)
+        /// <param name="uDPRN">UDPRN</param>
+        /// <param name="strFileName">FileName</param>
+        /// <param name="fileType">Filetype</param>
+        /// <param name="strException">Exception</param>
+        private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
             try
             {
@@ -276,8 +264,7 @@
                     FileType = fileType,
                     NatureOfError = strException
                 };
-
-                return fileProcessingLog.LogFileException(objFileProcessingLog);
+                fileProcessingLog.LogFileException(objFileProcessingLog);
             }
             catch (Exception ex)
             {

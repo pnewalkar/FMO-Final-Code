@@ -10,27 +10,29 @@ namespace Fmo.Common.AsyncEnumerator
 {
     public class DbAsyncEnumerable<T> : EnumerableQuery<T>, IDbAsyncEnumerable<T>, IQueryable<T>
     {
-        public  DbAsyncEnumerable(IEnumerable<T> enumerable)
+        public DbAsyncEnumerable(IEnumerable<T> enumerable)
             : base(enumerable)
-        { }
+        {
+        }
 
-        public  DbAsyncEnumerable(Expression expression)
+        public DbAsyncEnumerable(Expression expression)
             : base(expression)
-        { }
+        {
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get { return new DbAsyncQueryProvider<T>(this); }
+        }
 
         public IDbAsyncEnumerator<T> GetAsyncEnumerator()
         {
-            return new  DbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+            return new DbAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
         }
 
         IDbAsyncEnumerator IDbAsyncEnumerable.GetAsyncEnumerator()
         {
             return GetAsyncEnumerator();
-        }
-
-        IQueryProvider IQueryable.Provider
-        {
-            get { return new  DbAsyncQueryProvider<T>(this); }
         }
     }
 }

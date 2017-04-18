@@ -21,7 +21,7 @@
 .zoom-control {
   position: absolute;
   top: 0px;
-  left: -50px; }
+  left: -37px; }
 
 .zoom-scale {
   position: absolute;
@@ -33,4 +33,10 @@
   left: -155px; }
 
 .levelDanger {
-  background-color: rgba(255, 0, 0, 0.61); }
+  color: red;
+  border: 1px solid red; }
+
+.ol-zoom {
+  top: 0;
+  left: auto;
+  position: relative; }

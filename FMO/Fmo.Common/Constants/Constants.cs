@@ -46,7 +46,7 @@ namespace Fmo.Common.Constants
         public const string PAFINSERT = "I";
         public const string PAFUPDATE = "C";
         public const string PAFDELETE = "D";
-
+        public const string FMOWebAPIURL = "FMOWebAPIURL";
+        public const string FMOWebAPIName = "FMOWebAPIName"; 
     }
 }
-

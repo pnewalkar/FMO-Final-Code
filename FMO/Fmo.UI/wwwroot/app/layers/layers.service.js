@@ -45,8 +45,7 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
         mapService.refreshLayers();
     }
 
-    function onChange(changedLayer) {
-        debugger;
+    function onChange(changedLayer) {      
         // fetchDeliveryPoints();
         //  fetchAccessLinks();
         if (changedLayer.group) {
