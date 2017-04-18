@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Data.SqlTypes;
     using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Helpers;
@@ -36,9 +38,9 @@
                 var accessLinkCoordinates = GetData(null, boundaryBox.Split(','));
                 return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -49,9 +51,6 @@
         /// <returns> AccsessLink object</returns>
         private string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
         {
-            AccessLinkDTO accessLinkDTOCollectionObj = new AccessLinkDTO();
-            string json = string.Empty;
-
             var geoJson = new GeoJson
             {
                 features = new List<Feature>()
@@ -67,7 +66,7 @@
                     var resultCoordinates = res.AccessLinkLine;
 
                     SqlGeometry accessLinksqlGeometry = null;
-                    if (geometry.type == "LineString")
+                    if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
                         accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
 
@@ -90,7 +89,7 @@
                     Feature feature = new Feature();
                     feature.geometry = geometry;
 
-                    feature.type = "Feature";
+                    feature.type = Constants.FeatureType;
                     feature.id = res.AccessLink_Id;
                     feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
 
