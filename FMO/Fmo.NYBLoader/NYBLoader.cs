@@ -16,10 +16,8 @@ namespace Fmo.NYBLoader
         private static int noOfCharacters = 15;
         private static int maxCharacters = 507;
         private static int csvValues = 16;
-        private string strFMOWEbApiURL = string.Empty;
         private string strFMOWebAPIName = string.Empty;
         private IHttpHandler httpHandler;
-        private IConfigurationHelper configurationHelper;
         private ILoggingHelper loggingHelper;
         private IExceptionHelper exceptionHelper;
         #endregion
@@ -27,10 +25,8 @@ namespace Fmo.NYBLoader
         #region constructor
         public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
-            this.configurationHelper = configurationHelper;
             this.httpHandler = httpHandler;
-            this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIURL).ToString();
-            this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIName).ToString();
+            this.strFMOWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
             this.exceptionHelper = exceptionHelper;
         }
@@ -42,21 +38,21 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="strLine">Line read from CSV File</param>
         /// <returns>Postal Address DTO</returns>
-        public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine)
+        public List<PostalAddressDTO> LoadNybDetailsFromCSV(string line)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-                string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                string[] arrPAFDetails = line.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
 
                 if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {
-                    lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
+                    lstAddressDetails = arrPAFDetails.Select(v => MapNybDetailsToDTO(v)).ToList();
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
                         //Validate NYB Details
-                        ValidateNYBDetails(lstAddressDetails);
+                        ValidateNybDetails(lstAddressDetails);
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
 
@@ -93,7 +89,7 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
         /// <returns>If success returns true else returns false</returns>
-        public async Task<bool> SaveNYBDetails(List<PostalAddressDTO> lstAddress, string fileName)
+        public async Task<bool> SaveNybDetails(List<PostalAddressDTO> lstAddress, string fileName)
         {
             bool saveflag = false;
             try
@@ -140,7 +136,7 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="csvLine">Line read from CSV File</param>
         /// <returns>Returns mapped DTO</returns>
-        private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
+        private static PostalAddressDTO MapNybDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string[] values = csvLine.Split(',');
@@ -171,7 +167,7 @@ namespace Fmo.NYBLoader
         /// Perform business validation on postalAddressDTO object
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
-        private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
+        private static void ValidateNybDetails(List<PostalAddressDTO> lstAddress)
         {
             foreach (PostalAddressDTO objAdd in lstAddress)
             {
