@@ -114,7 +114,7 @@ namespace Fmo.DataServices.Repositories
                                         DependentLocality = l.PostalAddress.DependentLocality,
                                         UDPRN = l.PostalAddress.UDPRN
                                     }
-                                }).Take(10)
+                                })
                                 .ToListAsync();
 
             return result;

@@ -42,7 +42,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).Take(10).ToListAsync();
+                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).ToListAsync();
              //   var result = await DataContext.DeliveryRoutes.Take(10).ToListAsync();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes);
             }

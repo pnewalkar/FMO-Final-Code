@@ -36,7 +36,8 @@ i.fa.fa-map-marker.route {
   color: #53535a;
   margin: 0px 0px 5px 0px;
   padding: 5px 5px 5px 5px;
-  border-bottom: 1px solid grey; }
+  border-bottom: 1px solid grey;
+  cursor: pointer; }
 
 i.fa.fa-search {
   font-size: 25px; }
@@ -46,7 +47,8 @@ button.viewResult {
   padding: 3px;
   background: white;
   border: 1px solid #e0e0e0;
-  margin-top: -5px; }
+  margin-top: -5px;
+  cursor: pointer; }
 
 button.noResult {
   width: 264px;
