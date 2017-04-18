@@ -34,6 +34,11 @@
             }
         }
 
+        /// <summary>
+        /// Fetch street name for Basic Search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The result set of street name.</returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText)
         {
             try
@@ -60,6 +65,11 @@
             }
         }
 
+        /// <summary>
+        /// Get the count of street name
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The total count of street name</returns>
         public async Task<int> GetStreetNameCount(string searchText)
         {
             try

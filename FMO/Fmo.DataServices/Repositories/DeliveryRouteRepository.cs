@@ -52,6 +52,11 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// Fetch Delivery route for Basic Search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The result set of delivery route.</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
         {
             try
@@ -76,6 +81,11 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// Get the count of delivery route
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The total count of delivery route</returns>
         public async Task<int> GetDeliveryRouteCount(string searchText)
         {
             try
