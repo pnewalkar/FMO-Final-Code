@@ -22,8 +22,8 @@ namespace Fmo.DataServices.Repositories
         /// <summary>
         /// Fetch the Delivery Route.
         /// </summary>
-        /// <param name="operationStateID">Guid</param>
-        /// <param name="deliveryScenarioID">Guid</param>
+        /// <param name="operationStateID">Guid operationStateID</param>
+        /// <param name="deliveryScenarioID">Guid deliveryScenarioID</param>
         /// <returns>List</returns>
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {

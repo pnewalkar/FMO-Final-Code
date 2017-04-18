@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Fmo.DTO;
-using Fmo.Entities;
-using System;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
@@ -9,11 +8,11 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName);
 
+        bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName);
+
         PostalAddressDTO GetPostalAddress(int? uDPRN);
 
         PostalAddressDTO GetPostalAddress(PostalAddressDTO objPostalAddress);
-
-        //bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName);
 
         bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName);
 
