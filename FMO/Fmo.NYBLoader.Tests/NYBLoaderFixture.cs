@@ -62,7 +62,6 @@ namespace Fmo.NYBLoader.Tests
             httpHandlerMock.Setup(x => x.PostAsJsonAsync(It.IsAny<string>(), It.IsAny<List<PostalAddressDTO>>())).Throws<Exception>();
 
             var result = await testCandidate.SaveNYBDetails(lstPostalAddressDTO,"test.csv");
-            httpHandlerMock.Verify(x => x.SetBaseAddress(It.IsAny<Uri>()), Times.Once());
             httpHandlerMock.Verify(x => x.PostAsJsonAsync(It.IsAny<string>(), lstPostalAddressDTO), Times.Once());
             Assert.IsNotNull(result);
             Assert.IsFalse(result);

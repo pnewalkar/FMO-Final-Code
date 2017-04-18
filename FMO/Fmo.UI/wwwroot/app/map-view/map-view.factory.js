@@ -22,7 +22,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     var definedResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
     var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
     var zoomLimitReached = false;
-  
+
     return {
         initialiseMap: initialiseMap,
         getMap: getMap,
@@ -84,10 +84,10 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             view: view,
             loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
-            controls: ol.control.defaults().extend([
-                getCustomScaleLine()
-            ])
-        });
+            controls: []});
+
+        map.addControl(getCustomScaleLine());
+
         var external_control = new ol.control.Zoom({
             target: document.getElementById('zoom-control')
         });
@@ -301,6 +301,21 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             return result;
         });
     }
+    function setZoomButtonStatus(buttonList, status) {
+        for (var i = 0; i < buttonList.length; i++) {
+            buttonList[i].disabled = status;
+
+            if (status) {
+                buttonList[i].style.opacity = "0.65";
+                buttonList[i].style.cursor = "not-allowed";
+            }
+            else
+            {
+                buttonList[i].style.opacity = "1";
+                buttonList[i].style.cursor = "pointer";
+            }
+        }
+    }
 
     function getCustomScaleLine() {
         customScaleLine = function (opt_options) {
@@ -324,9 +339,28 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             var scale = Math.round(getScaleFromResolution(resolution));
             var index = definedScales.indexOf(scale);
             if (index > -1) {
+                var zoomInButtons = document.getElementsByClassName("ol-zoom-in");
+                if (index == definedScales.length - 1) {
+                    setZoomButtonStatus(zoomInButtons, true);
 
-                if (index == 0 || index == definedScales.length - 1) {
                     zoomLimitReached = true;
+                }
+                else {
+                    setZoomButtonStatus(zoomInButtons, false);
+
+                    zoomLimitReached = false;
+                }
+
+                var zoomOutButtons = document.getElementsByClassName("ol-zoom-out");
+                if (index == 0) {
+                    setZoomButtonStatus(zoomOutButtons, true);
+
+                    zoomLimitReached = true;
+                }
+                else {
+                    setZoomButtonStatus(zoomOutButtons, false);
+
+                    zoomLimitReached = false;
                 }
 
                 var html = 1 + ': ' + scale;
@@ -367,7 +401,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     function setUnitBoundaries(bbox, center) {
         // var bbox = [505058.162109375, 100281.562988281, 518986.837890625, 114158.741943359];
         //var center= [512022.5, 107220.15246582034];
-      
+
         map.getView().fit(bbox, map.getSize());
 
         var maxRes = map.getView().getResolution();
