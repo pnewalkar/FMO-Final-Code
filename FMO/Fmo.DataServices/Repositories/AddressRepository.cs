@@ -1,5 +1,8 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Common.Enums;
     using Common.Interface;
     using Fmo.DataServices.DBContext;
@@ -8,9 +11,7 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using Common.Constants;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -35,33 +36,26 @@
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             bool deleteFlag = false;
-            try
+            if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                if (lstUDPRN != null && lstUDPRN.Count() > 0)
+                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
+                if (lstAddress != null && lstAddress.Count > 0)
                 {
-                    var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
-                    if (lstAddress != null && lstAddress.Count > 0)
+                    lstAddress.ForEach(postalAddressEntity =>
                     {
-                        lstAddress.ForEach(postalAddressEntity =>
+                        if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
-                            if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
-                            {
-                                deleteFlag = false;
-                                this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
-                            }
-                            else
-                            {
-                                DataContext.PostalAddresses.Remove(postalAddressEntity);
-                                DataContext.SaveChanges();
-                                deleteFlag = true;
-                            }
-                        });
-                    }
+                            deleteFlag = false;
+                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
+                        }
+                        else
+                        {
+                            DataContext.PostalAddresses.Remove(postalAddressEntity);
+                            DataContext.SaveChanges();
+                            deleteFlag = true;
+                        }
+                    });
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
 
             return deleteFlag;
@@ -174,7 +168,6 @@
                                       n.Thoroughfare == objPostalAddress.Thoroughfare &&
                                       n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).FirstOrDefault();
 
-
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
             catch (Exception ex)
@@ -183,15 +176,21 @@
             }
         }
 
-        /*public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
+        /// <summary>
+        /// Create or update PAF details depending on the UDPRN
+        /// </summary>
+        /// <param name="objPostalAddress">PAF details DTO</param>
+        /// <param name="strFileName">CSV Filename</param>
+        /// <returns>true or false</returns>
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
             {
                 if (objPostalAddress != null)
                 {
-                    // .Include("DeliveryPoints")
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -206,26 +205,24 @@
                         objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
                         objAddress.DepartmentName = objPostalAddress.DepartmentName;
                         objAddress.OrganisationName = objPostalAddress.OrganisationName;
+                        objAddress.UDPRN = objPostalAddress.UDPRN;
                         objAddress.PostcodeType = objPostalAddress.PostcodeType;
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                        objAddress.UDPRN = objPostalAddress.UDPRN;
+                        objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
+                        objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
+                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        {
+                            foreach (var objDelPoint in objAddress.DeliveryPoints)
+                            {
+                                if (objAddress.OrganisationName.Length > 0)
+                                {
+                                    objDelPoint.DeliveryPointUseIndicator = Constants.DeliveryPointUseIndicatorPAF;
+                                }
 
-                        // if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
-                        // {
-                        //    foreach (var objDelPoint in objAddress.DeliveryPoints)
-                        //    {
-                        //        objDelPoint.UDPRN = objPostalAddress.UDPRN;
-                        //    }
-                        // }
-                        // else
-                        // {
-                        //    //To DO log error
-                        // }
-                    }
-                    else
-                    {
-                        // Error Log entry
+                                objDelPoint.UDPRN = objPostalAddress.UDPRN;
+                            }
+                        }
                     }
 
                     DataContext.SaveChanges();
@@ -234,41 +231,32 @@
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
             }
 
             return saveFlag;
-        }*/
+        }
 
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
-        /// <param name="uDPRN"></param>
-        /// <param name="strFileName"></param>
-        /// <param name="fileType"></param>
-        /// <param name="strException"></param>
-        /// <returns></returns>
-        private bool LogFileException(int uDPRN, string strFileName, string fileType, string strException)
+        /// <param name="uDPRN">UDPRN</param>
+        /// <param name="strFileName">FileName</param>
+        /// <param name="fileType">Filetype</param>
+        /// <param name="strException">Exception</param>
+        private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
-            try
+            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
             {
-                FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
-                {
-                    FileID = Guid.NewGuid(),
-                    UDPRN = uDPRN,
-                    AmendmentType = "I",
-                    FileName = strFileName,
-                    FileProcessing_TimeStamp = DateTime.Now,
-                    FileType = fileType,
-                    NatureOfError = strException
-                };
-
-                return fileProcessingLog.LogFileException(objFileProcessingLog);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+                FileID = Guid.NewGuid(),
+                UDPRN = uDPRN,
+                AmendmentType = "I",
+                FileName = strFileName,
+                FileProcessing_TimeStamp = DateTime.Now,
+                FileType = fileType,
+                NatureOfError = strException
+            };
+            fileProcessingLog.LogFileException(objFileProcessingLog);
         }
     }
 }

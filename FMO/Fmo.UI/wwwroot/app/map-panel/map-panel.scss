@@ -35,8 +35,8 @@ map-panel {
 }
 
 .map-panel .panel-header {
-    pointer-events: auto;
     @include background($white-smoke);
+    pointer-events: auto;
 }
 
 .map-panel .fa {
@@ -45,8 +45,8 @@ map-panel {
 
 .map-panel .map-panel-content {
     @include padding(3px 3px 3px 3px);
-    overflow: auto;
     height: calc(100% - 50px);
+    overflow: auto;
     pointer-events: auto;
 }
 

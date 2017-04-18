@@ -23,7 +23,7 @@ function mapToolbarService(mapService) {
     {
         var shape = getShapeForButton(button);
 
-        if (button == vm.selectedButton && mapService.mapButtons.length != 1)
+        if (button == vm.selectedButton && mapService.getMapButtons().length != 1)
         {
             deselectButton(button);
             return false;

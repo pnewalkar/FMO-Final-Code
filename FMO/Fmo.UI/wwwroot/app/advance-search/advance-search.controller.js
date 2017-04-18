@@ -165,9 +165,14 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
         debugger;
 
         if (selectedItem.type === "DeliveryPoint") {
-
-            $state.go('searchDetails', { selectedItem: selectedItem
-        });
+            searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
+                .then(function (response) {
+                    var data = response.data;
+                    var lat = data.features[0].geometry.coordinates[1];
+                    var long = data.features[0].geometry.coordinates[0];
+                    mapFactory.setDeliveryPoint(long, lat);
+                });
+            $state.go('searchDetails', { selectedItem: selectedItem });
         }
         $mdDialog.cancel();
     }

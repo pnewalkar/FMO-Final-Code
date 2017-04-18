@@ -10,27 +10,43 @@
 
 #leftPanel {
   position: absolute;
-  left: 15px;
-  top: 75px; }
+  top: 75px;
+  left: 15px; }
 
 #rightPanel {
   position: absolute;
-  right: 15px;
-  top: 75px; }
+  top: 75px;
+  right: 15px; }
 
 .zoom-control {
   position: absolute;
-  left: -50px;
-  top: 0; }
-
-.zoom-scale {
-  position: absolute;
-  background-color: #ffffff;
-  width: 34.96503%;
-  padding: 3px 10px 3px 10px;
-  text-align: center;
-  left: -155px;
-  top: 10px; }
+  top: 0px;
+  left: -37px; }
 
 .levelDanger {
-  background-color: rgba(255, 0, 0, 0.61); }
+    color: red;
+    border: 1px solid red;
+}
+
+.ol-zoom {
+  top: 0;
+  left: auto;
+  position: relative; }
+
+.zoom-scale {
+    left: -56%;
+    position: absolute;
+    width: 35%;
+}
+
+.labletext {
+    margin-top: 4px;
+    margin-left: 9px;
+    position: absolute;
+    font-size: 16px;
+}
+
+input[name="zoom-scale"] {
+    width: 95.5%;
+    text-indent: 22px;
+}

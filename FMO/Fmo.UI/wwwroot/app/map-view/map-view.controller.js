@@ -14,6 +14,8 @@ function MapController($scope,
     vm.dotStyle = getDotStyle();
     var unit = vm.selectedDeliveryUnit;
     vm.selectedDeliveryUnit = unit;
+    vm.selectFeatures = selectFeatures
+    vm.onEnterKeypress = onEnterKeypress;
 
     $scope.$on('refreshLayers', mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
@@ -22,6 +24,8 @@ function MapController($scope,
     $scope.$on("deleteSelectedFeature", function (event) {
         mapService.deleteSelectedFeature();
     });
+    mapService.addSelectionListener(selectFeatures);
+
     function initialise() {
         mapService.initialise();
     }
@@ -40,9 +44,20 @@ function MapController($scope,
     function getDotStyle() {
         mapService.getDotStyle();
     }
+    function selectFeatures(features) {
+        mapService.getfeature(features);
+        mapService.selectFeatures();
+    }
 
-    $scope.$on('zommLevelchanged', function (event, data) {
-        //console.log(data); // 'Data to send'
-        $scope.zoomLimitReached = data;
+    $scope.$on('zommLevelchanged', function (event, data) {      
+            vm.zoomLimitReached = data.zoomLimitReached;
+            vm.currentScale = data.currentScale
+            vm.maximumScale = data.maximumScale       
     });
+
+    function onEnterKeypress(currentScale) {
+        if (currentScale != '' && (currentScale % 100 == 0 && vm.maximumScale >= currentScale)) {
+            mapFactory.setMapScale(currentScale)
+        }
+    }
 }

@@ -23,9 +23,9 @@ namespace Fmo.DTO
         public string UnitBoundaryGeoJSONData { get; set; }
 
         [NotMapped]
-        public List<string> BoundingBox { get; set; }
+        public List<double> BoundingBox { get; set; }
 
         [NotMapped]
-        public List<string> BoundingBoxCenter { get; set; }
+        public List<double> BoundingBoxCenter { get; set; }
     }
 }

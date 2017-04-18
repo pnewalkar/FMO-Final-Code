@@ -72,7 +72,7 @@ $red:red;
     cursor: $cursor;
     }
 
-//borde
+//border
 @mixin border($border) {
     border: $border;
     }
@@ -92,11 +92,21 @@ $red:red;
     width: $width;
     }
 
+//height
+@mixin height($height) {
+    height: $height;
+    }
+
 //functions:-
 
 //min-width function
 @function minWidth($width) {
     @return 100% / $width;
+}
+
+//height
+@function height-percent($height) {
+    @return 100% / $height;
 }
 
 //width
