@@ -1,4 +1,4 @@
-.searchInput, .searchData span, button.viewResult, button.noResult, .viewResult a, .searchContext h1, .searchContext span {
+.searchInput, .searchData span, .viewResult, .noResult, .viewResult a, .searchContext h1, .searchContext span {
   color: #2a2a2d;
   font-family: PF DIN;
   font-size: 16px; }
@@ -28,45 +28,45 @@ i.fa.fa-map-marker.route {
 
 .searchContent {
   background-color: #ffffff;
-  /*width: width-percent(1.05);*/
-  margin-top: 16px; }
+  margin: 16px 0px 0px 0px; }
 
 .searchData {
   background-color: #ffffff;
   color: #53535a;
-  margin: 0px 0px 5px 0px;
   padding: 5px 5px 5px 5px;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid #808080;
   cursor: pointer; }
 
 i.fa.fa-search {
+  color: #ffffff;
   font-size: 25px; }
 
-button.viewResult {
-  width: 264px;
-  padding: 3px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  margin-top: -5px;
-  cursor: pointer; }
+.viewResult {
+  padding: 3px 3px 3px 3px;
+  cursor: pointer;
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #c1c6c8;
+  margin: -5px 0px 0px 0px; }
 
-button.noResult {
-  width: 264px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  margin-top: -5px; }
+.noResult {
+  cursor: pointer;
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #c1c6c8;
+  margin: -5px 0px 0px 0px; }
 
 i.fa.fa-angle-double-right {
-  color: black;
-  margin-left: 65px; }
+  color: #2a2a2d;
+  margin: 0px 0px 0px 65px; }
 
 .viewResult a {
   float: left; }
 
 i.fa.fa-angle-right.searchRight {
-  color: black;
+  color: #2a2a2d;
   float: right;
-  margin-right: 10px; }
+  margin: 0px 10px 0px 0px; }
 
 .searchContext span {
   margin: 15px 0px 10px 15px; }

@@ -4,15 +4,11 @@ h2 span {
  @extend %header-content;
 }
 
-.md-toolbar-tools .fa{
-    font-size: $primary-font-size; 
-    color: $white;
+.fa-bars,.fa-inbox{
+    @include font-color($white);
+    font-size: $primary-font-size;
 }
 
-.fa-inbox .fa-bars{
-    @include margin(0px 0px 0px 10px);
-}
-
-.md-toolbar-tools span { 
+.homeContainer span { 
     @include margin(0px 10px 0px 0px);
 }

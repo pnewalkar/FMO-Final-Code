@@ -1,4 +1,4 @@
-﻿<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
+<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
     <div layout="column" class="md-padding">
         <section layout="row" class="advSection">
             <input type="text" placeholder="vm.searchText" ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text">
@@ -40,16 +40,19 @@
         </section>
 
 
-        <section ng-repeat="route in vm.arrRoutes" ng-click="route.open = !route.open" class="advSecList">
-            <div is-open ="route.open" class="advSecItem">
-                <i class="fa fa-angle-right" ng-show="route.open = !route.open" aria-hidden="true"></i>
-                <i class="fa fa-angle-down" aria-hidden="true" ng-show="route.open = !route.open"></i>
-                {{route.type}} ({{route.name.length}})
-            </div>
-
-            <ul ng-repeat="subitem in route.name" ng-show="route.open">
-                <li> <a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></li>
-            </ul>
+        <section > 
+             <table ng-repeat="route in vm.arrRoutes" ng-click="route.open = !route.open" class="advSecList searchTable">
+  				<tr is-open ="route.open" class="advSecItem">
+    				<th class="searchTh">
+                        <i class="fa fa-angle-right" ng-show="route.open = !route.open" aria-hidden="true"></i>
+                        <i class="fa fa-angle-down" aria-hidden="true" ng-show="route.open = !route.open"></i>
+                        {{route.type}} ({{route.name.length}})
+                    </th>
+  				</tr>
+  				<tr ng-repeat="subitem in route.name" ng-show="route.open">
+    				<td class="searchTd"><a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></td>
+  				</tr>
+  			</table>
         </section> 
 
         <!--<section ng-repeat="route in vm.arrRoutes"  class="advSecList">

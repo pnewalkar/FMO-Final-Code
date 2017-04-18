@@ -31,12 +31,10 @@ namespace Fmo.Receiver
         private string USRWebApiName = string.Empty;
 
         private System.Timers.Timer m_mainTimer;
-        private bool m_timerTaskSuccess;
 
         private readonly IKernel kernal;
         private IMessageBroker<AddressLocationUSRDTO> msgUSR = default(IMessageBroker<AddressLocationUSRDTO>);
         private IMessageBroker<PostalAddressDTO> msgPAF = default(IMessageBroker<PostalAddressDTO>);
-        //private IHttpHandler httpHandler = default(IHttpHandler);
         private IHttpHandler httpHandler;
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
@@ -45,9 +43,6 @@ namespace Fmo.Receiver
         {
             kernal = new StandardKernel();
             Register(kernal);
-            //this.httpHandler = httpHandler;
-            //this.configurationHelper = configurationHelper;
-
 
             InitializeComponent();
         }
@@ -55,12 +50,10 @@ namespace Fmo.Receiver
         {
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            //kernal.Bind<IHttpHandler>().To<HttpHandler>().InTransientScope();
             kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
             kernal.Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
             msgUSR = kernel.Get<IMessageBroker<AddressLocationUSRDTO>>();
             msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
-            //httpHandler = kernel.Get<IHttpHandler>();
             configurationHelper = kernal.Get<IConfigurationHelper>();
             loggingHelper = kernal.Get<ILoggingHelper>();
 
