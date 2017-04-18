@@ -17,11 +17,6 @@ namespace Fmo.Receiver
         {
             ServiceBase[] servicesToRun = new ServiceBase[] { new Receiver() };
             ServiceBase.Run(servicesToRun);
-            /*using (Receiver myService = new Receiver())
-            {
-                myService.OnDebug();
-                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-            }*/
         }
     }
 }

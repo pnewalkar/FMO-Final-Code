@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
+    /// <summary>
+    /// Message, Inherits from IMessage and has the concrete implementation.
+    /// </summary>
     public class Message:IMessage
     {
         private object _content;

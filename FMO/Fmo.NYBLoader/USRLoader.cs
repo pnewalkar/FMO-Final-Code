@@ -21,7 +21,7 @@ using Fmo.DTO;
 
 namespace Fmo.NYBLoader
 {
-    public class TPFLoader : ITPFLoader
+    public class USRLoader : IUSRLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
         private readonly IFileMover fileMover;
@@ -34,7 +34,11 @@ namespace Fmo.NYBLoader
         private string ERROR;
 
 
-        public TPFLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker, IFileMover fileMover, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper, IConfigurationHelper configHelper, IFileProcessingLogRepository fileProcessingLogRepository)
+        public USRLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker,
+                         IFileMover fileMover, IExceptionHelper exceptionHelper,
+                         ILoggingHelper loggingHelper,
+                         IConfigurationHelper configHelper,
+                         IFileProcessingLogRepository fileProcessingLogRepository)
         {
             this.msgBroker = messageBroker;
             this.fileMover = fileMover;
@@ -42,9 +46,9 @@ namespace Fmo.NYBLoader
             this.loggingHelper = loggingHelper;
             this.configHelper = configHelper;
             this.fileProcessingLogRepository = fileProcessingLogRepository;
-            this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues("XSDLocation");
-            this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues("TPFProcessedFilePath");
-            this.ERROR = configHelper.ReadAppSettingsConfigurationValues("TPFErrorFilePath");
+            this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues(Constants.XSDLOCATIONCONFIG);
+            this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues(Constants.USRPROCESSEDFILEPATHCONFIG);
+            this.ERROR = configHelper.ReadAppSettingsConfigurationValues(Constants.USRERRORFILEPATHCONFIG);
         }
 
         /// <summary>
@@ -70,28 +74,12 @@ namespace Fmo.NYBLoader
 
                 lstUSRInsertFiles.ForEach(addressLocation =>
                 {
-                    IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
+                    IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
                     msgBroker.SendMessage(USRMsg);
                 });
 
 
                 fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
-
-                //Code to be uncommented after confirmation
-                /*lstUSRUpdateFiles.ForEach(addressLocation =>
-                {
-                    string xmlUSR = SerializeObject<addressLocation>(addressLocation);
-                    IMessage USRMsg = msgBroker.CreateMessage(xmlUSR, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
-                    msgBroker.SendMessage(USRMsg);
-                });
-
-                lstUSRDeleteFiles.ForEach(addressLocation =>
-                {
-                    string xmlUSR = SerializeObject<addressLocation>(addressLocation);
-                    IMessage USRMsg = msgBroker.CreateMessage(xmlUSR, Constants.QUEUE_THIRD_PARTY, Constants.QUEUE_PATH);
-                    msgBroker.SendMessage(USRMsg);
-                });*/
-
             }
 
             catch (Exception ex)
@@ -130,9 +118,9 @@ namespace Fmo.NYBLoader
             {
                 List<AddressLocationUSRDTO> lstUSRFiles = new List<AddressLocationUSRDTO>();
 
-                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USR_XML_ROOT));
+                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USRXMLROOT));
                 XmlDocument validXmlDocument = new XmlDocument();
-                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, Constants.USR_XML_ROOT, null);
+                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, Constants.USRXMLROOT, null);
                 validXmlDocument.AppendChild(rootNode);
 
 
@@ -158,13 +146,15 @@ namespace Fmo.NYBLoader
                     using (XmlReader xmlReader = XmlReader.Create(new StringReader(validXmlDocument.OuterXml)))
                     {
                         xmlReader.MoveToContent();
-                        lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(typeof(List<AddressLocationUSRDTO>), new XmlRootAttribute(Constants.USR_XML_ROOT)).Deserialize(xmlReader));    
+                        lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(
+                                                                                      typeof(List<AddressLocationUSRDTO>), 
+                                                                                      new XmlRootAttribute(Constants.USRXMLROOT)).Deserialize(xmlReader));    
                     }
                 };
 
                 return lstUSRFiles;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
                 throw ;
@@ -192,8 +182,10 @@ namespace Fmo.NYBLoader
                 {
                     FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
                     objFileProcessingLog.FileID = Guid.NewGuid();
-                    objFileProcessingLog.UDPRN = Convert.ToInt32(xDoc.Element(XName.Get("addressLocation")).Element(XName.Get("udprn")).Value);
-                    objFileProcessingLog.AmendmentType = xDoc.Element(XName.Get("addressLocation")).Element(XName.Get("changeType")).Value;
+                    objFileProcessingLog.UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
+                                                        .Element(XName.Get(Constants.USRUDPRN)).Value);
+                    objFileProcessingLog.AmendmentType = xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
+                                                             .Element(XName.Get(Constants.USRCHANGETYPE)).Value;
                     objFileProcessingLog.FileName = fileName;
                     objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
                     objFileProcessingLog.FileType = FileType.Usr.ToString();
@@ -225,7 +217,7 @@ namespace Fmo.NYBLoader
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
-               string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
+               string.Format(Constants.DATETIMEFORMAT, DateTime.Now),
                 Path.GetExtension(strfileName)
                 );
         }

@@ -14,5 +14,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action);
 
         Task<int> AddNewNotification(NotificationDTO notificationDTO);
+
+        bool CheckIfNotificationExists(int uDPRN, string action);
     }
 }

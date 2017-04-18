@@ -53,8 +53,8 @@ namespace Fmo.BusinessServices.Services
             string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
             try
             {
-                Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Nyb.ToString());
-                Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Status, PostCodeStatus.Live.GetDescription());
+                Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
+                Guid addressStatusId = refDataRepository.GetReferenceDataId(Constants.PostalAddressStatus, PostCodeStatus.Live.GetDescription());
                 if (lstPostalAddress != null && lstPostalAddress.Count > 0)
                 {
                     List<int> lstUDPRNS = lstPostalAddress.Select(n => (n.UDPRN != null ? n.UDPRN.Value : 0)).ToList();
@@ -92,9 +92,9 @@ namespace Fmo.BusinessServices.Services
             bool saveFlag = false;
             try
             {
-                Guid addressTypeUSR = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Usr.ToString());
-                Guid addressTypePAF = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Paf.ToString());
-                Guid addressTypeNYB = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Type, FileType.Nyb.ToString());
+                Guid addressTypeUSR = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
+                Guid addressTypePAF = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString());
+                Guid addressTypeNYB = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
                 foreach (var item in objPostalAddress)
                 {
@@ -112,7 +112,7 @@ namespace Fmo.BusinessServices.Services
         private void SavePAFRecords(PostalAddressDTO objPostalAddress, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
             objPostalAddress.AddressType_GUID = addressTypePAF;
-            objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId(Constants.Postal_Address_Status, PostCodeStatus.Live.GetDescription());
+            objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressStatus, PostCodeStatus.Live.GetDescription());
             var objPostalAddressMatchedUDPRN = addressRepository.GetPostalAddress(objPostalAddress.UDPRN);
             var objPostalAddressMatchedAddress = addressRepository.GetPostalAddress(objPostalAddress);
             if (objPostalAddressMatchedUDPRN != null)
@@ -184,8 +184,8 @@ namespace Fmo.BusinessServices.Services
             try
             {
                 var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
-                Guid tasktypeId = refDataRepository.GetReferenceDataId(Constants.TASK_NOTIFICATION, Constants.TASK_ACTION);
-                Guid locationProviderId = refDataRepository.GetReferenceDataId(Constants.NETWORK_LINK_DATA_PROVIDER, Constants.EXTERNAL);
+                Guid tasktypeId = refDataRepository.GetReferenceDataId(Constants.TASKNOTIFICATION, Constants.TASKACTION);
+                Guid locationProviderId = refDataRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.EXTERNAL);
                 string postCodeDistrict = objPostalAddress.Postcode.Substring(0, objPostalAddress.Postcode.Length - 4);
 
                 if (objAddressLocation == null)
@@ -201,8 +201,8 @@ namespace Fmo.BusinessServices.Services
                     objTask.ID = Guid.NewGuid();
                     objTask.NotificationType_GUID = tasktypeId;
                     objTask.NotificationPriority_GUID = null;
-                    objTask.NotificationSource = Constants.TASK_SOURCE;
-                    objTask.Notification_Heading = Constants.TASK_PAF_ACTION;
+                    objTask.NotificationSource = Constants.TASKSOURCE;
+                    objTask.Notification_Heading = Constants.TASKPAFACTION;
                     objTask.Notification_Message = AddressFields(objPostalAddress);
                     objTask.PostcodeDistrict = postCodeDistrict;
                     objTask.NotificationDueDate = DateTime.Now.AddHours(24);

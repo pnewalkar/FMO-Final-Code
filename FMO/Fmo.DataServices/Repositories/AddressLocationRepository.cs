@@ -10,6 +10,10 @@
     using MappingConfiguration;
     using System.Threading.Tasks;
 
+
+    /// <summary>
+    /// AddressLocation Repository to interact with the AddressLocation entity
+    /// </summary>
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository
     {
         public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -17,6 +21,11 @@
         {
         }
 
+        /// <summary>
+        /// Find AddressLocation by UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <returns></returns>
         public bool AddressLocationExists(int uDPRN)
         {
             try
@@ -36,6 +45,12 @@
             }
         }
 
+        /// <summary>
+        /// Get AddressLocation by UDPRN
+        /// </summary>
+        /// <param name="uDPRN"> UDPRN id</param>
+        /// <returns>AddressLocationDTO object</returns>
+
         public AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN)
         {
             try
@@ -51,6 +66,11 @@
             }
         }
 
+        /// <summary>
+        /// Add new address location to database.
+        /// </summary>
+        /// <param name="addressLocationDTO">AddressLocationDTO object</param>
+        /// <returns>Task<int></returns>
         public async Task<int> SaveNewAddressLocation(AddressLocationDTO addressLocationDTO)
         {
             try

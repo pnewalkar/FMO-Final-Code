@@ -36,9 +36,9 @@ namespace Fmo.DataServices.Repositories
                 saveFlag = true;
                 return saveFlag;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }
