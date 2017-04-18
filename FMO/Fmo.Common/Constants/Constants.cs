@@ -28,11 +28,11 @@ namespace Fmo.Common.Constants
         public const string TASKSOURCE = "SYSTEM";
         public const string DeliveryPointSuffix = "1A";
         public const int BNGCOORDINATESYSTEM = 27700;
+        public const string PostalAddressStatus = "Postal Address Status";
+        public const string PostalAddressType = "Postal Address Type";
         #endregion
 
         #region NYB
-        public const string PostalAddressStatus = "Postal Address Status";
-        public const string PostalAddressType = "Postal Address Type";
         public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File ins not valid File Name : {0} : Log Time : {1}";
         public const string QUEUENYB = "QUEUE_NYB";
         #endregion
@@ -74,8 +74,11 @@ namespace Fmo.Common.Constants
         public const string PAFDELETE = "D";
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
+        public const string DeliveryPointUseIndicatorPAF = "B";
         #endregion
 
         #endregion
+
+        public const string FeatureType = "Feature";
     }
 }
