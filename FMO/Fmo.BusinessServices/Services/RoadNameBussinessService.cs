@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.Helpers;
-using Microsoft.SqlServer.Types;
-using Newtonsoft.Json;
-
-namespace Fmo.BusinessServices.Services
+﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.SqlTypes;
+    using System.Threading.Tasks;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common.Constants;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.Helpers;
+    using Microsoft.SqlServer.Types;
+    using Newtonsoft.Json;
+
     public class RoadNameBussinessService : IRoadNameBussinessService
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
@@ -37,9 +38,9 @@ namespace Fmo.BusinessServices.Services
                 var coordinates = GetData(null, boundaryBox.Split(','));
                 return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -72,9 +73,6 @@ namespace Fmo.BusinessServices.Services
         /// <param name="osRoadLinkDTO"> osRoadLinkDTO as list of RoadLinkDTO </param>
         private string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
         {
-            OsRoadLinkDTO routeLinkFeatureCollections = new OsRoadLinkDTO();
-            string json = string.Empty;
-
             var geoJson = new GeoJson
             {
                 features = new List<Feature>()
@@ -115,7 +113,7 @@ namespace Fmo.BusinessServices.Services
                     Feature feature = new Feature();
                     feature.geometry = geometry;
                     feature.id = i;
-                    feature.type = "Feature";
+                    feature.type = Constants.FeatureType;
                     feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "roadlink" } };
                     geoJson.features.Add(feature);
                     i++;
