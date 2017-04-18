@@ -16,7 +16,6 @@
     {
         private IAccessLinkBussinessService testCandidate;
         private Mock<IAccessLinkRepository> mockaccessLinkRepository;
-        private Mock<ICreateOtherLayersObjects> mockCreateOtherLayers;
         private List<AccessLinkDTO> accessLinkDTO = null;
 
         [Test]
@@ -30,11 +29,10 @@
         protected override void OnSetup()
         {
             mockaccessLinkRepository = new Mock<IAccessLinkRepository>();
-            mockCreateOtherLayers = new Mock<ICreateOtherLayersObjects>();
             accessLinkDTO = new List<AccessLinkDTO>() { new AccessLinkDTO() { AccessLink_Id = 1, features = "DI0001", AccessLinkType_Id = 1, type = "UnitOne" } };
             mockaccessLinkRepository.Setup(x => x.GetAccessLinks(It.IsAny<string>())).Returns(It.IsAny<List<AccessLinkDTO>>);
 
-            testCandidate = new AccessLinkBussinessService(mockaccessLinkRepository.Object, mockCreateOtherLayers.Object);
+            testCandidate = new AccessLinkBussinessService(mockaccessLinkRepository.Object);
         }
     }
 }

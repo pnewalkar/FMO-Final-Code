@@ -12,7 +12,7 @@ namespace Fmo.NYBLoader.Interfaces
     { 
          Task<HttpResponseMessage> PostAsJsonAsync<T>(string url, T content);
 
-        void SetBaseAddress(Uri addr);
+        void SetBaseAddress(Uri address);
     }
 
 }

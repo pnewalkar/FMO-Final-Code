@@ -69,7 +69,6 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsTrue(actualResultCount == 7);
         }
 
-
         protected override void OnSetup()
         {
             var postcode = new List<Postcode>()

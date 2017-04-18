@@ -33,19 +33,21 @@ namespace Fmo.Common.Constants
         public const string USR_GEOMETRY_POINT = "POINT({0} {1})";
         public const string USR_CATEGORY = "Notification Type";
         public const string USR_REFERENCE_DATA_NAME = "Action required";
-        public const string NETWORK_LINK_DATA_PROVIDER = "Network Link Data Provider";
+        public const string NETWORK_LINK_DATA_PROVIDER = "Data Provider";
         public const string EXTERNAL = "External";
         public const string TASK_NOTIFICATION = "Notification Type";
         public const string TASK_ACTION = "Action required";
         public const string TASK_SOURCE = "SYSTEM";
         public const string TASK_PAF_ACTION = "Position new DP";
         public const int csvPAFValues = 20;
+        public const string DeliveryPointUseIndicatorPAF = "B";
 
         public const string PAFNOACTION = "B";
         public const string PAFINSERT = "I";
         public const string PAFUPDATE = "C";
         public const string PAFDELETE = "D";
-
+        public const string FMOWebAPIURL = "FMOWebAPIURL";
+        public const string FMOWebAPIName = "FMOWebAPIName";
+        public const string FeatureType = "Feature";
     }
 }
-
