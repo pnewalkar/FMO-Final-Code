@@ -11,6 +11,7 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
+    using Common.Constants;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
@@ -185,7 +186,7 @@
         /// <summary>
         /// Create or update PAF details depending on the UDPRN
         /// </summary>
-        /// <param name="objPostalAddress">NYB details DTO</param>
+        /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
         /// <returns>true or false</returns>
         public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
