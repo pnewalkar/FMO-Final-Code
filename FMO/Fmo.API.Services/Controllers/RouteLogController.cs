@@ -27,7 +27,7 @@ namespace Fmo.API.Services.Controllers
         }
 
        
-        [Authorize]
+        // [Authorize]
         [HttpGet("DeliveryUnit")]
         public List<DeliveryUnitLocationDTO> DeliveryUnit()
         {
