@@ -35,6 +35,7 @@ namespace Fmo.Common.Constants
         #region NYB
         public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File ins not valid File Name : {0} : Log Time : {1}";
         public const string QUEUENYB = "QUEUE_NYB";
+        public const string FMOWebAPIName = "FMOWebAPIName";
         #endregion
 
         #region USR
