@@ -1,6 +1,6 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', 'unitSelectorAPIService', 'mapFactory', UnitSelectorController])
-function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService, mapFactory) {
+.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', 'unitSelectorAPIService', 'mapFactory','manageAccessBusinessService', UnitSelectorController])
+function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService, mapFactory, manageAccessBusinessService) {
     var vm = this;
     vm.BindData = BindData;
     vm.DeliveryUnit = DeliveryUnit;
@@ -10,32 +10,20 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
 
     function DeliveryUnit() {        
         vm.selectedDeliveryUnit = vm.selectedUser;
-      
+        manageAccessBusinessService.activate(vm.selectedDeliveryUnit.id);
         updateMapAfterUnitChange(vm.selectedDeliveryUnit);          
 
     }
 
     function BindData() {
-        unitSelectorAPIService.getDeliveryUnit().then(function (response) {           
+        unitSelectorAPIService.getDeliveryUnit().then(function (response) {
             if (response.data)
                 vm.deliveryRouteUnit = response.data;
             vm.selectedUser = vm.deliveryRouteUnit[0];
             vm.selectedDeliveryUnit = vm.selectedUser;
-
             updateMapAfterUnitChange(vm.selectedDeliveryUnit);
-               
-          
-            //var deliveryUnitVectorLayer = new ol.layer.Vector({       
-            //    source:  new ol.source.Vector({
-            //        format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            //        features: (new ol.format.GeoJSON()).readFeatures(vm.selectedDeliveryUnit.unitBoundaryGeoJSONData)
-            //    })
-            //});
-
-            //deliveryUnitVectorLayer.set('name', 'deliveryUnitVectorLayer')
-            //mapFactory.getMap().addLayer(deliveryUnitVectorLayer);
-
         });
+        
     }
 
     function updateMapAfterUnitChange(selectedUnit)

@@ -75,7 +75,7 @@ namespace Fmo.API.Services
         {
             // Don't do this in production, obviously!
             //if (username == "TEST" && password == "TEST123")
-            List<string> userList = new List<string> { "amol.patil", "shobharam.katiya" };
+            List<string> userList = new List<string> { "manageruser1", "shobharam.katiya" };
             if (userList.Contains(username))
             {
                 return Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
