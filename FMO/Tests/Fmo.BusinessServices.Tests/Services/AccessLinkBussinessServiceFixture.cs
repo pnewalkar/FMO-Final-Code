@@ -16,7 +16,6 @@
     {
         private IAccessLinkBussinessService testCandidate;
         private Mock<IAccessLinkRepository> mockaccessLinkRepository;
-        private Mock<ICreateOtherLayersObjects> mockCreateOtherLayers;
         private List<AccessLinkDTO> accessLinkDTO = null;
 
         [Test]
