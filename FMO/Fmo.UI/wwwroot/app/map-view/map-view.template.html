@@ -11,19 +11,16 @@
 </div>
 
 
-<div><map-toolbar></map-toolbar></div>
+<map-toolbar></map-toolbar>
 
 
 <div id="rightPanel">
 
    <div md-whiteframe="3dp" id="zoom-scale"  ng-class="{'zoom-scale levelDanger':zoomLimitReached ,
-          'zoom-scale':!zoomLimitReached}"></div>
-    <!--<div md-whiteframe="3dp" id="zoom-scale" ng-class="vm.getStyleClass()"></div>-->
-
-    <!--<div md-whiteframe="3dp" id="zoom-scale" ></div>-->
+          'zoom-scale':!zoomLimitReached}"></div> 
     
-    
-    <div id="zoom-control" class="zoom-control"></div>
+    <div id="zoom-control" class="zoom-control">
+    </div>
     
     <div class="miniMap">
         <map-panel class="layer-panel show-panel"

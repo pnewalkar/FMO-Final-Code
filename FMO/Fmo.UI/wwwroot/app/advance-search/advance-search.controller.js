@@ -61,13 +61,23 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
                     arrDeliveryRoutes.push(obj);
                 }
             }
-            var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': false };
+            if (arrDeliverypoints.length == 1) {
+                var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': true };
+            }
+            else
+            {
+                var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': false };
+            }
             var postCodeObj = {
                 'type': 'PostCode', 'name': arrPostCodes, 'open': false
         };
             var streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open': false };
-            var deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': false };
-
+            if (arrDeliveryRoutes.length == 2) {
+                var deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': true };
+            }
+            else {
+                var deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': false };
+            }
 
             if (arrDeliverypoints.length > 0) {
                 vm.arrRoutes.push(deliveryPointObj);
@@ -155,9 +165,14 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
         debugger;
 
         if (selectedItem.type === "DeliveryPoint") {
-
-            $state.go('searchDetails', { selectedItem: selectedItem
-        });
+            searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
+                .then(function (response) {
+                    var data = response.data;
+                    var lat = data.features[0].geometry.coordinates[1];
+                    var long = data.features[0].geometry.coordinates[0];
+                    mapFactory.setDeliveryPoint(long, lat);
+                });
+            $state.go('searchDetails', { selectedItem: selectedItem });
         }
         $mdDialog.cancel();
     }

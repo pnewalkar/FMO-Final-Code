@@ -15,6 +15,7 @@ function mapService(mapFactory,
     vm.activeSelection = null;
     vm.secondarySelections = [];
     vm.selectionListeners = [];
+    vm.features = null;
     vm.onDeleteButton = function (featureId, layer) { console.log({ "featureID": featureId, "layer": layer }) };
     vm.onModify = function (feature) { console.log(feature) };
     vm.onDrawEnd = function (buttonName, feature) { console.log(buttonName, feature) };
@@ -56,7 +57,11 @@ function mapService(mapFactory,
         syncMinimapAnimation: syncMinimapAnimation,
         oncollapse: oncollapse,
         mapToolChange: mapToolChange,
-        refreshLayers:refreshLayers
+        refreshLayers: refreshLayers,
+        getActiveFeature: getActiveFeature,
+        setSelections: setSelections,
+        getfeature: getfeature,
+        selectFeatures:selectFeatures
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -129,6 +134,7 @@ function mapService(mapFactory,
             url: function (extent) { return 'http://localhost:34583/api/roadName/GetRouteLinks?bbox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
+
         //var mockAccessLinkLayer = new ol.layer.Vector({
         //    source: mockAccessLinkVector
         //});
@@ -142,6 +148,11 @@ function mapService(mapFactory,
 
         var roadLinkLayer = new ol.layer.Vector({
             source: roadLinkVector
+        });
+
+
+        var unitBoundaryLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({})
         });
 
         var roadsSelector = new MapFactory.LayerSelector();
@@ -196,6 +207,18 @@ function mapService(mapFactory,
         roadLinkLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
         roadLinkLayerSelector.keys = ["roadlink"];
         mapFactory.addLayer(roadLinkLayerSelector);
+
+        var unitBoundaryLayerSelector = new MapFactory.LayerSelector();
+        unitBoundaryLayerSelector.layerName = "Unit Boundary";
+        unitBoundaryLayerSelector.layer = unitBoundaryLayer;
+        unitBoundaryLayerSelector.group = "";
+        unitBoundaryLayerSelector.zIndex = 8;
+        unitBoundaryLayerSelector.selected = false;
+        unitBoundaryLayerSelector.onMiniMap = false;
+        unitBoundaryLayerSelector.selectorVisible = true;
+        unitBoundaryLayerSelector.style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE);
+        unitBoundaryLayerSelector.keys = ["unitBoundary"];
+        mapFactory.addLayer(unitBoundaryLayerSelector);
 
         
 
@@ -274,8 +297,9 @@ function mapService(mapFactory,
         })
     }
     function refreshLayers() {        
-        mapLayers().forEach(function (layer) {
+        mapLayers().forEach(function (layer) {         
             layer.layer.setVisible(layer.selected);
+            layer.layer.changed();            
         });
         vm.layerSummary = getLayerSummary();
     }
@@ -307,7 +331,7 @@ function mapService(mapFactory,
                 vm.onDeleteButton(feature.getId(), feature.layer);
             });
             vm.interactions.select.getFeatures().clear();
-            vm.setSelections(null, []);
+            setSelections(null, []);
         }
     }
     function addInteractions() {
@@ -371,9 +395,9 @@ function mapService(mapFactory,
         vm.interactions.select.on('select', function (e) {
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
-                vm.setSelections({ featureID: e.selected[0].getId(), layer: lastLayer }, []);
+                setSelections({ featureID: e.selected[0].getId(), layer: lastLayer }, []);
             } else {
-                vm.setSelections(null, []);
+                setSelections(null, []);
             }
 
         });
@@ -384,7 +408,7 @@ function mapService(mapFactory,
             condition: ol.events.condition.never
         });
         var collection = new ol.Collection();
-        collection.push(vm.getActiveFeature());
+        collection.push(getActiveFeature());
         vm.interactions.modify = new ol.interaction.Modify({
             features: collection
         });
@@ -392,9 +416,9 @@ function mapService(mapFactory,
         persistSelection();
     }
     function persistSelection() {
-        if (vm.getActiveFeature() != null && vm.interactions.select != null && vm.interactions.select != undefined) {
+        if (getActiveFeature() != null && vm.interactions.select != null && vm.interactions.select != undefined) {
             var features = vm.interactions.select.getFeatures();
-            features.push(vm.getActiveFeature());
+            features.push(getActiveFeature());
             vm.getSecondaryFeatures().forEach(function (feature) {
                 features.push(feature);
             })
@@ -440,7 +464,7 @@ function mapService(mapFactory,
 			function (evt) {
 			    evt.feature.setId(0);
 			    $timeout(function () {
-			       vm.setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
+			       setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
 			        onDrawEnd("group", evt.feature)
 			    });
 			});
@@ -450,7 +474,7 @@ function mapService(mapFactory,
 			function (evt) {
 			    removeInteraction("select");
 			    clearDrawingLayer(true);
-			    vm.setSelections(null, []);
+			    setSelections(null, []);
 			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
@@ -543,4 +567,26 @@ function mapService(mapFactory,
             addInteractions();
         }
     }
+
+    
+    function selectFeatures() {
+        if (vm.interactions.select == null || vm.interactions.select == undefined) {
+            vm.interactions.select = new ol.interaction.Select({
+                condition: ol.events.condition.never,
+                style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)
+            });
+            vm.map.addInteraction(vm.interactions.select);
+        }
+        vm.interactions.select.getFeatures().clear();
+        vm.features.forEach(function (feature) {
+            vm.interactions.select.getFeatures().push(feature);
+       })
+       
+    }
+    
+    function getfeature(feature)
+    {
+        vm.features = feature;
+    }
+    
 }

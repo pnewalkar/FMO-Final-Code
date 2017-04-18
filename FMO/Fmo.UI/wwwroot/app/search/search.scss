@@ -21,25 +21,23 @@ i.fa.fa-map-marker.route{
 .searchInput{
     @extend %body-content;
     @include background($white);
-    width: 235px;
+    @include width(235px);
     @include padding(8px 8px 8px 8px);
-    border-radius: 35px;
-    border: none;
+    @include border-radius(35px);
+    @include border(none);
 }
 
 .searchContent{
     @include background($white);
-    /*width: width-percent(1.05);*/
-    margin-top:16px;
+    @include margin(16px 0px 0px 0px);
 }
 
 .searchData{
     @include background($white);
     @include font-color($strong-grey);
-    @include margin(0px 0px 5px 0px);
     @include padding(5px 5px 5px 5px);
-    border-bottom: 1px solid grey;
-    cursor: pointer;
+    @include border-bottom(1px solid $grey);
+    @include cursor(pointer);
 
     & span{
         @extend %body-content;
@@ -47,40 +45,42 @@ i.fa.fa-map-marker.route{
 }
 
 i.fa.fa-search {
+    @include font-color($white);
     font-size: 25px;
 }
 
-button.viewResult {
+.viewResult {
+    @include padding(3px 3px 3px 3px);
     @extend %body-content;
-    width: 264px;
-    padding: 3px;
-    background: white;
-    border: 1px solid rgb(224,224,224);
-    margin-top:-5px;
-    cursor: pointer;
-}
-button.noResult {
+    @include cursor(pointer);
+    width: width-percent(1);
+    @include background($white);
+    @include border(1px solid $recess-grey);
+    @include margin(-5px 0px 0px 0px);
+   }
+.noResult {
     @extend %body-content;
-    width: 264px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    margin-top: -5px;
-}
+    @include cursor(pointer);
+    width: width-percent(1);
+    @include background($white);
+    @include border(1px solid $recess-grey);
+    @include margin(-5px 0px 0px 0px);
+    }
 
 i.fa.fa-angle-double-right {
-    color: black;
-    margin-left: 65px;
+    @include font-color($black);
+    @include margin(0px 0px 0px 65px);
 }
 
 .viewResult a {
     @extend %body-content;
-    float:left;
+    @include float(left);
 }
 
 i.fa.fa-angle-right.searchRight {
-    color:black;
-    float:right;
-    margin-right:10px;
+    @include font-color($black);
+    @include float(right);
+    @include margin(0px 10px 0px 0px);
 }
 
 .searchContext h1 {
