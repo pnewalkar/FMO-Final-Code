@@ -35,33 +35,26 @@
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             bool deleteFlag = false;
-            try
+            if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                if (lstUDPRN != null && lstUDPRN.Count() > 0)
+                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
+                if (lstAddress != null && lstAddress.Count > 0)
                 {
-                    var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
-                    if (lstAddress != null && lstAddress.Count > 0)
+                    lstAddress.ForEach(postalAddressEntity =>
                     {
-                        lstAddress.ForEach(postalAddressEntity =>
+                        if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
-                            if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
-                            {
-                                deleteFlag = false;
-                                this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
-                            }
-                            else
-                            {
-                                DataContext.PostalAddresses.Remove(postalAddressEntity);
-                                DataContext.SaveChanges();
-                                deleteFlag = true;
-                            }
-                        });
-                    }
+                            deleteFlag = false;
+                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
+                        }
+                        else
+                        {
+                            DataContext.PostalAddresses.Remove(postalAddressEntity);
+                            DataContext.SaveChanges();
+                            deleteFlag = true;
+                        }
+                    });
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
 
             return deleteFlag;
@@ -248,24 +241,17 @@
         /// <param name="strException">Exception</param>
         private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
         {
-            try
+            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
             {
-                FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
-                {
-                    FileID = Guid.NewGuid(),
-                    UDPRN = uDPRN,
-                    AmendmentType = "I",
-                    FileName = strFileName,
-                    FileProcessing_TimeStamp = DateTime.Now,
-                    FileType = fileType,
-                    NatureOfError = strException
-                };
-                fileProcessingLog.LogFileException(objFileProcessingLog);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+                FileID = Guid.NewGuid(),
+                UDPRN = uDPRN,
+                AmendmentType = "I",
+                FileName = strFileName,
+                FileProcessing_TimeStamp = DateTime.Now,
+                FileType = fileType,
+                NatureOfError = strException
+            };
+            fileProcessingLog.LogFileException(objFileProcessingLog);
         }
     }
 }
