@@ -20,12 +20,14 @@
     using Fmo.Common.Interface;
     public class PAFLoader : IPAFLoader
     {
+        #region private member declaration
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
         private IConfigurationHelper configurationHelper;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-
+        #endregion
+        #region constructor
         public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
@@ -34,7 +36,8 @@
             this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFProcessedFilePath");
             this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFErrorFilePath");
         }
-
+        #endregion
+        #region public methods
         public void LoadPAF(string fileName)
         {
             try
@@ -165,7 +168,8 @@
             }
             return saveflag;
         }
-
+        #endregion
+        #region private methods
         private static string AppendTimeStamp(string strfileName)
         {
             return string.Concat(
@@ -311,5 +315,6 @@
             }
             return isValid;
         }
+        #endregion
     }
 }
