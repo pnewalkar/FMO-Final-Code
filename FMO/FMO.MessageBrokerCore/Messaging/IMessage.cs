@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
+    /// <summary>
+    /// IMesssage interface, contains properties that are used by a queue message.
+    /// </summary>
     public interface IMessage
     {
             Guid Id { get; }
@@ -19,9 +22,4 @@ namespace Fmo.MessageBrokerCore.Messaging
 
             string QueueRootpath { get; }
     }
-    //interface IMessage<T> : IMessage
-    //{
-    //    T GetBody();
-    //}
-
 }

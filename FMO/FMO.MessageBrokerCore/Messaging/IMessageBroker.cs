@@ -14,6 +14,11 @@ namespace Fmo.MessageBrokerCore.Messaging
         ThirdParty
     }
 
+    /// <summary>
+    /// IMessageBroker, exposes the Message queue functionality to the client.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+
     public interface IMessageBroker<T>
     {
 

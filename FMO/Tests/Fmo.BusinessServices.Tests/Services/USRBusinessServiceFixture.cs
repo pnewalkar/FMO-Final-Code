@@ -37,7 +37,7 @@
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRToEmail")).Returns("sriram.kandade@capgemini.com");
             this.addressLocationRepositoryMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(addressDTOMockNull);
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
-
+            this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
             this.notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(new NotificationDTO());
             this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { udprn = 0, xCoordinate = 0, yCoordinate = 0 } });
 
@@ -66,7 +66,7 @@
                 LocationXY = null,
                 UDPRN = It.IsAny<int>()
             });
-
+            this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
             this.notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(notificationDTOMockNull);
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
             this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { udprn = 0, xCoordinate = 0, yCoordinate = 0 } });
@@ -99,6 +99,7 @@
 
             this.notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(notificationDTOMockNull);
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
+            this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
             this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { udprn = 0, xCoordinate = 0, yCoordinate = 5 } });
 
             this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);

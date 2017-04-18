@@ -1,6 +1,6 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', 'unitSelectorAPIService', 'mapFactory', UnitSelectorController])
-function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService, mapFactory) {
+.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', 'unitSelectorAPIService', 'mapFactory','manageAccessBusinessService', UnitSelectorController])
+function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService, mapFactory, manageAccessBusinessService) {
     var vm = this;
     vm.BindData = BindData;
     vm.DeliveryUnit = DeliveryUnit;
@@ -10,8 +10,8 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
 
     function DeliveryUnit() {
         vm.selectedDeliveryUnit = vm.selectedUser;
-
-        updateMapAfterUnitChange(vm.selectedDeliveryUnit);
+        manageAccessBusinessService.activate(vm.selectedDeliveryUnit.id);
+        updateMapAfterUnitChange(vm.selectedDeliveryUnit);          
 
     }
 
@@ -21,9 +21,9 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
                 vm.deliveryRouteUnit = response.data;
             vm.selectedUser = vm.deliveryRouteUnit[0];
             vm.selectedDeliveryUnit = vm.selectedUser;
-
             updateMapAfterUnitChange(vm.selectedDeliveryUnit);
         });
+        
     }
 
     function updateMapAfterUnitChange(selectedUnit) {

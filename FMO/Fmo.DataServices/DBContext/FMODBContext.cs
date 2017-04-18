@@ -1,12 +1,13 @@
 namespace Fmo.DataServices.DBContext
 {
+    using System.Configuration;
     using System.Data.Entity;
     using Fmo.Entities;
 
     public partial class FMODBContext : DbContext
     {
         public FMODBContext()
-            : base("name=FMODBContext")
+            : base(ConfigurationManager.ConnectionStrings["FMODBContext"].ConnectionString)
         {
         }
 

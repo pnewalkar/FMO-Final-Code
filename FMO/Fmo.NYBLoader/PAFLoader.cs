@@ -141,7 +141,7 @@
 
                 lstPAFInsertEvents.ForEach(postalAddress =>
                     {
-                        IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                        IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUEPAF, Constants.QUEUEPATH);
                         msgBroker.SendMessage(msg);
                     });
 
@@ -184,12 +184,12 @@
             bool isFileValid = true;
             foreach (string line in arrLines)
             {
-                if (line.Count(n => n == ',') != Constants.noOfCharactersForPAF)
+                if (line.Count(n => n == ',') != Constants.NoOfCharactersForPAF)
                 {
                     isFileValid = false;
                     break;
                 }
-                if (line.ToCharArray().Count() > Constants.maxCharactersForPAF)
+                if (line.ToCharArray().Count() > Constants.MaxCharactersForPAF)
                 {
                     isFileValid = false;
                     break;
@@ -202,7 +202,7 @@
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string[] values = csvLine.Split(',');
-            if (values.Count() == Constants.csvPAFValues)
+            if (values.Count() == Constants.CsvPAFValues)
             {
                 objAddDTO.Date = values[0];
                 objAddDTO.Time = values[1];

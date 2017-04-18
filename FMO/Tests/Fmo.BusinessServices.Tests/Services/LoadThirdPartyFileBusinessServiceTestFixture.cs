@@ -20,7 +20,7 @@
 
     public class LoadThirdPartyFileBusinessServiceTestFixture : TestFixtureBase
     {
-        private ITPFLoader testCandidate;
+        private IUSRLoader testCandidate;
         private Mock<IFileMover> fileMoverMock;
         private Mock<IMessageBroker<AddressLocationUSRDTO>> msgBrokerMock;
         private Mock<IExceptionHelper> exceptionHelperMock;
@@ -49,7 +49,7 @@
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
             fileProcessingLogRepositoryMock.Setup(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()));
 
-            testCandidate = new TPFLoader(
+            testCandidate = new USRLoader(
                                             msgBrokerMock.Object,
                                             fileMoverMock.Object,
                                             exceptionHelperMock.Object,
@@ -86,7 +86,7 @@
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
 
-            testCandidate = new TPFLoader(
+            testCandidate = new USRLoader(
                                             msgBrokerMock.Object,
                                             fileMoverMock.Object,
                                             exceptionHelperMock.Object,
@@ -100,6 +100,11 @@
             exceptionHelperMock.Verify(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException), Times.Never);
             fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Exactly(1));
             fileProcessingLogRepositoryMock.Verify(x => x.LogFileException(It.IsAny<FileProcessingLogDTO>()), Times.Once);
+        }
+
+        public void Test_USR_File()
+        {
+
         }
 
         /// <summary>
