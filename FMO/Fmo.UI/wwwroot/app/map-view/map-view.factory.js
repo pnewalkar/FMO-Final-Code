@@ -19,10 +19,14 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     var dpi = 25.4 / 0.28;
     var mpu = null;
 
-    var definedResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
+    var defaultResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
     var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
     var zoomLimitReached = false;
-  
+
+    var availableResolutionForCurrentExtent = [];
+    var maxScale = null;
+
+
     return {
         initialiseMap: initialiseMap,
         getMap: getMap,
@@ -39,12 +43,13 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         convertGeoJsonToOl: convertGeoJsonToOl,
         deleteAllFeaturesFromLayer: deleteAllFeaturesFromLayer,
         addFeaturesToMap: addFeaturesToMap,
-        definedResolutions: definedResolutions,
+        defaultResolutions: defaultResolutions,
         definedScales: definedScales,
         getResolutionFromScale: getResolutionFromScale,
         getScaleFromResolution: getScaleFromResolution,
         setUnitBoundaries: setUnitBoundaries,
-        setDeliveryPoint: setDeliveryPoint
+        setDeliveryPoint: setDeliveryPoint,
+        setMapScale: setMapScale
     };
 
     function initialiseMap() {
@@ -58,13 +63,13 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         //    maxZoom: 19
         //});
 
-
+        availableResolutionForCurrentExtent = defaultResolutions;
         view = new ol.View({
             projection: 'EPSG:27700',
             center: [400000, 650000],
             // zoom: 4,
-            resolutions: definedResolutions,
-            resolution: definedResolutions[11]
+            resolutions: defaultResolutions,
+            resolution: defaultResolutions[11]
         });
 
 
@@ -84,10 +89,11 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             view: view,
             loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
-            controls: ol.control.defaults().extend([
-                getCustomScaleLine()
-            ])
+            controls: []
         });
+
+        map.addControl(getCustomScaleLine());
+
         var external_control = new ol.control.Zoom({
             target: document.getElementById('zoom-control')
         });
@@ -301,6 +307,26 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             return result;
         });
     }
+    function setZoomButtonStatus(buttonList, status) {
+        for (var i = 0; i < buttonList.length; i++) {
+            buttonList[i].disabled = status;
+
+            if (status) {
+                buttonList[i].style.opacity = "0.65";
+                buttonList[i].style.cursor = "not-allowed";
+            }
+            else {
+                buttonList[i].style.opacity = "1";
+                buttonList[i].style.cursor = "pointer";
+            }
+        }
+    }
+
+    function setMapScale(scale) {
+        var resolution = getResolutionFromScale(scale)
+        map.getView().setResolution(resolution);
+        $rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: false, currentScale: scale, maximumScale: maxScale });
+    }
 
     function getCustomScaleLine() {
         customScaleLine = function (opt_options) {
@@ -323,26 +349,43 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             var resolution = map.getView().getResolution();
             var scale = Math.round(getScaleFromResolution(resolution));
             var index = definedScales.indexOf(scale);
+            var maxScaleIndex = definedScales.indexOf(maxScale);
             if (index > -1) {
+                var zoomInButtons = document.getElementsByClassName("ol-zoom-in");
+                var zoomOutButtons = document.getElementsByClassName("ol-zoom-out");
 
-                if (index == 0 || index == definedScales.length - 1) {
+                if (index == definedScales.length - 1) {
+                    setZoomButtonStatus(zoomInButtons, true);
+
                     zoomLimitReached = true;
                 }
-
-                var html = 1 + ': ' + scale;
-
-                if (this.renderedHTML_ != html) {
-                    this.element_.innerHTML = html;
-                    this.renderedHTML_ = html;
+                else {
+                    setZoomButtonStatus(zoomInButtons, false);
                 }
 
-                if (!this.renderedVisible_) {
-                    this.element_.style.display = '';
-                    this.renderedVisible_ = true;
+                if (index == 0 || index == maxScaleIndex) {
+                    setZoomButtonStatus(zoomOutButtons, true);
+
+                    zoomLimitReached = true;
                 }
+                else {
+                    setZoomButtonStatus(zoomOutButtons, false);
+                }
+
+                //var html = "1 + ': '<input width='20px' type='text' id='customScale' onChange='CheckThis' value='" + scale + "'>";
+
+                //if (this.renderedHTML_ != html) {
+                //    this.element_.innerHTML = html;
+                //    this.renderedHTML_ = html;
+                //}
+
+                //if (!this.renderedVisible_) {
+                //    this.element_.style.display = '';
+                //    this.renderedVisible_ = true;
+                //}    
+
+                $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
             }
-
-            $rootScope.$broadcast('zommLevelchanged', zoomLimitReached);
         };
 
         ol.inherits(customScaleLine, ol.control.ScaleLine);
@@ -367,25 +410,25 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     function setUnitBoundaries(bbox, center) {
         // var bbox = [505058.162109375, 100281.562988281, 518986.837890625, 114158.741943359];
         //var center= [512022.5, 107220.15246582034];
-      
+
         map.getView().fit(bbox, map.getSize());
 
         var maxRes = map.getView().getResolution();
 
-        for (var i = 0; i < definedResolutions.length; i++) {
-            if (maxRes > definedResolutions[i]) {
-                maxRes = definedResolutions[i];
-                break;
+        availableResolutionForCurrentExtent = [];
+        for (var i = 0; i < defaultResolutions.length; i++) {
+            if (maxRes > defaultResolutions[i]) {
+                availableResolutionForCurrentExtent.push(defaultResolutions[i]);
             }
         }
 
+        maxScale = Math.round(getScaleFromResolution(availableResolutionForCurrentExtent[0]));
         view = new ol.View({
-            projection: 'EPSG:27700',
-            extent: bbox,
+            projection: "EPSG:27700",
             center: center,
-            resolutions: definedResolutions,
+            extent: bbox,
+            resolutions: availableResolutionForCurrentExtent,
             resolution: getResolutionFromScale(2000),
-            maxResolution: maxRes
         });
 
         map.setView(view);

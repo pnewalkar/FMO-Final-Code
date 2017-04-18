@@ -302,7 +302,7 @@
                         var reader = new StreamReader(stream);
                         strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
-                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(strLine.Trim());
+                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCSV(strLine.Trim());
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                         {
                             var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
@@ -314,7 +314,7 @@
                             else
                             {
                                 File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.nybLoader.SaveNYBDetails(lstNYBDetails, strfileName);
+                                this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
                             }
                         }
                         else

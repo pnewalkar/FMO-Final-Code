@@ -19,6 +19,11 @@
         {
         }
 
+        /// <summary>
+        /// Fetch postcode for basic search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The result set of post code</returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText)
         {
             try
@@ -43,6 +48,11 @@
             }
         }
 
+        /// <summary>
+        /// Get the count of post code
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The total count of post code</returns>
         public async Task<int> GetPostCodeUnitCount(string searchText)
         {
             try
