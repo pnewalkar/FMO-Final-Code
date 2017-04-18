@@ -9,6 +9,5 @@ namespace Fmo.Common.Enums
     public enum GeometryType
     {
         LineString
-
     }
 }
