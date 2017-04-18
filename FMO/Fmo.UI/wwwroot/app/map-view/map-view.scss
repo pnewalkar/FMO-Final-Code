@@ -5,22 +5,22 @@
     height: 100%;
 }
 
-.miniMap{
+.miniMap {
     @include margin(0px 0px 20px 0px);
 }
 
-.layers{
-     @include margin(0px 0px 20px 0px);
+.layers {
+    @include margin(0px 0px 20px 0px);
 }
 
 
-#leftPanel{
+#leftPanel {
     @include position(absolute);
     @include top(75px);
     left: 15px;
 }
 
-#rightPanel{
+#rightPanel {
     @include position(absolute);
     @include top(75px);
     right: 15px;
@@ -32,24 +32,31 @@
     left: -37px;
 }
 
-
-.zoom-scale {
-    @include position(absolute);
-    @include background($white);
-    width: width-percent(2.86);
-    @include padding(3px 10px 3px 10px);
-    @include top(10px);
-    text-align: center;
-    left: -155px;
+.levelDanger {
+    color: red;
+    border: 1px solid red;
 }
-
-.levelDanger{
-    @include background(rgba(255, 0, 0, 0.61));
-}
-
 
 .ol-zoom {
     top: 0;
     left: auto;
-    position:relative;
+    position: relative;
+}
+
+.zoom-scale {
+    left: -56%;
+    position: absolute;
+    width: 35%;
+}
+
+.labletext {
+    margin-top: 4px;
+    margin-left: 9px;
+    position: absolute;
+    font-size: 16px;
+}
+
+input[name="zoom-scale"] {
+    width: 95.5%;
+    text-indent: 22px;
 }
