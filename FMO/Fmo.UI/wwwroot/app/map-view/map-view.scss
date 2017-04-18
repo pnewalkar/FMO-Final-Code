@@ -29,7 +29,7 @@
 .zoom-control {
     @include position(absolute);
     @include top(0px);
-    left: -50px;
+    left: -37px;
 }
 
 
@@ -47,3 +47,9 @@
     @include background(rgba(255, 0, 0, 0.61));
 }
 
+
+.ol-zoom {
+    top: 0;
+    left: auto;
+    position:relative;
+}
