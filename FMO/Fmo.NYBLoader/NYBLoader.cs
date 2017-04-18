@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
@@ -16,6 +12,7 @@ namespace Fmo.NYBLoader
 {
     public class NYBLoader : INYBLoader
     {
+        #region private member declaration
         private static int noOfCharacters = 15;
         private static int maxCharacters = 507;
         private static int csvValues = 16;
@@ -25,17 +22,21 @@ namespace Fmo.NYBLoader
         private IConfigurationHelper configurationHelper;
         private ILoggingHelper loggingHelper;
         private IExceptionHelper exceptionHelper;
+        #endregion
 
+        #region constructor
         public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
             this.configurationHelper = configurationHelper;
             this.httpHandler = httpHandler;
-            this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIURL").ToString();
-            this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIName").ToString();
+            this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIURL).ToString();
+            this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIName).ToString();
             this.loggingHelper = loggingHelper;
             this.exceptionHelper = exceptionHelper;
         }
+        #endregion
 
+        #region public methods
         /// <summary>
         /// Reads data from CSV file and maps to postalAddressDTO object
         /// </summary>
@@ -87,6 +88,29 @@ namespace Fmo.NYBLoader
             return lstAddressDetails;
         }
 
+        /// <summary>
+        /// Web API call to save postalAddress to PostalAddress table
+        /// </summary>
+        /// <param name="lstAddress">List of mapped address dto to validate each records</param>
+        /// <returns>If success returns true else returns false</returns>
+        public async Task<bool> SaveNYBDetails(List<PostalAddressDTO> lstAddress, string fileName)
+        {
+            bool saveflag = false;
+            try
+            {
+                saveflag = true;
+                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+                saveflag = false;
+            }
+            return saveflag;
+        }
+        #endregion
+
+        #region private methods
         /// <summary>
         /// Validates string i.e. no of comma's should be 15 and max characters per line should be 507
         /// </summary>
@@ -227,28 +251,7 @@ namespace Fmo.NYBLoader
             }
             return isValid;
         }
-
-        /// <summary>
-        /// Web API call to save postalAddress to PostalAddress table
-        /// </summary>
-        /// <param name="lstAddress">List of mapped address dto to validate each records</param>
-        /// <returns>If success returns true else returns false</returns>
-        public async Task<bool> SaveNYBDetails(List<PostalAddressDTO> lstAddress, string fileName)
-        {
-            bool saveflag = false;
-            try
-            {
-                saveflag = true;
-                //httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
-                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
-                saveflag = false;
-            }
-            return saveflag;
-        }
+        #endregion
 
     }
 }

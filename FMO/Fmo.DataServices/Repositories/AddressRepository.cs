@@ -1,5 +1,9 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Common.Enums;
     using Common.Interface;
     using Fmo.DataServices.DBContext;
@@ -8,9 +12,6 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
