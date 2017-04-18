@@ -119,9 +119,13 @@ namespace Fmo.BusinessServices.Services
             {
                 if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypeNYB)
                 {
-                    if (addressRepository.SaveAddress(objPostalAddress, strFileName))
+                    if (addressRepository.UpdateAddress(objPostalAddress, strFileName))
                     {
-                        SaveDeliveryPointProcess(objPostalAddress);
+                        var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
+                        if (objDeliveryPoint == null)
+                        {
+                            SaveDeliveryPointProcess(objPostalAddress);
+                        }
                     }
                     else
                     {
@@ -153,7 +157,7 @@ namespace Fmo.BusinessServices.Services
             {
                 if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
                 {
-                    addressRepository.SaveAddress(objPostalAddress, strFileName);
+                    addressRepository.UpdateAddress(objPostalAddress, strFileName);
                 }
                 else
                 {
@@ -207,7 +211,7 @@ namespace Fmo.BusinessServices.Services
                     objTask.PostcodeDistrict = postCodeDistrict;
                     objTask.NotificationDueDate = DateTime.Now.AddHours(24);
                     objTask.NotificationActionLink = ""; // Unique refn link
-                    notificationRepository.AddNewNotification(objTask);
+                    notificationRepository.AddNewNotification(objTask).Wait();
                 }
                 else
                 {

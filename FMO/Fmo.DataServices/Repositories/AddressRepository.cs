@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using Common.Constants;
     using Common.Enums;
     using Common.Interface;
     using Fmo.DataServices.DBContext;
@@ -80,7 +81,8 @@
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    //var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
@@ -101,6 +103,14 @@
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
+                        objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
+                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0 && objAddress.OrganisationName.Length > 0)
+                        {
+                            foreach (var objDelPoint in objAddress.DeliveryPoints)
+                            {
+                                objDelPoint.DeliveryPointUseIndicator = Constants.DeliveryPointUseIndicatorPAF;
+                            }
+                        }
                     }
                     else
                     {
@@ -183,15 +193,21 @@
             }
         }
 
-        /*public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
+        /// <summary>
+        /// Create or update PAF details depending on the UDPRN
+        /// </summary>
+        /// <param name="objPostalAddress">NYB details DTO</param>
+        /// <param name="strFileName">CSV Filename</param>
+        /// <returns>true or false</returns>
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
             try
             {
                 if (objPostalAddress != null)
                 {
-                    // .Include("DeliveryPoints")
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -206,26 +222,24 @@
                         objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
                         objAddress.DepartmentName = objPostalAddress.DepartmentName;
                         objAddress.OrganisationName = objPostalAddress.OrganisationName;
+                        objAddress.UDPRN = objPostalAddress.UDPRN;
                         objAddress.PostcodeType = objPostalAddress.PostcodeType;
                         objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                        objAddress.UDPRN = objPostalAddress.UDPRN;
+                        objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
+                        objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
+                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        {
+                            foreach (var objDelPoint in objAddress.DeliveryPoints)
+                            {
+                                if (objAddress.OrganisationName.Length > 0)
+                                {
+                                    objDelPoint.DeliveryPointUseIndicator = Constants.DeliveryPointUseIndicatorPAF;
+                                }
 
-                        // if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
-                        // {
-                        //    foreach (var objDelPoint in objAddress.DeliveryPoints)
-                        //    {
-                        //        objDelPoint.UDPRN = objPostalAddress.UDPRN;
-                        //    }
-                        // }
-                        // else
-                        // {
-                        //    //To DO log error
-                        // }
-                    }
-                    else
-                    {
-                        // Error Log entry
+                                objDelPoint.UDPRN = objPostalAddress.UDPRN;
+                            }
+                        }
                     }
 
                     DataContext.SaveChanges();
@@ -234,11 +248,11 @@
             }
             catch (Exception ex)
             {
-                throw ex;
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
             }
 
             return saveFlag;
-        }*/
+        }
 
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB

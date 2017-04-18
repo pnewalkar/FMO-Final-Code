@@ -9,6 +9,8 @@ namespace Fmo.DataServices.Repositories.Interfaces
     {
         bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName);
 
+        bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName);
+
         PostalAddressDTO GetPostalAddress(int? uDPRN);
 
         PostalAddressDTO GetPostalAddress(PostalAddressDTO objPostalAddress);
