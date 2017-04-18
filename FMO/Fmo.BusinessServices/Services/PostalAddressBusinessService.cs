@@ -84,7 +84,6 @@ namespace Fmo.BusinessServices.Services
         /// Business rules for PAF details
         /// </summary>
         /// <param name="objPostalAddress">address DTO</param>
-        /// <param name="strFileName">File Name</param>
         /// <returns>returns true or false</returns>
         public bool SavePAFDetails(List<PostalAddressDTO> objPostalAddress)
         {
@@ -106,6 +105,60 @@ namespace Fmo.BusinessServices.Services
             }
 
             return saveFlag;
+        }
+
+        /// <summary>
+        /// private methods to save delivery point and Task for notification
+        /// </summary>
+        /// <param name="objPostalAddress">pass PostalAddreesDTO</param>
+        public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
+        {
+            try
+            {
+                var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
+                Guid tasktypeId = refDataRepository.GetReferenceDataId(Constants.TASK_NOTIFICATION, Constants.TASK_ACTION);
+                Guid locationProviderId = refDataRepository.GetReferenceDataId(Constants.NETWORK_LINK_DATA_PROVIDER, Constants.EXTERNAL);
+                string postCodeDistrict = objPostalAddress.Postcode.Substring(0, objPostalAddress.Postcode.Length - 4);
+
+                if (objAddressLocation == null)
+                {
+                    var newDeliveryPoint = new DeliveryPointDTO();
+                    newDeliveryPoint.ID = Guid.NewGuid();
+                    newDeliveryPoint.Address_GUID = objPostalAddress.ID;
+                    newDeliveryPoint.UDPRN = objPostalAddress.UDPRN;
+                    deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
+
+                    // Create task
+                    var objTask = new NotificationDTO();
+                    objTask.ID = Guid.NewGuid();
+                    objTask.NotificationType_GUID = tasktypeId;
+                    objTask.NotificationPriority_GUID = null;
+                    objTask.NotificationSource = Constants.TASK_SOURCE;
+                    objTask.Notification_Heading = Constants.TASK_PAF_ACTION;
+                    objTask.Notification_Message = AddressFields(objPostalAddress);
+                    objTask.PostcodeDistrict = postCodeDistrict;
+                    objTask.NotificationDueDate = DateTime.Now.AddHours(24);
+                    objTask.NotificationActionLink = string.Empty; // Unique refn link
+                    notificationRepository.AddNewNotification(objTask).Wait();
+                }
+                else
+                {
+                    var newDeliveryPoint = new DeliveryPointDTO();
+                    newDeliveryPoint.ID = Guid.NewGuid();
+                    newDeliveryPoint.Address_GUID = objPostalAddress.ID;
+                    newDeliveryPoint.UDPRN = objAddressLocation.UDPRN;
+                    newDeliveryPoint.Address_Id = objPostalAddress.Address_Id;
+                    newDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
+                    newDeliveryPoint.Latitude = objAddressLocation.Lattitude;
+                    newDeliveryPoint.Longitude = objAddressLocation.Longitude;
+                    newDeliveryPoint.LocationProvider_GUID = locationProviderId;
+                    deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+            }
         }
 
         private void SavePAFRecords(PostalAddressDTO objPostalAddress, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
@@ -148,7 +201,7 @@ namespace Fmo.BusinessServices.Services
                     objFileProcessingLog.FileName = strFileName;
                     objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
                     objFileProcessingLog.FileType = FileType.Paf.ToString();
-                    objFileProcessingLog.NatureOfError = "Address Type of the selected Postal Address record is not <NYB>";//"RFMO 258 : Scenerio 1b";
+                    objFileProcessingLog.NatureOfError = "Address Type of the selected Postal Address record is not <NYB>";
                     fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                 }
             }
@@ -167,7 +220,7 @@ namespace Fmo.BusinessServices.Services
                     objFileProcessingLog.FileName = strFileName;
                     objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
                     objFileProcessingLog.FileType = FileType.Paf.ToString();
-                    objFileProcessingLog.NatureOfError = "Address Type of the selected Postal Address record is not <USR>";//"RFMO 259 : Scenerio 2a";
+                    objFileProcessingLog.NatureOfError = "Address Type of the selected Postal Address record is not <USR>";
                     fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                 }
             }
@@ -176,59 +229,6 @@ namespace Fmo.BusinessServices.Services
                 objPostalAddress.ID = Guid.NewGuid();
                 addressRepository.InsertAddress(objPostalAddress, string.Empty);
                 SaveDeliveryPointProcess(objPostalAddress);
-            }
-        }
-        /// <summary>
-        /// private methods to save delivery point and Task for notification
-        /// </summary>
-        /// <param name="objPostalAddress"></param>
-        public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
-        {
-            try
-            {
-                var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
-                Guid tasktypeId = refDataRepository.GetReferenceDataId(Constants.TASK_NOTIFICATION, Constants.TASK_ACTION);
-                Guid locationProviderId = refDataRepository.GetReferenceDataId(Constants.NETWORK_LINK_DATA_PROVIDER, Constants.EXTERNAL);
-                string postCodeDistrict = objPostalAddress.Postcode.Substring(0, objPostalAddress.Postcode.Length - 4);
-
-                if (objAddressLocation == null)
-                {
-                    var newDeliveryPoint = new DeliveryPointDTO();
-                    newDeliveryPoint.ID = Guid.NewGuid();
-                    newDeliveryPoint.Address_GUID = objPostalAddress.ID;
-                    newDeliveryPoint.UDPRN = objPostalAddress.UDPRN;
-                    deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
-
-                    // Create task
-                    var objTask = new NotificationDTO();
-                    objTask.ID = Guid.NewGuid();
-                    objTask.NotificationType_GUID = tasktypeId;
-                    objTask.NotificationPriority_GUID = null;
-                    objTask.NotificationSource = Constants.TASK_SOURCE;
-                    objTask.Notification_Heading = Constants.TASK_PAF_ACTION;
-                    objTask.Notification_Message = AddressFields(objPostalAddress);
-                    objTask.PostcodeDistrict = postCodeDistrict;
-                    objTask.NotificationDueDate = DateTime.Now.AddHours(24);
-                    objTask.NotificationActionLink = ""; // Unique refn link
-                    notificationRepository.AddNewNotification(objTask).Wait();
-                }
-                else
-                {
-                    var newDeliveryPoint = new DeliveryPointDTO();
-                    newDeliveryPoint.ID = Guid.NewGuid();
-                    newDeliveryPoint.Address_GUID = objPostalAddress.ID;
-                    newDeliveryPoint.UDPRN = objAddressLocation.UDPRN;
-                    newDeliveryPoint.Address_Id = objPostalAddress.Address_Id;
-                    newDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
-                    newDeliveryPoint.Latitude = objAddressLocation.Lattitude;
-                    newDeliveryPoint.Longitude = objAddressLocation.Longitude;
-                    newDeliveryPoint.LocationProvider_GUID = locationProviderId;
-                    deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
-                }
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
             }
         }
 
