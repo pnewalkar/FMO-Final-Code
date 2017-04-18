@@ -40,12 +40,11 @@ namespace Fmo.Common.Constants
         public const string TASK_SOURCE = "SYSTEM";
         public const string TASK_PAF_ACTION = "Position new DP";
         public const int csvPAFValues = 20;
-
         public const string PAFNOACTION = "B";
         public const string PAFINSERT = "I";
         public const string PAFUPDATE = "C";
         public const string PAFDELETE = "D";
-
+        public const string FMOWebAPIURL = "FMOWebAPIURL";
+        public const string FMOWebAPIName = "FMOWebAPIName"; 
     }
 }
-
