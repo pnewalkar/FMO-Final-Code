@@ -1,16 +1,16 @@
 ﻿namespace Fmo.BusinessServices.Services
 {
     using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Script.Serialization;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.Common;
-using Fmo.Common.Constants;
-using Fmo.Common.Enums;
-using Fmo.Common.Interface;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Script.Serialization;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
+    using Fmo.Common.Interface;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
 
     /// <summary>
     /// Business service to handle CRUD operations on Postal Address entites
@@ -41,27 +41,6 @@ using Fmo.DTO;
             this.notificationRepository = notificationRepository;
             this.fileProcessingLogRepository = fileProcessingLogRepository;
             this.loggingHelper = loggingHelper;
-        }
-
-        /// <summary>
-        /// Concatenating address fileds require for notification
-        /// </summary>
-        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
-        /// <returns>returns concatenated value of address field</returns>
-        private static string AddressFields(PostalAddressDTO objPostalAddress)
-        {
-            return "Please position the DP " +
-                        objPostalAddress.OrganisationName + ", " +
-                        objPostalAddress.DepartmentName + ", " +
-                        objPostalAddress.BuildingName + ", " +
-                        objPostalAddress.BuildingNumber + ", " +
-                        objPostalAddress.SubBuildingName + ", " +
-                        objPostalAddress.Thoroughfare + ", " +
-                        objPostalAddress.DependentThoroughfare + ", " +
-                        objPostalAddress.DependentLocality + ", " +
-                        objPostalAddress.DoubleDependentLocality + ", " +
-                        objPostalAddress.PostTown + ", " +
-                        objPostalAddress.Postcode;
         }
 
         /// <summary>
@@ -264,6 +243,25 @@ using Fmo.DTO;
             }
         }
 
-        
+        /// <summary>
+        /// Concatenating address fileds require for notification
+        /// </summary>
+        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
+        /// <returns>returns concatenated value of address field</returns>
+        private string AddressFields(PostalAddressDTO objPostalAddress)
+        {
+            return "Please position the DP " +
+                        objPostalAddress.OrganisationName + ", " +
+                        objPostalAddress.DepartmentName + ", " +
+                        objPostalAddress.BuildingName + ", " +
+                        objPostalAddress.BuildingNumber + ", " +
+                        objPostalAddress.SubBuildingName + ", " +
+                        objPostalAddress.Thoroughfare + ", " +
+                        objPostalAddress.DependentThoroughfare + ", " +
+                        objPostalAddress.DependentLocality + ", " +
+                        objPostalAddress.DoubleDependentLocality + ", " +
+                        objPostalAddress.PostTown + ", " +
+                        objPostalAddress.Postcode;
+        }
     }
 }
