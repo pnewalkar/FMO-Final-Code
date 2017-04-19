@@ -12,6 +12,9 @@
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// This class contains methods for fetching data for AccessLinks
+    /// </summary>
     public class AccessLinkBussinessService : IAccessLinkBussinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
@@ -35,8 +38,15 @@
         {
             try
             {
-                var accessLinkCoordinates = GetData(null, boundaryBox.Split(','));
-                return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var accessLinkCoordinates = GetData(boundaryBox.Split(','));
+                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -49,7 +59,7 @@
         /// </summary>
         /// <param name="lstAccessLinkDTO"> accesslink as list of AccessLinkDTO</param>
         /// <returns> AccsessLink object</returns>
-        private string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
+        private static string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
         {
             var geoJson = new GeoJson
             {
@@ -91,7 +101,7 @@
 
                     feature.type = Constants.FeatureType;
                     feature.id = res.AccessLink_Id;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.FeaturePropertyType, Constants.FeaturePropertyAccessLink } };
 
                     geoJson.features.Add(feature);
                 }
@@ -103,10 +113,9 @@
         /// <summary>
         /// This method fetches co-ordinates of accesslink
         /// </summary>
-        /// <param name="query"> query as string </param>
         /// <param name="accessLinkParameters"> accessLinkParameters as object </param>
         /// <returns> accesslink coordinates</returns>
-        private string GetData(string query, params object[] accessLinkParameters)
+        private static string GetData(params object[] accessLinkParameters)
         {
             string coordinates = string.Empty;
 

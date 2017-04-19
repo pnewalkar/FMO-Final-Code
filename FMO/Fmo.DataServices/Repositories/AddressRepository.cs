@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Common.Constants;
     using Common.Enums;
     using Common.Interface;
     using Fmo.DataServices.DBContext;
@@ -11,8 +12,10 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
-    using Common.Constants;
 
+    /// <summary>
+    /// Repository to interact with postal address entity
+    /// </summary>
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);

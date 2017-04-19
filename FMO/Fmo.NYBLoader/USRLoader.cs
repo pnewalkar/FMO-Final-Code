@@ -1,19 +1,15 @@
 ﻿using Fmo.DTO.FileProcessing;
 using Fmo.MessageBrokerCore.Messaging;
 using Fmo.NYBLoader.Interfaces;
-using Ninject;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using Fmo.Common.Constants;
 using System.Xml;
 using System.Xml.Schema;
-using System.Configuration;
 using Fmo.Common.Interface;
 using Fmo.Common.Enums;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -21,6 +17,9 @@ using Fmo.DTO;
 
 namespace Fmo.NYBLoader
 {
+    /// <summary>
+    /// Load third party file, process and add to MSMQ
+    /// </summary>
     public class USRLoader : IUSRLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
