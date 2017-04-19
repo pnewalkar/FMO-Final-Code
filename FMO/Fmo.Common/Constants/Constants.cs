@@ -80,6 +80,8 @@ namespace Fmo.Common.Constants
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
         public const string DeliveryPointUseIndicatorPAF = "B";
+        public const string PAFProcessedFilePath = "PAFProcessedFilePath";
+        public const string PAFErrorFilePath = "PAFErrorFilePath";
         #endregion
 
         #endregion
