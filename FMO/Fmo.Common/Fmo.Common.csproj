@@ -137,6 +137,9 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <CodeAnalysisDictionary Include="..\FmoCodeAnalysisDictionary.xml">
+      <Link>FmoCodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
