@@ -89,22 +89,22 @@ namespace Fmo.NYBLoader
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
-            bool saveflag = false;
+            bool isNybDetailsInserted = false;
             try
             {
-                saveflag = true;
+                isNybDetailsInserted = true;
                 var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress);
             }
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
-                saveflag = false;
+                isNybDetailsInserted = false;
             }
             finally
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
-            return saveflag;
+            return isNybDetailsInserted;
         }
         #endregion
 

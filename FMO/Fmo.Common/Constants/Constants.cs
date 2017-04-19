@@ -31,6 +31,7 @@
         public const string CRLF = "\r\n";
         public const string NEWLINE = "\n";
         public const string COLON = " : ";
+        public const string POSTALADDRESSDETAILS = "Postal Address Details : ";
 
         #endregion
 

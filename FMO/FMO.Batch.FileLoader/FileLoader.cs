@@ -28,6 +28,7 @@
     using Fmo.NYBLoader.Interfaces;
     using Ninject;
     using System.Reflection;
+    using System.Web.Script.Serialization;
 
     /// <summary>
     /// File loader service class for file uploads i.e. NYB,PAF,USR
@@ -308,6 +309,7 @@
         /// <param name="fileName">Input file name as a param</param>
         private void LoadNYBDetails(string fileName)
         {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
@@ -324,6 +326,8 @@
                         strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
                         List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCSV(strLine.Trim());
+                        string postaLAddress = serializer.Serialize(lstNYBDetails);
+                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress);
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                         {
                             var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
