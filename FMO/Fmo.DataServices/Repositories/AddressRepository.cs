@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Data.Entity;
     using Common.Constants;
     using Common.Enums;
     using Common.Interface;
@@ -41,7 +42,7 @@
             bool isPostalAddressDeleted = false;
             if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
+                var lstAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
                 if (lstAddress != null && lstAddress.Count > 0)
                 {
                     lstAddress.ForEach(postalAddressEntity =>
@@ -49,7 +50,7 @@
                         if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
                             isPostalAddressDeleted = false;
-                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
+                            this.loggingHelper.LogInfo(string.Format(Constants.NYBErrorMessageForDelete, string.Join(Constants.Comma, lstUDPRN)));
                         }
                         else
                         {
@@ -208,7 +209,7 @@
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {

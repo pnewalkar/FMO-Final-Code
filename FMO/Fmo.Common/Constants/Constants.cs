@@ -25,6 +25,7 @@
         public const string PostalAddressStatus = "Postal Address Status";
         public const string PostalAddressType = "Postal Address Type";
         public const string XMLFileFolderSettings = "XMLFileFolderSettings";
+        public const string Comma = ", ";
 
         #endregion
 
@@ -35,6 +36,7 @@
         public const string FMOWebAPIName = "FMOWebAPIName";
         public const string ProcessedFilePath = "ProcessedFilePath";
         public const string ErrorFilePath = "ErrorFilePath";
+        public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
 
         #endregion
 
@@ -81,6 +83,11 @@
         public const string DeliveryPointUseIndicatorPAF = "B";
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
+        public const string PAFErrorMessageForUDPRNNotUpdated= "Postal Address for Selected UDPRN not updated";
+        public const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
+        public const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
+        public const string PAFTaskBodyPreText = "Please position the DP ";
+        public const string DeliveryPoints = "DeliveryPoints";
 
         #endregion
 

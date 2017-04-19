@@ -199,7 +199,7 @@
                         objFileProcessingLog.FileName = strFileName;
                         objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
                         objFileProcessingLog.FileType = FileType.Paf.ToString();
-                        objFileProcessingLog.NatureOfError = "Postal Address for Selected UDPRN not updated";
+                        objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForUDPRNNotUpdated;
                         fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                     }
                 }
@@ -212,7 +212,7 @@
                     objFileProcessingLog.FileName = strFileName;
                     objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
                     objFileProcessingLog.FileType = FileType.Paf.ToString();
-                    objFileProcessingLog.NatureOfError = "Address Type of the selected Postal Address record is not <NYB>";
+                    objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeNYBNotFound;
                     fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                 }
             }
@@ -231,7 +231,7 @@
                     objFileProcessingLog.FileName = strFileName;
                     objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
                     objFileProcessingLog.FileType = FileType.Paf.ToString();
-                    objFileProcessingLog.NatureOfError = "Address Type of the selected Postal Address record is not <USR>";
+                    objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeUSRNotFound;
                     fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                 }
             }
@@ -250,17 +250,17 @@
         /// <returns>returns concatenated value of address field</returns>
         private string AddressFields(PostalAddressDTO objPostalAddress)
         {
-            return "Please position the DP " +
-                        objPostalAddress.OrganisationName + ", " +
-                        objPostalAddress.DepartmentName + ", " +
-                        objPostalAddress.BuildingName + ", " +
-                        objPostalAddress.BuildingNumber + ", " +
-                        objPostalAddress.SubBuildingName + ", " +
-                        objPostalAddress.Thoroughfare + ", " +
-                        objPostalAddress.DependentThoroughfare + ", " +
-                        objPostalAddress.DependentLocality + ", " +
-                        objPostalAddress.DoubleDependentLocality + ", " +
-                        objPostalAddress.PostTown + ", " +
+            return Constants.PAFTaskBodyPreText +
+                        objPostalAddress.OrganisationName + Constants.Comma +
+                        objPostalAddress.DepartmentName + Constants.Comma +
+                        objPostalAddress.BuildingName + Constants.Comma +
+                        objPostalAddress.BuildingNumber + Constants.Comma +
+                        objPostalAddress.SubBuildingName + Constants.Comma +
+                        objPostalAddress.Thoroughfare + Constants.Comma +
+                        objPostalAddress.DependentThoroughfare + Constants.Comma +
+                        objPostalAddress.DependentLocality + Constants.Comma +
+                        objPostalAddress.DoubleDependentLocality + Constants.Comma +
+                        objPostalAddress.PostTown + Constants.Comma +
                         objPostalAddress.Postcode;
         }
     }
