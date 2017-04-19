@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Dictionary>
+  <Words>
+    <Recognized>
+      <Word>PAF</Word>
+      <Word>NYB</Word>
+      <Word>PostCode</Word>
+      <Word>FMO</Word>
+      <Word>postcode</Word>
+      <Word>dto</Word>
+      <Word>udprn</Word>
+    </Recognized>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>UDPRN</Acronym>     
+      <Acronym>DTO</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>
