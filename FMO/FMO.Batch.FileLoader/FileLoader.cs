@@ -27,6 +27,8 @@
     using Fmo.NYBLoader.Common;
     using Fmo.NYBLoader.Interfaces;
     using Ninject;
+    using System.Reflection;
+    using System.Web.Script.Serialization;
 
     /// <summary>
     /// File loader service class for file uploads i.e. NYB,PAF,USR
@@ -51,6 +53,7 @@
 
         private IFileMover fileMover = default(IFileMover);
         private IConfigurationHelper configurationHelper;
+        private bool enableLogging = false;
 
         #endregion
 
@@ -76,6 +79,7 @@
             InitializeComponent();
             this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
             this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         #endregion
@@ -271,6 +275,8 @@
         /// <param name="action_Args">arguments to be passed to the executable (action)</param>
         private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             string fileName = e.FullPath;
             if (!string.IsNullOrEmpty(action_Args))
             {
@@ -290,6 +296,8 @@
                         break;
                 }
             }
+
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
         }
         #endregion
 
@@ -301,6 +309,9 @@
         /// <param name="fileName">Input file name as a param</param>
         private void LoadNYBDetails(string fileName)
         {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 using (ZipArchive zip = ZipFile.OpenRead(fileName))
@@ -315,6 +326,8 @@
                         strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
                         List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCSV(strLine.Trim());
+                        string postaLAddress = serializer.Serialize(lstNYBDetails);
+                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress);
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                         {
                             var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
@@ -341,7 +354,22 @@
             {
                 loggingHelper.LogError(ex);
             }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
         }
         #endregion
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage)
+        {
+            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+        }
+
     }
 }
