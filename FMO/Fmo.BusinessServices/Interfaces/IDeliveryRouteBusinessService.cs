@@ -41,8 +41,18 @@ namespace Fmo.BusinessServices.Interfaces
         /// <returns>List</returns>
         List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID);
 
+        /// <summary>
+        /// Fetch Delivery Route for Basic Search
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText);
 
+        /// <summary>
+        /// Fetch Delivery Route For Advance Search
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText);
     }
 }

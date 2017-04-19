@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlTypes;
+    using Common;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.Common.Constants;
     using Fmo.Common.Enums;
@@ -12,7 +13,10 @@
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
 
-    public class AccessLinkBussinessService : IAccessLinkBussinessService
+    /// <summary>
+    /// This class contains methods for fetching data for AccessLinks
+    /// </summary>
+    public class AccessLinkBussinessService : IAccessLinkBusinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
 
@@ -21,6 +25,10 @@
             this.accessLinkRepository = searchAccessLinkRepository;
         }
 
+        /// <summary>
+        /// This method is used to fetch Access Link data.
+        /// </summary>
+        /// <returns>List of Access link Dto</returns>
         public List<AccessLinkDTO> SearchAccessLink()
         {
             return accessLinkRepository.SearchAccessLink();
@@ -35,8 +43,15 @@
         {
             try
             {
-                var accessLinkCoordinates = GetData(null, boundaryBox.Split(','));
-                return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var accessLinkCoordinates = GetData(boundaryBox.Split(','));
+                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -49,7 +64,7 @@
         /// </summary>
         /// <param name="lstAccessLinkDTO"> accesslink as list of AccessLinkDTO</param>
         /// <returns> AccsessLink object</returns>
-        private string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
+        private static string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
         {
             var geoJson = new GeoJson
             {
@@ -91,22 +106,21 @@
 
                     feature.type = Constants.FeatureType;
                     feature.id = res.AccessLink_Id;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.AccessLink.GetDescription()) } };
 
                     geoJson.features.Add(feature);
                 }
             }
 
-           return JsonConvert.SerializeObject(geoJson);
+            return JsonConvert.SerializeObject(geoJson);
         }
 
         /// <summary>
         /// This method fetches co-ordinates of accesslink
         /// </summary>
-        /// <param name="query"> query as string </param>
         /// <param name="accessLinkParameters"> accessLinkParameters as object </param>
         /// <returns> accesslink coordinates</returns>
-        private string GetData(string query, params object[] accessLinkParameters)
+        private static string GetData(params object[] accessLinkParameters)
         {
             string coordinates = string.Empty;
 

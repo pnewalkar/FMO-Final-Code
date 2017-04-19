@@ -2,14 +2,13 @@
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
     using DTO;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.Entities;
     using MappingConfiguration;
-    using System.Threading.Tasks;
-
 
     /// <summary>
     /// AddressLocation Repository to interact with the AddressLocation entity
@@ -25,7 +24,7 @@
         /// Find AddressLocation by UDPRN
         /// </summary>
         /// <param name="uDPRN">UDPRN id</param>
-        /// <returns></returns>
+        /// <returns>boolean value</returns>
         public bool AddressLocationExists(int uDPRN)
         {
             try

@@ -4,7 +4,7 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-    public interface ISearchBussinessService
+    public interface ISearchBusinessService
     {
         Task<SearchResultDTO> FetchBasicSearchDetails(string searchText);
 

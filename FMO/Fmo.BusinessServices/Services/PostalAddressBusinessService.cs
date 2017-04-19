@@ -1,4 +1,6 @@
-﻿using System;
+﻿namespace Fmo.BusinessServices.Services
+{
+    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
@@ -10,8 +12,9 @@ using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
-namespace Fmo.BusinessServices.Services
-{
+    /// <summary>
+    /// Business service to handle CRUD operations on Postal Address entites
+    /// </summary>
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
         private IAddressRepository addressRepository = default(IAddressRepository);
@@ -41,6 +44,27 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
+        /// Concatenating address fileds require for notification
+        /// </summary>
+        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
+        /// <returns>returns concatenated value of address field</returns>
+        private static string AddressFields(PostalAddressDTO objPostalAddress)
+        {
+            return "Please position the DP " +
+                        objPostalAddress.OrganisationName + ", " +
+                        objPostalAddress.DepartmentName + ", " +
+                        objPostalAddress.BuildingName + ", " +
+                        objPostalAddress.BuildingNumber + ", " +
+                        objPostalAddress.SubBuildingName + ", " +
+                        objPostalAddress.Thoroughfare + ", " +
+                        objPostalAddress.DependentThoroughfare + ", " +
+                        objPostalAddress.DependentLocality + ", " +
+                        objPostalAddress.DoubleDependentLocality + ", " +
+                        objPostalAddress.PostTown + ", " +
+                        objPostalAddress.Postcode;
+        }
+
+        /// <summary>
         /// Save list of NYB details into database.
         /// </summary>
         /// <param name="lstPostalAddress">List Of address DTO</param>
@@ -48,7 +72,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>returns true or false</returns>
         public bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress, string strFileName)
         {
-            bool saveFlag = false;
+            bool isPostalAddressInserted = false;
             string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
             try
             {
@@ -66,26 +90,26 @@ namespace Fmo.BusinessServices.Services
                             addressRepository.SaveAddress(postalAddress, strFileName);
                         }
 
-                        saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                        isPostalAddressInserted = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                this.loggingHelper.LogError(ex);
-                this.loggingHelper.LogInfo(postalAddressList);
                 this.loggingHelper.LogInfo(ex.ToString());
+                this.loggingHelper.LogInfo(postalAddressList);
+                throw;
             }
 
-            return saveFlag;
+            return isPostalAddressInserted;
         }
 
         /// <summary>
         /// Business rules for PAF details
         /// </summary>
-        /// <param name="objPostalAddress">address DTO</param>
+        /// <param name="lstPostalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
-        public bool SavePAFDetails(List<PostalAddressDTO> objPostalAddress)
+        public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             bool saveFlag = false;
             try
@@ -94,7 +118,7 @@ namespace Fmo.BusinessServices.Services
                 Guid addressTypePAF = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString());
                 Guid addressTypeNYB = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
-                foreach (var item in objPostalAddress)
+                foreach (var item in lstPostalAddress)
                 {
                     SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
                 }
@@ -161,6 +185,14 @@ namespace Fmo.BusinessServices.Services
             }
         }
 
+        /// <summary>
+        /// Business rule implementation for PAF create events
+        /// </summary>
+        /// <param name="objPostalAddress">PostalAddressDTO to process</param>
+        /// <param name="addressTypeUSR">addressType Guid for USR</param>
+        /// <param name="addressTypeNYB">addressType Guid for NYB</param>
+        /// <param name="addressTypePAF">addressType Guid for PAF</param>
+        /// <param name="strFileName">FileName on PAF events to track against DB</param>
         private void SavePAFRecords(PostalAddressDTO objPostalAddress, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
             objPostalAddress.AddressType_GUID = addressTypePAF;
@@ -232,20 +264,6 @@ namespace Fmo.BusinessServices.Services
             }
         }
 
-        private string AddressFields(PostalAddressDTO objPostalAddress)
-        {
-            return "Please position the DP " +
-                        objPostalAddress.OrganisationName + ", " +
-                        objPostalAddress.DepartmentName + ", " +
-                        objPostalAddress.BuildingName + ", " +
-                        objPostalAddress.BuildingNumber + ", " +
-                        objPostalAddress.SubBuildingName + ", " +
-                        objPostalAddress.Thoroughfare + ", " +
-                        objPostalAddress.DependentThoroughfare + ", " +
-                        objPostalAddress.DependentLocality + ", " +
-                        objPostalAddress.DoubleDependentLocality + ", " +
-                        objPostalAddress.PostTown + ", " +
-                        objPostalAddress.Postcode;
-        }
+        
     }
 }

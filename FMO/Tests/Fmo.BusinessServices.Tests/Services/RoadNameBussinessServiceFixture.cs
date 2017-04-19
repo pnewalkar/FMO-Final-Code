@@ -10,9 +10,10 @@
     using Moq;
     using NUnit.Framework;
 
+    [TestFixture]
     public class RoadNameBussinessServiceFixture : TestFixtureBase
     {
-        private IRoadNameBussinessService testCandidate;
+        private IRoadNameBusinessService testCandidate;
         private Mock<IRoadNameRepository> mockRoadNameRepository;
         private Mock<ICreateOtherLayersObjects> mockCreateOtherLayers;
         private List<OsRoadLinkDTO> osRoadLinkDTO = null;

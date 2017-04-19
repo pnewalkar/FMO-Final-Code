@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
 using System.Threading.Tasks;
 using Fmo.MessageBrokerCore.Messaging;
 using Fmo.DTO;
@@ -109,24 +104,21 @@ namespace Fmo.Receiver
         /// <returns></returns>
         private async Task SavePAFDetails(List<PostalAddressDTO> postalAddress)
         {
-            bool saveFlag = false;
             try
             {
                 if (postalAddress != null && postalAddress.Count > 0)
                 {
                     httpHandler = new HttpHandler();
-                    //httpHandler.SetBaseAddress(new Uri(PAFWebApiurl));
                     await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
-                    saveFlag = true;
                 }
             }
             catch (Exception)
             {
-                saveFlag = false;
                 throw;
             }
 
         }
+
         /// <summary>
         /// SaveUSRDetails to save the USR data by calling the WebApi services.
         /// </summary>
@@ -137,11 +129,10 @@ namespace Fmo.Receiver
             try
             {
                 httpHandler = new HttpHandler();
-                //httpHandler.SetBaseAddress(new Uri(USRWebApiurl));
                 var addressLocationUSRPOSTDTO = GenericMapper.MapList<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -166,7 +157,7 @@ namespace Fmo.Receiver
                     }
                 }
                 if (lstPostalAddress != null && lstPostalAddress.Count > 0)
-                    SavePAFDetails(lstPostalAddress);
+                    SavePAFDetails(lstPostalAddress).Wait();
 
             }
             catch (Exception)
@@ -194,7 +185,7 @@ namespace Fmo.Receiver
                 }
 
                 if(lstAddressLocationUSR != null && lstAddressLocationUSR.Count > 0)
-                    SaveUSRDetails(lstAddressLocationUSR);
+                    SaveUSRDetails(lstAddressLocationUSR).Wait();
 
             }
             catch (Exception)
@@ -212,7 +203,6 @@ namespace Fmo.Receiver
         {
             try
             {
-                // do some work
                 USRMessageReceived();
                 PAFMessageReceived();
             }

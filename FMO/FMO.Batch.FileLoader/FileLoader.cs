@@ -9,9 +9,11 @@
     using System.ServiceProcess;
     using System.Text;
     using System.Xml.Serialization;
+    using Common;
+    using Common.Constants;
+    using Common.Enums;
     using Fmo.Common.ConfigurationManagement;
     using Fmo.Common.EmailManagement;
-    using Fmo.Common.ExceptionManagement;
     using Fmo.Common.Interface;
     using Fmo.Common.LoggingManagement;
     using Fmo.DataServices.DBContext;
@@ -25,13 +27,14 @@
     using Fmo.NYBLoader.Common;
     using Fmo.NYBLoader.Interfaces;
     using Ninject;
-    using Common.Constants;
-    using Common.Enums;
-    using Common;
 
+    /// <summary>
+    /// File loader service class for file uploads i.e. NYB,PAF,USR
+    /// </summary>
     public partial class FileLoader : ServiceBase
     {
         #region Property Declarations
+
         private static string dateTimeFormat = Constants.DATETIMEFORMAT;
         private readonly IKernel kernal;
         private string strProcessedFilePath = string.Empty;
@@ -48,48 +51,53 @@
 
         private IFileMover fileMover = default(IFileMover);
         private IConfigurationHelper configurationHelper;
+
         #endregion
 
         #region Append TimeStamp
+
         /// <summary>
         /// Append timestamp to filename before writing the file to specified folder
         /// </summary>
         /// <param name="strfileName">path</param>
-        /// <returns></returns>
+        /// <returns>Filename with timestamp appended</returns>
         private static string AppendTimeStamp(string strfileName)
         {
-            try
-            {
-                return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
         }
+
         #endregion
 
         #region Constructor
         public FileLoader()
         {
-            // this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-            // this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
             kernal = new StandardKernel();
             Register(kernal);
             InitializeComponent();
-            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ProcessedFilePath");
-            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ErrorFilePath");
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
         }
+
         #endregion
 
         #region On Debug test method
+
+        /// <summary>
+        /// Test method for debugging service on local
+        /// </summary>
         public void OnDebug()
         {
             OnStart(null);
-        } 
+        }
+
         #endregion
 
         #region Register
+
+        /// <summary>
+        /// Method for injecting object on respective implementation
+        /// </summary>
+        /// <param name="kernel">kernel object </param>
         protected void Register(IKernel kernel)
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>();
@@ -118,6 +126,7 @@
         #endregion
 
         #region OnStart
+
         /// <summary>Event automatically fired when the service is started by Windows</summary>
         /// <param name="args">array of arguments</param>
         protected override void OnStart(string[] args)
@@ -127,6 +136,7 @@
         #endregion
 
         #region OnStop
+
         /// <summary>Event automatically fired when the service is stopped by Windows</summary>
         protected override void OnStop()
         {
@@ -145,9 +155,11 @@
                 listFileSystemWatcher.Clear();
             }
         }
+
         #endregion
 
         #region Start
+
         /// <summary>
         /// Initialize Watchers
         /// </summary>
@@ -163,11 +175,12 @@
         #endregion
 
         #region File Watchers and handlers
+
         /// <summary>Reads an XML file and populates a list of <CustomFolderSettings> </summary>
         private void PopulateListFileSystemWatchers()
         {
             // Get the XML file name from the App.config file
-            string fileNameXML = ConfigurationManager.AppSettings["XMLFileFolderSettings"];
+            string fileNameXML = ConfigurationManager.AppSettings[Constants.XMLFileFolderSettings];
 
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
@@ -277,12 +290,11 @@
                         break;
                 }
             }
-
-            // ExecuteProcess(fileName);
         }
         #endregion
 
         #region Load NYB Details
+
         /// <summary>
         /// Read files from zip file and call NYBLoader Assembly to validate and save records
         /// </summary>
@@ -329,7 +341,7 @@
             {
                 loggingHelper.LogError(ex);
             }
-        } 
+        }
         #endregion
     }
 }

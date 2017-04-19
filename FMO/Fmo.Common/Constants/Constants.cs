@@ -30,12 +30,16 @@ namespace Fmo.Common.Constants
         public const int BNGCOORDINATESYSTEM = 27700;
         public const string PostalAddressStatus = "Postal Address Status";
         public const string PostalAddressType = "Postal Address Type";
+        public const string XMLFileFolderSettings = "XMLFileFolderSettings";
+        
         #endregion
 
         #region NYB
         public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File ins not valid File Name : {0} : Log Time : {1}";
         public const string QUEUENYB = "QUEUE_NYB";
         public const string FMOWebAPIName = "FMOWebAPIName";
+        public const string ProcessedFilePath = "ProcessedFilePath";
+        public const string ErrorFilePath = "ErrorFilePath";
         #endregion
 
         #region USR
@@ -76,10 +80,15 @@ namespace Fmo.Common.Constants
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
         public const string DeliveryPointUseIndicatorPAF = "B";
+        public const string PAFProcessedFilePath = "PAFProcessedFilePath";
+        public const string PAFErrorFilePath = "PAFErrorFilePath";
         #endregion
 
         #endregion
 
+        #region OtherLayers
         public const string FeatureType = "Feature";
+        public const string LayerType = "type";
+        #endregion
     }
 }

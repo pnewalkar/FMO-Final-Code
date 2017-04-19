@@ -1,9 +1,9 @@
 angular.module('mapView')
         .service('mapService', ['mapFactory',
-                                'mapStylesFactory','$timeout',
+                                'mapStylesFactory','$timeout','GlobalSettings',
                                  mapService])
 function mapService(mapFactory,
-                    mapStylesFactory, $timeout) {
+                    mapStylesFactory, $timeout, GlobalSettings) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
@@ -14,6 +14,7 @@ function mapService(mapFactory,
     vm.layersForContext = [];
     vm.activeSelection = null;
     vm.secondarySelections = [];
+   
     vm.selectionListeners = [];
     vm.features = null;
     vm.onDeleteButton = function (featureId, layer) { console.log({ "featureID": featureId, "layer": layer }) };
@@ -107,7 +108,7 @@ function mapService(mapFactory,
 
         var deliveryPointsVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            url: function (extent) { return 'http://localhost:34583/api/deliveryPoints/GetDeliveryPoints?bbox=' + extent.join(','); },
+            url: function (extent) { return GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
 
@@ -122,16 +123,14 @@ function mapService(mapFactory,
         });
 
         var accessLinkVector = new ol.source.Vector({
-            format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            // url: function (extent) { return 'http://localhost:47467/home/getdata?bbox=' + extent.join(','); },
-            url: function (extent) { return 'http://localhost:34583/api/accessLink/GetAccessLinks?bbox=' + extent.join(','); },
+            format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),          
+            url: function (extent) { return GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
 
         var roadLinkVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            // url: function (extent) { return 'http://localhost:47467/home/getdata?bbox=' + extent.join(','); },
-            url: function (extent) { return 'http://localhost:34583/api/roadName/GetRouteLinks?bbox=' + extent.join(','); },
+            url: function (extent) { return GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
 

@@ -9,6 +9,9 @@ using Fmo.Common.Interface;
 
 namespace Fmo.API.Services.Controllers
 {
+    /// <summary>
+    /// Address controller to handle NYB/PAF API request from windows service
+    /// </summary>
     [Route("api/[controller]")]
     public class AddressController : Controller
     {
@@ -21,6 +24,12 @@ namespace Fmo.API.Services.Controllers
             loggingHelper = _loggingHelper;
         }
 
+        /// <summary>
+        /// Api to save NYB details in DB.
+        /// </summary>
+        /// <param name="strFileName">File name</param>
+        /// <param name="lstAddressDetails">List of posatl address DTO</param>
+        /// <returns></returns>
         [HttpPost("SaveAddressdetails/{strFileName}")]
         public bool SaveAddressdetails(string strFileName, [FromBody]List<PostalAddressDTO> lstAddressDetails)
         {
@@ -30,11 +39,5 @@ namespace Fmo.API.Services.Controllers
                 return false;
         }
 
-
-        [HttpGet("getSample")]
-        public string GetSample()
-        {
-            return "virendra";
-        }
     }
 }
