@@ -30,8 +30,6 @@
 
         #endregion
 
-        #endregion Property Declarations
-
         #region Constructor
 
         public USRBusinessService(
