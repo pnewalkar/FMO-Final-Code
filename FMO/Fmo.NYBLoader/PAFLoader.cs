@@ -107,7 +107,7 @@
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-                string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                string[] arrPAFDetails = strLine.Split(new string[] { Constants.CRLF, Constants.NEWLINE }, StringSplitOptions.None);
                 if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
                 {
                     Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
@@ -143,7 +143,7 @@
         }
 
         /// <summary>
-        /// Web API call to save postalAddress to PostalAddress table
+        /// Sent PAF create event to MSMQ
         /// </summary>
         /// <param name="lstPostalAddress">List of mapped address dto to validate each records</param>
         /// <returns>If success returns true else returns false</returns>

@@ -6,6 +6,7 @@
 
         #region Common
 
+        public const int NOTIFICATIONDUE = 24;
         public const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
         public const string INSERT = "I";
         public const string UPDATE = "U";
@@ -59,7 +60,6 @@
         public const string USRGEOMETRYPOINT = "POINT({0} {1})";
         public const string USRCATEGORY = "Notification Type";
         public const string USRREFERENCEDATANAME = "Action required";
-        public const int USRNOTIFICATIONDUE = 24;
         public const string USREMAILFROMEMAIL = "USRFromEmail";
         public const string USREMAILSUBJECT = "USRSubject";
         public const string USREMAILBODY = "USRBody";

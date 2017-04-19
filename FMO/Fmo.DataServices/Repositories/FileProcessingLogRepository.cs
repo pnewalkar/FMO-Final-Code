@@ -19,7 +19,7 @@ namespace Fmo.DataServices.Repositories
         }
 
         /// <summary>
-        /// Log exception if the NYB record insertion fails
+        /// Log exception if the PAF and NYB record insertion fails
         /// </summary>
         /// <param name="fileProcessingLogDTO"> Expects DTO object to save exception while saving records in DB</param>
         public void LogFileException(FileProcessingLogDTO fileProcessingLogDTO)

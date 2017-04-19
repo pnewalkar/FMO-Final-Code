@@ -370,6 +370,5 @@
         {
             this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
         }
-
     }
 }

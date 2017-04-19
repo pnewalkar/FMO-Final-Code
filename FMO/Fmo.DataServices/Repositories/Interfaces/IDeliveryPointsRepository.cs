@@ -62,6 +62,11 @@
         /// <returns>Ienumerable of Delivery Point Dto</returns>
         IEnumerable<DeliveryPoint> GetData(string coordinates);
 
+        /// <summary>
+        /// Get the list of delivery points by the UDPRN id
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <returns>DeliveryPointDTO object</returns>
         List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
 
         /// <summary>
