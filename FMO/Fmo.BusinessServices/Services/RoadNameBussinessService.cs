@@ -125,7 +125,7 @@
                     feature.geometry = geometry;
                     feature.id = i;
                     feature.type = Constants.FeatureType;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.Roadlink.GetDescription()) } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.RoadLink.GetDescription()) } };
                     geoJson.features.Add(feature);
                     i++;
                 }
