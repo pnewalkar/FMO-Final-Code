@@ -10,14 +10,14 @@ GO
 
 CREATE TABLE [FMO].[AuditLog](
 	[AuditLog_Id] [uniqueidentifier] NOT NULL,	
-	[TableName] [varchar](50) NULL,
-	[RecordId] [varchar](50) NULL,	
+	[TableName] [varchar](50) NOT NULL,
+	[RecordId] [varchar](50) NOT NULL,	
 	[ColumnName] [varchar](50) NULL,
 	[OriginalValue] [nvarchar](MAX) NULL,
-	[NewValue] [nvarchar](MAX) NULL,
-	[UserId] [varchar](50) NULL,
-	[EventType] [varchar](50) NULL,
-	[EventTimeStamp] [datetime] NULL
+	[NewValue] [nvarchar](MAX)  NULL,
+	[UserId] [varchar](50) NOT NULL,
+	[EventType] [varchar](50) NOT NULL,
+	[EventTimeStamp] [datetime] NOT NULL
  CONSTRAINT [PK_AuditLog] PRIMARY KEY CLUSTERED 
 (
 	[AuditLog_Id] ASC

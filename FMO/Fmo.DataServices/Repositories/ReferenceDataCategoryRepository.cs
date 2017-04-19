@@ -11,6 +11,9 @@ using Entity = Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
+    /// <summary>
+    /// To interact with reference data entity
+    /// </summary>
     public class ReferenceDataCategoryRepository : RepositoryBase<Entity.ReferenceDataCategory, FMODBContext>, IReferenceDataCategoryRepository
     {
         public ReferenceDataCategoryRepository(IDatabaseFactory<FMODBContext> databaseFactory)
