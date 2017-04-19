@@ -11,6 +11,9 @@
     using Fmo.MappingConfiguration;
     using Interfaces;
 
+    /// <summary>
+    /// This class contains methods of Access Link Repository for fetching Access Link data.
+    /// </summary>
     public class AccessLinkRepository : RepositoryBase<AccessLink, FMODBContext>, IAccessLinkRepository
     {
         public AccessLinkRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -46,6 +49,11 @@
             return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
         }
 
+        /// <summary>
+        /// This Method is used to Accesss Link data for defined coordinates.
+        /// </summary>
+        /// <param name="coordinates">coordinates as string</param>
+        /// <returns>List of Access Link Dto</returns>
         public List<AccessLinkDTO> GetAccessLinks(string coordinates)
         {
             List<AccessLink> result = GetData(coordinates).ToList();

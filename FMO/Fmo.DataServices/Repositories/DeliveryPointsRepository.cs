@@ -2,6 +2,7 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.Entity;
     using System.Data.Entity.Spatial;
     using System.Data.Entity.SqlServer;
@@ -14,11 +15,10 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Entity = Entities;
-    using MappingConfiguration;
-    using Entity = Fmo.Entities;
- 
-    using System.Configuration;
 
+    /// <summary>
+    /// This class contains methods used for fetching/Inserting Delivery Points data.
+    /// </summary>
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
         public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory)

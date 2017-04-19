@@ -13,6 +13,9 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
+    /// <summary>
+    /// This class contains methods fetching for Road Links data.
+    /// </summary>
     public class RoadNameRepository : RepositoryBase<RoadName, FMODBContext>, IRoadNameRepository
     {
         public RoadNameRepository(IDatabaseFactory<FMODBContext> databaseFactory)

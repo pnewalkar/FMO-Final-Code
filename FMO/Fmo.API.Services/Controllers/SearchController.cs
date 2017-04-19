@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
 {
+    /// <summary>
+    /// This class contains methods used for fetching Basic search and advance search results.
+    /// </summary>
+    
     [Route("api/[controller]")]
     public class SearchController : Controller
     {
@@ -28,6 +32,11 @@ namespace Fmo.API.Services.Controllers
             return await searchBussinessService.FetchBasicSearchDetails(searchText);
         }
 
+        /// <summary>
+        /// Fetch results from Advanced search entities.
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns> Search Result Dto</returns>
         [HttpGet("AdvanceSearch")]
         public async Task<SearchResultDTO> AdvanceSearch(string searchText)
         {

@@ -39,6 +39,11 @@
         /// <returns>Task List of Delivery Point Dto</returns>
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText);
 
+        /// <summary>
+        /// This method is used to fetch Delivery Points as per basic search.
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>Task List of Delivery Point Dto</returns>
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText);
 
         Task<int> GetDeliveryPointsCount(string searchText);

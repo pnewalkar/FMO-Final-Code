@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
 {
+    /// <summary>
+    /// This class contains methods used to fetch Delivery Points.
+    /// </summary>
     [Route("api/deliveryPoints")]
     public class DeliveryPointsController : Controller
     {

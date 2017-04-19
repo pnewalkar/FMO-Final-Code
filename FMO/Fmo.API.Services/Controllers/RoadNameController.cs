@@ -14,6 +14,10 @@ using System.Net;
 
 namespace Fmo.API.Services.Controllers
 {
+    /// <summary>
+    /// This class contains methods used to fetch Road Link data.
+    /// </summary>
+    
     [Route("api/[controller]")]
     public class RoadNameController : Controller
     {

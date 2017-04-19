@@ -9,6 +9,9 @@
     using Interfaces;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
+    using Common.Enums;
+    using Common;
+    using Common.Constants;
 
     /// <summary>
     /// This class contains methods for fetching Delivery Points data.
@@ -84,7 +87,7 @@
                         { "number", point.PostalAddress.BuildingNumber },
                         { "postcode", point.PostalAddress.Postcode },
                         { "street_name", point.PostalAddress.BuildingName },
-                        { "type", "deliverypoint" }
+                        { Constants.LayerType, Convert.ToString(OtherLayersType.Deliverypoint.GetDescription()) }
                     },
                         geometry = new Geometry
                         {

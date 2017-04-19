@@ -12,6 +12,9 @@ using System.Net;
 
 namespace Fmo.API.Services.Controllers
 {
+    /// <summary>
+    /// This class contains methods used to fetch Access Links data.
+    /// </summary>
     [Route("api/[controller]")]
     public class AccessLinkController : Controller
     {
