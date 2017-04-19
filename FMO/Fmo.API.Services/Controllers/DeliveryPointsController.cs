@@ -39,6 +39,11 @@ namespace Fmo.API.Services.Controllers
             return Json(businessService.GetDeliveryPoints(boundaryBox));           
         }
 
+        /// <summary>
+        /// Get coordinates of the delivery point by UDPRN
+        /// </summary>
+        /// <param name="udprn">The UDPRN number</param>
+        /// <returns>The coordinates of the delivery point</returns>
         [Route("GetDeliveryPointByUDPRN")]
         [HttpGet]
         public object GetDeliveryPointByUDPRN(int udprn)

@@ -23,6 +23,8 @@ using Fmo.Helpers.Interface;
 using Fmo.Common.EmailManagement;
 
 using Fmo.Common.ConfigurationManagement;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Fmo.API.Services
 {
@@ -60,6 +62,13 @@ namespace Fmo.API.Services
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+            //services.AddMvc(config =>
+            //{
+            //    var policy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //    config.Filters.Add(new AuthorizeFilter(policy));
+            //});
 
             services.AddCors(
                 options => options.AddPolicy("AllowCors",
@@ -68,7 +77,7 @@ namespace Fmo.API.Services
                         builder
                             .AllowAnyOrigin()
                             .WithMethods("GET", "PUT", "POST", "DELETE")
-                            .AllowAnyHeader();
+                             .WithHeaders("accept", "content-type", "origin", "x-custom-header", "authorization");
                     })
             );
 
@@ -126,12 +135,16 @@ namespace Fmo.API.Services
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            
             ConfigureAuth(app);
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
+           
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "{controller=DeliveryPoints}/{action=Get}/{id?}");

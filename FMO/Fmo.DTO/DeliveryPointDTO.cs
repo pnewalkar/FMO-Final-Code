@@ -1,14 +1,11 @@
-﻿using Fmo.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data.Entity.Spatial;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Fmo.DTO
 {
+    /// <summary>
+    /// This class represents data transfer object for DeliveryPoint entity
+    /// </summary>
     public class DeliveryPointDTO
     {
         public int DeliveryPoint_Id { get; set; }
@@ -64,6 +61,5 @@ namespace Fmo.DTO
         public Guid? OperationalStatus_GUID { get; set; }
 
         public Guid? DeliveryGroup_GUID { get; set; }
-
     }
 }

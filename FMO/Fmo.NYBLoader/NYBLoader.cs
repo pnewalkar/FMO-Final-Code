@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
@@ -14,48 +10,53 @@ using Fmo.Common.Interface;
 
 namespace Fmo.NYBLoader
 {
+    /// <summary>
+    /// Load and process NYb files 
+    /// </summary>
     public class NYBLoader : INYBLoader
     {
+        #region private member declaration
         private static int noOfCharacters = 15;
         private static int maxCharacters = 507;
         private static int csvValues = 16;
-        private string strFMOWEbApiURL = string.Empty;
         private string strFMOWebAPIName = string.Empty;
         private IHttpHandler httpHandler;
-        private IConfigurationHelper configurationHelper;
         private ILoggingHelper loggingHelper;
         private IExceptionHelper exceptionHelper;
+        #endregion
 
+        #region constructor
         public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
-            this.configurationHelper = configurationHelper;
             this.httpHandler = httpHandler;
-            this.strFMOWEbApiURL = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIURL").ToString();
-            this.strFMOWebAPIName = configurationHelper.ReadAppSettingsConfigurationValues("FMOWebAPIName").ToString();
+            this.strFMOWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
             this.exceptionHelper = exceptionHelper;
         }
+        #endregion
 
+        #region public methods
         /// <summary>
         /// Reads data from CSV file and maps to postalAddressDTO object
         /// </summary>
         /// <param name="strLine">Line read from CSV File</param>
         /// <returns>Postal Address DTO</returns>
-        public List<PostalAddressDTO> LoadNYBDetailsFromCSV(string strLine)
+        public List<PostalAddressDTO> LoadNybDetailsFromCSV(string line)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
-                string[] arrPAFDetails = strLine.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+                string[] arrPAFDetails = line.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
 
                 if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {
-                    lstAddressDetails = arrPAFDetails.Select(v => MapNYBDetailsToDTO(v)).ToList();
+                    lstAddressDetails = arrPAFDetails.Select(v => MapNybDetailsToDTO(v)).ToList();
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
-                        //Validate NYB Details
-                        ValidateNYBDetails(lstAddressDetails);
+                        //Validate NYB Details ,validates each property of PostalAddressDTO as per the business rule and set the Value of IsValid property to either true 
+                        //or false.Depending on the count of IsValid property data wil either will be saved in DB or file will be moved to error folder.
+                        ValidateNybDetails(lstAddressDetails);
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
 
@@ -65,28 +66,34 @@ namespace Fmo.NYBLoader
             }
             catch (Exception ex)
             {
-                Exception newException;
-                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
-                if (rethrow)
-                {
-                    if (newException == null)
-                    {
-                        throw;
-
-                    }
-                    else
-                    {
-                        throw newException;
-                    }
-                }
-                else
-                {
-                    throw;
-                }
+                throw ex;
             }
             return lstAddressDetails;
         }
 
+        /// <summary>
+        /// Web API call to save postalAddress to PostalAddress table
+        /// </summary>
+        /// <param name="lstAddress">List of mapped address dto to validate each records</param>
+        /// <returns>If success returns true else returns false</returns>
+        public async Task<bool> SaveNybDetails(List<PostalAddressDTO> lstAddress, string fileName)
+        {
+            bool saveflag = false;
+            try
+            {
+                saveflag = true;
+                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+                saveflag = false;
+            }
+            return saveflag;
+        }
+        #endregion
+
+        #region private methods
         /// <summary>
         /// Validates string i.e. no of comma's should be 15 and max characters per line should be 507
         /// </summary>
@@ -116,7 +123,7 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="csvLine">Line read from CSV File</param>
         /// <returns>Returns mapped DTO</returns>
-        private static PostalAddressDTO MapNYBDetailsToDTO(string csvLine)
+        private static PostalAddressDTO MapNybDetailsToDTO(string csvLine)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string[] values = csvLine.Split(',');
@@ -147,7 +154,7 @@ namespace Fmo.NYBLoader
         /// Perform business validation on postalAddressDTO object
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
-        private static void ValidateNYBDetails(List<PostalAddressDTO> lstAddress)
+        private static void ValidateNybDetails(List<PostalAddressDTO> lstAddress)
         {
             foreach (PostalAddressDTO objAdd in lstAddress)
             {
@@ -227,28 +234,7 @@ namespace Fmo.NYBLoader
             }
             return isValid;
         }
-
-        /// <summary>
-        /// Web API call to save postalAddress to PostalAddress table
-        /// </summary>
-        /// <param name="lstAddress">List of mapped address dto to validate each records</param>
-        /// <returns>If success returns true else returns false</returns>
-        public async Task<bool> SaveNYBDetails(List<PostalAddressDTO> lstAddress, string fileName)
-        {
-            bool saveflag = false;
-            try
-            {
-                saveflag = true;
-                //httpHandler.SetBaseAddress(new Uri(strFMOWEbApiURL));
-                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
-                saveflag = false;
-            }
-            return saveflag;
-        }
+        #endregion
 
     }
 }

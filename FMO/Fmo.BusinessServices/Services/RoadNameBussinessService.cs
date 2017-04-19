@@ -1,16 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.Helpers;
-using Microsoft.SqlServer.Types;
-using Newtonsoft.Json;
-
-namespace Fmo.BusinessServices.Services
+﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.SqlTypes;
+    using System.Threading.Tasks;
+    using Common;
+    using Common.Enums;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common.Constants;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.Helpers;
+    using Microsoft.SqlServer.Types;
+    using Newtonsoft.Json;
+
+    /// <summary>
+    /// This class contains methods for fetching data for RoadLinks
+    /// </summary>
     public class RoadNameBussinessService : IRoadNameBussinessService
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
@@ -26,55 +32,58 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        ///
+        /// This method fetches data for RoadLinks
         /// </summary>
-        /// <param name="boundarybox"></param>
-        /// <returns></returns>
-        public string GetRoadRoutes(string boundarybox)
+        /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <returns>RoadLink object</returns>
+        public string GetRoadRoutes(string boundaryBox)
         {
             try
             {
-                var coordinates = GetData(null, boundarybox.Split(','));
-                return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var coordinates = GetData(boundaryBox.Split(','));
+                    return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
         /// <summary>
-        ///
+        /// This method fetches co-ordinates of roadlink
         /// </summary>
-        /// <param name="query"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        private string GetData(string query, params object[] parameters)
+        /// <param name="roadLinkparameters"> roadLinkparameters as object </param>
+        /// <returns> roadlink coordinates </returns>
+        private static string GetData(params object[] roadLinkparameters)
         {
             string coordinates = string.Empty;
 
-            if (parameters != null && parameters.Length == 4)
+            if (roadLinkparameters != null && roadLinkparameters.Length == 4)
             {
-                coordinates = "POLYGON((" + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + ", "
-                                                             + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[3]) + ", "
-                                                             + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[3]) + ", "
-                                                             + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[1]) + ", "
-                                                             + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + "))";
+                coordinates = "POLYGON((" + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[1]) + ", "
+                                                             + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[3]) + ", "
+                                                             + Convert.ToString(roadLinkparameters[2]) + " " + Convert.ToString(roadLinkparameters[3]) + ", "
+                                                             + Convert.ToString(roadLinkparameters[2]) + " " + Convert.ToString(roadLinkparameters[1]) + ", "
+                                                             + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[1]) + "))";
             }
 
             return coordinates;
         }
 
         /// <summary>
-        ///
+        /// This method fetches geojson data for roadlink
         /// </summary>
-        /// <param name="osRoadLinkDTO"></param>
-        /// <returns></returns>
-        private string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
+        /// <returns> roadlink object</returns>
+        /// <param name="osRoadLinkDTO"> osRoadLinkDTO as list of RoadLinkDTO </param>
+        private static string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
         {
-            OsRoadLinkDTO routeLinkFeatureCollections = new OsRoadLinkDTO();
-            string json = string.Empty;
-
             var geoJson = new GeoJson
             {
                 features = new List<Feature>()
@@ -91,32 +100,32 @@ namespace Fmo.BusinessServices.Services
 
                     var resultCoordinates = res.CentreLineGeometry;
 
-                    SqlGeometry sqlGeo = null;
+                    SqlGeometry roadLinkSqlGeometry = null;
                     if (geometry.type == "LineString")
                     {
-                        sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        roadLinkSqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
 
-                        List<List<double>> cords = new List<List<double>>();
+                        List<List<double>> roadLinkCoordinates = new List<List<double>>();
 
-                        for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
+                        for (int pt = 1; pt <= roadLinkSqlGeometry.STNumPoints().Value; pt++)
                         {
-                            List<double> coordinatesval = new List<double> { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-                            cords.Add(coordinatesval);
+                            List<double> coordinatesval = new List<double> { roadLinkSqlGeometry.STPointN(pt).STX.Value, roadLinkSqlGeometry.STPointN(pt).STY.Value };
+                            roadLinkCoordinates.Add(coordinatesval);
                         }
 
-                        geometry.coordinates = cords;
+                        geometry.coordinates = roadLinkCoordinates;
                     }
                     else
                     {
-                        sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-                        geometry.coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
+                        roadLinkSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        geometry.coordinates = new double[] { roadLinkSqlGeometry.STX.Value, roadLinkSqlGeometry.STY.Value };
                     }
 
                     Feature feature = new Feature();
                     feature.geometry = geometry;
                     feature.id = i;
-                    feature.type = "Feature";
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "roadlink" } };
+                    feature.type = Constants.FeatureType;
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.Roadlink.GetDescription()) } };
                     geoJson.features.Add(feature);
                     i++;
                 }

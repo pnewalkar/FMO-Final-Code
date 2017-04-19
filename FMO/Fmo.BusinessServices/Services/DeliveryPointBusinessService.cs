@@ -41,10 +41,10 @@
         }
 
         /// <summary>
-        /// This method is used to fetch Delivery Point by UDPRN.
+        /// Get coordinates of the delivery point by UDPRN
         /// </summary>
-        /// <param name="udprn">udprn as int</param>
-        /// <returns> Delivery Point Object</returns>
+        /// <param name="udprn">The UDPRN number</param>
+        /// <returns>The coordinates of the delivery point</returns>
         public object GetDeliveryPointByUDPRN(int udprn)
         {
             try

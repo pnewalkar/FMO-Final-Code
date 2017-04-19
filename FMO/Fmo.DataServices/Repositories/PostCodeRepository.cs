@@ -11,6 +11,7 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using System.Configuration;
 
     public class PostCodeRepository : RepositoryBase<Postcode, FMODBContext>, IPostCodeRepository
     {
@@ -19,11 +20,16 @@
         {
         }
 
+        /// <summary>
+        /// Fetch postcode for basic search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The result set of post code</returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText)
         {
             try
             {
-                int takeCount = 5;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
                 searchText = searchText ?? string.Empty;
                 var postCodeDetailsDto = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText))
                     .Take(takeCount)
@@ -43,6 +49,11 @@
             }
         }
 
+        /// <summary>
+        /// Get the count of post code
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The total count of post code</returns>
         public async Task<int> GetPostCodeUnitCount(string searchText)
         {
             try

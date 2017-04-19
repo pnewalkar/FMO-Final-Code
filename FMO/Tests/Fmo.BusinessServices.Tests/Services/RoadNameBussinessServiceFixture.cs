@@ -10,6 +10,7 @@
     using Moq;
     using NUnit.Framework;
 
+    [TestFixture]
     public class RoadNameBussinessServiceFixture : TestFixtureBase
     {
         private IRoadNameBusinessService testCandidate;
@@ -18,7 +19,7 @@
         private List<OsRoadLinkDTO> osRoadLinkDTO = null;
 
         [Test]
-        public void Test_GetRoadName()
+        public void TestGetRoadName()
         {
             string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
             var result = testCandidate.GetRoadRoutes(coordinates);

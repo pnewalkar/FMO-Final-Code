@@ -11,6 +11,7 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using System.Configuration;
 
     public class StreetNetworkRepository : RepositoryBase<StreetName, FMODBContext>, IStreetNetworkRepository
     {
@@ -34,11 +35,16 @@
             }
         }
 
+        /// <summary>
+        /// Fetch street name for Basic Search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The result set of street name.</returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText)
         {
             try
             {
-                int takeCount = 5;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
                 searchText = searchText ?? string.Empty;
                 var streetNamesDto = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
                     .Take(takeCount)
@@ -60,6 +66,11 @@
             }
         }
 
+        /// <summary>
+        /// Get the count of street name
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The total count of street name</returns>
         public async Task<int> GetStreetNameCount(string searchText)
         {
             try

@@ -8,10 +8,14 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
 using System.Text;
+using Fmo.Common.Constants;
 
 namespace Fmo.MessageBrokerCore.Messaging
-{
-    //public delegate void MessageReceivedEventHandler(object sender, MessageEventArgs args);
+{    
+    /// <summary>
+    /// Implements the IMessageAdapter interface
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     internal class MessageAdapter<T> : IMessageAdapter<T>
     {
         //here is where we implement the message queue technology of our choice
@@ -40,12 +44,15 @@ namespace Fmo.MessageBrokerCore.Messaging
                 // Create the Queue
                 MessageQueue.Create(queueBuilder.ToString());
                 messageQueue = new MessageQueue(queueBuilder.ToString());
-                messageQueue.SetPermissions("Everyone", MessageQueueAccessRights.FullControl);
+                messageQueue.SetPermissions(Constants.MSGQUEUEPERMISSION, MessageQueueAccessRights.FullControl);
                 messageQueue.Label = queueName;
             }
         }
 
- 
+        /// <summary>
+        /// Pull the message out of the queue
+        /// </summary>
+        /// <returns></returns>
         public T PopMessage()
         {
             // Set the formatter to indicate body contains an Order.
@@ -63,6 +70,10 @@ namespace Fmo.MessageBrokerCore.Messaging
             return returnMessage;
         }
 
+        /// <summary>
+        /// Add message to the queue
+        /// </summary>
+        /// <param name="message"></param>
         public void PushMessage(IMessage message)
         {
             XmlSerializer xsSubmit = new XmlSerializer(typeof(T));
@@ -81,22 +92,34 @@ namespace Fmo.MessageBrokerCore.Messaging
             messageQueue.Send(xml);
         }
 
+        /// <summary>
+        /// Check whether the queue has messages.
+        /// </summary>
+        /// <returns></returns>
         public bool HasMessage()
         {
             return messageQueue.GetAllMessages().Count() > 0;
         }
 
+        /// <summary>
+        /// Handler for the queue Receive Completed event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
         {
             System.Messaging.Message msg = messageQueue.EndReceive(e.AsyncResult);
 
             StartListening();
 
-            //string text = Encoding.Unicode.GetString(msg.Body);
-
             FireRecieveEvent(msg.Body);
         }
 
+        /// <summary>
+        /// Handler for the queue Peek Completed event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnPeekCompleted(object sender, PeekCompletedEventArgs e)
         {
             messageQueue.EndPeek(e.AsyncResult);
@@ -118,6 +141,10 @@ namespace Fmo.MessageBrokerCore.Messaging
             }
         }
 
+        /// <summary>
+        /// Fire the custom event for a message received.
+        /// </summary>
+        /// <param name="body"></param>
         private void FireRecieveEvent(object body)
         {
             if (MessageReceived != null)
@@ -126,6 +153,11 @@ namespace Fmo.MessageBrokerCore.Messaging
             }
         }
 
+        /// <summary>
+        /// Start method to register the handlers and set the formatter and start listening for queue
+        /// messages.
+        /// </summary>
+        /// <param name="handler"></param>
         public void Start(EventHandler<MessageEventArgs<T>> handler)
         {
             _listen = true;
@@ -139,6 +171,10 @@ namespace Fmo.MessageBrokerCore.Messaging
             StartListening();
         }
 
+        /// <summary>
+        /// Stop method to de-register the handlers and stop listening to the queue for messages.
+        /// </summary>
+        /// <param name="handler"></param>
         public void Stop(EventHandler<MessageEventArgs<T>> handler)
         {
             _listen = false;
@@ -147,6 +183,9 @@ namespace Fmo.MessageBrokerCore.Messaging
             MessageReceived -= handler;
         }
 
+        /// <summary>
+        /// Start Listening for the queue messages.
+        /// </summary>
         private void StartListening()
         {
             if (!_listen)
