@@ -84,6 +84,10 @@ namespace Fmo.Common.Constants
 
         #endregion
 
+        #region OtherLayers
         public const string FeatureType = "Feature";
+        public const string FeaturePropertyType = "Feature";
+        public const string FeaturePropertyAccessLink = "Feature";
+        #endregion
     }
 }
