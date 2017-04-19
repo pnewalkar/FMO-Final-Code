@@ -80,14 +80,15 @@ namespace Fmo.Common.Constants
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
         public const string DeliveryPointUseIndicatorPAF = "B";
+        public const string PAFProcessedFilePath = "PAFProcessedFilePath";
+        public const string PAFErrorFilePath = "PAFErrorFilePath";
         #endregion
 
         #endregion
 
         #region OtherLayers
         public const string FeatureType = "Feature";
-        public const string FeaturePropertyType = "Feature";
-        public const string FeaturePropertyAccessLink = "Feature";
+        public const string LayerType = "type";
         #endregion
     }
 }

@@ -11,6 +11,10 @@
 
     public class ScenarioRepository : RepositoryBase<Scenario, FMODBContext>, IScenarioRepository
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScenarioRepository"/> class.
+        /// </summary>
+        /// <param name="databaseFactory">IDatabaseFactory reference</param>
         public ScenarioRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {

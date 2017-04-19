@@ -8,6 +8,9 @@ using Fmo.MappingConfiguration;
 
 namespace Fmo.DataServices.Repositories
 {
+    /// <summary>
+    /// Repository to interact with file processing log entity
+    /// </summary>
     public class FileProcessingLogRepository : RepositoryBase<FileProcessingLog, FMODBContext>, IFileProcessingLogRepository
     {
         public FileProcessingLogRepository(IDatabaseFactory<FMODBContext> databaseFactory)

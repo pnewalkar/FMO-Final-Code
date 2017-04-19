@@ -38,7 +38,7 @@
         /// <returns>true or false</returns>
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
-            bool deleteFlag = false;
+            bool isPostalAddressDeleted = false;
             if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
                 var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
@@ -48,20 +48,20 @@
                     {
                         if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
-                            deleteFlag = false;
+                            isPostalAddressDeleted = false;
                             this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
                         }
                         else
                         {
                             DataContext.PostalAddresses.Remove(postalAddressEntity);
                             DataContext.SaveChanges();
-                            deleteFlag = true;
+                            isPostalAddressDeleted = true;
                         }
                     });
                 }
             }
 
-            return deleteFlag;
+            return isPostalAddressDeleted;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@
         /// <returns>true or false</returns>
         public bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
-            bool saveFlag = false;
+            bool isPostalAddressInserted = false;
             try
             {
                 if (objPostalAddress != null)
@@ -107,7 +107,7 @@
                     }
 
                     DataContext.SaveChanges();
-                    saveFlag = true;
+                    isPostalAddressInserted = true;
                 }
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
             }
 
-            return saveFlag;
+            return isPostalAddressInserted;
         }
 
         public bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName)
@@ -253,7 +253,7 @@
             {
                 FileID = Guid.NewGuid(),
                 UDPRN = uDPRN,
-                AmendmentType = "I",
+                AmendmentType = Constants.INSERT,
                 FileName = strFileName,
                 FileProcessing_TimeStamp = DateTime.Now,
                 FileType = fileType,

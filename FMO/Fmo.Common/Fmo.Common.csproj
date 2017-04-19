@@ -92,6 +92,7 @@
     <Compile Include="EmailManagement\EmailHelper.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="Enums\GeometryType.cs" />
+    <Compile Include="Enums\OtherLayersType.cs" />
     <Compile Include="Enums\PostCodeStatus.cs" />
     <Compile Include="Enums\SearchBusinessEntityType.cs" />
     <Compile Include="Enums\ExceptionHandlingPolicy.cs" />
