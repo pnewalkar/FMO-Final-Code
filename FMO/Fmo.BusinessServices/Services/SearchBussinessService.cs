@@ -7,6 +7,9 @@ using Fmo.Common.Enums;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
+/// <summary>
+/// This class contains methods for Basic and Advanced Search Results..
+/// </summary>
 namespace Fmo.BusinessServices.Services
 {
     public class SearchBussinessService : ISearchBusinessService
