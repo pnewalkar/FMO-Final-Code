@@ -29,31 +29,5 @@ function manageAccessService($http, $q, GlobalSettings) {
 
         return deferred.promise;
 
-
-        //JSON.stringify(userdata)
-        //var resp = $http({
-        //    url: "http://localhost:34583/api/token",
-        //    method: "POST",
-        //    data: JSON.stringify(userdata),
-        //    headers: {
-        //        'Content-Type': 'application/x-www-form-urlencoded'
-        //    },
-        //});
-
-        //return $http.post(GlobalSettings.apiUrl + '/token', 'username=TEST&password=TEST123');
-
-        //$http({
-        //    method: 'POST',
-        //    url: GlobalSettings.apiUrl + '/token',
-        //    data: JSON.stringify(username=TEST&password=TEST123,
-        //    headers: {
-        //        'Content-Type': 'application/x-www-form-urlencoded'
-        //    }
-        //}).then(function (result) {
-        //    console.log(result);
-        //    return result;
-        //}, function (error) {
-        //    console.log(error);
-        //});
     }
 }

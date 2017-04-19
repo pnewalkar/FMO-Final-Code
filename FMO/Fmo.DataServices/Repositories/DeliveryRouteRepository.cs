@@ -9,6 +9,7 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Entities;
 using Fmo.MappingConfiguration;
+using System.Configuration;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -62,7 +63,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                int takeCount = 5;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
                 searchText = searchText ?? string.Empty;
                 var deliveryRoutesDto = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
                     .Take(takeCount)
