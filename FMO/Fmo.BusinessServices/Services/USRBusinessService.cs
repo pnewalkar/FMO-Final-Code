@@ -1,18 +1,16 @@
 ﻿namespace Fmo.BusinessServices.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Linq;
-    using System.Net.Mail;
-    using System.Text;
-    using System.Threading.Tasks;
     using Common.Constants;
     using Common.Interface;
     using DataServices.Repositories.Interfaces;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DTO;
     using Fmo.DTO.FileProcessing;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
+    using System.Net.Mail;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Implements interface for USR Business service
@@ -31,6 +29,8 @@
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion
+
+        #endregion Property Declarations
 
         #region Constructor
 
@@ -209,7 +209,6 @@
         {
             try
             {
-
                 loggingHelper.LogInfo("******GetSpatialLocation method execution started*****");
                 string sbLocationXY = string.Format(
                                                                             Constants.USRGEOMETRYPOINT,
