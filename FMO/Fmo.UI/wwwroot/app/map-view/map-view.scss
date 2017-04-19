@@ -35,7 +35,7 @@
 
 .zoom-scale {
     @include position(absolute);
-    @include background($white);
+    @include background($white,none);
     width: width-percent(2.86);
     @include padding(3px 10px 3px 10px);
     @include top(10px);

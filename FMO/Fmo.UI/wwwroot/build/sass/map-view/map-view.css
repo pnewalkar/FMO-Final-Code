@@ -31,6 +31,8 @@
   top: 10px;
   text-align: center;
   left: -155px; }
+  .zoom-scale:hover {
+    background-color: none; }
 
 .levelDanger {
   color: red;
