@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -110,7 +109,9 @@ namespace Fmo.API.Services.Authentication
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.Role,string.Join(",", roleAccessDto.Select(x => x.FunctionName).ToList()))
+                new Claim(ClaimTypes.Role,string.Join(",", roleAccessDto.Select(x => x.FunctionName).ToList())),
+
+                new Claim(ClaimTypes.Name, username)
             };
 
             // Create the JWT and write it to a string
