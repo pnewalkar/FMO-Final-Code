@@ -1,18 +1,16 @@
 ﻿namespace Fmo.BusinessServices.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Linq;
-    using System.Net.Mail;
-    using System.Text;
-    using System.Threading.Tasks;
     using Common.Constants;
     using Common.Interface;
     using DataServices.Repositories.Interfaces;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DTO;
     using Fmo.DTO.FileProcessing;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
+    using System.Net.Mail;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Implements interface for USR Business service
@@ -20,6 +18,7 @@
     public class USRBusinessService : IUSRBusinessService
     {
         #region Property Declarations
+
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
@@ -27,10 +26,12 @@
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
-        private ILoggingHelper loggingHelper = default(ILoggingHelper); 
-        #endregion
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        #endregion Property Declarations
 
         #region Constructor
+
         public USRBusinessService(
            IAddressLocationRepository addressLocationRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
@@ -50,9 +51,11 @@
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Save USR Details to Database
+
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
@@ -190,9 +193,11 @@
                 this.loggingHelper.LogError(ex);
             }
         }
-        #endregion
+
+        #endregion Save USR Details to Database
 
         #region Calculate Spatial Location
+
         /// <summary>
         /// Get the geometry equivalent of the X-Y co-ordinate of address location
         /// </summary>
@@ -202,7 +207,6 @@
         {
             try
             {
-
                 loggingHelper.LogInfo("******GetSpatialLocation method execution started*****");
                 string sbLocationXY = string.Format(
                                                                             Constants.USRGEOMETRYPOINT,
@@ -219,9 +223,11 @@
                 throw;
             }
         }
-        #endregion
+
+        #endregion Calculate Spatial Location
 
         #region Send Email
+
         /// <summary>
         /// Send error e-mail to third party in case the UDPRN address location already exists
         /// </summary>
@@ -248,7 +254,8 @@
             {
                 throw;
             }
-        } 
-        #endregion
+        }
+
+        #endregion Send Email
     }
 }
