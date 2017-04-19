@@ -87,7 +87,7 @@
                         { "number", point.PostalAddress.BuildingNumber },
                         { "postcode", point.PostalAddress.Postcode },
                         { "street_name", point.PostalAddress.BuildingName },
-                        { Constants.LayerType, Convert.ToString(OtherLayersType.Deliverypoint.GetDescription()) }
+                        { Constants.LayerType, Convert.ToString(OtherLayersType.DeliveryPoint.GetDescription()) }
                     },
                         geometry = new Geometry
                         {
