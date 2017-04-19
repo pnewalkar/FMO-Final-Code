@@ -11,6 +11,7 @@
     using Fmo.Helpers;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
+    using Common;
 
     /// <summary>
     /// This class contains methods for fetching data for AccessLinks
@@ -101,7 +102,7 @@
 
                     feature.type = Constants.FeatureType;
                     feature.id = res.AccessLink_Id;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.FeaturePropertyType, Constants.FeaturePropertyAccessLink } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.Accesslink.GetDescription()) } };
 
                     geoJson.features.Add(feature);
                 }
