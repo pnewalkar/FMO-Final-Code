@@ -1,9 +1,7 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -12,6 +10,9 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
+    /// <summary>
+    /// To interact with the Notification database entity.
+    /// </summary>
     public class NotificationRepository : RepositoryBase<Notification, FMODBContext>, INotificationRepository
     {
         public NotificationRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -19,6 +20,11 @@
         {
         }
 
+        /// <summary>
+        /// Add new notification to the database
+        /// </summary>
+        /// <param name="notificationDTO">NotificationDTO object</param>
+        /// <returns>Task<int></returns>
         public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
         {
             try
@@ -28,12 +34,18 @@
                 DataContext.Notifications.Add(newNotification);
                 return await DataContext.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
 
+        /// <summary>
+        /// Delete the notification based on the UDPRN and the action
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="action">action string</param>
+        /// <returns>Task<int></returns>
         public async Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action)
         {
             try
@@ -48,6 +60,11 @@
             }
         }
 
+        /// <summary>
+        /// Get the notification details based on the UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <returns>NotificationDTO object</returns>
         public NotificationDTO GetNotificationByUDPRN(int uDPRN)
         {
             try
@@ -63,6 +80,12 @@
             }
         }
 
+        /// <summary>
+        /// Check if a notification exists for a given UDPRN id and action string.
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="action">action string</param>
+        /// <returns>boolean value</returns>
         public bool CheckIfNotificationExists(int uDPRN, string action)
         {
             try
