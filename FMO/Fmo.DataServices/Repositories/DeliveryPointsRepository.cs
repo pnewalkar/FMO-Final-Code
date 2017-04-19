@@ -2,23 +2,19 @@ namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.Entity;
     using System.Data.Entity.Spatial;
     using System.Data.Entity.SqlServer;
-    using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
-    using Common.Constants;
+    using AutoMapper;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using MappingConfiguration;
     using Entity = Fmo.Entities;
-    using AutoMapper;
-    using System.Configuration;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -40,7 +36,6 @@ namespace Fmo.DataServices.Repositories
                 });
 
                 Mapper.Configuration.CreateMapper();
-                //var deliveryPointDto = 
 
                 return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
             }
@@ -65,7 +60,6 @@ namespace Fmo.DataServices.Repositories
                     newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
-                    //newDeliveryPoint.LocationProvider = "E"; // Update in Enum as well as reference data category
                     DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     DataContext.SaveChangesAsync();
                     saveFlag = true;
@@ -204,7 +198,6 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-
                 DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN) == deliveryPointDTO.UDPRN).SingleOrDefault();
 
                 deliveryPoint.Longitude = deliveryPointDTO.Longitude;
@@ -266,7 +259,6 @@ namespace Fmo.DataServices.Repositories
                 throw;
             }
         }
-
     }
 
     public static class MappingExpressionExtensions

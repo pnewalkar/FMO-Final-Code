@@ -1,4 +1,6 @@
-﻿using System;
+﻿namespace Fmo.BusinessServices.Services
+{
+    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
@@ -10,8 +12,6 @@ using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
-namespace Fmo.BusinessServices.Services
-{
     /// <summary>
     /// Business service to handle CRUD operations on Postal Address entites
     /// </summary>
@@ -41,6 +41,27 @@ namespace Fmo.BusinessServices.Services
             this.notificationRepository = notificationRepository;
             this.fileProcessingLogRepository = fileProcessingLogRepository;
             this.loggingHelper = loggingHelper;
+        }
+
+        /// <summary>
+        /// Concatenating address fileds require for notification
+        /// </summary>
+        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
+        /// <returns>returns concatenated value of address field</returns>
+        private static string AddressFields(PostalAddressDTO objPostalAddress)
+        {
+            return "Please position the DP " +
+                        objPostalAddress.OrganisationName + ", " +
+                        objPostalAddress.DepartmentName + ", " +
+                        objPostalAddress.BuildingName + ", " +
+                        objPostalAddress.BuildingNumber + ", " +
+                        objPostalAddress.SubBuildingName + ", " +
+                        objPostalAddress.Thoroughfare + ", " +
+                        objPostalAddress.DependentThoroughfare + ", " +
+                        objPostalAddress.DependentLocality + ", " +
+                        objPostalAddress.DoubleDependentLocality + ", " +
+                        objPostalAddress.PostTown + ", " +
+                        objPostalAddress.Postcode;
         }
 
         /// <summary>
@@ -243,25 +264,6 @@ namespace Fmo.BusinessServices.Services
             }
         }
 
-        /// <summary>
-        /// Concatenating address fileds require for notification
-        /// </summary>
-        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
-        /// <returns>returns concatenated value of address field</returns>
-        private string AddressFields(PostalAddressDTO objPostalAddress)
-        {
-            return "Please position the DP " +
-                        objPostalAddress.OrganisationName + ", " +
-                        objPostalAddress.DepartmentName + ", " +
-                        objPostalAddress.BuildingName + ", " +
-                        objPostalAddress.BuildingNumber + ", " +
-                        objPostalAddress.SubBuildingName + ", " +
-                        objPostalAddress.Thoroughfare + ", " +
-                        objPostalAddress.DependentThoroughfare + ", " +
-                        objPostalAddress.DependentLocality + ", " +
-                        objPostalAddress.DoubleDependentLocality + ", " +
-                        objPostalAddress.PostTown + ", " +
-                        objPostalAddress.Postcode;
-        }
+        
     }
 }

@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Fmo.DTO;
-using Fmo.Entities;
-using System.IO;
-using System.Data.Entity.Spatial;
-
-namespace Fmo.DataServices.Repositories.Interfaces
+﻿namespace Fmo.DataServices.Repositories.Interfaces
 {
+    using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
+    using System.Threading.Tasks;
+    using Fmo.DTO;
+    using Fmo.Entities;
+
     public interface IDeliveryPointsRepository
     {
         /// <summary>
@@ -57,6 +55,5 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="newPoint">DbGeometry object</param>
         /// <returns>double?</returns>
         double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint);
-
     }
 }

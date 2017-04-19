@@ -23,8 +23,8 @@
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
-        private IConfigurationHelper configurationHelper;
-        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        //private IConfigurationHelper configurationHelper;
+        //private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion private member declaration
 
@@ -33,8 +33,8 @@
         public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
-            this.configurationHelper = configurationHelper;
-            this.loggingHelper = loggingHelper;
+            //this.configurationHelper = configurationHelper;
+            //this.loggingHelper = loggingHelper;
             this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFProcessedFilePath);
             this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFErrorFilePath);
         }
