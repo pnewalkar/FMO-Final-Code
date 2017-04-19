@@ -11,6 +11,7 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using System.Configuration;
 
     public class StreetNetworkRepository : RepositoryBase<StreetName, FMODBContext>, IStreetNetworkRepository
     {
@@ -43,7 +44,7 @@
         {
             try
             {
-                int takeCount = 5;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
                 searchText = searchText ?? string.Empty;
                 var streetNamesDto = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
                     .Take(takeCount)
