@@ -12,6 +12,9 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
+    /// <summary>
+    /// Business service to handle CRUD operations on Postal Address entites
+    /// </summary>
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
         private IAddressRepository addressRepository = default(IAddressRepository);

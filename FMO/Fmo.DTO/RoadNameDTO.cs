@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fmo.DTO
+﻿namespace Fmo.DTO
 {
     public class RoadNameDTO
     {
-
+        /// <summary>
+        /// This class represents data transfer object for RoadLink entity
+        /// </summary>
         public int RoadName_Id { get; set; }
 
         public string TOID { get; set; }

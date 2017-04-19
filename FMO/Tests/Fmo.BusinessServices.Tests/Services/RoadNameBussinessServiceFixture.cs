@@ -10,6 +10,7 @@
     using Moq;
     using NUnit.Framework;
 
+    [TestFixture]
     public class RoadNameBussinessServiceFixture : TestFixtureBase
     {
         private IRoadNameBussinessService testCandidate;

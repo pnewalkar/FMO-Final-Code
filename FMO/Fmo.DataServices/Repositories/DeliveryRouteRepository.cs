@@ -9,6 +9,7 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Entities;
 using Fmo.MappingConfiguration;
+using System.Configuration;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -32,9 +33,9 @@ namespace Fmo.DataServices.Repositories
                 IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.Where(x => x.DeliveryScenario_GUID == deliveryScenarioID && x.Scenario.OperationalState_GUID == operationStateID).ToList();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -43,7 +44,8 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).Take(10).ToListAsync();
-             //   var result = await DataContext.DeliveryRoutes.Take(10).ToListAsync();
+
+                // var result = await DataContext.DeliveryRoutes.Take(10).ToListAsync();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes);
             }
             catch (Exception ex)
@@ -61,7 +63,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                int takeCount = 5;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
                 searchText = searchText ?? string.Empty;
                 var deliveryRoutesDto = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
                     .Take(takeCount)

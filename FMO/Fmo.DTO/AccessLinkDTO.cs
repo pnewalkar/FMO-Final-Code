@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity.Spatial;
+﻿using System.Data.Entity.Spatial;
 
 namespace Fmo.DTO
 {
+    /// <summary>
+    /// This class represents data transfer object for AccessLink entity
+    /// </summary>
     public class AccessLinkDTO
     {
-
         public int AccessLink_Id { get; set; }
 
         public DbGeometry OperationalObjectPoint { get; set; }
@@ -35,21 +36,5 @@ namespace Fmo.DTO
         public string type { get; set; }
 
         public object features { get; set; }
-
-        //public virtual DeliveryGroup DeliveryGroup { get; set; }
-
-        //public virtual DeliveryPoint DeliveryPoint { get; set; }
-
-        //public virtual NetworkLink NetworkLink { get; set; }
-
-        //public virtual ReferenceData ReferenceData { get; set; }
-
-        //public virtual ReferenceData ReferenceData1 { get; set; }
-
-        //public virtual ReferenceData ReferenceData2 { get; set; }
-
-        //public virtual ReferenceData ReferenceData3 { get; set; }
-
-        //public virtual RMGDeliveryPoint RMGDeliveryPoint { get; set; }
     }
 }

@@ -12,6 +12,9 @@
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// This class contains methods for fetching data for RoadLinks
+    /// </summary>
     public class RoadNameBussinessService : IRoadNameBussinessService
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
@@ -35,8 +38,15 @@
         {
             try
             {
-                var coordinates = GetData(null, boundaryBox.Split(','));
-                return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var coordinates = GetData(boundaryBox.Split(','));
+                    return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -47,10 +57,9 @@
         /// <summary>
         /// This method fetches co-ordinates of roadlink
         /// </summary>
-        /// <param name="query"> query as string  </param>
         /// <param name="roadLinkparameters"> roadLinkparameters as object </param>
         /// <returns> roadlink coordinates </returns>
-        private string GetData(string query, params object[] roadLinkparameters)
+        private static string GetData(params object[] roadLinkparameters)
         {
             string coordinates = string.Empty;
 
@@ -71,7 +80,7 @@
         /// </summary>
         /// <returns> roadlink object</returns>
         /// <param name="osRoadLinkDTO"> osRoadLinkDTO as list of RoadLinkDTO </param>
-        private string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
+        private static string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
         {
             var geoJson = new GeoJson
             {
