@@ -22,7 +22,7 @@ namespace Fmo.DataServices.DBContext
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
 
         /// <summary>
-        /// Saves all changes made in this context to the underlying database 
+        /// Saves all changes made in this context to the underlying database
         /// </summary>
         /// <returns>The number of state entries written to the underlying database.</returns>
         public override int SaveChanges()
