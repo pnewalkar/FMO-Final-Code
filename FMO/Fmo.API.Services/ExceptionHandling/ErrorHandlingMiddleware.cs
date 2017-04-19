@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Fmo.Common.ExceptionManagement;
-using Newtonsoft.Json;
-using Fmo.Common.Interface;
 using Fmo.Common.Enums;
+using Fmo.Common.ExceptionManagement;
+using Fmo.Common.Interface;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Fmo.API.Services.MiddlerWare
 {
+    /// <summary>
+    /// Error Handling Middleware. Interceptor for handling error in controllers.
+    /// </summary>
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate next;
-        private  IExceptionHelper exceptionHelper = default(IExceptionHelper);
+        private IExceptionHelper exceptionHelper = default(IExceptionHelper);
 
         public ErrorHandlingMiddleware(RequestDelegate next, IExceptionHelper exceptionHelper)
         {
@@ -22,6 +23,11 @@ namespace Fmo.API.Services.MiddlerWare
             this.exceptionHelper = exceptionHelper;
         }
 
+        /// <summary>
+        /// Invokes the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context /* other scoped dependencies */)
         {
             try
@@ -55,6 +61,12 @@ namespace Fmo.API.Services.MiddlerWare
             }
         }
 
+        /// <summary>
+        /// Handles the exception asynchronous.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="exception">The exception.</param>
+        /// <returns></returns>
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             HttpStatusCode code = default(HttpStatusCode);
