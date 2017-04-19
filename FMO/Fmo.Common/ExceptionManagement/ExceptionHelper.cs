@@ -4,9 +4,7 @@ using System.IO;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.Common.LoggingManagement;
-using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
-using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace Fmo.Common.ExceptionManagement
