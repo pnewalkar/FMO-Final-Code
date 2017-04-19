@@ -10,6 +10,9 @@ using Fmo.Common.Interface;
 
 namespace Fmo.NYBLoader
 {
+    /// <summary>
+    /// Load and process NYb files 
+    /// </summary>
     public class NYBLoader : INYBLoader
     {
         #region private member declaration
@@ -51,7 +54,8 @@ namespace Fmo.NYBLoader
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
-                        //Validate NYB Details
+                        //Validate NYB Details ,validates each property of PostalAddressDTO as per the business rule and set the Value of IsValid property to either true 
+                        //or false.Depending on the count of IsValid property data wil either will be saved in DB or file will be moved to error folder.
                         ValidateNybDetails(lstAddressDetails);
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
@@ -60,26 +64,9 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Exception newException;
-                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
-                if (rethrow)
-                {
-                    if (newException == null)
-                    {
-                        throw;
-
-                    }
-                    else
-                    {
-                        throw newException;
-                    }
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
             return lstAddressDetails;
         }

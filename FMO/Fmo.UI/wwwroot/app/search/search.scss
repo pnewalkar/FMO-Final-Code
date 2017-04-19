@@ -20,7 +20,7 @@ i.fa.fa-map-marker.route{
 
 .searchInput{
     @extend %body-content;
-    @include background($white);
+    @include background($white,none);
     @include width(235px);
     @include padding(8px 8px 8px 8px);
     @include border-radius(35px);
@@ -28,12 +28,12 @@ i.fa.fa-map-marker.route{
 }
 
 .searchContent{
-    @include background($white);
+    @include background($white,none);
     @include margin(16px 0px 0px 0px);
 }
 
 .searchData{
-    @include background($white);
+    @include background($white,none);
     @include font-color($strong-grey);
     @include padding(5px 5px 5px 5px);
     @include border-bottom(1px solid $grey);
@@ -54,7 +54,7 @@ i.fa.fa-search {
     @extend %body-content;
     @include cursor(pointer);
     width: width-percent(1);
-    @include background($white);
+    @include background($white,none);
     @include border(1px solid $recess-grey);
     @include margin(-5px 0px 0px 0px);
    }
@@ -62,7 +62,7 @@ i.fa.fa-search {
     @extend %body-content;
     @include cursor(pointer);
     width: width-percent(1);
-    @include background($white);
+    @include background($white,none);
     @include border(1px solid $recess-grey);
     @include margin(-5px 0px 0px 0px);
     }

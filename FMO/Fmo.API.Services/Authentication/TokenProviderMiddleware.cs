@@ -105,13 +105,17 @@ namespace Fmo.API.Services.Authentication
 
             // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user) claims.
             // You can add other claims here, if you want:
-            var claims = new Claim[]
+            var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.Role,string.Join(",", roleAccessDto.Select(x => x.FunctionName).ToList()))
+
+                //new Claim(ClaimTypes.Role,string.Join(",", roleAccessDto.Select(x => x.FunctionName).ToList())),
+                //new Claim(ClaimTypes.Role, roleAccessDto.FirstOrDefault().RoleName),
+                new Claim(ClaimTypes.UserData, roleAccessDto.FirstOrDefault().Unit_GUID.ToString())
             };
+            roleAccessDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
 
             // Create the JWT and write it to a string
             var jwt = new JwtSecurityToken(
@@ -127,7 +131,8 @@ namespace Fmo.API.Services.Authentication
             {
                 access_token = encodedJwt,
                 expires_in = (int)_options.Expiration.TotalSeconds,
-                roleActions = roleAccessDto
+                roleActions = roleAccessDto,
+                username = username
             };
 
             // Serialize and return the response

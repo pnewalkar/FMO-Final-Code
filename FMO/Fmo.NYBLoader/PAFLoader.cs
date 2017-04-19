@@ -1,43 +1,52 @@
 ﻿namespace Fmo.NYBLoader
 {
-    using Fmo.NYBLoader.Interfaces;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Fmo.DTO;
-    using System.IO;
-    using System.IO.Compression;
-    using Ninject;
-    using System.Xml.Serialization;
-    using Fmo.MessageBrokerCore.Messaging;
-    using System.Configuration;
-    using Fmo.MessageBrokerCore;
-    using Fmo.Common;
     using Fmo.Common.Constants;
     using Fmo.Common.Enums;
     using Fmo.Common.Interface;
+    using Fmo.DTO;
+    using Fmo.MessageBrokerCore.Messaging;
+    using Fmo.NYBLoader.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Linq;
+
+    /// <summary>
+    /// Load, Validate and process file
+    /// </summary>
     public class PAFLoader : IPAFLoader
     {
         #region private member declaration
+
+        private static string dateTimeFormat = Constants.DATETIMEFORMAT;
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
-        private IConfigurationHelper configurationHelper;
-        private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        #endregion
+        //private IConfigurationHelper configurationHelper;
+        //private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        #endregion private member declaration
+
         #region constructor
+
         public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
-            this.configurationHelper = configurationHelper;
-            this.loggingHelper = loggingHelper;
-            this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFProcessedFilePath");
-            this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFErrorFilePath");
+            //this.configurationHelper = configurationHelper;
+            //this.loggingHelper = loggingHelper;
+            this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFProcessedFilePath);
+            this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFErrorFilePath);
         }
-        #endregion
+
+        #endregion constructor
+
         #region public methods
+
+        /// <summary>
+        /// Read files from zip file and validate and save records
+        /// </summary>
+        /// <param name="fileName">Input file name as a param</param>
         public void LoadPAF(string fileName)
         {
             try
@@ -77,7 +86,6 @@
                         else
                         {
                             File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                            //TO DO Log error... File validation error
                         }
                     }
                 }
@@ -88,6 +96,12 @@
             }
         }
 
+        /// <summary>
+        /// Reads data from CSV file and maps to postalAddressDTO object
+        /// </summary>
+        /// <param name="strLine">Line read from CSV File</param>
+        /// <param name="strFileName">FileName required to track the error in db against each records</param>
+        /// <returns>Postal Address DTO</returns>
         public List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
@@ -105,12 +119,11 @@
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
-
                         //Validate PAF Details
                         ValidatePAFDetails(lstAddressDetails);
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
-                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith("GY") || n.Postcode.StartsWith("JE") || n.Postcode.StartsWith("IM"))).ToList();
+                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith(PostCodePrefix.GY.ToString()) || n.Postcode.StartsWith(PostCodePrefix.JE.ToString()) || n.Postcode.StartsWith(PostCodePrefix.IM.ToString()))).ToList();
 
                         //Remove duplicate PAF events which have create and delete instance for same UDPRN
                         lstAddressDetails = lstAddressDetails
@@ -122,13 +135,18 @@
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                loggingHelper.LogError(ex);
+                throw;
             }
             return lstAddressDetails;
         }
 
+        /// <summary>
+        /// Web API call to save postalAddress to PostalAddress table
+        /// </summary>
+        /// <param name="lstPostalAddress">List of mapped address dto to validate each records</param>
+        /// <returns>If success returns true else returns false</returns>
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             bool saveflag = false;
@@ -137,7 +155,6 @@
                 saveflag = true;
 
                 var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == Constants.PAFINSERT).ToList();
-                
 
                 lstPAFInsertEvents.ForEach(postalAddress =>
                     {
@@ -168,17 +185,30 @@
             }
             return saveflag;
         }
-        #endregion
+
+        #endregion public methods
+
         #region private methods
+
+        /// <summary>
+        /// Append timestamp to filename before writing the file to specified folder
+        /// </summary>
+        /// <param name="strfileName">path</param>
+        /// <returns>Filename with timestamp appended</returns>
         private static string AppendTimeStamp(string strfileName)
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
-               string.Format("{0:-yyyy-MM-d-HH-mm-ss}", DateTime.Now),
+               string.Format(dateTimeFormat, DateTime.Now),
                 Path.GetExtension(strfileName)
                 );
         }
 
+        /// <summary>
+        /// Validates string i.e. no of comma's should be 19 and max characters per line should be 534
+        /// </summary>
+        /// <param name="arrLines">Array of string read from CSV file</param>
+        /// <returns>boolean value after validating all the lines</returns>
         private static bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
@@ -198,6 +228,11 @@
             return isFileValid;
         }
 
+        /// <summary>
+        /// Mapping comma separated value to postalAddressDTO object
+        /// </summary>
+        /// <param name="csvLine">Line read from CSV File</param>
+        /// <returns>Returns mapped DTO</returns>
         private static PostalAddressDTO MapPAFDetailsToDTO(string csvLine, string FileName)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
@@ -230,6 +265,10 @@
             return objAddDTO;
         }
 
+        /// <summary>
+        /// Perform business validation on postalAddressDTO object
+        /// </summary>
+        /// <param name="lstAddress">List of mapped address dto to validate each records</param>
         private static void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
             foreach (PostalAddressDTO objAdd in lstAddress)
@@ -288,6 +327,11 @@
             }
         }
 
+        /// <summary>
+        /// PostCode validation i.e start and end character should be numeric , fourth last character should be whitespace etc.
+        /// </summary>
+        /// <param name="strPostCode">Postcode read from csv file</param>
+        /// <returns></returns>
         private static bool ValidatePostCode(string strPostCode)
         {
             bool isValid = true;
@@ -306,7 +350,6 @@
                     {
                         isValid = false;
                     }
-
                 }
                 else
                 {
@@ -315,6 +358,7 @@
             }
             return isValid;
         }
-        #endregion
+
+        #endregion private methods
     }
 }

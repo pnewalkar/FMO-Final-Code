@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
     public class PostalAddressDTO
     {
+        /// <summary>
+        /// This class represents data transfer object for PostalAddress entity
+        /// </summary>
         public int Address_Id { get; set; }
 
         public string PostcodeType { get; set; }

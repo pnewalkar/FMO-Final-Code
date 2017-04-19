@@ -9,7 +9,7 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
-    public class SearchBussinessService : ISearchBussinessService
+    public class SearchBussinessService : ISearchBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
         private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
@@ -53,6 +53,11 @@ namespace Fmo.BusinessServices.Services
             }
         }
 
+        /// <summary>
+        /// Fetch results from entities using advanced search
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>search Result Dto</returns>
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
         {
             var postcodesTask = postcodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
@@ -98,8 +103,6 @@ namespace Fmo.BusinessServices.Services
                     UDPRN = deliveryPoint.PostalAddress.UDPRN,
                     Type = SearchBusinessEntityType.DeliveryPoint
                 });
-
-               // searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryPoint.UDPRN.ToString(), Type = SearchBusinessEntityType.DeliveryPoint });
             }
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });

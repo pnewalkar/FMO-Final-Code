@@ -15,6 +15,10 @@ namespace Fmo.DataServices.Repositories
 {
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeliveryRouteRepository"/> class.
+        /// </summary>
+        /// <param name="databaseFactory">IDatabaseFactory reference</param>
         public DeliveryRouteRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
@@ -33,17 +37,22 @@ namespace Fmo.DataServices.Repositories
                 IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.Where(x => x.DeliveryScenario_GUID == deliveryScenarioID && x.Scenario.OperationalState_GUID == operationStateID).ToList();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
+        /// <summary>
+        /// Fetch Delivery Route for Advance Search.
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             try
             {
-                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).Take(10).ToListAsync();
+                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).ToListAsync();
              //   var result = await DataContext.DeliveryRoutes.Take(10).ToListAsync();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes);
             }

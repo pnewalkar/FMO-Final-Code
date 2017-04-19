@@ -13,12 +13,16 @@
   border: #2a2a2d;
   float: right;
   border: 1px solid #2a2a2d; }
+  #table_wrapper:hover {
+    background-color: none; }
 
 #tbody {
   background-color: #ffffff;
   width: 550px;
   height: 150px;
   overflow-y: auto; }
+  #tbody:hover {
+    background-color: none; }
 
 table {
   width: 100%;
@@ -39,6 +43,8 @@ td {
   width: 550px;
   background-color: #c1c6c8;
   border-bottom: 1px solid #c1c6c8; }
+  #header:hover {
+    background-color: none; }
 
 #header div {
   padding: 1px 5px 1px 5px;
@@ -74,12 +80,18 @@ md-dialog h2 {
   padding: 0px 0px 0px 0px;
   height: 100%;
   outline: none; }
+  .routeSelectSearch:hover {
+    background-color: none; }
 
 md-switch.md-checked .md-bar {
   background-color: #d16268; }
+  md-switch.md-checked .md-bar:hover {
+    background-color: none; }
 
 md-switch.md-checked .md-thumb {
   background-color: #da202a; }
+  md-switch.md-checked .md-thumb:hover {
+    background-color: none; }
 
 .routeSearch {
   width: 97.08738%; }

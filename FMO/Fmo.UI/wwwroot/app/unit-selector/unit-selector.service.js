@@ -8,15 +8,16 @@ angular.module('unitSelector')
             var aValue = sessionStorage.getItem('authorizationData');
             var jobject = JSON.parse(aValue)
             //if (jobject)
-                //return $http.get('/api/RouteLog/DeliveryUnit', { headers: { 'Authorization': 'Bearer ' + jobject.token } });
-               // return $http.get(GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit');
-              return $http({
-                    method: 'GET',
-                    url: GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit',                   
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jobject.token }
+            //return $http.get('/api/RouteLog/DeliveryUnit', { headers: { 'Authorization': 'Bearer ' + jobject.token } });
+            // return $http.get(GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit');
+            if (jobject) {
+                return $http({
+                    method: 'GET',                    
+                    url: GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit'
                 });
+            }
         };
-    
-        return unitSelectorAPIService;  
+
+        return unitSelectorAPIService;
 
     }]);

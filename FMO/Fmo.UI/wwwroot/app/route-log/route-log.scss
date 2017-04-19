@@ -1,14 +1,14 @@
 @import './app/variables';
 
 #table_wrapper{
-    @include background($recess-grey);
+    @include background($recess-grey,none);
     @include border($black);
     @include float(right);
     @include border(1px solid $black);
 }
 
 #tbody{
-    @include background($white);
+    @include background($white,none);
     @include width(550px);
     @include height(150px);
     overflow-y:auto;
@@ -34,7 +34,7 @@ td{
 }
 #header{
     @include width(550px);
-    @include background($recess-grey);
+    @include background($recess-grey,none);
     @include border-bottom(1px solid $recess-grey);
 }
 #header div{
@@ -74,18 +74,18 @@ md-dialog h2{
 
 .routeSelectSearch {
     width: width-percent(1.03);
-    @include background(none);
+    @include background(none,none);
     @include padding(0px 0px 0px 0px);
     height: height-percent(1);
     outline: none;
 }
 
 md-switch.md-checked .md-bar {
-    @include background(rgb(209,98,104));
+    @include background(rgb(209,98,104),none);
 }
 
 md-switch.md-checked .md-thumb {
-    @include background(rgb(218,32,42));
+    @include background(rgb(218,32,42),none);
 }
 
 .md-text, label{

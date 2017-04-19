@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fmo.Common.Constants
+﻿namespace Fmo.Common.Constants
 {
     public static class Constants
     {
-
         #region File Processing
 
         #region Common
-        public const string DATETIMEFORMAT = "{0:-yyyy-MM-d-HH-mm-ss}";
+
+        public const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
         public const string INSERT = "I";
         public const string UPDATE = "U";
         public const string DELETE = "D";
@@ -30,15 +24,22 @@ namespace Fmo.Common.Constants
         public const int BNGCOORDINATESYSTEM = 27700;
         public const string PostalAddressStatus = "Postal Address Status";
         public const string PostalAddressType = "Postal Address Type";
+        public const string XMLFileFolderSettings = "XMLFileFolderSettings";
+
         #endregion
 
         #region NYB
+
         public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File ins not valid File Name : {0} : Log Time : {1}";
         public const string QUEUENYB = "QUEUE_NYB";
         public const string FMOWebAPIName = "FMOWebAPIName";
+        public const string ProcessedFilePath = "ProcessedFilePath";
+        public const string ErrorFilePath = "ErrorFilePath";
+
         #endregion
 
         #region USR
+
         public const string QUEUETHIRDPARTY = "QUEUE_THIRD_PARTY";
         public const string USRXMLROOT = "USR";
         public const string ADDRESSLOCATIONXMLROOT = "addressLocation";
@@ -61,9 +62,11 @@ namespace Fmo.Common.Constants
         public const string USRERRORFILEPATHCONFIG = "USRErrorFilePath";
         public const string USRUDPRN = "udprn";
         public const string USRCHANGETYPE = "changeType";
+
         #endregion
 
         #region PAF
+
         public const int NoOfCharactersForPAF = 19;
         public const int MaxCharactersForPAF = 534;
         public const string PAFWEBAPIURL = "PAFWebApiurl";
@@ -76,10 +79,18 @@ namespace Fmo.Common.Constants
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
         public const string DeliveryPointUseIndicatorPAF = "B";
+        public const string PAFProcessedFilePath = "PAFProcessedFilePath";
+        public const string PAFErrorFilePath = "PAFErrorFilePath";
+
         #endregion
 
         #endregion
+
+        #region OtherLayers
 
         public const string FeatureType = "Feature";
+        public const string LayerType = "type";
+
+        #endregion
     }
 }

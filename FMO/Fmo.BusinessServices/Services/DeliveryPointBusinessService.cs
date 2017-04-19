@@ -3,13 +3,19 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlTypes;
-    using Fmo.BusinessServices.Interfaces;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Helpers;
+    using Interfaces;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
+    using Common.Enums;
+    using Common;
+    using Common.Constants;
 
+    /// <summary>
+    /// This class contains methods for fetching Delivery Points data.
+    /// </summary>
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
@@ -20,20 +26,20 @@
         }
 
         /// <summary>
-        ///
+        /// This Method is used to fetch Delivery Points Co-ordinates.
         /// </summary>
-        /// <param name="boundarybox"></param>
-        /// <returns></returns>
-        public object GetDeliveryPoints(string boundarybox)
+        /// <param name="boundaryBox">Boundarybox as string</param>
+        /// <returns>Object</returns>
+        public object GetDeliveryPoints(string boundaryBox)
         {
             try
             {
-                var coordinates = GetData(null, boundarybox.Split(','));
+                var coordinates = GetData(null, boundaryBox.Split(','));
                 return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -48,21 +54,20 @@
             {
                 return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPointListByUDPRN(udprn));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
         /// <summary>
-        /// 
+        /// This method is used to fetch GeoJson data for Delivery Point.
         /// </summary>
-        /// <param name="lstDeliveryPointDTO"></param>
-        /// <returns></returns>
-        private object GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
+        /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
+        /// <returns>lstDeliveryPointDTO</returns>
+        private static object GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
         {
-            string jsonData = string.Empty;
-            var geoJson = new GeoJson
+            var deliveryPointGeoJson = new GeoJson
             {
                 features = new List<Feature>()
             };
@@ -71,7 +76,7 @@
             {
                 foreach (var point in lstDeliveryPointDTO)
                 {
-                    SqlGeometry sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
+                    SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(point.LocationXY.AsBinary()), 0);
 
                     var feature = new Feature
                     {
@@ -82,27 +87,27 @@
                         { "number", point.PostalAddress.BuildingNumber },
                         { "postcode", point.PostalAddress.Postcode },
                         { "street_name", point.PostalAddress.BuildingName },
-                        { "type", "deliverypoint" }
+                        { Constants.LayerType, Convert.ToString(OtherLayersType.DeliveryPoint.GetDescription()) }
                     },
                         geometry = new Geometry
                         {
-                            coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value }
+                            coordinates = new double[] { deliveryPointSqlGeometry.STX.Value, deliveryPointSqlGeometry.STY.Value }
                         }
                     };
-                    geoJson.features.Add(feature);
+                    deliveryPointGeoJson.features.Add(feature);
                 }
             }
 
-            return geoJson;
+            return deliveryPointGeoJson;
         }
 
         /// <summary>
-        ///
+        /// This Method is used to fetch Delivery Points Co-ordinates.
         /// </summary>
-        /// <param name="query"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        private string GetData(string query, params object[] parameters)
+        /// <param name="query">query as string</param>
+        /// <param name="parameters">parameters as object</param>
+        /// <returns>coordinates</returns>
+        private static string GetData(string query, params object[] parameters)
         {
             string coordinates = string.Empty;
 

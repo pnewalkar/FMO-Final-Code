@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Data.SqlTypes;
     using System.Threading.Tasks;
+    using Common;
+    using Common.Enums;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.Common.Constants;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -12,7 +14,10 @@
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
 
-    public class RoadNameBussinessService : IRoadNameBussinessService
+    /// <summary>
+    /// This class contains methods for fetching data for RoadLinks.
+    /// </summary>
+    public class RoadNameBussinessService : IRoadNameBusinessService
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
 
@@ -21,6 +26,10 @@
             this.roadNameRepository = roadNameRepository;
         }
 
+        /// <summary>
+        /// This method is used to fetch Road Links data.
+        /// </summary>
+        /// <returns>List of Road Link Dto</returns>
         public async Task<List<RoadNameDTO>> FetchRoadName()
         {
             return await roadNameRepository.FetchRoadName();
@@ -29,14 +38,21 @@
         /// <summary>
         /// This method fetches data for RoadLinks
         /// </summary>
-        /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <param name="boundarybox"> boundaryBox as string </param>
         /// <returns>RoadLink object</returns>
-        public string GetRoadRoutes(string boundaryBox)
+        public string GetRoadRoutes(string boundarybox)
         {
             try
             {
-                var coordinates = GetData(null, boundaryBox.Split(','));
-                return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                if (!string.IsNullOrEmpty(boundarybox))
+                {
+                    var coordinates = GetData(boundarybox.Split(','));
+                    return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -47,10 +63,9 @@
         /// <summary>
         /// This method fetches co-ordinates of roadlink
         /// </summary>
-        /// <param name="query"> query as string  </param>
         /// <param name="roadLinkparameters"> roadLinkparameters as object </param>
         /// <returns> roadlink coordinates </returns>
-        private string GetData(string query, params object[] roadLinkparameters)
+        private static string GetData(params object[] roadLinkparameters)
         {
             string coordinates = string.Empty;
 
@@ -71,7 +86,7 @@
         /// </summary>
         /// <returns> roadlink object</returns>
         /// <param name="osRoadLinkDTO"> osRoadLinkDTO as list of RoadLinkDTO </param>
-        private string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
+        private static string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
         {
             var geoJson = new GeoJson
             {
@@ -114,7 +129,7 @@
                     feature.geometry = geometry;
                     feature.id = i;
                     feature.type = Constants.FeatureType;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "roadlink" } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.RoadLink.GetDescription()) } };
                     geoJson.features.Add(feature);
                     i++;
                 }

@@ -17,5 +17,7 @@
   margin: 0px 5px 0px 10px;
   font-size: 16px; }
 
-.map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button:hover {
-  background-color: #aadaea; }
+.map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button {
+  background-color: none; }
+  .map-toolbar .button.selected:hover, .md-button.md-raised:not([disabled]).button:hover {
+    background-color: #aadaea; }

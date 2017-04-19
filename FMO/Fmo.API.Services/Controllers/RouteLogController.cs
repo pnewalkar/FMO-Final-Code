@@ -26,40 +26,55 @@ namespace Fmo.API.Services.Controllers
             deliveryRouteBusinessService = _deliveryRouteBusinessService;
         }
 
-       
-        // [Authorize]
+        /// <summary>
+        /// Fetches Delivery Unit
+        /// </summary>
+        /// <returns>List</returns>
+        [Authorize(Roles = "View Delivery Points, Maintain Delivery Points")]
         [HttpGet("DeliveryUnit")]
         public List<DeliveryUnitLocationDTO> DeliveryUnit()
         {
-            var u = User.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Sub)
-                               .Select(c => c.Value).SingleOrDefault();
-
-            var g = User.Claims.Where(c => c.Type == ClaimTypes.UserData)
-                               .Select(c => c.Value).SingleOrDefault();
-
             return deliveryRouteBusinessService.FetchDeliveryUnit();
         }
 
-
-
+        /// <summary>
+        /// Fetches Delivery Route
+        /// </summary>
+        /// <param name="operationStateID"> operationState ID</param>
+        /// <param name="deliveryScenarioID">deliveryScenario ID</param>
+        /// <returns>List</returns>
         [HttpGet("FetchDeliveryRoute")]
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
+        /// <summary>
+        /// Gives list of Route Logs Status.
+        /// </summary>
+        /// <returns>List</returns>
         [HttpGet("RouteLogsStatus")]
         public List<ReferenceDataDTO> RouteLogsStatus()
         {
             return deliveryRouteBusinessService.FetchRouteLogStatus();
         }
 
+        /// <summary>
+        /// Fetches Route Log Selection Type
+        /// </summary>
+        /// <returns>List</returns>
         [HttpGet("RouteLogsSelectionType")]
         public List<ReferenceDataDTO> RouteLogsSelectionType()
         {
             return deliveryRouteBusinessService.FetchRouteLogSelectionType();
         }
 
+        /// <summary>
+        /// Fetches Delivery Scenario
+        /// </summary>
+        /// <param name="operationStateID">operation State ID</param>
+        /// <param name="deliveryUnitID">delivery Unit ID</param>
+        /// <returns></returns>
         [HttpGet("FetchDeliveryScenario")]
         public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {

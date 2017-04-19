@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fmo.Common.AsyncEnumerator
 {
+    /// <summary>
+    /// This class is used for the NUnit testing of async methods
+    /// </summary>
+    /// <typeparam name="T"> Generic parameter </typeparam>
     public class DbAsyncEnumerator<T> : IDbAsyncEnumerator<T>
     {
         private readonly IEnumerator<T> localEnumerator;
