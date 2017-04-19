@@ -21,14 +21,26 @@ namespace Fmo.MessageBrokerCore.Messaging
             msgAdapterFactory = new MessageAdapterFactory<T>();
         }
 
+        /// <summary>
+        /// takes an object, serialises it and returns a message
+        /// </summary>
+        /// <param name="obj">Object to be serialized</param>
+        /// <param name="queueName">Queue name </param>
+        /// <param name="queueRootPath">Queue path</param>
+        /// <returns>MSMQ message</returns>
         public IMessage CreateMessage(Object obj, string queueName, string queueRootPath)
         {
             Message msg = new Message();
             msg.Content = obj;
             msg.QueueName = queueName;
             msg.QueueRootpath = queueRootPath;
-            return msg; 
+            return msg;
         }
+
+        /// <summary>
+        /// Add message to queue
+        /// </summary>
+        /// <param name="message">MSMQ message</param>
         public void SendMessage(IMessage message)
         {
 
@@ -38,6 +50,12 @@ namespace Fmo.MessageBrokerCore.Messaging
 
         }
 
+        /// <summary>
+        /// Read message from queue
+        /// </summary>
+        /// <param name="queueName">Queue name </param>
+        /// <param name="queueRootPath">Queue path</param>
+        /// <returns>serialized object</returns>
         public T ReceiveMessage(string queueName, string queueRootPath)
         {
             IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
@@ -45,6 +63,12 @@ namespace Fmo.MessageBrokerCore.Messaging
             return adpt.PopMessage();
         }
 
+        /// <summary>
+        /// Checks for message in MSMQ
+        /// </summary>
+        /// <param name="queueName">Queue name </param>
+        /// <param name="queueRootPath">Queue path</param>
+        /// <returns>boolean value true if message exists in queue</returns>
         public bool HasMessage(string queueName, string queueRootPath)
         {
 
@@ -53,6 +77,12 @@ namespace Fmo.MessageBrokerCore.Messaging
             return adpt.HasMessage();
         }
 
+        /// <summary>
+        /// Start listening for in coming message
+        /// </summary>
+        /// <param name="queueName">Queue name </param>
+        /// <param name="queueRootPath">Queue path</param>
+        /// <param name="handler">Message receieved handler</param>
         public void Start(string queueName, string queueRootPath, EventHandler<MessageEventArgs<T>> handler)
         {
             IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
@@ -60,6 +90,12 @@ namespace Fmo.MessageBrokerCore.Messaging
             adpt.Start(handler);
         }
 
+        /// <summary>
+        /// Stops listening to MSMQ
+        /// </summary>
+        /// <param name="queueName">Queue name </param>
+        /// <param name="queueRootPath">Queue path</param>
+        /// <param name="handler">Message receieved handler</param>
         public void Stop(string queueName, string queueRootPath, EventHandler<MessageEventArgs<T>> handler)
         {
             IMessageAdapter<T> adpt = msgAdapterFactory.GetAdapter(queueName, queueRootPath);
