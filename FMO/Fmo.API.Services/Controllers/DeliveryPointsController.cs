@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
 {
+    /// <summary>
+    /// This class contains methods used to fetch Delivery Points.
+    /// </summary>
     [Route("api/deliveryPoints")]
     public class DeliveryPointsController : Controller
     {
@@ -27,18 +30,16 @@ namespace Fmo.API.Services.Controllers
             return Json("");
         }
 
-        [Route("fetchDeliveryPoint")]
-        [HttpGet]
-        public async Task<List<DeliveryPointDTO>> FetchDeliveryPoints()
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        ///This method is used to Get Delivery Point Object.
+        /// </summary>
+        /// <param name="boundaryBox">boundaryBox as string</param>
+        /// <returns>Json Result of Delivery Points</returns>
         [Route("GetDeliveryPoints")]
         [HttpGet]
-        public JsonResult GetDeliveryPoints(string bbox)
+        public JsonResult GetDeliveryPoints(string boundaryBox)
         {
-            return Json(businessService.GetDeliveryPoints(bbox));           
+            return Json(businessService.GetDeliveryPoints(boundaryBox));           
         }
 
         /// <summary>

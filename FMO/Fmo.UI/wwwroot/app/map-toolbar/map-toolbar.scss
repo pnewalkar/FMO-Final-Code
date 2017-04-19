@@ -23,6 +23,6 @@
     font-size: $seondary-font-size;
 }
 
-.map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button:hover {
-    @include background($clear-blue);
+.map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button {
+    @include background(none,$clear-blue);
 }
