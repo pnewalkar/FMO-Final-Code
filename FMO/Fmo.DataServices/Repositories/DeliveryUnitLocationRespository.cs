@@ -27,9 +27,9 @@ namespace Fmo.DataServices.Repositories
                 var result = DataContext.UnitLocations.Where(x => x.UnitBoundryPolygon != null).ToList();
                 return GenericMapper.MapList<UnitLocation, DeliveryUnitLocationDTO>(result.ToList());
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }
