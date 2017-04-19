@@ -12,7 +12,7 @@ namespace Fmo.Common.Constants
         #region File Processing
 
         #region Common
-        public const string DATETIMEFORMAT = "{0:-yyyy-MM-d-HH-mm-ss}";
+        public const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
         public const string INSERT = "I";
         public const string UPDATE = "U";
         public const string DELETE = "D";
