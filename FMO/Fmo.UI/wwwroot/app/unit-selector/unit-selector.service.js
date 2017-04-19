@@ -13,8 +13,7 @@ angular.module('unitSelector')
             if (jobject) {
                 return $http({
                     method: 'GET',                    
-                    url: GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Bearer ' + jobject.token }
+                    url: GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit'
                 });
             }
         };
