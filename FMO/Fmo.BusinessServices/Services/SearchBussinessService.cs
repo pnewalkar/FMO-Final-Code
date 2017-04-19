@@ -9,17 +9,17 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
-    public class SearchBussinessService : ISearchBussinessService
+    public class SearchBussinessService : ISearchBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
-        private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
+        private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
         private IDeliveryPointsRepository deliveryPointRepository = default(IDeliveryPointsRepository);
 
-        public SearchBussinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postCodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
+        public SearchBussinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postcodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
-            this.postCodeRepository = postCodeRepository;
+            this.postcodeRepository = postcodeRepository;
             this.streetNetworkRepository = streetNetworkRepository;
             this.deliveryPointRepository = deliveryPointRepository;
         }
@@ -35,8 +35,8 @@ namespace Fmo.BusinessServices.Services
             {
                 var deliveryRoutes = await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText).ConfigureAwait(false);
                 var deliveryRouteCount = await deliveryRouteRepository.GetDeliveryRouteCount(searchText).ConfigureAwait(false);
-                var postcodes = await postCodeRepository.FetchPostCodeUnitForBasicSearch(searchText).ConfigureAwait(false);
-                var postCodeCount = await postCodeRepository.GetPostCodeUnitCount(searchText).ConfigureAwait(false);
+                var postcodes = await postcodeRepository.FetchPostCodeUnitForBasicSearch(searchText).ConfigureAwait(false);
+                var postCodeCount = await postcodeRepository.GetPostCodeUnitCount(searchText).ConfigureAwait(false);
                 var deliveryPoints = await deliveryPointRepository.FetchDeliveryPointsForBasicSearch(searchText).ConfigureAwait(false);
                 var deliveryPointsCount = await deliveryPointRepository.GetDeliveryPointsCount(searchText).ConfigureAwait(false);
                 var streetNames = await streetNetworkRepository.FetchStreetNamesForBasicSearch(searchText).ConfigureAwait(false);
@@ -47,15 +47,20 @@ namespace Fmo.BusinessServices.Services
 
                 return searchResultDTO;
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
         }
 
+        /// <summary>
+        /// Fetch results from entities using advanced search
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>search Result Dto</returns>
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
         {
-            var postcodesTask = postCodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
+            var postcodesTask = postcodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
             var deliveryRoutesTask = deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
             var streetNamesTask = streetNetworkRepository.FetchStreetNamesForAdvanceSearch(searchText);
             var deliveryPointsTask = deliveryPointRepository.FetchDeliveryPointsForAdvanceSearch(searchText);
@@ -98,8 +103,6 @@ namespace Fmo.BusinessServices.Services
                     UDPRN = deliveryPoint.PostalAddress.UDPRN,
                     Type = SearchBusinessEntityType.DeliveryPoint
                 });
-
-              //  searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryPoint.UDPRN.ToString(), Type = SearchBusinessEntityType.DeliveryPoint });
             }
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
@@ -130,7 +133,7 @@ namespace Fmo.BusinessServices.Services
         /// <param name="streetNames">The list of street names</param>
         /// <param name="streetNetworkCount">The count of street names</param>
         /// <returns>The result set</returns>
-        private SearchResultDTO GetBasicSearchResults(List<DeliveryRouteDTO> deliveryRoutes, int deliveryRouteCount, List<PostCodeDTO> postcodes, int postCodeCount, List<DeliveryPointDTO> deliveryPoints, int deliveryPointsCount, List<StreetNameDTO> streetNames, int streetNetworkCount)
+        private static SearchResultDTO GetBasicSearchResults(List<DeliveryRouteDTO> deliveryRoutes, int deliveryRouteCount, List<PostCodeDTO> postcodes, int postCodeCount, List<DeliveryPointDTO> deliveryPoints, int deliveryPointsCount, List<StreetNameDTO> streetNames, int streetNetworkCount)
         {
             var searchResultDTO = new SearchResultDTO();
 
@@ -163,7 +166,7 @@ namespace Fmo.BusinessServices.Services
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                 {
                     DisplayText = string.Format(
-                    "{0},{1},{3},{4},{5}",
+                    "{0},{1},{2},{3},{4},{5}",
                     deliveryPoint.PostalAddress.OrganisationName,
                     deliveryPoint.PostalAddress.BuildingName,
                     deliveryPoint.PostalAddress.SubBuildingName,

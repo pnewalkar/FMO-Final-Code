@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Script.Serialization;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.Common;
-using Fmo.Common.Constants;
-using Fmo.Common.Enums;
-using Fmo.Common.Interface;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-
-namespace Fmo.BusinessServices.Services
+﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Script.Serialization;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
+    using Fmo.Common.Interface;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+
     /// <summary>
     /// Business service to handle CRUD operations on Postal Address entites
     /// </summary>
@@ -163,6 +163,7 @@ namespace Fmo.BusinessServices.Services
                 this.loggingHelper.LogError(ex);
             }
         }
+        }
 
         /// <summary>
         /// Business rule implementation for PAF create events
@@ -263,5 +264,6 @@ namespace Fmo.BusinessServices.Services
                         objPostalAddress.PostTown + ", " +
                         objPostalAddress.Postcode;
         }
+
     }
 }

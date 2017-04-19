@@ -104,19 +104,16 @@ namespace Fmo.Receiver
         /// <returns></returns>
         private async Task SavePAFDetails(List<PostalAddressDTO> postalAddress)
         {
-            bool saveFlag = false;
             try
             {
                 if (postalAddress != null && postalAddress.Count > 0)
                 {
                     httpHandler = new HttpHandler();
                     await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
-                    saveFlag = true;
                 }
             }
             catch (Exception)
             {
-                saveFlag = false;
                 throw;
             }
 
@@ -135,7 +132,7 @@ namespace Fmo.Receiver
                 var addressLocationUSRPOSTDTO = GenericMapper.MapList<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

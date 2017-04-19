@@ -68,15 +68,15 @@
   <ItemGroup>
     <Compile Include="Interfaces\ActionManager\IActionManagerBussinessService.cs" />
     <Compile Include="Interfaces\ActionManager\IUserRoleUnitBussinessService.cs" />
-    <Compile Include="Interfaces\IAccessActionBussinessService.cs" />
-    <Compile Include="Interfaces\IAccessLinkBussinessService.cs" />
+    <Compile Include="Interfaces\IAccessActionBusinessService.cs" />
+    <Compile Include="Interfaces\IAccessLinkBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryPointBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryRouteBusinessService.cs" />
     <Compile Include="Interfaces\IPostalAddressBusinessService.cs" />
     <Compile Include="Interfaces\IPostCodeBussinessService.cs" />
-    <Compile Include="Interfaces\IRoadNameBussinessService.cs" />
-    <Compile Include="Interfaces\ISearchBussinessService.cs" />
-    <Compile Include="Interfaces\IStreetNetworkBussinessService.cs" />
+    <Compile Include="Interfaces\IRoadNameBusinessService.cs" />
+    <Compile Include="Interfaces\ISearchBusinessService.cs" />
+    <Compile Include="Interfaces\IStreetNetworkBusinessService.cs" />
     <Compile Include="Interfaces\IUSRBusinessService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccessActionBussinessService.cs" />

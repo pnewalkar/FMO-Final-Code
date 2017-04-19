@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlTypes;
+    using Common;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.Common.Constants;
     using Fmo.Common.Enums;
@@ -11,12 +12,11 @@
     using Fmo.Helpers;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
-    using Common;
 
     /// <summary>
     /// This class contains methods for fetching data for AccessLinks
     /// </summary>
-    public class AccessLinkBussinessService : IAccessLinkBussinessService
+    public class AccessLinkBussinessService : IAccessLinkBusinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
 
@@ -25,6 +25,10 @@
             this.accessLinkRepository = searchAccessLinkRepository;
         }
 
+        /// <summary>
+        /// This method is used to fetch Access Link data.
+        /// </summary>
+        /// <returns>List of Access link Dto</returns>
         public List<AccessLinkDTO> SearchAccessLink()
         {
             return accessLinkRepository.SearchAccessLink();
@@ -108,7 +112,7 @@
                 }
             }
 
-           return JsonConvert.SerializeObject(geoJson);
+            return JsonConvert.SerializeObject(geoJson);
         }
 
         /// <summary>

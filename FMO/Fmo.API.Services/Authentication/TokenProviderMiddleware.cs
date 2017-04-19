@@ -131,7 +131,8 @@ namespace Fmo.API.Services.Authentication
             {
                 access_token = encodedJwt,
                 expires_in = (int)_options.Expiration.TotalSeconds,
-                roleActions = roleAccessDto
+                roleActions = roleAccessDto,
+                username = username
             };
 
             // Serialize and return the response
