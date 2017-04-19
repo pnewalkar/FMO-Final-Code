@@ -38,15 +38,15 @@
         /// <summary>
         /// This method fetches data for RoadLinks
         /// </summary>
-        /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <param name="boundarybox"> boundaryBox as string </param>
         /// <returns>RoadLink object</returns>
-        public string GetRoadRoutes(string boundaryBox)
+        public string GetRoadRoutes(string boundarybox)
         {
             try
             {
-                if (!string.IsNullOrEmpty(boundaryBox))
+                if (!string.IsNullOrEmpty(boundarybox))
                 {
-                    var coordinates = GetData(boundaryBox.Split(','));
+                    var coordinates = GetData(boundarybox.Split(','));
                     return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
                 }
                 else

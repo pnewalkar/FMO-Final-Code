@@ -28,7 +28,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
             //accessToken, roleAccessData
             if (response.access_token) {
                 sessionStorage.clear();
-                sessionStorage.setItem("authorizationData", JSON.stringify({ token: response.access_token, userName: userName }));
+                sessionStorage.setItem("authorizationData", JSON.stringify({ token: response.access_token, userName: response.username[0] }));
                 sessionStorage.setItem("roleAccessData", JSON.stringify((response.roleActions)));
                 if (response.access_token || response.access_token !== undefined) {
                     window.location.href = "http://localhost:34559/app/index.html";

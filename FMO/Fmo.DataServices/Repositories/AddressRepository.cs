@@ -1,5 +1,8 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Common.Constants;
     using Common.Enums;
     using Common.Interface;
@@ -9,9 +12,6 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -118,6 +118,12 @@
             return isPostalAddressInserted;
         }
 
+        /// <summary>
+        /// Insert PAF details depending on the UDPRN
+        /// </summary>
+        /// <param name="objPostalAddress">PAF details DTO</param>
+        /// <param name="strFileName">CSV Filename</param>
+        /// <returns>true or false</returns>
         public bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
@@ -142,6 +148,11 @@
             return saveFlag;
         }
 
+        /// <summary>
+        /// Get Postal address details depending on the UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <returns>returns PostalAddress object</returns>
         public PostalAddressDTO GetPostalAddress(int? uDPRN)
         {
             try
@@ -156,6 +167,11 @@
             }
         }
 
+        /// <summary>
+        /// Get Postal address details depending on the address fields such as BuildingName and etc
+        /// </summary>
+        /// <param name="objPostalAddress">Postal address</param>
+        /// <returns>returns PostalAddress object</returns>
         public PostalAddressDTO GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
             try
@@ -180,7 +196,7 @@
         }
 
         /// <summary>
-        /// Create or update PAF details depending on the UDPRN
+        /// Update PAF details depending on the UDPRN
         /// </summary>
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
