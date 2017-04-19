@@ -25,10 +25,14 @@ i.fa.fa-map-marker.route {
   padding: 8px 8px 8px 8px;
   border-radius: 35px;
   border: none; }
+  .searchInput:hover {
+    background-color: none; }
 
 .searchContent {
   background-color: #ffffff;
   margin: 16px 0px 0px 0px; }
+  .searchContent:hover {
+    background-color: none; }
 
 .searchData {
   background-color: #ffffff;
@@ -36,6 +40,8 @@ i.fa.fa-map-marker.route {
   padding: 5px 5px 5px 5px;
   border-bottom: 1px solid #808080;
   cursor: pointer; }
+  .searchData:hover {
+    background-color: none; }
 
 i.fa.fa-search {
   color: #ffffff;
@@ -48,6 +54,8 @@ i.fa.fa-search {
   background-color: #ffffff;
   border: 1px solid #c1c6c8;
   margin: -5px 0px 0px 0px; }
+  .viewResult:hover {
+    background-color: none; }
 
 .noResult {
   cursor: pointer;
@@ -55,6 +63,8 @@ i.fa.fa-search {
   background-color: #ffffff;
   border: 1px solid #c1c6c8;
   margin: -5px 0px 0px 0px; }
+  .noResult:hover {
+    background-color: none; }
 
 i.fa.fa-angle-double-right {
   color: #2a2a2d;

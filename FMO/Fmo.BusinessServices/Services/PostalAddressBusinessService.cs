@@ -72,7 +72,7 @@ using Fmo.DTO;
         /// <returns>returns true or false</returns>
         public bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress, string strFileName)
         {
-            bool saveFlag = false;
+            bool isPostalAddressInserted = false;
             string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
             try
             {
@@ -90,18 +90,18 @@ using Fmo.DTO;
                             addressRepository.SaveAddress(postalAddress, strFileName);
                         }
 
-                        saveFlag = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
+                        isPostalAddressInserted = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
                     }
                 }
             }
             catch (Exception ex)
             {
-                this.loggingHelper.LogError(ex);
-                this.loggingHelper.LogInfo(postalAddressList);
                 this.loggingHelper.LogInfo(ex.ToString());
+                this.loggingHelper.LogInfo(postalAddressList);
+                throw;
             }
 
-            return saveFlag;
+            return isPostalAddressInserted;
         }
 
         /// <summary>

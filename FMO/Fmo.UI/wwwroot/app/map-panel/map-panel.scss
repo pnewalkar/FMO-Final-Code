@@ -15,7 +15,7 @@ map-panel {
 }
 
 .map-panel {
-    @include background($white);
+    @include background($white,none);
 }
 
 .map-panel ul {
@@ -35,7 +35,7 @@ map-panel {
 }
 
 .map-panel .panel-header {
-    @include background($white-smoke);
+    @include background($white-smoke,none);
     pointer-events: auto;
 }
 
@@ -61,4 +61,8 @@ map-panel {
 
 .right-panel {
     @include float(right);
+}
+
+.md-whiteframe-3dp.map-panel.hide-panel {
+    @include width(250px);
 }

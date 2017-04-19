@@ -16,6 +16,8 @@ map-panel {
 
 .map-panel {
   background-color: #ffffff; }
+  .map-panel:hover {
+    background-color: none; }
 
 .map-panel ul {
   margin: 0px 0px 0px 0px;
@@ -32,6 +34,8 @@ map-panel {
 .map-panel .panel-header {
   background-color: #f5f5f5;
   pointer-events: auto; }
+  .map-panel .panel-header:hover {
+    background-color: none; }
 
 .map-panel .fa {
   color: #53535a; }
@@ -51,3 +55,6 @@ map-panel {
 
 .right-panel {
   float: right; }
+
+.md-whiteframe-3dp.map-panel.hide-panel {
+  width: 250px; }
