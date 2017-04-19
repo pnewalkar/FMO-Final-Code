@@ -9,6 +9,9 @@ using Fmo.Entities;
 
 namespace Fmo.DataServices.DBContext
 {
+    /// <summary>
+    /// Base class to enable audit logging for the application.
+    /// </summary>
     public abstract class AuditContext : DbContext
     {
         public AuditContext(string connString)
@@ -18,9 +21,12 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
 
+        /// <summary>
+        /// Saves all changes made in this context to the underlying database 
+        /// </summary>
+        /// <returns>The number of state entries written to the underlying database.</returns>
         public override int SaveChanges()
         {
-            // [TODO]: throw NotImplementedException when userid is present
             return base.SaveChanges();
         }
 
