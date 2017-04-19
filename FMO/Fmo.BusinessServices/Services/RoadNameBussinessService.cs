@@ -15,9 +15,9 @@
     using Newtonsoft.Json;
 
     /// <summary>
-    /// This class contains methods for fetching data for RoadLinks
+    /// This class contains methods for fetching data for RoadLinks.
     /// </summary>
-    public class RoadNameBussinessService : IRoadNameBussinessService
+    public class RoadNameBussinessService : IRoadNameBusinessService
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
 
@@ -26,6 +26,10 @@
             this.roadNameRepository = roadNameRepository;
         }
 
+        /// <summary>
+        /// This method is used to fetch Road Links data.
+        /// </summary>
+        /// <returns>List of Road Link Dto</returns>
         public async Task<List<RoadNameDTO>> FetchRoadName()
         {
             return await roadNameRepository.FetchRoadName();
@@ -34,15 +38,15 @@
         /// <summary>
         /// This method fetches data for RoadLinks
         /// </summary>
-        /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <param name="boundarybox"> boundaryBox as string </param>
         /// <returns>RoadLink object</returns>
-        public string GetRoadRoutes(string boundaryBox)
+        public string GetRoadRoutes(string boundarybox)
         {
             try
             {
-                if (!string.IsNullOrEmpty(boundaryBox))
+                if (!string.IsNullOrEmpty(boundarybox))
                 {
-                    var coordinates = GetData(boundaryBox.Split(','));
+                    var coordinates = GetData(boundarybox.Split(','));
                     return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
                 }
                 else

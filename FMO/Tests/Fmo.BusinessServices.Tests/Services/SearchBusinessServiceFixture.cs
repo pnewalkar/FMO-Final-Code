@@ -15,7 +15,7 @@ namespace Fmo.BusinessServices.Tests.Services
     [TestFixture]
     public class SearchBusinessServiceFixture : TestFixtureBase
     {
-        private ISearchBussinessService testCandidate;
+        private ISearchBusinessService testCandidate;
         private Mock<IDeliveryRouteRepository> deliveryRouteRepositoryMock;
         private Mock<IPostCodeRepository> postCodeRepositoryMock;
         private Mock<IDeliveryPointsRepository> deliveryPointsRepositoryMock;

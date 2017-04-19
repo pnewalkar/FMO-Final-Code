@@ -64,9 +64,9 @@ namespace Fmo.NYBLoader
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
             return lstAddressDetails;
         }

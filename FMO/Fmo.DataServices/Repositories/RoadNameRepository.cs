@@ -1,8 +1,9 @@
-﻿
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Threading.Tasks;
     using Fmo.DataServices.DBContext;
@@ -11,21 +12,21 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System.Data.Entity;
-    using System.IO;
-    using Microsoft.SqlServer.Types;
-    using System.Data.SqlTypes;
-    using System.Text;
-    using Newtonsoft.Json;
 
+    /// <summary>
+    /// This class contains methods fetching for Road Links data.
+    /// </summary>
     public class RoadNameRepository : RepositoryBase<RoadName, FMODBContext>, IRoadNameRepository
     {
-
         public RoadNameRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
         }
 
+        /// <summary>
+        /// This method is used to Fetch Road Name details.
+        /// </summary>
+        /// <returns> Task List of Road Name DTO</returns>
         public async Task<List<RoadNameDTO>> FetchRoadName()
         {
             try
@@ -39,85 +40,28 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// This method is used to get Road Link data as per coordinates.
+        /// </summary>
+        /// <param name="coordinates">coordinates as string</param>
+        /// <returns>List of Road Link entity</returns>
         public IEnumerable<OSRoadLink> GetData(string coordinates)
         {
-            //string x1 = Convert.ToString(parameters[0]);
-            //string y1 = Convert.ToString(parameters[1]);
-            //string x2 = Convert.ToString(parameters[2]);
-            //string y2 = Convert.ToString(parameters[3]);
-
-
-            //string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
-
-            System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
 
             return DataContext.OSRoadLinks.Where(dp => dp.CentreLineGeometry != null && dp.CentreLineGeometry.Intersects(extent)).ToList();
         }
 
+        /// <summary>
+        /// This method is used to fetch Road routes data.
+        /// </summary>
+        /// <param name="coordinates">coordinates as string</param>
+        /// <returns>List of OsRoadLinkDTO</returns>
         public List<OsRoadLinkDTO> GetRoadRoutes(string coordinates)
         {
-            //GenericRepository gUoW = new GenericRepository();
             List<OSRoadLink> result = GetData(coordinates).ToList();
             var oSRoadLink = GenericMapper.MapList<OSRoadLink, OsRoadLinkDTO>(result);
             return oSRoadLink;
-            //            List<OSRoadLink> osRoadLinkList = GetData(coordinates).ToList();
-            //List<Feature> lstFeatures = new List<Feature>();
-
-            //            string json = string.Empty;
-
-            //            foreach (var res in osRoadLinkList)
-            //            {
-            //               Geometry geometry = new Geometry();
-
-            //                geometry.type = res.CentreLineGeometry.SpatialTypeName;
-
-            //                var resultCoordinates = res.CentreLineGeometry;
-
-            //                geometry.coordinates = new object();
-
-            //                SqlGeometry sqlGeo = null;
-            //                if (geometry.type == "LineString")
-            //                {
-            //                    sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-
-            //                    List<double[]> cords = new List<double[]>();
-
-            //                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
-            //                    {
-            //                        double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-            //                        cords.Add(coordinates);
-            //                    }
-
-            //                    geometry.coordinates = cords;
-            //                }
-            //                else
-            //                {
-            //                    sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-            //                    double[] coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
-            //                    geometry.coordinates = coordinates;
-            //                }
-
-            //             Feature features = new Feature();
-            //                features.geometry = geometry;
-
-            //                features.type = "Feature";
-            //              //  features.properties = new Properties { type = "roadlink" };
-
-            //                lstFeatures.Add(features);
-            //            }
-
-            //            //routeLinkFeatureCollections.features = lstFeatures;
-            //            //routeLinkFeatureCollections.type = "FeatureCollection";
-            //            json = JsonConvert.SerializeObject(routeLinkFeatureCollections,
-            //                            Newtonsoft.Json.Formatting.None,
-            //                            new JsonSerializerSettings
-            //                            {
-            //                                NullValueHandling = NullValueHandling.Ignore
-            //                            });
-
-            //            var resultBytes = Encoding.UTF8.GetBytes(json);
-            //            return new MemoryStream(resultBytes);
         }
-
     }
 }

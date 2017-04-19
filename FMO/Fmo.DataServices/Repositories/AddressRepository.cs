@@ -1,8 +1,5 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Common.Constants;
     using Common.Enums;
     using Common.Interface;
@@ -12,6 +9,9 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Repository to interact with postal address entity
