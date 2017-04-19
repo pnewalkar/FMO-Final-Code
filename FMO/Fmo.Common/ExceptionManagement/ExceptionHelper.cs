@@ -12,11 +12,10 @@ using Microsoft.Practices.EnterpriseLibrary.Logging;
 namespace Fmo.Common.ExceptionManagement
 {
     /// <summary>
-    /// This class should be inherited.
+    /// Enterprise library exception policy helper class for managing and logging exceptions.
     /// </summary>
     public class ExceptionHelper : IExceptionHelper
     {
-        // static ExceptionManager _exManager =   Microsoft.Practices.EnterpriseLibrary.Common.Configuration.EnterpriseLibraryContainer.Current.GetInstance<ExceptionManager>();
         private static bool isInitialized = false;
 
         public ExceptionHelper()
@@ -36,11 +35,24 @@ namespace Fmo.Common.ExceptionManagement
             }
         }
 
+        /// <summary>
+        /// Handles the exception.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <param name="policy">The policy.</param>
+        /// <param name="execptionToThrow">The execption to throw.</param>
+        /// <returns>bool</returns>
         public bool HandleException(Exception exception, ExceptionHandlingPolicy policy, out Exception execptionToThrow)
         {
             return ExceptionPolicy.HandleException(exception, policy.GetDescription(), out execptionToThrow);
         }
 
+        /// <summary>
+        /// Handles the exception.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <param name="policy">The policy.</param>
+        /// <returns>bool</returns>
         public bool HandleException(Exception exception, ExceptionHandlingPolicy policy)
         {
             return ExceptionPolicy.HandleException(exception, policy.GetDescription());
