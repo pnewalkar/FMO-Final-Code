@@ -122,9 +122,9 @@
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                loggingHelper.LogError(ex);
+                throw;
             }
             return lstAddressDetails;
         }
