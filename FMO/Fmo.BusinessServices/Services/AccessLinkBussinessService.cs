@@ -101,7 +101,7 @@
 
                     feature.type = Constants.FeatureType;
                     feature.id = res.AccessLink_Id;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.FeaturePropertyType, Constants.FeaturePropertyAccessLink } };
 
                     geoJson.features.Add(feature);
                 }
