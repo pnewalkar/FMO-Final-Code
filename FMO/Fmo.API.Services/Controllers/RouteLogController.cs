@@ -27,14 +27,16 @@ namespace Fmo.API.Services.Controllers
         }
 
        
-        // [Authorize]
+        [Authorize(Roles = "View Delivery Points, Maintain Delivery Points")]
         [HttpGet("DeliveryUnit")]
         public List<DeliveryUnitLocationDTO> DeliveryUnit()
         {
             var u = User.Claims.Where(c => c.Type == JwtRegisteredClaimNames.Sub)
                                .Select(c => c.Value).SingleOrDefault();
 
-            var g = User.Claims.Where(c => c.Type == ClaimTypes.UserData)
+            var g = User.Claims.Where(c => c.Type == ClaimTypes.Role)
+                               .Select(c => c.Value).SingleOrDefault();
+            var unit = User.Claims.Where(c => c.Type == ClaimTypes.UserData)
                                .Select(c => c.Value).SingleOrDefault();
 
             return deliveryRouteBusinessService.FetchDeliveryUnit();
