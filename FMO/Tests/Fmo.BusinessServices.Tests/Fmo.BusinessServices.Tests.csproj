@@ -90,6 +90,10 @@
     <None Include="TestData\ValidFile\ValidPAF.zip" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\FMO.Batch.FileLoader\Fmo.Batch.FileLoader.csproj">
+      <Project>{899723CB-0C54-4D8A-8F2C-966D28D511C6}</Project>
+      <Name>Fmo.Batch.FileLoader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Fmo.BusinessServices\Fmo.BusinessServices.csproj">
       <Project>{aba09fba-3f3f-47f7-8ab7-ba12841d56fe}</Project>
       <Name>Fmo.BusinessServices</Name>

@@ -17,6 +17,11 @@ namespace Fmo.API.Services.Controllers
             searchBussinessService = _searchBussinessService;
         }
 
+        /// <summary>
+        /// Fetch results from entities using basic search
+        /// </summary>
+        /// <param name="searchText">The text to be searched from the entities.</param>
+        /// <returns>The result set after filtering the values.</returns>
         [HttpGet("BasicSearch")]
         public async Task<SearchResultDTO> BasicSearch(string searchText)
         {
@@ -28,37 +33,5 @@ namespace Fmo.API.Services.Controllers
         {
             return await searchBussinessService.FetchAdvanceSearchDetails(searchText);
         }
-
-        // GET: api/values
-        // [HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/values/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/values
-        //[HttpPost]
-        //public void Post([FromBody]string value)
-        //{
-        //}
-
-        //// PUT api/values/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        //// DELETE api/values/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

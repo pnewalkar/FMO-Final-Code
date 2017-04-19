@@ -1,4 +1,4 @@
 angular.module('FMOApp', ['ngMaterial','ui.router',
-                          'ngMessages',
+                          'ngMessages','manageAccess',
                           'home'
                          ]);

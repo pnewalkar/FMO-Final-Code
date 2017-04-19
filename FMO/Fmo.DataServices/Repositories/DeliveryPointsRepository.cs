@@ -18,6 +18,7 @@ namespace Fmo.DataServices.Repositories
     using MappingConfiguration;
     using Entity = Fmo.Entities;
     using AutoMapper;
+    using System.Configuration;
 
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
@@ -120,9 +121,14 @@ namespace Fmo.DataServices.Repositories
             return result;
         }
 
+        /// <summary>
+        /// Fetch Delivery point for Basic Search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The result set of delivery point.</returns>
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText)
         {
-            int takeCount = 5;
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
             searchText = searchText ?? string.Empty;
             var result = await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
@@ -151,6 +157,11 @@ namespace Fmo.DataServices.Repositories
             return result;
         }
 
+        /// <summary>
+        /// Get the count of delivery points
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The total count of delivery points</returns>
         public async Task<int> GetDeliveryPointsCount(string searchText)
         {
             searchText = searchText ?? string.Empty;

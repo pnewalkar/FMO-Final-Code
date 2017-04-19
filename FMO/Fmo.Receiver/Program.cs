@@ -1,13 +1,10 @@
-﻿using Fmo.NYBLoader.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ServiceProcess;
 
 namespace Fmo.Receiver
 {
+    /// <summary>
+    /// Entry point for receiver service
+    /// </summary>
     static class Program
     {
         /// <summary>
@@ -17,11 +14,6 @@ namespace Fmo.Receiver
         {
             ServiceBase[] servicesToRun = new ServiceBase[] { new Receiver() };
             ServiceBase.Run(servicesToRun);
-            /*using (Receiver myService = new Receiver())
-            {
-                myService.OnDebug();
-                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-            }*/
         }
     }
 }

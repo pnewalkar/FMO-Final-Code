@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,6 +13,9 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
+    /// <summary>
+    /// Repository to interact with postal address entity
+    /// </summary>
     public class PostCodeRepository : RepositoryBase<Postcode, FMODBContext>, IPostCodeRepository
     {
         public PostCodeRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -19,11 +23,16 @@
         {
         }
 
+        /// <summary>
+        /// Fetch postcode for basic search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The result set of post code</returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText)
         {
             try
             {
-                int takeCount = 5;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
                 searchText = searchText ?? string.Empty;
                 var postCodeDetailsDto = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText))
                     .Take(takeCount)
@@ -43,6 +52,11 @@
             }
         }
 
+        /// <summary>
+        /// Get the count of post code
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <returns>The total count of post code</returns>
         public async Task<int> GetPostCodeUnitCount(string searchText)
         {
             try
@@ -70,6 +84,11 @@
             }
         }
 
+        /// <summary>
+        /// Get post code ID by passing post code.
+        /// </summary>
+        /// <param name="postCode"> Post Code</param>
+        /// <returns>Post code ID</returns>
         public Guid GetPostCodeID(string postCode)
         {
             var postCodeDetail = DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();

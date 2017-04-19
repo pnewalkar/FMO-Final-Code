@@ -9,9 +9,11 @@
     using System.ServiceProcess;
     using System.Text;
     using System.Xml.Serialization;
+    using Common;
+    using Common.Constants;
+    using Common.Enums;
     using Fmo.Common.ConfigurationManagement;
     using Fmo.Common.EmailManagement;
-    using Fmo.Common.ExceptionManagement;
     using Fmo.Common.Interface;
     using Fmo.Common.LoggingManagement;
     using Fmo.DataServices.DBContext;
@@ -26,17 +28,22 @@
     using Fmo.NYBLoader.Interfaces;
     using Ninject;
 
+    /// <summary>
+    /// File loader service class for file uploads i.e. NYB,PAF,USR
+    /// </summary>
     public partial class FileLoader : ServiceBase
     {
-        private static string dateTimeFormat = "{0:-yyyy-MM-d-HH-mm-ss}";
-        private string strProcessedFilePath = string.Empty;
-        private string strErrorFilePath = string.Empty;        
+        #region Property Declarations
+
+        private static string dateTimeFormat = Constants.DATETIMEFORMAT;
         private readonly IKernel kernal;
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;
         private List<FileSystemWatcher> listFileSystemWatcher;
         private List<CustomFolderSettings> listFolders;
         private INYBLoader nybLoader = default(INYBLoader);
         private IPAFLoader pafLoader = default(IPAFLoader);
-        private ITPFLoader tpfLoader = default(ITPFLoader);
+        private IUSRLoader usrLoader = default(IUSRLoader);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
@@ -45,44 +52,57 @@
         private IFileMover fileMover = default(IFileMover);
         private IConfigurationHelper configurationHelper;
 
+        #endregion
+
+        #region Append TimeStamp
+
         /// <summary>
         /// Append timestamp to filename before writing the file to specified folder
         /// </summary>
-        /// <param name="strfileName"></param>
-        /// <returns></returns>
+        /// <param name="strfileName">path</param>
+        /// <returns>Filename with timestamp appended</returns>
         private static string AppendTimeStamp(string strfileName)
         {
-            try
-            {
-                return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
         }
 
+        #endregion
+
+        #region Constructor
         public FileLoader()
         {
-            // this.strProcessedFilePath = ConfigurationManager.AppSettings["ProcessedFilePath"].ToString();
-            // this.strErrorFilePath = ConfigurationManager.AppSettings["ErrorFilePath"].ToString();
             kernal = new StandardKernel();
             Register(kernal);
             InitializeComponent();
-            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ProcessedFilePath");
-            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("ErrorFilePath");
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
         }
 
+        #endregion
+
+        #region On Debug test method
+
+        /// <summary>
+        /// Test method for debugging service on local
+        /// </summary>
         public void OnDebug()
         {
             OnStart(null);
         }
 
+        #endregion
+
+        #region Register
+
+        /// <summary>
+        /// Method for injecting object on respective implementation
+        /// </summary>
+        /// <param name="kernel">kernel object </param>
         protected void Register(IKernel kernel)
         {
             kernel.Bind<INYBLoader>().To<NYBLoader>();
             kernel.Bind<IPAFLoader>().To<PAFLoader>();
-            kernel.Bind<ITPFLoader>().To<TPFLoader>();
+            kernel.Bind<IUSRLoader>().To<USRLoader>();
             kernel.Bind<IFileProcessingLogRepository>().To<FileProcessingLogRepository>();
             kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
@@ -97,12 +117,15 @@
             fileProcessingLogRepository = kernel.Get<IFileProcessingLogRepository>();
             nybLoader = kernel.Get<INYBLoader>();
             pafLoader = kernel.Get<IPAFLoader>();
-            tpfLoader = kernel.Get<ITPFLoader>();
+            usrLoader = kernel.Get<IUSRLoader>();
             loggingHelper = kernel.Get<ILoggingHelper>();
             fileMover = kernel.Get<IFileMover>();
             emailHelper = kernal.Get<IEmailHelper>();
             configurationHelper = kernel.Get<IConfigurationHelper>();
         }
+        #endregion
+
+        #region OnStart
 
         /// <summary>Event automatically fired when the service is started by Windows</summary>
         /// <param name="args">array of arguments</param>
@@ -110,6 +133,9 @@
         {
             Start();
         }
+        #endregion
+
+        #region OnStop
 
         /// <summary>Event automatically fired when the service is stopped by Windows</summary>
         protected override void OnStop()
@@ -130,6 +156,13 @@
             }
         }
 
+        #endregion
+
+        #region Start
+
+        /// <summary>
+        /// Initialize Watchers
+        /// </summary>
         private void Start()
         {
             // Initialize the list of FileSystemWatchers based on the XML configuration file
@@ -139,12 +172,15 @@
             // and folders found on the List<>
             StartFileSystemWatcher();
         }
+        #endregion
+
+        #region File Watchers and handlers
 
         /// <summary>Reads an XML file and populates a list of <CustomFolderSettings> </summary>
         private void PopulateListFileSystemWatchers()
         {
             // Get the XML file name from the App.config file
-            string fileNameXML = ConfigurationManager.AppSettings["XMLFileFolderSettings"];
+            string fileNameXML = ConfigurationManager.AppSettings[Constants.XMLFileFolderSettings];
 
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
@@ -238,24 +274,26 @@
             string fileName = e.FullPath;
             if (!string.IsNullOrEmpty(action_Args))
             {
-                switch (action_Args)
+                FileType objFileType = EnumExtensions.GetEnumValue<FileType>(action_Args, true);
+                switch (objFileType)
                 {
-                    case "PAF":
+                    case FileType.Paf:
                         this.pafLoader.LoadPAF(fileName);
                         break;
 
-                    case "NYB":
+                    case FileType.Nyb:
                         LoadNYBDetails(fileName);
                         break;
 
-                    case "TPF":
-                        this.tpfLoader.LoadTPFDetailsFromXML(fileName);
+                    case FileType.Usr:
+                        this.usrLoader.LoadTPFDetailsFromXML(fileName);
                         break;
                 }
             }
-
-            // ExecuteProcess(fileName);
         }
+        #endregion
+
+        #region Load NYB Details
 
         /// <summary>
         /// Read files from zip file and call NYBLoader Assembly to validate and save records
@@ -276,7 +314,7 @@
                         var reader = new StreamReader(stream);
                         strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
-                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNYBDetailsFromCSV(strLine.Trim());
+                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCSV(strLine.Trim());
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                         {
                             var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
@@ -288,12 +326,13 @@
                             else
                             {
                                 File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.nybLoader.SaveNYBDetails(lstNYBDetails, strfileName);
+                                this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
                             }
                         }
                         else
                         {
-                            this.loggingHelper.LogInfo("Load NYB Error Message : NYB File ins not valid File Name :" + strfileName + " : Log Time :" + DateTime.Now.ToString());
+                            string logMessage = string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString());
+                            this.loggingHelper.LogInfo(logMessage);
                         }
                     }
                 }
@@ -303,5 +342,6 @@
                 loggingHelper.LogError(ex);
             }
         }
+        #endregion
     }
 }

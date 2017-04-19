@@ -1,10 +1,6 @@
-﻿using Fmo.Common.Interface;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Fmo.Common.Interface;
 
 namespace Fmo.Common.ConfigurationManagement
 {
@@ -12,15 +8,7 @@ namespace Fmo.Common.ConfigurationManagement
     {
         public string ReadAppSettingsConfigurationValues(string key)
         {
-            try
-            {
-                return ConfigurationManager.AppSettings[key].ToString();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            return ConfigurationManager.AppSettings[key].ToString();
         }
     }
 }

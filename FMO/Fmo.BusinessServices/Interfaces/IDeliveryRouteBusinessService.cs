@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
-using System;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -28,21 +28,31 @@ namespace Fmo.BusinessServices.Interfaces
         /// <summary>
         /// Fetch the Delivery Route by passing operationStateID and deliveryScenarioID.
         /// </summary>
-        /// <param name="operationStateID">Guid</param>
-        /// <param name="deliveryScenarioID">Guid</param>
+        /// <param name="operationStateID">Guid operationStateID</param>
+        /// <param name="deliveryScenarioID">Guid deliveryScenarioID</param>
         /// <returns>List</returns>
         List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID);
 
         /// <summary>
         /// Fetch the Delivery Scenario by passing the operationStateID and deliveryScenarioID.
         /// </summary>
-        /// <param name="operationStateID"></param>
-        /// <param name="deliveryScenarioID"></param>
+        /// <param name="operationStateID">operationState ID</param>
+        /// <param name="deliveryScenarioID">deliveryScenario ID</param>
         /// <returns>List</returns>
         List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID);
 
+        /// <summary>
+        /// Fetch Delivery Route for Basic Search
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText);
 
+        /// <summary>
+        /// Fetch Delivery Route For Advance Search
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText);
     }
 }

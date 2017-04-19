@@ -1,24 +1,24 @@
 angular
     .module('sideNav')
-    .controller("sideNavController",['$scope','$state','$stateParams','routeLogService','$mdSidenav','$mdDialog','sideNavApiService', sideNavController])
+    .controller("sideNavController", ['$scope', '$state', '$stateParams', 'routeLogService', '$mdSidenav', '$mdDialog', 'sideNavApiService', sideNavController])
 
 function sideNavController($scope, $state, $stateParams, routeLogService, $mdSidenav, $mdDialog, sideNavApiService) {
-        vm = this;
-        vm.routeLog =routeLog;
-        vm.openModalPopup = openModalPopup;
-        vm.fetchActionItems = fetchActionItems;
-        $scope.results;
-        vm.fetchActions = fetchActions;
-        vm.closeSideNav = closeSideNav;
-        vm.routeSimulation = routeSimulation;
-        vm.selectedUnit = $stateParams;
-        function routeSimulation(selectedDeliveryUnit) {
-           
-            $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
-        }
-        $scope.toggleSideNav = function() {
-            $mdSidenav('left').toggle();
-            vm.fetchActionItems();           
+    vm = this;
+    vm.routeLog = routeLog;
+    vm.openModalPopup = openModalPopup;
+    vm.fetchActionItems = fetchActionItems;
+    $scope.results;
+    vm.fetchActions = fetchActions;
+    vm.closeSideNav = closeSideNav;
+    vm.routeSimulation = routeSimulation;
+    vm.selectedUnit = $stateParams;
+    function routeSimulation(selectedDeliveryUnit) {
+
+        $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
+    }
+    $scope.toggleSideNav = function () {
+        $mdSidenav('left').toggle();
+        vm.fetchActionItems();
     }
 
 
@@ -32,27 +32,24 @@ function sideNavController($scope, $state, $stateParams, routeLogService, $mdSid
         var popupSetting = modalSetting;
         $mdDialog.show(popupSetting)
     };
-        
-    function fetchActionItems()
-    {
+
+    function fetchActionItems() {
         sideNavApiService.fetchActionItems().then(function (response) {
             $scope.results = response.data;
-    });
+        });
     }
 
-        function closeSideNav() {
-            $mdSidenav('left').close();
-        };
+    function closeSideNav() {
+        $mdSidenav('left').close();
+    };
 
-        function fetchActions(query, selectedUnit) { 
-            if(query=="Route Log")
-            {
-                vm.routeLog(selectedUnit);
-            }
-            if (query == "Route Simulation")
-            {
-                vm.routeSimulation(selectedUnit);
-            }
+    function fetchActions(query, selectedUnit) {
+        if (query == "Route Log") {
+            vm.routeLog(selectedUnit);
         }
-          
+        if (query == "Route Simulation") {
+            vm.routeSimulation(selectedUnit);
+        }
+    }
+
 };

@@ -4,23 +4,25 @@
     using System.Collections.Generic;
     using System.Data.SqlTypes;
     using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Helpers;
-    using Fmo.Helpers.Interface;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
+    using Common;
 
+    /// <summary>
+    /// This class contains methods for fetching data for AccessLinks
+    /// </summary>
     public class AccessLinkBussinessService : IAccessLinkBussinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
 
-        private ICreateOtherLayersObjects createOtherLayersObjects = default(ICreateOtherLayersObjects);
-
-        public AccessLinkBussinessService(IAccessLinkRepository searchAccessLinkRepository, ICreateOtherLayersObjects createOtherLayerObjects)
+        public AccessLinkBussinessService(IAccessLinkRepository searchAccessLinkRepository)
         {
             this.accessLinkRepository = searchAccessLinkRepository;
-            this.createOtherLayersObjects = createOtherLayerObjects;
         }
 
         public List<AccessLinkDTO> SearchAccessLink()
@@ -29,33 +31,37 @@
         }
 
         /// <summary>
-        ///
+        ///  This method fetches data for AccsessLinks
         /// </summary>
-        /// <param name="boundaryBox"></param>
-        /// <returns></returns>
+        /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <returns> AccsessLink object</returns>
         public string GetAccessLinks(string boundaryBox)
         {
             try
             {
-                var accessLinkCoordinates = GetData(null, boundaryBox.Split(','));
-                return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var accessLinkCoordinates = GetData(boundaryBox.Split(','));
+                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
         /// <summary>
-        ///
+        /// This method fetches geojson data for accesslink
         /// </summary>
-        /// <param name="lstAccessLinkDTO"></param>
-        /// <returns></returns>
-        private string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
+        /// <param name="lstAccessLinkDTO"> accesslink as list of AccessLinkDTO</param>
+        /// <returns> AccsessLink object</returns>
+        private static string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
         {
-            AccessLinkDTO accessLinkDTOCollectionObj = new AccessLinkDTO();
-            string json = string.Empty;
-
             var geoJson = new GeoJson
             {
                 features = new List<Feature>()
@@ -70,65 +76,59 @@
 
                     var resultCoordinates = res.AccessLinkLine;
 
-                    SqlGeometry sqlGeo = null;
-                    if (geometry.type == "LineString")
+                    SqlGeometry accessLinksqlGeometry = null;
+                    if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                        sqlGeo = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
 
-                    List<List<double>> cords = new List<List<double>>();
+                        List<List<double>> cords = new List<List<double>>();
 
-                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
-                    {
-                        List<double> coordinates = new List<double> { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-                        cords.Add(coordinates);
+                        for (int pt = 1; pt <= accessLinksqlGeometry.STNumPoints().Value; pt++)
+                        {
+                            List<double> accessLinkCoordinates = new List<double> { accessLinksqlGeometry.STPointN(pt).STX.Value, accessLinksqlGeometry.STPointN(pt).STY.Value };
+                            cords.Add(accessLinkCoordinates);
+                        }
 
-                        //cords.Add(coordinates);
+                        geometry.coordinates = cords;
                     }
-
-                    geometry.coordinates = cords;
-                }
-                else
-                {
-                    sqlGeo = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
-                    geometry.coordinates = new double[] { sqlGeo.STX.Value, sqlGeo.STY.Value };
-                }
+                    else
+                    {
+                        accessLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        geometry.coordinates = new double[] { accessLinksqlGeometry.STX.Value, accessLinksqlGeometry.STY.Value };
+                    }
 
                     Feature feature = new Feature();
                     feature.geometry = geometry;
 
-                    feature.type = "Feature";
+                    feature.type = Constants.FeatureType;
                     feature.id = res.AccessLink_Id;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { "type", "accesslink" } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.AccessLink.GetDescription()) } };
 
                     geoJson.features.Add(feature);
                 }
             }
 
-            //accessLinkDTOCollectionObj.features = lstFeatures;
-            //accessLinkDTOCollectionObj.type = "FeatureCollection";
-
-            //json = JsonConvert.SerializeObject(accessLinkDTOCollectionObj, Newtonsoft.Json.Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            return JsonConvert.SerializeObject(geoJson);
+           return JsonConvert.SerializeObject(geoJson);
         }
 
         /// <summary>
-        ///
+        /// This method fetches co-ordinates of accesslink
         /// </summary>
-        /// <param name="query"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        private string GetData(string query, params object[] parameters)
+        /// <param name="accessLinkParameters"> accessLinkParameters as object </param>
+        /// <returns> accesslink coordinates</returns>
+        private static string GetData(params object[] accessLinkParameters)
         {
             string coordinates = string.Empty;
 
-            if (parameters != null && parameters.Length == 4)
+            if (accessLinkParameters != null && accessLinkParameters.Length == 4)
             {
-                coordinates = "POLYGON((" + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + ", "
-                                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[3]) + ", "
-                                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[3]) + ", "
-                                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[1]) + ", "
-                                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + "))";
+                coordinates = "POLYGON((" + Convert.ToString(accessLinkParameters[0]) + " " + Convert.ToString(accessLinkParameters[1]) + ", "
+                                          + Convert.ToString(accessLinkParameters[0]) + " " + Convert.ToString(accessLinkParameters[3]) + ", "
+                                          + Convert.ToString(accessLinkParameters[2]) + " " + Convert.ToString(accessLinkParameters[3]) + ", "
+                                          + Convert.ToString(accessLinkParameters[2]) + " " + Convert.ToString(accessLinkParameters[1]) + ", "
+                                          + Convert.ToString(accessLinkParameters[0]) + " " + Convert.ToString(accessLinkParameters[1]) + "))";
             }
+
             return coordinates;
         }
     }

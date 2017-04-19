@@ -1,10 +1,10 @@
 <div id="map" class="mapContainer"></div>
 <div id="leftPanel">
     <map-panel class="context-panel"
-				paneltitle="Context"
-				showheader="true"
-				collapsed="false"
-				isleftpanel="true">
+               paneltitle="Context"
+               showheader="true"
+               collapsed="false"
+               isleftpanel="true">
         <!--<simulation></simulation>-->
         <div ui-view></div>
     </map-panel>
@@ -16,41 +16,43 @@
 
 <div id="rightPanel">
 
-   <div md-whiteframe="3dp" id="zoom-scale"  ng-class="{'zoom-scale levelDanger':zoomLimitReached ,
-          'zoom-scale':!zoomLimitReached}"></div> 
-    
+    <div id="zoom-scale" md-whiteframe="3dp" ng-class="{'zoom-scale levelDanger':vm.zoomLimitReached ,
+          'zoom-scale':!vm.zoomLimitReached}">
+        <label class='labletext'>1:</label>
+        <input type="text" name="zoom-scale" ng-model="vm.currentScale" ng-enter="vm.onEnterKeypress(vm.currentScale)" min="100"/>
+    </div>
+
+
     <div id="zoom-control" class="zoom-control">
     </div>
-    
+
     <div class="miniMap">
         <map-panel class="layer-panel show-panel"
-               paneltitle="Mini Map"
-               showheader="true"
-               collapsed="false"
-               collapsedtext=""
-               oncreate="vm.initialiseMiniMap"
-               oncollapse="vm.oncollapse">
-            <div id="mini-map" ></div>
+                   paneltitle="Mini Map"
+                   showheader="true"
+                   collapsed="false"
+                   collapsedtext=""
+                   oncreate="vm.initialiseMiniMap"
+                   oncollapse="vm.oncollapse">
+            <div id="mini-map"></div>
         </map-panel>
     </div>
-        
+
     <div class="layers">
-        <map-panel
-                class="layer-panel show-panel"
-                paneltitle="Layers"
-                showheader="true"
-                collapsed="true"
-                group="SelectorKeyGroup">
+        <map-panel class="layer-panel show-panel"
+                   paneltitle="Layers"
+                   showheader="true"
+                   collapsed="true"
+                   group="SelectorKeyGroup">
             <layers></layers>
         </map-panel>
     </div>
-        
+
     <div>
-        <map-panel
-                class="key-panel show-panel" 
+        <map-panel class="key-panel show-panel"
                    paneltitle="Map Key"
-                   showheader="true" 
-                   collapsed="true" 
+                   showheader="true"
+                   collapsed="true"
                    group="SelectorKeyGroup">
             <map-key></map-key>
         </map-panel>
