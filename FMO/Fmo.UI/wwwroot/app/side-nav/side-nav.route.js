@@ -37,11 +37,11 @@ angular.module('FMOApp')
          controller: "ContextController as vm",
          params: { selectedItem: null, }
      });
+})
+.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('authInterceptorService');
+    // $httpProvider.defaults.headers.get = {}
 });
-//.config(function ($httpProvider) {
-//    $httpProvider.interceptors.push('authInterceptorService');
-//    // $httpProvider.defaults.headers.get = {}
-//});
 //.run(function ($http) {
 //    //var aValue = sessionStorage.getItem('authorizationData');
 //    //var jobject = JSON.parse(aValue)

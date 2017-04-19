@@ -16,6 +16,9 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using Entity = Fmo.Entities;
 
+    /// <summary>
+    /// This class contains methods used for fetching/Inserting Delivery Points data.
+    /// </summary>
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
         public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -23,6 +26,11 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
+        /// <summary>
+        /// This method is used to fetch Delivery Point by udprn.
+        /// </summary>
+        /// <param name="uDPRN">udprn as int</param>
+        /// <returns>DeliveryPointDTO</returns>
         public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
         {
             try
@@ -45,6 +53,11 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// This method is used to insert delivery point.
+        /// </summary>
+        /// <param name="objDeliveryPoint"> Delivery point dto as object</param>
+        /// <returns>bool</returns>
         public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
             bool saveFlag = false;
@@ -73,20 +86,11 @@ namespace Fmo.DataServices.Repositories
             return saveFlag;
         }
 
-        public IEnumerable<DeliveryPoint> GetData(string query, params object[] parameters)
-        {
-            string x1 = Convert.ToString(parameters[0]);
-            string y1 = Convert.ToString(parameters[1]);
-            string x2 = Convert.ToString(parameters[2]);
-            string y2 = Convert.ToString(parameters[3]);
-
-            string coordinates = "POLYGON((" + x1 + " " + y1 + ", " + x1 + " " + y2 + ", " + x2 + " " + y2 + ", " + x2 + " " + y1 + ", " + x1 + " " + y1 + "))";
-
-            System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
-
-            return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
-        }
-
+        /// <summary>
+        /// This method is used to fetch delivery points for advance search.
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>Task List of Delivery Point Dto</returns>
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText)
         {
             var result = await DataContext.DeliveryPoints.AsNoTracking()
@@ -109,7 +113,7 @@ namespace Fmo.DataServices.Repositories
                                         DependentLocality = l.PostalAddress.DependentLocality,
                                         UDPRN = l.PostalAddress.UDPRN
                                     }
-                                }).Take(10)
+                                })
                                 .ToListAsync();
 
             return result;
@@ -171,13 +175,23 @@ namespace Fmo.DataServices.Repositories
             return result;
         }
 
+        /// <summary>
+        /// This method is used to Get delivery Point coordinates data.
+        /// </summary>
+        /// <param name="coordinates">coordinates as string</param>
+        /// <returns>List of Delivery Point Entity</returns>
         public IEnumerable<DeliveryPoint> GetData(string coordinates)
         {
-            System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
+           DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
 
             return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
         }
 
+        /// <summary>
+        /// This method is used to Get Delivery Points Dto as data.
+        /// </summary>
+        /// <param name="coordinates">coordinates as string</param>
+        /// <returns>List of Delivery Point Dto</returns>
         public List<DeliveryPointDTO> GetDeliveryPoints(string coordinates)
         {
             List<DeliveryPoint> deliveryPoints = this.GetData(coordinates).ToList();

@@ -1,16 +1,16 @@
 ﻿namespace Fmo.BusinessServices.Services
 {
     using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Script.Serialization;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.Common;
-using Fmo.Common.Constants;
-using Fmo.Common.Enums;
-using Fmo.Common.Interface;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Script.Serialization;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
+    using Fmo.Common.Interface;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
 
     /// <summary>
     /// Business service to handle CRUD operations on Postal Address entites
@@ -162,6 +162,7 @@ using Fmo.DTO;
             {
                 this.loggingHelper.LogError(ex);
             }
+        }
         }
 
         /// <summary>

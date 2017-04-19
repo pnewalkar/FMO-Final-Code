@@ -4,14 +4,17 @@
     using System.Collections.Generic;
     using Fmo.DTO;
 
+    /// <summary>
+    /// Interface to interact with postal address entity
+    /// </summary>
     public interface IAddressRepository
     {
         /// <summary>
-        /// Save PostalAddress based on the PostalAddressDTO passed
+        /// Create or update NYB details depending on the UDPRN
         /// </summary>
-        /// <param name="objPostalAddress">PostalAddressDTO</param>
-        /// <param name="strFileName">Passing File Name in case PAF, NYB to track error</param>
-        /// <returns>return status as bool</returns>
+        /// <param name="objPostalAddress">NYB details DTO</param>
+        /// <param name="strFileName">CSV Filename</param>
+        /// <returns>true or false</returns>
         bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName);
 
         /// <summary>
@@ -45,11 +48,11 @@
         bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName);
 
         /// <summary>
-        /// Delete PostalAddress of NYB
+        /// Delete postal Address records do not have an associated Delivery Point
         /// </summary>
-        /// <param name="lstUDPRN">list of UDPRN id to be deleted</param>
-        /// <param name="addressType">Guid of AddressType of NYB</param>
-        /// <returns>return status as bool</returns>
+        /// <param name="lstUDPRN">List of UDPRN</param>
+        /// <param name="addressType">NYB</param>
+        /// <returns>true or false</returns>
         bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
     }
 }
