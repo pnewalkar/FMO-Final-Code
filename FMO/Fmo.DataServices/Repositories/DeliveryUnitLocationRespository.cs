@@ -11,6 +11,10 @@ namespace Fmo.DataServices.Repositories
 {
     public class DeliveryUnitLocationRespository : RepositoryBase<UnitLocation, FMODBContext>, IDeliveryUnitLocationRepository
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeliveryUnitLocationRespository"/> class.
+        /// </summary>
+        /// <param name="databaseFactory">IDatabaseFactory reference</param>
         public DeliveryUnitLocationRespository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {

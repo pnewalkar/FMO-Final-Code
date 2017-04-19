@@ -16,23 +16,43 @@ namespace Fmo.API.Services.Controllers
       
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RouteSimulationController"/> class and other classes.
+        /// </summary>
+        /// <param name="_deliveryRouteBusinessService">IDeliveryRouteBusinessService reference</param>
         public RouteSimulationController(IDeliveryRouteBusinessService _deliveryRouteBusinessService)
         {
             deliveryRouteBusinessService = _deliveryRouteBusinessService;
         }
 
+        /// <summary>
+        /// Fetches Delivery Route
+        /// </summary>
+        /// <param name="operationStateID">operation State ID</param>
+        /// <param name="deliveryScenarioID">delivery Scenario ID</param>
+        /// <returns>List</returns>
         [HttpGet("FetchDeliveryRoute")]
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
         }
 
+        /// <summary>
+        /// Fetches Route Log Status
+        /// </summary>
+        /// <returns>List</returns>
         [HttpGet("RouteLogsStatus")]
         public List<ReferenceDataDTO> RouteLogsStatus()
         {
             return deliveryRouteBusinessService.FetchRouteLogStatus();
         }
 
+        /// <summary>
+        /// Fetches Delivery Scenario
+        /// </summary>
+        /// <param name="operationStateID">operation State ID</param>
+        /// <param name="deliveryUnitID">delivery Unit ID</param>
+        /// <returns></returns>
         [HttpGet("FetchDeliveryScenario")]
         public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {
