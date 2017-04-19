@@ -59,9 +59,13 @@ $red:red;
 }
 
 //background
-@mixin background($background) {
-      background-color: $background;
+@mixin background($bgColor,$hoverColor) {
+      background-color: $bgColor;
+    &:hover{
+        background-color: $hoverColor;
     }
+}
+
 //font-color
 @mixin font-color($color) {
     color: $color;

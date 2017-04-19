@@ -106,7 +106,7 @@
 
                     feature.type = Constants.FeatureType;
                     feature.id = res.AccessLink_Id;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.Accesslink.GetDescription()) } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.AccessLink.GetDescription()) } };
 
                     geoJson.features.Add(feature);
                 }

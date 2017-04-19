@@ -18,6 +18,13 @@ namespace Fmo.BusinessServices.Services
         private IScenarioRepository scenarioRepository;
         private IDeliveryUnitLocationRepository deliveryUnitLocationRespository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService"/> class and other classes.
+        /// </summary>
+        /// <param name="deliveryRouteRepository">IDeliveryRouteRepository reference</param>
+        /// <param name="referenceDataCategoryRepository">IReferenceDataCategoryRepository reference</param>
+        /// <param name="scenarioRepository">IScenarioRepository reference</param>
+        /// <param name="deliveryUnitLocationRespository">IDeliveryUnitLocationRepository reference</param>
         public DeliveryRouteBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository, IDeliveryUnitLocationRepository deliveryUnitLocationRespository)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
@@ -66,6 +73,11 @@ namespace Fmo.BusinessServices.Services
             return scenarioRepository.FetchScenario(operationStateID, deliveryScenarioID);
         }
 
+        /// <summary>
+        /// Fetch the Delivery Route for Basic Search.
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)
         {
             return await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText);
@@ -94,6 +106,11 @@ namespace Fmo.BusinessServices.Services
             return deliveryUnitLocationDTOList;
         }
 
+        /// <summary>
+        /// Fetch Delivery Route for Advance Search
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             throw new NotImplementedException();

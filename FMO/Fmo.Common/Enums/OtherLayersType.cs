@@ -5,12 +5,12 @@ namespace Fmo.Common.Enums
     public enum OtherLayersType
     {
         [Description("accesslink")]
-        Accesslink,
+        AccessLink,
 
         [Description("deliverypoint")]
-        Deliverypoint,
+        DeliveryPoint,
 
         [Description("roadlink")]
-        Roadlink
+        RoadLink
     }
 }

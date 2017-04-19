@@ -8,8 +8,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
         getParameterValues: getParameterValues
     };
 
-    function activate(unitGuid) {
-        debugger;
+    function activate(unitGuid) {  
         if (unitGuid) {
             var aValue = sessionStorage.getItem('authorizationData');
             var jobject = JSON.parse(aValue)

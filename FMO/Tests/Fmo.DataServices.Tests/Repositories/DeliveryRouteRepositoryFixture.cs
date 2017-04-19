@@ -1,22 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Fmo.Common.AsyncEnumerator;
-using Fmo.Common.TestSupport;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.Entities;
-using Moq;
-using NUnit.Framework;
-using System;
-
-namespace Fmo.DataServices.Tests.Repositories
+﻿namespace Fmo.DataServices.Tests.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Infrastructure;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Fmo.Common.AsyncEnumerator;
+    using Fmo.Common.TestSupport;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.Entities;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeliveryRouteRepositoryFixture : RepositoryFixtureBase
     {
@@ -27,14 +25,14 @@ namespace Fmo.DataServices.Tests.Repositories
         private Guid operationalStateID = System.Guid.NewGuid();
 
         [Test]
-        public void Test_FetchDeliveryRoute()
+        public void TestFetchDeliveryRoute()
         {
             var actualResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryUnitID);
             Assert.IsNotNull(actualResult);
         }
 
         [Test]
-        public async Task Test_FetchDeliveryRouteForBasicSearch_Valid()
+        public async Task TestFetchDeliveryRouteForBasicSearchValid()
         {
             var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("test");
             Assert.IsNotNull(actualResult);
@@ -42,7 +40,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchDeliveryRouteForBasicSearch_inValid()
+        public async Task TestFetchDeliveryRouteForBasicSearchInvalid()
         {
             var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("invalid_testsearch");
             Assert.IsNotNull(actualResult);
@@ -50,7 +48,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchDeliveryRouteForBasicSearch_null()
+        public async Task TestFetchDeliveryRouteForBasicSearchNull()
         {
             var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch(null);
             Assert.IsNotNull(actualResult);
@@ -58,7 +56,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetDeliveryRouteCount_Valid()
+        public async Task TestGetDeliveryRouteCountValid()
         {
             var actualResultCount = await testCandidate.GetDeliveryRouteCount("testsearch");
             Assert.IsNotNull(actualResultCount);
@@ -66,7 +64,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetDeliveryRouteCount_inValid()
+        public async Task TestGetDeliveryRouteCountInvalid()
         {
             var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch");
             Assert.IsNotNull(actualResultCount);
@@ -74,7 +72,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetDeliveryRouteCount_null()
+        public async Task TestGetDeliveryRouteCountNull()
         {
             var actualResultCount = await testCandidate.GetDeliveryRouteCount(null);
             Assert.IsNotNull(actualResultCount);
@@ -111,5 +109,4 @@ namespace Fmo.DataServices.Tests.Repositories
             testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object);
         }
     }
-  
 }

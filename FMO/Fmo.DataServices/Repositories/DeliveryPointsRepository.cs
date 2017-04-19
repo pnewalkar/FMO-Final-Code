@@ -14,7 +14,7 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using Entity = Entities;
+    using Entity = Fmo.Entities;
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
@@ -73,7 +73,6 @@ namespace Fmo.DataServices.Repositories
                     newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
-                    //newDeliveryPoint.LocationProvider = "E"; // Update in Enum as well as reference data category
                     DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     DataContext.SaveChangesAsync();
                     saveFlag = true;

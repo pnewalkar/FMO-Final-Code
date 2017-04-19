@@ -1,30 +1,22 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using Fmo.API.Services.MiddlerWare;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
+using Fmo.Common.ConfigurationManagement;
+using Fmo.Common.EmailManagement;
+using Fmo.Common.ExceptionManagement;
+using Fmo.Common.Interface;
+using Fmo.Common.LoggingManagement;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.Helpers;
+using Fmo.Helpers.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fmo.Common.ExceptionManagement;
-using Fmo.Common.LoggingManagement;
-using Fmo.Common.Interface;
-using Fmo.API.Services.MiddlerWare;
-using Fmo.Helpers;
-using Fmo.Helpers.Interface;
-using Fmo.Common.EmailManagement;
-
-using Fmo.Common.ConfigurationManagement;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Fmo.API.Services
 {
@@ -47,7 +39,7 @@ namespace Fmo.API.Services
             Configuration = builder.Build();
 
 #if DEBUG
-           SqlServerTypes.Utilities.LoadNativeAssemblies(System.IO.Path.Combine(env.ContentRootPath, "bin"));
+            SqlServerTypes.Utilities.LoadNativeAssemblies(System.IO.Path.Combine(env.ContentRootPath, "bin"));
 #else
  SqlServerTypes.Utilities.LoadNativeAssemblies( env.ContentRootPath);
 #endif
@@ -61,25 +53,19 @@ namespace Fmo.API.Services
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMvc();
-            //services.AddMvc(config =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-            //    config.Filters.Add(new AuthorizeFilter(policy));
-            //});
-
             services.AddCors(
                 options => options.AddPolicy("AllowCors",
                     builder =>
                     {
                         builder
-                            .AllowAnyOrigin()
-                            .WithMethods("GET", "PUT", "POST", "DELETE")
-                             .WithHeaders("accept", "content-type", "origin", "x-custom-header", "authorization");
+                           .AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
                     })
             );
+
+            services.AddMvc();
 
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
@@ -105,6 +91,7 @@ namespace Fmo.API.Services
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             services.AddTransient<IRoadNameBusinessService, RoadNameBussinessService>();
             services.AddTransient<IRoadNameRepository, RoadNameRepository>();
+
             //Repositories
             services.AddTransient<IDeliveryPointsRepository, DeliveryPointsRepository>();
             services.AddTransient<IAddressRepository, AddressRepository>();
@@ -117,6 +104,7 @@ namespace Fmo.API.Services
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
+
             //services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
             services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
@@ -135,7 +123,9 @@ namespace Fmo.API.Services
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            
+
+            app.UseCors("AllowCors");
+
             ConfigureAuth(app);
             app.UseApplicationInsightsRequestTelemetry();
 
@@ -143,13 +133,10 @@ namespace Fmo.API.Services
 
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
-           
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "{controller=DeliveryPoints}/{action=Get}/{id?}");
             });
-            app.UseCors("AllowCors");
         }
     }
 }

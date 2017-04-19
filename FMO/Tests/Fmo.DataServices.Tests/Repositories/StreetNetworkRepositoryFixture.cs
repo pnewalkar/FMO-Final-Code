@@ -22,7 +22,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private IStreetNetworkRepository testCandidate;
 
         [Test]
-        public async Task Test_FetchStreetNamesForBasicSearch_Valid()
+        public async Task TestFetchStreetNamesForBasicSearchValid()
         {
             var actualResult = await testCandidate.FetchStreetNamesForBasicSearch("Test");
             Assert.IsNotNull(actualResult);
@@ -30,7 +30,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchStreetNamesForBasicSearch_inValid()
+        public async Task TestFetchStreetNamesForBasicSearchInvalid()
         {
             var actualResult = await testCandidate.FetchStreetNamesForBasicSearch("invalid_Test");
             Assert.IsNotNull(actualResult);
@@ -38,7 +38,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchStreetNamesForBasicSearch_null()
+        public async Task TestFetchStreetNamesForBasicSearchNull()
         {
             var actualResult = await testCandidate.FetchStreetNamesForBasicSearch(null);
             Assert.IsNotNull(actualResult);
@@ -46,7 +46,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetStreetNameCount_Valid()
+        public async Task TestGetStreetNameCountValid()
         {
             var actualResultCount = await testCandidate.GetStreetNameCount("Test");
             Assert.IsNotNull(actualResultCount);
@@ -54,7 +54,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetStreetNameCount_inValid()
+        public async Task TestGetStreetNameCountInvalid()
         {
             var actualResultCount = await testCandidate.GetStreetNameCount("invalid_Test");
             Assert.IsNotNull(actualResultCount);
@@ -62,7 +62,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetStreetNameCount_null()
+        public async Task TestGetStreetNameCountNull()
         {
             var actualResultCount = await testCandidate.GetStreetNameCount(null);
             Assert.IsNotNull(actualResultCount);

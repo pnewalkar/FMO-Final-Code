@@ -12,9 +12,9 @@ angular.module('unitSelector')
             // return $http.get(GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit');
             if (jobject) {
                 return $http({
-                    method: 'GET',
+                    method: 'GET',                    
                     url: GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jobject.token }
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Bearer ' + jobject.token }
                 });
             }
         };

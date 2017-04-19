@@ -15,6 +15,10 @@ namespace Fmo.DataServices.Repositories
 {
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeliveryRouteRepository"/> class.
+        /// </summary>
+        /// <param name="databaseFactory">IDatabaseFactory reference</param>
         public DeliveryRouteRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
@@ -39,6 +43,11 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// Fetch Delivery Route for Advance Search.
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <returns>Task</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             try
