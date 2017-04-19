@@ -91,6 +91,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <CodeAnalysisDictionary Include="..\FmoCodeAnalysisDictionary.xml">
+      <Link>FmoCodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Content Include="CustomSettings.xml">
       <SubType>Designer</SubType>
     </Content>
