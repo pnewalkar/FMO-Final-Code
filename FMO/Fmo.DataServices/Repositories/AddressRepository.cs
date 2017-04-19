@@ -253,7 +253,7 @@
             {
                 FileID = Guid.NewGuid(),
                 UDPRN = uDPRN,
-                AmendmentType = "I",
+                AmendmentType = Constants.INSERT,
                 FileName = strFileName,
                 FileProcessing_TimeStamp = DateTime.Now,
                 FileType = fileType,

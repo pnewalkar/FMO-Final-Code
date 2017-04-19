@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
@@ -11,8 +12,10 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System.Configuration;
 
+    /// <summary>
+    /// Repository to interact with postal address entity
+    /// </summary>
     public class PostCodeRepository : RepositoryBase<Postcode, FMODBContext>, IPostCodeRepository
     {
         public PostCodeRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -81,6 +84,11 @@
             }
         }
 
+        /// <summary>
+        /// Get post code ID by passing post code.
+        /// </summary>
+        /// <param name="postCode"> Post Code</param>
+        /// <returns>Post code ID</returns>
         public Guid GetPostCodeID(string postCode)
         {
             var postCodeDetail = DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
