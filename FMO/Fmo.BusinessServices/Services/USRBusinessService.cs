@@ -20,6 +20,7 @@
     public class USRBusinessService : IUSRBusinessService
     {
         #region Property Declarations
+
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
@@ -27,10 +28,12 @@
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
-        private ILoggingHelper loggingHelper = default(ILoggingHelper); 
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
         #endregion
 
         #region Constructor
+
         public USRBusinessService(
            IAddressLocationRepository addressLocationRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
@@ -50,9 +53,11 @@
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
         }
+
         #endregion
 
         #region Save USR Details to Database
+
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
@@ -190,14 +195,16 @@
                 this.loggingHelper.LogError(ex);
             }
         }
+
         #endregion
 
         #region Calculate Spatial Location
+
         /// <summary>
         /// Get the geometry equivalent of the X-Y co-ordinate of address location
         /// </summary>
-        /// <param name="addressLocationUSRPOSTDTO"></param>
-        /// <returns>DbGeometry</returns>
+        /// <param name="addressLocationUSRPOSTDTO">AddressLocationUSRPOSTDTO object</param>
+        /// <returns>DbGeometry object</returns>
         private DbGeometry GetSpatialLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
         {
             try
@@ -219,13 +226,15 @@
                 throw;
             }
         }
+
         #endregion
 
         #region Send Email
+
         /// <summary>
         /// Send error e-mail to third party in case the UDPRN address location already exists
         /// </summary>
-        /// <param name="fileUdprn"></param>
+        /// <param name="fileUdprn">UDPRN id from file</param>
         private void SendEmail(int fileUdprn)
         {
             try
@@ -248,7 +257,8 @@
             {
                 throw;
             }
-        } 
+        }
+
         #endregion
     }
 }
