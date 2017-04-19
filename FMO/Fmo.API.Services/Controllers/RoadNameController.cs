@@ -18,54 +18,33 @@ namespace Fmo.API.Services.Controllers
     public class RoadNameController : Controller
     {
 
-        IRoadNameBussinessService roadNameBussinessService = default(IRoadNameBussinessService);
+        IRoadNameBusinessService roadNameBussinessService = default(IRoadNameBusinessService);
 
-        public RoadNameController(IRoadNameBussinessService businessService)
+        public RoadNameController(IRoadNameBusinessService businessService)
         {
             this.roadNameBussinessService = businessService;
         }
 
+        /// <summary>
+        /// This method is used to fetch Road name
+        /// </summary>
+        /// <param name="RoadNameDTO">RoadNameDTO</param>
+        /// <returns>Task List of Road Name Dto</returns>
         public async Task<List<RoadNameDTO>> FetchRoadName(List<RoadNameDTO> RoadNameDTO)
         {
             return await roadNameBussinessService.FetchRoadName();
         }
 
+        /// <summary>
+        /// This method is used to get Route Link data.
+        /// </summary>
+        /// <param name="boundaryBox">boundaryBox as strintg</param>
+        /// <returns></returns>
         [Route("GetRouteLinks")]
         [HttpGet]
-        public string GetRoouteData(string bbox)
+        public string GetRoouteData(string boundaryBox)
         {
-            return roadNameBussinessService.GetRoadRoutes(bbox);
+            return roadNameBussinessService.GetRoadRoutes(boundaryBox);
         }
-        //// GET: api/values
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/values/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/values
-        //[HttpPost]
-        //public void Post([FromBody]string value)
-        //{
-        //}
-
-        //// PUT api/values/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        //// DELETE api/values/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

@@ -108,7 +108,7 @@ function mapService(mapFactory,
 
         var deliveryPointsVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            url: function (extent) { return GlobalSettings.apiUrl+'/deliveryPoints/GetDeliveryPoints?bbox=' + extent.join(','); },
+            url: function (extent) { return GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
 
@@ -124,13 +124,13 @@ function mapService(mapFactory,
 
         var accessLinkVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),          
-            url: function (extent) { return GlobalSettings.apiUrl+'/accessLink/GetAccessLinks?bbox=' + extent.join(','); },
+            url: function (extent) { return GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
 
         var roadLinkVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            url: function (extent) { return GlobalSettings.apiUrl+'/roadName/GetRouteLinks?bbox=' + extent.join(','); },
+            url: function (extent) { return GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','); },
             strategy: ol.loadingstrategy.bbox
         });
 

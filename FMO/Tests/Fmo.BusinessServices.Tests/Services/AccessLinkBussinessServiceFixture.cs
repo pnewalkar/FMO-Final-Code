@@ -14,7 +14,7 @@
     [TestFixture]
     public class AccessLinkBussinessServiceFixture : TestFixtureBase
     {
-        private IAccessLinkBussinessService testCandidate;
+        private IAccessLinkBusinessService testCandidate;
         private Mock<IAccessLinkRepository> mockaccessLinkRepository;
         private Mock<ICreateOtherLayersObjects> mockCreateOtherLayers;
         private List<AccessLinkDTO> accessLinkDTO = null;

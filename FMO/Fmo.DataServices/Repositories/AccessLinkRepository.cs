@@ -2,15 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
     using System.Linq;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System.IO;
-    using System.Data.SqlTypes;
+    using Interfaces;
 
     public class AccessLinkRepository : RepositoryBase<AccessLink, FMODBContext>, IAccessLinkRepository
     {
@@ -19,6 +18,10 @@
         {
         }
 
+        /// <summary>
+        /// This Method is used to fetch Access Link Data.
+        /// </summary>
+        /// <returns>List of Access Link DTO</returns>
         public List<AccessLinkDTO> SearchAccessLink()
         {
             try
@@ -26,17 +29,20 @@
                 var result = DataContext.AccessLinks.ToList();
                 return GenericMapper.MapList<AccessLink, AccessLinkDTO>(result.ToList());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
+        /// <summary>
+        /// This Method is used to Accesss Link data for defined coordinates.
+        /// </summary>
+        /// <param name="coordinates">coordinates as string</param>
+        /// <returns>Link of Access Link Entity</returns>
         public IEnumerable<AccessLink> GetData(string coordinates)
         {
-            System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
-
-            //return DataContext.AccessLinks.Take(100);
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
             return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
         }
 

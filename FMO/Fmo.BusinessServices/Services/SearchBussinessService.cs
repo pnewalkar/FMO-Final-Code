@@ -9,7 +9,7 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
-    public class SearchBussinessService : ISearchBussinessService
+    public class SearchBussinessService : ISearchBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
         private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
