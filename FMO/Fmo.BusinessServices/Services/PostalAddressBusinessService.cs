@@ -163,7 +163,6 @@
                 this.loggingHelper.LogError(ex);
             }
         }
-        }
 
         /// <summary>
         /// Business rule implementation for PAF create events
@@ -264,6 +263,5 @@
                         objPostalAddress.PostTown + ", " +
                         objPostalAddress.Postcode;
         }
-
     }
 }
