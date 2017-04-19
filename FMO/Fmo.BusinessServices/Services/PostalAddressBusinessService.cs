@@ -44,27 +44,6 @@ using Fmo.DTO;
         }
 
         /// <summary>
-        /// Concatenating address fileds require for notification
-        /// </summary>
-        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
-        /// <returns>returns concatenated value of address field</returns>
-        private static string AddressFields(PostalAddressDTO objPostalAddress)
-        {
-            return "Please position the DP " +
-                        objPostalAddress.OrganisationName + ", " +
-                        objPostalAddress.DepartmentName + ", " +
-                        objPostalAddress.BuildingName + ", " +
-                        objPostalAddress.BuildingNumber + ", " +
-                        objPostalAddress.SubBuildingName + ", " +
-                        objPostalAddress.Thoroughfare + ", " +
-                        objPostalAddress.DependentThoroughfare + ", " +
-                        objPostalAddress.DependentLocality + ", " +
-                        objPostalAddress.DoubleDependentLocality + ", " +
-                        objPostalAddress.PostTown + ", " +
-                        objPostalAddress.Postcode;
-        }
-
-        /// <summary>
         /// Save list of NYB details into database.
         /// </summary>
         /// <param name="lstPostalAddress">List Of address DTO</param>
@@ -264,6 +243,26 @@ using Fmo.DTO;
             }
         }
 
-        
+        /// <summary>
+        /// Concatenating address fileds require for notification
+        /// </summary>
+        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
+        /// <returns>returns concatenated value of address field</returns>
+        private string AddressFields(PostalAddressDTO objPostalAddress)
+        {
+            return "Please position the DP " +
+                        objPostalAddress.OrganisationName + ", " +
+                        objPostalAddress.DepartmentName + ", " +
+                        objPostalAddress.BuildingName + ", " +
+                        objPostalAddress.BuildingNumber + ", " +
+                        objPostalAddress.SubBuildingName + ", " +
+                        objPostalAddress.Thoroughfare + ", " +
+                        objPostalAddress.DependentThoroughfare + ", " +
+                        objPostalAddress.DependentLocality + ", " +
+                        objPostalAddress.DoubleDependentLocality + ", " +
+                        objPostalAddress.PostTown + ", " +
+                        objPostalAddress.Postcode;
+        }
+
     }
 }
