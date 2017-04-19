@@ -22,7 +22,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private IPostCodeRepository testCandidate;
 
         [Test]
-        public async Task Test_FetchPostCodeUnitForBasicSearch_Valid()
+        public async Task TestFetchPostCodeUnitForBasicSearchValid()
         {
             var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch("se");
             Assert.IsNotNull(actualResult);
@@ -30,7 +30,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchPostCodeUnitForBasicSearch_inValid()
+        public async Task TestFetchPostCodeUnitForBasicSearchInvalid()
         {
             var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch("invalid_searchtest");
             Assert.IsNotNull(actualResult);
@@ -38,7 +38,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchPostCodeUnitForBasicSearch_null()
+        public async Task TestFetchPostCodeUnitForBasicSearchNull()
         {
             var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch(null);
             Assert.IsNotNull(actualResult);
@@ -46,7 +46,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetPostCodeUnitCount_Valid()
+        public async Task TestGetPostCodeUnitCountValid()
         {
             var actualResultCount = await testCandidate.GetPostCodeUnitCount("search");
             Assert.IsNotNull(actualResultCount);
@@ -54,7 +54,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetPostCodeUnitCount_inValid()
+        public async Task TestGetPostCodeUnitCountInvalid()
         {
             var actualResultCount = await testCandidate.GetPostCodeUnitCount("searchtest");
             Assert.IsNotNull(actualResultCount);
@@ -62,7 +62,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetPostCodeUnitCount_null()
+        public async Task TestGetPostCodeUnitCountNull()
         {
             var actualResultCount = await testCandidate.GetPostCodeUnitCount(null);
             Assert.IsNotNull(actualResultCount);

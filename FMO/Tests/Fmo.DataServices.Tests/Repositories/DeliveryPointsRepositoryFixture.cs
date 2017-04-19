@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Threading.Tasks;
-using Fmo.Common.AsyncEnumerator;
-using Fmo.Common.TestSupport;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.Entities;
-using Moq;
-using NUnit.Framework;
-
-namespace Fmo.DataServices.Tests.Repositories
+﻿namespace Fmo.DataServices.Tests.Repositories
 {
+    using System.Collections.Generic;
+    using System.Data.Entity.Infrastructure;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Fmo.Common.AsyncEnumerator;
+    using Fmo.Common.TestSupport;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.Entities;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class DeliveryPointsRepositoryFixture : RepositoryFixtureBase
     {
@@ -22,7 +22,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private IDeliveryPointsRepository testCandidate;
 
         [Test]
-        public async Task Test_FetchDeliveryPointsForBasicSearch_Valid()
+        public async Task TestFetchDeliveryPointsForBasicSearchValid()
         {
             var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("Org");
             Assert.IsNotNull(actualResult);
@@ -30,7 +30,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchDeliveryPointsForBasicSearch_inValid()
+        public async Task TestFetchDeliveryPointsForBasicSearchInvalid()
         {
             var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("invalid_org");
             Assert.IsNotNull(actualResult);
@@ -38,7 +38,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_FetchDeliveryPointsForBasicSearch_null()
+        public async Task TestFetchDeliveryPointsForBasicSearchNull()
         {
             var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch(null);
             Assert.IsNotNull(actualResult);
@@ -46,7 +46,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetDeliveryPointsCount_Valid()
+        public async Task TestGetDeliveryPointsCountValid()
         {
             var actualResultCount = await testCandidate.GetDeliveryPointsCount("Org");
             Assert.IsNotNull(actualResultCount);
@@ -54,7 +54,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetDeliveryPointsCount_inValid()
+        public async Task TestGetDeliveryPointsCountInvalid()
         {
             var actualResultCount = await testCandidate.GetDeliveryPointsCount("invalid_Org");
             Assert.IsNotNull(actualResultCount);
@@ -62,7 +62,7 @@ namespace Fmo.DataServices.Tests.Repositories
         }
 
         [Test]
-        public async Task Test_GetDeliveryPointsCount_null()
+        public async Task TestGetDeliveryPointsCountNull()
         {
             var actualResultCount = await testCandidate.GetDeliveryPointsCount(null);
             Assert.IsNotNull(actualResultCount);
@@ -105,24 +105,23 @@ namespace Fmo.DataServices.Tests.Repositories
                {
                    PostalAddress = new PostalAddress()
                     {
-                        OrganisationName = "MyOrg5", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber =1, Thoroughfare = "ABC", DependentLocality = "XYZ"
+                        OrganisationName = "MyOrg5", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber = 1, Thoroughfare = "ABC", DependentLocality = "XYZ"
                     }
                },
                new DeliveryPoint()
                {
                    PostalAddress = new PostalAddress()
                     {
-                        OrganisationName = "MyOrg6", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber =1, Thoroughfare = "ABC", DependentLocality = "XYZ"
+                        OrganisationName = "MyOrg6", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber = 1, Thoroughfare = "ABC", DependentLocality = "XYZ"
                     }
                },
                new DeliveryPoint()
                {
                    PostalAddress = new PostalAddress()
                     {
-                        OrganisationName = "MyOrg7", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber =1, Thoroughfare = "ABC", DependentLocality = "XYZ"
+                        OrganisationName = "MyOrg7", BuildingName = "Test", SubBuildingName = "subTest", BuildingNumber = 1, Thoroughfare = "ABC", DependentLocality = "XYZ"
                     }
                }
-
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
