@@ -63,6 +63,14 @@ namespace Fmo.Common.LoggingManagement
             Logger.Write(message, "General", 0, 0, TraceEventType.Warning);
         }
 
+        public void LogInfo(string message, bool enableLogging)
+        {
+            if (enableLogging)
+            {
+                Logger.Write(message, "General", 0, 0, TraceEventType.Information);
+            }
+        }
+
         public void LogWarn(string message)
         {
             Logger.Write(message, "General", 0, 0, TraceEventType.Information);

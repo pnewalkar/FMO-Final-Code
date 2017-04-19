@@ -25,6 +25,12 @@
         public const string PostalAddressStatus = "Postal Address Status";
         public const string PostalAddressType = "Postal Address Type";
         public const string XMLFileFolderSettings = "XMLFileFolderSettings";
+        public const string MethodExecutionStarted = " Method exceution started";
+        public const string MethodExecutionCompleted = " Method exceution completed";
+        public const string EnableLogging = "EnableLogging";
+        public const string CRLF = "\r\n";
+        public const string NEWLINE = "\n";
+        public const string COLON = " : ";
 
         #endregion
 
@@ -62,6 +68,7 @@
         public const string USRERRORFILEPATHCONFIG = "USRErrorFilePath";
         public const string USRUDPRN = "udprn";
         public const string USRCHANGETYPE = "changeType";
+        public const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
 
         #endregion
 
