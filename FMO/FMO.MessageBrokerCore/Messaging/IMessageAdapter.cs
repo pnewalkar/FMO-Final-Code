@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
+    /// <summary>
+    /// IMessageAdapter is used to provide the core functionality of a message queue.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IMessageAdapter<T>
     {
         event EventHandler<MessageEventArgs<T>> MessageReceived;

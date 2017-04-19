@@ -9,6 +9,10 @@ using System.Xml.Serialization;
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
+    /// <summary>
+    /// Custom implementation of the Event Args for Message events.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MessageEventArgs<T> : EventArgs
     {
         private T _messageBody;

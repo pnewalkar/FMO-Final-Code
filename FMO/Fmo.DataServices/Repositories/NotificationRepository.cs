@@ -38,7 +38,7 @@
         {
             try
             {
-                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id.Equals(uDPRN) && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
+                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
                 DataContext.Notifications.Remove(notification);
                 return await DataContext.SaveChangesAsync();
             }
@@ -56,6 +56,25 @@
                NotificationDTO notificationDTO = new NotificationDTO();
                GenericMapper.Map(notification, notificationDTO);
                return notificationDTO;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool CheckIfNotificationExists(int uDPRN, string action)
+        {
+            try
+            {
+                if (DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN && notific.Notification_Heading.Trim().Equals(action)).Any())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception)
             {

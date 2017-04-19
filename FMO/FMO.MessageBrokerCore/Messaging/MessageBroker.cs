@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 namespace Fmo.MessageBrokerCore.Messaging
 {
     public delegate void MessageEventHandler<T>(object sender, MessageEventArgs<T> e);
+
+    /// <summary>
+    /// Concrete implementation of the IMessageBroker interface
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MessageBroker<T> : IMessageBroker<T>
     {
         private MessageAdapterFactory<T> msgAdapterFactory;

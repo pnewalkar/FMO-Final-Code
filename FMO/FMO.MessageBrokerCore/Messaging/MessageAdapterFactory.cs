@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
-                //    //MessageQueue messageQueue = null;
+    /// <summary>
+    /// Assists in creation of the Message Adapter instance.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     internal class MessageAdapterFactory<T>
     {
         //provides an adapter for the queueing technology that we are currently using

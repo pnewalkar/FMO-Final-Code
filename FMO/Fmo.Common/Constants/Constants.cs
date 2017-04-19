@@ -8,46 +8,78 @@ namespace Fmo.Common.Constants
 {
     public static class Constants
     {
-        public const string USR_XML_ROOT = "USR";
-        public const string ADDRESS_LOCATION_XML_ROOT = "addressLocation";
+
+        #region File Processing
+
+        #region Common
+        public const string DATETIMEFORMAT = "{0:-yyyy-MM-d-HH-mm-ss}";
         public const string INSERT = "I";
         public const string UPDATE = "U";
         public const string DELETE = "D";
-        public const string QUEUE_NYB = "QUEUE_NYB";
-        public const string QUEUE_PAF = "QUEUE_PAF";
-        public const string QUEUE_THIRD_PARTY = "QUEUE_THIRD_PARTY";
-        public const string QUEUE_PATH = @".\Private$\";
-        public const string PROCESSED_FOLDER = "Processed";
-        public const string Error_FOLDER = "Error";
-        public const string DeliveryPointSuffix = "1A";
-        public const int BNG_COORDINATE_SYSTEM = 27700;
-        public const int noOfCharactersForPAF = 19;
-        public const int maxCharactersForPAF = 534;
-        public const string USR_LOC_PROVIDER = "E";
-        public const int TOLERANCE_DISTANCE_IN_METERS = 10;
-        public const string USR_NOTIFICATION_SOURCE = "SYSTEM";
-        public const string USR_ACTION = "Check updated DP Location";
-        public const string Postal_Address_Status = "Postal Address Status";
-        public const string Postal_Address_Type = "Postal Address Type";
-        public const string USR_BODY = "Please check the proposed new Location of the DP Latitude: {0}, Longitude: {1}, X: {2}, Y: {3}";
-        public const string USR_GEOMETRY_POINT = "POINT({0} {1})";
-        public const string USR_CATEGORY = "Notification Type";
-        public const string USR_REFERENCE_DATA_NAME = "Action required";
-        public const string NETWORK_LINK_DATA_PROVIDER = "Data Provider";
+        public const string QUEUEPATH = @".\Private$\";
+        public const string PROCESSEDFOLDER = "Processed";
+        public const string ErrorFOLDER = "Error";
+        public const string USRLOCPROVIDER = "E";
+        public const string MSGQUEUEPERMISSION = "Everyone";
+        public const string NETWORKLINKDATAPROVIDER = "Data Provider";
         public const string EXTERNAL = "External";
-        public const string TASK_NOTIFICATION = "Notification Type";
-        public const string TASK_ACTION = "Action required";
-        public const string TASK_SOURCE = "SYSTEM";
-        public const string TASK_PAF_ACTION = "Position new DP";
-        public const int csvPAFValues = 20;
-        public const string DeliveryPointUseIndicatorPAF = "B";
+        public const string TASKNOTIFICATION = "Notification Type";
+        public const string TASKACTION = "Action required";
+        public const string TASKSOURCE = "SYSTEM";
+        public const string DeliveryPointSuffix = "1A";
+        public const int BNGCOORDINATESYSTEM = 27700;
+        public const string PostalAddressStatus = "Postal Address Status";
+        public const string PostalAddressType = "Postal Address Type";
+        #endregion
 
+        #region NYB
+        public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File ins not valid File Name : {0} : Log Time : {1}";
+        public const string QUEUENYB = "QUEUE_NYB";
+        public const string FMOWebAPIName = "FMOWebAPIName";
+        #endregion
+
+        #region USR
+        public const string QUEUETHIRDPARTY = "QUEUE_THIRD_PARTY";
+        public const string USRXMLROOT = "USR";
+        public const string ADDRESSLOCATIONXMLROOT = "addressLocation";
+        public const int TOLERANCEDISTANCEINMETERS = 10;
+        public const string USRNOTIFICATIONSOURCE = "SYSTEM";
+        public const string USRACTION = "Check updated DP Location";
+        public const string USRBODY = "Please check the proposed new Location of the DP Latitude: {0}, Longitude: {1}, X: {2}, Y: {3}";
+        public const string USRGEOMETRYPOINT = "POINT({0} {1})";
+        public const string USRCATEGORY = "Notification Type";
+        public const string USRREFERENCEDATANAME = "Action required";
+        public const int USRNOTIFICATIONDUE = 24;
+        public const string USREMAILFROMEMAIL = "USRFromEmail";
+        public const string USREMAILSUBJECT = "USRSubject";
+        public const string USREMAILBODY = "USRBody";
+        public const string USREMAILTOEMAIL = "USRFromEmail";
+        public const string USRWEBAPIURL = "USRWebApiurl";
+        public const string USRWEBAPINAME = "USRWebApiName";
+        public const string XSDLOCATIONCONFIG = "XSDLocation";
+        public const string USRPROCESSEDFILEPATHCONFIG = "USRProcessedFilePath";
+        public const string USRERRORFILEPATHCONFIG = "USRErrorFilePath";
+        public const string USRUDPRN = "udprn";
+        public const string USRCHANGETYPE = "changeType";
+        #endregion
+
+        #region PAF
+        public const int NoOfCharactersForPAF = 19;
+        public const int MaxCharactersForPAF = 534;
+        public const string PAFWEBAPIURL = "PAFWebApiurl";
+        public const string PAFWEBAPINAME = "PAFWebApiName";
+        public const string TASKPAFACTION = "Position new DP";
         public const string PAFNOACTION = "B";
         public const string PAFINSERT = "I";
         public const string PAFUPDATE = "C";
         public const string PAFDELETE = "D";
-        public const string FMOWebAPIURL = "FMOWebAPIURL";
-        public const string FMOWebAPIName = "FMOWebAPIName";
+        public const int CsvPAFValues = 20;
+        public const string QUEUEPAF = "QUEUE_PAF";
+        public const string DeliveryPointUseIndicatorPAF = "B";
+        #endregion
+
+        #endregion
+
         public const string FeatureType = "Feature";
     }
 }

@@ -20,12 +20,14 @@
     using Fmo.Common.Interface;
     public class PAFLoader : IPAFLoader
     {
+        #region private member declaration
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
         private IConfigurationHelper configurationHelper;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-
+        #endregion
+        #region constructor
         public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
@@ -34,7 +36,8 @@
             this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFProcessedFilePath");
             this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues("PAFErrorFilePath");
         }
-
+        #endregion
+        #region public methods
         public void LoadPAF(string fileName)
         {
             try
@@ -138,7 +141,7 @@
 
                 lstPAFInsertEvents.ForEach(postalAddress =>
                     {
-                        IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
+                        IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUEPAF, Constants.QUEUEPATH);
                         msgBroker.SendMessage(msg);
                     });
 
@@ -165,7 +168,8 @@
             }
             return saveflag;
         }
-
+        #endregion
+        #region private methods
         private static string AppendTimeStamp(string strfileName)
         {
             return string.Concat(
@@ -180,12 +184,12 @@
             bool isFileValid = true;
             foreach (string line in arrLines)
             {
-                if (line.Count(n => n == ',') != Constants.noOfCharactersForPAF)
+                if (line.Count(n => n == ',') != Constants.NoOfCharactersForPAF)
                 {
                     isFileValid = false;
                     break;
                 }
-                if (line.ToCharArray().Count() > Constants.maxCharactersForPAF)
+                if (line.ToCharArray().Count() > Constants.MaxCharactersForPAF)
                 {
                     isFileValid = false;
                     break;
@@ -198,7 +202,7 @@
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string[] values = csvLine.Split(',');
-            if (values.Count() == Constants.csvPAFValues)
+            if (values.Count() == Constants.CsvPAFValues)
             {
                 objAddDTO.Date = values[0];
                 objAddDTO.Time = values[1];
@@ -311,5 +315,6 @@
             }
             return isValid;
         }
+        #endregion
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fmo.NYBLoader.Interfaces
 {
-    public interface ITPFLoader
+    public interface IUSRLoader
     {
         void LoadTPFDetailsFromXML(string strPath);
     }

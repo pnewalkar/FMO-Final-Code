@@ -1,13 +1,15 @@
 ﻿'use strict';
-MyApp.factory('authInterceptorService', ['$q', '$injector', '$location', 'localStorageService', function ($q, $injector, $location, localStorageService) {
+angular.module('FMOApp')
+.factory('authInterceptorService', ['$q', '$injector', '$location', function ($q, $injector, $location) {
 
     var authInterceptorServiceFactory = {};
 
     var _request = function (config) {
-
+     
         config.headers = config.headers || {};
 
-        var authData = localStorageService.get('authorizationData');
+        var authData = sessionStorage.getItem('authorizationData');
+        authData = JSON.parse(authData);
         if (authData) {
             config.headers.Authorization = 'Bearer ' + authData.token;
         }
@@ -16,18 +18,16 @@ MyApp.factory('authInterceptorService', ['$q', '$injector', '$location', 'localS
     }
 
     var _responseError = function (rejection) {
+        
         if (rejection.status === 401) {
             var authService = $injector.get('authService');
-            var authData = localStorageService.get('authorizationData');
+            var authData = sessionStorage.getItem('authorizationData');
 
             if (authData) {
                 if (authData.useRefreshTokens) {
-                    $location.path('/refresh');
                     return $q.reject(rejection);
                 }
             }
-            authService.logOut();
-            $location.path('/login');
         }
         return $q.reject(rejection);
     }
