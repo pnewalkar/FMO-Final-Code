@@ -24,29 +24,20 @@
   left: -37px; }
 
 .levelDanger {
-    color: red;
-    border: 1px solid red;
-}
-
-.ol-zoom {
-  top: 0;
-  left: auto;
-  position: relative; }
+  color: red;
+  border: 1px solid red; }
 
 .zoom-scale {
-    left: -56%;
-    position: absolute;
-    width: 35%;
-}
+  left: -56%;
+  position: absolute;
+  width: 35%; }
 
 .labletext {
-    margin-top: 4px;
-    margin-left: 9px;
-    position: absolute;
-    font-size: 16px;
-}
+  margin-top: 4px;
+  margin-left: 9px;
+  position: absolute;
+  font-size: 16px; }
 
 input[name="zoom-scale"] {
-    width: 95.5%;
-    text-indent: 22px;
-}
+  width: 95.5%;
+  text-indent: 22px; }

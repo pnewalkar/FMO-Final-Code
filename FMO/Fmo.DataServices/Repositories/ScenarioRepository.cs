@@ -19,8 +19,8 @@
         /// <summary>
         /// Fetch the Delivery Scenario by passing the operationstateID and deliveryUnitID.
         /// </summary>
-        /// <param name="operationStateID">Guid</param>
-        /// <param name="deliveryUnitID">Guid</param>
+        /// <param name="operationStateID">Guid operationStateID</param>
+        /// <param name="deliveryUnitID">Guid deliveryUnitID</param>
         /// <returns>List</returns>
         public List<DTO.ScenarioDTO> FetchScenario(Guid operationStateID, Guid deliveryUnitID)
         {
@@ -29,9 +29,9 @@
                 IEnumerable<Scenario> result = DataContext.Scenarios.ToList().Where(x => x.OperationalState_GUID == operationStateID && x.Unit_GUID == deliveryUnitID);
                 return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

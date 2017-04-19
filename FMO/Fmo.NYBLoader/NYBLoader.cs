@@ -10,6 +10,9 @@ using Fmo.Common.Interface;
 
 namespace Fmo.NYBLoader
 {
+    /// <summary>
+    /// Load and process NYb files 
+    /// </summary>
     public class NYBLoader : INYBLoader
     {
         #region private member declaration
