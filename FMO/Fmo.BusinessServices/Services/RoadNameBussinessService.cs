@@ -46,7 +46,7 @@
             {
                 if (!string.IsNullOrEmpty(boundarybox))
                 {
-                    var coordinates = GetData(boundarybox.Split(','));
+                    var coordinates = GetData(boundarybox.Split(Constants.Comma[0]));
                     return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
                 }
                 else
@@ -71,11 +71,18 @@
 
             if (roadLinkparameters != null && roadLinkparameters.Length == 4)
             {
-                coordinates = "POLYGON((" + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[1]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[3]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[2]) + " " + Convert.ToString(roadLinkparameters[3]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[2]) + " " + Convert.ToString(roadLinkparameters[1]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[1]) + "))";
+                coordinates = string.Format(
+                                     Constants.Polygon,
+                                     Convert.ToString(roadLinkparameters[0]),
+                                     Convert.ToString(roadLinkparameters[1]),
+                                     Convert.ToString(roadLinkparameters[0]),
+                                     Convert.ToString(roadLinkparameters[3]),
+                                     Convert.ToString(roadLinkparameters[2]),
+                                     Convert.ToString(roadLinkparameters[3]),
+                                     Convert.ToString(roadLinkparameters[2]),
+                                     Convert.ToString(roadLinkparameters[1]),
+                                     Convert.ToString(roadLinkparameters[0]),
+                                     Convert.ToString(roadLinkparameters[1]));
             }
 
             return coordinates;
@@ -105,9 +112,9 @@
                     var resultCoordinates = res.CentreLineGeometry;
 
                     SqlGeometry roadLinkSqlGeometry = null;
-                    if (geometry.type == "LineString")
+                    if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                        roadLinkSqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        roadLinkSqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
 
                         List<List<double>> roadLinkCoordinates = new List<List<double>>();
 
