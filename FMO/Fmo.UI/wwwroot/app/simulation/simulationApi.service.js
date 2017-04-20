@@ -1,23 +1,57 @@
 ﻿
 // Just for reference
 angular.module('simulation')
-    .factory('simulationAPIService', ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
-        
-        return {
-            getStatus: getStatus,
-            getScenario: getScenario,
-            getRoutes: getRoutes
-        };
+    .factory('simulationAPIService', simulationAPIService);
 
-        function getStatus() {
-            return $http.get(GlobalSettings.apiUrl + '/RouteSimulation/RouteLogsStatus');
-        };
+simulationAPIService.$inject = ['$http', '$q', 'GlobalSettings'];
 
-         function getScenario(operationStateID, deliveryUnitID) {
-             return $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID);
-        };
+function simulationAPIService($http, $q, GlobalSettings) {
 
-         function getRoutes(operationStateID,deliveryScenarioID) {
-             return $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID);
-        };
-    }]);
+    return {
+        getStatus: getStatus,
+        getScenario: getScenario,
+        getRoutes: getRoutes
+    };
+
+    function getStatus() {
+        var deferred = $q.defer();
+
+        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/RouteLogsStatus').success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+            console.log(err);
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+
+    function getScenario(operationStateID, deliveryUnitID) {
+        var deferred = $q.defer();
+
+        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID).success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+            console.log(err);
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+
+    function getRoutes(operationStateID, deliveryScenarioID) {
+        var deferred = $q.defer();
+
+        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID).success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+            console.log(err);
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+}
