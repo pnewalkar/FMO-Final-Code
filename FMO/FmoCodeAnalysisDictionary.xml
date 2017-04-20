@@ -16,6 +16,9 @@
     <CasingExceptions>
       <Acronym>UDPRN</Acronym>     
       <Acronym>DTO</Acronym>
+      <Acronym>NYB</Acronym>
+      <Acronym>PAF</Acronym>
+     <Acronym>USR</Acronym>
     </CasingExceptions>
   </Acronyms>
 </Dictionary>
