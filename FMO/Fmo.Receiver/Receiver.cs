@@ -190,12 +190,12 @@ namespace Fmo.Receiver
                                         methodName,
                                         string.Format(
                                         Constants.REQUESTLOG,
-                                        addressLocation.udprn == null? string.Empty : addressLocation.udprn.ToString(),
-                                        addressLocation.xCoordinate == null ? string.Empty : addressLocation.xCoordinate.ToString(),
-                                        addressLocation.yCoordinate == null ? string.Empty : addressLocation.yCoordinate.ToString(),
-                                        addressLocation.latitude == null ? string.Empty : addressLocation.latitude.ToString(),
-                                        addressLocation.longitude == null ? string.Empty : addressLocation.longitude.ToString(),
-                                        addressLocation.changeType == null ? string.Empty : addressLocation.changeType
+                                        addressLocation.UDPRN == null? string.Empty : addressLocation.UDPRN.ToString(),
+                                        addressLocation.XCoordinate == null ? string.Empty : addressLocation.XCoordinate.ToString(),
+                                        addressLocation.YCoordinate == null ? string.Empty : addressLocation.YCoordinate.ToString(),
+                                        addressLocation.Latitude == null ? string.Empty : addressLocation.Latitude.ToString(),
+                                        addressLocation.Longitude == null ? string.Empty : addressLocation.Longitude.ToString(),
+                                        addressLocation.ChangeType == null ? string.Empty : addressLocation.ChangeType
                                         ));
                 });
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);

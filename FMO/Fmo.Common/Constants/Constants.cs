@@ -70,6 +70,10 @@
         public const string USRPROCESSEDFILEPATHCONFIG = "USRProcessedFilePath";
         public const string USRERRORFILEPATHCONFIG = "USRErrorFilePath";
         public const string USRUDPRN = "udprn";
+        public const string USRXCOORDINATE = "xCoordinate";
+        public const string USRYCOORDINATE = "yCoordinate";
+        public const string USRLATITUDE = "latitude";
+        public const string USRLONGITITUDE = "longitude";
         public const string USRCHANGETYPE = "changeType";
         public const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
 
