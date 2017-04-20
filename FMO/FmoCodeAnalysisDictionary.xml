@@ -9,12 +9,16 @@
       <Word>postcode</Word>
       <Word>dto</Word>
       <Word>udprn</Word>
+      <Word>Rmg</Word>
     </Recognized>
   </Words>
   <Acronyms>
     <CasingExceptions>
       <Acronym>UDPRN</Acronym>     
       <Acronym>DTO</Acronym>
+      <Acronym>NYB</Acronym>
+      <Acronym>PAF</Acronym>
+     <Acronym>USR</Acronym>
     </CasingExceptions>
   </Acronyms>
 </Dictionary>

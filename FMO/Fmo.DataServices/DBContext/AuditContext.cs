@@ -14,8 +14,8 @@ namespace Fmo.DataServices.DBContext
     /// </summary>
     public abstract class AuditContext : DbContext
     {
-        public AuditContext(string connString)
-            : base(connString)
+        protected AuditContext(string connectionString)
+            : base(connectionString)
         {
         }
 

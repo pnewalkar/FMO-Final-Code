@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,11 +21,12 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IPostCodeRepository testCandidate;
+        private Guid deliveryUnitID = System.Guid.NewGuid();
 
         [Test]
         public async Task TestFetchPostCodeUnitForBasicSearchValid()
         {
-            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch("se");
+            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch("se", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -32,7 +34,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestFetchPostCodeUnitForBasicSearchInvalid()
         {
-            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch("invalid_searchtest");
+            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch("invalid_searchtest", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 0);
         }
@@ -40,7 +42,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestFetchPostCodeUnitForBasicSearchNull()
         {
-            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch(null);
+            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch(null, deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -48,7 +50,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestGetPostCodeUnitCountValid()
         {
-            var actualResultCount = await testCandidate.GetPostCodeUnitCount("search");
+            var actualResultCount = await testCandidate.GetPostCodeUnitCount("search", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }
@@ -56,7 +58,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestGetPostCodeUnitCountInvalid()
         {
-            var actualResultCount = await testCandidate.GetPostCodeUnitCount("searchtest");
+            var actualResultCount = await testCandidate.GetPostCodeUnitCount("searchtest", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
         }
@@ -64,7 +66,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestGetPostCodeUnitCountNull()
         {
-            var actualResultCount = await testCandidate.GetPostCodeUnitCount(null);
+            var actualResultCount = await testCandidate.GetPostCodeUnitCount(null, deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }

@@ -9,11 +9,13 @@ namespace Fmo.DataServices.Repositories
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Common.Constants;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
+    using MappingExtensions;
     using Entity = Fmo.Entities;
 
     /// <summary>
@@ -29,13 +31,13 @@ namespace Fmo.DataServices.Repositories
         /// <summary>
         /// This method is used to fetch Delivery Point by udprn.
         /// </summary>
-        /// <param name="uDPRN">udprn as int</param>
+        /// <param name="udprn">udprn as int</param>
         /// <returns>DeliveryPointDTO</returns>
-        public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
+        public DeliveryPointDTO GetDeliveryPointByUDPRN(int udprn)
         {
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == udprn).SingleOrDefault();
 
                 Mapper.Initialize(cfg =>
                 {
@@ -78,9 +80,9 @@ namespace Fmo.DataServices.Repositories
                     saveFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return saveFlag;
@@ -90,17 +92,21 @@ namespace Fmo.DataServices.Repositories
         /// This method is used to fetch delivery points for advance search.
         /// </summary>
         /// <param name="searchText">searchText as string</param>
-        /// <returns>Task List of Delivery Point Dto</returns>
-        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task List of Delivery Point Dto
+        /// </returns>
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid)
         {
+            DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
             var result = await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
-                .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
+                .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
                                 || x.PostalAddress.BuildingName.Contains(searchText)
                                 || x.PostalAddress.SubBuildingName.Contains(searchText)
                                 || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                                 || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                || x.PostalAddress.DependentLocality.Contains(searchText))
+                                || x.PostalAddress.DependentLocality.Contains(searchText)))
                                 .Select(l => new DeliveryPointDTO
                                 {
                                     PostalAddress = new PostalAddressDTO
@@ -123,19 +129,25 @@ namespace Fmo.DataServices.Repositories
         /// Fetch Delivery point for Basic Search
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <returns>The result set of delivery point.</returns>
-        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// The result set of delivery point.
+        /// </returns>
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
             searchText = searchText ?? string.Empty;
+
+            DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
             var result = await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
-                .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
+                .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
                                 || x.PostalAddress.BuildingName.Contains(searchText)
                                 || x.PostalAddress.SubBuildingName.Contains(searchText)
                                 || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                                 || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                || x.PostalAddress.DependentLocality.Contains(searchText))
+                                || x.PostalAddress.DependentLocality.Contains(searchText)))
                 .Select(l => new DeliveryPointDTO
                 {
                     PostalAddress = new PostalAddressDTO
@@ -159,18 +171,23 @@ namespace Fmo.DataServices.Repositories
         /// Get the count of delivery points
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <returns>The total count of delivery points</returns>
-        public async Task<int> GetDeliveryPointsCount(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// The total count of delivery points
+        /// </returns>
+        public async Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid)
         {
             searchText = searchText ?? string.Empty;
+            DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
             var result = await DataContext.DeliveryPoints.AsNoTracking()
               .Include(l => l.PostalAddress)
-              .Where(x => x.PostalAddress.OrganisationName.Contains(searchText)
+              .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
                               || x.PostalAddress.BuildingName.Contains(searchText)
                               || x.PostalAddress.SubBuildingName.Contains(searchText)
                               || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                               || x.PostalAddress.Thoroughfare.Contains(searchText)
-                              || x.PostalAddress.DependentLocality.Contains(searchText)).CountAsync();
+                              || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
 
             return result;
         }
@@ -182,9 +199,16 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List of Delivery Point Entity</returns>
         public IEnumerable<DeliveryPoint> GetData(string coordinates)
         {
-           DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
+            if (!string.IsNullOrEmpty(coordinates))
+            {
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
-            return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
+                return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -208,6 +232,11 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDto;
         }
 
+        /// <summary>
+        /// This method updates delivery point location using UDPRN
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
+        /// <returns>updated delivery point</returns>
         public async Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO)
         {
             try
@@ -227,6 +256,11 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// This method fetches delivery point data for given UDPRN
+        /// </summary>
+        /// <param name="udprn">udprn as int</param>
+        /// <returns>deliveryPoint DTO</returns>
         public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
         {
             List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();
@@ -243,11 +277,16 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDto;
         }
 
-        public bool DeliveryPointExists(int uDPRN)
+        /// <summary>
+        /// This method checks delivery point for given UDPRN exists or not
+        /// </summary>
+        /// <param name="udprn">uDPRN as int</param>
+        /// <returns>boolean value true or false</returns>
+        public bool DeliveryPointExists(int udprn)
         {
             try
             {
-                if (DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(uDPRN)).Any())
+                if (DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(udprn)).Any())
                 {
                     return true;
                 }
@@ -262,25 +301,28 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// Calculte distance between two points
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPoint DTO</param>
+        /// <param name="newPoint">newPoint as DbGeometry</param>
+        /// <returns>distance as double</returns>
         public double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint)
         {
             try
             {
-                return deliveryPointDTO.LocationXY.Distance(newPoint);
+                double? distance = 0;
+                if (deliveryPointDTO != null)
+                {
+                    distance = deliveryPointDTO.LocationXY.Distance(newPoint);
+                }
+
+                return distance;
             }
             catch (Exception)
             {
                 throw;
             }
-        }
-    }
-
-    public static class MappingExpressionExtensions
-    {
-        public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
-        {
-            expression.ForAllMembers(opt => opt.Ignore());
-            return expression;
         }
     }
 }

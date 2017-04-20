@@ -24,9 +24,7 @@ namespace Fmo.Receiver
     /// </summary>
     public partial class Receiver : ServiceBase
     {
-        private string PAFWebApiurl = string.Empty;
         private string PAFWebApiName = string.Empty;
-        private string USRWebApiurl = string.Empty;
         private string USRWebApiName = string.Empty;
 
         private System.Timers.Timer m_mainTimer;
@@ -56,13 +54,9 @@ namespace Fmo.Receiver
         /// </summary>
         /// <param name="kernel"></param>
         protected void Register(IKernel kernel)
-        {
-
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
-            try
-            {
-
+        {    
+            if(kernel != null)
+            { 
                 kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
                 kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
                 kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
@@ -71,22 +65,11 @@ namespace Fmo.Receiver
                 msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
                 configurationHelper = kernal.Get<IConfigurationHelper>();
                 loggingHelper = kernal.Get<ILoggingHelper>();
-
-                this.PAFWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPIURL).ToString();
-                this.PAFWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString();
-                this.USRWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPIURL).ToString();
-                this.USRWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString();
-                this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
-            }
-            catch (Exception ex)
-            {
-                loggingHelper.LogError(ex);
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
 
+            this.PAFWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString();
+            this.USRWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString();
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         /// <summary>
@@ -190,12 +173,12 @@ namespace Fmo.Receiver
                                         methodName,
                                         string.Format(
                                         Constants.REQUESTLOG,
-                                        addressLocation.udprn == null? string.Empty : addressLocation.udprn.ToString(),
-                                        addressLocation.xCoordinate == null ? string.Empty : addressLocation.xCoordinate.ToString(),
-                                        addressLocation.yCoordinate == null ? string.Empty : addressLocation.yCoordinate.ToString(),
-                                        addressLocation.latitude == null ? string.Empty : addressLocation.latitude.ToString(),
-                                        addressLocation.longitude == null ? string.Empty : addressLocation.longitude.ToString(),
-                                        addressLocation.changeType == null ? string.Empty : addressLocation.changeType
+                                        addressLocation.UDPRN == null? string.Empty : addressLocation.UDPRN.ToString(),
+                                        addressLocation.XCoordinate == null ? string.Empty : addressLocation.XCoordinate.ToString(),
+                                        addressLocation.YCoordinate == null ? string.Empty : addressLocation.YCoordinate.ToString(),
+                                        addressLocation.Latitude == null ? string.Empty : addressLocation.Latitude.ToString(),
+                                        addressLocation.Longitude == null ? string.Empty : addressLocation.Longitude.ToString(),
+                                        addressLocation.ChangeType == null ? string.Empty : addressLocation.ChangeType
                                         ));
                 });
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
@@ -327,7 +310,7 @@ namespace Fmo.Receiver
         /// <param name="logMessage">Message</param>
         private void LogMethodInfoBlock(string methodName, string logMessage)
         {
-            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(string.Concat(methodName, Constants.COLON, logMessage), this.enableLogging);
         }
     }
 }

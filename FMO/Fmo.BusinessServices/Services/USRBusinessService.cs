@@ -1,16 +1,16 @@
 ﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
+    using System.Net.Mail;
+    using System.Threading.Tasks;
     using Common.Constants;
     using Common.Interface;
     using DataServices.Repositories.Interfaces;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.DTO;
     using Fmo.DTO.FileProcessing;
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Net.Mail;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Implements interface for USR Business service
@@ -22,7 +22,7 @@
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
-        private IPostCodeSectorRepository postCodeSectorRepository = default(IPostCodeSectorRepository);
+        private IPostcodeSectorRepository postcodeSectorRepository = default(IPostcodeSectorRepository);
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
@@ -36,7 +36,7 @@
            IAddressLocationRepository addressLocationRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
            INotificationRepository notificationRepository,
-           IPostCodeSectorRepository postCodeSectorRepository,
+           IPostcodeSectorRepository postcodeSectorRepository,
            IReferenceDataCategoryRepository referenceDataCategoryRepository,
            IEmailHelper emailHelper,
            IConfigurationHelper configurationHelper,
@@ -45,7 +45,7 @@
             this.addressLocationRepository = addressLocationRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.notificationRepository = notificationRepository;
-            this.postCodeSectorRepository = postCodeSectorRepository;
+            this.postcodeSectorRepository = postcodeSectorRepository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.emailHelper = emailHelper;
             this.configurationHelper = configurationHelper;
@@ -59,18 +59,17 @@
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
-        /// <param name="lstAddressLocationUSRPOSTDTO"> List of Address Locations</param>
+        /// <param name="addressLocationUsrpostdtos"> List of Address Locations</param>
         /// <returns> Task </returns>
-        public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> lstAddressLocationUSRPOSTDTO)
+        public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
             try
             {
-                loggingHelper.LogInfo("******SaveUSRDetails method execution started*****");
-                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in lstAddressLocationUSRPOSTDTO)
+                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
                 {
                     // Get the udprn id for each USR record.
-                    fileUdprn = (int)addressLocationUSRPOSTDTO.udprn;
+                    fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
 
                     if (addressLocationRepository.AddressLocationExists(fileUdprn))
                     {
@@ -82,10 +81,10 @@
 
                         AddressLocationDTO newAddressLocationDTO = new AddressLocationDTO()
                         {
-                            UDPRN = addressLocationUSRPOSTDTO.udprn,
+                            UDPRN = addressLocationUSRPOSTDTO.UDPRN,
                             LocationXY = spatialLocationXY,
-                            Lattitude = addressLocationUSRPOSTDTO.latitude,
-                            Longitude = addressLocationUSRPOSTDTO.longitude
+                            Lattitude = addressLocationUSRPOSTDTO.Latitude,
+                            Longitude = addressLocationUSRPOSTDTO.Longitude
                         };
 
                         // Save the address location data record to the database.
@@ -104,8 +103,8 @@
 
                                 DeliveryPointDTO newDeliveryPoint = new DeliveryPointDTO
                                 {
-                                    Latitude = addressLocationUSRPOSTDTO.latitude,
-                                    Longitude = addressLocationUSRPOSTDTO.longitude,
+                                    Latitude = addressLocationUSRPOSTDTO.Latitude,
+                                    Longitude = addressLocationUSRPOSTDTO.Longitude,
                                     LocationXY = spatialLocationXY,
                                     LocationProvider_GUID = locationProviderId
                                 };
@@ -135,8 +134,8 @@
                                     DeliveryPointDTO newDeliveryPoint = new DeliveryPointDTO
                                     {
                                         UDPRN = fileUdprn,
-                                        Latitude = addressLocationUSRPOSTDTO.latitude,
-                                        Longitude = addressLocationUSRPOSTDTO.longitude,
+                                        Latitude = addressLocationUSRPOSTDTO.Latitude,
+                                        Longitude = addressLocationUSRPOSTDTO.Longitude,
                                         LocationXY = spatialLocationXY,
                                         LocationProvider_GUID = locationProviderId
                                     };
@@ -154,7 +153,7 @@
                                 else
                                 {
                                     // Get the Postcode Sector by UDPRN
-                                    PostCodeSectorDTO postCodeSectorDTO = postCodeSectorRepository.GetPostCodeSectorByUDPRN(fileUdprn);
+                                    PostCodeSectorDTO postCodeSectorDTO = postcodeSectorRepository.GetPostCodeSectorByUDPRN(fileUdprn);
 
                                     // Get the Notification Type from the Reference data table
                                     Guid notificationTypeId_GUID = referenceDataCategoryRepository.GetReferenceDataId(
@@ -170,10 +169,10 @@
                                         Notification_Heading = Constants.USRACTION,
                                         Notification_Message = string.Format(
                                                                                 Constants.USRBODY,
-                                                                                addressLocationUSRPOSTDTO.latitude.ToString(),
-                                                                                addressLocationUSRPOSTDTO.longitude.ToString(),
-                                                                                addressLocationUSRPOSTDTO.xCoordinate.ToString(),
-                                                                                addressLocationUSRPOSTDTO.yCoordinate.ToString()),
+                                                                                addressLocationUSRPOSTDTO.Latitude.ToString(),
+                                                                                addressLocationUSRPOSTDTO.Longitude.ToString(),
+                                                                                addressLocationUSRPOSTDTO.XCoordinate.ToString(),
+                                                                                addressLocationUSRPOSTDTO.YCoordinate.ToString()),
                                         PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null) ? string.Empty : postCodeSectorDTO.District,
                                         PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null) ? string.Empty : postCodeSectorDTO.Sector,
                                     };
@@ -185,8 +184,6 @@
                         }
                     }
                 }
-
-                loggingHelper.LogInfo("******SaveUSRDetails method execution finished*****");
             }
             catch (Exception ex)
             {
@@ -203,19 +200,17 @@
         /// </summary>
         /// <param name="addressLocationUSRPOSTDTO">AddressLocationUSRPOSTDTO object</param>
         /// <returns>DbGeometry object</returns>
-        private DbGeometry GetSpatialLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
+        private static DbGeometry GetSpatialLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
         {
             try
             {
-                loggingHelper.LogInfo("******GetSpatialLocation method execution started*****");
                 string sbLocationXY = string.Format(
                                                                             Constants.USRGEOMETRYPOINT,
-                                                                            Convert.ToString(addressLocationUSRPOSTDTO.xCoordinate),
-                                                                            Convert.ToString(addressLocationUSRPOSTDTO.yCoordinate));
+                                                                            Convert.ToString(addressLocationUSRPOSTDTO.XCoordinate),
+                                                                            Convert.ToString(addressLocationUSRPOSTDTO.YCoordinate));
 
                 // Convert the location from string type to geometry type
                 DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
-                loggingHelper.LogInfo("******GetSpatialLocation method execution finished*****");
                 return spatialLocationXY;
             }
             catch (Exception)
@@ -236,19 +231,16 @@
         {
             try
             {
-                loggingHelper.LogInfo("******SendEmail method execution started*****");
-                MailMessage message = new MailMessage()
+                using (MailMessage message = new MailMessage())
                 {
-                    From = new MailAddress(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILFROMEMAIL)),
-                    Subject = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILSUBJECT),
-                    Body = string.Format(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILBODY), fileUdprn.ToString())
-                };
+                    message.From = new MailAddress(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILFROMEMAIL));
+                    message.Subject = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILSUBJECT);
+                    message.Body = string.Format(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILBODY), fileUdprn.ToString());
+                    message.To.Add(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILTOEMAIL));
 
-                message.To.Add(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILTOEMAIL));
-
-                // Send email if the address location udprn already exists in the database
-                emailHelper.SendMessage(message);
-                loggingHelper.LogInfo("******SendEmail method execution finished*****");
+                    // Send email if the address location udprn already exists in the database
+                    emailHelper.SendMessage(message);
+                }
             }
             catch (Exception)
             {

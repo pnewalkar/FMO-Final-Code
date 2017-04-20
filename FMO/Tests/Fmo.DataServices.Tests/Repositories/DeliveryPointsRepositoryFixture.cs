@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Tests.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using System.Data.Entity.Infrastructure;
     using System.Linq;
@@ -20,11 +21,12 @@
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryPointsRepository testCandidate;
+        private Guid deliveryUnitID = System.Guid.NewGuid();
 
         [Test]
         public async Task TestFetchDeliveryPointsForBasicSearchValid()
         {
-            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("Org");
+            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("Org", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -32,7 +34,7 @@
         [Test]
         public async Task TestFetchDeliveryPointsForBasicSearchInvalid()
         {
-            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("invalid_org");
+            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch("invalid_org", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 0);
         }
@@ -40,7 +42,7 @@
         [Test]
         public async Task TestFetchDeliveryPointsForBasicSearchNull()
         {
-            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch(null);
+            var actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch(null, deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -48,7 +50,7 @@
         [Test]
         public async Task TestGetDeliveryPointsCountValid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryPointsCount("Org");
+            var actualResultCount = await testCandidate.GetDeliveryPointsCount("Org", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }
@@ -56,7 +58,7 @@
         [Test]
         public async Task TestGetDeliveryPointsCountInvalid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryPointsCount("invalid_Org");
+            var actualResultCount = await testCandidate.GetDeliveryPointsCount("invalid_Org", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
         }
@@ -64,7 +66,7 @@
         [Test]
         public async Task TestGetDeliveryPointsCountNull()
         {
-            var actualResultCount = await testCandidate.GetDeliveryPointsCount(null);
+            var actualResultCount = await testCandidate.GetDeliveryPointsCount(null, deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }

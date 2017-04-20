@@ -7,15 +7,13 @@
     {
         private SmtpClient client;
 
-        public EmailHelper()
-        {
-            client = new SmtpClient();
-            client.Host = string.Empty;
-        }
-
         public void SendMessage(MailMessage message)
         {
-            client.Send(message);
+            using (client = new SmtpClient())
+            {
+                client.Host = string.Empty;
+                client.Send(message);
+            }
         }
     }
 }

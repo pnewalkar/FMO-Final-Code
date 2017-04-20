@@ -1,9 +1,8 @@
-﻿using Fmo.DTO;
-using Fmo.Entities;
-using System.Threading.Tasks;
-
-namespace Fmo.DataServices.Repositories.Interfaces
+﻿namespace Fmo.DataServices.Repositories.Interfaces
 {
+    using System.Threading.Tasks;
+    using Fmo.DTO;
+
     /// <summary>
     /// Address Location Repository interface to interact with the entities
     /// </summary>
@@ -12,9 +11,9 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <summary>
         /// Get the Address location for the specified UDPRN
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>AddressLocationDTO object</returns>
-        AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN);
+        AddressLocationDTO GetAddressLocationByUDPRN(int udprn);
 
         /// <summary>
         /// Save the address location to the database
@@ -26,8 +25,8 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <summary>
         /// Check if the address location exists
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>Task<int></returns>
-        bool AddressLocationExists(int uDPRN);
+        bool AddressLocationExists(int udprn);
     }
 }

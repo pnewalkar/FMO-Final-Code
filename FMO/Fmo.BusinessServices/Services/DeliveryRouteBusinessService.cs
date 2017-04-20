@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Helpers;
@@ -38,10 +39,13 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="operationStateID">The operationstate id.</param>
         /// <param name="deliveryScenarioID">The delivery scenario id.</param>
-        /// <returns>List</returns>
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
+        /// <param name="userUnit">Guid</param>
+        /// <returns>
+        /// List
+        /// </returns>
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit)
         {
-            return deliveryRouteRepository.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
+            return deliveryRouteRepository.FetchDeliveryRoute(operationStateID, deliveryScenarioID, userUnit);
         }
 
         /// <summary>
@@ -77,24 +81,30 @@ namespace Fmo.BusinessServices.Services
         /// Fetch the Delivery Route for Basic Search.
         /// </summary>
         /// <param name="searchText">Text to search</param>
-        /// <returns>Task</returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText)
+        /// <param name="userUnit">Guid</param>
+        /// <returns>
+        /// Task
+        /// </returns>
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText, Guid userUnit)
         {
-            return await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText);
+            return await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText, userUnit);
         }
 
         /// <summary>
         /// Fetch the Delivery unit.
         /// </summary>
-        /// <returns>List of <see cref="DeliveryUnitLocationDTO"/>.</returns>
-        public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// List of <see cref="DeliveryUnitLocationDTO" />.
+        /// </returns>
+        public List<DeliveryUnitLocationDTO> FetchDeliveryUnit(Guid unitGuid)
         {
-            var deliveryUnitLocationDTOList = deliveryUnitLocationRespository.FetchDeliveryUnit();
+            var deliveryUnitLocationDTOList = deliveryUnitLocationRespository.FetchDeliveryUnit(unitGuid);
 
             foreach (var deliveryUnitLocationDTO in deliveryUnitLocationDTOList)
             {
                 // take the unit boundry plus 1 mile envelope
-                var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(deliveryUnitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), 27700).MakeValid();
+                var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(deliveryUnitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
 
                 deliveryUnitLocationDTO.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
 
@@ -110,8 +120,12 @@ namespace Fmo.BusinessServices.Services
         /// Fetch Delivery Route for Advance Search
         /// </summary>
         /// <param name="searchText">Text to search</param>
-        /// <returns>Task</returns>
-        public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
         {
             throw new NotImplementedException();
         }
@@ -143,7 +157,7 @@ namespace Fmo.BusinessServices.Services
                 {
                     geometry.type = OpenGisGeometryType.Polygon.ToString();
 
-                    sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
                     List<List<double[]>> listCords = new List<List<double[]>>();
                     List<double[]> cords = new List<double[]>();
 
@@ -161,7 +175,7 @@ namespace Fmo.BusinessServices.Services
                 {
                     geometry.type = OpenGisGeometryType.MultiPolygon.ToString();
 
-                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
                     List<List<List<double[]>>> listCords = new List<List<List<double[]>>>();
 
                     List<List<double[]>> cords = new List<List<double[]>>();

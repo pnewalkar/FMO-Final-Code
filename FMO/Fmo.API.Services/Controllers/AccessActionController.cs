@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,8 +13,7 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class AccessActionController : Controller
     {
-
-        IAccessActionBusinessService accessActionBussinessService = default(IAccessActionBusinessService);
+        private IAccessActionBusinessService accessActionBussinessService = default(IAccessActionBusinessService);
 
         public AccessActionController(IAccessActionBusinessService accessActionBussinessService)
         {
@@ -32,6 +31,5 @@ namespace Fmo.API.Services.Controllers
         {
             return accessActionBussinessService.FetchAccessActions();
         }
-      
     }
 }

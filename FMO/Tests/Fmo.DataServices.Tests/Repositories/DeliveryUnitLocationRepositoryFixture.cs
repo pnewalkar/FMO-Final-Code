@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Tests.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using Fmo.Common.TestSupport;
     using Fmo.DataServices.DBContext;
@@ -19,7 +20,8 @@
         [Test]
         public void Test_FetchDeliveryUnit()
         {
-            var actualResult = testCandidate.FetchDeliveryUnit();
+             Guid UnitID = System.Guid.NewGuid();
+             var actualResult = testCandidate.FetchDeliveryUnit(UnitID);
             Assert.IsNotNull(actualResult);
         }
 

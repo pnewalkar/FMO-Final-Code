@@ -11,6 +11,7 @@
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using System.Reflection;
 
     /// <summary>
     /// Load, Validate and process file
@@ -23,8 +24,9 @@
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
-        //private IConfigurationHelper configurationHelper;
-        //private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IConfigurationHelper configurationHelper;
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private bool enableLogging = false;
 
         #endregion private member declaration
 
@@ -33,8 +35,8 @@
         public PAFLoader(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
-            //this.configurationHelper = configurationHelper;
-            //this.loggingHelper = loggingHelper;
+            this.configurationHelper = configurationHelper;
+            this.loggingHelper = loggingHelper;
             this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFProcessedFilePath);
             this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFErrorFilePath);
         }
@@ -49,6 +51,8 @@
         /// <param name="fileName">Input file name as a param</param>
         public void LoadPAF(string fileName)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 using (ZipArchive zip = ZipFile.OpenRead(fileName))
@@ -94,6 +98,10 @@
             {
                 throw;
             }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
         }
 
         /// <summary>
@@ -105,6 +113,8 @@
         public List<PostalAddressDTO> ProcessPAF(string strLine, string strFileName)
         {
             List<PostalAddressDTO> lstAddressDetails = null;
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 string[] arrPAFDetails = strLine.Split(new string[] { Constants.CRLF, Constants.NEWLINE }, StringSplitOptions.None);
@@ -139,6 +149,10 @@
             {
                 throw;
             }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
             return lstAddressDetails;
         }
 
@@ -149,10 +163,12 @@
         /// <returns>If success returns true else returns false</returns>
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
-            bool saveflag = false;
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            bool isMessageQueued = false;
             try
             {
-                saveflag = true;
+                isMessageQueued = true;
 
                 var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == Constants.PAFINSERT).ToList();
 
@@ -161,29 +177,17 @@
                         IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUEPAF, Constants.QUEUEPATH);
                         msgBroker.SendMessage(msg);
                     });
-
-                //Sprint 1- Only create events has to be executed
-                /*
-                var lstPAFUpdateEvents = lstPostalAddress.Where(updateFiles => updateFiles.AmendmentType == Constants.PAFUPDATE).ToList();
-                var lstPAFDeleteEvents = lstPostalAddress.Where(deleteFiles => deleteFiles.AmendmentType == Constants.PAFDELETE).ToList();
-                lstPAFUpdateEvents.ForEach(postalAddress =>
-                {
-                    IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                    msgBroker.SendMessage(msg);
-                });
-
-                lstPAFDeleteEvents.ForEach(postalAddress =>
-                {
-                    IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUE_PAF, Constants.QUEUE_PATH);
-                    msgBroker.SendMessage(msg);
-                });*/
             }
             catch (Exception)
             {
-                saveflag = false;
+                isMessageQueued = false;
                 throw;
             }
-            return saveflag;
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
+            return isMessageQueued;
         }
 
         #endregion public methods
@@ -209,21 +213,34 @@
         /// </summary>
         /// <param name="arrLines">Array of string read from CSV file</param>
         /// <returns>boolean value after validating all the lines</returns>
-        private static bool ValidateFile(string[] arrLines)
+        private bool ValidateFile(string[] arrLines)
         {
             bool isFileValid = true;
-            foreach (string line in arrLines)
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            try
             {
-                if (line.Count(n => n == ',') != Constants.NoOfCharactersForPAF)
+                foreach (string line in arrLines)
                 {
-                    isFileValid = false;
-                    break;
+                    if (line.Count(n => n == ',') != Constants.NoOfCharactersForPAF)
+                    {
+                        isFileValid = false;
+                        break;
+                    }
+                    if (line.ToCharArray().Count() > Constants.MaxCharactersForPAF)
+                    {
+                        isFileValid = false;
+                        break;
+                    }
                 }
-                if (line.ToCharArray().Count() > Constants.MaxCharactersForPAF)
-                {
-                    isFileValid = false;
-                    break;
-                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
             return isFileValid;
         }
@@ -233,34 +250,47 @@
         /// </summary>
         /// <param name="csvLine">Line read from CSV File</param>
         /// <returns>Returns mapped DTO</returns>
-        private static PostalAddressDTO MapPAFDetailsToDTO(string csvLine, string FileName)
+        private PostalAddressDTO MapPAFDetailsToDTO(string csvLine, string FileName)
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
-            string[] values = csvLine.Split(',');
-            if (values.Count() == Constants.CsvPAFValues)
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            try
             {
-                objAddDTO.Date = values[0];
-                objAddDTO.Time = values[1];
-                objAddDTO.AmendmentType = values[2];
-                objAddDTO.AmendmentDesc = values[3];
-                objAddDTO.Postcode = values[4];
-                objAddDTO.PostTown = values[5];
-                objAddDTO.DependentLocality = values[6];
-                objAddDTO.DoubleDependentLocality = values[7];
-                objAddDTO.Thoroughfare = values[8];
-                objAddDTO.DependentThoroughfare = values[9];
-                objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[10]) && !string.IsNullOrWhiteSpace(values[10]) ? Convert.ToInt16(values[10]) : Convert.ToInt16(0);
-                objAddDTO.BuildingName = values[11];
-                objAddDTO.SubBuildingName = values[12];
-                objAddDTO.POBoxNumber = values[13];
-                objAddDTO.DepartmentName = values[14];
-                objAddDTO.OrganisationName = values[15];
-                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[16]) && !string.IsNullOrWhiteSpace(values[16]) ? Convert.ToInt32(values[16]) : 0;
-                objAddDTO.PostcodeType = values[17];
-                objAddDTO.SmallUserOrganisationIndicator = values[18];
-                objAddDTO.DeliveryPointSuffix = values[19];
-                objAddDTO.IsValidData = true;
-                objAddDTO.FileName = FileName;
+                string[] values = csvLine.Split(',');
+                if (values.Count() == Constants.CsvPAFValues)
+                {
+                    objAddDTO.Date = values[0];
+                    objAddDTO.Time = values[1];
+                    objAddDTO.AmendmentType = values[2];
+                    objAddDTO.AmendmentDesc = values[3];
+                    objAddDTO.Postcode = values[4];
+                    objAddDTO.PostTown = values[5];
+                    objAddDTO.DependentLocality = values[6];
+                    objAddDTO.DoubleDependentLocality = values[7];
+                    objAddDTO.Thoroughfare = values[8];
+                    objAddDTO.DependentThoroughfare = values[9];
+                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[10]) && !string.IsNullOrWhiteSpace(values[10]) ? Convert.ToInt16(values[10]) : Convert.ToInt16(0);
+                    objAddDTO.BuildingName = values[11];
+                    objAddDTO.SubBuildingName = values[12];
+                    objAddDTO.POBoxNumber = values[13];
+                    objAddDTO.DepartmentName = values[14];
+                    objAddDTO.OrganisationName = values[15];
+                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[16]) && !string.IsNullOrWhiteSpace(values[16]) ? Convert.ToInt32(values[16]) : 0;
+                    objAddDTO.PostcodeType = values[17];
+                    objAddDTO.SmallUserOrganisationIndicator = values[18];
+                    objAddDTO.DeliveryPointSuffix = values[19];
+                    objAddDTO.IsValidData = true;
+                    objAddDTO.FileName = FileName;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
             return objAddDTO;
         }
@@ -269,61 +299,74 @@
         /// Perform business validation on postalAddressDTO object
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
-        private static void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
+        private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
-            foreach (PostalAddressDTO objAdd in lstAddress)
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            try
             {
-                if (string.IsNullOrEmpty(objAdd.AmendmentType) || !(System.Enum.IsDefined(typeof(AmmendmentType), objAdd.AmendmentType)))
+                foreach (PostalAddressDTO objAdd in lstAddress)
                 {
-                    objAdd.IsValidData = false;
-                }
-                if (string.IsNullOrEmpty(objAdd.PostTown))
-                {
-                    objAdd.IsValidData = false;
-                }
-                if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
-                {
-                    objAdd.IsValidData = false;
-                }
-                if (string.IsNullOrEmpty(objAdd.PostTown))
-                {
-                    objAdd.IsValidData = false;
-                }
-                if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
-                {
-                    objAdd.IsValidData = false;
-                }
-                if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN == 0 ? null : objAdd.UDPRN)))
-                {
-                    objAdd.IsValidData = false;
-                }
-                if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
-                {
-                    objAdd.IsValidData = false;
-                }
-                if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                {
-                    objAdd.IsValidData = false;
-                }
-                if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
-                {
-                    char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
+                    if (string.IsNullOrEmpty(objAdd.AmendmentType) || !(System.Enum.IsDefined(typeof(AmmendmentType), objAdd.AmendmentType)))
                     {
                         objAdd.IsValidData = false;
                     }
-                    if (characters.Count() != 2)
+                    if (string.IsNullOrEmpty(objAdd.PostTown))
                     {
                         objAdd.IsValidData = false;
                     }
-                    else if (characters.Count() == 2)
+                    if ((string.IsNullOrEmpty(objAdd.Postcode)) || !ValidatePostCode(objAdd.Postcode))
                     {
-                        if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
+                        objAdd.IsValidData = false;
+                    }
+                    if (string.IsNullOrEmpty(objAdd.PostTown))
+                    {
+                        objAdd.IsValidData = false;
+                    }
+                    if (string.IsNullOrEmpty(objAdd.PostcodeType) || (!string.Equals(objAdd.PostcodeType, PostcodeType.S.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        objAdd.IsValidData = false;
+                    }
+                    if (string.IsNullOrEmpty(Convert.ToString(objAdd.UDPRN == 0 ? null : objAdd.UDPRN)))
+                    {
+                        objAdd.IsValidData = false;
+                    }
+                    if ((!string.Equals(objAdd.SmallUserOrganisationIndicator, PostcodeType.Y.ToString(), StringComparison.OrdinalIgnoreCase) && objAdd.SmallUserOrganisationIndicator != " "))
+                    {
+                        objAdd.IsValidData = false;
+                    }
+                    if (string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                    {
+                        objAdd.IsValidData = false;
+                    }
+                    if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
+                    {
+                        char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
+                        if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                         {
                             objAdd.IsValidData = false;
                         }
+                        if (characters.Count() != 2)
+                        {
+                            objAdd.IsValidData = false;
+                        }
+                        else if (characters.Count() == 2)
+                        {
+                            if (!char.IsLetter(characters[1]) && !char.IsNumber(characters[0]))
+                            {
+                                objAdd.IsValidData = false;
+                            }
+                        }
                     }
                 }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
         }
 
@@ -332,31 +375,54 @@
         /// </summary>
         /// <param name="strPostCode">Postcode read from csv file</param>
         /// <returns></returns>
-        private static bool ValidatePostCode(string strPostCode)
+        private bool ValidatePostCode(string strPostCode)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             bool isValid = true;
-            if (!string.IsNullOrEmpty(strPostCode))
+            try
             {
-                char[] chrCodes = strPostCode.ToCharArray();
-                if (chrCodes.Length >= 5)
+                if (!string.IsNullOrEmpty(strPostCode))
                 {
-                    int length = chrCodes.Length;
-                    if (char.IsLetter(chrCodes[0]) && char.IsLetter(chrCodes[length - 1]) && char.IsLetter(chrCodes[length - 2])
-                            && char.IsNumber(chrCodes[length - 3]) && char.IsWhiteSpace(chrCodes[length - 4]))
+                    char[] chrCodes = strPostCode.ToCharArray();
+                    if (chrCodes.Length >= 5)
                     {
-                        isValid = true;
+                        int length = chrCodes.Length;
+                        if (char.IsLetter(chrCodes[0]) && char.IsLetter(chrCodes[length - 1]) && char.IsLetter(chrCodes[length - 2])
+                                && char.IsNumber(chrCodes[length - 3]) && char.IsWhiteSpace(chrCodes[length - 4]))
+                        {
+                            isValid = true;
+                        }
+                        else
+                        {
+                            isValid = false;
+                        }
                     }
                     else
                     {
                         isValid = false;
                     }
                 }
-                else
-                {
-                    isValid = false;
-                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
             return isValid;
+        }
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage)
+        {
+            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
         }
 
         #endregion private methods

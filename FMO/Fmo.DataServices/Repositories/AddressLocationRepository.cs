@@ -23,13 +23,13 @@
         /// <summary>
         /// Find AddressLocation by UDPRN
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>boolean value</returns>
-        public bool AddressLocationExists(int uDPRN)
+        public bool AddressLocationExists(int udprn)
         {
             try
             {
-                if (DataContext.AddressLocations.Where(n => n.UDPRN == uDPRN).Any())
+                if (DataContext.AddressLocations.Where(n => n.UDPRN == udprn).Any())
                 {
                     return true;
                 }
@@ -47,13 +47,13 @@
         /// <summary>
         /// Get AddressLocation by UDPRN
         /// </summary>
-        /// <param name="uDPRN"> UDPRN id</param>
+        /// <param name="udprn"> UDPRN id</param>
         /// <returns>AddressLocationDTO object</returns>
-        public AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN)
+        public AddressLocationDTO GetAddressLocationByUDPRN(int udprn)
         {
             try
             {
-                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefault();
 
                 // return context.Students.Find(id);
                 return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);

@@ -6,12 +6,12 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Entities;
-    using Fmo.MappingConfiguration;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -27,28 +27,33 @@
         /// Fetch postcode for basic search
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <returns>The result set of post code</returns>
-        public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// The result set of post code
+        /// </returns>
+        public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid unitGuid)
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText))
-                    .Take(takeCount)
-                    .Select(l => new PostCodeDTO
-                    {
-                        PostcodeUnit = l.PostcodeUnit,
-                        InwardCode = l.InwardCode,
-                        OutwardCode = l.OutwardCode,
-                        Sector = l.Sector
-                    }).ToListAsync();
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes
+                                                join s in DataContext.PostcodeSectors on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors on s.ID equals u.PostcodeSector_GUID
+                                                where p.PostcodeUnit.StartsWith(searchText)
+                                                select new PostCodeDTO
+                                                {
+                                                    PostcodeUnit = p.PostcodeUnit,
+                                                    InwardCode = p.InwardCode,
+                                                    OutwardCode = p.OutwardCode,
+                                                    Sector = p.Sector
+                                                }).Take(takeCount).ToListAsync();
 
                 return postCodeDetailsDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -56,27 +61,49 @@
         /// Get the count of post code
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <returns>The total count of post code</returns>
-        public async Task<int> GetPostCodeUnitCount(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// The total count of post code
+        /// </returns>
+        public async Task<int> GetPostCodeUnitCount(string searchText, Guid unitGuid)
         {
             try
             {
                 searchText = searchText ?? string.Empty;
-                return await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).CountAsync();
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes
+                                                join s in DataContext.PostcodeSectors on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors on s.ID equals u.PostcodeSector_GUID
+                                                where p.PostcodeUnit.StartsWith(searchText)
+                                                select p).CountAsync();
+                return postCodeDetailsDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
-        public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText)
+        /// <summary>
+        /// Fetches the post code unit for advance search.
+        /// </summary>
+        /// <param name="searchText">The search text.</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>List<PostCodeDTO></returns>
+        public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid unitGuid)
         {
             try
             {
-                var postCodeDetails = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText)).ToListAsync();
+                searchText = searchText ?? string.Empty;
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes
+                                                join s in DataContext.PostcodeSectors on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors on s.ID equals u.PostcodeSector_GUID
+                                                where p.PostcodeUnit.StartsWith(searchText)
+                                                select new PostCodeDTO
+                                                {
+                                                    PostcodeUnit = p.PostcodeUnit
+                                                }).ToListAsync();
 
-                return GenericMapper.MapList<Postcode, PostCodeDTO>(postCodeDetails);
+                return postCodeDetailsDto;
             }
             catch (Exception ex)
             {

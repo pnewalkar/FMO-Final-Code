@@ -44,7 +44,7 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="strLine">Line read from CSV File</param>
         /// <returns>Postal Address DTO</returns>
-        public List<PostalAddressDTO> LoadNybDetailsFromCSV(string line)
+        public List<PostalAddressDTO> LoadNybDetailsFromCsv(string line)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);

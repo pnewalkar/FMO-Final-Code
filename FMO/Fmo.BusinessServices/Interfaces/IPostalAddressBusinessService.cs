@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using Fmo.DTO;
 
-
     /// <summary>
     /// Interface for USR Business service
     /// </summary>

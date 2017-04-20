@@ -10,11 +10,21 @@ namespace Fmo.DataServices.Repositories.Interfaces
     /// </summary>
     public interface IPostCodeRepository
     {
-        Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText);
+        /// <summary>
+        ///  Fetch postcode for basic search
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>PostCode DTO</returns>
+        Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid userUnit);
 
-        Task<int> GetPostCodeUnitCount(string searchText);
+        /// <summary>
+        /// Fetch Postcode Unit for advance search
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>PostCode DTO</returns>
+        Task<int> GetPostCodeUnitCount(string searchText, Guid userUnit);
 
-        Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText);
+        Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Get post code ID by passing post code.

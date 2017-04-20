@@ -3,15 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlTypes;
+    using Common;
+    using Common.Constants;
+    using Common.Enums;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Helpers;
     using Interfaces;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
-    using Common.Enums;
-    using Common;
-    using Common.Constants;
 
     /// <summary>
     /// This class contains methods for fetching Delivery Points data.
@@ -34,8 +34,15 @@
         {
             try
             {
-                var coordinates = GetData(null, boundaryBox.Split(','));
-                return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates));
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var coordinates = GetData(boundaryBox.Split(Constants.Comma[0]));
+                    return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -83,10 +90,10 @@
                         id = point.DeliveryPoint_Id,
                         properties = new Dictionary<string, JToken>
                     {
-                        { "name", point.PostalAddress.BuildingName },
-                        { "number", point.PostalAddress.BuildingNumber },
-                        { "postcode", point.PostalAddress.Postcode },
-                        { "street_name", point.PostalAddress.BuildingName },
+                        { Constants.BuildingName, point.PostalAddress.BuildingName },
+                        { Constants.BuildingNumber, point.PostalAddress.BuildingNumber },
+                        { Constants.Postcode, point.PostalAddress.Postcode },
+                        { Constants.StreetName, point.PostalAddress.BuildingName },
                         { Constants.LayerType, Convert.ToString(OtherLayersType.DeliveryPoint.GetDescription()) }
                     },
                         geometry = new Geometry
@@ -104,20 +111,26 @@
         /// <summary>
         /// This Method is used to fetch Delivery Points Co-ordinates.
         /// </summary>
-        /// <param name="query">query as string</param>
         /// <param name="parameters">parameters as object</param>
         /// <returns>coordinates</returns>
-        private static string GetData(string query, params object[] parameters)
+        private static string GetData(params object[] parameters)
         {
             string coordinates = string.Empty;
 
             if (parameters != null && parameters.Length == 4)
             {
-                coordinates = "POLYGON((" + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + ", "
-                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[3]) + ", "
-                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[3]) + ", "
-                          + Convert.ToString(parameters[2]) + " " + Convert.ToString(parameters[1]) + ", "
-                          + Convert.ToString(parameters[0]) + " " + Convert.ToString(parameters[1]) + "))";
+                coordinates = string.Format(
+                                     Constants.Polygon,
+                                     Convert.ToString(parameters[0]),
+                                     Convert.ToString(parameters[1]),
+                                     Convert.ToString(parameters[0]),
+                                     Convert.ToString(parameters[3]),
+                                     Convert.ToString(parameters[2]),
+                                     Convert.ToString(parameters[3]),
+                                     Convert.ToString(parameters[2]),
+                                     Convert.ToString(parameters[1]),
+                                     Convert.ToString(parameters[0]),
+                                     Convert.ToString(parameters[1]));
             }
 
             return coordinates;
