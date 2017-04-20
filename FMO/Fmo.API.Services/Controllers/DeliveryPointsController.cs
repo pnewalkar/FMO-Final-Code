@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
+﻿using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.Common.Interface;
-using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -27,7 +24,7 @@ namespace Fmo.API.Services.Controllers
 
         public JsonResult Get()
         {
-            return Json("");
+            return Json(Constants.EmptyString);
         }
 
         /// <summary>
@@ -39,7 +36,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public JsonResult GetDeliveryPoints(string boundaryBox)
         {
-            return Json(businessService.GetDeliveryPoints(boundaryBox));           
+            return Json(businessService.GetDeliveryPoints(boundaryBox));
         }
 
         /// <summary>
@@ -53,6 +50,5 @@ namespace Fmo.API.Services.Controllers
         {
             return businessService.GetDeliveryPointByUDPRN(udprn);
         }
-
-    }   
+    }
 }
