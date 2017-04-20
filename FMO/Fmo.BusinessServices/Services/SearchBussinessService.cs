@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
+    /// <summary>
+    /// This class contains methods for basic and advance search
+    /// </summary>
     public class SearchBussinessService : ISearchBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
@@ -89,7 +93,7 @@ namespace Fmo.BusinessServices.Services
 
             foreach (var streetName in streetNames)
             {
-               searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
+                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
             }
 
             searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
@@ -99,7 +103,7 @@ namespace Fmo.BusinessServices.Services
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                 {
                     DisplayText = string.Format(
-                       "{0},{1},{3},{4},{5}",
+                       Constants.DeliveryPointFormat,
                        deliveryPoint.PostalAddress.OrganisationName,
                        deliveryPoint.PostalAddress.BuildingName,
                        deliveryPoint.PostalAddress.SubBuildingName,
@@ -159,7 +163,7 @@ namespace Fmo.BusinessServices.Services
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                 {
                     DisplayText = string.Format(
-                    "{0},{1}",
+                    Constants.StreetNameFormat,
                     streetName.NationalRoadCode,
                     streetName.DesignatedName),
                     Type = SearchBusinessEntityType.StreetNetwork
@@ -172,7 +176,7 @@ namespace Fmo.BusinessServices.Services
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                 {
                     DisplayText = string.Format(
-                    "{0},{1},{2},{3},{4},{5}",
+                    Constants.DeliveryPointFormat,
                     deliveryPoint.PostalAddress.OrganisationName,
                     deliveryPoint.PostalAddress.BuildingName,
                     deliveryPoint.PostalAddress.SubBuildingName,

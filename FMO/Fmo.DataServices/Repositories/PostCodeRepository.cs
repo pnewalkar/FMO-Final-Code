@@ -6,6 +6,7 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -34,7 +35,7 @@
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
                 var postCodeDetailsDto = await (from p in DataContext.Postcodes
                                                 join s in DataContext.PostcodeSectors on p.SectorGUID equals s.ID

@@ -15,6 +15,7 @@ using Fmo.Common.ConfigurationManagement;
 using Fmo.MappingConfiguration;
 using System.Timers;
 using Fmo.Common.LoggingManagement;
+using System.Reflection;
 
 namespace Fmo.Receiver
 {
@@ -23,9 +24,7 @@ namespace Fmo.Receiver
     /// </summary>
     public partial class Receiver : ServiceBase
     {
-        private string PAFWebApiurl = string.Empty;
         private string PAFWebApiName = string.Empty;
-        private string USRWebApiurl = string.Empty;
         private string USRWebApiName = string.Empty;
 
         private System.Timers.Timer m_mainTimer;
@@ -36,6 +35,8 @@ namespace Fmo.Receiver
         private IHttpHandler httpHandler;
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        private bool enableLogging = false;
 
         /// <summary>
         /// Constructor for the receiver class.
@@ -53,20 +54,22 @@ namespace Fmo.Receiver
         /// </summary>
         /// <param name="kernel"></param>
         protected void Register(IKernel kernel)
-        {
-            kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
-            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-            kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
-            kernal.Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
-            msgUSR = kernel.Get<IMessageBroker<AddressLocationUSRDTO>>();
-            msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
-            configurationHelper = kernal.Get<IConfigurationHelper>();
-            loggingHelper = kernal.Get<ILoggingHelper>();
+        {    
+            if(kernel != null)
+            { 
+                kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
+                kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
+                kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
+                kernal.Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
+                msgUSR = kernel.Get<IMessageBroker<AddressLocationUSRDTO>>();
+                msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
+                configurationHelper = kernal.Get<IConfigurationHelper>();
+                loggingHelper = kernal.Get<ILoggingHelper>();
+            }
 
-            this.PAFWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPIURL).ToString();
             this.PAFWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString();
-            this.USRWebApiurl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPIURL).ToString();
             this.USRWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString();
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         /// <summary>
@@ -75,10 +78,23 @@ namespace Fmo.Receiver
         /// <param name="args"></param>
         protected override void OnStart(string[] args)
         {
-            //instantiate timer
-            Thread t = new Thread(new ThreadStart(this.InitTimer));
-            t.Start();
-            // Start();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            try
+            {
+                //instantiate timer
+                Thread t = new Thread(new ThreadStart(this.InitTimer));
+                t.Start();
+                // Start();
+            }
+            catch (Exception ex)
+            {
+                loggingHelper.LogError(ex);
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
         }
 
         /// <summary>
@@ -86,15 +102,28 @@ namespace Fmo.Receiver
         /// </summary>
         private void InitTimer()
         {
-            m_mainTimer = new System.Timers.Timer();
-            //wire up the timer event 
-            m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
-            //set timer interval   
-            //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]); 
-            double timeInSeconds = 3.0;
-            m_mainTimer.Interval = (timeInSeconds * 1000);
-            // timer.Interval is in milliseconds, so times above by 1000 
-            m_mainTimer.Enabled = true;
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            try
+            {
+                m_mainTimer = new System.Timers.Timer();
+                //wire up the timer event 
+                m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
+                //set timer interval   
+                //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]); 
+                double timeInSeconds = 3.0;
+                m_mainTimer.Interval = (timeInSeconds * 1000);
+                // timer.Interval is in milliseconds, so times above by 1000 
+                m_mainTimer.Enabled = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
         }
 
         /// <summary>
@@ -104,6 +133,8 @@ namespace Fmo.Receiver
         /// <returns></returns>
         private async Task SavePAFDetails(List<PostalAddressDTO> postalAddress)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 if (postalAddress != null && postalAddress.Count > 0)
@@ -116,6 +147,10 @@ namespace Fmo.Receiver
             {
                 throw;
             }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
 
         }
 
@@ -126,15 +161,35 @@ namespace Fmo.Receiver
         /// <returns></returns>
         private async Task SaveUSRDetails(List<AddressLocationUSRDTO> addressLocationUSRDTO)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 httpHandler = new HttpHandler();
                 var addressLocationUSRPOSTDTO = GenericMapper.MapList<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
+                addressLocationUSRPOSTDTO.ForEach(addressLocation =>
+                {
+                    LogMethodInfoBlock(
+                                        methodName,
+                                        string.Format(
+                                        Constants.REQUESTLOG,
+                                        addressLocation.UDPRN == null? string.Empty : addressLocation.UDPRN.ToString(),
+                                        addressLocation.XCoordinate == null ? string.Empty : addressLocation.XCoordinate.ToString(),
+                                        addressLocation.YCoordinate == null ? string.Empty : addressLocation.YCoordinate.ToString(),
+                                        addressLocation.Latitude == null ? string.Empty : addressLocation.Latitude.ToString(),
+                                        addressLocation.Longitude == null ? string.Empty : addressLocation.Longitude.ToString(),
+                                        addressLocation.ChangeType == null ? string.Empty : addressLocation.ChangeType
+                                        ));
+                });
                 await httpHandler.PostAsJsonAsync(USRWebApiName, addressLocationUSRPOSTDTO);
             }
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
 
         }
@@ -144,8 +199,10 @@ namespace Fmo.Receiver
         /// </summary>
         public void PAFMessageReceived()
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
-            {                
+            {
                 List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
 
                 while (msgPAF.HasMessage(Constants.QUEUEPAF, Constants.QUEUEPATH))
@@ -164,6 +221,10 @@ namespace Fmo.Receiver
             {
                 throw;
             }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
         }
 
         /// <summary>
@@ -171,6 +232,8 @@ namespace Fmo.Receiver
         /// </summary>
         public void USRMessageReceived()
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 List<AddressLocationUSRDTO> lstAddressLocationUSR = new List<AddressLocationUSRDTO>();
@@ -184,13 +247,17 @@ namespace Fmo.Receiver
                     }
                 }
 
-                if(lstAddressLocationUSR != null && lstAddressLocationUSR.Count > 0)
+                if (lstAddressLocationUSR != null && lstAddressLocationUSR.Count > 0)
                     SaveUSRDetails(lstAddressLocationUSR).Wait();
 
             }
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
         }
 
@@ -201,6 +268,8 @@ namespace Fmo.Receiver
         /// <param name="e"></param>
         void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 USRMessageReceived();
@@ -208,13 +277,13 @@ namespace Fmo.Receiver
             }
             catch (Exception ex)
             {
-                loggingHelper.LogInfo(ex.Message);
-
-                if(ex.InnerException != null)
-                    loggingHelper.LogInfo(ex.InnerException.Message);
-
+                loggingHelper.LogError(ex);
             }
-            
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
+
         }
 
         /// <summary>
@@ -233,5 +302,16 @@ namespace Fmo.Receiver
         {
             OnStart(null);
         }
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage)
+        {
+            this.loggingHelper.LogInfo(string.Concat(methodName, Constants.COLON, logMessage), this.enableLogging);
+        }
     }
 }
+

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
-using System.Net.Http;
-using System.IO;
-using System.Net.Http.Headers;
-using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,12 +11,11 @@ namespace Fmo.API.Services.Controllers
     /// <summary>
     /// This class contains methods used to fetch Road Link data.
     /// </summary>
-    
+
     [Route("api/[controller]")]
     public class RoadNameController : Controller
     {
-
-        IRoadNameBusinessService roadNameBussinessService = default(IRoadNameBusinessService);
+        private IRoadNameBusinessService roadNameBussinessService = default(IRoadNameBusinessService);
 
         public RoadNameController(IRoadNameBusinessService businessService)
         {

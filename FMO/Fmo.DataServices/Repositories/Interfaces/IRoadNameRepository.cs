@@ -29,6 +29,5 @@
         /// <param name="coordinates">coordinates as string</param>
         /// <returns>IEnumerable OSRoadLink</returns>
         IEnumerable<OSRoadLink> GetData(string coordinates);
-
     }
 }

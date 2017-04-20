@@ -7,6 +7,7 @@
     using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -14,6 +15,9 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
+    /// <summary>
+    /// Repository to fetch street network details
+    /// </summary>
     public class StreetNetworkRepository : RepositoryBase<StreetName, FMODBContext>, IStreetNetworkRepository
     {
         public StreetNetworkRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -21,6 +25,11 @@
         {
         }
 
+        /// <summary>
+        /// Fetch street names for advance search
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>StreetNames</returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
         {
             try
@@ -47,7 +56,7 @@
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
 
                 DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();

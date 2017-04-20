@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
     using System.Linq;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DTO;
@@ -45,8 +46,15 @@
         /// <returns>Link of Access Link Entity</returns>
         public IEnumerable<AccessLink> GetData(string coordinates)
         {
-            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
-            return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
+            if (!string.IsNullOrEmpty(coordinates))
+            {
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

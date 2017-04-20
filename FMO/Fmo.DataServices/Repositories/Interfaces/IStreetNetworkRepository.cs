@@ -5,6 +5,9 @@ using Fmo.DTO;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
+    /// <summary>
+    /// This interface contains declarations of methods for basic and advance search of street network
+    /// </summary>
     public interface IStreetNetworkRepository
     {
         /// <summary>

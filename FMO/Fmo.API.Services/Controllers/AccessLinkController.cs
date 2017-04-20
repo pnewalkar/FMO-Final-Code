@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.IO;
-using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,8 +13,7 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class AccessLinkController : Controller
     {
-        IAccessLinkBusinessService accessLinkBussinessService = default(IAccessLinkBusinessService);
-
+        private IAccessLinkBusinessService accessLinkBussinessService = default(IAccessLinkBusinessService);
 
         public AccessLinkController(IAccessLinkBusinessService businessService)
         {
@@ -47,10 +41,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public string GetAccessLinks(string boundaryBox)
         {
-
             return accessLinkBussinessService.GetAccessLinks(boundaryBox);
-
         }
-
     }
 }

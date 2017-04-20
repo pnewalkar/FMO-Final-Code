@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.Entities;
-using Fmo.MappingConfiguration;
-using System.Configuration;
-
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Common.Constants;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.Entities;
+    using Fmo.MappingConfiguration;
+
+    /// <summary>
+    /// This class contains methods for fetching Delivery route data for basic and advance search
+    /// </summary>
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
         /// <summary>
@@ -75,7 +79,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
                 var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
                     .Where(l => (l.Scenario.Unit_GUID == userUnit && l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText))

@@ -11,7 +11,7 @@ namespace Fmo.API.Services.Controllers
     /// <summary>
     /// This class contains methods used for fetching Basic search and advance search results.
     /// </summary>
-    
+
     [Route("api/[controller]")]
     public class SearchController : FmoBaseController
     {

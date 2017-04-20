@@ -6,12 +6,15 @@
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using System.Reflection;
     using System.ServiceProcess;
     using System.Text;
+    using System.Web.Script.Serialization;
     using System.Xml.Serialization;
     using Common;
     using Common.Constants;
     using Common.Enums;
+    using Common.ExceptionManagement;
     using Fmo.Common.ConfigurationManagement;
     using Fmo.Common.EmailManagement;
     using Fmo.Common.Interface;
@@ -45,26 +48,8 @@
         private IPAFLoader pafLoader = default(IPAFLoader);
         private IUSRLoader usrLoader = default(IUSRLoader);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IEmailHelper emailHelper = default(IEmailHelper);
-        private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
-        private IDatabaseFactory<FMODBContext> databaseFactory = default(IDatabaseFactory<FMODBContext>);
-
-        private IFileMover fileMover = default(IFileMover);
         private IConfigurationHelper configurationHelper;
-
-        #endregion
-
-        #region Append TimeStamp
-
-        /// <summary>
-        /// Append timestamp to filename before writing the file to specified folder
-        /// </summary>
-        /// <param name="strfileName">path</param>
-        /// <returns>Filename with timestamp appended</returns>
-        private static string AppendTimeStamp(string strfileName)
-        {
-            return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
-        }
+        private bool enableLogging = false;
 
         #endregion
 
@@ -76,6 +61,7 @@
             InitializeComponent();
             this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
             this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         #endregion
@@ -100,28 +86,27 @@
         /// <param name="kernel">kernel object </param>
         protected void Register(IKernel kernel)
         {
-            kernel.Bind<INYBLoader>().To<NYBLoader>();
-            kernel.Bind<IPAFLoader>().To<PAFLoader>();
-            kernel.Bind<IUSRLoader>().To<USRLoader>();
-            kernel.Bind<IFileProcessingLogRepository>().To<FileProcessingLogRepository>();
-            kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
-            kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
-            kernel.Bind<IHttpHandler>().To<HttpHandler>();
-            kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
-            kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
-            kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
-            kernel.Bind<IEmailHelper>().To<EmailHelper>();
-            kernel.Bind<IDatabaseFactory<FMODBContext>>().To<DatabaseFactory<FMODBContext>>();
-
-            databaseFactory = kernel.Get<IDatabaseFactory<FMODBContext>>();
-            fileProcessingLogRepository = kernel.Get<IFileProcessingLogRepository>();
-            nybLoader = kernel.Get<INYBLoader>();
-            pafLoader = kernel.Get<IPAFLoader>();
-            usrLoader = kernel.Get<IUSRLoader>();
-            loggingHelper = kernel.Get<ILoggingHelper>();
-            fileMover = kernel.Get<IFileMover>();
-            emailHelper = kernal.Get<IEmailHelper>();
-            configurationHelper = kernel.Get<IConfigurationHelper>();
+            if (kernel != null)
+            {
+                kernel.Bind<INYBLoader>().To<NYBLoader>();
+                kernel.Bind<IPAFLoader>().To<PAFLoader>();
+                kernel.Bind<IUSRLoader>().To<USRLoader>();
+                kernel.Bind<IExceptionHelper>().To<ExceptionHelper>();
+                kernel.Bind<IEmailHelper>().To<EmailHelper>();
+                kernel.Bind<IFileProcessingLogRepository>().To<FileProcessingLogRepository>();
+                kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
+                kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
+                kernel.Bind<IHttpHandler>().To<HttpHandler>();
+                kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
+                kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
+                kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
+                kernel.Bind<IDatabaseFactory<FMODBContext>>().To<DatabaseFactory<FMODBContext>>();
+                nybLoader = kernel.Get<INYBLoader>();
+                pafLoader = kernel.Get<IPAFLoader>();
+                usrLoader = kernel.Get<IUSRLoader>();
+                loggingHelper = kernel.Get<ILoggingHelper>();
+                configurationHelper = kernel.Get<IConfigurationHelper>();
+            }
         }
         #endregion
 
@@ -158,6 +143,20 @@
 
         #endregion
 
+        #region Append TimeStamp
+
+        /// <summary>
+        /// Append timestamp to filename before writing the file to specified folder
+        /// </summary>
+        /// <param name="strfileName">path</param>
+        /// <returns>Filename with timestamp appended</returns>
+        private static string AppendTimeStamp(string strfileName)
+        {
+            return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
+        }
+
+        #endregion
+
         #region Start
 
         /// <summary>
@@ -184,14 +183,13 @@
 
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
-            TextReader reader = new StreamReader(fileNameXML);
-            object obj = deserializer.Deserialize(reader);
+            using (TextReader reader = new StreamReader(fileNameXML))
+            {
+                object obj = deserializer.Deserialize(reader);
 
-            // Close the TextReader object
-            reader.Close();
-
-            // Obtain a list of CustomFolderSettings from XML Input data
-            listFolders = obj as List<CustomFolderSettings>;
+                // Obtain a list of CustomFolderSettings from XML Input data
+                listFolders = obj as List<CustomFolderSettings>;
+            }
         }
 
         /// <summary>Start the file system watcher for each of the file
@@ -213,36 +211,39 @@
                     // Creates a new instance of FileSystemWatcher
                     FileSystemWatcher fileSWatch = new FileSystemWatcher();
 
-                    // Sets the filter
-                    fileSWatch.Filter = customFolder.FolderFilter;
+                    try
+                    {
+                        // Sets the filter
+                        fileSWatch.Filter = customFolder.FolderFilter;
 
-                    // Sets the folder location
-                    fileSWatch.Path = customFolder.FolderPath;
+                        // Sets the folder location
+                        fileSWatch.Path = customFolder.FolderPath;
 
-                    // Sets the action to be executed
-                    StringBuilder actionToExecute = new StringBuilder(
-                      customFolder.ExecutableFile);
+                        // List of arguments
+                        StringBuilder actionArguments = new StringBuilder(
+                          customFolder.ExecutableArguments);
 
-                    // List of arguments
-                    StringBuilder actionArguments = new StringBuilder(
-                      customFolder.ExecutableArguments);
+                        // Subscribe to notify filters
+                        fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
+                          NotifyFilters.DirectoryName;
 
-                    // Subscribe to notify filters
-                    fileSWatch.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName |
-                      NotifyFilters.DirectoryName;
+                        // Associate the event that will be triggered when a new file
+                        // is added to the monitored folder, using a lambda expression
+                        // fileSWatch.Created += (senderObj, fileSysArgs) =>
+                        //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
+                        fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionArguments.ToString()));
+                        fileSWatch.Error += OnFileSystemWatcherError;
 
-                    // Associate the event that will be triggered when a new file
-                    // is added to the monitored folder, using a lambda expression
-                    // fileSWatch.Created += (senderObj, fileSysArgs) =>
-                    //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
-                    fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString()));
-                    fileSWatch.Error += OnFileSystemWatcherError;
+                        // Begin watching
+                        fileSWatch.EnableRaisingEvents = true;
 
-                    // Begin watching
-                    fileSWatch.EnableRaisingEvents = true;
-
-                    // Add the systemWatcher to the list
-                    listFileSystemWatcher.Add(fileSWatch);
+                        // Add the systemWatcher to the list
+                        listFileSystemWatcher.Add(fileSWatch);
+                    }
+                    catch (Exception)
+                    {
+                        fileSWatch.Dispose();
+                    }
 
                     // Record a log entry into Windows Event Log
 
@@ -267,28 +268,40 @@
         /// extension is created on the monitored folder</summary>
         /// <param name="sender">Object raising the event</param>
         /// <param name="e">List of arguments - FileSystemEventArgs</param>
-        /// <param name="action_Exec">The action to be executed upon detecting a change in the File system</param>
         /// <param name="action_Args">arguments to be passed to the executable (action)</param>
-        private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Exec, string action_Args)
+        private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Args)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             string fileName = e.FullPath;
-            if (!string.IsNullOrEmpty(action_Args))
+            try
             {
-                FileType objFileType = EnumExtensions.GetEnumValue<FileType>(action_Args, true);
-                switch (objFileType)
+                if (!string.IsNullOrEmpty(action_Args))
                 {
-                    case FileType.Paf:
-                        this.pafLoader.LoadPAF(fileName);
-                        break;
+                    FileType objFileType = (FileType)Enum.Parse(typeof(FileType), action_Args, true);
+                    switch (objFileType)
+                    {
+                        case FileType.Paf:
+                            this.pafLoader.LoadPAF(fileName);
+                            break;
 
-                    case FileType.Nyb:
-                        LoadNYBDetails(fileName);
-                        break;
+                        case FileType.Nyb:
+                            LoadNYBDetails(fileName);
+                            break;
 
-                    case FileType.Usr:
-                        this.usrLoader.LoadTPFDetailsFromXML(fileName);
-                        break;
+                        case FileType.Usr:
+                            this.usrLoader.LoadTPFDetailsFromXML(fileName);
+                            break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                loggingHelper.LogError(ex);
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
         }
         #endregion
@@ -301,20 +314,23 @@
         /// <param name="fileName">Input file name as a param</param>
         private void LoadNYBDetails(string fileName)
         {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 using (ZipArchive zip = ZipFile.OpenRead(fileName))
                 {
                     foreach (ZipArchiveEntry entry in zip.Entries)
                     {
-                        string strLine = string.Empty;
-                        string strfileName = string.Empty;
-
                         Stream stream = entry.Open();
                         var reader = new StreamReader(stream);
-                        strLine = reader.ReadToEnd();
-                        strfileName = entry.Name;
-                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCSV(strLine.Trim());
+                        string strLine = reader.ReadToEnd();
+                        string strfileName = entry.Name;
+                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
+                        string postaLAddress = serializer.Serialize(lstNYBDetails);
+                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress);
+
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                         {
                             var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
@@ -331,17 +347,30 @@
                         }
                         else
                         {
-                            string logMessage = string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString());
-                            this.loggingHelper.LogInfo(logMessage);
+                            this.loggingHelper.LogInfo(string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString()));
                         }
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                loggingHelper.LogError(ex);
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
         }
         #endregion
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage)
+        {
+            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+        }
     }
 }
