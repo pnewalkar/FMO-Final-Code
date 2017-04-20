@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace Fmo.Common.LoggingManagement
 {
+    /// <summary>
+    /// Logging Helper class
+    /// </summary>
     public class LoggingHelper : ILoggingHelper
     {
         private static LogWriter logWriter = null;
@@ -28,6 +26,10 @@ namespace Fmo.Common.LoggingManagement
             Logger.SetLogWriter(logWriter, false);
         }
 
+        /// <summary>
+        /// Logs Error
+        /// </summary>
+        /// <param name="exception">exception</param>
         public void LogError(Exception exception)
         {
             string errorMessage = string.Empty;
@@ -43,6 +45,11 @@ namespace Fmo.Common.LoggingManagement
             Logger.Write(errorMessage, "General", 0, 0, TraceEventType.Error);
         }
 
+        /// <summary>
+        /// Logs Error
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="exception">exception</param>
         public void LogError(string message, Exception exception)
         {
             string errorMessage = string.Empty;
@@ -58,11 +65,32 @@ namespace Fmo.Common.LoggingManagement
             Logger.Write(errorMessage, "General", 0, 0, TraceEventType.Error);
         }
 
+        /// <summary>
+        /// Logs Information
+        /// </summary>
+        /// <param name="message">message</param>
         public void LogInfo(string message)
         {
             Logger.Write(message, "General", 0, 0, TraceEventType.Warning);
         }
 
+        /// <summary>
+        /// Logs Information
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="enableLogging">Is Logging enabled</param>
+        public void LogInfo(string message, bool enableLogging)
+        {
+            if (enableLogging)
+            {
+                Logger.Write(message, "General", 0, 0, TraceEventType.Information);
+            }
+        }
+
+        /// <summary>
+        /// Logs Warning
+        /// </summary>
+        /// <param name="message">message</param>
         public void LogWarn(string message)
         {
             Logger.Write(message, "General", 0, 0, TraceEventType.Information);

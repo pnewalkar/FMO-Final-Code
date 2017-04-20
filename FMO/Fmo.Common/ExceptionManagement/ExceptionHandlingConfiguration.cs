@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Resources;
 using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
 using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace Fmo.Common.ExceptionManagement
 {
+    /// <summary>
+    /// Exception Handling Configuration for programatically configuring exception policies
+    /// </summary>
     [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed.")]
     public class ExceptionHandlingConfiguration
     {
@@ -15,8 +21,14 @@ namespace Fmo.Common.ExceptionManagement
         {
         }
 
+        /// <summary>
+        /// Builds the exception handling configuration.
+        /// </summary>
+        /// <param name="logWriter">The log writer.</param>
+        /// <returns></returns>
         public static ExceptionManager BuildExceptionHandlingConfiguration(LogWriter logWriter)
         {
+            ResourceManager resxManager = new ResourceManager(ConfigurationManager.AppSettings["FmoMessages_ResourceFileName"], Assembly.GetExecutingAssembly());
             var policies = new List<ExceptionPolicyDefinition>();
             var exceptionShielding = new List<ExceptionPolicyEntry>
             {
@@ -26,7 +38,7 @@ namespace Fmo.Common.ExceptionManagement
                     new IExceptionHandler[]
                      {
                        new WrapHandler(
-                           "Application Error. Please contact your administrator.",
+                           resxManager.GetString("GenralErrorMessage"),
                          typeof(Exception))
                      })
             };
@@ -39,15 +51,15 @@ namespace Fmo.Common.ExceptionManagement
                     new IExceptionHandler[]
                      {
                        new LoggingExceptionHandler(
-                           "General",
-                       9000,
+                           resxManager.GetString("LogCategory"),
+                       Convert.ToInt32(resxManager.GetString("EventID")),
                        TraceEventType.Error,
-                         "FMO Exception",
+                         resxManager.GetString("EventLogTitle"),
                          5,
                          typeof(TextExceptionFormatter),
                          logWriter),
                        new ReplaceHandler(
-                           "An application error occurred and has been logged. Please contact your administrator.",
+                           resxManager.GetString("LogAndThrowErrorMessage"),
                          typeof(Exception))
                      }),
                 new ExceptionPolicyEntry(
@@ -56,7 +68,7 @@ namespace Fmo.Common.ExceptionManagement
                     new IExceptionHandler[]
                      {
                        new ReplaceHandler(
-                           "An application error has occurred.Please contact your administrator.",
+                           resxManager.GetString("GenralErrorMessage"),
                          typeof(BusinessLogicException))
                      })
             };
@@ -69,15 +81,15 @@ namespace Fmo.Common.ExceptionManagement
                     new IExceptionHandler[]
                      {
                        new LoggingExceptionHandler(
-                           "General",
-                       9002,
+                          resxManager.GetString("LogCategory"),
+                       Convert.ToInt32(resxManager.GetString("EventID")),
                        TraceEventType.Error,
-                         "FMO Exception",
+                         resxManager.GetString("EventLogTitle"),
                          5,
                          typeof(TextExceptionFormatter),
                          logWriter),
                        new WrapHandler(
-                           "Application Error. Please contact your administrator.",
+                           resxManager.GetString("GenralErrorMessage"),
                          typeof(Exception))
                      }),
                 new ExceptionPolicyEntry(
@@ -86,22 +98,22 @@ namespace Fmo.Common.ExceptionManagement
                     new IExceptionHandler[]
                      {
                         new WrapHandler(
-                            "An application error has occurred.Please contact your administrator.",
+                            resxManager.GetString("LogAndThrowErrorMessage"),
                          typeof(BusinessLogicException)),
                        new LoggingExceptionHandler(
-                           "General",
-                           9002,
+                           resxManager.GetString("LogCategory"),
+                           Convert.ToInt32(resxManager.GetString("EventID")),
                            TraceEventType.Error,
-                         "FMO Exception",
+                         resxManager.GetString("EventLogTitle"),
                          5,
                          typeof(TextExceptionFormatter),
                          logWriter)
                      })
             };
 
-            policies.Add(new ExceptionPolicyDefinition("ExceptionShielding", exceptionShielding));
-            policies.Add(new ExceptionPolicyDefinition("LoggingAndReplacingException", loggingAndReplacing));
-            policies.Add(new ExceptionPolicyDefinition("LogAndWrap", logAndWrap));
+            policies.Add(new ExceptionPolicyDefinition(resxManager.GetString("Policy_ExceptionShielding"), exceptionShielding));
+            policies.Add(new ExceptionPolicyDefinition(resxManager.GetString("Policy_LoggingAndReplacingException"), loggingAndReplacing));
+            policies.Add(new ExceptionPolicyDefinition(resxManager.GetString("Policy_LogAndWrap"), logAndWrap));
             return new ExceptionManager(policies);
         }
     }
