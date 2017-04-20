@@ -88,7 +88,7 @@
     <Compile Include="Services\DeliveryRouteBusinessService.cs" />
     <Compile Include="Services\PostCodeBussinessService.cs" />
     <Compile Include="Services\RoadNameBussinessService.cs" />
-    <Compile Include="Services\SearchBussinessService.cs" />
+    <Compile Include="Services\SearchBusinessService.cs" />
     <Compile Include="Services\StreetNetworkBussinessService.cs" />
     <Compile Include="Services\USRBusinessService.cs" />
   </ItemGroup>

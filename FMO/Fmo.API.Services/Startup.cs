@@ -78,7 +78,7 @@ namespace Fmo.API.Services
 
             //BusinessServices
             services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
-            services.AddTransient<ISearchBusinessService, SearchBussinessService>();
+            services.AddTransient<ISearchBusinessService, SearchBusinessService>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddTransient<IAccessLinkBusinessService, AccessLinkBussinessService>();

@@ -21,6 +21,15 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
             if (userName === undefined) {
                 return;
             }
+            else {
+                var aValue = sessionStorage.getItem('authorizationData');
+                if (aValue) {
+                    var jobject = JSON.parse(aValue)
+                    if (jobject.userName !== userName) {
+                        sessionStorage.clear();
+                    }
+                }
+            }
         }
        
         manageAccessService.getToken(vm.userdata).then(function (response) {

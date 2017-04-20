@@ -12,14 +12,14 @@ using Fmo.DTO;
 /// </summary>
 namespace Fmo.BusinessServices.Services
 {
-    public class SearchBussinessService : ISearchBusinessService
+    public class SearchBusinessService : ISearchBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
         private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
         private IDeliveryPointsRepository deliveryPointRepository = default(IDeliveryPointsRepository);
 
-        public SearchBussinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postcodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
+        public SearchBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postcodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
             this.postcodeRepository = postcodeRepository;
