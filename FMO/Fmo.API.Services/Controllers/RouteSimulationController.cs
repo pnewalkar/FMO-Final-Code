@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Fmo.API.Services.Controllers
 {
     [Route("api/[controller]")]
-    public class RouteSimulationController : Controller
+    public class RouteSimulationController : FmoBaseController//Controller
     {
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 
@@ -31,7 +31,8 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("FetchDeliveryRoute")]
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
-            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
+            var unitGuid = this.CurrentUserUnit;
+            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, unitGuid);
         }
 
         /// <summary>

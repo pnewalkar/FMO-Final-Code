@@ -1,5 +1,6 @@
 ﻿namespace Fmo.DataServices.Repositories.Interfaces
 {
+    using System;
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
     using System.Threading.Tasks;
@@ -36,17 +37,29 @@
         /// This method is used to fetch Delivery Points as per advance search.
         /// </summary>
         /// <param name="searchText">searchText as string</param>
-        /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText);
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task List of Delivery Point Dto
+        /// </returns>
+        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// This method is used to fetch Delivery Points as per basic search.
         /// </summary>
         /// <param name="searchText">searchText as string</param>
-        /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText);
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task List of Delivery Point Dto
+        /// </returns>
+        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid);
 
-        Task<int> GetDeliveryPointsCount(string searchText);
+        /// <summary>
+        /// Gets the delivery points count.
+        /// </summary>
+        /// <param name="searchText">The search text.</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>int</returns>
+        Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid);
 
         /// <summary>
         /// This method is used to fetch Delivery Points data.

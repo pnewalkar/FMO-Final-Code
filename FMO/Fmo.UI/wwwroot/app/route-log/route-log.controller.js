@@ -34,7 +34,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     function loadSelectionType() {
         routeLogAPIService.getSelectionType().then(function (response) {
             debugger;
-            vm.RouteselectionTypeObj = response.data;
+            vm.RouteselectionTypeObj = response;
             vm.selectedRouteSelectionObj = vm.RouteselectionTypeObj[0];
         });
     }
@@ -45,7 +45,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     function loadRouteLogStatus() {
         routeLogAPIService.getStatus().then(function (response) {
             debugger;
-            vm.RouteStatusObj = response.data;
+            vm.RouteStatusObj = response;
             vm.selectedRouteStatusObj = vm.RouteStatusObj[0];
             loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.selectedUnit.id);
         });
@@ -66,17 +66,17 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
         routeLogAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
             debugger;
-            vm.RouteScenario = response.data;
+            vm.RouteScenario = response;
         });
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
             if (vm.selectedRouteSelectionObj.displayText == "Single") {
                 vm.multiSelectiondeliveryRoute = null;
-                vm.deliveryRoute = response.data;
+                vm.deliveryRoute = response;
             } else {
                 vm.deliveryRoute = null;
-                vm.multiSelectiondeliveryRoute = response.data;
+                vm.multiSelectiondeliveryRoute = response;
             }           
         });
     }

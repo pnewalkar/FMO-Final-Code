@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Fmo.API.Services.Controllers.Base
+namespace Fmo.API.Services.Controllers
 {
     /// <summary>
     /// Base controller class for FMO Web API

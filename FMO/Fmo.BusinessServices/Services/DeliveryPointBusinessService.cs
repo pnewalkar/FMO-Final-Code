@@ -34,8 +34,15 @@
         {
             try
             {
-                var coordinates = GetData(null, boundaryBox.Split(Constants.Comma[0]));
-                return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates));
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var coordinates = GetData(boundaryBox.Split(Constants.Comma[0]));
+                    return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates));
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -104,10 +111,9 @@
         /// <summary>
         /// This Method is used to fetch Delivery Points Co-ordinates.
         /// </summary>
-        /// <param name="query">query as string</param>
         /// <param name="parameters">parameters as object</param>
         /// <returns>coordinates</returns>
-        private static string GetData(string query, params object[] parameters)
+        private static string GetData(params object[] parameters)
         {
             string coordinates = string.Empty;
 

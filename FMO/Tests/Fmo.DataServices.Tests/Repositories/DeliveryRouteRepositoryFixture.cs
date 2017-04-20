@@ -22,19 +22,20 @@
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryRouteRepository testCandidate;
         private Guid deliveryUnitID = System.Guid.NewGuid();
+        private Guid deliveryScenarioID = System.Guid.NewGuid();
         private Guid operationalStateID = System.Guid.NewGuid();
 
         [Test]
         public void TestFetchDeliveryRoute()
         {
-            var actualResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryUnitID);
+            var actualResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryScenarioID, deliveryUnitID);
             Assert.IsNotNull(actualResult);
         }
 
         [Test]
         public async Task TestFetchDeliveryRouteForBasicSearchValid()
         {
-            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("test");
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("test", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -42,7 +43,7 @@
         [Test]
         public async Task TestFetchDeliveryRouteForBasicSearchInvalid()
         {
-            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("invalid_testsearch");
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("invalid_testsearch", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 0);
         }
@@ -50,7 +51,7 @@
         [Test]
         public async Task TestFetchDeliveryRouteForBasicSearchNull()
         {
-            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch(null);
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch(null, deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -58,7 +59,7 @@
         [Test]
         public async Task TestGetDeliveryRouteCountValid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryRouteCount("testsearch");
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount("testsearch", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }
@@ -66,7 +67,7 @@
         [Test]
         public async Task TestGetDeliveryRouteCountInvalid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch");
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
         }
@@ -74,7 +75,7 @@
         [Test]
         public async Task TestGetDeliveryRouteCountNull()
         {
-            var actualResultCount = await testCandidate.GetDeliveryRouteCount(null);
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount(null, deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }

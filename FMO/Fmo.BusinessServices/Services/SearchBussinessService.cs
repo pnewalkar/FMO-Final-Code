@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
@@ -31,19 +32,22 @@ namespace Fmo.BusinessServices.Services
         /// Fetch results from entities using basic search
         /// </summary>
         /// <param name="searchText">The text to be searched from the entities.</param>
-        /// <returns>The result set after filtering the values.</returns>
-        public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText)
+        /// <param name="userUnit">The user unit.</param>
+        /// <returns>
+        /// The result set after filtering the values.
+        /// </returns>
+        public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText, Guid userUnit)
         {
             try
             {
-                var deliveryRoutes = await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText).ConfigureAwait(false);
-                var deliveryRouteCount = await deliveryRouteRepository.GetDeliveryRouteCount(searchText).ConfigureAwait(false);
-                var postcodes = await postcodeRepository.FetchPostCodeUnitForBasicSearch(searchText).ConfigureAwait(false);
-                var postCodeCount = await postcodeRepository.GetPostCodeUnitCount(searchText).ConfigureAwait(false);
-                var deliveryPoints = await deliveryPointRepository.FetchDeliveryPointsForBasicSearch(searchText).ConfigureAwait(false);
-                var deliveryPointsCount = await deliveryPointRepository.GetDeliveryPointsCount(searchText).ConfigureAwait(false);
-                var streetNames = await streetNetworkRepository.FetchStreetNamesForBasicSearch(searchText).ConfigureAwait(false);
-                var streetNetworkCount = await streetNetworkRepository.GetStreetNameCount(searchText).ConfigureAwait(false);
+                var deliveryRoutes = await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+                var deliveryRouteCount = await deliveryRouteRepository.GetDeliveryRouteCount(searchText, userUnit).ConfigureAwait(false);
+                var postcodes = await postcodeRepository.FetchPostCodeUnitForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+                var postCodeCount = await postcodeRepository.GetPostCodeUnitCount(searchText, userUnit).ConfigureAwait(false);
+                var deliveryPoints = await deliveryPointRepository.FetchDeliveryPointsForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+                var deliveryPointsCount = await deliveryPointRepository.GetDeliveryPointsCount(searchText, userUnit).ConfigureAwait(false);
+                var streetNames = await streetNetworkRepository.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+                var streetNetworkCount = await streetNetworkRepository.GetStreetNameCount(searchText, userUnit).ConfigureAwait(false);
 
                 var searchResultDTO = new SearchResultDTO();
                 searchResultDTO = GetBasicSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
@@ -60,13 +64,16 @@ namespace Fmo.BusinessServices.Services
         /// Fetch results from entities using advanced search
         /// </summary>
         /// <param name="searchText">searchText as string</param>
-        /// <returns>search Result Dto</returns>
-        public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
+        /// <param name="userUnit">The user unit.</param>
+        /// <returns>
+        /// search Result Dto
+        /// </returns>
+        public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText, Guid userUnit)
         {
-            var postcodesTask = postcodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText);
-            var deliveryRoutesTask = deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText);
-            var streetNamesTask = streetNetworkRepository.FetchStreetNamesForAdvanceSearch(searchText);
-            var deliveryPointsTask = deliveryPointRepository.FetchDeliveryPointsForAdvanceSearch(searchText);
+            var postcodesTask = postcodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText, userUnit);
+            var deliveryRoutesTask = deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText, userUnit);
+            var streetNamesTask = streetNetworkRepository.FetchStreetNamesForAdvanceSearch(searchText, userUnit);
+            var deliveryPointsTask = deliveryPointRepository.FetchDeliveryPointsForAdvanceSearch(searchText, userUnit);
 
             Task.WaitAll(deliveryRoutesTask, postcodesTask, streetNamesTask, deliveryPointsTask);
 
