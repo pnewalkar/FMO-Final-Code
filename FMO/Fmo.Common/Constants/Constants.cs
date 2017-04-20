@@ -6,6 +6,7 @@
 
         #region Common
 
+        public const int NOTIFICATIONDUE = 24;
         public const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
         public const string INSERT = "I";
         public const string UPDATE = "U";
@@ -25,6 +26,14 @@
         public const string PostalAddressStatus = "Postal Address Status";
         public const string PostalAddressType = "Postal Address Type";
         public const string XMLFileFolderSettings = "XMLFileFolderSettings";
+        public const string MethodExecutionStarted = " Method exceution started";
+        public const string MethodExecutionCompleted = " Method exceution completed";
+        public const string EnableLogging = "EnableLogging";
+        public const string CRLF = "\r\n";
+        public const string NEWLINE = "\n";
+        public const string COLON = " : ";
+        public const string POSTALADDRESSDETAILS = "Postal Address Details : ";
+        public const string Comma = ", ";
 
         #endregion
 
@@ -35,6 +44,7 @@
         public const string FMOWebAPIName = "FMOWebAPIName";
         public const string ProcessedFilePath = "ProcessedFilePath";
         public const string ErrorFilePath = "ErrorFilePath";
+        public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
 
         #endregion
 
@@ -50,7 +60,6 @@
         public const string USRGEOMETRYPOINT = "POINT({0} {1})";
         public const string USRCATEGORY = "Notification Type";
         public const string USRREFERENCEDATANAME = "Action required";
-        public const int USRNOTIFICATIONDUE = 24;
         public const string USREMAILFROMEMAIL = "USRFromEmail";
         public const string USREMAILSUBJECT = "USRSubject";
         public const string USREMAILBODY = "USRBody";
@@ -62,6 +71,7 @@
         public const string USRERRORFILEPATHCONFIG = "USRErrorFilePath";
         public const string USRUDPRN = "udprn";
         public const string USRCHANGETYPE = "changeType";
+        public const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
 
         #endregion
 
@@ -81,6 +91,11 @@
         public const string DeliveryPointUseIndicatorPAF = "B";
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
+        public const string PAFErrorMessageForUDPRNNotUpdated= "Postal Address for Selected UDPRN not updated";
+        public const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
+        public const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
+        public const string PAFTaskBodyPreText = "Please position the DP ";
+        public const string DeliveryPoints = "DeliveryPoints";
 
         #endregion
 

@@ -14,6 +14,7 @@ using Fmo.Common.Interface;
 using Fmo.Common.Enums;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using System.Reflection;
 
 namespace Fmo.NYBLoader
 {
@@ -31,6 +32,7 @@ namespace Fmo.NYBLoader
         private string XSD_LOCATION;
         private string PROCESSED;
         private string ERROR;
+        private bool enableLogging = false;
 
 
         public USRLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker,
@@ -48,6 +50,7 @@ namespace Fmo.NYBLoader
             this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues(Constants.XSDLOCATIONCONFIG);
             this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues(Constants.USRPROCESSEDFILEPATHCONFIG);
             this.ERROR = configHelper.ReadAppSettingsConfigurationValues(Constants.USRERRORFILEPATHCONFIG);
+            this.enableLogging = Convert.ToBoolean(configHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         /// <summary>
@@ -57,11 +60,13 @@ namespace Fmo.NYBLoader
         public void LoadTPFDetailsFromXML(string strPath)
         {
             string destinationPath = string.Empty;
-            List <AddressLocationUSRDTO> lstUSRFiles = null;
+            List<AddressLocationUSRDTO> lstUSRFiles = null;
             List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
             List<AddressLocationUSRDTO> lstUSRUpdateFiles = null;
             List<AddressLocationUSRDTO> lstUSRDeleteFiles = null;
 
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
 
             try
             {
@@ -81,27 +86,13 @@ namespace Fmo.NYBLoader
                 fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
-                Exception newException;
-                exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
-                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
-                if (rethrow)
-                {
-                    if (newException == null)
-                    {
-                        throw;
-
-                    }
-                    else
-                    {
-                        throw newException;
-                    }
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
         }
 
@@ -112,6 +103,8 @@ namespace Fmo.NYBLoader
         /// <returns></returns>
         private List<AddressLocationUSRDTO> GetValidRecords(string strPath)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
 
             try
             {
@@ -146,8 +139,8 @@ namespace Fmo.NYBLoader
                     {
                         xmlReader.MoveToContent();
                         lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(
-                                                                                      typeof(List<AddressLocationUSRDTO>), 
-                                                                                      new XmlRootAttribute(Constants.USRXMLROOT)).Deserialize(xmlReader));    
+                                                                                      typeof(List<AddressLocationUSRDTO>),
+                                                                                      new XmlRootAttribute(Constants.USRXMLROOT)).Deserialize(xmlReader));
                     }
                 };
 
@@ -156,7 +149,11 @@ namespace Fmo.NYBLoader
             catch (Exception)
             {
                 fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
-                throw ;
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
 
         }
@@ -170,6 +167,8 @@ namespace Fmo.NYBLoader
         private bool IsXmlValid(string fileName, string xsdFile, XmlNode xNode)
         {
 
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 bool result = true;
@@ -193,7 +192,7 @@ namespace Fmo.NYBLoader
                     {
                         objFileProcessingLog.NatureOfError = e.Message;
                     }
-                    else if(e.Severity == XmlSeverityType.Error)
+                    else if (e.Severity == XmlSeverityType.Error)
                     {
                         objFileProcessingLog.NatureOfError = e.Message;
                     }
@@ -210,6 +209,10 @@ namespace Fmo.NYBLoader
             {
                 throw;
             }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
         }
 
         private string AppendTimeStamp(string strfileName)
@@ -219,6 +222,16 @@ namespace Fmo.NYBLoader
                string.Format(Constants.DATETIMEFORMAT, DateTime.Now),
                 Path.GetExtension(strfileName)
                 );
+        }
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage)
+        {
+            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
         }
     }
 }

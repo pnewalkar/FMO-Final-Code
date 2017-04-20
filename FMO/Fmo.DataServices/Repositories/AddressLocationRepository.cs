@@ -49,7 +49,6 @@
         /// </summary>
         /// <param name="uDPRN"> UDPRN id</param>
         /// <returns>AddressLocationDTO object</returns>
-
         public AddressLocationDTO GetAddressLocationByUDPRN(int uDPRN)
         {
             try

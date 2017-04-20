@@ -11,6 +11,9 @@ using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace Fmo.Common.ExceptionManagement
 {
+    /// <summary>
+    /// Exception Handling Configuration for programatically configuring exception policies
+    /// </summary>
     [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed.")]
     public class ExceptionHandlingConfiguration
     {
@@ -18,6 +21,11 @@ namespace Fmo.Common.ExceptionManagement
         {
         }
 
+        /// <summary>
+        /// Builds the exception handling configuration.
+        /// </summary>
+        /// <param name="logWriter">The log writer.</param>
+        /// <returns></returns>
         public static ExceptionManager BuildExceptionHandlingConfiguration(LogWriter logWriter)
         {
             ResourceManager resxManager = new ResourceManager(ConfigurationManager.AppSettings["FmoMessages_ResourceFileName"], Assembly.GetExecutingAssembly());

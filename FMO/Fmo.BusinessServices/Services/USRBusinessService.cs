@@ -165,7 +165,7 @@
                                     {
                                         Notification_Id = fileUdprn,
                                         NotificationType_GUID = notificationTypeId_GUID,
-                                        NotificationDueDate = DateTime.Now.AddHours(Constants.USRNOTIFICATIONDUE),
+                                        NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE),
                                         NotificationSource = Constants.USRNOTIFICATIONSOURCE,
                                         Notification_Heading = Constants.USRACTION,
                                         Notification_Message = string.Format(
