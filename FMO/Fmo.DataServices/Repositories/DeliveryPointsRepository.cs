@@ -208,6 +208,11 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDto;
         }
 
+        /// <summary>
+        /// This method updates delivery point location using UDPRN
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
+        /// <returns>updated delivery point</returns>
         public async Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO)
         {
             try
@@ -227,6 +232,11 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// This method fetches delivery point data for given UDPRN
+        /// </summary>
+        /// <param name="udprn">udprn as int</param>
+        /// <returns>deliveryPoint DTO</returns>
         public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
         {
             List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();
@@ -243,6 +253,11 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDto;
         }
 
+        /// <summary>
+        /// This method checks delivery point for given UDPRN exists or not
+        /// </summary>
+        /// <param name="uDPRN">uDPRN as int</param>
+        /// <returns>boolean value true or false</returns>
         public bool DeliveryPointExists(int uDPRN)
         {
             try
@@ -262,6 +277,12 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// Calculte distance between two points
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPoint DTO</param>
+        /// <param name="newPoint">newPoint as DbGeometry</param>
+        /// <returns>distance as double</returns>
         public double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint)
         {
             try
@@ -275,6 +296,9 @@ namespace Fmo.DataServices.Repositories
         }
     }
 
+    /// <summary>
+    /// Mapping extensions for generic mapper
+    /// </summary>
     public static class MappingExpressionExtensions
     {
         public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
