@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,11 +21,12 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IStreetNetworkRepository testCandidate;
+        private Guid deliveryUnitID = System.Guid.NewGuid();
 
         [Test]
         public async Task TestFetchStreetNamesForBasicSearchValid()
         {
-            var actualResult = await testCandidate.FetchStreetNamesForBasicSearch("Test");
+            var actualResult = await testCandidate.FetchStreetNamesForBasicSearch("Test", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -32,7 +34,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestFetchStreetNamesForBasicSearchInvalid()
         {
-            var actualResult = await testCandidate.FetchStreetNamesForBasicSearch("invalid_Test");
+            var actualResult = await testCandidate.FetchStreetNamesForBasicSearch("invalid_Test", deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 0);
         }
@@ -40,7 +42,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestFetchStreetNamesForBasicSearchNull()
         {
-            var actualResult = await testCandidate.FetchStreetNamesForBasicSearch(null);
+            var actualResult = await testCandidate.FetchStreetNamesForBasicSearch(null, deliveryUnitID);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -48,7 +50,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestGetStreetNameCountValid()
         {
-            var actualResultCount = await testCandidate.GetStreetNameCount("Test");
+            var actualResultCount = await testCandidate.GetStreetNameCount("Test", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }
@@ -56,7 +58,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestGetStreetNameCountInvalid()
         {
-            var actualResultCount = await testCandidate.GetStreetNameCount("invalid_Test");
+            var actualResultCount = await testCandidate.GetStreetNameCount("invalid_Test", deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
         }
@@ -64,7 +66,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public async Task TestGetStreetNameCountNull()
         {
-            var actualResultCount = await testCandidate.GetStreetNameCount(null);
+            var actualResultCount = await testCandidate.GetStreetNameCount(null, deliveryUnitID);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }

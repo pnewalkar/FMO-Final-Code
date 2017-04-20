@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.Entity;
+    using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Threading.Tasks;
     using Fmo.DataServices.DBContext;
@@ -11,7 +13,6 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System.Configuration;
 
     public class StreetNetworkRepository : RepositoryBase<StreetName, FMODBContext>, IStreetNetworkRepository
     {
@@ -20,13 +21,12 @@
         {
         }
 
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText)
+        public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
         {
             try
             {
-                var streetNames = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)).ToListAsync();
-
-              //  var result = await DataContext.StreetNames.ToListAsync();
+                DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+                var streetNames = await DataContext.StreetNames.Where(l => l.Geometry.Intersects(polygon) && (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))).ToListAsync();
                 return GenericMapper.MapList<StreetName, StreetNameDTO>(streetNames);
             }
             catch (Exception ex)
@@ -39,14 +39,20 @@
         /// Fetch street name for Basic Search
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <returns>The result set of street name.</returns>
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// The result set of street name.
+        /// </returns>
+        public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid unitGuid)
         {
             try
             {
                 int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
                 searchText = searchText ?? string.Empty;
-                var streetNamesDto = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+
+                DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
+                var streetNamesDto = await DataContext.StreetNames.Where(l => l.Geometry.Intersects(polygon) && (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                     .Take(takeCount)
                     .Select(l => new StreetNameDTO
                     {
@@ -70,13 +76,17 @@
         /// Get the count of street name
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <returns>The total count of street name</returns>
-        public async Task<int> GetStreetNameCount(string searchText)
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// The total count of street name
+        /// </returns>
+        public async Task<int> GetStreetNameCount(string searchText, Guid unitGuid)
         {
             try
             {
                 searchText = searchText ?? string.Empty;
-                return await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
+                DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+                return await DataContext.StreetNames.Where(l => l.Geometry.Intersects(polygon) && (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                     .CountAsync();
             }
             catch (Exception ex)
