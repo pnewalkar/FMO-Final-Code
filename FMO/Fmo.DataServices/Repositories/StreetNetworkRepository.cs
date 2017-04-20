@@ -2,17 +2,21 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System.Configuration;
 
+    /// <summary>
+    /// Repository to fetch street network details
+    /// </summary>
     public class StreetNetworkRepository : RepositoryBase<StreetName, FMODBContext>, IStreetNetworkRepository
     {
         public StreetNetworkRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -20,13 +24,17 @@
         {
         }
 
+        /// <summary>
+        /// Fetch street names for advance search
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>StreetNames</returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText)
         {
             try
             {
                 var streetNames = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)).ToListAsync();
 
-              //  var result = await DataContext.StreetNames.ToListAsync();
                 return GenericMapper.MapList<StreetName, StreetNameDTO>(streetNames);
             }
             catch (Exception ex)
@@ -44,7 +52,7 @@
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
                 var streetNamesDto = await DataContext.StreetNames.Where(l => l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))
                     .Take(takeCount)
