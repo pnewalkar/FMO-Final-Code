@@ -8,16 +8,16 @@ namespace Fmo.DTO.FileProcessing
 {
     public class AddressLocationUSRPOSTDTO
     {
-        public int? udprn { get; set; }
+        public int? UDPRN { get; set; }
 
-        public decimal? xCoordinate { get; set; }
+        public decimal? XCoordinate { get; set; }
 
-        public decimal? yCoordinate { get; set; }
+        public decimal? YCoordinate { get; set; }
 
-        public decimal? latitude { get; set; }
+        public decimal? Latitude { get; set; }
 
-        public decimal? longitude { get; set; }
+        public decimal? Longitude { get; set; }
 
-        public string changeType { get; set; }
+        public string ChangeType { get; set; }
     }
 }
