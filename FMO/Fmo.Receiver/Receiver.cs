@@ -310,7 +310,7 @@ namespace Fmo.Receiver
         /// <param name="logMessage">Message</param>
         private void LogMethodInfoBlock(string methodName, string logMessage)
         {
-            this.loggingHelper.LogInfo(string.Concat(methodName, Constants.COLON, logMessage), this.enableLogging));
+            this.loggingHelper.LogInfo(string.Concat(methodName, Constants.COLON, logMessage), this.enableLogging);
         }
     }
 }

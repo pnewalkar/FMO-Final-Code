@@ -12,8 +12,8 @@
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
-        /// <param name="lstAddressLocationUSRPOSTDTO">lstAddressLocationUSRPOSTDTO</param>
+        /// <param name="addressLocationUsrpostdtos">addressLocationUsrpostdtos</param>
         /// <returns>Task</returns>
-        Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> lstAddressLocationUSRPOSTDTO);
+        Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos);
     }
 }

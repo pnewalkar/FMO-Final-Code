@@ -22,7 +22,7 @@
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
-        private IPostCodeSectorRepository postCodeSectorRepository = default(IPostCodeSectorRepository);
+        private IPostcodeSectorRepository postcodeSectorRepository = default(IPostcodeSectorRepository);
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
@@ -36,7 +36,7 @@
            IAddressLocationRepository addressLocationRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
            INotificationRepository notificationRepository,
-           IPostCodeSectorRepository postCodeSectorRepository,
+           IPostcodeSectorRepository postcodeSectorRepository,
            IReferenceDataCategoryRepository referenceDataCategoryRepository,
            IEmailHelper emailHelper,
            IConfigurationHelper configurationHelper,
@@ -45,7 +45,7 @@
             this.addressLocationRepository = addressLocationRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.notificationRepository = notificationRepository;
-            this.postCodeSectorRepository = postCodeSectorRepository;
+            this.postcodeSectorRepository = postcodeSectorRepository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.emailHelper = emailHelper;
             this.configurationHelper = configurationHelper;
@@ -59,14 +59,14 @@
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
-        /// <param name="lstAddressLocationUSRPOSTDTO"> List of Address Locations</param>
+        /// <param name="addressLocationUsrpostdtos"> List of Address Locations</param>
         /// <returns> Task </returns>
-        public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> lstAddressLocationUSRPOSTDTO)
+        public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
             try
             {
-                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in lstAddressLocationUSRPOSTDTO)
+                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
                 {
                     // Get the udprn id for each USR record.
                     fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
@@ -153,7 +153,7 @@
                                 else
                                 {
                                     // Get the Postcode Sector by UDPRN
-                                    PostCodeSectorDTO postCodeSectorDTO = postCodeSectorRepository.GetPostCodeSectorByUDPRN(fileUdprn);
+                                    PostCodeSectorDTO postCodeSectorDTO = postcodeSectorRepository.GetPostCodeSectorByUDPRN(fileUdprn);
 
                                     // Get the Notification Type from the Reference data table
                                     Guid notificationTypeId_GUID = referenceDataCategoryRepository.GetReferenceDataId(
@@ -200,7 +200,7 @@
         /// </summary>
         /// <param name="addressLocationUSRPOSTDTO">AddressLocationUSRPOSTDTO object</param>
         /// <returns>DbGeometry object</returns>
-        private DbGeometry GetSpatialLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
+        private static DbGeometry GetSpatialLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
         {
             try
             {
@@ -231,17 +231,16 @@
         {
             try
             {
-                MailMessage message = new MailMessage()
+                using (MailMessage message = new MailMessage())
                 {
-                    From = new MailAddress(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILFROMEMAIL)),
-                    Subject = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILSUBJECT),
-                    Body = string.Format(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILBODY), fileUdprn.ToString())
-                };
+                    message.From = new MailAddress(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILFROMEMAIL));
+                    message.Subject = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILSUBJECT);
+                    message.Body = string.Format(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILBODY), fileUdprn.ToString());
+                    message.To.Add(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILTOEMAIL));
 
-                message.To.Add(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILTOEMAIL));
-
-                // Send email if the address location udprn already exists in the database
-                emailHelper.SendMessage(message);
+                    // Send email if the address location udprn already exists in the database
+                    emailHelper.SendMessage(message);
+                }
             }
             catch (Exception)
             {

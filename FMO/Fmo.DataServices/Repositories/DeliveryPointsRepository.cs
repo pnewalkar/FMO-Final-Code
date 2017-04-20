@@ -30,13 +30,13 @@ namespace Fmo.DataServices.Repositories
         /// <summary>
         /// This method is used to fetch Delivery Point by udprn.
         /// </summary>
-        /// <param name="uDPRN">udprn as int</param>
+        /// <param name="udprn">udprn as int</param>
         /// <returns>DeliveryPointDTO</returns>
-        public DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN)
+        public DeliveryPointDTO GetDeliveryPointByUDPRN(int udprn)
         {
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == uDPRN).SingleOrDefault();
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == udprn).SingleOrDefault();
 
                 Mapper.Initialize(cfg =>
                 {
@@ -79,9 +79,9 @@ namespace Fmo.DataServices.Repositories
                     saveFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return saveFlag;
@@ -257,13 +257,13 @@ namespace Fmo.DataServices.Repositories
         /// <summary>
         /// This method checks delivery point for given UDPRN exists or not
         /// </summary>
-        /// <param name="uDPRN">uDPRN as int</param>
+        /// <param name="udprn">uDPRN as int</param>
         /// <returns>boolean value true or false</returns>
-        public bool DeliveryPointExists(int uDPRN)
+        public bool DeliveryPointExists(int udprn)
         {
             try
             {
-                if (DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(uDPRN)).Any())
+                if (DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(udprn)).Any())
                 {
                     return true;
                 }
@@ -288,7 +288,13 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                return deliveryPointDTO.LocationXY.Distance(newPoint);
+                double? distance = 0;
+                if (deliveryPointDTO != null)
+                {
+                    distance = deliveryPointDTO.LocationXY.Distance(newPoint);
+                }
+
+                return distance;
             }
             catch (Exception)
             {

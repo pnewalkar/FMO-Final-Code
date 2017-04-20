@@ -14,9 +14,9 @@
         /// <summary>
         /// Get the delivery points by the UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>DeliveryPointDTO object</returns>
-        DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN);
+        DeliveryPointDTO GetDeliveryPointByUDPRN(int udprn);
 
         /// <summary>
         /// Insert the DeliveryPointDTO object into the database
@@ -65,16 +65,16 @@
         /// <summary>
         /// Get the list of delivery points by the UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>DeliveryPointDTO object</returns>
         List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
 
         /// <summary>
         /// Check if the delivery point exists for a given UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>boolean value</returns>
-        bool DeliveryPointExists(int uDPRN);
+        bool DeliveryPointExists(int udprn);
 
         /// <summary>
         /// Calculate the distance between a given point and delivery point
