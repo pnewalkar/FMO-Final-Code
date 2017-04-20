@@ -8,12 +8,12 @@
     using Fmo.MappingConfiguration;
     using Infrastructure;
     using Interfaces;
-    using Entites=Fmo.Entities;
+    using Entites = Fmo.Entities;
 
     /// <summary>
     /// This class contains for methods for fetching access action items.
     /// </summary>
-  public class AccessActionRepository : RepositoryBase<Action, FMODBContext>, IAccessActionRepository
+    public class AccessActionRepository : RepositoryBase<Action, FMODBContext>, IAccessActionRepository
     {
         public AccessActionRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
@@ -28,7 +28,7 @@
         {
             try
             {
-              var result = DataContext.Actions.ToList();
+                var result = DataContext.Actions.ToList();
                 List<AccessActionDTO> accessActionDTO = GenericMapper.MapList<Entites.Action, AccessActionDTO>(result);
                 return accessActionDTO;
             }
