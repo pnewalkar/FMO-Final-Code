@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
@@ -23,12 +24,15 @@ namespace Fmo.DataServices.Repositories
         /// <summary>
         /// Fetch the delivery unit.
         /// </summary>
-        /// <returns>List</returns>
-        public List<DeliveryUnitLocationDTO> FetchDeliveryUnit()
+        /// <param name="unitId">The unit identifier.</param>
+        /// <returns>
+        /// List
+        /// </returns>
+        public List<DeliveryUnitLocationDTO> FetchDeliveryUnit(Guid unitId)
         {
             try
             {
-                var result = DataContext.UnitLocations.Where(x => x.UnitBoundryPolygon != null).ToList();
+                var result = DataContext.UnitLocations.Where(x => x.ID == unitId && x.UnitBoundryPolygon != null).ToList();
                 return GenericMapper.MapList<UnitLocation, DeliveryUnitLocationDTO>(result.ToList());
             }
             catch (System.Exception)

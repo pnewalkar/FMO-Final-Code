@@ -9,9 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
 {
-    //[EnableCors("AllowCors")]
     [Route("api/[controller]")]
-    public class RouteLogController : Controller
+    public class RouteLogController : FmoBaseController
     {
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 
@@ -24,11 +23,12 @@ namespace Fmo.API.Services.Controllers
         /// Fetches Delivery Unit
         /// </summary>
         /// <returns>List</returns>
-        [Authorize(Roles = "View Delivery Points, Maintain Delivery Points")]
+        [Authorize]
         [HttpGet("DeliveryUnit")]
         public List<DeliveryUnitLocationDTO> DeliveryUnit()
         {
-            return deliveryRouteBusinessService.FetchDeliveryUnit();
+            var unitGuid = this.CurrentUserUnit;
+            return deliveryRouteBusinessService.FetchDeliveryUnit(unitGuid);
         }
 
         /// <summary>
@@ -37,10 +37,12 @@ namespace Fmo.API.Services.Controllers
         /// <param name="operationStateID"> operationState ID</param>
         /// <param name="deliveryScenarioID">deliveryScenario ID</param>
         /// <returns>List</returns>
+        [Authorize]
         [HttpGet("FetchDeliveryRoute")]
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
-            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
+            var unitGuid = this.CurrentUserUnit;
+            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, unitGuid);
         }
 
         /// <summary>
