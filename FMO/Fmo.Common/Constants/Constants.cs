@@ -42,7 +42,8 @@
         public const string EmptyString = "";
         public const string DeliveryPointFormat = "{0},{1},{2},{3},{4},{5}";
         public const string StreetNameFormat = "{0},{1}";
-
+        public const string SMTPHOSTNAME = "localhost";
+        public const int SMTPPORT = 25;
         #endregion Common
 
         #region NYB
