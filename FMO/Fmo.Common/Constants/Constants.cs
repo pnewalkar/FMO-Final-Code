@@ -40,6 +40,8 @@
         public const string StreetName = "street_name";
         public const string SearchResultCount = "SearchResultCount";
         public const string EmptyString = "";
+        public const string DeliveryPointFormat = "{0},{1},{2},{3},{4},{5}";
+        public const string StreetNameFormat = "{0},{1}";
 
         #endregion Common
 
