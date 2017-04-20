@@ -24,9 +24,9 @@ namespace Fmo.NYBLoader.Common
         /// Set Web api URL
         /// </summary>
         /// <param name="addr"></param>
-        public void SetBaseAddress(Uri addr)
+        public void SetBaseAddress(Uri address)
         {
-            this.client.BaseAddress = addr;
+            this.client.BaseAddress = address;
         }
 
         /// <summary>
