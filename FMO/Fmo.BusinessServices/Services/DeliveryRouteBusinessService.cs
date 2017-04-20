@@ -175,7 +175,7 @@ namespace Fmo.BusinessServices.Services
                 {
                     geometry.type = OpenGisGeometryType.MultiPolygon.ToString();
 
-                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
                     List<List<List<double[]>>> listCords = new List<List<List<double[]>>>();
 
                     List<List<double[]>> cords = new List<List<double[]>>();
