@@ -22,7 +22,7 @@
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
-        private IPostcodeSectorRepository postcodeSectorRepository = default(IPostcodeSectorRepository);
+        private IPostCodeSectorRepository postcodeSectorRepository = default(IPostCodeSectorRepository);
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
@@ -36,7 +36,7 @@
            IAddressLocationRepository addressLocationRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
            INotificationRepository notificationRepository,
-           IPostcodeSectorRepository postcodeSectorRepository,
+           IPostCodeSectorRepository postcodeSectorRepository,
            IReferenceDataCategoryRepository referenceDataCategoryRepository,
            IEmailHelper emailHelper,
            IConfigurationHelper configurationHelper,

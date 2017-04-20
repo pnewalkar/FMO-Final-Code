@@ -5,7 +5,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
     /// <summary>
     /// IPostCodeSectorRepository interface to abstract away the PostCodeSectorRepository implementation
     /// </summary>
-    public interface IPostcodeSectorRepository
+    public interface IPostCodeSectorRepository
     {
         /// <summary>
         /// Get the postcode sector by the UDPRN id

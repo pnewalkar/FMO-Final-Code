@@ -29,7 +29,8 @@ namespace Fmo.DataServices.Repositories
                     Unit_GUID = x.Unit_GUID,
                     UserName = x.UserName,
                     FunctionName = x.FunctionName,
-                    ActionName = x.ActionName
+                    ActionName = x.ActionName,
+                    UserId = x.UserId
                 }).ToListAsync();
 
             return roleAccessDto;

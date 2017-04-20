@@ -79,6 +79,7 @@
     <Compile Include="Services\PostalAddressBusinessServiceFixture.cs" />
     <Compile Include="Services\RoadNameBussinessServiceFixture.cs" />
     <Compile Include="Services\SearchBusinessServiceFixture.cs" />
+    <Compile Include="Services\UnitLocationBusinessServiceFixture.cs" />
     <Compile Include="Services\USRBusinessServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>

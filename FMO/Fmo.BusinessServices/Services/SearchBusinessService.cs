@@ -16,7 +16,7 @@ namespace Fmo.BusinessServices.Services
     /// <summary>
     /// This class contains methods for basic and advance search
     /// </summary>
-    public class SearchBussinessService : ISearchBusinessService
+    public class SearchBusinessService : ISearchBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
         private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);

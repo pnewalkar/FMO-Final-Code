@@ -86,6 +86,7 @@ namespace Fmo.API.Services
             services.AddTransient<IUserRoleUnitBussinessService, UserRoleUnitBussinessService>();
             services.AddTransient<IUSRBusinessService, USRBusinessService>();
             services.AddTransient<IAccessActionBusinessService, AccessActionBussinessService>();
+            services.AddTransient<IUnitLocationBusinessService, UnitLocationBusinessService>();
             //Repositories
             services.AddTransient<IAccessActionRepository, AccessActionRepository>();
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
@@ -98,12 +99,13 @@ namespace Fmo.API.Services
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
             services.AddTransient<IDeliveryRouteRepository, DeliveryRouteRepository>();
             services.AddTransient<IScenarioRepository, ScenarioRepository>();
-            services.AddTransient<IDeliveryUnitLocationRepository, DeliveryUnitLocationRespository>();
+            services.AddTransient<IUnitLocationRepository, UnitLocationRepository>();
             services.AddTransient<IAddressLocationRepository, AddressLocationRepository>();
             services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<IUnitLocationRepository, UnitLocationRepository>();
 
             //services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();

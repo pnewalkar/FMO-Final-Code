@@ -72,6 +72,7 @@
     <Compile Include="Interfaces\IAccessLinkBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryPointBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryRouteBusinessService.cs" />
+    <Compile Include="Interfaces\IUnitLocationBusinessService.cs" />
     <Compile Include="Interfaces\IPostalAddressBusinessService.cs" />
     <Compile Include="Interfaces\IPostCodeBussinessService.cs" />
     <Compile Include="Interfaces\IRoadNameBusinessService.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Services\ActionManager\ActionManagerBussinessService.cs" />
     <Compile Include="Services\ActionManager\UserRoleUnitBussinessService.cs" />
     <Compile Include="Services\DeliveryPointBusinessService.cs" />
+    <Compile Include="Services\UnitLocationBusinessService.cs" />
     <Compile Include="Services\PostalAddressBusinessService.cs" />
     <Compile Include="Services\DeliveryRouteBusinessService.cs" />
     <Compile Include="Services\PostCodeBussinessService.cs" />

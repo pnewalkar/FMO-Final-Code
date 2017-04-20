@@ -8,15 +8,6 @@ namespace Fmo.BusinessServices.Interfaces
     public interface IDeliveryRouteBusinessService
     {
         /// <summary>
-        /// Fetch the Delivery unit.
-        /// </summary>
-        /// <param name="unitGuid">The unit unique identifier.</param>
-        /// <returns>
-        /// List
-        /// </returns>
-        List<DeliveryUnitLocationDTO> FetchDeliveryUnit(Guid unitGuid);
-
-        /// <summary>
         /// Fetch the Delivery Route status.
         /// </summary>
         /// <returns>List</returns>

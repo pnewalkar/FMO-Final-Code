@@ -7,7 +7,7 @@ angular.module('unitSelector')
         unitSelectorAPIService.getDeliveryUnit = function () {
             return $http({
                 method: 'GET',
-                url: GlobalSettings.apiUrl + '/RouteLog/DeliveryUnit'
+                url: GlobalSettings.apiUrl + '/UnitLocation/DeliveryUnitsForUser'
             });
         };
 

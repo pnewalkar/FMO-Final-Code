@@ -1,5 +1,12 @@
 
 /****** Object:  View [FMO].[Vw_GetAccessFunction]    Script Date: 4/14/2017 3:53:08 PM ******/
+GO
+
+/****** Object:  View [FMO].[Vw_GetAccessFunction]    Script Date: 4/20/2017 8:07:25 PM ******/
+DROP VIEW [FMO].[Vw_GetAccessFunction]
+GO
+
+/****** Object:  View [FMO].[Vw_GetAccessFunction]    Script Date: 4/20/2017 8:07:25 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -8,7 +15,7 @@ GO
 
 CREATE View [FMO].[Vw_GetAccessFunction] 
 	as
- Select r.RoleName, uru.Unit_GUID, u.UserName, f.Name as FunctionName, a.DisplayText as ActionName 
+ Select r.RoleName, uru.Unit_GUID, u.UserName, f.Name as FunctionName, a.DisplayText as ActionName, u.ID as UserId
   from [FMO].[Function] f 
 inner join [FMO].[RoleFunction] rf on f.ID = rf.Function_GUID
 inner join [FMO].[Action] a on a.ID = f.Action_GUID
@@ -17,5 +24,3 @@ inner join [FMO].[User] u on u.ID = uru.User_GUID
 inner join [FMO].[Role] r on r.ID = uru.Role_GUID
 
 GO
-
-

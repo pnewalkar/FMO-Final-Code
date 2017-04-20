@@ -9,9 +9,9 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
-    public class PostcodeSectorRepository : RepositoryBase<PostcodeSector, FMODBContext>, IPostcodeSectorRepository
+    public class PostCodeSectorRepository : RepositoryBase<PostcodeSector, FMODBContext>, IPostCodeSectorRepository
     {
-        public PostcodeSectorRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        public PostCodeSectorRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
         }
