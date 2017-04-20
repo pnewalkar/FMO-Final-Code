@@ -1,5 +1,9 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Data.Entity;
     using Common.Constants;
     using Common.Enums;
     using Common.Interface;
@@ -9,9 +13,6 @@
     using Fmo.DTO;
     using Fmo.Entities;
     using MappingConfiguration;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -41,7 +42,7 @@
             bool isPostalAddressDeleted = false;
             if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
-                var lstAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
+                var lstAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
                 if (lstAddress != null && lstAddress.Count > 0)
                 {
                     lstAddress.ForEach(postalAddressEntity =>
@@ -49,7 +50,7 @@
                         if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
                             isPostalAddressDeleted = false;
-                            this.loggingHelper.LogInfo("Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: " + string.Join(",", lstUDPRN));
+                            this.loggingHelper.LogInfo(string.Format(Constants.NYBErrorMessageForDelete, string.Join(Constants.Comma, lstUDPRN)));
                         }
                         else
                         {
@@ -118,6 +119,12 @@
             return isPostalAddressInserted;
         }
 
+        /// <summary>
+        /// Insert PAF details depending on the UDPRN
+        /// </summary>
+        /// <param name="objPostalAddress">PAF details DTO</param>
+        /// <param name="strFileName">CSV Filename</param>
+        /// <returns>true or false</returns>
         public bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool saveFlag = false;
@@ -142,6 +149,11 @@
             return saveFlag;
         }
 
+        /// <summary>
+        /// Get Postal address details depending on the UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <returns>returns PostalAddress object</returns>
         public PostalAddressDTO GetPostalAddress(int? uDPRN)
         {
             try
@@ -156,6 +168,11 @@
             }
         }
 
+        /// <summary>
+        /// Get Postal address details depending on the address fields such as BuildingName and etc
+        /// </summary>
+        /// <param name="objPostalAddress">Postal address</param>
+        /// <returns>returns PostalAddress object</returns>
         public PostalAddressDTO GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
             try
@@ -180,7 +197,7 @@
         }
 
         /// <summary>
-        /// Create or update PAF details depending on the UDPRN
+        /// Update PAF details depending on the UDPRN
         /// </summary>
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
@@ -192,7 +209,7 @@
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Include("DeliveryPoints").Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {

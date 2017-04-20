@@ -9,15 +9,15 @@ SET ANSI_PADDING ON
 GO
 
 CREATE TABLE [FMO].[AuditLog](
-	[AuditLog_Id] [uniqueidentifier] NOT NULL,
-	[EventTimeStamp] [datetime] NULL,
-	[EventType] [varchar](50) NULL,
-	[RecordId] [varchar](50) NULL,
-	[TableName] [varchar](50) NULL,
+	[AuditLog_Id] [uniqueidentifier] NOT NULL,	
+	[TableName] [varchar](50) NOT NULL,
+	[RecordId] [varchar](50) NOT NULL,	
 	[ColumnName] [varchar](50) NULL,
-	[OriginalValue] [varchar](500) NULL,
-	[NewValue] [varchar](500) NULL,
-	[UserId] [uniqueidentifier] NULL,
+	[OriginalValue] [nvarchar](MAX) NULL,
+	[NewValue] [nvarchar](MAX)  NULL,
+	[UserId] [varchar](50) NOT NULL,
+	[EventType] [varchar](50) NOT NULL,
+	[EventTimeStamp] [datetime] NOT NULL
  CONSTRAINT [PK_AuditLog] PRIMARY KEY CLUSTERED 
 (
 	[AuditLog_Id] ASC

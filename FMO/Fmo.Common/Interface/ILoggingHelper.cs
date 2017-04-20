@@ -14,6 +14,8 @@ namespace Fmo.Common.Interface
 
         void LogInfo(string message);
 
+        void LogInfo(string message, bool enableLogging);
+
         void LogWarn(string message);
     }
 }

@@ -137,6 +137,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\FmoCodeAnalysisDictionary.xml">
+      <Link>FmoCodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Content Include="TestData\InvalidFile\InvalidTestFile.xml" />
     <Content Include="TestData\ValidFile\ValidTestFile.xml" />
   </ItemGroup>
