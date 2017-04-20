@@ -48,9 +48,16 @@
         /// <returns>List of Road Link entity</returns>
         public IEnumerable<OSRoadLink> GetData(string coordinates)
         {
-            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+            if (!string.IsNullOrEmpty(coordinates))
+            {
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
-            return DataContext.OSRoadLinks.Where(dp => dp.CentreLineGeometry != null && dp.CentreLineGeometry.Intersects(extent)).ToList();
+                return DataContext.OSRoadLinks.Where(dp => dp.CentreLineGeometry != null && dp.CentreLineGeometry.Intersects(extent)).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

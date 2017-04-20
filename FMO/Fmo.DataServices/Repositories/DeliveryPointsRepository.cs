@@ -18,6 +18,18 @@ namespace Fmo.DataServices.Repositories
     using Entity = Fmo.Entities;
 
     /// <summary>
+    /// Mapping extensions for generic mapper
+    /// </summary>
+    public static class MappingExpressionExtensions
+    {
+        public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
+        {
+            expression.ForAllMembers(opt => opt.Ignore());
+            return expression;
+        }
+    }
+
+    /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
     /// </summary>
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
@@ -79,9 +91,9 @@ namespace Fmo.DataServices.Repositories
                     saveFlag = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return saveFlag;
@@ -183,9 +195,16 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List of Delivery Point Entity</returns>
         public IEnumerable<DeliveryPoint> GetData(string coordinates)
         {
-            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+            if (!string.IsNullOrEmpty(coordinates))
+            {
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
-            return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
+                return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -294,18 +313,6 @@ namespace Fmo.DataServices.Repositories
             {
                 throw;
             }
-        }
-    }
-
-    /// <summary>
-    /// Mapping extensions for generic mapper
-    /// </summary>
-    public static class MappingExpressionExtensions
-    {
-        public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
-        {
-            expression.ForAllMembers(opt => opt.Ignore());
-            return expression;
         }
     }
 }

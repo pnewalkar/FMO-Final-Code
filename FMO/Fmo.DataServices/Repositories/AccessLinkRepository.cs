@@ -46,8 +46,15 @@
         /// <returns>Link of Access Link Entity</returns>
         public IEnumerable<AccessLink> GetData(string coordinates)
         {
-            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-            return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
+            if (!string.IsNullOrEmpty(coordinates))
+            {
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
