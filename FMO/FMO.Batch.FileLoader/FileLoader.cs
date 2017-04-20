@@ -325,7 +325,7 @@
                         var reader = new StreamReader(stream);
                         strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
-                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCSV(strLine.Trim());
+                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
                         string postaLAddress = serializer.Serialize(lstNYBDetails);
                         LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress);
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)

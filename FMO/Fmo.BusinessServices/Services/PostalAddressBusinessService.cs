@@ -103,7 +103,6 @@
             bool saveFlag = false;
             try
             {
-                loggingHelper.LogInfo("******SavePAFDetails method execution started*****");
                 Guid addressTypeUSR = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
                 Guid addressTypePAF = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString());
                 Guid addressTypeNYB = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
@@ -112,8 +111,6 @@
                 {
                     SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
                 }
-
-                loggingHelper.LogInfo("******SavePAFDetails method execution finished*****");
             }
             catch (Exception ex)
             {
@@ -129,7 +126,6 @@
         /// <param name="objPostalAddress">pass PostalAddreesDTO</param>
         public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
         {
-            loggingHelper.LogInfo("******SaveDeliveryPointProcess method execution started*****");
             var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
             Guid tasktypeId = refDataRepository.GetReferenceDataId(Constants.TASKNOTIFICATION, Constants.TASKACTION);
             Guid locationProviderId = refDataRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.EXTERNAL);
@@ -169,8 +165,6 @@
                 newDeliveryPoint.LocationProvider_GUID = locationProviderId;
                 deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
             }
-
-            loggingHelper.LogInfo("******SaveDeliveryPointProcess method execution finished*****");
         }
 
         #endregion
@@ -187,7 +181,6 @@
         /// <param name="strFileName">FileName on PAF events to track against DB</param>
         private void SavePAFRecords(PostalAddressDTO objPostalAddress, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
-            loggingHelper.LogInfo("******SavePAFRecords method execution started*****");
             objPostalAddress.AddressType_GUID = addressTypePAF;
             objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressStatus, PostCodeStatus.Live.GetDescription());
             var objPostalAddressMatchedUDPRN = addressRepository.GetPostalAddress(objPostalAddress.UDPRN);
@@ -255,8 +248,6 @@
                 addressRepository.InsertAddress(objPostalAddress, string.Empty);
                 SaveDeliveryPointProcess(objPostalAddress);
             }
-
-            loggingHelper.LogInfo("******SavePAFRecords method execution finished*****");
         }
 
         /// <summary>

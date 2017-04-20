@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Fmo.DTO;
 using Fmo.BusinessServices.Interfaces;
-using System.Security.Claims;
-using System.Threading;
-using System.IdentityModel.Tokens.Jwt;
+using Fmo.DTO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
