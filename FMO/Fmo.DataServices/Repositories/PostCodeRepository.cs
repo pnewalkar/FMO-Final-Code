@@ -6,6 +6,7 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -32,7 +33,7 @@
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
                 var postCodeDetailsDto = await DataContext.Postcodes.Where(l => l.PostcodeUnit.StartsWith(searchText))
                     .Take(takeCount)
@@ -70,6 +71,11 @@
             }
         }
 
+        /// <summary>
+        /// Fetch Postcode Unit for advance search
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <returns>PostCodeDetails</returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText)
         {
             try

@@ -7,7 +7,7 @@
     using Fmo.Entities;
 
     /// <summary>
-    /// This class methods for fetching, Insertnig Delivery Points data.
+    /// This interface contains declarations of methods for fetching, Insertnig Delivery Points data.
     /// </summary>
     public interface IDeliveryPointsRepository
     {

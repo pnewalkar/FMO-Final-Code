@@ -6,6 +6,7 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
@@ -13,6 +14,9 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
+    /// <summary>
+    /// This class contains methods for fetching Delivery route data for basic and advance search
+    /// </summary>
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
         /// <summary>
@@ -53,7 +57,6 @@
             try
             {
                 var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).ToListAsync();
-                //   var result = await DataContext.DeliveryRoutes.Take(10).ToListAsync();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes);
             }
             catch (Exception ex)
@@ -71,7 +74,7 @@
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
                 var deliveryRoutesDto = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
                     .Take(takeCount)

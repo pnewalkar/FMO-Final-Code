@@ -9,6 +9,7 @@ namespace Fmo.DataServices.Repositories
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Common.Constants;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -126,7 +127,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>The result set of delivery point.</returns>
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
             searchText = searchText ?? string.Empty;
             var result = await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
@@ -182,7 +183,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List of Delivery Point Entity</returns>
         public IEnumerable<DeliveryPoint> GetData(string coordinates)
         {
-           DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
             return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent));
         }
