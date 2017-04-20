@@ -15,19 +15,8 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
+    using MappingExtensions;
     using Entity = Fmo.Entities;
-
-    /// <summary>
-    /// Mapping extensions for generic mapper
-    /// </summary>
-    public static class MappingExpressionExtensions
-    {
-        public static IMappingExpression<TSource, TDest> IgnoreAllUnmapped<TSource, TDest>(this IMappingExpression<TSource, TDest> expression)
-        {
-            expression.ForAllMembers(opt => opt.Ignore());
-            return expression;
-        }
-    }
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
