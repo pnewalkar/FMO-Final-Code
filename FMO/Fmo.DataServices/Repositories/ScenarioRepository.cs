@@ -30,7 +30,7 @@
         {
             try
             {
-                IEnumerable<Scenario> result = DataContext.Scenarios.ToList().Where(x => x.OperationalState_GUID == operationStateID && x.Unit_GUID == deliveryUnitID);
+                IEnumerable<Scenario> result = DataContext.Scenarios.AsNoTracking().ToList().Where(x => x.OperationalState_GUID == operationStateID && x.Unit_GUID == deliveryUnitID);
                 return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
             }
             catch (Exception)

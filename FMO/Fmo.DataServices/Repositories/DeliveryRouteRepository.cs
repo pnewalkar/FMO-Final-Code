@@ -41,7 +41,7 @@
         {
             try
             {
-                IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioID && x.Scenario.OperationalState_GUID == operationStateID).ToList();
+                IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking().Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioID && x.Scenario.OperationalState_GUID == operationStateID).ToList();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
             }
             catch (Exception)

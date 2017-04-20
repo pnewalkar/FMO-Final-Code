@@ -55,7 +55,7 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 List<ReferenceDataDTO> lstReferenceDt = null;
-                var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals("Delivery Point Operational Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("Delivery Point Operational Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                 if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
                 {
                     lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
@@ -69,10 +69,14 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        /// <summary>
+        /// Fetch the Route log selection type.
+        /// </summary>
+        /// <returns>List</returns>
         public List<ReferenceDataDTO> RouteLogSelectionType()
         {
             List<ReferenceDataDTO> lstReferenceDt = null;
-            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Equals("Route Log Selection Type", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("Route Log Selection Type", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
             {
                 lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());

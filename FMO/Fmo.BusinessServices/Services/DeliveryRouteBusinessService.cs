@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Helpers;
@@ -103,7 +104,7 @@ namespace Fmo.BusinessServices.Services
             foreach (var deliveryUnitLocationDTO in deliveryUnitLocationDTOList)
             {
                 // take the unit boundry plus 1 mile envelope
-                var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(deliveryUnitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), 27700).MakeValid();
+                var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(deliveryUnitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
 
                 deliveryUnitLocationDTO.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
 
@@ -156,7 +157,7 @@ namespace Fmo.BusinessServices.Services
                 {
                     geometry.type = OpenGisGeometryType.Polygon.ToString();
 
-                    sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
                     List<List<double[]>> listCords = new List<List<double[]>>();
                     List<double[]> cords = new List<double[]>();
 
@@ -174,7 +175,7 @@ namespace Fmo.BusinessServices.Services
                 {
                     geometry.type = OpenGisGeometryType.MultiPolygon.ToString();
 
-                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
                     List<List<List<double[]>>> listCords = new List<List<List<double[]>>>();
 
                     List<List<double[]>> cords = new List<List<double[]>>();
