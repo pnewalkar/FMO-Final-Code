@@ -1,4 +1,6 @@
-﻿namespace Fmo.DataServices.Tests.Repositories
+﻿using System;
+
+namespace Fmo.DataServices.Tests.Repositories
 {
     using System.Collections.Generic;
     using Fmo.Common.TestSupport;
@@ -17,20 +19,13 @@
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryPointsRepository testCandidate;
         private string coordinates;
+        private Guid userId;
 
         [Test]
         public void Test_GetDeliveryPoints()
         {
             coordinates = "1234.87";
-            var actualResult = testCandidate.GetDeliveryPoints(coordinates);
-            Assert.IsNotNull(actualResult);
-        }
-
-        [Test]
-        public void Test_GetData()
-        {
-            coordinates = "1234.87";
-            var actualResult = testCandidate.GetData(coordinates);
+            var actualResult = testCandidate.GetDeliveryPoints(coordinates, userId);
             Assert.IsNotNull(actualResult);
         }
 
@@ -44,10 +39,9 @@
                                 BuildingName = "Bldg 1",
                                 BuildingNumber = 23,
                                 Postcode = "123"
+                        }
+                    };
 
-        }
-
-    };
             var mocdeliveryPointDBSet = MockDbSet(lstPostalAddressDTO);
 
             mockFmoDbContext = CreateMock<FMODBContext>();

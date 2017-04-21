@@ -39,6 +39,7 @@
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
             this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
             this.notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(new NotificationDTO());
+            this.notificationRepositoryMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(true);
             this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 0 } });
 
             this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);

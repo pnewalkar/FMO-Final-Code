@@ -30,7 +30,7 @@ namespace Fmo.DataServices.Repositories
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
             Guid statusId = Guid.Empty;
-            var result = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (result != null)
             {
                 if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)

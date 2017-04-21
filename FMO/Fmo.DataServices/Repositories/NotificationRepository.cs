@@ -90,7 +90,7 @@
         {
             try
             {
-                if (DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN && notific.Notification_Heading.Trim().Equals(action)).Any())
+                if (DataContext.Notifications.AsNoTracking().Where(notific => notific.Notification_Id == uDPRN && notific.Notification_Heading.Trim().Equals(action)).Any())
                 {
                     return true;
                 }
