@@ -13,7 +13,6 @@
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Entities;
-    using Fmo.MappingConfiguration;
 
     /// <summary>
     /// Repository to fetch street network details
@@ -29,18 +28,31 @@
         /// Fetch street names for advance search
         /// </summary>
         /// <param name="searchText">searchText as string</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>StreetNames</returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
         {
             try
             {
-                DbGeometry polygon = DataContext.UnitLocations.Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
-                var streetNames = await DataContext.StreetNames.Where(l => l.Geometry.Intersects(polygon) && (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText))).ToListAsync();
-                return GenericMapper.MapList<StreetName, StreetNameDTO>(streetNames);
+                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid)
+                                                      .Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
+                var streetNames = await DataContext.StreetNames.AsNoTracking()
+                    .Where(l => l.Geometry.Intersects(polygon) && (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
+                    .Select(l => new StreetNameDTO
+                    {
+                        StreetName_Id = l.StreetName_Id,
+                        StreetType = l.StreetType,
+                        NationalRoadCode = l.NationalRoadCode,
+                        DesignatedName = l.DesignatedName,
+                        Descriptor = l.Descriptor
+                    }).ToListAsync();
+
+                return streetNames;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -75,9 +87,9 @@
 
                 return streetNamesDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -98,9 +110,9 @@
                 return await DataContext.StreetNames.Where(l => l.Geometry.Intersects(polygon) && (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                     .CountAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

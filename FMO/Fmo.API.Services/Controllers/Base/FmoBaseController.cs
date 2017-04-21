@@ -27,6 +27,22 @@ namespace Fmo.API.Services.Controllers
         }
 
         /// <summary>
+        /// Gets Current UserId
+        /// </summary>
+        public Guid UserId
+        {
+            get
+            {
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.PrimarySid)
+                               .Select(c => c.Value).FirstOrDefault();
+
+                Guid userGuid;
+                bool isGuid = Guid.TryParse(userId, out userGuid);
+                return userGuid;
+            }
+        }
+
+        /// <summary>
         /// Gets Current User Unit
         /// </summary>
         public Guid CurrentUserUnit

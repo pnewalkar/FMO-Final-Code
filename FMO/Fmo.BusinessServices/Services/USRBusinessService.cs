@@ -22,7 +22,7 @@
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
-        private IPostcodeSectorRepository postcodeSectorRepository = default(IPostcodeSectorRepository);
+        private IPostCodeSectorRepository postcodeSectorRepository = default(IPostCodeSectorRepository);
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
@@ -36,7 +36,7 @@
            IAddressLocationRepository addressLocationRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
            INotificationRepository notificationRepository,
-           IPostcodeSectorRepository postcodeSectorRepository,
+           IPostCodeSectorRepository postcodeSectorRepository,
            IReferenceDataCategoryRepository referenceDataCategoryRepository,
            IEmailHelper emailHelper,
            IConfigurationHelper configurationHelper,
@@ -81,6 +81,7 @@
 
                         AddressLocationDTO newAddressLocationDTO = new AddressLocationDTO()
                         {
+                            ID = Guid.NewGuid(),
                             UDPRN = addressLocationUSRPOSTDTO.UDPRN,
                             LocationXY = spatialLocationXY,
                             Lattitude = addressLocationUSRPOSTDTO.Latitude,
@@ -162,6 +163,7 @@
 
                                     NotificationDTO notificationDO = new NotificationDTO
                                     {
+                                        ID = Guid.NewGuid(),
                                         Notification_Id = fileUdprn,
                                         NotificationType_GUID = notificationTypeId_GUID,
                                         NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE),
@@ -175,6 +177,7 @@
                                                                                 addressLocationUSRPOSTDTO.YCoordinate.ToString()),
                                         PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null) ? string.Empty : postCodeSectorDTO.District,
                                         PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null) ? string.Empty : postCodeSectorDTO.Sector,
+                                        NotificationActionLink = string.Format(Constants.USRNOTIFICATIONLINK, fileUdprn)
                                     };
 
                                     // Insert the new notification.

@@ -21,7 +21,7 @@ namespace Fmo.DataServices.Repositories
 
         public async Task<Guid> GetUserUnitInfo(string userName)
         {
-            return await DataContext.UserRoleUnits
+            return await DataContext.UserRoleUnits.AsNoTracking()
                 .Where(x => x.User.UserName == userName).Select(x => x.Unit_GUID).FirstOrDefaultAsync();
         }
     }

@@ -9,9 +9,9 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
 
-    public class PostcodeSectorRepository : RepositoryBase<PostcodeSector, FMODBContext>, IPostcodeSectorRepository
+    public class PostCodeSectorRepository : RepositoryBase<PostcodeSector, FMODBContext>, IPostCodeSectorRepository
     {
-        public PostcodeSectorRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        public PostCodeSectorRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
         }
@@ -20,7 +20,7 @@
         {
             try
             {
-                PostcodeSector postCodeSector = DataContext.PostalAddresses.Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault().Postcode1.PostcodeSector;
+                PostcodeSector postCodeSector = DataContext.PostalAddresses.AsNoTracking().Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault().Postcode1.PostcodeSector;
                 PostCodeSectorDTO postCodeSectorDTO = new PostCodeSectorDTO();
                 GenericMapper.Map(postCodeSector, postCodeSectorDTO);
                 return postCodeSectorDTO;

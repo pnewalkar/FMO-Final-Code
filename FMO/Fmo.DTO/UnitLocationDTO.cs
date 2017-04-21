@@ -5,7 +5,7 @@ using System.Data.Entity.Spatial;
 
 namespace Fmo.DTO
 {
-    public class DeliveryUnitLocationDTO
+    public class UnitLocationDTO
     {
         public int DeliveryUnit_Id { get; set; }
 

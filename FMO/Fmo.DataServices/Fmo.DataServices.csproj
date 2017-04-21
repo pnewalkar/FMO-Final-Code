@@ -99,14 +99,14 @@
     <Compile Include="Repositories\AddressLocationRepository.cs" />
     <Compile Include="Repositories\AccessLinkRepository.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
-    <Compile Include="Repositories\DeliveryUnitLocationRespository.cs" />
+    <Compile Include="Repositories\UnitLocationRepository.cs" />
     <Compile Include="Repositories\FileProcessingLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressLocationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAccessLinkRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryRouteRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDeliveryPointsRepository.cs" />
-    <Compile Include="Repositories\Interfaces\IDeliveryUnitLocationRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IUnitLocationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IFileProcessingLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\INotificationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostCodeSectorRepository.cs" />

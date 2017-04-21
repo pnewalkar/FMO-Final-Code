@@ -37,10 +37,11 @@
             {
                 int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await (from p in DataContext.Postcodes
-                                                join s in DataContext.PostcodeSectors on p.SectorGUID equals s.ID
-                                                join u in DataContext.UnitPostcodeSectors on s.ID equals u.PostcodeSector_GUID
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
                                                 where p.PostcodeUnit.StartsWith(searchText)
+                                                 && u.Unit_GUID == unitGuid
                                                 select new PostCodeDTO
                                                 {
                                                     PostcodeUnit = p.PostcodeUnit,
@@ -70,10 +71,11 @@
             try
             {
                 searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await (from p in DataContext.Postcodes
-                                                join s in DataContext.PostcodeSectors on p.SectorGUID equals s.ID
-                                                join u in DataContext.UnitPostcodeSectors on s.ID equals u.PostcodeSector_GUID
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
                                                 where p.PostcodeUnit.StartsWith(searchText)
+                                                 && u.Unit_GUID == unitGuid
                                                 select p).CountAsync();
                 return postCodeDetailsDto;
             }
@@ -94,20 +96,24 @@
             try
             {
                 searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await (from p in DataContext.Postcodes
-                                                join s in DataContext.PostcodeSectors on p.SectorGUID equals s.ID
-                                                join u in DataContext.UnitPostcodeSectors on s.ID equals u.PostcodeSector_GUID
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
                                                 where p.PostcodeUnit.StartsWith(searchText)
+                                                 && u.Unit_GUID == unitGuid
                                                 select new PostCodeDTO
                                                 {
-                                                    PostcodeUnit = p.PostcodeUnit
+                                                    PostcodeUnit = p.PostcodeUnit,
+                                                    InwardCode = p.InwardCode,
+                                                    OutwardCode = p.OutwardCode,
+                                                    Sector = p.Sector
                                                 }).ToListAsync();
 
                 return postCodeDetailsDto;
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 

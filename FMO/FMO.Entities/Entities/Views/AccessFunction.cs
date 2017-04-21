@@ -30,5 +30,9 @@
         [Key]
         [Column(Order = 1)]
         public Guid Unit_GUID { get; set; }
+
+        [Key]
+        [Column(Order = 5)]
+        public Guid UserId { get; set; }
     }
 }

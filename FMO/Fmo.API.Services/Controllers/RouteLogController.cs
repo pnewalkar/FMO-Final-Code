@@ -20,18 +20,6 @@ namespace Fmo.API.Services.Controllers
         }
 
         /// <summary>
-        /// Fetches Delivery Unit
-        /// </summary>
-        /// <returns>List</returns>
-        [Authorize]
-        [HttpGet("DeliveryUnit")]
-        public List<DeliveryUnitLocationDTO> DeliveryUnit()
-        {
-            var unitGuid = this.CurrentUserUnit;
-            return deliveryRouteBusinessService.FetchDeliveryUnit(unitGuid);
-        }
-
-        /// <summary>
         /// Fetches Delivery Route
         /// </summary>
         /// <param name="operationStateID"> operationState ID</param>

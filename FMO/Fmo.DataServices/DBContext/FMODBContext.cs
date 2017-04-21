@@ -9,7 +9,7 @@ namespace Fmo.DataServices.DBContext
     public partial class FMODBContext : AuditContext
     {
         public FMODBContext()
-            : base(ConfigurationManager.ConnectionStrings["FMODBContext"].ConnectionString)
+            : base("name=FMODBContext")
         {
         }
 
