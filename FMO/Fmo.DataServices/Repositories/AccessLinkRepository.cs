@@ -23,33 +23,19 @@
         }
 
         /// <summary>
-        /// This Method is used to fetch Access Link Data.
+        /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
-        /// <returns>List of Access Link DTO</returns>
-        public List<AccessLinkDTO> SearchAccessLink()
-        {
-            try
-            {
-                var result = DataContext.AccessLinks.ToList();
-                return GenericMapper.MapList<AccessLink, AccessLinkDTO>(result.ToList());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This Method is used to Accesss Link data for defined coordinates.
-        /// </summary>
-        /// <param name="coordinates">coordinates as string</param>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>Link of Access Link Entity</returns>
-        public IEnumerable<AccessLink> GetData(string coordinates)
+        public IEnumerable<AccessLink> GetData(string boundingBoxCoordinates, Guid unitGuid)
         {
-            if (!string.IsNullOrEmpty(coordinates))
+            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-                return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
+                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                return DataContext.AccessLinks.Where(x => x.AccessLinkLine.Intersects(extent) && x.AccessLinkLine.Intersects(polygon)).ToList();
             }
             else
             {
@@ -58,13 +44,14 @@
         }
 
         /// <summary>
-        /// This Method is used to Accesss Link data for defined coordinates.
+        /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
-        /// <param name="coordinates">coordinates as string</param>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Access Link Dto</returns>
-        public List<AccessLinkDTO> GetAccessLinks(string coordinates)
+        public List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<AccessLink> result = GetData(coordinates).ToList();
+            List<AccessLink> result = GetData(boundingBoxCoordinates, unitGuid).ToList();
             var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDTO>(result);
             return accessLink;
         }
