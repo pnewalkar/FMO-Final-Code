@@ -23,7 +23,7 @@ namespace Fmo.BusinessServices.Services
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
         private IDeliveryPointsRepository deliveryPointRepository = default(IDeliveryPointsRepository);
 
-        public SearchBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postcodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
+        public SearchBussinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postcodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
             this.postcodeRepository = postcodeRepository;

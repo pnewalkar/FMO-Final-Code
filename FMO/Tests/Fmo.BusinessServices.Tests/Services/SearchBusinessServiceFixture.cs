@@ -310,7 +310,7 @@ namespace Fmo.BusinessServices.Tests.Services
             postCodeRepositoryMock = CreateMock<IPostCodeRepository>();
             deliveryPointsRepositoryMock = CreateMock<IDeliveryPointsRepository>();
             streetNetworkRepositoryMock = CreateMock<IStreetNetworkRepository>();
-            testCandidate = new SearchBusinessService(
+            testCandidate = new SearchBussinessService(
                                          deliveryRouteRepositoryMock.Object,
                                          postCodeRepositoryMock.Object,
                                          streetNetworkRepositoryMock.Object,
