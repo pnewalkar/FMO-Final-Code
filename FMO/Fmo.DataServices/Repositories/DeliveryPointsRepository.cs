@@ -37,7 +37,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.UDPRN == udprn).SingleOrDefault();
+                var objDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking().Where(n => n.UDPRN == udprn).SingleOrDefault();
 
                 Mapper.Initialize(cfg =>
                 {
@@ -287,7 +287,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                if (DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN).Equals(udprn)).Any())
+                if (DataContext.DeliveryPoints.AsNoTracking().Where(dp => ((int)dp.UDPRN).Equals(udprn)).Any())
                 {
                     return true;
                 }
