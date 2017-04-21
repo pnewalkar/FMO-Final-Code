@@ -115,7 +115,7 @@ namespace Fmo.API.Services.Authentication
                 //new Claim(ClaimTypes.Role, roleAccessDto.FirstOrDefault().RoleName),
                 new Claim(ClaimTypes.UserData, roleAccessDto.FirstOrDefault().Unit_GUID.ToString()),
                  new Claim(ClaimTypes.Name, username),
-                  new Claim(ClaimTypes.NameIdentifier, roleAccessDto.FirstOrDefault().UserId.ToString())
+                  new Claim(ClaimTypes.PrimarySid, roleAccessDto.FirstOrDefault().UserId.ToString())
             };
             roleAccessDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
 

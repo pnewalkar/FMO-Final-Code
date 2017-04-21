@@ -5,8 +5,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 using NYB = Fmo.NYBLoader;
 using System.Linq;
@@ -40,20 +38,6 @@ namespace Fmo.NYBLoader.Tests
         }
 
         [Test]
-        public async Task Test_SuccessFullHttpClientCall()
-        {
-            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
-
-            httpHandlerMock.Setup(x => x.SetBaseAddress(It.IsAny<Uri>()));
-            httpHandlerMock.Setup(x => x.PostAsJsonAsync(It.IsAny<string>(), It.IsAny<List<PostalAddressDTO>>())).Returns(() => new Task<HttpResponseMessage>(() => new HttpResponseMessage(System.Net.HttpStatusCode.OK)));
-
-            var result = await testCandidate.SaveNybDetails(lstPostalAddressDTO,"test.csv");
-            httpHandlerMock.Verify(x => x.PostAsJsonAsync(It.IsAny<string>(), lstPostalAddressDTO), Times.Once());
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result);
-        }
-
-        [Test]
         public async Task Test_FailureHttpClientCall()
         {
             List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
@@ -61,7 +45,7 @@ namespace Fmo.NYBLoader.Tests
             httpHandlerMock.Setup(x => x.SetBaseAddress(It.IsAny<Uri>()));
             httpHandlerMock.Setup(x => x.PostAsJsonAsync(It.IsAny<string>(), It.IsAny<List<PostalAddressDTO>>())).Throws<Exception>();
 
-            var result = await testCandidate.SaveNybDetails(lstPostalAddressDTO,"test.csv");
+            var result = await testCandidate.SaveNybDetails(lstPostalAddressDTO, "test.csv");
             httpHandlerMock.Verify(x => x.PostAsJsonAsync(It.IsAny<string>(), lstPostalAddressDTO), Times.Once());
             Assert.IsNotNull(result);
             Assert.IsFalse(result);

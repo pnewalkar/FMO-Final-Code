@@ -13,17 +13,17 @@
         /// Create or update NYB details depending on the UDPRN
         /// </summary>
         /// <param name="objPostalAddress">NYB details DTO</param>
-        /// <param name="strFileName">CSV Filename</param>
+        /// <param name="fileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName);
+        bool SaveAddress(PostalAddressDTO objPostalAddress, string fileName);
 
         /// <summary>
         /// Update PostalAddress based on the PostalAddressDTO passed for PAF
         /// </summary>
         /// <param name="objPostalAddress">PostalAddressDTO</param>
-        /// <param name="strFileName">Passing File Name in case PAF, NYB to track error</param>
+        /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
         /// <returns>return status as bool</returns>
-        bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName);
+        bool UpdateAddress(PostalAddressDTO objPostalAddress, string fileName);
 
         /// <summary>
         /// Get the existing postal address details based on the UDPRN
@@ -43,9 +43,9 @@
         /// Insert PostalAddress based on the PostalAddressDTO passed for PAF
         /// </summary>
         /// <param name="objPostalAddress">PostalAddressDTO</param>
-        /// <param name="strFileName">Passing File Name in case PAF, NYB to track error</param>
+        /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
         /// <returns>return status as bool</returns>
-        bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName);
+        bool InsertAddress(PostalAddressDTO objPostalAddress, string fileName);
 
         /// <summary>
         /// Delete postal Address records do not have an associated Delivery Point

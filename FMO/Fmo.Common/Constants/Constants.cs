@@ -85,6 +85,7 @@
         public const string USRLONGITITUDE = "longitude";
         public const string USRCHANGETYPE = "changeType";
         public const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
+        public const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
 
         #endregion USR
 

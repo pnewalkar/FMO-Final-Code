@@ -60,8 +60,16 @@
         {
             try
             {
-                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => (l.Scenario.Unit_GUID == userUnit && l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText)).ToListAsync();
-                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes);
+                var deliveryRoutes = await DataContext.DeliveryRoutes.AsNoTracking()
+                                 .Where(l => (l.Scenario.Unit_GUID == userUnit && l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText))
+                                 .Select(l => new DeliveryRouteDTO
+                                 {
+                                     DeliveryRoute_Id = l.DeliveryRoute_Id,
+                                     RouteName = l.RouteName,
+                                     RouteNumber = l.RouteNumber
+                                 }).ToListAsync();
+
+                return deliveryRoutes;
             }
             catch (Exception ex)
             {

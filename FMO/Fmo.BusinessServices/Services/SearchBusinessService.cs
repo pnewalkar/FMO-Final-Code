@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
@@ -8,9 +7,6 @@ using Fmo.Common.Enums;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
-/// <summary>
-/// This class contains methods for Basic and Advanced Search Results..
-/// </summary>
 namespace Fmo.BusinessServices.Services
 {
     /// <summary>
@@ -18,10 +14,10 @@ namespace Fmo.BusinessServices.Services
     /// </summary>
     public class SearchBusinessService : ISearchBusinessService
     {
-        private IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
-        private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
-        private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
-        private IDeliveryPointsRepository deliveryPointRepository = default(IDeliveryPointsRepository);
+        private readonly IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
+        private readonly IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
+        private readonly IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
+        private readonly IDeliveryPointsRepository deliveryPointRepository = default(IDeliveryPointsRepository);
 
         public SearchBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postcodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
         {
@@ -52,8 +48,7 @@ namespace Fmo.BusinessServices.Services
                 var streetNames = await streetNetworkRepository.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
                 var streetNetworkCount = await streetNetworkRepository.GetStreetNameCount(searchText, userUnit).ConfigureAwait(false);
 
-                var searchResultDTO = new SearchResultDTO();
-                searchResultDTO = GetBasicSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
+                var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
 
                 return searchResultDTO;
             }
@@ -85,51 +80,7 @@ namespace Fmo.BusinessServices.Services
             var streetNames = await streetNamesTask ?? new List<StreetNameDTO>();
             var deliveryPoints = await deliveryPointsTask ?? new List<DeliveryPointDTO>();
 
-            var searchResultDTO = new SearchResultDTO();
-
-            foreach (var postcode in postcodes)
-            {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = postcode.PostcodeUnit, Type = SearchBusinessEntityType.Postcode });
-            }
-
-            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = postcodes.Count, Type = SearchBusinessEntityType.Postcode });
-
-            foreach (var streetName in streetNames)
-            {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = streetName.LocalName, Type = SearchBusinessEntityType.StreetNetwork });
-            }
-
-            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = streetNames.Count, Type = SearchBusinessEntityType.StreetNetwork });
-
-            foreach (var deliveryPoint in deliveryPoints)
-            {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
-                {
-                    DisplayText = string.Format(
-                       Constants.DeliveryPointFormat,
-                       deliveryPoint.PostalAddress.OrganisationName,
-                       deliveryPoint.PostalAddress.BuildingName,
-                       deliveryPoint.PostalAddress.SubBuildingName,
-                       deliveryPoint.PostalAddress.BuildingNumber,
-                       deliveryPoint.PostalAddress.Thoroughfare,
-                       deliveryPoint.PostalAddress.DependentLocality),
-                    UDPRN = deliveryPoint.PostalAddress.UDPRN,
-                    Type = SearchBusinessEntityType.DeliveryPoint
-                });
-            }
-
-            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryPoints.Count, Type = SearchBusinessEntityType.DeliveryPoint });
-
-            foreach (var deliveryRoute in deliveryRoutes)
-            {
-                searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO { DisplayText = deliveryRoute.RouteName, Type = SearchBusinessEntityType.Route });
-            }
-
-            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = deliveryRoutes.Count, Type = SearchBusinessEntityType.Route });
-
-            int totalCount = searchResultDTO.SearchCounts.Sum(x => x.Count);
-
-            searchResultDTO.SearchCounts.Add(new SearchCountDTO { Count = totalCount, Type = SearchBusinessEntityType.All });
+            var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
 
             return searchResultDTO;
         }
@@ -138,7 +89,7 @@ namespace Fmo.BusinessServices.Services
         /// Get the result populated in the DTO
         /// </summary>
         /// <param name="deliveryRoutes">The list of delivery routes</param>
-        /// <param name="deliveryRouteCount">The count of delivery reoutes</param>
+        /// <param name="deliveryRouteCount">The count of delivery routes</param>
         /// <param name="postcodes">The list of postcodes</param>
         /// <param name="postCodeCount">The count of postcodes</param>
         /// <param name="deliveryPoints">The list of delivery points</param>
@@ -146,7 +97,7 @@ namespace Fmo.BusinessServices.Services
         /// <param name="streetNames">The list of street names</param>
         /// <param name="streetNetworkCount">The count of street names</param>
         /// <returns>The result set</returns>
-        private static SearchResultDTO GetBasicSearchResults(List<DeliveryRouteDTO> deliveryRoutes, int deliveryRouteCount, List<PostCodeDTO> postcodes, int postCodeCount, List<DeliveryPointDTO> deliveryPoints, int deliveryPointsCount, List<StreetNameDTO> streetNames, int streetNetworkCount)
+        private static SearchResultDTO MapSearchResults(List<DeliveryRouteDTO> deliveryRoutes, int deliveryRouteCount, List<PostCodeDTO> postcodes, int postCodeCount, List<DeliveryPointDTO> deliveryPoints, int deliveryPointsCount, List<StreetNameDTO> streetNames, int streetNetworkCount)
         {
             var searchResultDTO = new SearchResultDTO();
 
