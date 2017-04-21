@@ -2,7 +2,7 @@
 
 .mapContainer {
     width: width-percent(1);
-    height: 100%;
+    height: height-percent(1);
 }
 
 .miniMap {
@@ -28,29 +28,28 @@
 
 .zoom-control {
     @include position(absolute);
-    @include top(0px);
-    left: -37px;
+    @include top(-10px);
+    left: -50px;
 }
 
 .levelDanger {
-    color: red;
-    border: 1px solid red;
+    @include font-color($red);
+    @include border(1px solid $red);
 }
 
 .zoom-scale {
+    @include position(absolute);
+    width: width-percent(2.857);
     left: -56%;
-    position: absolute;
-    width: 35%;
 }
 
 .labletext {
-    margin-top: 4px;
-    margin-left: 9px;
-    position: absolute;
+    @include margin(4px 0px 0px 9px);
+    @include position(absolute);
     font-size: 16px;
 }
 
 input[name="zoom-scale"] {
-    width: 95.5%;
+    width: width-percent(1.047);
     text-indent: 22px;
 }
