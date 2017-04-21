@@ -24,7 +24,7 @@ namespace Fmo.API.Services.Controllers
         /// <summary>
         /// Api to save PAF details in DB.
         /// </summary>
-        /// <param name="lstAddressLocationUSRPOSTDTO">List of posatl address DTO</param>
+        /// <param name="postalAddress">List of posatl address DTO</param>
         /// <returns></returns>
         [HttpPost("SavePAFDetails")]
         public bool SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
