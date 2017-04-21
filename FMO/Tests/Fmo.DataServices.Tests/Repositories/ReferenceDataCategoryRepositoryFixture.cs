@@ -67,6 +67,7 @@
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFmoDbContext.Setup(x => x.Set<ReferenceDataCategory>()).Returns(mockReferenceDataCategoryDBSet.Object);
             mockFmoDbContext.Setup(x => x.ReferenceDataCategories).Returns(mockReferenceDataCategoryDBSet.Object);
+            mockFmoDbContext.Setup(c => c.ReferenceDataCategories.AsNoTracking()).Returns(mockReferenceDataCategoryDBSet.Object);
             mockReferenceDataCategoryDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockReferenceDataCategoryDBSet.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
