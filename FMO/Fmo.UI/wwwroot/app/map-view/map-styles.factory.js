@@ -43,32 +43,18 @@ function MapStylesFactory() {
     });
 
     var roadLinkStyle = new ol.style.Style({
-        text: new ol.style.Text({
-            text: '\uf018',
-            font: 'normal 16px FontAwesome',
-            textBaseline: 'Bottom',
-            fill: new ol.style.Fill({
-                color: '#c1c6c8',
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#000',
-                width: 2
-            })
+        fill: whiteFill,
+        stroke: new ol.style.Stroke({
+            color: 'rgb(16, 115, 5)',
+            width: 2
         })
     });
 
     var accessLinkStyle = new ol.style.Style({
-        text: new ol.style.Text({
-            text: '\uf178',
-            font: 'normal 16px FontAwesome',
-            textBaseline: 'Bottom',
-            fill: new ol.style.Fill({
-                color: '#2a2a2d',
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#000',
-                width: 2
-            })
+        fill: whiteFill,
+        stroke: new ol.style.Stroke({
+            color: '#000',
+            width: 2
         })
     });
 
