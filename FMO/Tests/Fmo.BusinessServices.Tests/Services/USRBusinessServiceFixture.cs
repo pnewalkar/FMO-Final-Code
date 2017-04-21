@@ -19,7 +19,7 @@
         private Mock<IAddressLocationRepository> addressLocationRepositoryMock;
         private Mock<IDeliveryPointsRepository> deliveryPointsRepositoryMock;
         private Mock<INotificationRepository> notificationRepositoryMock;
-        private Mock<IPostcodeSectorRepository> postCodeSectorRepositoryMock;
+        private Mock<IPostCodeSectorRepository> postCodeSectorRepositoryMock;
         private Mock<IReferenceDataCategoryRepository> referenceDataCategoryRepositoryMock;
         private Mock<IEmailHelper> emailHelperMock;
         private Mock<IConfigurationHelper> configurationHelperMock;
@@ -114,7 +114,7 @@
             this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
             this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
             this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
-            this.postCodeSectorRepositoryMock = this.CreateMock<IPostcodeSectorRepository>();
+            this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
             this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
             this.emailHelperMock = this.CreateMock<IEmailHelper>();
             this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
