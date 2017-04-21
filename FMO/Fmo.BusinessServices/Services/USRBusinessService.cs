@@ -81,6 +81,7 @@
 
                         AddressLocationDTO newAddressLocationDTO = new AddressLocationDTO()
                         {
+                            ID = Guid.NewGuid(),
                             UDPRN = addressLocationUSRPOSTDTO.UDPRN,
                             LocationXY = spatialLocationXY,
                             Lattitude = addressLocationUSRPOSTDTO.Latitude,
@@ -162,6 +163,7 @@
 
                                     NotificationDTO notificationDO = new NotificationDTO
                                     {
+                                        ID = Guid.NewGuid(),
                                         Notification_Id = fileUdprn,
                                         NotificationType_GUID = notificationTypeId_GUID,
                                         NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE),
@@ -175,6 +177,7 @@
                                                                                 addressLocationUSRPOSTDTO.YCoordinate.ToString()),
                                         PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null) ? string.Empty : postCodeSectorDTO.District,
                                         PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null) ? string.Empty : postCodeSectorDTO.Sector,
+                                        NotificationActionLink = string.Format(Constants.USRNOTIFICATIONLINK, fileUdprn)
                                     };
 
                                     // Insert the new notification.
