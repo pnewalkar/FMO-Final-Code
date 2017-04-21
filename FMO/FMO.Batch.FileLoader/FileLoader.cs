@@ -338,6 +338,8 @@
                             if (invalidRecordsCount > 0)
                             {
                                 File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                string udprn = string.Join(Constants.Comma, lstNYBDetails.Where(n => n.IsValidData == false).Select(n => n.UDPRN).ToList());
+                                this.loggingHelper.LogInfo(string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString(), udprn));
                             }
                             else
                             {
@@ -347,7 +349,7 @@
                         }
                         else
                         {
-                            this.loggingHelper.LogInfo(string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString()));
+                            this.loggingHelper.LogInfo(string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString(), string.Empty));
                         }
                     }
                 }
