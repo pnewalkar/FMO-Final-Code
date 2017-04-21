@@ -1,8 +1,7 @@
 ﻿using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Fmo.API.Services.Controllers
 {
@@ -11,7 +10,7 @@ namespace Fmo.API.Services.Controllers
     /// </summary>
 
     [Route("api/[controller]")]
-    public class RoadNameController : Controller
+    public class RoadNameController : FmoBaseController
     {
         private IRoadNameBusinessService roadNameBussinessService = default(IRoadNameBusinessService);
 
@@ -39,7 +38,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public string GetRoouteData(string boundaryBox)
         {
-            return roadNameBussinessService.GetRoadRoutes(boundaryBox);
+            return roadNameBussinessService.GetRoadRoutes(boundaryBox,CurrentUserUnit);
         }
     }
 }

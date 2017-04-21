@@ -26,27 +26,19 @@
         }
 
         /// <summary>
-        /// This method is used to fetch Access Link data.
-        /// </summary>
-        /// <returns>List of Access link Dto</returns>
-        public List<AccessLinkDTO> SearchAccessLink()
-        {
-            return accessLinkRepository.SearchAccessLink();
-        }
-
-        /// <summary>
         ///  This method fetches data for AccsessLinks
         /// </summary>
         /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns> AccsessLink object</returns>
-        public string GetAccessLinks(string boundaryBox)
+        public string GetAccessLinks(string boundaryBox, Guid unitGuid)
         {
             try
             {
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var accessLinkCoordinates = GetData(boundaryBox.Split(Constants.Comma[0]));
-                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates, unitGuid));
                 }
                 else
                 {

@@ -9,7 +9,7 @@ namespace Fmo.API.Services.Controllers
     /// This class contains methods used to fetch Delivery Points.
     /// </summary>
     [Route("api/deliveryPoints")]
-    public class DeliveryPointsController : Controller
+    public class DeliveryPointsController : FmoBaseController
     {
         private IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
@@ -34,7 +34,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public JsonResult GetDeliveryPoints(string boundaryBox)
         {
-            return Json(businessService.GetDeliveryPoints(boundaryBox));
+            return Json(businessService.GetDeliveryPoints(boundaryBox,CurrentUserUnit));
         }
 
         /// <summary>

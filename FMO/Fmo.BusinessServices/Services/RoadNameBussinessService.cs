@@ -38,16 +38,17 @@
         /// <summary>
         /// This method fetches data for RoadLinks
         /// </summary>
-        /// <param name="boundarybox"> boundaryBox as string </param>
+        /// <param name="boundaryBox">boundaryBox as string.</param>
+        /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>RoadLink object</returns>
-        public string GetRoadRoutes(string boundarybox)
+        public string GetRoadRoutes(string boundarybox, Guid uniGuid)
         {
             try
             {
                 if (!string.IsNullOrEmpty(boundarybox))
                 {
-                    var coordinates = GetData(boundarybox.Split(Constants.Comma[0]));
-                    return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                    var boundingBoxCoordinates = GetData(boundarybox.Split(Constants.Comma[0]), uniGuid);
+                    return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
                 }
                 else
                 {
