@@ -3,7 +3,7 @@
         <div class="md-toolbar-tools">
             <h2>
               <span ><i class="fa fa-arrow-circle-left" aria-hidden="true" ng-click="vm.closeSideNav()"></i></span> 
-                 <span>Side Panel</span>
+                 <span>Actions</span>
             </h2>
         </div>
     </md-toolbar> 
@@ -11,7 +11,7 @@
     <md-content layout-padding="">
         <md-list>
 
-      <md-list-item  ng-repeat="Item in results">
+      <md-list-item  ng-repeat="Item in vm.userUnitInfoDto">
     <p ng-click="vm.fetchActions(Item.displayText,vm.selectedDeliveryUnit)">{{Item.displayText}}</p>
       </md-list-item>
 

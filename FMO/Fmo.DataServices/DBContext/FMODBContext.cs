@@ -4,10 +4,12 @@ namespace Fmo.DataServices.DBContext
     using System.Data.Entity;
     using Fmo.Entities;
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Not applicable for database context")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode", Justification = "Not applicable for database context")]
     public partial class FMODBContext : AuditContext
     {
         public FMODBContext()
-            : base(ConfigurationManager.ConnectionStrings["FMODBContext"].ConnectionString)
+            : base("name=FMODBContext")
         {
         }
 

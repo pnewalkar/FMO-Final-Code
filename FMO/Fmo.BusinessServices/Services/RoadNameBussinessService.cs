@@ -15,9 +15,9 @@
     using Newtonsoft.Json;
 
     /// <summary>
-    /// This class contains methods for fetching data for RoadLinks
+    /// This class contains methods for fetching data for RoadLinks.
     /// </summary>
-    public class RoadNameBussinessService : IRoadNameBussinessService
+    public class RoadNameBussinessService : IRoadNameBusinessService
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
 
@@ -26,6 +26,10 @@
             this.roadNameRepository = roadNameRepository;
         }
 
+        /// <summary>
+        /// This method is used to fetch Road Links data.
+        /// </summary>
+        /// <returns>List of Road Link Dto</returns>
         public async Task<List<RoadNameDTO>> FetchRoadName()
         {
             return await roadNameRepository.FetchRoadName();
@@ -34,16 +38,17 @@
         /// <summary>
         /// This method fetches data for RoadLinks
         /// </summary>
-        /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <param name="boundaryBox">boundaryBox as string.</param>
+        /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>RoadLink object</returns>
-        public string GetRoadRoutes(string boundaryBox)
+        public string GetRoadRoutes(string boundarybox, Guid uniGuid)
         {
             try
             {
-                if (!string.IsNullOrEmpty(boundaryBox))
+                if (!string.IsNullOrEmpty(boundarybox))
                 {
-                    var coordinates = GetData(boundaryBox.Split(','));
-                    return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(coordinates));
+                    var boundingBoxCoordinates = GetData(boundarybox.Split(Constants.Comma[0]));
+                    return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
                 }
                 else
                 {
@@ -67,11 +72,18 @@
 
             if (roadLinkparameters != null && roadLinkparameters.Length == 4)
             {
-                coordinates = "POLYGON((" + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[1]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[3]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[2]) + " " + Convert.ToString(roadLinkparameters[3]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[2]) + " " + Convert.ToString(roadLinkparameters[1]) + ", "
-                                                             + Convert.ToString(roadLinkparameters[0]) + " " + Convert.ToString(roadLinkparameters[1]) + "))";
+                coordinates = string.Format(
+                                     Constants.Polygon,
+                                     Convert.ToString(roadLinkparameters[0]),
+                                     Convert.ToString(roadLinkparameters[1]),
+                                     Convert.ToString(roadLinkparameters[0]),
+                                     Convert.ToString(roadLinkparameters[3]),
+                                     Convert.ToString(roadLinkparameters[2]),
+                                     Convert.ToString(roadLinkparameters[3]),
+                                     Convert.ToString(roadLinkparameters[2]),
+                                     Convert.ToString(roadLinkparameters[1]),
+                                     Convert.ToString(roadLinkparameters[0]),
+                                     Convert.ToString(roadLinkparameters[1]));
             }
 
             return coordinates;
@@ -101,9 +113,9 @@
                     var resultCoordinates = res.CentreLineGeometry;
 
                     SqlGeometry roadLinkSqlGeometry = null;
-                    if (geometry.type == "LineString")
+                    if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                        roadLinkSqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        roadLinkSqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
 
                         List<List<double>> roadLinkCoordinates = new List<List<double>>();
 

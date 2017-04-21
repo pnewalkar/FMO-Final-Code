@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\Fmo.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\Fmo.Test.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -79,6 +79,7 @@
     <Compile Include="Services\PostalAddressBusinessServiceFixture.cs" />
     <Compile Include="Services\RoadNameBussinessServiceFixture.cs" />
     <Compile Include="Services\SearchBusinessServiceFixture.cs" />
+    <Compile Include="Services\UnitLocationBusinessServiceFixture.cs" />
     <Compile Include="Services\USRBusinessServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +138,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\FmoCodeAnalysisDictionary.xml">
+      <Link>FmoCodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
     <Content Include="TestData\InvalidFile\InvalidTestFile.xml" />
     <Content Include="TestData\ValidFile\ValidTestFile.xml" />
   </ItemGroup>

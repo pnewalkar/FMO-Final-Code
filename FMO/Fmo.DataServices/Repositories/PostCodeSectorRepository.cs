@@ -1,17 +1,14 @@
-﻿using Fmo.DataServices.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fmo.DTO;
-using Fmo.DataServices.DBContext;
-using Fmo.Entities;
-using Fmo.DataServices.Infrastructure;
-using Fmo.MappingConfiguration;
-
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Linq;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.Entities;
+    using Fmo.MappingConfiguration;
+
     public class PostCodeSectorRepository : RepositoryBase<PostcodeSector, FMODBContext>, IPostCodeSectorRepository
     {
         public PostCodeSectorRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -23,7 +20,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                PostcodeSector postCodeSector = DataContext.PostalAddresses.Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault().Postcode1.PostcodeSector;
+                PostcodeSector postCodeSector = DataContext.PostalAddresses.AsNoTracking().Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault().Postcode1.PostcodeSector;
                 PostCodeSectorDTO postCodeSectorDTO = new PostCodeSectorDTO();
                 GenericMapper.Map(postCodeSector, postCodeSectorDTO);
                 return postCodeSectorDTO;
@@ -32,7 +29,6 @@ namespace Fmo.DataServices.Repositories
             {
                 throw;
             }
-
         }
     }
 }

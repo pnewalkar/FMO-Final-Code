@@ -14,9 +14,7 @@ function routeLogService(routeLogAPIService) {
     };
 
     function loadRouteLogStatus() {
-
-        simulationAPIService.getStatus().then(function (response) {
-            debugger;
+        simulationAPIService.getStatus().then(function (response) {            
             vm.RouteStatusObj = response.data;
             vm.selectedRouteStatusObj = {
                 group1: vm.RouteStatusObj[0].id,
@@ -29,8 +27,7 @@ function routeLogService(routeLogAPIService) {
     }
 
     function loadScenario(operationStateID, deliveryUnitID) {
-        simulationAPIService.getScenario(operationStateID, deliveryUnitID).then(function (response) {
-            debugger;
+        simulationAPIService.getScenario(operationStateID, deliveryUnitID).then(function (response) {            
             vm.RouteScenario = response.data;
         });
     }

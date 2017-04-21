@@ -5,15 +5,13 @@ using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Fmo.Common.Interface;
 
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Fmo.API.Services.Controllers
 {
     /// <summary>
     /// Address controller to handle NYB/PAF API request from windows service
     /// </summary>
     [Route("api/[controller]")]
-    public class AddressController : Controller
+    public class AddressController : FmoBaseController
     {
         private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);

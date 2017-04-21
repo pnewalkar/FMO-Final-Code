@@ -1,23 +1,17 @@
-﻿using Fmo.BusinessServices.Interfaces;
-using Fmo.BusinessServices.Services;
-using Fmo.Common.Interface;
-using Fmo.Common.TestSupport;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.MessageBrokerCore.Messaging;
-using Fmo.NYBLoader;
-using Fmo.NYBLoader.Interfaces;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fmo.BusinessServices.Tests.Services
+﻿namespace Fmo.BusinessServices.Tests.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.BusinessServices.Services;
+    using Fmo.Common.Interface;
+    using Fmo.Common.TestSupport;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class PostalAddressBusinessServiceFixture : TestFixtureBase
     {
@@ -29,21 +23,6 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IFileProcessingLogRepository> mockfileProcessingLogRepository;
         private Mock<ILoggingHelper> mockloggingHelper;
         private IPostalAddressBusinessService testCandidate;
-
-        protected override void OnSetup()
-        {
-            mockAddressRepository = CreateMock<IAddressRepository>();
-            mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
-            mockdeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
-            mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
-            mocknotificationRepository = CreateMock<INotificationRepository>();
-            mockfileProcessingLogRepository = CreateMock<IFileProcessingLogRepository>();
-            mockloggingHelper = CreateMock<ILoggingHelper>();
-            mockrefDataRepository.Setup(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
-            mockAddressRepository.Setup(x => x.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockAddressRepository.Setup(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<Guid>())).Returns(true);
-            testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mocknotificationRepository.Object, mockfileProcessingLogRepository.Object, mockloggingHelper.Object);
-        }
 
         [Test]
         public void Test_ValidPostalAddressData()
@@ -87,8 +66,6 @@ namespace Fmo.BusinessServices.Tests.Services
 
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
-
-            DeliveryPointDTO objDeliveryPoint = null;
             AddressLocationDTO objAddressLocation = null;
 
             mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
@@ -128,7 +105,6 @@ namespace Fmo.BusinessServices.Tests.Services
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
 
-            DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
                 UDPRN = 54162429
@@ -170,7 +146,6 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
-            DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
                 UDPRN = 54162428
@@ -215,7 +190,6 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
-            DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
                 UDPRN = 54162428
@@ -261,7 +235,6 @@ namespace Fmo.BusinessServices.Tests.Services
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
 
-            DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
                 UDPRN = 54162428
@@ -269,7 +242,6 @@ namespace Fmo.BusinessServices.Tests.Services
 
             mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("7A976FB6-A113-4F62-B366-10A19DB6DF01")); // for diif GUID
             mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            //mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
             mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
             mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
             mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
@@ -303,7 +275,6 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
-            DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
                 UDPRN = 54162428
@@ -327,7 +298,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
-        
+
         [Test]
         public void SavePAFDetails_Check_NotMatchPostalAddress()
         {
@@ -345,7 +316,6 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
-            DeliveryPointDTO objDeliveryPoint = null; // new DeliveryPointDTO(){};
             AddressLocationDTO objAddressLocation = new AddressLocationDTO()
             {
                 UDPRN = 54162428
@@ -370,7 +340,8 @@ namespace Fmo.BusinessServices.Tests.Services
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Once());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
-        private void SetUpdata(PostalAddressDTO objPostalAddress, DeliveryPointDTO objDeliveryPoint, AddressLocationDTO objAddressLocation)
+
+        protected override void OnSetup()
         {
             mockAddressRepository = CreateMock<IAddressRepository>();
             mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
@@ -379,16 +350,31 @@ namespace Fmo.BusinessServices.Tests.Services
             mocknotificationRepository = CreateMock<INotificationRepository>();
             mockfileProcessingLogRepository = CreateMock<IFileProcessingLogRepository>();
             mockloggingHelper = CreateMock<ILoggingHelper>();
+            mockrefDataRepository.Setup(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
+            mockAddressRepository.Setup(x => x.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
+            mockAddressRepository.Setup(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<Guid>())).Returns(true);
             testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mocknotificationRepository.Object, mockfileProcessingLogRepository.Object, mockloggingHelper.Object);
-            /*
-            mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
-            mockAddressRepository.Setup(n => n.UpdateAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
-            mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
-            mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
-            mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));*/
         }
+
+        // private void SetUpdata(PostalAddressDTO objPostalAddress, DeliveryPointDTO objDeliveryPoint, AddressLocationDTO objAddressLocation)
+        // {
+        //    mockAddressRepository = CreateMock<IAddressRepository>();
+        //    mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
+        //    mockdeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
+        //    mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
+        //    mocknotificationRepository = CreateMock<INotificationRepository>();
+        //    mockfileProcessingLogRepository = CreateMock<IFileProcessingLogRepository>();
+        //    mockloggingHelper = CreateMock<ILoggingHelper>();
+        //    testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mocknotificationRepository.Object, mockfileProcessingLogRepository.Object, mockloggingHelper.Object);
+        //    /*
+        //    mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
+        //    mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
+        //    mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
+        //    mockAddressRepository.Setup(n => n.UpdateAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
+        //    mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
+        //    mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
+        //    mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
+        //    mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));*/
+        // }
     }
 }

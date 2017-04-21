@@ -5,8 +5,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 using NYB = Fmo.NYBLoader;
 using System.Linq;
@@ -40,20 +38,6 @@ namespace Fmo.NYBLoader.Tests
         }
 
         [Test]
-        public async Task Test_SuccessFullHttpClientCall()
-        {
-            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
-
-            httpHandlerMock.Setup(x => x.SetBaseAddress(It.IsAny<Uri>()));
-            httpHandlerMock.Setup(x => x.PostAsJsonAsync(It.IsAny<string>(), It.IsAny<List<PostalAddressDTO>>())).Returns(() => new Task<HttpResponseMessage>(() => new HttpResponseMessage(System.Net.HttpStatusCode.OK)));
-
-            var result = await testCandidate.SaveNybDetails(lstPostalAddressDTO,"test.csv");
-            httpHandlerMock.Verify(x => x.PostAsJsonAsync(It.IsAny<string>(), lstPostalAddressDTO), Times.Once());
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result);
-        }
-
-        [Test]
         public async Task Test_FailureHttpClientCall()
         {
             List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
@@ -61,7 +45,7 @@ namespace Fmo.NYBLoader.Tests
             httpHandlerMock.Setup(x => x.SetBaseAddress(It.IsAny<Uri>()));
             httpHandlerMock.Setup(x => x.PostAsJsonAsync(It.IsAny<string>(), It.IsAny<List<PostalAddressDTO>>())).Throws<Exception>();
 
-            var result = await testCandidate.SaveNybDetails(lstPostalAddressDTO,"test.csv");
+            var result = await testCandidate.SaveNybDetails(lstPostalAddressDTO, "test.csv");
             httpHandlerMock.Verify(x => x.PostAsJsonAsync(It.IsAny<string>(), lstPostalAddressDTO), Times.Once());
             Assert.IsNotNull(result);
             Assert.IsFalse(result);
@@ -71,7 +55,7 @@ namespace Fmo.NYBLoader.Tests
         public void Test_ValidRecords_Count()
         {
             string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,S, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCSV(strLine);
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCsv(strLine);
             Assert.IsNotNull(methodOutput);
             Assert.IsTrue(methodOutput.Count == 2);
         }
@@ -80,7 +64,7 @@ namespace Fmo.NYBLoader.Tests
         public void Test_ValidRecords_Data()
         {
             string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,S, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCSV(strLine);
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCsv(strLine);
             Assert.IsNotNull(methodOutput);
             Assert.IsNotNull(methodOutput[0].UDPRN);
         }
@@ -89,7 +73,7 @@ namespace Fmo.NYBLoader.Tests
         public void Test_InvalidRecords_Data()
         {
             string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,S, ,1A,,,,,,\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCSV(strLine);
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCsv(strLine);
             Assert.IsNull(methodOutput);
         }
 
@@ -97,7 +81,7 @@ namespace Fmo.NYBLoader.Tests
         public void Test_InValidPostCodeType_Data()
         {
             string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,G, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCSV(strLine);
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCsv(strLine);
             int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsNotNull(methodOutput);
             Assert.IsTrue(InValidReccount == 1);
@@ -107,7 +91,7 @@ namespace Fmo.NYBLoader.Tests
         public void Test_InValidPostCode_Data()
         {
             string strLine = "1458 abc,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,l, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
-            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCSV(strLine);
+            List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCsv(strLine);
             int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsTrue(InValidReccount == 1);
         }

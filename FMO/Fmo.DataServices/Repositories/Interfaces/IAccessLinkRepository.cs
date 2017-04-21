@@ -1,15 +1,21 @@
-﻿namespace Fmo.DataServices.Repositories.Interfaces
+﻿using System;
+
+namespace Fmo.DataServices.Repositories.Interfaces
 {
     using System.Collections.Generic;
     using Fmo.DTO;
-    using Fmo.Entities;
 
+    /// <summary>
+    /// This class contains methods used to fetch access Link data.
+    /// </summary>
     public interface IAccessLinkRepository
     {
-        List<AccessLinkDTO> SearchAccessLink();
-
-        List<AccessLinkDTO> GetAccessLinks(string coordinates);
-
-        IEnumerable<AccessLink> GetData(string coordinates);
+        /// <summary>
+        /// This method is used to fetch access Link data.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates.</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>List of Access Link dto</returns>
+        List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid);
     }
 }

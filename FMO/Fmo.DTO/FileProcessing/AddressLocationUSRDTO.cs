@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fmo.Common.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,20 +9,26 @@ using System.Xml.Serialization;
 namespace Fmo.DTO.FileProcessing
 {
     [Serializable()]
-    [XmlType("addressLocation")]
+    [XmlType(Constants.ADDRESSLOCATIONXMLROOT)]
     public class AddressLocationUSRDTO
     {
-        public int? udprn { get; set; }
+        [XmlElement(ElementName = Constants.USRUDPRN)]
+        public int? UDPRN { get; set; }
 
-        public decimal? xCoordinate { get; set; }
+        [XmlElement(ElementName = Constants.USRXCOORDINATE)]
+        public decimal? XCoordinate { get; set; }
 
-        public decimal? yCoordinate { get; set; }
+        [XmlElement(ElementName = Constants.USRYCOORDINATE)]
+        public decimal? YCoordinate { get; set; }
 
-        public decimal? latitude { get; set; }
+        [XmlElement(ElementName = Constants.USRLATITUDE)]
+        public decimal? Latitude { get; set; }
 
-        public decimal? longitude { get; set; }
+        [XmlElement(ElementName = Constants.USRLONGITITUDE)]
+        public decimal? Longitude { get; set; }
 
-        public string changeType { get; set; }
+        [XmlElement(ElementName = Constants.USRCHANGETYPE)]
+        public string ChangeType { get; set; }
 
 
     }

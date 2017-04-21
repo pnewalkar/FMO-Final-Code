@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
+﻿using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.Common.Interface;
-using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Fmo.API.Services.Controllers
 {
+    /// <summary>
+    /// This class contains methods used to fetch Delivery Points.
+    /// </summary>
     [Route("api/deliveryPoints")]
-    public class DeliveryPointsController : Controller
+    public class DeliveryPointsController : FmoBaseController
     {
         private IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
@@ -24,21 +24,19 @@ namespace Fmo.API.Services.Controllers
 
         public JsonResult Get()
         {
-            return Json("");
+            return Json(Constants.EmptyString);
         }
 
-        [Route("fetchDeliveryPoint")]
-        [HttpGet]
-        public async Task<List<DeliveryPointDTO>> FetchDeliveryPoints()
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        ///This method is used to Get Delivery Point Object.
+        /// </summary>
+        /// <param name="boundaryBox">boundaryBox as string</param>
+        /// <returns>Json Result of Delivery Points</returns>
         [Route("GetDeliveryPoints")]
         [HttpGet]
-        public JsonResult GetDeliveryPoints(string bbox)
+        public JsonResult GetDeliveryPoints(string boundaryBox)
         {
-            return Json(businessService.GetDeliveryPoints(bbox));           
+            return Json(businessService.GetDeliveryPoints(boundaryBox,CurrentUserUnit));
         }
 
         /// <summary>
@@ -52,6 +50,5 @@ namespace Fmo.API.Services.Controllers
         {
             return businessService.GetDeliveryPointByUDPRN(udprn);
         }
-
-    }   
+    }
 }

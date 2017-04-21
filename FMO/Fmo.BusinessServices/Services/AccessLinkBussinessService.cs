@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlTypes;
+    using Common;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.Common.Constants;
     using Fmo.Common.Enums;
@@ -11,12 +12,11 @@
     using Fmo.Helpers;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
-    using Common;
 
     /// <summary>
     /// This class contains methods for fetching data for AccessLinks
     /// </summary>
-    public class AccessLinkBussinessService : IAccessLinkBussinessService
+    public class AccessLinkBussinessService : IAccessLinkBusinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
 
@@ -25,24 +25,20 @@
             this.accessLinkRepository = searchAccessLinkRepository;
         }
 
-        public List<AccessLinkDTO> SearchAccessLink()
-        {
-            return accessLinkRepository.SearchAccessLink();
-        }
-
         /// <summary>
         ///  This method fetches data for AccsessLinks
         /// </summary>
         /// <param name="boundaryBox"> boundaryBox as string </param>
+        /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns> AccsessLink object</returns>
-        public string GetAccessLinks(string boundaryBox)
+        public string GetAccessLinks(string boundaryBox, Guid unitGuid)
         {
             try
             {
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
-                    var accessLinkCoordinates = GetData(boundaryBox.Split(','));
-                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates));
+                    var accessLinkCoordinates = GetData(boundaryBox.Split(Constants.Comma[0]));
+                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates, unitGuid));
                 }
                 else
                 {
@@ -79,7 +75,7 @@
                     SqlGeometry accessLinksqlGeometry = null;
                     if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                        accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
 
                         List<List<double>> cords = new List<List<double>>();
 
@@ -93,7 +89,7 @@
                     }
                     else
                     {
-                        accessLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), 27700).MakeValid();
+                        accessLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
                         geometry.coordinates = new double[] { accessLinksqlGeometry.STX.Value, accessLinksqlGeometry.STY.Value };
                     }
 
@@ -108,7 +104,7 @@
                 }
             }
 
-           return JsonConvert.SerializeObject(geoJson);
+            return JsonConvert.SerializeObject(geoJson);
         }
 
         /// <summary>
@@ -122,11 +118,18 @@
 
             if (accessLinkParameters != null && accessLinkParameters.Length == 4)
             {
-                coordinates = "POLYGON((" + Convert.ToString(accessLinkParameters[0]) + " " + Convert.ToString(accessLinkParameters[1]) + ", "
-                                          + Convert.ToString(accessLinkParameters[0]) + " " + Convert.ToString(accessLinkParameters[3]) + ", "
-                                          + Convert.ToString(accessLinkParameters[2]) + " " + Convert.ToString(accessLinkParameters[3]) + ", "
-                                          + Convert.ToString(accessLinkParameters[2]) + " " + Convert.ToString(accessLinkParameters[1]) + ", "
-                                          + Convert.ToString(accessLinkParameters[0]) + " " + Convert.ToString(accessLinkParameters[1]) + "))";
+                coordinates = string.Format(
+                              Constants.Polygon,
+                              Convert.ToString(accessLinkParameters[0]),
+                              Convert.ToString(accessLinkParameters[1]),
+                              Convert.ToString(accessLinkParameters[0]),
+                              Convert.ToString(accessLinkParameters[3]),
+                              Convert.ToString(accessLinkParameters[2]),
+                              Convert.ToString(accessLinkParameters[3]),
+                              Convert.ToString(accessLinkParameters[2]),
+                              Convert.ToString(accessLinkParameters[1]),
+                              Convert.ToString(accessLinkParameters[0]),
+                              Convert.ToString(accessLinkParameters[1]));
             }
 
             return coordinates;

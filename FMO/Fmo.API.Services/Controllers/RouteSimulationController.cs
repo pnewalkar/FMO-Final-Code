@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Fmo.API.Services.Controllers
 {
     [Route("api/[controller]")]
-    public class RouteSimulationController : Controller
+    public class RouteSimulationController : FmoBaseController
     {
-      
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 
         /// <summary>
@@ -34,7 +31,8 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("FetchDeliveryRoute")]
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
-            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID);
+            var unitGuid = this.CurrentUserUnit;
+            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, unitGuid);
         }
 
         /// <summary>

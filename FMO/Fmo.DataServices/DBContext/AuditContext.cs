@@ -14,15 +14,15 @@ namespace Fmo.DataServices.DBContext
     /// </summary>
     public abstract class AuditContext : DbContext
     {
-        public AuditContext(string connString)
-            : base(connString)
+        protected AuditContext(string connectionString)
+            : base(connectionString)
         {
         }
 
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
 
         /// <summary>
-        /// Saves all changes made in this context to the underlying database 
+        /// Saves all changes made in this context to the underlying database
         /// </summary>
         /// <returns>The number of state entries written to the underlying database.</returns>
         public override int SaveChanges()

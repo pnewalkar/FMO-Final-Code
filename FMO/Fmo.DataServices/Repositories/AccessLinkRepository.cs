@@ -2,16 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
     using System.Linq;
+    using Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System.IO;
-    using System.Data.SqlTypes;
+    using Interfaces;
 
+    /// <summary>
+    /// This class contains methods of Access Link Repository for fetching Access Link data.
+    /// </summary>
     public class AccessLinkRepository : RepositoryBase<AccessLink, FMODBContext>, IAccessLinkRepository
     {
         public AccessLinkRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -19,30 +22,36 @@
         {
         }
 
-        public List<AccessLinkDTO> SearchAccessLink()
+        /// <summary>
+        /// This Method is used to Access Link data for defined coordinates.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
+        /// <returns>Link of Access Link Entity</returns>
+        public IEnumerable<AccessLink> GetData(string boundingBoxCoordinates, Guid unitGuid)
         {
-            try
+            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
-                var result = DataContext.AccessLinks.ToList();
-                return GenericMapper.MapList<AccessLink, AccessLinkDTO>(result.ToList());
+                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                return DataContext.AccessLinks.Where(x => x.AccessLinkLine.Intersects(extent) && x.AccessLinkLine.Intersects(polygon)).ToList();
             }
-            catch (Exception ex)
+            else
             {
-                throw ex;
+                return null;
             }
         }
 
-        public IEnumerable<AccessLink> GetData(string coordinates)
+        /// <summary>
+        /// This Method is used to Access Link data for defined coordinates.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
+        /// <returns>List of Access Link Dto</returns>
+        public List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
         {
-            System.Data.Entity.Spatial.DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(coordinates.ToString(), 27700);
-
-            //return DataContext.AccessLinks.Take(100);
-            return DataContext.AccessLinks.Where(dp => dp.AccessLinkLine.Intersects(extent)).ToList();
-        }
-
-        public List<AccessLinkDTO> GetAccessLinks(string coordinates)
-        {
-            List<AccessLink> result = GetData(coordinates).ToList();
+            List<AccessLink> result = GetData(boundingBoxCoordinates, unitGuid).ToList();
             var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDTO>(result);
             return accessLink;
         }

@@ -25,7 +25,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
     var availableResolutionForCurrentExtent = [];
     var maxScale = null;
-
+    var BNGProjection = 'EPSG:27700';
 
     return {
         initialiseMap: initialiseMap,
@@ -65,7 +65,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
         availableResolutionForCurrentExtent = defaultResolutions;
         view = new ol.View({
-            projection: 'EPSG:27700',
+            projection: BNGProjection,
             center: [400000, 650000],
             // zoom: 4,
             resolutions: defaultResolutions,
@@ -108,7 +108,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             initialiseMap();
 
         viewMiniMap = new ol.View({
-            projection: 'EPSG:27700',
+            projection: BNGProjection,
             center: view.getCenter(),
             zoom: view.getZoom() - 5
         });
@@ -372,18 +372,6 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
                     setZoomButtonStatus(zoomOutButtons, false);
                 }
 
-                //var html = "1 + ': '<input width='20px' type='text' id='customScale' onChange='CheckThis' value='" + scale + "'>";
-
-                //if (this.renderedHTML_ != html) {
-                //    this.element_.innerHTML = html;
-                //    this.renderedHTML_ = html;
-                //}
-
-                //if (!this.renderedVisible_) {
-                //    this.element_.style.display = '';
-                //    this.renderedVisible_ = true;
-                //}    
-
                 $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
             }
         };
@@ -408,8 +396,6 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     }
 
     function setUnitBoundaries(bbox, center) {
-        // var bbox = [505058.162109375, 100281.562988281, 518986.837890625, 114158.741943359];
-        //var center= [512022.5, 107220.15246582034];
 
         map.getView().fit(bbox, map.getSize());
 
@@ -424,11 +410,11 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
         maxScale = Math.round(getScaleFromResolution(availableResolutionForCurrentExtent[0]));
         view = new ol.View({
-            projection: "EPSG:27700",
+            projection: BNGProjection,
             center: center,
             extent: bbox,
             resolutions: availableResolutionForCurrentExtent,
-            resolution: getResolutionFromScale(2000),
+            resolution: getResolutionFromScale(2000)
         });
 
         map.setView(view);

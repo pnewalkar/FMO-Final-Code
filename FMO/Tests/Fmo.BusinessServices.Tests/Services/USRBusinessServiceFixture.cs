@@ -39,7 +39,8 @@
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
             this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
             this.notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(new NotificationDTO());
-            this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { udprn = 0, xCoordinate = 0, yCoordinate = 0 } });
+            this.notificationRepositoryMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(true);
+            this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 0 } });
 
             this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
@@ -69,7 +70,7 @@
             this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
             this.notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(notificationDTOMockNull);
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
-            this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { udprn = 0, xCoordinate = 0, yCoordinate = 0 } });
+            this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 0 } });
 
             this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
@@ -100,40 +101,13 @@
             this.notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(notificationDTOMockNull);
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
             this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
-            this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { udprn = 0, xCoordinate = 0, yCoordinate = 5 } });
+            this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 5 } });
 
             this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
             this.deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
             this.notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
-
-        /*public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Location_Within_Tolerance_Existing_Notification()
-        {
-            //Setup mock objects
-            AddressLocationDTO addressDTOMockNull = null;
-            NotificationDTO notificationDTOMockNull = null;
-
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRFromEmail")).Returns("sriram.kandade@capgemini.com");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRSubject")).Returns("USR file error");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRBody")).Returns("UDPRN - {0} already exists");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRToEmail")).Returns("sriram.kandade@capgemini.com");
-            addressLocationRepositoryMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(addressDTOMockNull);
-            addressLocationRepositoryMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(new AddressLocationDTO()
-            {
-                Latitude = It.IsAny<decimal>(),
-                Longitude = It.IsAny<decimal>(),
-                LocationXY = null,
-                UDPRN = It.IsAny<int>()
-            });
-
-            notificationRepositoryMock.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).Returns(notificationDTOMockNull);
-
-            emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
-            addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
-            deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<int>(), It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<DbGeometry>()), Times.Once);
-            notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
-        }*/
 
         protected override void OnSetup()
         {

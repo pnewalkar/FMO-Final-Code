@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.Entities;
-using Fmo.MappingConfiguration;
-using System.Configuration;
-
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Common.Constants;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.Entities;
+    using Fmo.MappingConfiguration;
+
+    /// <summary>
+    /// This class contains methods for fetching Delivery route data for basic and advance search
+    /// </summary>
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
         /// <summary>
@@ -29,12 +33,15 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="operationStateID">Guid operationStateID</param>
         /// <param name="deliveryScenarioID">Guid deliveryScenarioID</param>
-        /// <returns>List</returns>
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
+        /// <param name="userUnit">The user unit.</param>
+        /// <returns>
+        /// List
+        /// </returns>
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit)
         {
             try
             {
-                IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.Where(x => x.DeliveryScenario_GUID == deliveryScenarioID && x.Scenario.OperationalState_GUID == operationStateID).ToList();
+                IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking().Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioID && x.Scenario.OperationalState_GUID == operationStateID).ToList();
                 return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
             }
             catch (Exception)
@@ -47,15 +54,22 @@ namespace Fmo.DataServices.Repositories
         /// Fetch Delivery Route for Advance Search.
         /// </summary>
         /// <param name="searchText">Text to search</param>
+        /// <param name="userUnit">Guid userUnit</param>
         /// <returns>Task</returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit)
         {
             try
             {
-                var deliveryRoutes = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).Take(10).ToListAsync();
+                var deliveryRoutes = await DataContext.DeliveryRoutes.AsNoTracking()
+                                 .Where(l => (l.Scenario.Unit_GUID == userUnit && l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText))
+                                 .Select(l => new DeliveryRouteDTO
+                                 {
+                                     DeliveryRoute_Id = l.DeliveryRoute_Id,
+                                     RouteName = l.RouteName,
+                                     RouteNumber = l.RouteNumber
+                                 }).ToListAsync();
 
-                // var result = await DataContext.DeliveryRoutes.Take(10).ToListAsync();
-                return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(deliveryRoutes);
+                return deliveryRoutes;
             }
             catch (Exception ex)
             {
@@ -67,14 +81,16 @@ namespace Fmo.DataServices.Repositories
         /// Fetch Delivery route for Basic Search
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">Guid userUnit</param>
         /// <returns>The result set of delivery route.</returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
         {
             try
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings["SearchResultCount"]);
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
-                var deliveryRoutesDto = await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText))
+                var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) && (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                     .Take(takeCount)
                     .Select(l => new DeliveryRouteDTO
                     {
@@ -96,13 +112,16 @@ namespace Fmo.DataServices.Repositories
         /// Get the count of delivery route
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">Guid userUnit</param>
         /// <returns>The total count of delivery route</returns>
-        public async Task<int> GetDeliveryRouteCount(string searchText)
+        public async Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit)
         {
             try
             {
                 searchText = searchText ?? string.Empty;
-                return await DataContext.DeliveryRoutes.Where(l => l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)).CountAsync();
+                return await DataContext.DeliveryRoutes.AsNoTracking()
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) && (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                    .CountAsync();
             }
             catch (Exception ex)
             {

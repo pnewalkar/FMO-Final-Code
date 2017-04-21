@@ -78,19 +78,19 @@ namespace Fmo.API.Services
 
             //BusinessServices
             services.AddTransient<IDeliveryPointBusinessService, DeliveryPointBusinessService>();
-            services.AddTransient<ISearchBussinessService, SearchBussinessService>();
+            services.AddTransient<ISearchBusinessService, SearchBusinessService>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
-            services.AddTransient<IAccessLinkBussinessService, AccessLinkBussinessService>();
+            services.AddTransient<IAccessLinkBusinessService, AccessLinkBussinessService>();
             services.AddTransient<IActionManagerBussinessService, ActionManagerBussinessService>();
             services.AddTransient<IUserRoleUnitBussinessService, UserRoleUnitBussinessService>();
             services.AddTransient<IUSRBusinessService, USRBusinessService>();
-            services.AddTransient<IAccessActionBussinessService, AccessActionBussinessService>();
-
+            services.AddTransient<IAccessActionBusinessService, AccessActionBussinessService>();
+            services.AddTransient<IUnitLocationBusinessService, UnitLocationBusinessService>();
             //Repositories
             services.AddTransient<IAccessActionRepository, AccessActionRepository>();
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
-            services.AddTransient<IRoadNameBussinessService, RoadNameBussinessService>();
+            services.AddTransient<IRoadNameBusinessService, RoadNameBussinessService>();
             services.AddTransient<IRoadNameRepository, RoadNameRepository>();
 
             //Repositories
@@ -99,12 +99,13 @@ namespace Fmo.API.Services
             services.AddTransient<IReferenceDataCategoryRepository, ReferenceDataCategoryRepository>();
             services.AddTransient<IDeliveryRouteRepository, DeliveryRouteRepository>();
             services.AddTransient<IScenarioRepository, ScenarioRepository>();
-            services.AddTransient<IDeliveryUnitLocationRepository, DeliveryUnitLocationRespository>();
+            services.AddTransient<IUnitLocationRepository, UnitLocationRepository>();
             services.AddTransient<IAddressLocationRepository, AddressLocationRepository>();
             services.AddTransient<IPostalAddressRepository, PostalAddressRepository>();
             services.AddTransient<IPostCodeRepository, PostCodeRepository>();
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<IUnitLocationRepository, UnitLocationRepository>();
 
             //services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();

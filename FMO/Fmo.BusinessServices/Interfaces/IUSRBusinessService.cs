@@ -1,9 +1,6 @@
 ﻿namespace Fmo.BusinessServices.Interfaces
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using Fmo.DTO.FileProcessing;
 
@@ -15,8 +12,8 @@
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
-        /// <returns><placeholder>A <see cref="Task"/> representing the asynchronous operation.</placeholder></returns><param name="lstAddressLocationUSRPOSTDTO">List<AddressLocationUSRPOSTDTO></param>
+        /// <param name="addressLocationUsrpostdtos">addressLocationUsrpostdtos</param>
         /// <returns>Task</returns>
-        Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> lstAddressLocationUSRPOSTDTO);
+        Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos);
     }
 }

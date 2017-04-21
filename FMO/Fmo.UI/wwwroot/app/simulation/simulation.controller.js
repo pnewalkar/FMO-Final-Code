@@ -1,7 +1,7 @@
 ﻿angular.module('simulation')
 .controller('SimulationController', ['$scope', '$state', '$stateParams', 'simulationBusinessService', 'simulationAPIService', SimulationController])
 function SimulationController($scope, $state, $stateParams, simulationBusinessService, simulationAPIService) {
-    debugger;
+    
     var vm = this;
     vm.loadRouteLogStatus = loadRouteLogStatus();
     vm.loadScenario = loadScenario;
@@ -14,17 +14,15 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.selectedDeliveryRoute = null;
     vm.deliveryRoute = null;
     vm.selectedVegetables;
-   
-
     vm.searchTerm;
+
     function selectedRouteStatus() {
-        debugger;
+        
         //loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
     }
     function loadRouteLogStatus() {
-        simulationAPIService.getStatus().then(function (response) {
-            debugger;
-            vm.RouteStatusObj = response.data;
+        simulationAPIService.getStatus().then(function (response) {            
+            vm.RouteStatusObj = response;
             vm.selectedRouteStatusObj = {
                 group1: vm.RouteStatusObj[0].id,
                 group2: vm.RouteStatusObj[1].id
@@ -39,15 +37,13 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
         vm.isDeliveryRouteDisabled = false;
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
-        simulationAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
-            debugger;
-            vm.RouteScenario = response.data;           
+        simulationAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {            
+            vm.RouteScenario = response;           
         });
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         simulationAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            vm.deliveryRoute = response.data;
+            vm.deliveryRoute = response;
         });
-        //simulationBusinessService.loadDeliveryRoute(selectedRouteStatusObj, selectedRouteScenario);
     }
 }

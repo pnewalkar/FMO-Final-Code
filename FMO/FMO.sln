@@ -47,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DBScripts", "DBScripts", "{
 		DBScripts\DB_20170404160654_AddRowVersionColumnToAccessLinkTable .sql = DBScripts\DB_20170404160654_AddRowVersionColumnToAccessLinkTable .sql
 		DB_20170407155252_CreateFileProcessingLogTable.sql = DB_20170407155252_CreateFileProcessingLogTable.sql
 		DB_20170412202000_CreateAuditLogTable.sql = DB_20170412202000_CreateAuditLogTable.sql
+		DBScripts\DB_20170412202000_CreateAuditLogTable.sql = DBScripts\DB_20170412202000_CreateAuditLogTable.sql
 		DBScripts\DB_20170414155500_CreateViewGetAccessFunction.sql = DBScripts\DB_20170414155500_CreateViewGetAccessFunction.sql
 	EndProjectSection
 EndProject
@@ -61,6 +62,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Receiver", "Receiver", "{A65461C0-455F-4C3E-AF96-15733E73A2A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MessageBrokerCore", "MessageBrokerCore", "{C5ACA626-E351-4B28-9E99-161CAC77FE53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F3143198-2E05-4FAC-B7E6-A18A77D3E57E}"
+	ProjectSection(SolutionItems) = preProject
+		FmoCodeAnalysisDictionary.xml = FmoCodeAnalysisDictionary.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

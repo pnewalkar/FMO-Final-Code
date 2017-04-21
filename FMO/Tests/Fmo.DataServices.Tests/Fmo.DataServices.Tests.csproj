@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\Fmo.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\Fmo.Test.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -62,7 +62,7 @@
     <Compile Include="Repositories\DeliveryPointRepositoryFixture.cs" />
     <Compile Include="Repositories\DeliveryPointsRepositoryFixture.cs" />
     <Compile Include="Repositories\DeliveryRouteRepositoryFixture.cs" />
-    <Compile Include="Repositories\DeliveryUnitLocationRepositoryFixture.cs" />
+    <Compile Include="Repositories\UnitLocationRepositoryFixture.cs" />
     <Compile Include="Repositories\PostCodeRepositoryFixture.cs" />
     <Compile Include="Repositories\ReferenceDataCategoryRepositoryFixture.cs" />
     <Compile Include="Repositories\RoadNameRepositoryFixture.cs" />
@@ -100,6 +100,11 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\..\FmoCodeAnalysisDictionary.xml">
+      <Link>FmoCodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

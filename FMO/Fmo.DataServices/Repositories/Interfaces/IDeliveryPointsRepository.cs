@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Fmo.DTO;
-using Fmo.Entities;
-using System.IO;
-using System.Data.Entity.Spatial;
-
-namespace Fmo.DataServices.Repositories.Interfaces
+﻿namespace Fmo.DataServices.Repositories.Interfaces
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
+    using System.Threading.Tasks;
+    using Fmo.DTO;
+
+    /// <summary>
+    /// This interface contains declarations of methods for fetching, Insertnig Delivery Points data.
+    /// </summary>
     public interface IDeliveryPointsRepository
     {
         /// <summary>
         /// Get the delivery points by the UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>DeliveryPointDTO object</returns>
-        DeliveryPointDTO GetDeliveryPointByUDPRN(int uDPRN);
+        DeliveryPointDTO GetDeliveryPointByUDPRN(int udprn);
 
         /// <summary>
         /// Insert the DeliveryPointDTO object into the database
@@ -31,24 +32,55 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <returns>Task<int></returns>
         Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO);
 
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText);
+        /// <summary>
+        /// This method is used to fetch Delivery Points as per advance search.
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task List of Delivery Point Dto
+        /// </returns>
+        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
 
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText);
+        /// <summary>
+        /// This method is used to fetch Delivery Points as per basic search.
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task List of Delivery Point Dto
+        /// </returns>
+        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid);
 
-        Task<int> GetDeliveryPointsCount(string searchText);
+        /// <summary>
+        /// Gets the delivery points count.
+        /// </summary>
+        /// <param name="searchText">The search text.</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>int</returns>
+        Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid);
 
-        List<DeliveryPointDTO> GetDeliveryPoints(string coordinates);
+        /// <summary>
+        /// This method is used to fetch Delivery Points data.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>List of Delivery Point Dto</returns>
+        List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);
 
-        IEnumerable<DeliveryPoint> GetData(string coordinates);
-
+        /// <summary>
+        /// Get the list of delivery points by the UDPRN id
+        /// </summary>
+        /// <param name="udprn">UDPRN id</param>
+        /// <returns>DeliveryPointDTO object</returns>
         List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
 
         /// <summary>
         /// Check if the delivery point exists for a given UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>boolean value</returns>
-        bool DeliveryPointExists(int uDPRN);
+        bool DeliveryPointExists(int udprn);
 
         /// <summary>
         /// Calculate the distance between a given point and delivery point
@@ -57,6 +89,5 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="newPoint">DbGeometry object</param>
         /// <returns>double?</returns>
         double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint);
-
     }
 }
