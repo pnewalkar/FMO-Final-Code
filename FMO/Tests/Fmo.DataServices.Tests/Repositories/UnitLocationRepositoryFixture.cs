@@ -19,8 +19,11 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IUnitLocationRepository testCandidate;
-        private Guid unit1Guid, unit2Guid, unit3Guid;
-        private Guid user1Id, user2Id;
+        private Guid unit1Guid;
+        private Guid unit2Guid;
+        private Guid unit3Guid;
+        private Guid user1Id;
+        private Guid user2Id;
 
         [Test]
         public void Test_FetchDeliveryUnit()
@@ -51,9 +54,9 @@ namespace Fmo.DataServices.Tests.Repositories
 
             var unitLocation = new List<UnitLocation>()
             {
-                new UnitLocation() { UnitName = "unit1", ExternalId = "extunit1",ID = unit1Guid,UnitBoundryPolygon = unitBoundary,UserRoleUnits = new List<UserRoleUnit> {new UserRoleUnit {Unit_GUID = unit1Guid,User_GUID = user1Id } } },
-                new UnitLocation() { UnitName = "unit2", ExternalId = "extunit2",ID = unit2Guid,UnitBoundryPolygon = unitBoundary,UserRoleUnits = new List<UserRoleUnit> {new UserRoleUnit {Unit_GUID = unit2Guid, User_GUID = user1Id } } },
-                new UnitLocation() { UnitName = "unit3", ExternalId = "extunit2",ID = unit3Guid,UnitBoundryPolygon = unitBoundary,UserRoleUnits = new List<UserRoleUnit> {new UserRoleUnit {Unit_GUID = unit3Guid, User_GUID = user2Id } } }
+                new UnitLocation() { UnitName = "unit1", ExternalId = "extunit1", ID = unit1Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit1Guid, User_GUID = user1Id } } },
+                new UnitLocation() { UnitName = "unit2", ExternalId = "extunit2", ID = unit2Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit2Guid, User_GUID = user1Id } } },
+                new UnitLocation() { UnitName = "unit3", ExternalId = "extunit2", ID = unit3Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit3Guid, User_GUID = user2Id } } }
             };
 
             var mockDeliveryUnitLocationDBSet = MockDbSet(unitLocation);

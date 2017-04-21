@@ -33,8 +33,8 @@ namespace Fmo.API.Services.Controllers
         {
             get
             {
-                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
-                               .Select(c => c.Value).SingleOrDefault();
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.PrimarySid)
+                               .Select(c => c.Value).FirstOrDefault();
 
                 Guid userGuid;
                 bool isGuid = Guid.TryParse(userId, out userGuid);

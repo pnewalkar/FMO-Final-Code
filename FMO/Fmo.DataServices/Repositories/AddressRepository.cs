@@ -21,14 +21,14 @@
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogRepository fileProcessingLog = default(IFileProcessingLogRepository);
-        private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
+        private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
 
         public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog, IPostCodeRepository postCodeRepository)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
             this.fileProcessingLog = fileProcessingLog;
-            this.postCodeRepository = postCodeRepository;
+            this.postcodeRepository = postCodeRepository;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@
                 if (objPostalAddress != null)
                 {
                     var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
-                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
+                    objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;
@@ -132,7 +132,7 @@
             {
                 if (objPostalAddress != null)
                 {
-                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
+                    objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     var objAddress = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
                     DataContext.PostalAddresses.Add(objAddress);
 
@@ -210,7 +210,7 @@
                 if (objPostalAddress != null)
                 {
                     var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
-                    objPostalAddress.PostCodeGUID = this.postCodeRepository.GetPostCodeID(objPostalAddress.Postcode);
+                    objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
                         objAddress.Postcode = objPostalAddress.Postcode;

@@ -37,6 +37,6 @@
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the
       corresponding file name -->
-    <ExecutableArguments>TPF</ExecutableArguments>
+    <ExecutableArguments>USR</ExecutableArguments>
   </CustomFolderSettings>
 </ArrayOfCustomFolderSettings>

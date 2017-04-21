@@ -178,26 +178,10 @@ namespace Fmo.NYBLoader
 
                 xDoc.Validate(schemas, (o, e) =>
                 {
-                    FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
-                    objFileProcessingLog.FileID = Guid.NewGuid();
-                    objFileProcessingLog.UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
+                    int UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
                                                         .Element(XName.Get(Constants.USRUDPRN)).Value);
-                    objFileProcessingLog.AmendmentType = xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
-                                                             .Element(XName.Get(Constants.USRCHANGETYPE)).Value;
-                    objFileProcessingLog.FileName = fileName;
-                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
-                    objFileProcessingLog.FileType = FileType.Usr.ToString();
 
-                    if (e.Severity == XmlSeverityType.Warning)
-                    {
-                        objFileProcessingLog.NatureOfError = e.Message;
-                    }
-                    else if (e.Severity == XmlSeverityType.Error)
-                    {
-                        objFileProcessingLog.NatureOfError = e.Message;
-                    }
-
-                    fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                    LogFileException(UDPRN, fileName, FileType.Usr.ToString(), e.Message);
                     //logger code to write schema mismatch exception 
                     result = false;
                 });
@@ -232,6 +216,28 @@ namespace Fmo.NYBLoader
         private void LogMethodInfoBlock(string methodName, string logMessage)
         {
             this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+        }
+
+        /// <summary>
+        /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
+        /// </summary>
+        /// <param name="uDPRN">UDPRN</param>
+        /// <param name="strFileName">FileName</param>
+        /// <param name="fileType">Filetype</param>
+        /// <param name="strException">Exception</param>
+        private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
+        {
+            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
+            {
+                FileID = Guid.NewGuid(),
+                UDPRN = uDPRN,
+                AmendmentType = Constants.INSERT,
+                FileName = strFileName,
+                FileProcessing_TimeStamp = DateTime.Now,
+                FileType = fileType,
+                NatureOfError = strException
+            };
+            fileProcessingLogRepository.LogFileException(objFileProcessingLog);
         }
     }
 }
