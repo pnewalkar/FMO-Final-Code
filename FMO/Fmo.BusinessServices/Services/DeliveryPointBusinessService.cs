@@ -29,15 +29,16 @@
         /// This Method is used to fetch Delivery Points Co-ordinates.
         /// </summary>
         /// <param name="boundaryBox">Boundarybox as string</param>
+        /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>Object</returns>
-        public object GetDeliveryPoints(string boundaryBox)
+        public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
             try
             {
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var coordinates = GetData(boundaryBox.Split(Constants.Comma[0]));
-                    return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates));
+                    return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
                 }
                 else
                 {

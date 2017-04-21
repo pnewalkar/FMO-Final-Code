@@ -48,7 +48,7 @@
 
         #region NYB
 
-        public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File ins not valid File Name : {0} : Log Time : {1}";
+        public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File is not valid, File Name : {0} : Log Time : {1} : UDPRN : {2}";
         public const string QUEUENYB = "QUEUE_NYB";
         public const string FMOWebAPIName = "FMOWebAPIName";
         public const string ProcessedFilePath = "ProcessedFilePath";
@@ -85,6 +85,7 @@
         public const string USRLONGITITUDE = "longitude";
         public const string USRCHANGETYPE = "changeType";
         public const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
+        public const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
 
         #endregion USR
 

@@ -6,7 +6,6 @@ using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
-using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
 
@@ -18,23 +17,17 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IRoadNameRepository testCandidate;
         private string coordinates;
+        private Guid unitGuid;
 
         [Test]
         public void Test_GetRoadRoutes()
         {
             coordinates = "1234.87";
-            var actualResult = testCandidate.GetRoadRoutes(coordinates);
+            var actualResult = testCandidate.GetRoadRoutes(coordinates, unitGuid);
             Assert.IsNotNull(actualResult);
         }
 
         [Test]
-        public void Test_GetData()
-        {
-            coordinates = "1234.87";
-            var actualResult = testCandidate.GetData(coordinates);
-            Assert.IsNotNull(actualResult);
-        }
-
         protected override void OnSetup()
         {
             List<OsRoadLinkDTO> lstRoadLinkDTO = new List<OsRoadLinkDTO>();

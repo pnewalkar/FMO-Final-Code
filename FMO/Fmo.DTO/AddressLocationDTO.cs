@@ -14,5 +14,6 @@ namespace Fmo.DTO
         public DbGeometry LocationXY { get; set; }
         public decimal? Lattitude { get; set; }
         public decimal? Longitude { get; set; }
+        public Guid ID { get; set; }
     }
 }
