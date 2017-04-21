@@ -1,8 +1,9 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Interface;
 using Fmo.DTO;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -29,10 +30,17 @@ namespace Fmo.API.Services.Controllers
         [HttpPost("SavePAFDetails")]
         public bool SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
         {
-            if (postalAddress != null && postalAddress.Count > 0)
-                return postalAddressBusinessService.SavePAFDetails(postalAddress);
-            else
-                return false;
+            bool IsPAFSaved = false;
+            try
+            {
+                if (postalAddress != null && postalAddress.Count > 0)
+                    IsPAFSaved = postalAddressBusinessService.SavePAFDetails(postalAddress);
+            }
+            catch (Exception ex)
+            {
+                loggingHelper.LogError(ex);
+            }
+            return IsPAFSaved;
         }
     }
 }

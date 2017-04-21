@@ -17,8 +17,8 @@
         private IDeliveryPointBusinessService testCandidate;
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
         private Mock<ICreateOtherLayersObjects> mockCreateOtherLayers;
-        private List<DeliveryPointDTO> deliveryPointDTO = null;
 
+        // private List<DeliveryPointDTO> deliveryPointDTO = null;
         [Test]
         public void Test_GetDeliveryPoints()
         {
@@ -38,12 +38,10 @@
             objdeliverypointDTO.LocationXY = System.Data.Entity.Spatial.DbGeometry.PointFromText("POINT (487431 193658)", 27700);
             objdeliverypointDTO.PostalAddress = new PostalAddressDTO();
             lstDeliveryPointDTO.Add(objdeliverypointDTO);
-            //mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(lstDeliveryPointDTO);
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
             var coordinates = testCandidate.GetDeliveryPointByUDPRN(udprn);
             mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>()), Times.Once);
             Assert.IsNotNull(coordinates);
-           // Assert.AreEqual(lstDeliveryPointDTO, coordinates);
         }
 
         protected override void OnSetup()
