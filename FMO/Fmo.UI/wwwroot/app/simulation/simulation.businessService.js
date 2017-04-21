@@ -19,8 +19,7 @@ function simulationBusinessService(simulationAPIService) {
     {
        
         simulationAPIService.getStatus().then(function (response) {
-            debugger;
-            vm.RouteStatusObj = response.data;
+            vm.RouteStatusObj = response;
             vm.selectedRouteStatusObj = {
                 group1: vm.RouteStatusObj[0].id,
                 group2: vm.RouteStatusObj[1].id
@@ -34,14 +33,13 @@ function simulationBusinessService(simulationAPIService) {
     function loadScenario(operationStateID, deliveryUnitID)
     {
         simulationAPIService.getScenario(operationStateID, deliveryUnitID).then(function (response) {
-            debugger;
-            vm.RouteScenario = response.data;
+            vm.RouteScenario = response;
         });
     }
 
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         simulationAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            vm.deliveryRoute = response.data;
+            vm.deliveryRoute = response;
         });
     }
     
