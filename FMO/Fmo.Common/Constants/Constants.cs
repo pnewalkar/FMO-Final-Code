@@ -110,6 +110,7 @@
         public const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
         public const string PAFTaskBodyPreText = "Please position the DP ";
         public const string DeliveryPoints = "DeliveryPoints";
+        public const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
 
         #endregion PAF
 
