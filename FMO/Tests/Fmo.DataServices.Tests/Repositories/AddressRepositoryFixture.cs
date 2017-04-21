@@ -7,7 +7,6 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
-using System.Data.Entity;
 using Fmo.DTO;
 using Fmo.Common.Interface;
 using System;
@@ -135,8 +134,9 @@ namespace Fmo.DataServices.Tests.Repositories
                 new PostalAddress()
                 {
                     Address_Id = 10,
-                    AddressType_Id=2,
+                    AddressType_Id = 2,
                     UDPRN = 14856,
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
                 }
             };
 

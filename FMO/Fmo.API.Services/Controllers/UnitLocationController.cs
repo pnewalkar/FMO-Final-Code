@@ -35,7 +35,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <returns>List</returns>
         [Authorize]
-        [HttpGet("DeliveryUnit")]
+        [HttpGet("DeliveryUnitsForUser")]
         public List<UnitLocationDTO> DeliveryUnitsForUser()
         {
             return unitLocationBusinessService.FetchDeliveryUnitsForUser(UserId);
