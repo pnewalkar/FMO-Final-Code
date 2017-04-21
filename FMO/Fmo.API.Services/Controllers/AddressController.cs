@@ -5,8 +5,6 @@ using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Fmo.Common.Interface;
 
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Fmo.API.Services.Controllers
 {
     /// <summary>
