@@ -1,4 +1,6 @@
-﻿namespace Fmo.BusinessServices.Tests.Services
+﻿using System;
+
+namespace Fmo.BusinessServices.Tests.Services
 {
     using System.Collections.Generic;
     using BusinessServices.Services;
@@ -18,13 +20,15 @@
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
         private Mock<ICreateOtherLayersObjects> mockCreateOtherLayers;
         private List<DeliveryPointDTO> deliveryPointDTO = null;
+        private Guid unitGuid = Guid.NewGuid();
 
         [Test]
         public void Test_GetDeliveryPoints()
         {
             string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
-            var result = testCandidate.GetDeliveryPoints(coordinates);
-            mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPoints(It.IsAny<string>()), Times.Once);
+
+            var result = testCandidate.GetDeliveryPoints(coordinates, unitGuid);
+            mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>()), Times.Once);
             Assert.IsNotNull(result);
         }
 
@@ -38,12 +42,14 @@
             objdeliverypointDTO.LocationXY = System.Data.Entity.Spatial.DbGeometry.PointFromText("POINT (487431 193658)", 27700);
             objdeliverypointDTO.PostalAddress = new PostalAddressDTO();
             lstDeliveryPointDTO.Add(objdeliverypointDTO);
+
             //mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(lstDeliveryPointDTO);
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
             var coordinates = testCandidate.GetDeliveryPointByUDPRN(udprn);
             mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>()), Times.Once);
             Assert.IsNotNull(coordinates);
-           // Assert.AreEqual(lstDeliveryPointDTO, coordinates);
+
+            // Assert.AreEqual(lstDeliveryPointDTO, coordinates);
         }
 
         protected override void OnSetup()
@@ -62,7 +68,7 @@
                                 Postcode = "123"
                             }
             };
-            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
+            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
 
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object);
         }
