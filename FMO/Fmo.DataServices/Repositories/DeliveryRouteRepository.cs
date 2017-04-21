@@ -90,7 +90,7 @@
                 int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
                 searchText = searchText ?? string.Empty;
                 var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
-                    .Where(l => (l.Scenario.Unit_GUID == userUnit && l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText))
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) && (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                     .Take(takeCount)
                     .Select(l => new DeliveryRouteDTO
                     {
@@ -120,7 +120,7 @@
             {
                 searchText = searchText ?? string.Empty;
                 return await DataContext.DeliveryRoutes.AsNoTracking()
-                    .Where(l => (l.Scenario.Unit_GUID == userUnit) && ((l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText)))
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) && (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                     .CountAsync();
             }
             catch (Exception ex)

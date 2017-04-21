@@ -356,25 +356,25 @@
             testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mocknotificationRepository.Object, mockfileProcessingLogRepository.Object, mockloggingHelper.Object);
         }
 
-        private void SetUpdata(PostalAddressDTO objPostalAddress, DeliveryPointDTO objDeliveryPoint, AddressLocationDTO objAddressLocation)
-        {
-            mockAddressRepository = CreateMock<IAddressRepository>();
-            mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
-            mockdeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
-            mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
-            mocknotificationRepository = CreateMock<INotificationRepository>();
-            mockfileProcessingLogRepository = CreateMock<IFileProcessingLogRepository>();
-            mockloggingHelper = CreateMock<ILoggingHelper>();
-            testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mocknotificationRepository.Object, mockfileProcessingLogRepository.Object, mockloggingHelper.Object);
-            /*
-            mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
-            mockAddressRepository.Setup(n => n.UpdateAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
-            mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
-            mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
-            mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));*/
-        }
+        // private void SetUpdata(PostalAddressDTO objPostalAddress, DeliveryPointDTO objDeliveryPoint, AddressLocationDTO objAddressLocation)
+        // {
+        //    mockAddressRepository = CreateMock<IAddressRepository>();
+        //    mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
+        //    mockdeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
+        //    mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
+        //    mocknotificationRepository = CreateMock<INotificationRepository>();
+        //    mockfileProcessingLogRepository = CreateMock<IFileProcessingLogRepository>();
+        //    mockloggingHelper = CreateMock<ILoggingHelper>();
+        //    testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mocknotificationRepository.Object, mockfileProcessingLogRepository.Object, mockloggingHelper.Object);
+        //    /*
+        //    mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
+        //    mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
+        //    mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
+        //    mockAddressRepository.Setup(n => n.UpdateAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
+        //    mockdeliveryPointsRepository.Setup(n => n.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(objDeliveryPoint);
+        //    mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
+        //    mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
+        //    mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));*/
+        // }
     }
 }
