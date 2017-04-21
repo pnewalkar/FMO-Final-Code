@@ -22,10 +22,10 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
     vm.advanceSearch = advanceSearch;
     vm.openAdvanceSearchPopup = openAdvanceSearchPopup;
     var searchItem;
-    debugger;
+
     function queryAdvanceSearch(query) {
        
-        debugger;
+   
         console.log(query);
         searchApiService.advanceSearch(query).then(function (response) {
 
@@ -68,11 +68,26 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
             {
                 var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': false };
             }
-            var postCodeObj = {
-                'type': 'PostCode', 'name': arrPostCodes, 'open': false
-        };
-            var streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open': false };
-            if (arrDeliveryRoutes.length == 2) {
+           
+            if (arrPostCodes.length == 1) {
+                var postCodeObj = {
+                    'type': 'PostCode', 'name': arrPostCodes, 'open': true
+                };
+            }
+            else
+            {
+                var postCodeObj = {
+                    'type': 'PostCode', 'name': arrPostCodes, 'open': false
+                };
+            }
+            if (arrStreetNames.length == 1) {
+                var streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open': true };
+            }
+            else
+            {
+                var streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open':false };
+            }
+            if (arrDeliveryRoutes.length == 1) {
                 var deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': true };
             }
             else {
@@ -150,7 +165,6 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
     ]
 
     $scope.toggleList = function (state) {
-        debugger;
        
 
             vm.arrRoutes.forEach(function (e) {
@@ -162,7 +176,6 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
     }
 
     function OnChangeItem(selectedItem) {
-        debugger;
 
         if (selectedItem.type === "DeliveryPoint") {
             searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)

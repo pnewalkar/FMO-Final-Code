@@ -61,7 +61,7 @@
             try
             {
                 var deliveryRoutes = await DataContext.DeliveryRoutes.AsNoTracking()
-                                 .Where(l => (l.Scenario.Unit_GUID == userUnit && l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText))
+                                 .Where(l => (l.Scenario.Unit_GUID == userUnit) && (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                                  .Select(l => new DeliveryRouteDTO
                                  {
                                      DeliveryRoute_Id = l.DeliveryRoute_Id,
@@ -120,7 +120,7 @@
             {
                 searchText = searchText ?? string.Empty;
                 return await DataContext.DeliveryRoutes.AsNoTracking()
-                    .Where(l => (l.Scenario.Unit_GUID == userUnit && l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText))
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) && ((l.RouteName.StartsWith(searchText)) || l.RouteNumber.StartsWith(searchText)))
                     .CountAsync();
             }
             catch (Exception ex)

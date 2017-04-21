@@ -58,7 +58,7 @@ namespace Fmo.BusinessServices.Tests.Services
             deliveryRouteRepositoryMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(input, unitGuid))
                 .Returns(Task.FromResult(new List<DTO.DeliveryRouteDTO> { new DTO.DeliveryRouteDTO { RouteName = "dumyRouteName" } }));
             deliveryPointsRepositoryMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(input, unitGuid))
-                .Returns(Task.FromResult(new List<DTO.DeliveryPointDTO> { new DTO.DeliveryPointDTO { UDPRN = 123456789 } }));
+                .Returns(Task.FromResult(new List<DTO.DeliveryPointDTO> { new DTO.DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new DTO.PostalAddressDTO() {BuildingName = "Bldg-001" } } }));
             streetNetworkRepositoryMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(input, unitGuid))
                 .Returns(Task.FromResult(new List<DTO.StreetNameDTO> { new DTO.StreetNameDTO { LocalName = "dummyLocalName" } }));
 
