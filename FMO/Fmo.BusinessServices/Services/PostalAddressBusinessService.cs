@@ -115,6 +115,7 @@
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
+                throw;
             }
 
             return saveFlag;

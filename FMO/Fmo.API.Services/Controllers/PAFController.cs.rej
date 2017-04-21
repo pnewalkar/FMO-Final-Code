@@ -1,9 +1,0 @@
-diff a/FMO/Fmo.API.Services/Controllers/PAFController.cs b/FMO/Fmo.API.Services/Controllers/PAFController.cs	(rejected hunks)
-@@ -20,6 +20,7 @@
-             this.postalAddressBusinessService = postalAddressBusinessService;
-         }
- 
-+        [HttpPost("SavePAFDetails")]
-         public void SavePAFDetails([FromBody]PostalAddressDTO postalAddress)
-         {
-             try

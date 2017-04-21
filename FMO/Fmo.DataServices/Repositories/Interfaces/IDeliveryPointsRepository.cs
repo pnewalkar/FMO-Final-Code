@@ -5,7 +5,6 @@
     using System.Data.Entity.Spatial;
     using System.Threading.Tasks;
     using Fmo.DTO;
-    using Fmo.Entities;
 
     /// <summary>
     /// This interface contains declarations of methods for fetching, Insertnig Delivery Points data.
@@ -64,16 +63,10 @@
         /// <summary>
         /// This method is used to fetch Delivery Points data.
         /// </summary>
-        /// <param name="coordinates">coordinates as string</param>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
-        List<DeliveryPointDTO> GetDeliveryPoints(string coordinates);
-
-        /// <summary>
-        /// This method is used to fetch delivery points data as per coordinates.
-        /// </summary>
-        /// <param name="coordinates">coordinates as string</param>
-        /// <returns>Ienumerable of Delivery Point Dto</returns>
-        IEnumerable<DeliveryPoint> GetData(string coordinates);
+        List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);
 
         /// <summary>
         /// Get the list of delivery points by the UDPRN id

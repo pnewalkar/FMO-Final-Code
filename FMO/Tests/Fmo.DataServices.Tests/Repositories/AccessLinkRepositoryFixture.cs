@@ -1,4 +1,6 @@
-﻿namespace Fmo.DataServices.Tests.Repositories
+﻿using System;
+
+namespace Fmo.DataServices.Tests.Repositories
 {
     using System.Collections.Generic;
     using Fmo.Common.TestSupport;
@@ -7,7 +9,6 @@
     using Fmo.DataServices.Repositories;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using Fmo.Entities;
     using Moq;
     using NUnit.Framework;
 
@@ -17,20 +18,13 @@
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAccessLinkRepository testCandidate;
         private string coordinates;
+        private Guid unitGuid;
 
         [Test]
         public void Test_Get()
         {
             coordinates = "1234.87";
-            var actualResult = testCandidate.GetAccessLinks(coordinates);
-            Assert.IsNotNull(actualResult);
-        }
-
-        [Test]
-        public void Test_GetData()
-        {
-            coordinates = "1234.87";
-            var actualResult = testCandidate.GetData(coordinates);
+            var actualResult = testCandidate.GetAccessLinks(coordinates, unitGuid);
             Assert.IsNotNull(actualResult);
         }
 
