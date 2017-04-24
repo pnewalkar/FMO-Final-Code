@@ -52,7 +52,7 @@
         public void LoadPAF(string fileName)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 using (ZipArchive zip = ZipFile.OpenRead(fileName))
@@ -100,7 +100,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -114,7 +114,7 @@
         {
             List<PostalAddressDTO> lstAddressDetails = null;
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 string[] arrPAFDetails = strLine.Split(new string[] { Constants.CRLF, Constants.NEWLINE }, StringSplitOptions.None);
@@ -151,7 +151,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             return lstAddressDetails;
         }
@@ -164,7 +164,7 @@
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             bool isMessageQueued = false;
             try
             {
@@ -185,7 +185,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             return isMessageQueued;
         }
@@ -217,7 +217,7 @@
         {
             bool isFileValid = true;
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 foreach (string line in arrLines)
@@ -240,7 +240,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             return isFileValid;
         }
@@ -254,7 +254,7 @@
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 string[] values = csvLine.Split(',');
@@ -290,7 +290,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON );
             }
             return objAddDTO;
         }
@@ -302,7 +302,7 @@
         private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 foreach (PostalAddressDTO objAdd in lstAddress)
@@ -366,7 +366,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -378,7 +378,7 @@
         private bool ValidatePostCode(string strPostCode)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             bool isValid = true;
             try
             {
@@ -410,7 +410,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             return isValid;
         }
@@ -420,9 +420,10 @@
         /// </summary>
         /// <param name="methodName">Function Name</param>
         /// <param name="logMessage">Message</param>
-        private void LogMethodInfoBlock(string methodName, string logMessage)
+        /// <param name="seperator">Seperator used</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + seperator + logMessage, this.enableLogging);
         }
 
         #endregion private methods
