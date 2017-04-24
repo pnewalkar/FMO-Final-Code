@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Fmo.API.Services.Controllers
 {
     [Route("api/ActionManager")]
-    public class ActionManagerController : Controller
+    public class ActionManagerController : FmoBaseController
     {
         IActionManagerBussinessService actionManagerBussinessService = default(IActionManagerBussinessService);
 
