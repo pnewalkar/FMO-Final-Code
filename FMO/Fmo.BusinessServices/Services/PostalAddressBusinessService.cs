@@ -100,7 +100,7 @@
         /// <returns>returns true or false</returns>
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
-            bool saveFlag = false;
+            bool isPostalAddressProcessed = false;
             try
             {
                 Guid addressTypeUSR = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
@@ -118,7 +118,7 @@
                 throw;
             }
 
-            return saveFlag;
+            return isPostalAddressProcessed;
         }
 
         /// <summary>
@@ -229,6 +229,19 @@
                 if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
                 {
                     addressRepository.UpdateAddress(objPostalAddress, strFileName);
+                    var isDeliveryPointUpdated = deliveryPointsRepository.UpdateDeliveryPointByAddressId(objPostalAddressMatchedAddress.ID, objPostalAddress.UDPRN ?? default(int));
+                    if (!isDeliveryPointUpdated)
+                    {
+                        FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+                        objFileProcessingLog.FileID = Guid.NewGuid();
+                        objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
+                        objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
+                        objFileProcessingLog.FileName = strFileName;
+                        objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
+                        objFileProcessingLog.FileType = FileType.Paf.ToString();
+                        objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType;
+                        fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                    }
                 }
                 else
                 {

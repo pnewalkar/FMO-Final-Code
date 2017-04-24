@@ -130,7 +130,9 @@ function mapService($http, mapFactory,
         });
 
         var deliveryPointsLayer = new ol.layer.Vector({
-            source: deliveryPointsVector
+            source: deliveryPointsVector,
+            minResolution: 0,
+            maxResolution: 1
         });
 
         var mockGroupsVector = new ol.source.Vector({
@@ -180,11 +182,15 @@ function mapService($http, mapFactory,
         });
 
         var accessLinkLayer = new ol.layer.Vector({
-            source: accessLinkVector
+            source: accessLinkVector,
+            minResolution: 0,
+            maxResolution: 1
         });
 
         var roadLinkLayer = new ol.layer.Vector({
-            source: roadLinkVector
+            source: roadLinkVector,
+            minResolution: 0,
+            maxResolution: 1
         });
 
 
@@ -194,6 +200,7 @@ function mapService($http, mapFactory,
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
+        //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -210,7 +217,7 @@ function mapService($http, mapFactory,
 
 
         var deliveryPointsLayerSelector = new MapFactory.LayerSelector();
-        deliveryPointsLayerSelector.layerName = "Delivery Points";
+        deliveryPointsLayerSelector.layerName = GlobalSettings.deliveryPointLayerName;
         deliveryPointsLayerSelector.layer = deliveryPointsLayer;
         deliveryPointsLayerSelector.group = "";
         deliveryPointsLayerSelector.zIndex = 8;
@@ -221,7 +228,7 @@ function mapService($http, mapFactory,
         mapFactory.addLayer(deliveryPointsLayerSelector);
 
         var accessLinksLayerSelector = new MapFactory.LayerSelector();
-        accessLinksLayerSelector.layerName = "Access Links";
+        accessLinksLayerSelector.layerName = GlobalSettings.accessLinkLayerName,
         accessLinksLayerSelector.layer = accessLinkLayer;
         accessLinksLayerSelector.group = "";
         accessLinksLayerSelector.zIndex = 8;
@@ -233,7 +240,7 @@ function mapService($http, mapFactory,
         mapFactory.addLayer(accessLinksLayerSelector);
 
         var roadLinkLayerSelector = new MapFactory.LayerSelector();
-        roadLinkLayerSelector.layerName = "Roads";
+        roadLinkLayerSelector.layerName = GlobalSettings.roadLinkLayerName;
         roadLinkLayerSelector.layer = roadLinkLayer;
         roadLinkLayerSelector.group = "";
         roadLinkLayerSelector.zIndex = 8;
@@ -245,7 +252,7 @@ function mapService($http, mapFactory,
         mapFactory.addLayer(roadLinkLayerSelector);
 
         var unitBoundaryLayerSelector = new MapFactory.LayerSelector();
-        unitBoundaryLayerSelector.layerName = "Unit Boundary";
+        unitBoundaryLayerSelector.layerName = GlobalSettings.unitBoundaryLayerName;
         unitBoundaryLayerSelector.layer = unitBoundaryLayer;
         unitBoundaryLayerSelector.group = "";
         unitBoundaryLayerSelector.zIndex = 1;

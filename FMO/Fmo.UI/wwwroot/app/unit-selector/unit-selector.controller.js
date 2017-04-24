@@ -30,14 +30,7 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
     }
 
     function updateMapAfterUnitChange(selectedUnit) {
-
-        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter);
-
-        var unitBoundaryLayer = mapFactory.getLayer("Unit Boundary");
-
-        unitBoundaryLayer.layer.getSource().clear();
-
-        unitBoundaryLayer.layer.getSource().addFeatures((new ol.format.GeoJSON()).readFeatures(selectedUnit.unitBoundaryGeoJSONData));
+        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter, selectedUnit.unitBoundaryGeoJSONData);
     }
 }
 
