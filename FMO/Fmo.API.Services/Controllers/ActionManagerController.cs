@@ -10,7 +10,7 @@ namespace Fmo.API.Services.Controllers
     /// This class contains methods for fetching Action Roles.
     /// </summary>
     [Route("api/ActionManager")]
-    public class ActionManagerController : Controller
+    public class ActionManagerController : FmoBaseController
     {
         private IActionManagerBussinessService actionManagerBussinessService = default(IActionManagerBussinessService);
 

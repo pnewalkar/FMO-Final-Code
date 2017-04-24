@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('mapView')
-.factory('mapFactory', ['$http', 'mapStylesFactory', '$rootScope', MapFactory]);
+.factory('mapFactory', ['$http', 'mapStylesFactory', '$rootScope','GlobalSettings', MapFactory]);
 
 
 function MapFactory($http, mapStylesFactory, $rootScope) {
@@ -22,10 +22,11 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     var defaultResolutions = [700.0014000028002, 336.0006720013441, 168.00033600067206, 84.00016800033603, 39.20007840015681, 19.600039200078406, 9.800019600039203, 5.600011200022402, 2.800005600011201, 2.240004480008961, 1.1200022400044805, 0.5600011200022402, 0.2800005600011201, 0.14000028000056006, 0.05600011200022402, 0.02800005600011201];
     var definedScales = [2500000, 1200000, 600000, 300000, 140000, 70000, 35000, 20000, 10000, 8000, 4000, 2000, 1000, 500, 200, 100];
     var zoomLimitReached = false;
+    var defaultZoomScale = 2000;
 
     var availableResolutionForCurrentExtent = [];
     var maxScale = null;
-
+    var BNGProjection = 'EPSG:27700';
 
     return {
         initialiseMap: initialiseMap,
@@ -53,21 +54,10 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     };
 
     function initialiseMap() {
-        //view = new ol.View({
-        //    center: ol.proj.fromLonLat([
-        //        -0.45419810184716686,
-        //        50.83910301753454
-        //    ]),
-        //    zoom: 17,
-        //    minZoom: 5,
-        //    maxZoom: 19
-        //});
-
         availableResolutionForCurrentExtent = defaultResolutions;
         view = new ol.View({
-            projection: 'EPSG:27700',
+            projection: BNGProjection,
             center: [400000, 650000],
-            // zoom: 4,
             resolutions: defaultResolutions,
             resolution: defaultResolutions[11]
         });
@@ -108,7 +98,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             initialiseMap();
 
         viewMiniMap = new ol.View({
-            projection: 'EPSG:27700',
+            projection: BNGProjection,
             center: view.getCenter(),
             zoom: view.getZoom() - 5
         });
@@ -372,18 +362,6 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
                     setZoomButtonStatus(zoomOutButtons, false);
                 }
 
-                //var html = "1 + ': '<input width='20px' type='text' id='customScale' onChange='CheckThis' value='" + scale + "'>";
-
-                //if (this.renderedHTML_ != html) {
-                //    this.element_.innerHTML = html;
-                //    this.renderedHTML_ = html;
-                //}
-
-                //if (!this.renderedVisible_) {
-                //    this.element_.style.display = '';
-                //    this.renderedVisible_ = true;
-                //}    
-
                 $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
             }
         };
@@ -407,31 +385,35 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         return scale;
     }
 
-    function setUnitBoundaries(bbox, center) {
-        // var bbox = [505058.162109375, 100281.562988281, 518986.837890625, 114158.741943359];
-        //var center= [512022.5, 107220.15246582034];
+    function setUnitBoundaries(bbox, center, unitBoundaryGeoJSONData) {
 
         map.getView().fit(bbox, map.getSize());
 
-        var maxRes = map.getView().getResolution();
+        var maxResolution = map.getView().getResolution();
 
         availableResolutionForCurrentExtent = [];
         for (var i = 0; i < defaultResolutions.length; i++) {
-            if (maxRes > defaultResolutions[i]) {
+            if (maxResolution > defaultResolutions[i]) {
                 availableResolutionForCurrentExtent.push(defaultResolutions[i]);
             }
         }
 
         maxScale = Math.round(getScaleFromResolution(availableResolutionForCurrentExtent[0]));
         view = new ol.View({
-            projection: "EPSG:27700",
+            projection: BNGProjection,
             center: center,
             extent: bbox,
             resolutions: availableResolutionForCurrentExtent,
-            resolution: getResolutionFromScale(2000),
+            resolution: getResolutionFromScale(defaultZoomScale)
         });
 
         map.setView(view);
+
+        var unitBoundaryLayer = getLayer(GlobalSettings.unitBoundaryLayerName);
+
+        unitBoundaryLayer.layer.getSource().clear();
+
+        unitBoundaryLayer.layer.getSource().addFeatures((new ol.format.GeoJSON({ defaultDataProjection: BNGProjection })).readFeatures(unitBoundaryGeoJSONData));
     }
 
     function setDeliveryPoint(long, lat) {

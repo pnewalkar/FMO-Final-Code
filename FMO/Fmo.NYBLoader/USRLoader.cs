@@ -11,9 +11,6 @@ using Fmo.Common.Constants;
 using System.Xml;
 using System.Xml.Schema;
 using Fmo.Common.Interface;
-using Fmo.Common.Enums;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
 using System.Reflection;
 
 namespace Fmo.NYBLoader
@@ -28,7 +25,6 @@ namespace Fmo.NYBLoader
         private readonly IExceptionHelper exceptionHelper;
         private readonly ILoggingHelper loggingHelper;
         private readonly IConfigurationHelper configHelper;
-        private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
         private string XSD_LOCATION;
         private string PROCESSED;
         private string ERROR;
@@ -38,15 +34,13 @@ namespace Fmo.NYBLoader
         public USRLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker,
                          IFileMover fileMover, IExceptionHelper exceptionHelper,
                          ILoggingHelper loggingHelper,
-                         IConfigurationHelper configHelper,
-                         IFileProcessingLogRepository fileProcessingLogRepository)
+                         IConfigurationHelper configHelper)
         {
             this.msgBroker = messageBroker;
             this.fileMover = fileMover;
             this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
             this.configHelper = configHelper;
-            this.fileProcessingLogRepository = fileProcessingLogRepository;
             this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues(Constants.XSDLOCATIONCONFIG);
             this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues(Constants.USRPROCESSEDFILEPATHCONFIG);
             this.ERROR = configHelper.ReadAppSettingsConfigurationValues(Constants.USRERRORFILEPATHCONFIG);
@@ -70,24 +64,79 @@ namespace Fmo.NYBLoader
 
             try
             {
-                lstUSRFiles = GetValidRecords(strPath);
-
-                lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
-                lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
-                lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
-
-                lstUSRInsertFiles.ForEach(addressLocation =>
+                if (IsFileValid(strPath))
                 {
-                    IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
-                    msgBroker.SendMessage(USRMsg);
-                });
+                    lstUSRFiles = GetValidRecords(strPath);
+
+                    lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
+                    lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
+                    lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
+
+                    lstUSRInsertFiles.ForEach(addressLocation =>
+                    {
+                        IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
+                        msgBroker.SendMessage(USRMsg);
+                    });
 
 
-                fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
+                    fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
+                }
+                else
+                {
+                    fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
+                }
             }
 
             catch (Exception)
             {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the file is valid or not
+        /// </summary>
+        /// <returns></returns>
+        private bool IsFileValid(string strPath)
+        {
+            bool isFilevalid = true;
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+
+            try
+            {
+                List<AddressLocationUSRDTO> lstUSRFiles = new List<AddressLocationUSRDTO>();
+
+                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USRXMLROOT));
+                XmlDocument validXmlDocument = new XmlDocument();
+                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, Constants.USRXMLROOT, null);
+                validXmlDocument.AppendChild(rootNode);
+
+
+                using (TextReader reader = new StreamReader(strPath))
+                {
+                    List<XmlNode> xmlNodes = ((XmlNode[])fledeserializer.Deserialize(reader)).ToList();
+                    List<XmlNode> validXmlNodes = new List<XmlNode>();
+
+                    xmlNodes.ForEach(xmlNode =>
+                    {
+                        if (!IsXmlValid(strPath, XSD_LOCATION, xmlNode))
+                        {
+                            isFilevalid = false;
+                        }
+                    });
+                };
+
+                return isFilevalid;
+            }
+            catch (Exception)
+            {
+                fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
+                isFilevalid = false;
                 throw;
             }
             finally
@@ -123,14 +172,6 @@ namespace Fmo.NYBLoader
 
                     xmlNodes.ForEach(xmlNode =>
                     {
-                        if (IsXmlValid(new FileInfo(strPath).Name, XSD_LOCATION, xmlNode))
-                        {
-                            validXmlNodes.Add(xmlNode);
-                        }
-
-                    });
-                    validXmlNodes.ForEach(xmlNode =>
-                    {
                         XmlNode newNode = validXmlDocument.ImportNode(xmlNode, true);
                         rootNode.AppendChild(newNode);
                     });
@@ -155,7 +196,6 @@ namespace Fmo.NYBLoader
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
-
         }
 
         /// <summary>
@@ -178,10 +218,14 @@ namespace Fmo.NYBLoader
 
                 xDoc.Validate(schemas, (o, e) =>
                 {
-                    int UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
-                                                        .Element(XName.Get(Constants.USRUDPRN)).Value);
+                    int UDPRN = 0;
+                    if (!string.IsNullOrEmpty(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT)).Element(XName.Get(Constants.USRUDPRN)).Value))
+                    {
+                        UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
+                                                            .Element(XName.Get(Constants.USRUDPRN)).Value);
+                    }
 
-                    LogFileException(UDPRN, fileName, FileType.Usr.ToString(), e.Message);
+                    loggingHelper.LogError("UDPRN : " + UDPRN.ToString() + " File Name: " + fileName, e.Exception);                    
                     //logger code to write schema mismatch exception 
                     result = false;
                 });
@@ -216,28 +260,6 @@ namespace Fmo.NYBLoader
         private void LogMethodInfoBlock(string methodName, string logMessage)
         {
             this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
-        }
-
-        /// <summary>
-        /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
-        /// </summary>
-        /// <param name="uDPRN">UDPRN</param>
-        /// <param name="strFileName">FileName</param>
-        /// <param name="fileType">Filetype</param>
-        /// <param name="strException">Exception</param>
-        private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
-        {
-            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
-            {
-                FileID = Guid.NewGuid(),
-                UDPRN = uDPRN,
-                AmendmentType = Constants.INSERT,
-                FileName = strFileName,
-                FileProcessing_TimeStamp = DateTime.Now,
-                FileType = fileType,
-                NatureOfError = strException
-            };
-            fileProcessingLogRepository.LogFileException(objFileProcessingLog);
         }
     }
 }

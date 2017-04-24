@@ -8,7 +8,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
         getParameterValues: getParameterValues
     };
 
-    function activate(unitGuid) {  
+    function activate(unitGuid) {
         if (unitGuid) {
             var aValue = sessionStorage.getItem('authorizationData');
             var jobject = JSON.parse(aValue)
@@ -30,15 +30,16 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
                 }
             }
         }
-       
+
         manageAccessService.getToken(vm.userdata).then(function (response) {
             var accessData = response.data;
-            //accessToken, roleAccessData
             if (response.access_token) {
                 sessionStorage.clear();
                 sessionStorage.setItem("authorizationData", JSON.stringify({ token: response.access_token, userName: response.username[0] }));
                 sessionStorage.setItem("roleAccessData", JSON.stringify((response.roleActions)));
-                if (response.access_token || response.access_token !== undefined) {
+                if (unitGuid) {
+                    return;
+                } else if (response.access_token || response.access_token !== undefined) {
                     window.location.href = "http://localhost:34559/app/index.html";
                 }
             }

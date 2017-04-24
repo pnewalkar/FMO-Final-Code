@@ -6,6 +6,7 @@ using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using System.Text.RegularExpressions;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -116,10 +117,13 @@ namespace Fmo.BusinessServices.Services
             {
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                 {
-                    DisplayText = string.Format(
+                    DisplayText = Regex.Replace(
+                        string.Format(
                     Constants.StreetNameFormat,
                     streetName.NationalRoadCode,
                     streetName.DesignatedName),
+                        ",+",
+                        ", ").Trim(','),
                     Type = SearchBusinessEntityType.StreetNetwork
                 });
             }
@@ -129,7 +133,8 @@ namespace Fmo.BusinessServices.Services
             {
                 searchResultDTO.SearchResultItems.Add(new SearchResultItemDTO
                 {
-                    DisplayText = string.Format(
+                    DisplayText = Regex.Replace(
+                        string.Format(
                     Constants.DeliveryPointFormat,
                     deliveryPoint.PostalAddress.OrganisationName,
                     deliveryPoint.PostalAddress.BuildingName,
@@ -137,6 +142,8 @@ namespace Fmo.BusinessServices.Services
                     deliveryPoint.PostalAddress.BuildingNumber,
                     deliveryPoint.PostalAddress.Thoroughfare,
                     deliveryPoint.PostalAddress.DependentLocality),
+                        ",+",
+                        ", ").Trim(','),
                     UDPRN = deliveryPoint.PostalAddress.UDPRN,
                     Type = SearchBusinessEntityType.DeliveryPoint
                 });

@@ -44,15 +44,20 @@
         public const string StreetNameFormat = "{0},{1}";
         public const string SMTPHOSTNAME = "localhost";
         public const int SMTPPORT = 25;
+        public const string AccessToken = "access_token";
+        public const string Bearer = "bearer";
         #endregion Common
 
         #region NYB
 
-        public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File ins not valid File Name : {0} : Log Time : {1}";
+        public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File is not valid, File Name : {0} : Log Time : {1} : UDPRN : {2}";
         public const string QUEUENYB = "QUEUE_NYB";
         public const string FMOWebAPIName = "FMOWebAPIName";
+        public const string FMOTokenGenerationUrl = "FMOTokenGenerationUrl";
+        public const string FMOWebAPIUser = "FMOWebAPIUser";
         public const string ProcessedFilePath = "ProcessedFilePath";
         public const string ErrorFilePath = "ErrorFilePath";
+        public const string UserName = "username";
         public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
 
         #endregion NYB
@@ -106,10 +111,12 @@
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
         public const string PAFErrorMessageForUDPRNNotUpdated = "Postal Address for Selected UDPRN not updated";
+        public const string PAFErrorMessageForUnmatchedDeliveryPointForUSRType = "Delivery point not matched for Postal address whose address type is <USR>";
         public const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
         public const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
         public const string PAFTaskBodyPreText = "Please position the DP ";
         public const string DeliveryPoints = "DeliveryPoints";
+        public const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
 
         #endregion PAF
 

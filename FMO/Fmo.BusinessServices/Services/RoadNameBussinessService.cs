@@ -37,7 +37,7 @@
             {
                 if (!string.IsNullOrEmpty(boundarybox))
                 {
-                    var boundingBoxCoordinates = GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]), uniGuid);
+                    var boundingBoxCoordinates = GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]));
                     return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
                 }
                 else

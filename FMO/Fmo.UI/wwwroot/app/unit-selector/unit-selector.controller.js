@@ -18,24 +18,19 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
     function BindData() {
         if (vm.deliveryRouteUnit.length === 0) {
             unitSelectorAPIService.getDeliveryUnit().then(function (response) {
-                if (response.data)
-                    vm.deliveryRouteUnit = response.data;
+                if (response)
+                    {
+                    vm.deliveryRouteUnit = response;
                 vm.selectedUser = vm.deliveryRouteUnit[0];
                 vm.selectedDeliveryUnit = vm.selectedUser;
                 updateMapAfterUnitChange(vm.selectedDeliveryUnit);
+                }
             });
         }
     }
 
     function updateMapAfterUnitChange(selectedUnit) {
-
-        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter);
-
-        var unitBoundaryLayer = mapFactory.getLayer("Unit Boundary");
-
-        unitBoundaryLayer.layer.getSource().clear();
-
-        unitBoundaryLayer.layer.getSource().addFeatures((new ol.format.GeoJSON()).readFeatures(selectedUnit.unitBoundaryGeoJSONData));
+        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter, selectedUnit.unitBoundaryGeoJSONData);
     }
 }
 
