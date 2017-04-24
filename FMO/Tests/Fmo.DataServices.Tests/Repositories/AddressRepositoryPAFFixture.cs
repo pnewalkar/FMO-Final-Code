@@ -56,16 +56,6 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsNull(result);
         }
 
-        [Test]
-        public void Test_GetPostalAddressByAddress()
-        {
-        }
-
-        [Test]
-        public void Test_LogFileException()
-        {
-        }
-
         #endregion
 
         protected override void OnSetup()
@@ -86,15 +76,15 @@ namespace Fmo.DataServices.Tests.Repositories
             mockFMODBContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockFMODBContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
 
-            mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
-            mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFMODBContext.Object);
-
             mockloggingHelper = CreateMock<ILoggingHelper>();
 
             mockfileProcessingLogRepository = CreateMock<IFileProcessingLogRepository>();
 
             mockpostCodeRepository = CreateMock<IPostCodeRepository>();
             mockpostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+
+            mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFMODBContext.Object);
 
             testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockloggingHelper.Object, mockfileProcessingLogRepository.Object, mockpostCodeRepository.Object);
         }
