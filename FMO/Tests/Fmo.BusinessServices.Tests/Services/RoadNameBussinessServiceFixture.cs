@@ -16,7 +16,6 @@ namespace Fmo.BusinessServices.Tests.Services
     {
         private IRoadNameBusinessService testCandidate;
         private Mock<IRoadNameRepository> mockRoadNameRepository;
-        private List<OsRoadLinkDTO> osRoadLinkDTO = null;
         private Guid userGuid = Guid.NewGuid();
 
         [Test]

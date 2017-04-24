@@ -47,7 +47,7 @@ namespace Fmo.NYBLoader
         public List<PostalAddressDTO> LoadNybDetailsFromCsv(string line)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             List<PostalAddressDTO> lstAddressDetails = null;
             try
             {
@@ -75,7 +75,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             return lstAddressDetails;
         }
@@ -88,7 +88,7 @@ namespace Fmo.NYBLoader
         public async Task<bool> SaveNybDetails(List<PostalAddressDTO> lstAddress, string fileName)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             bool isNybDetailsInserted = false;
             try
             {
@@ -102,7 +102,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             return isNybDetailsInserted;
         }
@@ -118,7 +118,7 @@ namespace Fmo.NYBLoader
         {
             bool isFileValid = true;
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 foreach (string line in arrLines)
@@ -141,7 +141,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
             return isFileValid;
@@ -155,7 +155,7 @@ namespace Fmo.NYBLoader
         private PostalAddressDTO MapNybDetailsToDTO(string csvLine)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 PostalAddressDTO objAddDTO = new PostalAddressDTO();
@@ -188,7 +188,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -199,7 +199,7 @@ namespace Fmo.NYBLoader
         private void ValidateNybDetails(List<PostalAddressDTO> lstAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 foreach (PostalAddressDTO objAdd in lstAddress)
@@ -256,7 +256,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -268,7 +268,7 @@ namespace Fmo.NYBLoader
         private bool ValidatePostCode(string strPostCode)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 bool isValid = true;
@@ -301,7 +301,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -310,9 +310,10 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="methodName">Function Name</param>
         /// <param name="logMessage">Message</param>
-        private void LogMethodInfoBlock(string methodName, string logMessage)
+        /// <param name="seperator">seperator</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + seperator + logMessage, this.enableLogging);
         }
         #endregion
 
