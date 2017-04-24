@@ -25,7 +25,7 @@ namespace Fmo.BusinessServices.Services
                 var roleAccessDto = await actionManagerRepository.GetRoleBasedAccessFunctions(userUnitInfo);
                 return roleAccessDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

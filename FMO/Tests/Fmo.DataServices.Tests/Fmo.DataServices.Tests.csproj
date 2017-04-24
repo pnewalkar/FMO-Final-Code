@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>..\..\Fmo.Test.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\Fmo.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -70,7 +70,6 @@
     <Compile Include="Repositories\ScenarioRepositoryFixture.cs" />
     <Compile Include="Repositories\SerarchDeliveryPointsRepositoryFixture.cs" />
     <Compile Include="Repositories\StreetNetworkRepositoryFixture.cs" />
-    <Compile Include="Repositories\USRFileLoadRepositoryFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

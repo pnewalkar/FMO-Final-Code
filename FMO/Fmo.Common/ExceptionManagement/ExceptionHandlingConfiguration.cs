@@ -15,17 +15,13 @@ namespace Fmo.Common.ExceptionManagement
     /// Exception Handling Configuration for programatically configuring exception policies
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed.")]
-    public class ExceptionHandlingConfiguration
+    public static class ExceptionHandlingConfiguration
     {
-        private ExceptionHandlingConfiguration()
-        {
-        }
-
         /// <summary>
         /// Builds the exception handling configuration.
         /// </summary>
         /// <param name="logWriter">The log writer.</param>
-        /// <returns></returns>
+        /// <returns>ExceptionManager</returns>
         public static ExceptionManager BuildExceptionHandlingConfiguration(LogWriter logWriter)
         {
             ResourceManager resxManager = new ResourceManager(ConfigurationManager.AppSettings["FmoMessages_ResourceFileName"], Assembly.GetExecutingAssembly());

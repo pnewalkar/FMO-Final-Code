@@ -24,7 +24,7 @@ namespace Fmo.BusinessServices.Services
             {
                 return userRoleUnitRepository.GetUserUnitInfo(userName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

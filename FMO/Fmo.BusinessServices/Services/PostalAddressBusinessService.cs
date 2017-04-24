@@ -111,6 +111,8 @@
                 {
                     SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
                 }
+
+                isPostalAddressProcessed = true;
             }
             catch (Exception ex)
             {

@@ -18,7 +18,6 @@ namespace Fmo.BusinessServices.Tests.Services
     {
         private IDeliveryPointBusinessService testCandidate;
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
-        private Mock<ICreateOtherLayersObjects> mockCreateOtherLayers;
         private List<DeliveryPointDTO> deliveryPointDTO = null;
         private Guid unitGuid = Guid.NewGuid();
 
@@ -54,7 +53,6 @@ namespace Fmo.BusinessServices.Tests.Services
         protected override void OnSetup()
         {
             mockDeliveryPointsRepository = new Mock<IDeliveryPointsRepository>();
-            mockCreateOtherLayers = new Mock<ICreateOtherLayersObjects>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();

@@ -54,8 +54,9 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                List<ReferenceDataDTO> lstReferenceDt = null;
-                var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("Delivery Point Operational Status", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                List<ReferenceDataDTO> lstReferenceDt = new List<ReferenceDataDTO>();
+                string categoryname = "Delivery Point Operational Status";
+                var query = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(categoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                 if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
                 {
                     lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
@@ -63,9 +64,9 @@ namespace Fmo.DataServices.Repositories
 
                 return lstReferenceDt;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 

@@ -39,9 +39,9 @@ map-panel {
     pointer-events: auto;
 }
 
-.map-panel .fa {
+/*.map-panel .fa {
     @include font-color($strong-grey);
-}
+}*/
 
 .map-panel .map-panel-content {
     @include padding(3px 3px 3px 3px);

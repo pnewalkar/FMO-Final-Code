@@ -1,15 +1,17 @@
 <div class="searchBox">
-    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.onEnterKeypress(vm.searchText)" />
+    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" 
+           ng-enter="vm.onEnterKeypress(vm.searchText)" />
+    <div class="numberCircle" ng-show="vm.resultscount[0].count > 0"><span>{{vm.resultscount[0].count}}</span></div> 
     <i class="fa fa-search" aria-hidden="true" ng-click="vm.onEnterKeypress(vm.searchText)"></i>
-    <div class="searchContent" md-whiteframe="3dp">
+    <div class="searchContent" md-whiteframe="3dp" ng-show="vm.isResultDisplay">
         <ul ng-repeat="item in vm.results | limitTo:5">
             <li class="searchData">
                 <a ng-click="vm.OnChangeItem(item)">
                     <span ng-switch on="item.type" ng-if="item.type">
                         <i class="fa fa-map-marker delivery" aria-hidden="true" ng-switch-when="DeliveryPoint"></i>
-                        <i class="fa fa-map-marker postcode" aria-hidden="true" ng-switch-when="Postcode"></i>
+                        <!--<i class="fa fa-map-marker postcode" aria-hidden="true" ng-switch-when="Postcode"></i>
                         <i class="fa fa-map-marker street" aria-hidden="true" ng-switch-when="StreetNetwork"></i>
-                        <i class="fa fa-map-marker route" aria-hidden="true" ng-switch-when="Route"></i>
+                        <i class="fa fa-map-marker route" aria-hidden="true" ng-switch-when="Route"></i>-->
                     </span>
                     <span ng-show="item.type!='Warning'">
                         {{ item.displayText | limitTo: 30 }}
@@ -21,7 +23,7 @@
         </ul>
         <ul>
             <li ng-show="vm.results.length >= 5">
-                <button class="viewResult" ng-click="vm.advanceSearch(vm.searchText)"> <span class="searchCount">{{vm.resultscount[0].count}}</span> View More Results<i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
+                <button class="viewResult" ng-click="vm.advanceSearch(vm.searchText)"> <span class="searchCount">{{vm.resultscount[0].count - 5}}</span> View More Results<i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
             </li>
         </ul>
         <ul>
