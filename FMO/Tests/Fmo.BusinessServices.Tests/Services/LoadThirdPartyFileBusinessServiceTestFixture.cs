@@ -1,15 +1,9 @@
 ﻿namespace Fmo.BusinessServices.Tests.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Messaging;
-    using System.Reflection;
-    using Common.Constants;
     using Common.Enums;
     using Common.Interface;
-    using DataServices.Repositories.Interfaces;
-    using DTO;
     using DTO.FileProcessing;
     using Fmo.Common.TestSupport;
     using Fmo.NYBLoader;
@@ -25,7 +19,7 @@
         private Mock<IMessageBroker<AddressLocationUSRDTO>> msgBrokerMock;
         private Mock<IExceptionHelper> exceptionHelperMock;
         private Mock<ILoggingHelper> loggingHelperMock;
-        private Mock<IConfigurationHelper> configHelperMock;        
+        private Mock<IConfigurationHelper> configHelperMock;
 
         /// <summary>
         /// Test the method with the valid file data.
@@ -49,7 +43,7 @@
             loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
-            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");            
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
 
             testCandidate = new USRLoader(
                                             msgBrokerMock.Object,
