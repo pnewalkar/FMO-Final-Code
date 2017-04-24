@@ -50,6 +50,18 @@
           "codeLanguage": "any",
           "copyToOutput": true
         },
+        "bin/Debug/resourcefile/fmomessagesconstants.designer.cs": {
+          "buildAction": "Compile",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "resourcefile/fmomessagesconstants.designer.cs"
+        },
+        "bin/Debug/resourcefile/fmomessagesconstants.resx": {
+          "buildAction": "EmbeddedResource",
+          "codeLanguage": "any",
+          "copyToOutput": true,
+          "outputPath": "resourcefile/fmomessagesconstants.resx"
+        },
         "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",

@@ -5,7 +5,8 @@
 
 var GlobalSettings = {
     apiUrl: '',
-    env: 'localhost' // Here set the current environment
+    env: 'localhost', // Here set the current environment
+    indexUrl:'http://localhost:34559/app/index.html'
 };
 
 /* For Api */
