@@ -1,5 +1,7 @@
 ﻿namespace Fmo.BusinessServices.Tests.Services
 {
+    using System.Collections.Generic;
+    using System.Net.Mail;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.BusinessServices.Services;
     using Fmo.Common.Interface;
@@ -9,8 +11,6 @@
     using Fmo.DTO.FileProcessing;
     using Moq;
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using System.Net.Mail;
 
     [TestFixture]
     public class USRBusinessServiceFixture : TestFixtureBase
@@ -45,8 +45,6 @@
                                             this.emailHelperMock.Object,
                                             this.configurationHelperMock.Object,
                                             this.loggingHelperMock.Object);
-
-            //Setup mock objects
             AddressLocationDTO addressDTOMockNull = null;
 
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRFromEmail")).Returns("sriram.kandade@capgemini.com");
@@ -85,10 +83,7 @@
                                             this.referenceDataCategoryRepositoryMock.Object,
                                             this.emailHelperMock.Object,
                                             this.configurationHelperMock.Object,
-                                            this.loggingHelperMock.Object
-                                            );
-
-            //Setup mock objects
+                                            this.loggingHelperMock.Object);
             AddressLocationDTO addressDTOMockNull = null;
             NotificationDTO notificationDTOMockNull = null;
 
@@ -134,10 +129,7 @@
                                             this.referenceDataCategoryRepositoryMock.Object,
                                             this.emailHelperMock.Object,
                                             this.configurationHelperMock.Object,
-                                            this.loggingHelperMock.Object
-                                            );
-
-            //Setup mock objects
+                                            this.loggingHelperMock.Object);
             AddressLocationDTO addressDTOMockNull = null;
             NotificationDTO notificationDTOMockNull = null;
 

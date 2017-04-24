@@ -27,6 +27,19 @@
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
+        /// <returns>List of Access Link Dto</returns>
+        public List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
+        {
+            List<AccessLink> result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+            var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDTO>(result);
+            return accessLink;
+        }
+
+        /// <summary>
+        /// This Method is used to Access Link data for defined coordinates.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>Link of Access Link Entity</returns>
         private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
         {
@@ -41,19 +54,6 @@
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// This Method is used to Access Link data for defined coordinates.
-        /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
-        /// <param name="unitGuid">unit unique identifier.</param>
-        /// <returns>List of Access Link Dto</returns>
-        public List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
-        {
-            List<AccessLink> result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
-            var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDTO>(result);
-            return accessLink;
         }
     }
 }
