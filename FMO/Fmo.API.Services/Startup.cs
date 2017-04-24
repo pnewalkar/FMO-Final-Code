@@ -85,10 +85,8 @@ namespace Fmo.API.Services
             services.AddTransient<IActionManagerBussinessService, ActionManagerBussinessService>();
             services.AddTransient<IUserRoleUnitBussinessService, UserRoleUnitBussinessService>();
             services.AddTransient<IUSRBusinessService, USRBusinessService>();
-            services.AddTransient<IAccessActionBusinessService, AccessActionBussinessService>();
             services.AddTransient<IUnitLocationBusinessService, UnitLocationBusinessService>();
             //Repositories
-            services.AddTransient<IAccessActionRepository, AccessActionRepository>();
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
             services.AddTransient<IRoadNameBusinessService, RoadNameBussinessService>();
             services.AddTransient<IRoadNameRepository, RoadNameRepository>();
@@ -115,7 +113,6 @@ namespace Fmo.API.Services
 
             //Others - Helper, Utils etc
             services.AddTransient<ILoggingHelper, LoggingHelper>();
-            services.AddTransient<ICreateOtherLayersObjects, CreateOtherLayerObjects>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IConfigurationHelper, ConfigurationHelper>();
         }

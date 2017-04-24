@@ -100,7 +100,7 @@
         /// <returns>returns true or false</returns>
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
-            bool saveFlag = false;
+            bool isPostalAddressProcessed = false;
             try
             {
                 Guid addressTypeUSR = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
@@ -118,7 +118,7 @@
                 throw;
             }
 
-            return saveFlag;
+            return isPostalAddressProcessed;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@
                 objTask.Notification_Heading = Constants.TASKPAFACTION;
                 objTask.Notification_Message = AddressFields(objPostalAddress);
                 objTask.PostcodeDistrict = postCodeDistrict;
-                objTask.NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE);
+                objTask.NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE);
                 objTask.NotificationActionLink = string.Format(Constants.PAFNOTIFICATIONLINK, objPostalAddress.UDPRN);
                 notificationRepository.AddNewNotification(objTask).Wait();
             }
@@ -205,7 +205,7 @@
                         objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
                         objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
                         objFileProcessingLog.FileName = strFileName;
-                        objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
+                        objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
                         objFileProcessingLog.FileType = FileType.Paf.ToString();
                         objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForUDPRNNotUpdated;
                         fileProcessingLogRepository.LogFileException(objFileProcessingLog);
@@ -218,7 +218,7 @@
                     objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
                     objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
                     objFileProcessingLog.FileName = strFileName;
-                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
+                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
                     objFileProcessingLog.FileType = FileType.Paf.ToString();
                     objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeNYBNotFound;
                     fileProcessingLogRepository.LogFileException(objFileProcessingLog);
@@ -229,6 +229,19 @@
                 if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
                 {
                     addressRepository.UpdateAddress(objPostalAddress, strFileName);
+                    var isDeliveryPointUpdated = deliveryPointsRepository.UpdateDeliveryPointByAddressId(objPostalAddressMatchedAddress.ID, objPostalAddress.UDPRN ?? default(int));
+                    if (!isDeliveryPointUpdated)
+                    {
+                        FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+                        objFileProcessingLog.FileID = Guid.NewGuid();
+                        objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
+                        objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
+                        objFileProcessingLog.FileName = strFileName;
+                        objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
+                        objFileProcessingLog.FileType = FileType.Paf.ToString();
+                        objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType;
+                        fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                    }
                 }
                 else
                 {
@@ -237,7 +250,7 @@
                     objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
                     objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
                     objFileProcessingLog.FileName = strFileName;
-                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.Now;
+                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
                     objFileProcessingLog.FileType = FileType.Paf.ToString();
                     objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeUSRNotFound;
                     fileProcessingLogRepository.LogFileException(objFileProcessingLog);

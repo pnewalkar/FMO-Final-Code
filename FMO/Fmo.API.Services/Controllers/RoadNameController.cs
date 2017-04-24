@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.DTO;
+﻿using Fmo.BusinessServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace Fmo.API.Services.Controllers
 {
@@ -22,16 +18,6 @@ namespace Fmo.API.Services.Controllers
         }
 
         /// <summary>
-        /// This method is used to fetch Road name
-        /// </summary>
-        /// <param name="RoadNameDTO">RoadNameDTO</param>
-        /// <returns>Task List of Road Name Dto</returns>
-        public async Task<List<RoadNameDTO>> FetchRoadName(List<RoadNameDTO> RoadNameDTO)
-        {
-            return await roadNameBussinessService.FetchRoadName();
-        }
-
-        /// <summary>
         /// This method is used to get Route Link data.
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as strintg</param>
@@ -40,7 +26,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public string GetRoouteData(string boundaryBox)
         {
-            return roadNameBussinessService.GetRoadRoutes(boundaryBox,CurrentUserUnit);
+            return roadNameBussinessService.GetRoadRoutes(boundaryBox, CurrentUserUnit);
         }
     }
 }

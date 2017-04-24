@@ -56,6 +56,38 @@ namespace Fmo.DataServices.Repositories
         }
 
         /// <summary>
+        /// This method is used to update UDPRN of Delivery Point by matching udprn of postal address id.
+        /// </summary>
+        /// <param name="addressId">Postal address guid</param>
+        /// <param name="udprn">UDPRN id of postal address</param>
+        /// <returns>DeliveryPointDTO</returns>
+        public bool UpdateDeliveryPointByAddressId(Guid addressId, int udprn)
+        {
+            bool isDeliveryPointUpdated = false;
+            try
+            {
+                var objDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking().Where(n => n.Address_GUID == addressId).SingleOrDefault();
+
+                if (objDeliveryPoint != null)
+                {
+                    objDeliveryPoint.UDPRN = udprn;
+                    DataContext.SaveChanges();
+                    isDeliveryPointUpdated = true;
+                }
+                else
+                {
+                    isDeliveryPointUpdated = true;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return isDeliveryPointUpdated;
+        }
+
+        /// <summary>
         /// This method is used to insert delivery point.
         /// </summary>
         /// <param name="objDeliveryPoint"> Delivery point dto as object</param>
@@ -199,7 +231,7 @@ namespace Fmo.DataServices.Repositories
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Entity</returns>
-        public IEnumerable<DeliveryPoint> GetData(string boundingBoxCoordinates, Guid unitGuid)
+        private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
         {
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
@@ -223,7 +255,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List of Delivery Point Dto</returns>
         public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<DeliveryPoint> deliveryPoints = this.GetData(boundingBoxCoordinates, unitGuid).ToList();
+            List<DeliveryPoint> deliveryPoints = this.GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
             Mapper.Initialize(cfg =>
             {

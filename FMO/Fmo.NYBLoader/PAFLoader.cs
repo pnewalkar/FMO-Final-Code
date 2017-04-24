@@ -178,10 +178,10 @@
                         msgBroker.SendMessage(msg);
                     });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.loggingHelper.LogError(ex);
                 isMessageQueued = false;
-                throw;
             }
             finally
             {
@@ -203,7 +203,7 @@
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
-               string.Format(dateTimeFormat, DateTime.Now),
+               string.Format(dateTimeFormat, DateTime.UtcNow),
                 Path.GetExtension(strfileName)
                 );
         }
