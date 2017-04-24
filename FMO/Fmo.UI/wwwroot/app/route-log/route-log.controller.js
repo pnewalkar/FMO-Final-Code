@@ -1,6 +1,6 @@
 ﻿angular.module('routeLog')
-.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', RouteLogController])
-function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService) {
+.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService','$mdDialog', RouteLogController])
+function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService, $mdDialog) {
     var vm = this;
     vm.loadSelectionType = loadSelectionType();
     vm.loadRouteLogStatus = loadRouteLogStatus();
@@ -19,6 +19,11 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.selectedVegetables;
     vm.searchTerm;
     vm.isShowMultiSelectionRoute = false;
+    vm.closeWindow = closeWindow;
+
+    function closeWindow() {
+        $mdDialog.cancel();
+    }
    
     function selectionTypeChange() {
         
