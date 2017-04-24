@@ -119,7 +119,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
     function updateMiniMap() {
         viewMiniMap.setCenter(view.getCenter());
-        viewMiniMap.setZoom(view.getZoom() - 5);
+        viewMiniMap.setZoom(view.getZoom() - 2);
     }
 
     function getVectorLayer() {
