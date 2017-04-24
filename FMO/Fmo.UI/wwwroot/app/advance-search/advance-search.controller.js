@@ -14,7 +14,8 @@ function AdvanceSearchController(searchApiService,
                                   $mdDialog,
                                   advanceSearchService,
                                   $stateParams)
-                 {
+{
+    vm.queryAdvanceSearch(vm.searchText);
     var vm = this;
     vm.toggle = vm.toggle;
     vm.toggleList = vm.toggleList;
