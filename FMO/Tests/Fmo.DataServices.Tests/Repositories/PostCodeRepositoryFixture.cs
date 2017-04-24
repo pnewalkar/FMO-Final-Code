@@ -78,7 +78,7 @@ namespace Fmo.DataServices.Tests.Repositories
                         new UnitPostcodeSector()
                         {
                             Unit_GUID = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918"),
-                            PostcodeSector_GUID=new Guid("0C65F088-874F-40FB-A753-8F29C371821F")
+                            PostcodeSector_GUID = new Guid("0C65F088-874F-40FB-A753-8F29C371821F")
                         }
                     };
 

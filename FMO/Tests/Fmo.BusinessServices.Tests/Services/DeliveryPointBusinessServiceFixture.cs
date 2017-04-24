@@ -18,7 +18,6 @@ namespace Fmo.BusinessServices.Tests.Services
     {
         private IDeliveryPointBusinessService testCandidate;
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
-        private List<DeliveryPointDTO> deliveryPointDTO = null;
         private Guid unitGuid = Guid.NewGuid();
 
         [Test]
