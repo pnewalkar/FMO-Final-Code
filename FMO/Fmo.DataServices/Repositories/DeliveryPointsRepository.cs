@@ -108,7 +108,7 @@ namespace Fmo.DataServices.Repositories
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
                     DataContext.DeliveryPoints.Add(newDeliveryPoint);
-                    DataContext.SaveChangesAsync();
+                    DataContext.SaveChanges();
                     saveFlag = true;
                 }
             }

@@ -27,6 +27,11 @@
         [Test]
         public void Test_Valid_FileData()
         {
+            msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
+            fileMoverMock = CreateMock<IFileMover>();
+            exceptionHelperMock = CreateMock<IExceptionHelper>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+            configHelperMock = CreateMock<IConfigurationHelper>();
             string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
 
             Exception mockException = It.IsAny<Exception>();
@@ -62,6 +67,12 @@
         [Test]
         public void Test_InValid_FileData()
         {
+            msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
+            fileMoverMock = CreateMock<IFileMover>();
+            exceptionHelperMock = CreateMock<IExceptionHelper>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+            configHelperMock = CreateMock<IConfigurationHelper>();
+
             string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
 
             Exception mockException = It.IsAny<Exception>();
@@ -94,11 +105,6 @@
         /// </summary>
         protected override void OnSetup()
         {
-            msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
-            fileMoverMock = CreateMock<IFileMover>();
-            exceptionHelperMock = CreateMock<IExceptionHelper>();
-            loggingHelperMock = CreateMock<ILoggingHelper>();
-            configHelperMock = CreateMock<IConfigurationHelper>();
         }
     }
 }

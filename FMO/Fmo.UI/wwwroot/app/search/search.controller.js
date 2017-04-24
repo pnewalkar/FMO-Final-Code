@@ -15,6 +15,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
         searchApiService.basicSearch(query).then(function (response) {
             vm.resultscount = response.data.searchCounts;
             vm.results = response.data.searchResultItems;
+            vm.isResultDisplay = true
         });
     }
 
@@ -49,6 +50,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
                 });
             $state.go('searchDetails', { selectedItem: selectedItem });
         }
+        vm.isResultDisplay = false;
     }
 
     function advanceSearch(query) {

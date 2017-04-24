@@ -6,7 +6,7 @@
 var GlobalSettings = {
     apiUrl: '',
     env: 'localhost', // Here set the current environment
-    indexUrl:'http://localhost:34559/app/index.html'
+    indexUrl:'http://10.246.18.250/fmoui/app/index.html'
 };
 
 /* For Api */
@@ -18,7 +18,7 @@ var GlobalSettings = {
 //}
 
 if (GlobalSettings.env == "localhost") {
-    GlobalSettings.apiUrl = "http://localhost:34583/api";
+    GlobalSettings.apiUrl = "http://10.246.18.250/fmoapi";
 }
 else if (GlobalSettings.env == "dev") {
     GlobalSettings.apiUrl = ""; // Here comes development enviroment url
