@@ -49,216 +49,6 @@
         }
 
         [Test]
-        public void SavePAFDetails_Check_MatchPostalAddressOnUDPRN_WithAddressLocationNull()
-        {
-            var objPostalAddress = new PostalAddressDTO()
-            {
-                Time = "7/19/2016",
-                Date = "8:37:00",
-                AmendmentType = "I",
-                AmendmentDesc = "new insert",
-                Postcode = "YO23 1DQ",
-                PostTown = "York",
-                UDPRN = 54162429,
-                DeliveryPointSuffix = "1A",
-                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
-            };
-
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
-            lstPostalAddress.Add(objPostalAddress);
-            AddressLocationDTO objAddressLocation = null;
-
-            mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
-            mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
-            mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
-            mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
-
-            var result = testCandidate.SavePAFDetails(lstPostalAddress);
-
-            mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Once());
-            mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Once());
-        }
-
-        [Test]
-        public void SavePAFDetails_Check_MatchPostalAddressOnUDPRN_WithAddressLocationMatched()
-        {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
-            {
-                Time = "7/19/2016",
-                Date = "8:37:00",
-                AmendmentType = "I",
-                AmendmentDesc = "new insert",
-                Postcode = "YO23 1DQ",
-                PostTown = "York",
-                UDPRN = 54162429,
-                DeliveryPointSuffix = "1A",
-                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
-            };
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
-            lstPostalAddress.Add(objPostalAddress);
-
-            AddressLocationDTO objAddressLocation = new AddressLocationDTO()
-            {
-                UDPRN = 54162429
-            };
-
-            mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
-            mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
-            mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
-            mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
-
-            var result = testCandidate.SavePAFDetails(lstPostalAddress);
-
-            mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Once());
-            mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
-        }
-
-        [Test]
-        public void SavePAFDetails_Check_MatchPostalAddressOnUDPRN_NotMatchedAddressLocationOnUDPRN()
-        {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
-            {
-                Time = "7/19/2016",
-                Date = "8:37:00",
-                AmendmentType = "I",
-                AmendmentDesc = "new insert",
-                Postcode = "YO23 1DQ",
-                PostTown = "York",
-                UDPRN = 54162429,
-                DeliveryPointSuffix = "1A",
-                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
-            };
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
-            lstPostalAddress.Add(objPostalAddress);
-            AddressLocationDTO objAddressLocation = new AddressLocationDTO()
-            {
-                UDPRN = 54162428
-            };
-
-            mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
-            mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
-            mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
-            mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
-            mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
-
-            var result = testCandidate.SavePAFDetails(lstPostalAddress);
-
-            mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Once());
-            mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
-        }
-
-        /// <summary>
-        /// Exception Case
-        /// </summary>
-        [Test]
-        public void SavePAFDetails_Check_ReturnsFalseOnRepository()
-        {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
-            {
-                Time = "7/19/2016",
-                Date = "8:37:00",
-                AmendmentType = "I",
-                AmendmentDesc = "new insert",
-                Postcode = "YO23 1DQ",
-                PostTown = "York",
-                UDPRN = 54162429,
-                DeliveryPointSuffix = "1A",
-                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
-            };
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
-            lstPostalAddress.Add(objPostalAddress);
-            AddressLocationDTO objAddressLocation = new AddressLocationDTO()
-            {
-                UDPRN = 54162428
-            };
-
-            mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974"));
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>())).Returns(It.IsAny<PostalAddressDTO>());
-            mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
-            mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
-            mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
-            mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
-
-            var result = testCandidate.SavePAFDetails(lstPostalAddress);
-
-            mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
-            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Never());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
-            mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
-        }
-
-        /// <summary>
-        /// RFMO 258 : Scenerio 1b : Error Log entry
-        /// </summary>
-        [Test]
-        public void SavePAFDetails_Check_WrongAddressType()
-        {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
-            {
-                Time = "7/19/2016",
-                Date = "8:37:00",
-                AmendmentType = "I",
-                AmendmentDesc = "new insert",
-                Postcode = "YO23 1DQ",
-                PostTown = "York",
-                UDPRN = 54162429,
-                DeliveryPointSuffix = "1A",
-                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
-            };
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
-            lstPostalAddress.Add(objPostalAddress);
-
-            AddressLocationDTO objAddressLocation = new AddressLocationDTO()
-            {
-                UDPRN = 54162428
-            };
-
-            mockrefDataRepository.Setup(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("7A976FB6-A113-4F62-B366-10A19DB6DF01")); // for diif GUID
-            mockAddressRepository.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(objPostalAddress);
-            mockAddressRepository.Setup(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(false);
-            mockaddressLocationRepository.Setup(n => n.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(objAddressLocation);
-            mockdeliveryPointsRepository.Setup(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).Returns(true);
-            mocknotificationRepository.Setup(n => n.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(It.IsAny<int>()));
-
-            var result = testCandidate.SavePAFDetails(lstPostalAddress);
-
-            mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Never());
-            mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
-            mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
-            mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
-        }
-
-        [Test]
         public void SavePAFDetails_Check_MatchPostalAddressOnAddress()
         {
             PostalAddressDTO objPostalAddress = new PostalAddressDTO()
@@ -293,7 +83,7 @@
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
             mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
-            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
+            mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Never);
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Never());
             mockdeliveryPointsRepository.Verify(n => n.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>()), Times.Never());
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
@@ -332,8 +122,8 @@
             var result = testCandidate.SavePAFDetails(lstPostalAddress);
 
             mockrefDataRepository.Verify(n => n.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(3));
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.Once());
-            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Once());
+            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<int>()), Times.AtMost(5));
+            mockAddressRepository.Verify(n => n.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.AtMost(5));
             mockAddressRepository.Verify(n => n.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Never);
             mockAddressRepository.Verify(n => n.InsertAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
             mockaddressLocationRepository.Verify(n => n.GetAddressLocationByUDPRN(It.IsAny<int>()), Times.Once());
