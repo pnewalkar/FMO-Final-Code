@@ -11,13 +11,13 @@ angular.module('FMOApp')
 
         .state("routeLog", {
             url: "/routeLog",
-            templateUrl: "/app/route-log/route-log.template.html",
+            templateUrl: "./route-log/route-log.template.html",
             controller: "RouteLogController as vm",
             params: { selectedUnit: null, }
         })
         .state("routeSimulation", {
             url: "/routeSimulation",
-            templateUrl: "/app/simulation/simulation.template.html",
+            templateUrl: "./simulation/simulation.template.html",
             controller: "SimulationController as vm",
             params: { selectedUnit: null, }
             //resolve: {
@@ -33,7 +33,7 @@ angular.module('FMOApp')
              params: { username: null, }
          })
      .state("searchDetails", {
-         templateUrl: "/app/search/context.template.html",
+         templateUrl: "./search/context.template.html",
          controller: "ContextController as vm",
          params: { selectedItem: null, }
      });
