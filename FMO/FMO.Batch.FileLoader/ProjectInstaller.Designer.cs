@@ -39,7 +39,7 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.ServiceName = "FileLoader";
+            this.serviceInstaller1.ServiceName = "Fmo.FileLoader";
             // 
             // ProjectInstaller
             // 

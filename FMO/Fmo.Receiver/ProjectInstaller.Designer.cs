@@ -39,7 +39,7 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.ServiceName = "Receiver";
+            this.serviceInstaller1.ServiceName = "Fmo.Receiver";
             // 
             // ProjectInstaller
             // 
