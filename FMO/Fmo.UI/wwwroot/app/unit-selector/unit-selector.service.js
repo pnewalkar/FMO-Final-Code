@@ -1,7 +1,7 @@
 
 // Just for reference
 angular.module('unitSelector')
-    .factory('unitSelectorAPIService', ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
+    .factory('unitSelectorAPIService', ['$http', '$q', 'GlobalSettings', function ($http, $q,GlobalSettings) {
         var unitSelectorAPIService = {};
 
         unitSelectorAPIService.getDeliveryUnit = function () {

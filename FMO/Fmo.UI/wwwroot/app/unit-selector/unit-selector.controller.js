@@ -18,11 +18,13 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
     function BindData() {
         if (vm.deliveryRouteUnit.length === 0) {
             unitSelectorAPIService.getDeliveryUnit().then(function (response) {
-                if (response.data)
+                if (response)
+                    {
                     vm.deliveryRouteUnit = response;
                 vm.selectedUser = vm.deliveryRouteUnit[0];
                 vm.selectedDeliveryUnit = vm.selectedUser;
                 updateMapAfterUnitChange(vm.selectedDeliveryUnit);
+                }
             });
         }
     }
