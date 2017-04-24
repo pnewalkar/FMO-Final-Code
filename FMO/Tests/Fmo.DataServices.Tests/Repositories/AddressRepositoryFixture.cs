@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Fmo.Common.Interface;
 using Fmo.Common.TestSupport;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
 using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
-using Fmo.DTO;
-using Fmo.Common.Interface;
-using System;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -92,7 +92,6 @@ namespace Fmo.DataServices.Tests.Repositories
 
         protected override void OnSetup()
         {
-
         }
 
         private void SetUpdataWithDeliverypoints()

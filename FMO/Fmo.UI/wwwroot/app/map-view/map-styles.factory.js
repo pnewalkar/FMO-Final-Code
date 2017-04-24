@@ -224,17 +224,10 @@ function MapStylesFactory() {
     });
 
     var selectedLinkStyle = new ol.style.Style({
-        text: new ol.style.Text({
-            text: '\uf178',
-            font: 'normal 16px FontAwesome',
-            textBaseline: 'Bottom',
-            fill: new ol.style.Fill({
-                color: '#62a531',
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#000',
-                width: 2
-            })
+        fill: whiteFill,
+        stroke: new ol.style.Stroke({
+            color: '#62a531',
+            width: 2
         })
     });
 

@@ -62,7 +62,8 @@ function mapService($http, mapFactory,
         getActiveFeature: getActiveFeature,
         setSelections: setSelections,
         getfeature: getfeature,
-        selectFeatures: selectFeatures
+        selectFeatures: selectFeatures,
+        getSecondaryFeatures: getSecondaryFeatures
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
