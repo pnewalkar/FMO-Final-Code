@@ -2,6 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity.Infrastructure;
+    using System.Linq;
+    using Common.AsyncEnumerator;
     using Fmo.Common.TestSupport;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -63,12 +66,20 @@
                                     }
             };
 
+            var mockAsynEnumerable = new DbAsyncEnumerable<ReferenceDataCategory>(referenceDataCategory);
             var mockReferenceDataCategoryDBSet = MockDbSet(referenceDataCategory);
+
+            mockReferenceDataCategoryDBSet.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable.AsQueryable().Provider);
+            mockReferenceDataCategoryDBSet.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynEnumerable.AsQueryable().Expression);
+            mockReferenceDataCategoryDBSet.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable.AsQueryable().ElementType);
+            mockReferenceDataCategoryDBSet.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<ReferenceDataCategory>)mockAsynEnumerable).GetAsyncEnumerator());
+
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFmoDbContext.Setup(x => x.Set<ReferenceDataCategory>()).Returns(mockReferenceDataCategoryDBSet.Object);
             mockFmoDbContext.Setup(x => x.ReferenceDataCategories).Returns(mockReferenceDataCategoryDBSet.Object);
             mockFmoDbContext.Setup(c => c.ReferenceDataCategories.AsNoTracking()).Returns(mockReferenceDataCategoryDBSet.Object);
             mockReferenceDataCategoryDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockReferenceDataCategoryDBSet.Object);
+
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             testCandidate = new ReferenceDataCategoryRepository(mockDatabaseFactory.Object);
