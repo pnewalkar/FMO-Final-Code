@@ -12,11 +12,13 @@ function MapToolbarController(mapToolbarService, $scope) {
     vm.mapButtons = mapToolbarService.getMapButtons();
 
     function setSelectedButton(button) {
-        debugger;
         var shape = getShapeForButton(button);
         var emit = mapToolbarService.setSelectedButton(button, vm.selectedButton);
         if (emit) {
             $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
+        }
+        else {
+           $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
         }
 
     }
