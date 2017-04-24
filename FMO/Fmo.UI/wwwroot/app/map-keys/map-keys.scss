@@ -1,5 +1,21 @@
 @import './app/variables';
 
+.selcetedKey{
+    @extend %font-icon;
+    color:green;
+}
+
+.deliveryKey{
+    @extend %font-icon;
+    color:red;
+}
+
+/*
+.roadKey ,accessKey{
+    @extend %font-icon;    
+}
+*/
+
 .mapKeys{
     @extend %body-content;
 }

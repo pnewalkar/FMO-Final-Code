@@ -37,9 +37,9 @@ map-panel {
   .map-panel .panel-header:hover {
     background-color: none; }
 
-.map-panel .fa {
-  color: #53535a; }
-
+/*.map-panel .fa {
+    @include font-color($strong-grey);
+}*/
 .map-panel .map-panel-content {
   padding: 3px 3px 3px 3px;
   height: calc(100% - 50px);
