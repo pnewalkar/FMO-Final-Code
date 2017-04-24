@@ -17,16 +17,16 @@ var GlobalSettings = {
 //    GlobalSettings.apiUrl = "";
 //}
 
-if (GlobalSettings.env == "localhost") {
-    GlobalSettings.apiUrl = "http://localhost:34583/api";
+if (GlobalSettings.env === "localhost") {
+    GlobalSettings.apiUrl = "http://10.246.18.250/fmoapi";
 }
-else if (GlobalSettings.env == "dev") {
+else if (GlobalSettings.env === "dev") {
     GlobalSettings.apiUrl = ""; // Here comes development enviroment url
 }
-else if (GlobalSettings.env == "test") {
+else if (GlobalSettings.env === "test") {
     GlobalSettings.apiUrl = ""; // Here comes test enviroment url
 }
-else if (GlobalSettings.env == "prod") {
+else if (GlobalSettings.env === "prod") {
     GlobalSettings.apiUrl = ""; // Here comes production enviroment url
 }
 

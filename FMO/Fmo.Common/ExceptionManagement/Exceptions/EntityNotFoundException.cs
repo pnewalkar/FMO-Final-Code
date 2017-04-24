@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 
 namespace Fmo.Common.ExceptionManagement
 {
+    [SuppressMessage("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly", Justification = "Not applicable for this class.")]
     [Serializable]
     [ExcludeFromCodeCoverage]
     public class EntityNotFoundException : DataAccessException
