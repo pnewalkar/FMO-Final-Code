@@ -106,6 +106,7 @@
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
         public const string PAFErrorMessageForUDPRNNotUpdated = "Postal Address for Selected UDPRN not updated";
+        public const string PAFErrorMessageForUnmatchedDeliveryPointForUSRType = "Delivery point not matched for Postal address whose address type is <USR>";
         public const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
         public const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
         public const string PAFTaskBodyPreText = "Please position the DP ";
