@@ -178,10 +178,10 @@
                         msgBroker.SendMessage(msg);
                     });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.loggingHelper.LogError(ex);
                 isMessageQueued = false;
-                throw;
             }
             finally
             {
