@@ -92,7 +92,7 @@
             testCandidate.LoadTPFDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Never);
-            loggingHelperMock.Verify(x => x.LogError(It.IsAny<Exception>()), Times.Once);
+            loggingHelperMock.Verify(x => x.LogError(It.IsAny<string>(), It.IsAny<Exception>()), Times.Once);
             fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Exactly(1));
         }
 
