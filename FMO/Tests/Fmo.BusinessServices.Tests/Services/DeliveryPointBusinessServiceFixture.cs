@@ -53,7 +53,6 @@ namespace Fmo.BusinessServices.Tests.Services
         protected override void OnSetup()
         {
             mockDeliveryPointsRepository = new Mock<IDeliveryPointsRepository>();
-            mockCreateOtherLayers = new Mock<ICreateOtherLayersObjects>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
