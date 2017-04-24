@@ -1,20 +1,20 @@
 angular.module('mapView')
-        .service('mapService', ['mapFactory',
-                                'mapStylesFactory','$timeout','GlobalSettings',
+        .service('mapService', ['$http', 'mapFactory',
+                                'mapStylesFactory', '$timeout', 'GlobalSettings',
                                  mapService])
-function mapService(mapFactory,
+function mapService($http, mapFactory,
                     mapStylesFactory, $timeout, GlobalSettings) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = [ "select", "point","line"];
+    vm.mapButtons = ["select", "point", "line"];
     vm.interactions = {};
     vm.layersForContext = [];
     vm.activeSelection = null;
     vm.secondarySelections = [];
-   
+
     vm.selectionListeners = [];
     vm.features = null;
     vm.onDeleteButton = function (featureId, layer) { console.log({ "featureID": featureId, "layer": layer }) };
@@ -62,7 +62,7 @@ function mapService(mapFactory,
         getActiveFeature: getActiveFeature,
         setSelections: setSelections,
         getfeature: getfeature,
-        selectFeatures:selectFeatures
+        selectFeatures: selectFeatures
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -75,7 +75,7 @@ function mapService(mapFactory,
 
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
-        
+
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
             source: new ol.source.XYZ({
@@ -106,10 +106,27 @@ function mapService(mapFactory,
             })
         });
 
+        var loadFeatures = function (layerSource, response) {
+            var features = new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }).readFeatures(response);
+            deliveryPointsVector.addFeatures(features);
+        };
+
         var deliveryPointsVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            url: function (extent) { return GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','); },
-            strategy: ol.loadingstrategy.bbox
+            strategy: ol.loadingstrategy.bbox,
+            loader: function (extent) {
+                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                $http({
+                    method: 'GET',
+                    url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer ' + authData.token
+                    }
+                }).success(function (response) {
+                    loadFeatures(deliveryPointsVector, response);
+                });
+            }
         });
 
         var deliveryPointsLayer = new ol.layer.Vector({
@@ -119,24 +136,45 @@ function mapService(mapFactory,
         var mockGroupsVector = new ol.source.Vector({
             format: new ol.format.GeoJSON(),
             url: function (extent) { return 'http://localhost:47467/home/getgroupsdata?bbox=' + extent.join(','); },
-            strategy: ol.loadingstrategy.bbox,
+            strategy: ol.loadingstrategy.bbox
         });
 
         var accessLinkVector = new ol.source.Vector({
-            format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),          
-            url: function (extent) { return GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','); },
-            strategy: ol.loadingstrategy.bbox
+            format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
+            strategy: ol.loadingstrategy.bbox,
+            loader: function (extent) {
+                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                $http({
+                    method: 'GET',
+                    url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer ' + authData.token
+                    }
+                }).success(function (response) {
+                    loadFeatures(accessLinkVector, response);
+                });
+            }
         });
 
         var roadLinkVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
-            url: function (extent) { return GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','); },
-            strategy: ol.loadingstrategy.bbox
+            strategy: ol.loadingstrategy.bbox,
+            loader: function (extent) {
+                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                $http({
+                    method: 'GET',
+                    url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer ' + authData.token
+                    }
+                }).success(function (response) {
+                    loadFeatures(roadLinkVector, response);
+                });
+            }
         });
-
-        //var mockAccessLinkLayer = new ol.layer.Vector({
-        //    source: mockAccessLinkVector
-        //});
+        
         var mockGroupsLayer = new ol.layer.Vector({
             source: mockGroupsVector
         });
@@ -156,7 +194,6 @@ function mapService(mapFactory,
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
-        //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -171,7 +208,7 @@ function mapService(mapFactory,
         drawingLayerSelector.selectorVisible = false;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
 
-      
+
         var deliveryPointsLayerSelector = new MapFactory.LayerSelector();
         deliveryPointsLayerSelector.layerName = "Delivery Points";
         deliveryPointsLayerSelector.layer = deliveryPointsLayer;
@@ -211,7 +248,7 @@ function mapService(mapFactory,
         unitBoundaryLayerSelector.layerName = "Unit Boundary";
         unitBoundaryLayerSelector.layer = unitBoundaryLayer;
         unitBoundaryLayerSelector.group = "";
-        unitBoundaryLayerSelector.zIndex = 8;
+        unitBoundaryLayerSelector.zIndex = 1;
         unitBoundaryLayerSelector.selected = false;
         unitBoundaryLayerSelector.onMiniMap = false;
         unitBoundaryLayerSelector.selectorVisible = true;
@@ -219,7 +256,7 @@ function mapService(mapFactory,
         unitBoundaryLayerSelector.keys = ["unitBoundary"];
         mapFactory.addLayer(unitBoundaryLayerSelector);
 
-        
+
 
         roadsLayer.selected = true;
         vm.map.on('pointermove', vm.pointerMoveHandler);
@@ -234,13 +271,12 @@ function mapService(mapFactory,
     function getMapButtons() {
         return vm.mapButtons;
     }
-    function mapLayers()
-    {
-              return mapFactory.getAllLayers();
-         
+    function mapLayers() {
+        return mapFactory.getAllLayers();
+
     }
     function getLayer(layerName) {
-        var returnVal = null; 
+        var returnVal = null;
         mapLayers().forEach(function (layer) {
             if (layer.layerName == layerName)
                 returnVal = layer;
@@ -295,10 +331,10 @@ function mapService(mapFactory,
             callback(selectedFeatures);
         })
     }
-    function refreshLayers() {        
-        mapLayers().forEach(function (layer) {         
+    function refreshLayers() {
+        mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
-            layer.layer.changed();            
+            layer.layer.changed();
         });
         vm.layerSummary = getLayerSummary();
     }
@@ -411,7 +447,7 @@ function mapService(mapFactory,
         vm.interactions.modify = new ol.interaction.Modify({
             features: collection
         });
-        vm.interactions.modify.on('modifyend',  onModify());
+        vm.interactions.modify.on('modifyend', onModify());
         persistSelection();
     }
     function persistSelection() {
@@ -463,7 +499,7 @@ function mapService(mapFactory,
 			function (evt) {
 			    evt.feature.setId(0);
 			    $timeout(function () {
-			       setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
+			        setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
 			        onDrawEnd("group", evt.feature)
 			    });
 			});
@@ -479,7 +515,7 @@ function mapService(mapFactory,
 			function (evt) {
 			    evt.feature.setId(0);
 			    $timeout(function () {
-			       vm. setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
+			        vm.setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
 			        onDrawEnd("deliverypoint", evt.feature)
 			    });
 			});
@@ -536,20 +572,18 @@ function mapService(mapFactory,
             })
         });
     }
-    function syncMinimapAnimation(event)
-    {
+    function syncMinimapAnimation(event) {
         var vectorContext = event.vectorContext;
         if (vm.latestDrawnFeature) {
             vectorContext.drawFeature(vm.latestDrawnFeature, vm.dotStyle);
         }
         vm.minimap.render();
     }
-    function oncollapse(collapse)
-    {   if (!collapse)
+    function oncollapse(collapse) {
+        if (!collapse)
             $timeout(function () { vm.miniMap.updateSize() }, 10);
     }
-    function mapToolChange(button)
-    {
+    function mapToolChange(button) {
         vm.activeTool = button.name;
         removeCurrentInteractions();
         if (button.enabled) {
@@ -567,7 +601,7 @@ function mapService(mapFactory,
         }
     }
 
-    
+
     function selectFeatures() {
         if (vm.interactions.select == null || vm.interactions.select == undefined) {
             vm.interactions.select = new ol.interaction.Select({
@@ -579,13 +613,12 @@ function mapService(mapFactory,
         vm.interactions.select.getFeatures().clear();
         vm.features.forEach(function (feature) {
             vm.interactions.select.getFeatures().push(feature);
-       })
-       
+        })
+
     }
-    
-    function getfeature(feature)
-    {
+
+    function getfeature(feature) {
         vm.features = feature;
     }
-    
+
 }

@@ -115,6 +115,7 @@
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
+                throw;
             }
 
             return saveFlag;
@@ -149,7 +150,7 @@
                 objTask.Notification_Message = AddressFields(objPostalAddress);
                 objTask.PostcodeDistrict = postCodeDistrict;
                 objTask.NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE);
-                objTask.NotificationActionLink = string.Empty; // Unique refn link
+                objTask.NotificationActionLink = string.Format(Constants.PAFNOTIFICATIONLINK, objPostalAddress.UDPRN);
                 notificationRepository.AddNewNotification(objTask).Wait();
             }
             else

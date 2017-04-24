@@ -1,4 +1,6 @@
-﻿namespace Fmo.BusinessServices.Interfaces
+﻿using System;
+
+namespace Fmo.BusinessServices.Interfaces
 {
     /// <summary>
     /// This interface contains declaration of methods for fetching Delivery Points data.
@@ -8,9 +10,10 @@
         /// <summary>
         /// This method is used to fetch delivery points data on the basis of coordinates.
         /// </summary>
-        /// <param name="boundaryBox">boundarybox as string</param>
+        /// <param name="boundaryBox">Boundarybox as string</param>
+        /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>delivery points data as object</returns>
-        object GetDeliveryPoints(string boundaryBox);
+        object GetDeliveryPoints(string boundaryBox, Guid unitGuid);
 
         /// <summary>
         /// This method is used to fetch delivery points data on the basis of udprn.

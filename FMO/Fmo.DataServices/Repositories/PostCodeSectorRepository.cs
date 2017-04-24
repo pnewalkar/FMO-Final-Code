@@ -20,7 +20,7 @@
         {
             try
             {
-                PostcodeSector postCodeSector = DataContext.PostalAddresses.Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault().Postcode1.PostcodeSector;
+                PostcodeSector postCodeSector = DataContext.PostalAddresses.AsNoTracking().Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault().Postcode1.PostcodeSector;
                 PostCodeSectorDTO postCodeSectorDTO = new PostCodeSectorDTO();
                 GenericMapper.Map(postCodeSector, postCodeSectorDTO);
                 return postCodeSectorDTO;

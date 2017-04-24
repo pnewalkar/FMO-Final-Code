@@ -21,9 +21,10 @@
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryRouteRepository testCandidate;
-        private Guid deliveryUnitID = System.Guid.NewGuid();
-        private Guid deliveryScenarioID = System.Guid.NewGuid();
-        private Guid operationalStateID = System.Guid.NewGuid();
+        private Guid deliveryUnitID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44");
+        private Guid deliveryScenarioID = new Guid("D771E341-8FE8-4980-BE96-A339AE014B4E");
+        private Guid operationalStateID = new Guid("1FC7DAB1-D4D7-45BD-BA2E-E8AE6737E1EB");
+        private Guid invalidId = new Guid("4A2DE1A4-BC19-4DB8-A8D9-DAA828E1B526");
 
         [Test]
         public void TestFetchDeliveryRoute()
@@ -43,7 +44,7 @@
         [Test]
         public async Task TestFetchDeliveryRouteForBasicSearchInvalid()
         {
-            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("invalid_testsearch", deliveryUnitID);
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("invalid_testsearch", invalidId);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 0);
         }
@@ -67,7 +68,7 @@
         [Test]
         public async Task TestGetDeliveryRouteCountInvalid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch", deliveryUnitID);
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch", invalidId);
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
         }
@@ -84,13 +85,13 @@
         {
             var deliveryRoute = new List<DeliveryRoute>()
             {
-                new DeliveryRoute() { DeliveryRoute_Id = 1, OperationalStatus_Id = 1, DeliveryScenario_Id = 1, RouteName = "testsearch1jbcjkdsghfjks", RouteNumber = "testsearch1jbcjkdsghfjks" },
-                new DeliveryRoute() { DeliveryRoute_Id = 2, OperationalStatus_Id = 2, DeliveryScenario_Id = 2, RouteName = "testsearch2jbcjkdsghfjks", RouteNumber = "testsearch2jbcjkdsghfjks" },
-                new DeliveryRoute() { DeliveryRoute_Id = 3, OperationalStatus_Id = 3, DeliveryScenario_Id = 3, RouteName = "testsearch3jbcjkdsghfjks", RouteNumber = "testsearch3jbcjkdsghfjks" },
-                new DeliveryRoute() { DeliveryRoute_Id = 4, OperationalStatus_Id = 4, DeliveryScenario_Id = 4, RouteName = "testsearch4jbcjkdsghfjks", RouteNumber = "testsearch4jbcjkdsghfjks" },
-                new DeliveryRoute() { DeliveryRoute_Id = 5, OperationalStatus_Id = 5, DeliveryScenario_Id = 5, RouteName = "testsearch5jbcjkdsghfjks", RouteNumber = "testsearch5jbcjkdsghfjks" },
-                new DeliveryRoute() { DeliveryRoute_Id = 6, OperationalStatus_Id = 6, DeliveryScenario_Id = 6, RouteName = "testsearch6jbcjkdsghfjks", RouteNumber = "testsearch6jbcjkdsghfjks" },
-                new DeliveryRoute() { DeliveryRoute_Id = 7, OperationalStatus_Id = 7, DeliveryScenario_Id = 7, RouteName = "testsearch7jbcjkdsghfjks", RouteNumber = "testsearch7jbcjkdsghfjks" }
+                new DeliveryRoute() { DeliveryRoute_Id = 1, OperationalStatus_Id = 1, DeliveryScenario_Id = 1, RouteName = "testsearch1jbcjkdsghfjks", RouteNumber = "testsearch1jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },
+                new DeliveryRoute() { DeliveryRoute_Id = 2, OperationalStatus_Id = 2, DeliveryScenario_Id = 2, RouteName = "testsearch2jbcjkdsghfjks", RouteNumber = "testsearch2jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },
+                new DeliveryRoute() { DeliveryRoute_Id = 3, OperationalStatus_Id = 3, DeliveryScenario_Id = 3, RouteName = "testsearch3jbcjkdsghfjks", RouteNumber = "testsearch3jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },
+                new DeliveryRoute() { DeliveryRoute_Id = 4, OperationalStatus_Id = 4, DeliveryScenario_Id = 4, RouteName = "testsearch4jbcjkdsghfjks", RouteNumber = "testsearch4jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },
+                new DeliveryRoute() { DeliveryRoute_Id = 5, OperationalStatus_Id = 5, DeliveryScenario_Id = 5, RouteName = "testsearch5jbcjkdsghfjks", RouteNumber = "testsearch5jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },
+                new DeliveryRoute() { DeliveryRoute_Id = 6, OperationalStatus_Id = 6, DeliveryScenario_Id = 6, RouteName = "testsearch6jbcjkdsghfjks", RouteNumber = "testsearch6jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },
+                new DeliveryRoute() { DeliveryRoute_Id = 7, OperationalStatus_Id = 7, DeliveryScenario_Id = 7, RouteName = "testsearch7jbcjkdsghfjks", RouteNumber = "testsearch7jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } }
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryRoute>(deliveryRoute);
@@ -105,6 +106,9 @@
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFmoDbContext.Setup(x => x.Set<DeliveryRoute>()).Returns(mockDeliveryRouteDBSet.Object);
             mockFmoDbContext.Setup(x => x.DeliveryRoutes).Returns(mockDeliveryRouteDBSet.Object);
+
+            mockFmoDbContext.Setup(c => c.DeliveryRoutes.AsNoTracking()).Returns(mockDeliveryRouteDBSet.Object);
+
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object);

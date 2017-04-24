@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Fmo.API.Services.Controllers
 {
     [Route("api/[controller]")]
-    public class RouteSimulationController : FmoBaseController//Controller
+    public class RouteSimulationController : FmoBaseController
     {
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 

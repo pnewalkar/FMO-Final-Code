@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +11,7 @@ namespace Fmo.API.Services.Controllers
     /// <summary>
     /// Base controller class for FMO Web API
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     public abstract class FmoBaseController : Controller
     {

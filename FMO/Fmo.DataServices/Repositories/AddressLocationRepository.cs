@@ -29,7 +29,7 @@
         {
             try
             {
-                if (DataContext.AddressLocations.Where(n => n.UDPRN == udprn).Any())
+                if (DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).Any())
                 {
                     return true;
                 }
