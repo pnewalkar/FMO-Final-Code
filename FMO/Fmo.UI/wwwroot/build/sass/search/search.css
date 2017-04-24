@@ -45,6 +45,7 @@ i.fa.fa-map-marker.route {
 
 i.fa.fa-search {
   color: #ffffff;
+  margin: 0px 0px 0px 15px;
   font-size: 25px; }
 
 .viewResult {
@@ -80,3 +81,22 @@ i.fa.fa-angle-right.searchRight {
 
 .searchContext span {
   margin: 15px 0px 10px 15px; }
+
+.numberCircle {
+  background-color: #0892cb;
+  position: absolute;
+  border-radius: 50%;
+  width: 21.97802%;
+  border: 1px solid #2a2a2d;
+  top: 0px;
+  right: 33px; }
+  .numberCircle:hover {
+    background-color: none; }
+
+.numberCircle span {
+  color: #2a2a2d;
+  text-align: center;
+  line-height: 32px;
+  display: block;
+  color: black;
+  font-size: 12px; }

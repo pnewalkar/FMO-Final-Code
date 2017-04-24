@@ -46,6 +46,7 @@ i.fa.fa-map-marker.route{
 
 i.fa.fa-search {
     @include font-color($white);
+    @include margin(0px 0px 0px 15px);
     font-size: 25px;
 }
 
@@ -90,4 +91,24 @@ i.fa.fa-angle-right.searchRight {
 .searchContext span{
     @extend %body-content;
     @include margin(15px 0px 10px 15px);
+}
+
+
+.numberCircle {
+    @include background($positive-blue,none);
+    @include position(absolute);
+    @include border-radius(50%);
+    width: width-percent(4.55);
+    @include border(1px solid $black);
+    @include top(0px);
+    right: 33px;
+}
+
+.numberCircle span {
+    @include font-color($black);
+    text-align: center;
+    line-height: 32px;
+    display: block;
+    color: black;
+    font-size: 12px;
 }
