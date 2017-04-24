@@ -407,6 +407,9 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             resolution: getResolutionFromScale(defaultZoomScale)
         });
 
+        view.on('change:resolution', updateMiniMap);
+        view.on('change:center', updateMiniMap);
+
         map.setView(view);
 
         var unitBoundaryLayer = getLayer(GlobalSettings.unitBoundaryLayerName);
