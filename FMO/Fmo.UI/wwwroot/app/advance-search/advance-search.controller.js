@@ -15,7 +15,7 @@ function AdvanceSearchController(searchApiService,
                                   advanceSearchService,
                                   $stateParams)
 {
-    vm.queryAdvanceSearch(vm.searchText);
+  
     var vm = this;
     vm.toggle = vm.toggle;
     vm.toggleList = vm.toggleList;
@@ -40,6 +40,7 @@ function AdvanceSearchController(searchApiService,
     vm.arrStreetNames = [];
     vm.arrDeliveryRoutes = [];
     vm.obj;
+    vm.queryAdvanceSearch(vm.searchText);
 
 
     function queryAdvanceSearch(query) {
