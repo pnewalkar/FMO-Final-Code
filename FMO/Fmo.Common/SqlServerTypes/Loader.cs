@@ -4,14 +4,17 @@ using System.Runtime.InteropServices;
 
 namespace SqlServerTypes
 {
+#pragma warning disable SA1649 // File name must match first type name
     /// <summary>
     /// Utility methods related to CLR Types for SQL Server
     /// </summary>
     public class Utilities
+#pragma warning restore SA1649 // File name must match first type name
     {
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr LoadLibrary(string libname);
 
+#pragma warning disable SA1202 // Elements must be ordered by access
         /// <summary>
         /// Loads the required native assemblies for the current architecture (x86 or x64)
         /// </summary>
@@ -20,6 +23,7 @@ namespace SqlServerTypes
         /// and AppDomain.CurrentDomain.BaseDirectory for desktop applications.
         /// </param>
         public static void LoadNativeAssemblies(string rootApplicationPath)
+#pragma warning restore SA1202 // Elements must be ordered by access
         {
             var nativeBinaryPath = IntPtr.Size > 4
                 ? Path.Combine(rootApplicationPath, @"SqlServerTypes\x64\")

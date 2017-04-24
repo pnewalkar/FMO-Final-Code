@@ -99,7 +99,9 @@ namespace Fmo.DataServices.Tests.Repositories
 
             var postcode = new List<Postcode>()
             {
-                new Postcode() { PostcodeUnit = "search12",
+                new Postcode()
+                {
+                    PostcodeUnit = "search12",
                 PostcodeSector = postcodeSectorSingle1,
                 SectorGUID = new Guid("0C65F088-874F-40FB-A753-8F29C371821F"),
                 InwardCode = "1",
