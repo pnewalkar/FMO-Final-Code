@@ -1,8 +1,9 @@
 <div class="searchBox">
-    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" ng-enter="vm.onEnterKeypress(vm.searchText)" />
+    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" style="" placeholder="Search" 
+           ng-enter="vm.onEnterKeypress(vm.searchText)" />
     <div class="numberCircle" ng-show="vm.resultscount[0].count > 0"><span>{{vm.resultscount[0].count}}</span></div> 
     <i class="fa fa-search" aria-hidden="true" ng-click="vm.onEnterKeypress(vm.searchText)"></i>
-    <div class="searchContent" md-whiteframe="3dp">
+    <div class="searchContent" md-whiteframe="3dp" ng-show="vm.isResultDisplay">
         <ul ng-repeat="item in vm.results | limitTo:5">
             <li class="searchData">
                 <a ng-click="vm.OnChangeItem(item)">
