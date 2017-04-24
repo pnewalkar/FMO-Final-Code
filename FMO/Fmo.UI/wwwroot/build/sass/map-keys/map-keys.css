@@ -3,5 +3,19 @@
   font-family: PF DIN;
   font-size: 16px; }
 
+.selcetedKey, .deliveryKey {
+  font-size: 24px; }
+
+.selcetedKey {
+  color: green; }
+
+.deliveryKey {
+  color: red; }
+
+/*
+.roadKey ,accessKey{
+    @extend %font-icon;    
+}
+*/
 .mapKeys {
   margin: 0px 0px 10px 0px; }
