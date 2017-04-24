@@ -100,7 +100,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         viewMiniMap = new ol.View({
             projection: BNGProjection,
             center: view.getCenter(),
-            zoom: view.getZoom() - 5
+            zoom: view.getZoom() - 2
         });
 
         miniMap = new ol.Map({
