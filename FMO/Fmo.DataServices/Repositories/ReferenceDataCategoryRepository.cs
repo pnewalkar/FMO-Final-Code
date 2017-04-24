@@ -63,9 +63,9 @@ namespace Fmo.DataServices.Repositories
 
                 return lstReferenceDt;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
