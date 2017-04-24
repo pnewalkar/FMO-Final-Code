@@ -1,16 +1,18 @@
 ﻿
 angular.module('manageAccess')
-    .service('manageAccessBusinessService', ['$stateParams', '$state', 'manageAccessService', '$location', manageAccessBusinessService])
-function manageAccessBusinessService($stateParams, $state, manageAccessService, $location) {
+    .service('manageAccessBusinessService', ['$stateParams', '$state', 'manageAccessService', '$location', 'GlobalSettings', manageAccessBusinessService])
+function manageAccessBusinessService($stateParams, $state, manageAccessService, $location, GlobalSettings) {
     var vm = this;
+
     return {
         activate: activate,
         getParameterValues: getParameterValues
     };
 
     function activate(unitGuid) {
+        var aValue = sessionStorage.getItem('authorizationData');
         if (unitGuid) {
-            var aValue = sessionStorage.getItem('authorizationData');
+
             var jobject = JSON.parse(aValue)
             vm.userdata = "username=" + jobject.userName + "&unitguid=" + unitGuid;
         }
@@ -19,10 +21,15 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
             vm.userdata = "username=" + userName + "&unitguid=" + unitGuid;
             debugger
             if (userName === undefined) {
-                return;
+                if (aValue) {
+                    return;
+                }
+                else {
+                    alert("User Name not provided.")
+                    return;
+                }
             }
             else {
-                var aValue = sessionStorage.getItem('authorizationData');
                 if (aValue) {
                     var jobject = JSON.parse(aValue)
                     if (jobject.userName !== userName) {
@@ -41,10 +48,10 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
                 if (unitGuid) {
                     return;
                 } else if (response.access_token || response.access_token !== undefined) {
-                    window.location.href = "http://localhost:34559/app/index.html";
+                    window.location.href = GlobalSettings.indexUrl;
                 }
             }
-            //$state.go('home', { redirect: true });
+
         });
     }
 
