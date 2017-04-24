@@ -18,16 +18,16 @@ namespace Fmo.API.Services.Controllers
             this.accessActionBussinessService = accessActionBussinessService;
         }
 
-        /// <summary>
-        /// This method is used to Fetch Access Action items.
-        /// </summary>
-        /// <param name="AccessActionDTO">AccessActionDTO as input</param>
-        /// <returns>List of AccessActionDto</returns>
-        [Route("fetchAccessLink")]
-        [HttpGet]
-        public List<AccessActionDTO> FetchAccessActions(List<AccessActionDTO> AccessActionDTO)
-        {
-            return accessActionBussinessService.FetchAccessActions();
-        }
+        /////// <summary>
+        /////// This method is used to Fetch Access Action items.
+        /////// </summary>
+        /////// <param name="AccessActionDTO">AccessActionDTO as input</param>
+        /////// <returns>List of AccessActionDto</returns>
+        ////[Route("fetchAccessLink")]
+        ////[HttpGet]
+        ////public List<AccessActionDTO> FetchAccessActions(List<AccessActionDTO> AccessActionDTO)
+        ////{
+        ////    return accessActionBussinessService.FetchAccessActions();
+        ////}
     }
 }

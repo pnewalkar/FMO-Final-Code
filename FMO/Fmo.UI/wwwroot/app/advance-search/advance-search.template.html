@@ -29,8 +29,8 @@
         </section>
         <section layout="row" class="advSection">
             <div layout-align="start start">
-                <md-button class="md-raised md-primary" ng-click="toggleList(false)">Collapse All</md-button>
-                <md-button class="md-raised md-primary" ng-click="toggleList(true)">Expand All</md-button>
+                <md-button class="md-raised md-primary" ng-click="vm.toggleList(false)">Collapse All</md-button>
+                <md-button class="md-raised md-primary" ng-click="vm.toggleList(true)">Expand All</md-button>
             </div>
             <span flex></span>
             <div layout-align="end start">
@@ -54,31 +54,5 @@
   				</tr>
   			</table>
         </section> 
-
-        <!--<section ng-repeat="route in vm.arrRoutes"  class="advSecList">
-            <div ng-click="show = !show" class="advSecItem">
-                <i class="fa fa-angle-right" ng-show="show = !show" aria-hidden="true"></i>
-                <i class="fa fa-angle-down" aria-hidden="true" ng-show="show = !show"></i>
-                {{route.type}} ({{route.name.length}})
-            </div>
-
-            <ul ng-repeat="subitem in route.name" ng-show="show">
-                <li> <a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></li>
-            </ul>
-        </section>--original> 
-
-        <!--<section ng-repeat="route in vm.arrRoutes" is-open ="route.open"class="advSecList">
-        <div ng-click="toggleList(show = !show)" class="advSecItem">
-            <i class="fa fa-angle-right" ng-show="route.open" aria-hidden="true"></i>
-            <i class="fa fa-angle-down" aria-hidden="true" ng-show="route.open"></i>
-            {{route.type}} ({{route.name.length}})
-        </div>
-
-        <ul ng-repeat="subitem in route.name" ng-show="route.open">
-            <li> <a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></li>
-        </ul>
-    </section>-->
-        
-     
     </div>
 </md-dialog>

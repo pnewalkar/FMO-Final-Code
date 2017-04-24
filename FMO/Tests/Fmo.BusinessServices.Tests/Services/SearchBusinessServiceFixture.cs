@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.BusinessServices.Services;
-using Fmo.Common.Enums;
-using Fmo.Common.TestSupport;
-using Fmo.DataServices.Repositories.Interfaces;
-using Moq;
-using NUnit.Framework;
-
-namespace Fmo.BusinessServices.Tests.Services
+﻿namespace Fmo.BusinessServices.Tests.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.BusinessServices.Services;
+    using Fmo.Common.Enums;
+    using Fmo.Common.TestSupport;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Moq;
+    using NUnit.Framework;
+
     [TestFixture]
     public class SearchBusinessServiceFixture : TestFixtureBase
     {
@@ -32,18 +32,6 @@ namespace Fmo.BusinessServices.Tests.Services
 
             var output = await testCandidate.FetchAdvanceSearchDetails(input, unitGuid);
 
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.Postcode));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.Postcode).Count == 0);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.DeliveryPoint));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.DeliveryPoint).Count == 0);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.Route));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.Route).Count == 0);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.StreetNetwork));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.StreetNetwork).Count == 0);
-
             Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.All));
             Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.All).Count == 0);
 
@@ -58,23 +46,11 @@ namespace Fmo.BusinessServices.Tests.Services
             deliveryRouteRepositoryMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(input, unitGuid))
                 .Returns(Task.FromResult(new List<DTO.DeliveryRouteDTO> { new DTO.DeliveryRouteDTO { RouteName = "dumyRouteName" } }));
             deliveryPointsRepositoryMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(input, unitGuid))
-                .Returns(Task.FromResult(new List<DTO.DeliveryPointDTO> { new DTO.DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new DTO.PostalAddressDTO() {BuildingName = "Bldg-001" } } }));
+                .Returns(Task.FromResult(new List<DTO.DeliveryPointDTO> { new DTO.DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new DTO.PostalAddressDTO() { BuildingName = "Bldg-001" } } }));
             streetNetworkRepositoryMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(input, unitGuid))
                 .Returns(Task.FromResult(new List<DTO.StreetNameDTO> { new DTO.StreetNameDTO { LocalName = "dummyLocalName" } }));
 
             var output = await testCandidate.FetchAdvanceSearchDetails(input, unitGuid);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.Postcode));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.Postcode).Count == 1);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.DeliveryPoint));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.DeliveryPoint).Count == 1);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.Route));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.Route).Count == 1);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.StreetNetwork));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.StreetNetwork).Count == 1);
 
             Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.All));
             Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.All).Count == 4);
@@ -96,8 +72,8 @@ namespace Fmo.BusinessServices.Tests.Services
             deliveryPointsRepositoryMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(input, unitGuid))
                 .Returns(Task.FromResult(new List<DTO.DeliveryPointDTO>
                 {
-                    new DTO.DeliveryPointDTO { UDPRN = 123456789 },
-                    new DTO.DeliveryPointDTO { UDPRN = 23456789 }
+                    new DTO.DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new DTO.PostalAddressDTO() },
+                    new DTO.DeliveryPointDTO { UDPRN = 23456789,  PostalAddress = new DTO.PostalAddressDTO() }
                 }));
             streetNetworkRepositoryMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(input, unitGuid))
                 .Returns(Task.FromResult(new List<DTO.StreetNameDTO>
@@ -107,18 +83,6 @@ namespace Fmo.BusinessServices.Tests.Services
                 }));
 
             var output = await testCandidate.FetchAdvanceSearchDetails(input, unitGuid);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.Postcode));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.Postcode).Count == 2);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.DeliveryPoint));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.DeliveryPoint).Count == 2);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.Route));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.Route).Count == 1);
-
-            Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.StreetNetwork));
-            Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.StreetNetwork).Count == 2);
 
             Assert.IsTrue(output.SearchCounts.Any(x => x.Type == SearchBusinessEntityType.All));
             Assert.IsTrue(output.SearchCounts.SingleOrDefault(x => x.Type == SearchBusinessEntityType.All).Count == 7);

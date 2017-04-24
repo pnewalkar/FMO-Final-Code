@@ -21,9 +21,9 @@ namespace Fmo.BusinessServices.Services
         /// This method is used to fetch Access Actions data.
         /// </summary>
         /// <returns>List of Access Action Dto</returns>
-        public List<AccessActionDTO> FetchAccessActions()
-        {
-            return accessActionRepository.FetchAccessActions();
-        }
+        //public List<AccessActionDTO> FetchAccessActions()
+        //{
+        //    return accessActionRepository.FetchAccessActions();
+        //}
     }
 }

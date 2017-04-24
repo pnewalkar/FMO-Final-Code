@@ -1,9 +1,5 @@
 ﻿namespace Fmo.BusinessServices.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.SqlTypes;
-    using System.Threading.Tasks;
     using Common;
     using Common.Enums;
     using Fmo.BusinessServices.Interfaces;
@@ -13,6 +9,9 @@
     using Fmo.Helpers;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.SqlTypes;
 
     /// <summary>
     /// This class contains methods for fetching data for RoadLinks.
@@ -27,15 +26,6 @@
         }
 
         /// <summary>
-        /// This method is used to fetch Road Links data.
-        /// </summary>
-        /// <returns>List of Road Link Dto</returns>
-        public async Task<List<RoadNameDTO>> FetchRoadName()
-        {
-            return await roadNameRepository.FetchRoadName();
-        }
-
-        /// <summary>
         /// This method fetches data for RoadLinks
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string.</param>
@@ -47,7 +37,7 @@
             {
                 if (!string.IsNullOrEmpty(boundarybox))
                 {
-                    var boundingBoxCoordinates = GetData(boundarybox.Split(Constants.Comma[0]), uniGuid);
+                    var boundingBoxCoordinates = GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]), uniGuid);
                     return GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
                 }
                 else
@@ -66,7 +56,7 @@
         /// </summary>
         /// <param name="roadLinkparameters"> roadLinkparameters as object </param>
         /// <returns> roadlink coordinates </returns>
-        private static string GetData(params object[] roadLinkparameters)
+        private static string GetRoadNameCoordinatesDatabyBoundarybox(params object[] roadLinkparameters)
         {
             string coordinates = string.Empty;
 

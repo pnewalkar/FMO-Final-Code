@@ -11,11 +11,11 @@ namespace Fmo.BusinessServices.Interfaces
     /// </summary>
     public interface IRoadNameBusinessService
     {
-        /// <summary>
-        /// This method is used to fetch Road Link data.
-        /// </summary>
-        /// <returns>List of Road Link Dto</returns>
-        Task<List<RoadNameDTO>> FetchRoadName();
+        ///// <summary>
+        ///// This method is used to fetch Road Link data.
+        ///// </summary>
+        ///// <returns>List of Road Link Dto</returns>
+        //Task<List<RoadNameDTO>> FetchRoadName();
 
         /// <summary>
         /// This method is used to Fetch Road Links data as per coordinates

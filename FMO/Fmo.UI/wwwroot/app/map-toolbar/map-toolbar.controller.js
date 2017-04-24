@@ -12,7 +12,6 @@ function MapToolbarController(mapToolbarService, $scope) {
     vm.mapButtons = mapToolbarService.getMapButtons();
 
     function setSelectedButton(button) {
-        debugger;
         var shape = getShapeForButton(button);
         var emit = mapToolbarService.setSelectedButton(button, vm.selectedButton);
         if (emit) {

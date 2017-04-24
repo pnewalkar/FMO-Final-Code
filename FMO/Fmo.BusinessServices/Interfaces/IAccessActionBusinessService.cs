@@ -12,6 +12,6 @@
         /// This method is used to AccessActions List
         /// </summary>
         /// <returns>Access Actions List</returns>
-        List<AccessActionDTO> FetchAccessActions();
+       // List<AccessActionDTO> FetchAccessActions();
     }
 }

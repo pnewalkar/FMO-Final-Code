@@ -37,7 +37,7 @@
             {
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
-                    var coordinates = GetData(boundaryBox.Split(Constants.Comma[0]));
+                    var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
                     return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
                 }
                 else
@@ -114,7 +114,7 @@
         /// </summary>
         /// <param name="parameters">parameters as object</param>
         /// <returns>coordinates</returns>
-        private static string GetData(params object[] parameters)
+        private static string GetDeliveryPointsCoordinatesDatabyBoundingBox(params object[] parameters)
         {
             string coordinates = string.Empty;
 

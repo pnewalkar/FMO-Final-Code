@@ -17,7 +17,6 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
         else {
             var userName = getParameterValues('username');
             vm.userdata = "username=" + userName + "&unitguid=" + unitGuid;
-            debugger
             if (userName === undefined) {
                 return;
             }

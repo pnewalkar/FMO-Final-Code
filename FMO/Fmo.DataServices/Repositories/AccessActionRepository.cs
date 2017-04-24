@@ -24,18 +24,18 @@
         /// This metod is used to fetch Access action items.
         /// </summary>
         /// <returns>List of Access Action Dto</returns>
-        public List<AccessActionDTO> FetchAccessActions()
-        {
-            try
-            {
-                var result = DataContext.Actions.ToList();
-                List<AccessActionDTO> accessActionDTO = GenericMapper.MapList<Entites.Action, AccessActionDTO>(result);
-                return accessActionDTO;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        //public List<AccessActionDTO> FetchAccessActions()
+        //{
+        //    try
+        //    {
+        //        var result = DataContext.Actions.ToList();
+        //        List<AccessActionDTO> accessActionDTO = GenericMapper.MapList<Entites.Action, AccessActionDTO>(result);
+        //        return accessActionDTO;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
     }
 }

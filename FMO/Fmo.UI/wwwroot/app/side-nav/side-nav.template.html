@@ -11,53 +11,13 @@
     <md-content layout-padding="">
         <md-list>
 
-      <md-list-item  ng-repeat="Item in vm.userUnitInfoDto">
-    <p ng-click="vm.fetchActions(Item.displayText,vm.selectedDeliveryUnit)">{{Item.displayText}}</p>
+      <md-list-item  ng-repeat="Item in vm.RolesActionResult">
+    <p ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)">{{Item.ActionName}}</p>
       </md-list-item>
 
       <md-divider></md-divider>
 
       </md-list>
-
-        <!--<md-list>
-            
-            <md-list-item  ng-click="vm.advanceSearch()">
-                <p>Advance Search</p>
-            </md-list-item>
-            
-            <md-divider></md-divider>
-            
-            <md-list-item>
-                <p>Delivery Point</p>
-            </md-list-item>
-            
-            <md-divider></md-divider>
-            
-            <md-list-item>
-                <p> Delivery Group</p>
-            </md-list-item>
-            
-            <md-divider></md-divider>
-                
-            <md-list-item>
-                <p>Hazards</p>
-            </md-list-item>
-                
-            <md-divider></md-divider>
-
-            <md-list-item ng-click="vm.routeLog(vm.selectedDeliveryUnit)" >
-                <p>Route Log</p>
-            </md-list-item>
-            
-            <md-divider></md-divider>
-            
-            <md-list-item>
-                <p  ng-click="vm.routeSimulation(vm.selectedDeliveryUnit)" > Simulation</p>
-            </md-list-item>
-            
-            <md-divider></md-divider>
-
-            </md-list>-->
-    </md-content> 
+        </md-content> 
     
 </md-sidenav>
