@@ -200,6 +200,7 @@ function mapService($http, mapFactory,
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
+        //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -216,7 +217,7 @@ function mapService($http, mapFactory,
 
 
         var deliveryPointsLayerSelector = new MapFactory.LayerSelector();
-        deliveryPointsLayerSelector.layerName = "Delivery Points";
+        deliveryPointsLayerSelector.layerName = GlobalSettings.deliveryPointLayerName;
         deliveryPointsLayerSelector.layer = deliveryPointsLayer;
         deliveryPointsLayerSelector.group = "";
         deliveryPointsLayerSelector.zIndex = 8;
@@ -227,7 +228,7 @@ function mapService($http, mapFactory,
         mapFactory.addLayer(deliveryPointsLayerSelector);
 
         var accessLinksLayerSelector = new MapFactory.LayerSelector();
-        accessLinksLayerSelector.layerName = "Access Links";
+        accessLinksLayerSelector.layerName = GlobalSettings.accessLinkLayerName,
         accessLinksLayerSelector.layer = accessLinkLayer;
         accessLinksLayerSelector.group = "";
         accessLinksLayerSelector.zIndex = 8;
@@ -239,7 +240,7 @@ function mapService($http, mapFactory,
         mapFactory.addLayer(accessLinksLayerSelector);
 
         var roadLinkLayerSelector = new MapFactory.LayerSelector();
-        roadLinkLayerSelector.layerName = "Roads";
+        roadLinkLayerSelector.layerName = GlobalSettings.roadLinkLayerName;
         roadLinkLayerSelector.layer = roadLinkLayer;
         roadLinkLayerSelector.group = "";
         roadLinkLayerSelector.zIndex = 8;
@@ -251,7 +252,7 @@ function mapService($http, mapFactory,
         mapFactory.addLayer(roadLinkLayerSelector);
 
         var unitBoundaryLayerSelector = new MapFactory.LayerSelector();
-        unitBoundaryLayerSelector.layerName = "Unit Boundary";
+        unitBoundaryLayerSelector.layerName = GlobalSettings.unitBoundaryLayerName;
         unitBoundaryLayerSelector.layer = unitBoundaryLayer;
         unitBoundaryLayerSelector.group = "";
         unitBoundaryLayerSelector.zIndex = 1;
