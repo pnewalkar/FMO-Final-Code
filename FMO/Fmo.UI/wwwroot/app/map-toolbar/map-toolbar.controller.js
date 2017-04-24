@@ -17,6 +17,9 @@ function MapToolbarController(mapToolbarService, $scope) {
         if (emit) {
             $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
         }
+        else {
+           $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
+        }
 
     }
 
