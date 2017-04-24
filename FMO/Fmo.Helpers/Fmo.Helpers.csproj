@@ -61,7 +61,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CreateOtherLayersObject.cs" />
     <Compile Include="CreateSummaryObject.cs" />
     <Compile Include="GeoJsonData\Coordinate.cs" />
     <Compile Include="GeoJsonData\Feature.cs" />

@@ -11,11 +11,11 @@ namespace Fmo.DataServices.Repositories.Interfaces
     /// </summary>
     public interface IRoadNameRepository
     {
-        /// <summary>
-        /// This method is used to Road Link data.
-        /// </summary>
-        /// <returns>List of Road Link dto</returns>
-        Task<List<RoadNameDTO>> FetchRoadName();
+        ///// <summary>
+        ///// This method is used to Road Link data.
+        ///// </summary>
+        ///// <returns>List of Road Link dto</returns>
+        //Task<List<RoadNameDTO>> FetchRoadName();
 
         /// <summary>
         /// This method is used to fetch Road Link data as per boundingBox.
