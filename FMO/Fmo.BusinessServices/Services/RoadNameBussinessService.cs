@@ -1,5 +1,8 @@
 ﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.SqlTypes;
     using Common;
     using Common.Enums;
     using Fmo.BusinessServices.Interfaces;
@@ -9,9 +12,6 @@
     using Fmo.Helpers;
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Data.SqlTypes;
 
     /// <summary>
     /// This class contains methods for fetching data for RoadLinks.
@@ -28,8 +28,8 @@
         /// <summary>
         /// This method fetches data for RoadLinks
         /// </summary>
-        /// <param name="boundaryBox">boundaryBox as string.</param>
-        /// <param name="unitGuid">Unit unique identifier.</param>
+        /// <param name="boundarybox">boundaryBox as string.</param>
+        /// <param name="uniGuid">Unit unique identifier.</param>
         /// <returns>RoadLink object</returns>
         public string GetRoadRoutes(string boundarybox, Guid uniGuid)
         {

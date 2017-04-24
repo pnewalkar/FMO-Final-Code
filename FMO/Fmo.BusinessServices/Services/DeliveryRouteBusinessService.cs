@@ -88,9 +88,8 @@ namespace Fmo.BusinessServices.Services
         /// <param name="searchText">Text to search</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>
-        /// Task
+        /// List of <see cref="DeliveryRouteDTO"/>.
         /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
         {
             throw new NotImplementedException();

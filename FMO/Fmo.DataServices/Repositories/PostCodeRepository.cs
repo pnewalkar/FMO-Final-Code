@@ -111,7 +111,7 @@
 
                 return postCodeDetailsDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

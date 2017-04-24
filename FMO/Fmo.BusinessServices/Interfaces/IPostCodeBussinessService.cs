@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Fmo.DTO;
-
-namespace Fmo.BusinessServices.Interfaces
+﻿namespace Fmo.BusinessServices.Interfaces
 {
-  public interface IPostCodeBussinessService
+    public interface IPostCodeBussinessService
     {
-        Task<List<PostCodeDTO>> FetchPostCodeUnit(string searchText);
+        // Task<List<PostCodeDTO>> FetchPostCodeUnit(string searchText);
     }
 }

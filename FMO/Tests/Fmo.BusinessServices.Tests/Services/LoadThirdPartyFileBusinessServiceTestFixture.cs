@@ -1,15 +1,9 @@
 ﻿namespace Fmo.BusinessServices.Tests.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Messaging;
-    using System.Reflection;
-    using Common.Constants;
     using Common.Enums;
     using Common.Interface;
-    using DataServices.Repositories.Interfaces;
-    using DTO;
     using DTO.FileProcessing;
     using Fmo.Common.TestSupport;
     using Fmo.NYBLoader;
@@ -25,7 +19,7 @@
         private Mock<IMessageBroker<AddressLocationUSRDTO>> msgBrokerMock;
         private Mock<IExceptionHelper> exceptionHelperMock;
         private Mock<ILoggingHelper> loggingHelperMock;
-        private Mock<IConfigurationHelper> configHelperMock;        
+        private Mock<IConfigurationHelper> configHelperMock;
 
         /// <summary>
         /// Test the method with the valid file data.
@@ -33,7 +27,11 @@
         [Test]
         public void Test_Valid_FileData()
         {
-
+            msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
+            fileMoverMock = CreateMock<IFileMover>();
+            exceptionHelperMock = CreateMock<IExceptionHelper>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+            configHelperMock = CreateMock<IConfigurationHelper>();
             string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
 
             Exception mockException = It.IsAny<Exception>();
@@ -45,7 +43,7 @@
             loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
-            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");            
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
 
             testCandidate = new USRLoader(
                                             msgBrokerMock.Object,
@@ -69,6 +67,12 @@
         [Test]
         public void Test_InValid_FileData()
         {
+            msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
+            fileMoverMock = CreateMock<IFileMover>();
+            exceptionHelperMock = CreateMock<IExceptionHelper>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+            configHelperMock = CreateMock<IConfigurationHelper>();
+
             string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
 
             Exception mockException = It.IsAny<Exception>();
@@ -101,11 +105,6 @@
         /// </summary>
         protected override void OnSetup()
         {
-            msgBrokerMock = CreateMock<IMessageBroker<AddressLocationUSRDTO>>();
-            fileMoverMock = CreateMock<IFileMover>();
-            exceptionHelperMock = CreateMock<IExceptionHelper>();
-            loggingHelperMock = CreateMock<ILoggingHelper>();
-            configHelperMock = CreateMock<IConfigurationHelper>();
         }
     }
 }

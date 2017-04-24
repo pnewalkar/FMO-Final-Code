@@ -102,7 +102,7 @@
 
                 return deliveryRoutesDto;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
