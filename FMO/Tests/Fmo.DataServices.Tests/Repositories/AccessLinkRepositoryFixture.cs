@@ -20,7 +20,6 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAccessLinkRepository testCandidate;
         private string coordinates;
-        private Guid ID = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid unit1Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid unit2Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid unit3Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
