@@ -27,7 +27,7 @@ namespace Fmo.Common.LoggingManagement
 
             // Listeners
             // var flatFileTraceListener = new FlatFileTraceListener(string.Concat(ConfigurationManager.AppSettings["LogFilePath"], ConfigurationManager.AppSettings["ErrorLogFileName"]), "----------------------------------------", "----------------------------------------", formatter);
-            var rollingFlatFileTraceListener = new RollingFlatFileTraceListener(string.Concat(ConfigurationManager.AppSettings["LogFilePath"], ConfigurationManager.AppSettings["ErrorLogFileName"]), "----------------------------------------", "----------------------------------------", formatter, 20, "dd-MM-YYYY", RollFileExistsBehavior.Increment, RollInterval.None, 3);
+            var rollingFlatFileTraceListener = new RollingFlatFileTraceListener(string.Concat(ConfigurationManager.AppSettings["LogFilePath"], ConfigurationManager.AppSettings["ErrorLogFileName"]), "----------------------------------------", "----------------------------------------", formatter, 20, "yyyy-MM-dd", RollFileExistsBehavior.Increment, RollInterval.None, 3);
 
             var eventLog = new EventLog(resxManager.GetString("Logging_LogName"), ".", resxManager.GetString("Logging_LogSource"));
             var eventLogTraceListener = new FormattedEventLogTraceListener(eventLog);
