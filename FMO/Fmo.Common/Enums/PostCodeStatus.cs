@@ -9,6 +9,8 @@ namespace Fmo.Common.Enums
 {
     public enum PostCodeStatus
     {
+        None = 0,
+
         [Description("Pending Delete in PAF")]
         PendingDeleteInPAF = 1,
 

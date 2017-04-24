@@ -12,6 +12,11 @@ using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
+    /// <summary>
+    /// Repository for User Role and Unit information
+    /// </summary>
+    /// <seealso cref="Fmo.DataServices.Infrastructure.RepositoryBase{Fmo.Entities.UserRoleUnit, Fmo.DataServices.DBContext.FMODBContext}" />
+    /// <seealso cref="Fmo.DataServices.Repositories.Interfaces.IUserRoleUnitRepository" />
     public class UserRoleUnitRepository : RepositoryBase<UserRoleUnit, FMODBContext>, IUserRoleUnitRepository
     {
         public UserRoleUnitRepository(IDatabaseFactory<FMODBContext> databaseFactory)
@@ -19,10 +24,19 @@ namespace Fmo.DataServices.Repositories
         {
         }
 
+        /// <summary>
+        /// Gets the user unit information.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <returns>Guid</returns>
         public async Task<Guid> GetUserUnitInfo(string userName)
         {
-            return await DataContext.UserRoleUnits.AsNoTracking()
-                .Where(x => x.User.UserName == userName).Select(x => x.Unit_GUID).FirstOrDefaultAsync();
+            var userUnit = await (from r in DataContext.UserRoleUnits.AsNoTracking()
+                        join u in DataContext.Users on r.User_GUID equals u.ID
+                        where u.UserName == userName
+                        select r.Unit_GUID).FirstOrDefaultAsync();
+
+            return userUnit;
         }
     }
 }

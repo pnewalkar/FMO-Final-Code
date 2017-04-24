@@ -71,9 +71,9 @@
 
                 return deliveryRoutes;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -104,7 +104,7 @@
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -123,9 +123,9 @@
                     .Where(l => (l.Scenario.Unit_GUID == userUnit) && (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                     .CountAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

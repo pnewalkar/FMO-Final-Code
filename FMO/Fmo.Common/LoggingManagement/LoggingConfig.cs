@@ -12,7 +12,7 @@ namespace Fmo.Common.LoggingManagement
     /// <summary>
     /// Logging configuration
     /// </summary>
-    public class LoggingConfig
+    public static class LoggingConfig
     {
         /// <summary>
         /// Builds Programmatic Configuration for Logging

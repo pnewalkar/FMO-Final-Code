@@ -114,6 +114,7 @@
             catch (Exception ex)
             {
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                throw;
             }
 
             return isPostalAddressInserted;
@@ -143,7 +144,7 @@
             catch (Exception ex)
             {
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
-                throw ex;
+                throw;
             }
 
             return saveFlag;
@@ -162,9 +163,9 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -190,9 +191,9 @@
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -252,6 +253,7 @@
             catch (Exception ex)
             {
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                throw;
             }
 
             return saveFlag;

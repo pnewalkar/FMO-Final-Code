@@ -14,12 +14,9 @@ function manageAccessService($http, $q, GlobalSettings) {
     return service;
 
     function getToken(userdata) {
-
-        //var data = "username=" + userdata.userName + "&password=" + "pass";
-
         var deferred = $q.defer();
 
-        $http.post('http://localhost:34583' + '/api/token', userdata, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
+        $http.post(GlobalSettings.apiUrl + '/token', userdata, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

@@ -22,7 +22,7 @@ namespace Fmo.NYBLoader
     {
         private readonly IMessageBroker<AddressLocationUSRDTO> msgBroker;
         private readonly IFileMover fileMover;
-        private readonly IExceptionHelper exceptionHelper;
+        //private readonly IExceptionHelper exceptionHelper;
         private readonly ILoggingHelper loggingHelper;
         private readonly IConfigurationHelper configHelper;
         private string XSD_LOCATION;
@@ -38,7 +38,7 @@ namespace Fmo.NYBLoader
         {
             this.msgBroker = messageBroker;
             this.fileMover = fileMover;
-            this.exceptionHelper = exceptionHelper;
+            //this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
             this.configHelper = configHelper;
             this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues(Constants.XSDLOCATIONCONFIG);
@@ -53,11 +53,11 @@ namespace Fmo.NYBLoader
         /// <param name="strPath"></param>
         public void LoadTPFDetailsFromXML(string strPath)
         {
-            string destinationPath = string.Empty;
+            //string destinationPath = string.Empty;
             List<AddressLocationUSRDTO> lstUSRFiles = null;
             List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
-            List<AddressLocationUSRDTO> lstUSRUpdateFiles = null;
-            List<AddressLocationUSRDTO> lstUSRDeleteFiles = null;
+            //List<AddressLocationUSRDTO> lstUSRUpdateFiles = null;
+            //List<AddressLocationUSRDTO> lstUSRDeleteFiles = null;
 
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
@@ -69,8 +69,8 @@ namespace Fmo.NYBLoader
                     lstUSRFiles = GetValidRecords(strPath);
 
                     lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
-                    lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
-                    lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
+                    //lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
+                    //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
 
                     lstUSRInsertFiles.ForEach(addressLocation =>
                     {
@@ -109,7 +109,7 @@ namespace Fmo.NYBLoader
 
             try
             {
-                List<AddressLocationUSRDTO> lstUSRFiles = new List<AddressLocationUSRDTO>();
+                //List<AddressLocationUSRDTO> lstUSRFiles = new List<AddressLocationUSRDTO>();
 
                 XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USRXMLROOT));
                 XmlDocument validXmlDocument = new XmlDocument();
@@ -120,7 +120,7 @@ namespace Fmo.NYBLoader
                 using (TextReader reader = new StreamReader(strPath))
                 {
                     List<XmlNode> xmlNodes = ((XmlNode[])fledeserializer.Deserialize(reader)).ToList();
-                    List<XmlNode> validXmlNodes = new List<XmlNode>();
+                    //List<XmlNode> validXmlNodes = new List<XmlNode>();
 
                     xmlNodes.ForEach(xmlNode =>
                     {
@@ -168,7 +168,7 @@ namespace Fmo.NYBLoader
                 using (TextReader reader = new StreamReader(strPath))
                 {
                     List<XmlNode> xmlNodes = ((XmlNode[])fledeserializer.Deserialize(reader)).ToList();
-                    List<XmlNode> validXmlNodes = new List<XmlNode>();
+                    //List<XmlNode> validXmlNodes = new List<XmlNode>();
 
                     xmlNodes.ForEach(xmlNode =>
                     {
