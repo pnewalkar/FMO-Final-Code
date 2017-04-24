@@ -19,6 +19,14 @@
         DeliveryPointDTO GetDeliveryPointByUDPRN(int udprn);
 
         /// <summary>
+        /// Update UDPRN of Delivery Point by matching udprn of postal address id.
+        /// </summary>
+        /// <param name="addressId">Address GUID</param>
+        /// <param name="udprn">UDPRN id of postal address</param>
+        /// <returns>DeliveryPointDTO object</returns>
+        bool UpdateDeliveryPointByAddressId(Guid addressId, int udprn);
+
+        /// <summary>
         /// Insert the DeliveryPointDTO object into the database
         /// </summary>
         /// <param name="objDeliveryPoint">DeliveryPointDTO object</param>
