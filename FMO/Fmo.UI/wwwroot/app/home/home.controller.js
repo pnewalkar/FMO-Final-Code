@@ -6,8 +6,6 @@ function homeController($scope) {
     var deliveryunit = vm.selectedDeliveryUnit;
     vm.deliveryUnit = deliveryUnit;
     function deliveryUnit() {
-        debugger;
-        alert("hi");
-
+      
     }
 };
