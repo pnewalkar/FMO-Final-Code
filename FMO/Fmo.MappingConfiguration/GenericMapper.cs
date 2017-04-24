@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Fmo.MappingConfiguration
 {
-    public class GenericMapper
+    public static class GenericMapper
     {
         public static TDestination Map<TSource, TDestination>(TSource source)
         {

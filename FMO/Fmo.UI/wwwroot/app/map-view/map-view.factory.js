@@ -417,19 +417,47 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     }
 
     function setDeliveryPoint(long, lat) {
-        var point_feature = new ol.Feature({});
-
-        var point_geom = new ol.geom.Point([long, lat]);
-        point_feature.setGeometry(point_geom);
-
-        var vector_layer = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                features: [point_feature]
-            })
-        });
-        vector_layer.setStyle(mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)("deliverypoint"));
-        map.addLayer(vector_layer);
         map.getView().setCenter([long, lat]);
+        map.getView().setResolution(0.5600011200022402);
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        deliveryPointsLayer.layer.getSource().clear();
+        deliveryPointsLayer.selected = true;
+        deliveryPointsLayer.layer.setVisible(true)
+        var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+        $http({
+            method: 'GET',
+            url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + map.getView().calculateExtent(map.getSize()).join(','),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + authData.token
+            }
+        }).success(function (response) {          
+        
+            var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
+            deliveryPointsLayer.layer.getSource().addFeatures(features);
+           
+            var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+
+            var select = new ol.interaction.Select({ style: style });
+            
+            map.addInteraction(select);
+
+            var selectedFeatures = select.getFeatures();
+
+            var featureToSelect;
+            angular.forEach(features, function (feature, index) {              
+                var featureLatitude = feature.values_.geometry.getCoordinates()[1];
+                var featureLongitude = feature.values_.geometry.getCoordinates()[0];
+
+                if (featureLatitude ===lat && featureLongitude===long) {
+                    featureToSelect = feature;
+                }
+            });      
+
+            if (featureToSelect)
+                selectedFeatures.push(featureToSelect);
+        });
+      
     }
 }
 

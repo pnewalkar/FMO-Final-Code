@@ -48,6 +48,7 @@ i.fa.fa-search {
     @include font-color($white);
     @include margin(0px 0px 0px 15px);
     font-size: 25px;
+    margin-left: 15px;
 }
 
 .viewResult {
@@ -109,6 +110,5 @@ i.fa.fa-angle-right.searchRight {
     text-align: center;
     line-height: 32px;
     display: block;
-    color: black;
     font-size: 12px;
 }
