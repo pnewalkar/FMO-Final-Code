@@ -194,7 +194,6 @@ function mapService($http, mapFactory,
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
-        //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;

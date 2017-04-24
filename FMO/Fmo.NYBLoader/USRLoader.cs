@@ -124,7 +124,7 @@ namespace Fmo.NYBLoader
 
                     xmlNodes.ForEach(xmlNode =>
                     {
-                        if (!IsXmlValid(XSD_LOCATION, xmlNode))
+                        if (!IsXmlValid(strPath, XSD_LOCATION, xmlNode))
                         {
                             isFilevalid = false;
                         }
@@ -204,7 +204,7 @@ namespace Fmo.NYBLoader
         /// <param name="xsdFile"></param>
         /// <param name="xNode"></param>
         /// <returns></returns>
-        private bool IsXmlValid(string xsdFile, XmlNode xNode)
+        private bool IsXmlValid(string fileName, string xsdFile, XmlNode xNode)
         {
 
             string methodName = MethodBase.GetCurrentMethod().Name;
@@ -225,7 +225,7 @@ namespace Fmo.NYBLoader
                                                             .Element(XName.Get(Constants.USRUDPRN)).Value);
                     }
 
-                    loggingHelper.LogError(e.Exception);
+                    loggingHelper.LogError("UDPRN : " + UDPRN.ToString() + " File Name: " + fileName, e.Exception);                    
                     //logger code to write schema mismatch exception 
                     result = false;
                 });

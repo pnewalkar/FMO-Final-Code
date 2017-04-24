@@ -11,7 +11,7 @@ namespace Fmo.API.Services.Controllers
     /// PAF controller to handle PAF API request from windows service
     /// </summary>
     [Route("api/[controller]")]
-    public class PAFController : FmoBaseController
+    public class PAFController : Controller
     {
         private IPostalAddressBusinessService postalAddressBusinessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
