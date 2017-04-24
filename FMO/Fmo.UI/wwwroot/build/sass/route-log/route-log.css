@@ -98,3 +98,8 @@ md-switch.md-checked .md-thumb {
 
 md-select {
   margin-right: 10px; }
+
+span.closeRouteWindow {
+  right: 7px;
+  position: absolute;
+  top: 7px; }

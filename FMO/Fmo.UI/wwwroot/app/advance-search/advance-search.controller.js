@@ -41,6 +41,13 @@ function AdvanceSearchController(searchApiService,
     vm.arrDeliveryRoutes = [];
     vm.obj;
     vm.queryAdvanceSearch(vm.searchText);
+    vm.closeWindow = closeWindow;
+
+
+    function closeWindow() {
+        $mdDialog.cancel();
+    }
+
 
 
     function queryAdvanceSearch(query) {
