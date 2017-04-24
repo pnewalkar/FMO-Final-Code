@@ -28,7 +28,7 @@
         [Test]
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Null_Location_Existing_Notification()
         {
-            //Setup mock objects
+            // Setup mock objects
             AddressLocationDTO addressDTOMockNull = null;
 
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRFromEmail")).Returns("sriram.kandade@capgemini.com");
@@ -51,7 +51,7 @@
         [Test]
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Null_Location_Non_Existing_Notification()
         {
-            //Setup mock objects
+            // Setup mock objects
             AddressLocationDTO addressDTOMockNull = null;
             NotificationDTO notificationDTOMockNull = null;
 
@@ -81,7 +81,7 @@
         [Test]
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Existing_Location_Within_Range_Non_Existing_Notification()
         {
-            //Setup mock objects
+            // Setup mock objects
             AddressLocationDTO addressDTOMockNull = null;
             NotificationDTO notificationDTOMockNull = null;
 
@@ -127,9 +127,7 @@
                                             this.referenceDataCategoryRepositoryMock.Object,
                                             this.emailHelperMock.Object,
                                             this.configurationHelperMock.Object,
-                                            this.loggingHelperMock.Object
-                                            );
+                                            this.loggingHelperMock.Object);
         }
-
     }
 }
