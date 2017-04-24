@@ -49,7 +49,7 @@
 
                 DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates, Constants.BNGCOORDINATESYSTEM);
 
-                return DataContext.AccessLink.AsNoTracking().Where(x => x.CentreLineGeometry != null && x.CentreLineGeometry.Intersects(extent) && x.CentreLineGeometry.Intersects(polygon)).ToList();
+                return DataContext.OSRoadLinks.AsNoTracking().Where(x => x.CentreLineGeometry != null && x.CentreLineGeometry.Intersects(extent) && x.CentreLineGeometry.Intersects(polygon)).ToList();
             }
             else
             {

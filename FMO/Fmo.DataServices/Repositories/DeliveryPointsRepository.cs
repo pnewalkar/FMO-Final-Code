@@ -255,7 +255,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List of Delivery Point Dto</returns>
         public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<DeliveryPoint> deliveryPoints = this.GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+            List<DeliveryPoint> deliveryPoints = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
             Mapper.Initialize(cfg =>
             {
@@ -362,26 +362,5 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        /// <summary>
-        /// This method is used to Get delivery Point boundingBox data.
-        /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
-        /// <param name="unitGuid">unit unique identifier.</param>
-        /// <returns>List of Delivery Point Entity</returns>
-        private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
-        {
-            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
-            {
-                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
-
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-
-                return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
-            }
-            else
-            {
-                return null;
-            }
-        }
     }
 }

@@ -18,7 +18,7 @@ var GlobalSettings = {
 //}
 
 if (GlobalSettings.env == "localhost") {
-    GlobalSettings.apiUrl = "http://10.246.18.250/fmoapi";
+    GlobalSettings.apiUrl = "http://localhost:34583/api";
 }
 else if (GlobalSettings.env == "dev") {
     GlobalSettings.apiUrl = ""; // Here comes development enviroment url
