@@ -1,10 +1,24 @@
 'use strict';
 angular.module('advanceSearch')
-    .controller('advanceSearchController', ['$scope', 'searchApiService', 'mapFactory', '$state', '$mdDialog','advanceSearchService','$stateParams', AdvanceSearchController]);
+    .controller('advanceSearchController', ['searchApiService',
+                                            'mapFactory',
+                                             '$state',
+                                             '$mdDialog',
+                                         'advanceSearchService',
+                                         '$stateParams',
+                                 AdvanceSearchController]);
 
-function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $mdDialog, advanceSearchService, $stateParams) {
+function AdvanceSearchController(searchApiService,
+                                  mapFactory,
+                                  $state,
+                                  $mdDialog,
+                                  advanceSearchService,
+                                  $stateParams)
+{
+  
     var vm = this;
-    $scope.toggle;
+    vm.toggle = vm.toggle;
+    vm.toggleList = vm.toggleList;
     vm.chkRoute = true;
     vm.chkPostCode = true;
     vm.chkDeliveryPoint = true;
@@ -12,84 +26,102 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
     vm.queryAdvanceSearch = queryAdvanceSearch;
     vm.selectAll = selectAll;
     vm.deSelectAll = deSelectAll;
-    var results = [];
+    vm.results = [];
     vm.searchText = $stateParams.data;
     vm.query;
+    vm.route;
     vm.routeval = [];
-    var searchCount = [];
-    vm.searchCount = searchCount;
+    vm.searchCount = vm.searchCount;
     vm.OnChangeItem = OnChangeItem;
     vm.advanceSearch = advanceSearch;
     vm.openAdvanceSearchPopup = openAdvanceSearchPopup;
-    var searchItem;
-    debugger;
+    vm.arrDeliverypoints = [];
+    vm.arrPostCodes = [];
+    vm.arrStreetNames = [];
+    vm.arrDeliveryRoutes = [];
+    vm.obj;
+    vm.queryAdvanceSearch(vm.searchText);
+
+
     function queryAdvanceSearch(query) {
        
-        debugger;
+   
         console.log(query);
         searchApiService.advanceSearch(query).then(function (response) {
 
             vm.results = response.data;
             vm.searchCount = vm.results.searchCounts;
             console.log(vm.results.searchCounts);
-            vm.searchItem = results.searchResultItems;
+            vm.searchItem = vm.results.searchResultItems;
             vm.arrRoutes = [];
 
-            var arrDeliverypoints = [];
-            var arrPostCodes = [];
-            var arrStreetNames = [];
-            var arrDeliveryRoutes = [];
+          
 
 
             for (var i = 0; i < vm.results.searchResultItems.length; i++) {
-                var route = vm.results.searchResultItems[i];
-                var obj;
-                if (route.type == 'DeliveryPoint') {
-                    obj = { 'displayText': route.displayText, 'UDPRN': route.udprn,'type':"DeliveryPoint" }
-                    arrDeliverypoints.push(obj);
+                vm.route = vm.results.searchResultItems[i];
+               vm.obj;
+                if (vm.route.type == 'DeliveryPoint') {
+                    vm.obj = { 'displayText': vm.route.displayText, 'UDPRN': vm.route.udprn, 'type': "DeliveryPoint" }
+                    vm.arrDeliverypoints.push( vm.obj);
                 }
-                else if (route.type == 'Postcode') {
-                    obj = { 'displayText': route.displayText }
-                    arrPostCodes.push(obj);
+                else if (vm.route.type == 'Postcode') {
+                    vm.obj = { 'displayText': vm.route.displayText }
+                    vm.arrPostCodes.push(vm.obj);
                 }
-                else if (route.type == 'StreetNetwork') {
-                    obj = { 'displayText': route.displayText }
-                    arrStreetNames.push(obj);
+                else if (vm.route.type == 'StreetNetwork') {
+                    vm.obj = { 'displayText': vm.route.displayText }
+                    vm.arrStreetNames.push(vm.obj);
                 }
-                else if (route.type == 'Route') {
-                    obj = { 'displayText': route.displayText }
-                    arrDeliveryRoutes.push(obj);
+                else if (vm.route.type == 'Route') {
+                    vm.obj = { 'displayText': vm.route.displayText }
+                    vm.arrDeliveryRoutes.push(vm.obj);
                 }
             }
-            if (arrDeliverypoints.length == 1) {
-                var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': true };
+            if (vm.arrDeliverypoints.length == 1) {
+                vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': true };
             }
             else
             {
-                var deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': false };
+                vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': false };
             }
-            var postCodeObj = {
-                'type': 'PostCode', 'name': arrPostCodes, 'open': false
-        };
-            var streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open': false };
-            if (arrDeliveryRoutes.length == 2) {
-                var deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': true };
+           
+            if (vm.arrPostCodes.length == 1) {
+                vm.postCodeObj = {
+                    'type': 'PostCode', 'name': vm.arrPostCodes, 'open': true
+                };
+            }
+            else
+            {
+                vm.postCodeObj = {
+                    'type': 'PostCode', 'name': vm.arrPostCodes, 'open': false
+                };
+            }
+            if (vm.arrStreetNames.length == 1) {
+                var streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': true };
+            }
+            else
+            {
+                vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': false };
+            }
+            if (vm.arrDeliveryRoutes.length == 1) {
+                vm.deliveryRouteobj = { 'type': 'Route', 'name': vm.arrDeliveryRoutes, 'open': true };
             }
             else {
-                var deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': false };
+                vm.deliveryRouteobj = { 'type': 'Route', 'name': vm.arrDeliveryRoutes, 'open': false };
             }
 
-            if (arrDeliverypoints.length > 0) {
-                vm.arrRoutes.push(deliveryPointObj);
+            if (vm.arrDeliverypoints.length > 0) {
+                vm.arrRoutes.push(vm.deliveryPointObj);
             }
-            if (arrPostCodes.length > 0) {
-                vm.arrRoutes.push(postCodeObj);
+            if (vm.arrPostCodes.length > 0) {
+                vm.arrRoutes.push(vm.postCodeObj);
             }
-            if (arrStreetNames.length > 0) {
-                vm.arrRoutes.push(streetnameObj);
+            if (vm.arrStreetNames.length > 0) {
+                vm.arrRoutes.push(vm.streetnameObj);
             }
-            if (arrDeliveryRoutes.length > 0) {
-                vm.arrRoutes.push(deliveryRouteobj);
+            if (vm.arrDeliveryRoutes.length > 0) {
+                vm.arrRoutes.push(vm.deliveryRouteobj);
             }
 
         });
@@ -108,51 +140,8 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
         vm.chkDeliveryPoint = false;
         vm.chkStreetNetwork = false;
     }
-    $scope.routes = [
-                       {
 
-                           "type": "Route1", "open": true,
-                           "name": [
-                             { "type_name": "Route 1" },
-                             { "type_name": "Route 2" }]
-
-                       },
-                       {
-
-                           "type": "Route2", "open": true,
-                           "name": [
-                             { "type_name": "Route 10" },
-                             { "type_name": "Route 20" },
-                             { "type_name": "Route 30" }]
-
-                       }
-                       ,
-                       {
-
-                           "type": "Route3", "open": true,
-                           "name": [
-                             { "type_name": "Route 100" },
-                             { "type_name": "Route 200" },
-                             { "type_name": "Route 300" },
-                             { "type_name": "Route 400" }]
-
-                       },
-                        {
-
-                            "type": "Route4", "open": true,
-                            "name": [
-                              { "type_name": "Route 100" },
-                              { "type_name": "Route 200" },
-                              { "type_name": "Route 300" },
-                              { "type_name": "Route 400" }]
-
-                        }
-    ]
-
-    $scope.toggleList = function (state) {
-        debugger;
-       
-
+    vm.toggleList = function (state) {
             vm.arrRoutes.forEach(function (e) {
                 e.open = state;
             });
@@ -162,15 +151,14 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
     }
 
     function OnChangeItem(selectedItem) {
-        debugger;
 
         if (selectedItem.type === "DeliveryPoint") {
             searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
-                    var data = response.data;
-                    var lat = data.features[0].geometry.coordinates[1];
-                    var long = data.features[0].geometry.coordinates[0];
-                    mapFactory.setDeliveryPoint(long, lat);
+                    vm.data = response.data;
+                    vm.lat = vm.data.features[0].geometry.coordinates[1];
+                    vm.long = vm.data.features[0].geometry.coordinates[0];
+                    mapFactory.setDeliveryPoint(vm.long, vm.lat);
                 });
             $state.go('searchDetails', { selectedItem: selectedItem });
         }
@@ -180,7 +168,6 @@ function AdvanceSearchController($scope, searchApiService, mapFactory, $state, $
     function advanceSearch() {
         var advaceSearchTemplate = advanceSearchService.advanceSearch();
         vm.openAdvanceSearchPopup(advaceSearchTemplate);
-        ///vm.openModalPopup("Test");
     }
 
     function openAdvanceSearchPopup(modalSetting) {

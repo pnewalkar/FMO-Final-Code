@@ -52,21 +52,15 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     }
 
     function advanceSearch(query) {
-        debugger;
         $stateParams.data = query;
         var state = $stateParams;
         var advaceSearchTemplate = advanceSearchService.advanceSearch(query);
         vm.openModalPopup(advaceSearchTemplate);
-      //  vm.openModalPopup("Test");
     }
 
     function openModalPopup(modalSetting) {
-        //var state = $stateParams;
-        //var setting = routeLogService.routeLog(selectedUnit);
-        //debugger;
         var popupSetting = modalSetting;
-        $mdDialog.show(popupSetting);
-      
+        $mdDialog.show(popupSetting);     
     };
 
     

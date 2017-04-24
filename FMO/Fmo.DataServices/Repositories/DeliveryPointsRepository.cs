@@ -231,7 +231,7 @@ namespace Fmo.DataServices.Repositories
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Entity</returns>
-        public IEnumerable<DeliveryPoint> GetData(string boundingBoxCoordinates, Guid unitGuid)
+        private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
         {
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
@@ -255,7 +255,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List of Delivery Point Dto</returns>
         public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<DeliveryPoint> deliveryPoints = this.GetData(boundingBoxCoordinates, unitGuid).ToList();
+            List<DeliveryPoint> deliveryPoints = this.GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
             Mapper.Initialize(cfg =>
             {

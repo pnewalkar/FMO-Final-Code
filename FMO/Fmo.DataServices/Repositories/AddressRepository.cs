@@ -272,7 +272,7 @@
                 UDPRN = uDPRN,
                 AmendmentType = Constants.INSERT,
                 FileName = strFileName,
-                FileProcessing_TimeStamp = DateTime.Now,
+                FileProcessing_TimeStamp = DateTime.UtcNow,
                 FileType = fileType,
                 NatureOfError = strException
             };

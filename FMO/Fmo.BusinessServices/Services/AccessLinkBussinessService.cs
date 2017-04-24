@@ -37,7 +37,7 @@
             {
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
-                    var accessLinkCoordinates = GetData(boundaryBox.Split(Constants.Comma[0]));
+                    var accessLinkCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(Constants.Comma[0]));
                     return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates, unitGuid));
                 }
                 else
@@ -112,7 +112,7 @@
         /// </summary>
         /// <param name="accessLinkParameters"> accessLinkParameters as object </param>
         /// <returns> accesslink coordinates</returns>
-        private static string GetData(params object[] accessLinkParameters)
+        private static string GetAccessLinkCoordinatesDataByBoundingBox(params object[] accessLinkParameters)
         {
             string coordinates = string.Empty;
 
