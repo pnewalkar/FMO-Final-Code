@@ -1,17 +1,33 @@
 angular
     .module('sideNav')
-    .controller("sideNavController", ['$scope', '$state', '$stateParams', 'routeLogService', '$mdSidenav', '$mdDialog', 'sideNavApiService', sideNavController])
+    .controller("sideNavController",
+               ['$scope',
+                '$state',
+                '$stateParams',
+                'routeLogService',
+                '$mdSidenav',
+                '$mdDialog',
+                'sideNavApiService',
+                 sideNavController])
 
-function sideNavController($scope, $state, $stateParams, routeLogService, $mdSidenav, $mdDialog, sideNavApiService) {
+function sideNavController($scope,
+                           $state,
+                           $stateParams,
+                           routeLogService,
+                           $mdSidenav,
+                           $mdDialog,
+                           sideNavApiService)
+                           {
     vm = this;
     vm.routeLog = routeLog;
     vm.openModalPopup = openModalPopup;
     vm.fetchActionItems = fetchActionItems;
-    $scope.results;
     vm.fetchActions = fetchActions;
     vm.closeSideNav = closeSideNav;
     vm.routeSimulation = routeSimulation;
     vm.selectedUnit = $stateParams;
+
+
     function routeSimulation(selectedDeliveryUnit) {
 
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
@@ -36,24 +52,18 @@ function sideNavController($scope, $state, $stateParams, routeLogService, $mdSid
     function fetchActionItems() {
         vm.getItem = sessionStorage.getItem('roleAccessData');
         vm.RolesActionResult = JSON.parse(vm.getItem);
-        sideNavApiService.fetchActionItems().then(function (response) {
-            vm.results = response.data;
-            vm.userUnitInfoDto = [];
-            if (vm.results.length != null && vm.RolesActionResult.length != null)
-                {
-
-            for (i = 0; i < vm.results.length; i++) {
-
-                for (j = 0; j < vm.RolesActionResult.length; j++) {
-                    if (vm.RolesActionResult[j]["ActionName"] === vm.results[i]["name"]) {
-                        if (vm.userUnitInfoDto.indexOf(vm.results[i]) < 0) {
-                            vm.userUnitInfoDto.push(vm.results[i]);
+            if (vm.RolesActionResult.length != null)
+            {
+                for (i = 0; i < vm.RolesActionResult.length; i++) {
+                    
+                    for (var j = i + 1; j < vm.RolesActionResult.length; j++) {
+                        if (vm.RolesActionResult[i]["ActionName"] == vm.RolesActionResult[j]["ActionName"]) {
+                            vm.RolesActionResult.splice(j, 1);
+                            }
                         }
-                    }
+                    
                 }
-            }
                 }
-        });
     }
 
     function closeSideNav() {

@@ -203,7 +203,7 @@
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
-               string.Format(dateTimeFormat, DateTime.Now),
+               string.Format(dateTimeFormat, DateTime.UtcNow),
                 Path.GetExtension(strfileName)
                 );
         }

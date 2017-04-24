@@ -68,7 +68,6 @@
   <ItemGroup>
     <Compile Include="Interfaces\ActionManager\IActionManagerBussinessService.cs" />
     <Compile Include="Interfaces\ActionManager\IUserRoleUnitBussinessService.cs" />
-    <Compile Include="Interfaces\IAccessActionBusinessService.cs" />
     <Compile Include="Interfaces\IAccessLinkBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryPointBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryRouteBusinessService.cs" />
@@ -80,7 +79,6 @@
     <Compile Include="Interfaces\IStreetNetworkBusinessService.cs" />
     <Compile Include="Interfaces\IUSRBusinessService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AccessActionBussinessService.cs" />
     <Compile Include="Services\AccessLinkBussinessService.cs" />
     <Compile Include="Services\ActionManager\ActionManagerBussinessService.cs" />
     <Compile Include="Services\ActionManager\UserRoleUnitBussinessService.cs" />

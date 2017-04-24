@@ -24,22 +24,22 @@
         {
         }
 
-        /// <summary>
-        /// This method is used to Fetch Road Name details.
-        /// </summary>
-        /// <returns> Task List of Road Name DTO</returns>
-        public async Task<List<RoadNameDTO>> FetchRoadName()
-        {
-            try
-            {
-                var result = await DataContext.RoadNames.ToListAsync();
-                return GenericMapper.MapList<RoadName, RoadNameDTO>(result.ToList());
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        ///// <summary>
+        ///// This method is used to Fetch Road Name details.
+        ///// </summary>
+        ///// <returns> Task List of Road Name DTO</returns>
+        //public async Task<List<RoadNameDTO>> FetchRoadName()
+        //{
+        //    try
+        //    {
+        //        var result = await DataContext.RoadNames.ToListAsync();
+        //        return GenericMapper.MapList<RoadName, RoadNameDTO>(result.ToList());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
 
         /// <summary>
         /// This method is used to get Road Link data as per coordinates.
@@ -47,7 +47,7 @@
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Road Link entity</returns>
-        public IEnumerable<OSRoadLink> GetData(string boundingBoxCoordinates, Guid unitGuid)
+        private IEnumerable<OSRoadLink> GetRoadNameCoordinatesDatabyBoundingbox(string boundingBoxCoordinates, Guid unitGuid)
         {
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
@@ -71,7 +71,7 @@
         /// <returns>List of OsRoadLinkDTO</returns>
         public List<OsRoadLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<OSRoadLink> result = GetData(boundingBoxCoordinates, unitGuid).ToList();
+            List<OSRoadLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, unitGuid).ToList();
             var oSRoadLink = GenericMapper.MapList<OSRoadLink, OsRoadLinkDTO>(result);
             return oSRoadLink;
         }
