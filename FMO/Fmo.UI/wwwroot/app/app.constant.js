@@ -4,7 +4,8 @@
 //}(this));
 
 var GlobalSettings = {
-    apiUrl: ''
+    apiUrl: '',
+    indexUrl:'http://localhost:34559/app/index.html'
 };
 
 /* For Api */

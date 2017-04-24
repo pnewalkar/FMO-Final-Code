@@ -125,6 +125,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FmoMessagesConstants.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="TestSupport\RepositoryFixtureBase.cs" />
@@ -164,6 +165,7 @@
     <EmbeddedResource Include="ResourceFile\FmoMessagesConstants.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FmoMessagesConstants.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
