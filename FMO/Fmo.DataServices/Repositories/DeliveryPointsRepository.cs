@@ -239,7 +239,7 @@ namespace Fmo.DataServices.Repositories
 
                 DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
-                return DataContext.DeliveryPoints.Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
+                return DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
             }
             else
             {

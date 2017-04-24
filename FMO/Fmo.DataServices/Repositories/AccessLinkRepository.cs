@@ -35,7 +35,7 @@
                 DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
                 DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-                return DataContext.AccessLinks.Where(x => x.AccessLinkLine.Intersects(extent) && x.AccessLinkLine.Intersects(polygon)).ToList();
+                return DataContext.AccessLinks.AsNoTracking().Where(x => x.AccessLinkLine.Intersects(extent) && x.AccessLinkLine.Intersects(polygon)).ToList();
             }
             else
             {

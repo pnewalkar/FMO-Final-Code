@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using Fmo.Common.AsyncEnumerator;
 using Fmo.Common.TestSupport;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories;
 using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
+using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
 
@@ -17,23 +19,59 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IRoadNameRepository testCandidate;
         private string coordinates;
-        private Guid unitGuid;
+        private Guid unit1Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
+        private Guid unit2Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
+        private Guid unit3Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
+        private Guid user1Id;
+        private Guid user2Id;
 
         [Test]
         public void Test_GetRoadRoutes()
         {
-            coordinates = "1234.87";
-            var actualResult = testCandidate.GetRoadRoutes(coordinates, unitGuid);
+            coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
+            var actualResult = testCandidate.GetRoadRoutes(coordinates, unit1Guid);
             Assert.IsNotNull(actualResult);
         }
 
-        [Test]
         protected override void OnSetup()
         {
-            List<OsRoadLinkDTO> lstRoadLinkDTO = new List<OsRoadLinkDTO>();
-            var mocAccessLinkDtoDBSet = MockDbSet(lstRoadLinkDTO);
+            unit1Guid = Guid.NewGuid();
+            unit2Guid = Guid.NewGuid();
+            unit3Guid = Guid.NewGuid();
+            user1Id = System.Guid.NewGuid();
+            user2Id = System.Guid.NewGuid();
 
+            var unitBoundary = DbGeometry.PolygonFromText("POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))", 27700);
+
+            var unitLocation = new List<UnitLocation>()
+            {
+                new UnitLocation() { UnitName = "unit1", ExternalId = "extunit1", ID = unit1Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit1Guid, User_GUID = user1Id } } },
+                new UnitLocation() { UnitName = "unit2", ExternalId = "extunit2", ID = unit2Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit2Guid, User_GUID = user1Id } } },
+                new UnitLocation() { UnitName = "unit3", ExternalId = "extunit2", ID = unit3Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit3Guid, User_GUID = user2Id } } }
+            };
+
+            var roadName = new List<OSRoadLink>()
+            {
+               new OSRoadLink()
+               {
+                  CentreLineGeometry = unitBoundary,
+                  RoadName = "Road 001"
+                      }
+            };
+
+            var mockAsynEnumerable = new DbAsyncEnumerable<OSRoadLink>(roadName);
+            var mockRoadNameRepository = MockDbSet(roadName);
             mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFmoDbContext.Setup(x => x.Set<OSRoadLink>()).Returns(mockRoadNameRepository.Object);
+            mockFmoDbContext.Setup(x => x.AccessLink).Returns(mockRoadNameRepository.Object);
+            mockFmoDbContext.Setup(c => c.AccessLink.AsNoTracking()).Returns(mockRoadNameRepository.Object);
+            mockRoadNameRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockRoadNameRepository.Object);
+            var mockAsynEnumerable2 = new DbAsyncEnumerable<UnitLocation>(unitLocation);
+            var mockRoadNameRepository2 = MockDbSet(unitLocation);
+            mockFmoDbContext.Setup(x => x.Set<UnitLocation>()).Returns(mockRoadNameRepository2.Object);
+            mockFmoDbContext.Setup(x => x.UnitLocations).Returns(mockRoadNameRepository2.Object);
+            mockFmoDbContext.Setup(c => c.UnitLocations.AsNoTracking()).Returns(mockRoadNameRepository2.Object);
+            mockRoadNameRepository2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockRoadNameRepository2.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             testCandidate = new RoadNameRepository(mockDatabaseFactory.Object);
