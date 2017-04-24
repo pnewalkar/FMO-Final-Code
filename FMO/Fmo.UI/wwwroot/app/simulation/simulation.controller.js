@@ -1,7 +1,7 @@
 ﻿angular.module('simulation')
 .controller('SimulationController', ['$scope', '$state', '$stateParams', 'simulationBusinessService', 'simulationAPIService', SimulationController])
 function SimulationController($scope, $state, $stateParams, simulationBusinessService, simulationAPIService) {
-    debugger;
+    
     var vm = this;
     vm.loadRouteLogStatus = loadRouteLogStatus();
     vm.loadScenario = loadScenario;
@@ -17,12 +17,11 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.searchTerm;
 
     function selectedRouteStatus() {
-        debugger;
+        
         //loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
     }
     function loadRouteLogStatus() {
-        simulationAPIService.getStatus().then(function (response) {
-            debugger;
+        simulationAPIService.getStatus().then(function (response) {            
             vm.RouteStatusObj = response;
             vm.selectedRouteStatusObj = {
                 group1: vm.RouteStatusObj[0].id,
@@ -38,8 +37,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
         vm.isDeliveryRouteDisabled = false;
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
-        simulationAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
-            debugger;
+        simulationAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {            
             vm.RouteScenario = response;           
         });
     }

@@ -20,24 +20,23 @@
 
 .zoom-control {
   position: absolute;
-  top: 0px;
-  left: -37px; }
+  top: -10px;
+  left: -50px; }
 
 .levelDanger {
   color: red;
   border: 1px solid red; }
 
 .zoom-scale {
-  left: -56%;
   position: absolute;
-  width: 35%; }
+  width: 35.00175%;
+  left: -56%; }
 
 .labletext {
-  margin-top: 4px;
-  margin-left: 9px;
+  margin: 4px 0px 0px 9px;
   position: absolute;
   font-size: 16px; }
 
 input[name="zoom-scale"] {
-  width: 95.5%;
+  width: 95.51098%;
   text-indent: 22px; }

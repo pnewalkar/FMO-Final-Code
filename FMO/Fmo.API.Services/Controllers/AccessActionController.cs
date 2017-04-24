@@ -11,7 +11,7 @@ namespace Fmo.API.Services.Controllers
     /// This controller contains methods for fetching Access Actions.
     /// </summary>
     [Route("api/[controller]")]
-    public class AccessActionController : Controller
+    public class AccessActionController : FmoBaseController
     {
         private IAccessActionBusinessService accessActionBussinessService = default(IAccessActionBusinessService);
 
