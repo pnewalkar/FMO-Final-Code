@@ -1,7 +1,5 @@
 ﻿namespace Fmo.BusinessServices.Tests.Services
 {
-    using System.Collections.Generic;
-    using System.Net.Mail;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.BusinessServices.Services;
     using Fmo.Common.Interface;
@@ -11,6 +9,8 @@
     using Fmo.DTO.FileProcessing;
     using Moq;
     using NUnit.Framework;
+    using System.Collections.Generic;
+    using System.Net.Mail;
 
     [TestFixture]
     public class USRBusinessServiceFixture : TestFixtureBase
@@ -28,6 +28,24 @@
         [Test]
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Null_Location_Existing_Notification()
         {
+            this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
+            this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
+            this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
+            this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
+            this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
+            this.emailHelperMock = this.CreateMock<IEmailHelper>();
+            this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
+            this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
+            this.testCandidate = new USRBusinessService(
+                                            this.addressLocationRepositoryMock.Object,
+                                            this.deliveryPointsRepositoryMock.Object,
+                                            this.notificationRepositoryMock.Object,
+                                            this.postCodeSectorRepositoryMock.Object,
+                                            this.referenceDataCategoryRepositoryMock.Object,
+                                            this.emailHelperMock.Object,
+                                            this.configurationHelperMock.Object,
+                                            this.loggingHelperMock.Object);
+
             //Setup mock objects
             AddressLocationDTO addressDTOMockNull = null;
 
@@ -51,6 +69,25 @@
         [Test]
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Null_Location_Non_Existing_Notification()
         {
+            this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
+            this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
+            this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
+            this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
+            this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
+            this.emailHelperMock = this.CreateMock<IEmailHelper>();
+            this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
+            this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
+            this.testCandidate = new USRBusinessService(
+                                            this.addressLocationRepositoryMock.Object,
+                                            this.deliveryPointsRepositoryMock.Object,
+                                            this.notificationRepositoryMock.Object,
+                                            this.postCodeSectorRepositoryMock.Object,
+                                            this.referenceDataCategoryRepositoryMock.Object,
+                                            this.emailHelperMock.Object,
+                                            this.configurationHelperMock.Object,
+                                            this.loggingHelperMock.Object
+                                            );
+
             //Setup mock objects
             AddressLocationDTO addressDTOMockNull = null;
             NotificationDTO notificationDTOMockNull = null;
@@ -81,6 +118,25 @@
         [Test]
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Existing_Location_Within_Range_Non_Existing_Notification()
         {
+            this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
+            this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
+            this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
+            this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
+            this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
+            this.emailHelperMock = this.CreateMock<IEmailHelper>();
+            this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
+            this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
+            this.testCandidate = new USRBusinessService(
+                                            this.addressLocationRepositoryMock.Object,
+                                            this.deliveryPointsRepositoryMock.Object,
+                                            this.notificationRepositoryMock.Object,
+                                            this.postCodeSectorRepositoryMock.Object,
+                                            this.referenceDataCategoryRepositoryMock.Object,
+                                            this.emailHelperMock.Object,
+                                            this.configurationHelperMock.Object,
+                                            this.loggingHelperMock.Object
+                                            );
+
             //Setup mock objects
             AddressLocationDTO addressDTOMockNull = null;
             NotificationDTO notificationDTOMockNull = null;
@@ -111,25 +167,6 @@
 
         protected override void OnSetup()
         {
-            this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
-            this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
-            this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
-            this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
-            this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
-            this.emailHelperMock = this.CreateMock<IEmailHelper>();
-            this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
-            this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
-            this.testCandidate = new USRBusinessService(
-                                            this.addressLocationRepositoryMock.Object,
-                                            this.deliveryPointsRepositoryMock.Object,
-                                            this.notificationRepositoryMock.Object,
-                                            this.postCodeSectorRepositoryMock.Object,
-                                            this.referenceDataCategoryRepositoryMock.Object,
-                                            this.emailHelperMock.Object,
-                                            this.configurationHelperMock.Object,
-                                            this.loggingHelperMock.Object
-                                            );
         }
-
     }
 }
