@@ -41,7 +41,6 @@ map-panel {
     @include font-color($strong-grey);
 }*/
 .map-panel .map-panel-content {
-  padding: 3px 3px 3px 3px;
   height: calc(100% - 50px);
   overflow: auto;
   pointer-events: auto; }
