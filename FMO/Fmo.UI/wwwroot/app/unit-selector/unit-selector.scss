@@ -1,5 +1,6 @@
 @import './app/variables';
 
-.unitSelector{
-    @include width(110px);
+.unitSelector.md-text{
+    @extend %body-content;
+    @include font-color($white);
 }

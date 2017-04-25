@@ -1,5 +1,5 @@
 <md-input-container class="md-block" >
     <md-select  ng-model="vm.selectedUser" ng-change="vm.DeliveryUnit()" aria-label="Unit Selector" class="customSelector">
-        <md-option  ng-value="unit" ng-repeat="unit in vm.deliveryRouteUnit" >{{unit.unitName}}</md-option>
+        <md-option  ng-value="unit" ng-repeat="unit in vm.deliveryRouteUnit" class="unitSelector">{{unit.unitName}}</md-option>
     </md-select>
 </md-input-container>
