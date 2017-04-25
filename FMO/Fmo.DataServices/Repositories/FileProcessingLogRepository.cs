@@ -24,9 +24,16 @@ namespace Fmo.DataServices.Repositories
         /// <param name="fileProcessingLogDTO"> Expects DTO object to save exception while saving records in DB</param>
         public void LogFileException(FileProcessingLogDTO fileProcessingLogDTO)
         {
-            var entity = GenericMapper.Map<FileProcessingLogDTO, FileProcessingLog>(fileProcessingLogDTO);
-            DataContext.FileProcessingLogs.Add(entity);
-            DataContext.SaveChanges();
+            try
+            {
+                var entity = GenericMapper.Map<FileProcessingLogDTO, FileProcessingLog>(fileProcessingLogDTO);
+                DataContext.FileProcessingLogs.Add(entity);
+                DataContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

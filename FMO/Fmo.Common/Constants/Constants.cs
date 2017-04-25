@@ -96,6 +96,9 @@
 
         #region PAF
 
+        public const string LOGMESSAGEFORPAFDATAVALIDATION = "Load PAF Error Message : PAF File Data is not valid, File Name : {0} : Log Time : {1} : UDPRN : {2}";
+        public const string LOGMESSAGEFORPAFWRONGFORMAT = "Load PAF Error Message : PAF File is not valid due to wrong file format or empty records, File Name : {0} : Log Time : {1}";
+        public const string ERRORLOGMESSAGEFORPAFMSMQ = "Load PAF Error Message : Error occurred while processing it to messaging queue, File Name : {0} : Log Time : {1}";
         public const int NoOfCharactersForPAF = 19;
         public const int MaxCharactersForPAF = 534;
         public const string PAFWEBAPIURL = "PAFWebApiurl";

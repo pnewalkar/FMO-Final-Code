@@ -76,7 +76,7 @@ namespace Fmo.DataServices.Repositories
                 }
                 else
                 {
-                    isDeliveryPointUpdated = true;
+                    isDeliveryPointUpdated = false;
                 }
             }
             catch (Exception)
