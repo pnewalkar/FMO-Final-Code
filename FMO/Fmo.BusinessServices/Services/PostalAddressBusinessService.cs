@@ -194,6 +194,7 @@
                 {
                     if (addressRepository.UpdateAddress(objPostalAddress, strFileName))
                     {
+                        objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
                         var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
                         if (objDeliveryPoint == null)
                         {
@@ -231,6 +232,7 @@
                 if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
                 {
                     addressRepository.UpdateAddress(objPostalAddress, strFileName);
+                    objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
                     var isDeliveryPointUpdated = deliveryPointsRepository.UpdateDeliveryPointByAddressId(objPostalAddressMatchedAddress.ID, objPostalAddress.UDPRN ?? default(int));
                     if (!isDeliveryPointUpdated)
                     {

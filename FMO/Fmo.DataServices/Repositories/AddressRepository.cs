@@ -40,6 +40,7 @@
         public bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
         {
             bool isPostalAddressDeleted = false;
+            string nybDeleteMsg = Constants.NYBErrorMessageForDelete;
             if (lstUDPRN != null && lstUDPRN.Count() > 0)
             {
                 var lstAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToList();
@@ -50,7 +51,7 @@
                         if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
                             isPostalAddressDeleted = false;
-                            this.loggingHelper.LogInfo(string.Format(Constants.NYBErrorMessageForDelete, string.Join(Constants.Comma, lstUDPRN)));
+                            this.loggingHelper.LogInfo(string.Format(nybDeleteMsg, string.Join(Constants.Comma, lstUDPRN)));
                         }
                         else
                         {

@@ -63,8 +63,8 @@ namespace Fmo.DataServices.Tests.Repositories
             var mockRoadNameRepository = MockDbSet(roadName);
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFmoDbContext.Setup(x => x.Set<OSRoadLink>()).Returns(mockRoadNameRepository.Object);
-            mockFmoDbContext.Setup(x => x.AccessLink).Returns(mockRoadNameRepository.Object);
-            mockFmoDbContext.Setup(c => c.AccessLink.AsNoTracking()).Returns(mockRoadNameRepository.Object);
+            mockFmoDbContext.Setup(x => x.OSRoadLinks).Returns(mockRoadNameRepository.Object);
+            mockFmoDbContext.Setup(c => c.OSRoadLinks.AsNoTracking()).Returns(mockRoadNameRepository.Object);
             mockRoadNameRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockRoadNameRepository.Object);
             var mockAsynEnumerable2 = new DbAsyncEnumerable<UnitLocation>(unitLocation);
             var mockRoadNameRepository2 = MockDbSet(unitLocation);

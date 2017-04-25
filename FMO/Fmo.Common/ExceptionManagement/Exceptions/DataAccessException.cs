@@ -36,6 +36,5 @@ namespace Fmo.Common.ExceptionManagement
             : base(info, context)
         {
         }
-
     }
 }

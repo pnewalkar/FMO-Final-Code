@@ -25,6 +25,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
         }
         else {
             vm.results = {};
+            vm.resultscount = { 0: { count: 0 } };
         }
     }
 

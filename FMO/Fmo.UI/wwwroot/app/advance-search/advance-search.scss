@@ -37,3 +37,7 @@
 .searchTh{
     font-weight: bold;
 }
+
+span.closeWindow {
+    @include margin(-10px -7px 0px 0px);
+}

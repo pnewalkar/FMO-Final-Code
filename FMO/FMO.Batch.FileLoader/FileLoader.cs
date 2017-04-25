@@ -50,6 +50,7 @@
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IConfigurationHelper configurationHelper;
         private bool enableLogging = false;
+        private string nybMessage = Constants.LOADNYBDETAILSLOGMESSAGE;
 
         #endregion
 
@@ -272,7 +273,7 @@
         private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Args)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             string fileName = e.FullPath;
             try
             {
@@ -301,7 +302,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
         #endregion
@@ -316,7 +317,7 @@
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 using (ZipArchive zip = ZipFile.OpenRead(fileName))
@@ -329,7 +330,7 @@
                         string strfileName = entry.Name;
                         List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
                         string postaLAddress = serializer.Serialize(lstNYBDetails);
-                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress);
+                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
 
                         if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                         {
@@ -339,7 +340,7 @@
                             {
                                 File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
                                 string udprn = string.Join(Constants.Comma, lstNYBDetails.Where(n => n.IsValidData == false).Select(n => n.UDPRN).ToList());
-                                this.loggingHelper.LogInfo(string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString(), udprn));
+                                this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString(), udprn));
                             }
                             else
                             {
@@ -349,7 +350,7 @@
                         }
                         else
                         {
-                            this.loggingHelper.LogInfo(string.Format(Constants.LOADNYBDETAILSLOGMESSAGE, strfileName, DateTime.Now.ToString(), string.Empty));
+                            this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString(), string.Empty));
                         }
                     }
                 }
@@ -360,7 +361,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
         #endregion
@@ -370,9 +371,10 @@
         /// </summary>
         /// <param name="methodName">Function Name</param>
         /// <param name="logMessage">Message</param>
-        private void LogMethodInfoBlock(string methodName, string logMessage)
+        /// <param name="separator">separator</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
         }
     }
 }

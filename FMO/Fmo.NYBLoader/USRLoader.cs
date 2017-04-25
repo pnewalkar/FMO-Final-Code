@@ -60,7 +60,7 @@ namespace Fmo.NYBLoader
             //List<AddressLocationUSRDTO> lstUSRDeleteFiles = null;
 
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
             try
             {
@@ -93,7 +93,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -105,7 +105,7 @@ namespace Fmo.NYBLoader
         {
             bool isFilevalid = true;
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
             try
             {
@@ -141,7 +141,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -153,7 +153,7 @@ namespace Fmo.NYBLoader
         private List<AddressLocationUSRDTO> GetValidRecords(string strPath)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
             try
             {
@@ -194,7 +194,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -208,7 +208,7 @@ namespace Fmo.NYBLoader
         {
 
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
                 bool result = true;
@@ -239,7 +239,7 @@ namespace Fmo.NYBLoader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
         }
 
@@ -257,9 +257,10 @@ namespace Fmo.NYBLoader
         /// </summary>
         /// <param name="methodName">Function Name</param>
         /// <param name="logMessage">Message</param>
-        private void LogMethodInfoBlock(string methodName, string logMessage)
+        /// <param name="seperator">Seperator used</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            this.loggingHelper.LogInfo(methodName + Constants.COLON + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + seperator + logMessage, this.enableLogging);
         }
     }
 }

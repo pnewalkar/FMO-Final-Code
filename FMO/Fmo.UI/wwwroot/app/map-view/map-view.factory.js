@@ -100,7 +100,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         viewMiniMap = new ol.View({
             projection: BNGProjection,
             center: view.getCenter(),
-            zoom: view.getZoom() - 5
+            zoom: view.getZoom() - 2
         });
 
         miniMap = new ol.Map({
@@ -119,7 +119,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
 
     function updateMiniMap() {
         viewMiniMap.setCenter(view.getCenter());
-        viewMiniMap.setZoom(view.getZoom() - 5);
+        viewMiniMap.setZoom(view.getZoom() - 2);
     }
 
     function getVectorLayer() {
@@ -406,6 +406,9 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             resolutions: availableResolutionForCurrentExtent,
             resolution: getResolutionFromScale(defaultZoomScale)
         });
+
+        view.on('change:resolution', updateMiniMap);
+        view.on('change:center', updateMiniMap);
 
         map.setView(view);
 

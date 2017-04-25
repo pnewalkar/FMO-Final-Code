@@ -41,7 +41,8 @@
             exceptionHelperMock.Setup(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException));
             loggingHelperMock.Setup(x => x.LogError(It.IsAny<Exception>()));
             loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
-            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation"))
+                   .Returns(Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\Schemas\USRFileSchema.xsd"));
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
 
@@ -82,7 +83,8 @@
             exceptionHelperMock.Setup(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException));
             loggingHelperMock.Setup(x => x.LogError(It.IsAny<Exception>()));
             loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
-            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation")).Returns(@"C:\Workspace\FMO\FMO\Fmo.NYBLoader\Schemas\USRFileSchema.xsd");
+            configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation"))
+                .Returns(Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\Schemas\USRFileSchema.xsd"));
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFErrorFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Error");
 
