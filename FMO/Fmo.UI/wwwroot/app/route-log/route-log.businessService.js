@@ -1,5 +1,5 @@
 angular.module('routeLog')
-    .service('routeLogService',['routeLogAPIService',routeLogService])
+    .service('routeLogService', ['routeLogAPIService', routeLogService])
 function routeLogService(routeLogAPIService) {
     var vm = this;
     vm.RouteStatusObj = null;
@@ -14,7 +14,7 @@ function routeLogService(routeLogAPIService) {
     };
 
     function loadRouteLogStatus() {
-        simulationAPIService.getStatus().then(function (response) {            
+        simulationAPIService.getStatus().then(function (response) {
             vm.RouteStatusObj = response.data;
             vm.selectedRouteStatusObj = {
                 group1: vm.RouteStatusObj[0].id,
@@ -27,7 +27,7 @@ function routeLogService(routeLogAPIService) {
     }
 
     function loadScenario(operationStateID, deliveryUnitID) {
-        simulationAPIService.getScenario(operationStateID, deliveryUnitID).then(function (response) {            
+        simulationAPIService.getScenario(operationStateID, deliveryUnitID).then(function (response) {
             vm.RouteScenario = response.data;
         });
     }
@@ -38,12 +38,14 @@ function routeLogService(routeLogAPIService) {
         });
     }
 
-    function routeLog (selectedUnit){
+    function routeLog(selectedUnit) {
         return {
             templateUrl: './route-log/route-log.template.html',
-            clickOutsideToClose: true,
-            controller: 'RouteLogController as vm',
-            params: { selectedUnit: selectedUnit, }
+            clickOutsideToClose: true,           
+            locals: {
+                items: selectedUnit
+            },
+            controller: 'RouteLogController as vm'
         }
     }
 }
