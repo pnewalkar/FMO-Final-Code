@@ -109,7 +109,7 @@ function mapService($http, mapFactory,
 
         var loadFeatures = function (layerSource, response) {
             var features = new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }).readFeatures(response);
-            deliveryPointsVector.addFeatures(features);
+            layerSource.addFeatures(features);
         };
 
         var deliveryPointsVector = new ol.source.Vector({
