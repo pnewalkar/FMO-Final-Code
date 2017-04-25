@@ -22,9 +22,7 @@ i.fa.fa-map-marker.route{
     @extend %body-content;
     @include background($white,none);
     @include width(235px);
-    @include padding(8px 8px 8px 8px);
-    @include border-radius(35px);
-    @include border(none);
+    @include padding(5px 5px 5px 5px);
 }
 
 .searchContent{
@@ -47,8 +45,7 @@ i.fa.fa-map-marker.route{
 i.fa.fa-search {
     @include font-color($white);
     @include margin(0px 0px 0px 15px);
-    font-size: 25px;
-    margin-left: 15px;
+    font-size: $primary-font-size;
 }
 
 .viewResult {

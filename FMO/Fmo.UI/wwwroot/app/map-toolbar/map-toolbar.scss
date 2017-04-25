@@ -6,9 +6,9 @@
 }
 
 .map-toolbar {
-    @include top(70px);
+    @include top(75px);
     @include position(absolute);
-    left: 450px;
+    left: 375px;
 }
 
 .map-toolbar .button {
@@ -23,6 +23,6 @@
     font-size: $seondary-font-size;
 }
 
-.map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button {
-    @include background(none,$clear-blue);
-}
+.map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button:hover {
+    background-color: #aadaea;
+}   
