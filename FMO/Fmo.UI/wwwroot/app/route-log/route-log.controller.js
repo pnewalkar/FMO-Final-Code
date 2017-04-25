@@ -1,6 +1,6 @@
 ﻿angular.module('routeLog')
-.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService','$mdDialog', RouteLogController])
-function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService, $mdDialog) {
+.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService','$mdDialog','items', RouteLogController])
+function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService, $mdDialog, items) {
     var vm = this;
     vm.loadSelectionType = loadSelectionType();
     vm.loadRouteLogStatus = loadRouteLogStatus();
@@ -10,7 +10,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.selectionTypeChange = selectionTypeChange;
     vm.clearSearchTerm = clearSearchTerm;
     vm.routeChange = routeChange;
-    vm.selectedDeliveryUnitObj = $stateParams;
+    vm.selectedDeliveryUnitObj = items;
     vm.selectedRouteStatusObj = null;
     vm.selectedRouteScenario = null;
     vm.isDeliveryRouteDisabled = true;
@@ -50,7 +50,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         routeLogAPIService.getStatus().then(function (response) {            
             vm.RouteStatusObj = response;
             vm.selectedRouteStatusObj = vm.RouteStatusObj[0];
-            loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.selectedUnit.id);
+            loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.id);
         });
     }
     function scenarioChange() {
