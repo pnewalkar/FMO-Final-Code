@@ -71,7 +71,7 @@
         /// <summary>
         /// This method is used to fetch Delivery Points data.
         /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="boundingBox">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
         List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);

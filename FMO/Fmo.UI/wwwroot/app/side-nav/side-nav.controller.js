@@ -26,15 +26,12 @@ function sideNavController($scope,
     vm.closeSideNav = closeSideNav;
     vm.routeSimulation = routeSimulation;
     vm.selectedUnit = $stateParams;
+    vm.fetchActionItems();
 
 
     function routeSimulation(selectedDeliveryUnit) {
 
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
-    }
-    $scope.toggleSideNav = function () {
-        $mdSidenav('left').toggle();
-        vm.fetchActionItems();
     }
 
 
@@ -50,20 +47,21 @@ function sideNavController($scope,
     };
 
     function fetchActionItems() {
-        vm.getItem = sessionStorage.getItem('roleAccessData');
-        vm.RolesActionResult = JSON.parse(vm.getItem);
-            if (vm.RolesActionResult.length != null)
-            {
+        if (vm.selectedUnit != null) {
+            vm.getItem = sessionStorage.getItem('roleAccessData');
+            vm.RolesActionResult = JSON.parse(vm.getItem);
+            if (vm.RolesActionResult.length != null) {
                 for (i = 0; i < vm.RolesActionResult.length; i++) {
-                    
+
                     for (var j = i + 1; j < vm.RolesActionResult.length; j++) {
                         if (vm.RolesActionResult[i]["ActionName"] == vm.RolesActionResult[j]["ActionName"]) {
                             vm.RolesActionResult.splice(j, 1);
-                            }
                         }
-                    
+                    }
+
                 }
-                }
+            }
+        }
     }
 
     function closeSideNav() {

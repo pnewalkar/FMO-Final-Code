@@ -22,12 +22,12 @@ if (GlobalSettings.env === "localhost") {
     GlobalSettings.indexUrl =  "http://localhost:34559/app/index.html"
 }
 else if (GlobalSettings.env === "dev") {
-    GlobalSettings.apiUrl = "http://10.246.18.250/fmoapi"; // Here comes development enviroment url
-    GlobalSettings.indexUrl = "http://10.246.18.250/fmoui"
+    GlobalSettings.apiUrl = "http://10.246.18.250/fmoapi/api"; // Here comes development enviroment url
+    GlobalSettings.indexUrl = "http://10.246.18.250/fmoui/app/index.html"
 }
 else if (GlobalSettings.env === "test") {
-    GlobalSettings.apiUrl = "http://10.246.17.62/fmoapi"; // Here comes test enviroment url
-    GlobalSettings.indexUrl = "http://10.246.17.62/fmoui"
+    GlobalSettings.apiUrl = "http://10.246.17.62/fmoapi/api"; // Here comes test enviroment url
+    GlobalSettings.indexUrl = "http://10.246.17.62/fmoui/app/index.html"
 }
 else if (GlobalSettings.env === "prod") {
     GlobalSettings.apiUrl = ""; // Here comes production enviroment url
