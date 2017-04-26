@@ -31,4 +31,5 @@
   font-weight: bold; }
 
 span.closeWindow {
-  margin: -10px -7px 0px 0px; }
+  margin: -10px -7px 0px 0px;
+  cursor: default; }

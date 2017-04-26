@@ -1,18 +1,19 @@
-﻿namespace Fmo.BusinessServices.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.SqlTypes;
-    using Common;
-    using Common.Constants;
-    using Common.Enums;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Helpers;
-    using Interfaces;
-    using Microsoft.SqlServer.Types;
-    using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Threading.Tasks;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.Common;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Helpers;
+using Microsoft.SqlServer.Types;
+using Newtonsoft.Json.Linq;
 
+namespace Fmo.BusinessServices.Services
+{
     /// <summary>
     /// This class contains methods for fetching Delivery Points data.
     /// </summary>
@@ -66,6 +67,43 @@
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Fetch the Delivery point for Basic Search.
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <param name="userUnit">Guid</param>
+        /// <returns>
+        /// Task
+        /// </returns>
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid userUnit)
+        {
+            return await deliveryPointsRepository.FetchDeliveryPointsForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the count of delivery point
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">Guid userUnit</param>
+        /// <returns>The total count of delivery point</returns>
+        public async Task<int> GetDeliveryPointsCount(string searchText, Guid userUnit)
+        {
+            return await deliveryPointsRepository.GetDeliveryPointsCount(searchText, userUnit).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// This method is used to fetch delivery points for advance search.
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task List of Delivery Point Dto
+        /// </returns>
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid)
+        {
+            return await deliveryPointsRepository.FetchDeliveryPointsForAdvanceSearch(searchText, unitGuid);
         }
 
         /// <summary>

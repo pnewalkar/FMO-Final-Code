@@ -26,14 +26,11 @@ function sideNavController($scope,
     vm.routeSimulation = routeSimulation;
     vm.selectedUnit = $stateParams;
     vm.contextTitle = "Context";
+    vm.fetchActionItems();
 
     function routeSimulation(selectedDeliveryUnit) {
         vm.contextTitle = "Simulation";
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
-    }
-    $scope.toggleSideNav = function () {
-        $mdSidenav('left').toggle();
-        vm.fetchActionItems();
     }
 
 
@@ -49,17 +46,19 @@ function sideNavController($scope,
     };
 
     function fetchActionItems() {
-        vm.getItem = sessionStorage.getItem('roleAccessData');
-        vm.RolesActionResult = JSON.parse(vm.getItem);
-        if (vm.RolesActionResult.length != null) {
-            for (i = 0; i < vm.RolesActionResult.length; i++) {
+        if (vm.selectedUnit != null) {
+            vm.getItem = sessionStorage.getItem('roleAccessData');
+            vm.RolesActionResult = JSON.parse(vm.getItem);
+            if (vm.RolesActionResult.length != null) {
+                for (i = 0; i < vm.RolesActionResult.length; i++) {
 
-                for (var j = i + 1; j < vm.RolesActionResult.length; j++) {
-                    if (vm.RolesActionResult[i]["ActionName"] == vm.RolesActionResult[j]["ActionName"]) {
-                        vm.RolesActionResult.splice(j, 1);
+                    for (var j = i + 1; j < vm.RolesActionResult.length; j++) {
+                        if (vm.RolesActionResult[i]["ActionName"] == vm.RolesActionResult[j]["ActionName"]) {
+                            vm.RolesActionResult.splice(j, 1);
+                        }
                     }
-                }
 
+                }
             }
         }
     }
