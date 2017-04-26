@@ -189,16 +189,15 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 var postalAddress = DataContext.PostalAddresses
-                               .Where(
-                                n => n.Postcode == objPostalAddress.Postcode &&
-                                      n.BuildingName == objPostalAddress.BuildingName &&
-                                      n.BuildingNumber == objPostalAddress.BuildingNumber &&
-                                      n.SubBuildingName == objPostalAddress.SubBuildingName &&
-                                      n.OrganisationName == objPostalAddress.OrganisationName &&
-                                      n.DepartmentName == objPostalAddress.DepartmentName &&
-                                      n.Thoroughfare == objPostalAddress.Thoroughfare &&
-                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).FirstOrDefault();
-
+                                .Where(
+                                n => n.Postcode == objPostalAddress.Postcode
+                                && n.BuildingName == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : null)
+                                && n.BuildingNumber == (objPostalAddress.BuildingNumber != null ? objPostalAddress.BuildingNumber : null)
+                                && n.SubBuildingName == (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName) ? objPostalAddress.SubBuildingName : null)
+                                && n.OrganisationName == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : null)
+                                && n.DepartmentName == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : null)
+                                && n.Thoroughfare == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : null)
+                                && n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null)).FirstOrDefault();
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
             catch (Exception)
@@ -212,15 +211,16 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
+        /// <param name="pafUpdateType">Passing 'USR' and 'NYB' to update</param>
         /// <returns>true or false</returns>
-        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName, string pafUpdateType)
         {
             bool saveFlag = false;
             try
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
