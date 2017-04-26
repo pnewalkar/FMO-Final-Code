@@ -9,11 +9,11 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
-    public class StreetNetworkBusinessService : IStreetNetworkBusinessService
+    public class StreetNetworkBussinessService : IStreetNetworkBusinessService
     {
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
 
-        public StreetNetworkBusinessService(IStreetNetworkRepository streetNetworkRepository)
+        public StreetNetworkBussinessService(IStreetNetworkRepository streetNetworkRepository)
         {
             this.streetNetworkRepository = streetNetworkRepository;
         }
