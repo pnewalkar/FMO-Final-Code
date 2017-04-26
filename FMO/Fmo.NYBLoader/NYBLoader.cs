@@ -163,20 +163,20 @@ namespace Fmo.NYBLoader
                 if (values.Count() == csvValues)
                 {
                     objAddDTO.Postcode = values[0].Trim();
-                    objAddDTO.PostTown = values[1].Trim();
-                    objAddDTO.DependentLocality = values[2].Trim();
-                    objAddDTO.DoubleDependentLocality = values[3].Trim();
-                    objAddDTO.Thoroughfare = values[4].Trim();
-                    objAddDTO.DependentThoroughfare = values[5].Trim();
-                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[6]) && !string.IsNullOrWhiteSpace(values[6]) ? Convert.ToInt16(values[6].Trim()) : Convert.ToInt16(0);
-                    objAddDTO.BuildingName = values[7].Trim();
-                    objAddDTO.SubBuildingName = values[8].Trim();
-                    objAddDTO.POBoxNumber = values[9].Trim();
-                    objAddDTO.DepartmentName = values[10].Trim();
-                    objAddDTO.OrganisationName = values[11].Trim();
-                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) || !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12].Trim()) : 0;
-                    objAddDTO.PostcodeType = values[13].Trim();
-                    objAddDTO.SmallUserOrganisationIndicator = values[14].Trim();
+                    objAddDTO.PostTown = values[1];
+                    objAddDTO.DependentLocality = values[2];
+                    objAddDTO.DoubleDependentLocality = values[3];
+                    objAddDTO.Thoroughfare = values[4];
+                    objAddDTO.DependentThoroughfare = values[5];
+                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[6]) && !string.IsNullOrWhiteSpace(values[6]) ? Convert.ToInt16(values[6]) : Convert.ToInt16(0);
+                    objAddDTO.BuildingName = values[7];
+                    objAddDTO.SubBuildingName = values[8];
+                    objAddDTO.POBoxNumber = values[9];
+                    objAddDTO.DepartmentName = values[10];
+                    objAddDTO.OrganisationName = values[11];
+                    objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) || !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
+                    objAddDTO.PostcodeType = values[13];
+                    objAddDTO.SmallUserOrganisationIndicator = values[14];
                     objAddDTO.DeliveryPointSuffix = values[15].Trim();
                     objAddDTO.IsValidData = true;
                 }
