@@ -17,7 +17,7 @@
     {
         private ISearchBusinessService testCandidate;
         private Mock<IDeliveryRouteBusinessService> deliveryRouteRepositoryMock;
-        private Mock<IPostCodeBussinessService> postCodeRepositoryMock;
+        private Mock<IPostCodeBusinessService> postCodeRepositoryMock;
         private Mock<IDeliveryPointBusinessService> deliveryPointsRepositoryMock;
         private Mock<IStreetNetworkBusinessService> streetNetworkRepositoryMock;
         private Guid unitGuid = System.Guid.NewGuid();
@@ -235,7 +235,7 @@
         protected override void OnSetup()
         {
             deliveryRouteRepositoryMock = CreateMock<IDeliveryRouteBusinessService>();
-            postCodeRepositoryMock = CreateMock<IPostCodeBussinessService>();
+            postCodeRepositoryMock = CreateMock<IPostCodeBusinessService>();
             deliveryPointsRepositoryMock = CreateMock<IDeliveryPointBusinessService>();
             streetNetworkRepositoryMock = CreateMock<IStreetNetworkBusinessService>();
             testCandidate = new SearchBusinessService(
