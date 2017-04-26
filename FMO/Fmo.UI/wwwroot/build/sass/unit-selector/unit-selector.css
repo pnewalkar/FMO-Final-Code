@@ -1,2 +1,7 @@
-.unitSelector {
-  width: 110px; }
+.unitSelector.md-text {
+  color: #2a2a2d;
+  font-family: PF DIN;
+  font-size: 16px; }
+
+.unitSelector.md-text {
+  color: #ffffff; }

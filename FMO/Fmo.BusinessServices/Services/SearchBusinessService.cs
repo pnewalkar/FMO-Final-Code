@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
-using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
@@ -15,17 +14,17 @@ namespace Fmo.BusinessServices.Services
     /// </summary>
     public class SearchBusinessService : ISearchBusinessService
     {
-        private readonly IDeliveryRouteRepository deliveryRouteRepository = default(IDeliveryRouteRepository);
-        private readonly IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
-        private readonly IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
-        private readonly IDeliveryPointsRepository deliveryPointRepository = default(IDeliveryPointsRepository);
+         private readonly IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
+         private readonly IPostCodeBussinessService postcodeBusinessService = default(IPostCodeBussinessService);
+        private readonly IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
+        private readonly IDeliveryPointBusinessService deliveryPointBusinessService = default(IDeliveryPointBusinessService);
 
-        public SearchBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IPostCodeRepository postcodeRepository, IStreetNetworkRepository streetNetworkRepository, IDeliveryPointsRepository deliveryPointRepository)
+        public SearchBusinessService(IDeliveryRouteBusinessService deliveryRouteBusinessService, IPostCodeBussinessService postcodeBusinessService, IStreetNetworkBusinessService streetNetworkBusinessService, IDeliveryPointBusinessService deliveryPointBusinessService)
         {
-            this.deliveryRouteRepository = deliveryRouteRepository;
-            this.postcodeRepository = postcodeRepository;
-            this.streetNetworkRepository = streetNetworkRepository;
-            this.deliveryPointRepository = deliveryPointRepository;
+            this.deliveryRouteBusinessService = deliveryRouteBusinessService;
+            this.postcodeBusinessService = postcodeBusinessService;
+            this.streetNetworkBusinessService = streetNetworkBusinessService;
+            this.deliveryPointBusinessService = deliveryPointBusinessService;
         }
 
         /// <summary>
@@ -40,17 +39,16 @@ namespace Fmo.BusinessServices.Services
         {
             try
             {
-                var deliveryRoutes = await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText, userUnit).ConfigureAwait(false);
-                var deliveryRouteCount = await deliveryRouteRepository.GetDeliveryRouteCount(searchText, userUnit).ConfigureAwait(false);
-                var postcodes = await postcodeRepository.FetchPostCodeUnitForBasicSearch(searchText, userUnit).ConfigureAwait(false);
-                var postCodeCount = await postcodeRepository.GetPostCodeUnitCount(searchText, userUnit).ConfigureAwait(false);
-                var deliveryPoints = await deliveryPointRepository.FetchDeliveryPointsForBasicSearch(searchText, userUnit).ConfigureAwait(false);
-                var deliveryPointsCount = await deliveryPointRepository.GetDeliveryPointsCount(searchText, userUnit).ConfigureAwait(false);
-                var streetNames = await streetNetworkRepository.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
-                var streetNetworkCount = await streetNetworkRepository.GetStreetNameCount(searchText, userUnit).ConfigureAwait(false);
+                var deliveryRoutes = await deliveryRouteBusinessService.FetchDeliveryRouteForBasicSearch(searchText, userUnit);
+                var deliveryRouteCount = await deliveryRouteBusinessService.GetDeliveryRouteCount(searchText, userUnit);
+                var postcodes = await postcodeBusinessService.FetchPostCodeUnitForBasicSearch(searchText, userUnit);
+                var postCodeCount = await postcodeBusinessService.GetPostCodeUnitCount(searchText, userUnit);
+                var deliveryPoints = await deliveryPointBusinessService.FetchDeliveryPointsForBasicSearch(searchText, userUnit);
+                var deliveryPointsCount = await deliveryPointBusinessService.GetDeliveryPointsCount(searchText, userUnit);
+                var streetNames = await streetNetworkBusinessService.FetchStreetNamesForBasicSearch(searchText, userUnit);
+                var streetNetworkCount = await streetNetworkBusinessService.GetStreetNameCount(searchText, userUnit);
 
                 var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
-
                 return searchResultDTO;
             }
             catch
@@ -69,10 +67,10 @@ namespace Fmo.BusinessServices.Services
         /// </returns>
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText, Guid userUnit)
         {
-            var postcodesTask = postcodeRepository.FetchPostCodeUnitForAdvanceSearch(searchText, userUnit);
-            var deliveryRoutesTask = deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText, userUnit);
-            var streetNamesTask = streetNetworkRepository.FetchStreetNamesForAdvanceSearch(searchText, userUnit);
-            var deliveryPointsTask = deliveryPointRepository.FetchDeliveryPointsForAdvanceSearch(searchText, userUnit);
+            var postcodesTask = postcodeBusinessService.FetchPostCodeUnitForAdvanceSearch(searchText, userUnit);
+            var deliveryRoutesTask = deliveryRouteBusinessService.FetchDeliveryRouteForAdvanceSearch(searchText, userUnit);
+            var streetNamesTask = streetNetworkBusinessService.FetchStreetNamesForAdvanceSearch(searchText, userUnit);
+            var deliveryPointsTask = deliveryPointBusinessService.FetchDeliveryPointsForAdvanceSearch(searchText, userUnit);
 
             Task.WaitAll(deliveryRoutesTask, postcodesTask, streetNamesTask, deliveryPointsTask);
 

@@ -26,14 +26,12 @@ function sideNavController($scope,
     vm.closeSideNav = closeSideNav;
     vm.routeSimulation = routeSimulation;
     vm.selectedUnit = $stateParams;
+    vm.contextTitle = "Context";
+    vm.fetchActionItems();
 
     function routeSimulation(selectedDeliveryUnit) {
-
+        vm.contextTitle = "Simulation";
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
-    }
-    $scope.toggleSideNav = function () {
-        $mdSidenav('left').toggle();
-        vm.fetchActionItems();
     }
 
 

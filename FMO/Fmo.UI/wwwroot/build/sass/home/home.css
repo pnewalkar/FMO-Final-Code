@@ -3,7 +3,12 @@ h2 span {
   font-family: Chevin;
   font-size: 18px; }
 
-.fa-bars, .fa-inbox {
+.fa-inbox {
+  color: #ffffff;
+  font-size: 18px;
+  margin: 0px 0px 0px 25px; }
+
+.fa-bars {
   color: #ffffff;
   font-size: 18px; }
 

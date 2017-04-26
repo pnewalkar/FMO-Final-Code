@@ -71,7 +71,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <summary>
         /// This method is used to fetch Delivery Points data.
         /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="boundingBox">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
         List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);
@@ -82,6 +82,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="udprn">UDPRN id</param>
         /// <returns>DeliveryPointDTO object</returns>
         List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
+
+        /// <summary>
+        /// Get the delivery points by the Postal Address Guid
+        /// </summary>
+        /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
+        /// <returns>DeliveryPointDTO object</returns>
+        DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId);
 
         /// <summary>
         /// Check if the delivery point exists for a given UDPRN id

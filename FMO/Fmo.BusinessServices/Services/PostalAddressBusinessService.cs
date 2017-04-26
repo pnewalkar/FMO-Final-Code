@@ -192,7 +192,8 @@ namespace Fmo.BusinessServices.Services
             {
                 if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypeNYB)
                 {
-                    if (addressRepository.UpdateAddress(objPostalAddress, strFileName))
+                    objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
+                    if (addressRepository.UpdateAddress(objPostalAddress, strFileName, Constants.PAFUPDATEFORNYB))
                     {
                         var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
                         if (objDeliveryPoint == null)
@@ -230,9 +231,26 @@ namespace Fmo.BusinessServices.Services
             {
                 if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
                 {
-                    addressRepository.UpdateAddress(objPostalAddress, strFileName);
-                    var isDeliveryPointUpdated = deliveryPointsRepository.UpdateDeliveryPointByAddressId(objPostalAddressMatchedAddress.ID, objPostalAddress.UDPRN ?? default(int));
-                    if (!isDeliveryPointUpdated)
+                    objPostalAddress.ID = objPostalAddressMatchedAddress.ID;
+                    var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
+                    if (objDeliveryPoint != null)
+                    {
+                        addressRepository.UpdateAddress(objPostalAddress, strFileName, Constants.PAFUPDATEFORUSR);
+                        var isDeliveryPointUpdated = deliveryPointsRepository.UpdateDeliveryPointByAddressId(objPostalAddressMatchedAddress.ID, objPostalAddress.UDPRN ?? default(int));
+                        if (!isDeliveryPointUpdated)
+                        {
+                            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+                            objFileProcessingLog.FileID = Guid.NewGuid();
+                            objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
+                            objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
+                            objFileProcessingLog.FileName = strFileName;
+                            objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
+                            objFileProcessingLog.FileType = FileType.Paf.ToString();
+                            objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForMatchedDeliveryPointNotUpdatedForUSRType;
+                            fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                        }
+                    }
+                    else
                     {
                         FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
                         objFileProcessingLog.FileID = Guid.NewGuid();

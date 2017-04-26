@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -31,19 +32,19 @@ namespace Fmo.BusinessServices.Services
         /// <param name="boundaryBox">Boundarybox as string</param>
         /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>Object</returns>
-        public GeoJson GetDeliveryPoints(string boundaryBox, Guid unitGuid)
+        public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
             try
             {
-                GeoJson deliveryPointsJsonData = null;
-
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                    deliveryPointsJsonData = GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
+                    return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
                 }
-
-                return deliveryPointsJsonData;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -69,11 +70,48 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
+        /// Fetch the Delivery point for Basic Search.
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <param name="userUnit">Guid</param>
+        /// <returns>
+        /// Task
+        /// </returns>
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid userUnit)
+        {
+            return await deliveryPointsRepository.FetchDeliveryPointsForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the count of delivery point
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">Guid userUnit</param>
+        /// <returns>The total count of delivery point</returns>
+        public async Task<int> GetDeliveryPointsCount(string searchText, Guid userUnit)
+        {
+            return await deliveryPointsRepository.GetDeliveryPointsCount(searchText, userUnit).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// This method is used to fetch delivery points for advance search.
+        /// </summary>
+        /// <param name="searchText">searchText as string</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// Task List of Delivery Point Dto
+        /// </returns>
+        public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid)
+        {
+            return await deliveryPointsRepository.FetchDeliveryPointsForAdvanceSearch(searchText, unitGuid);
+        }
+
+        /// <summary>
         /// This method is used to fetch GeoJson data for Delivery Point.
         /// </summary>
         /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
         /// <returns>lstDeliveryPointDTO</returns>
-        private static GeoJson GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
+        private static object GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
         {
             var deliveryPointGeoJson = new GeoJson
             {

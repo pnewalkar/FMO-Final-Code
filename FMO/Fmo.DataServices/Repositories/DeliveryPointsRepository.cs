@@ -1,26 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.Entity;
-using System.Data.Entity.Spatial;
-using System.Data.Entity.SqlServer;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Fmo.Common.Constants;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.MappingExtensions;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.Entities;
-
 namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Data.Entity;
+    using System.Data.Entity.Spatial;
+    using System.Data.Entity.SqlServer;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using Common.Constants;
+    using Entities;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using MappingConfiguration;
+    using MappingExtensions;
+    using Entity = Fmo.Entities;
+
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
     /// </summary>
-    public class DeliveryPointsRepository : RepositoryBase<DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
+    public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
         public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
@@ -65,7 +67,7 @@ namespace Fmo.DataServices.Repositories
             bool isDeliveryPointUpdated = false;
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking().Where(n => n.Address_GUID == addressId).SingleOrDefault();
+                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.Address_GUID == addressId).SingleOrDefault();
 
                 if (objDeliveryPoint != null)
                 {
@@ -75,7 +77,7 @@ namespace Fmo.DataServices.Repositories
                 }
                 else
                 {
-                    isDeliveryPointUpdated = true;
+                    isDeliveryPointUpdated = false;
                 }
             }
             catch (Exception)
@@ -289,6 +291,24 @@ namespace Fmo.DataServices.Repositories
             var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
 
             return deliveryPointDto;
+        }
+
+        /// <summary>
+        /// Get the delivery points by the Postal Address Guid
+        /// </summary>
+        /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
+        /// <returns>DeliveryPointDTO object</returns>
+        public DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId)
+        {
+            try
+            {
+                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId).SingleOrDefault();
+                return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

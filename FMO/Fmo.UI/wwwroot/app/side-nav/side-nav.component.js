@@ -1,7 +1,8 @@
 angular.module('sideNav')
   .component('sideNav', {
       bindings: {
-          selectedDeliveryUnit: "="
+          selectedDeliveryUnit: "=",
+          contextTitle: "="
       },
       templateUrl: './side-nav/side-nav.template.html',
       controller: 'sideNavController as vm'

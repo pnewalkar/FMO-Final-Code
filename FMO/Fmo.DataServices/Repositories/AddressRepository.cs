@@ -1,19 +1,19 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using Common.Constants;
-    using Common.Enums;
-    using Common.Interface;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Entities;
-    using MappingConfiguration;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.Common.Interface;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// Repository to interact with postal address entity
     /// </summary>
@@ -75,11 +75,12 @@
         public bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool isPostalAddressInserted = false;
-            try
+            PostalAddress entity = new PostalAddress();
+            if (objPostalAddress != null)
             {
-                if (objPostalAddress != null)
+                var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                try
                 {
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
@@ -104,18 +105,26 @@
                     else
                     {
                         objPostalAddress.ID = Guid.NewGuid();
-                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
                         DataContext.PostalAddresses.Add(entity);
                     }
 
                     DataContext.SaveChanges();
                     isPostalAddressInserted = true;
                 }
-            }
-            catch (Exception ex)
-            {
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
-                throw;
+                catch (Exception ex)
+                {
+                    if (objAddress != null)
+                    {
+                        DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                    }
+                    else
+                    {
+                        DataContext.Entry(entity).State = EntityState.Unchanged;
+                    }
+
+                    LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                }
             }
 
             return isPostalAddressInserted;
@@ -180,16 +189,15 @@
             try
             {
                 var postalAddress = DataContext.PostalAddresses
-                               .Where(
-                                n => n.Postcode == objPostalAddress.Postcode &&
-                                      n.BuildingName == objPostalAddress.BuildingName &&
-                                      n.BuildingNumber == objPostalAddress.BuildingNumber &&
-                                      n.SubBuildingName == objPostalAddress.SubBuildingName &&
-                                      n.OrganisationName == objPostalAddress.OrganisationName &&
-                                      n.DepartmentName == objPostalAddress.DepartmentName &&
-                                      n.Thoroughfare == objPostalAddress.Thoroughfare &&
-                                      n.DependentThoroughfare == objPostalAddress.DependentThoroughfare).FirstOrDefault();
-
+                                .Where(
+                                n => n.Postcode == objPostalAddress.Postcode
+                                && n.BuildingName == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : null)
+                                && n.BuildingNumber == (objPostalAddress.BuildingNumber != null ? objPostalAddress.BuildingNumber : null)
+                                && n.SubBuildingName == (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName) ? objPostalAddress.SubBuildingName : null)
+                                && n.OrganisationName == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : null)
+                                && n.DepartmentName == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : null)
+                                && n.Thoroughfare == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : null)
+                                && n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null)).FirstOrDefault();
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
             catch (Exception)
@@ -203,15 +211,16 @@
         /// </summary>
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
+        /// <param name="pafUpdateType">Passing 'USR' and 'NYB' to update</param>
         /// <returns>true or false</returns>
-        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName)
+        public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName, string pafUpdateType)
         {
             bool saveFlag = false;
             try
             {
                 if (objPostalAddress != null)
                 {
-                    var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                    var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {

@@ -65,7 +65,7 @@ namespace Fmo.NYBLoader
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
 
-                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith(PostCodePrefix.GY.ToString()) || n.Postcode.StartsWith(PostCodePrefix.JE.ToString()) || n.Postcode.StartsWith(PostCodePrefix.IM.ToString()))).ToList();
+                        lstAddressDetails = lstAddressDetails.Where(n => !n.Postcode.StartsWith(PostCodePrefix.GY.ToString(), StringComparison.OrdinalIgnoreCase) && !n.Postcode.StartsWith(PostCodePrefix.JE.ToString(), StringComparison.OrdinalIgnoreCase) && !n.Postcode.StartsWith(PostCodePrefix.IM.ToString(), StringComparison.OrdinalIgnoreCase)).ToList();
                     }
                 }
             }
@@ -162,7 +162,7 @@ namespace Fmo.NYBLoader
                 string[] values = csvLine.Split(',');
                 if (values.Count() == csvValues)
                 {
-                    objAddDTO.Postcode = values[0];
+                    objAddDTO.Postcode = values[0].Trim();
                     objAddDTO.PostTown = values[1];
                     objAddDTO.DependentLocality = values[2];
                     objAddDTO.DoubleDependentLocality = values[3];
@@ -177,7 +177,7 @@ namespace Fmo.NYBLoader
                     objAddDTO.UDPRN = !string.IsNullOrEmpty(values[12]) || !string.IsNullOrWhiteSpace(values[12]) ? Convert.ToInt32(values[12]) : 0;
                     objAddDTO.PostcodeType = values[13];
                     objAddDTO.SmallUserOrganisationIndicator = values[14];
-                    objAddDTO.DeliveryPointSuffix = values[15];
+                    objAddDTO.DeliveryPointSuffix = values[15].Trim();
                     objAddDTO.IsValidData = true;
                 }
                 return objAddDTO;

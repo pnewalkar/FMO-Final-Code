@@ -1,6 +1,6 @@
 'use strict';
 angular.module('search')
-   .controller('SearchController', SearchController);
+.controller('SearchController', SearchController);
 
 function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService, $mdDialog, $stateParams) {
     var vm = this;
@@ -9,12 +9,13 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     vm.OnChangeItem = OnChangeItem;
     vm.advanceSearch = advanceSearch;
     vm.openModalPopup = openModalPopup;
-   
+    vm.onBlur = onBlur;
+
     function querySearch(query) {
         searchApiService.basicSearch(query).then(function (response) {
             vm.resultscount = response.data.searchCounts;
             vm.results = response.data.searchResultItems;
-            vm.isResultDisplay = true
+            vm.isResultDisplay = true;
         });
     }
 
@@ -29,17 +30,23 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     }
 
     function onEnterKeypress(searchText) {
-        if (searchText.length >= 3) {
-            if (vm.results.length === 1) {
-                OnChangeItem(vm.results);
-            }
-            if(vm.results.length>1)
-            {
-                advanceSearch(vm.searchText);
-            }
+        vm.isResultDisplay = true;
+
+        if (searchText === undefined) {
+            vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
         }
         else {
-            vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+            if (searchText.length >= 3) {
+                if (vm.results.length === 1) {
+                    OnChangeItem(vm.results[0]);
+                }
+                if (vm.results.length > 1) {
+                    advanceSearch(vm.searchText);
+                }
+            }
+            else {
+                vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+            }
         }
     }
 
@@ -52,9 +59,25 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
                     var long = data.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(long, lat);
                 });
-            $state.go('searchDetails', { selectedItem: selectedItem });
+            $state.go('searchDetails', {
+                selectedItem: selectedItem
+            });
         }
         vm.isResultDisplay = false;
+        vm.searchText = "";
+    }
+
+    function onBlur() {
+        if(vm.results.length === 0)
+        {
+            vm.isResultDisplay = false;
+            vm.searchText = "";
+        }
+        else if(vm.results[0].type === "Warning")
+        {
+            vm.isResultDisplay = false;
+            vm.searchText = "";
+        }
     }
 
     function advanceSearch(query) {

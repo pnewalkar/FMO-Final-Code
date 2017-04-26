@@ -13,17 +13,25 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <summary>
         ///  Fetch postcode for basic search
         /// </summary>
-        /// <param name="searchText">searchText as string</param>
+        /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">The unit uniqueidentifier for user</param>
         /// <returns>PostCode DTO</returns>
         Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid userUnit);
 
         /// <summary>
         /// Fetch Postcode Unit for advance search
         /// </summary>
-        /// <param name="searchText">searchText as string</param>
+        /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">The unit uniqueidentifier for user</param>
         /// <returns>PostCode DTO</returns>
         Task<int> GetPostCodeUnitCount(string searchText, Guid userUnit);
 
+        /// <summary>
+        ///  Fetch postcode for advanced search
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <param name="unitGuid">The unit uniqueidentifier for user</param>
+        /// <returns>PostCode DTO</returns>
         Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>

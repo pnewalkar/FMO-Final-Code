@@ -462,7 +462,7 @@ function mapService($http, mapFactory,
         if (getActiveFeature() != null && vm.interactions.select != null && vm.interactions.select != undefined) {
             var features = vm.interactions.select.getFeatures();
             features.push(getActiveFeature());
-            vm.getSecondaryFeatures().forEach(function (feature) {
+            getSecondaryFeatures().forEach(function (feature) {
                 features.push(feature);
             })
         }
