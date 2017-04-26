@@ -1,19 +1,19 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using Common.Constants;
-    using Common.Enums;
-    using Common.Interface;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Entities;
-    using MappingConfiguration;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.Common.Interface;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// Repository to interact with postal address entity
     /// </summary>
@@ -75,11 +75,12 @@
         public bool SaveAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool isPostalAddressInserted = false;
-            try
+            PostalAddress entity = new PostalAddress();
+            if (objPostalAddress != null)
             {
-                if (objPostalAddress != null)
+                var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
+                try
                 {
-                    var objAddress = DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
@@ -104,17 +105,18 @@
                     else
                     {
                         objPostalAddress.ID = Guid.NewGuid();
-                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                        entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
                         DataContext.PostalAddresses.Add(entity);
                     }
 
                     DataContext.SaveChanges();
                     isPostalAddressInserted = true;
                 }
-            }
-            catch (Exception ex)
-            {
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                catch (Exception ex)
+                {
+                    DataContext.Entry(entity).State = EntityState.Unchanged;
+                    LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                }
             }
 
             return isPostalAddressInserted;
