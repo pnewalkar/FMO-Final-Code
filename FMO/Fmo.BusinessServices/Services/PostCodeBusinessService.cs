@@ -12,10 +12,10 @@ namespace Fmo.BusinessServices.Services
         private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostCodeBusinessService"/> class and other classes.
+        /// Initializes a new instance of the <see cref="PostCodeBussinessService"/> class and other classes.
         /// </summary>
         /// <param name="postCodeRepository">IPostCodeRepository reference</param>
-        public PostCodeBusinessService(IPostCodeRepository postCodeRepository)
+        public PostCodeBussinessService(IPostCodeRepository postCodeRepository)
         {
             this.postCodeRepository = postCodeRepository;
         }

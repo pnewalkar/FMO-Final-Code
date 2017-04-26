@@ -15,11 +15,11 @@ namespace Fmo.BusinessServices.Services
     public class SearchBusinessService : ISearchBusinessService
     {
          private readonly IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
-         private readonly IPostCodeBusinessService postcodeBusinessService = default(IPostCodeBusinessService);
+         private readonly IPostCodeBussinessService postcodeBusinessService = default(IPostCodeBussinessService);
         private readonly IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
         private readonly IDeliveryPointBusinessService deliveryPointBusinessService = default(IDeliveryPointBusinessService);
 
-        public SearchBusinessService(IDeliveryRouteBusinessService deliveryRouteBusinessService, IPostCodeBusinessService postcodeBusinessService, IStreetNetworkBusinessService streetNetworkBusinessService, IDeliveryPointBusinessService deliveryPointBusinessService)
+        public SearchBusinessService(IDeliveryRouteBusinessService deliveryRouteBusinessService, IPostCodeBussinessService postcodeBusinessService, IStreetNetworkBusinessService streetNetworkBusinessService, IDeliveryPointBusinessService deliveryPointBusinessService)
         {
             this.deliveryRouteBusinessService = deliveryRouteBusinessService;
             this.postcodeBusinessService = postcodeBusinessService;
