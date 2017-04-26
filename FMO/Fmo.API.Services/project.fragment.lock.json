@@ -15,6 +15,13 @@
         "../packages/System.ValueTuple.4.3.0/lib/netstandard1.0/System.ValueTuple.dll": {},
         "bin/Debug/Fmo.BusinessServices.dll": {},
         "bin/Debug/system.data.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Fmo.BusinessServices.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
       }
     },
     "Fmo.Common/1.0.0": {
