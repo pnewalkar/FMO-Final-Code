@@ -16,8 +16,7 @@ function sideNavController($scope,
                            routeLogService,
                            $mdSidenav,
                            $mdDialog,
-                           sideNavApiService)
-                           {
+                           sideNavApiService) {
     vm = this;
     vm.routeLog = routeLog;
     vm.openModalPopup = openModalPopup;
@@ -26,10 +25,10 @@ function sideNavController($scope,
     vm.closeSideNav = closeSideNav;
     vm.routeSimulation = routeSimulation;
     vm.selectedUnit = $stateParams;
-
+    vm.contextTitle = "Context";
 
     function routeSimulation(selectedDeliveryUnit) {
-
+        vm.contextTitle = "Simulation";
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
     }
     $scope.toggleSideNav = function () {
@@ -52,18 +51,17 @@ function sideNavController($scope,
     function fetchActionItems() {
         vm.getItem = sessionStorage.getItem('roleAccessData');
         vm.RolesActionResult = JSON.parse(vm.getItem);
-            if (vm.RolesActionResult.length != null)
-            {
-                for (i = 0; i < vm.RolesActionResult.length; i++) {
-                    
-                    for (var j = i + 1; j < vm.RolesActionResult.length; j++) {
-                        if (vm.RolesActionResult[i]["ActionName"] == vm.RolesActionResult[j]["ActionName"]) {
-                            vm.RolesActionResult.splice(j, 1);
-                            }
-                        }
-                    
+        if (vm.RolesActionResult.length != null) {
+            for (i = 0; i < vm.RolesActionResult.length; i++) {
+
+                for (var j = i + 1; j < vm.RolesActionResult.length; j++) {
+                    if (vm.RolesActionResult[i]["ActionName"] == vm.RolesActionResult[j]["ActionName"]) {
+                        vm.RolesActionResult.splice(j, 1);
+                    }
                 }
-                }
+
+            }
+        }
     }
 
     function closeSideNav() {
