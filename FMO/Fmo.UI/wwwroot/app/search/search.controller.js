@@ -4,7 +4,6 @@ angular.module('search')
 
 function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService, $mdDialog, $stateParams) {
     var vm = this;
-
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
     vm.OnChangeItem = OnChangeItem;
@@ -40,6 +39,9 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
             if (searchText.length >= 3) {
                 if (vm.results.length === 1) {
                     OnChangeItem(vm.results[0]);
+                }
+                if (vm.results.length > 1) {
+                    advanceSearch(vm.searchText);
                 }
             }
             else {
@@ -80,15 +82,20 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
 
     function advanceSearch(query) {
         $stateParams.data = query;
-        var state = $stateParams;
+      //  var state = $stateParams;
         var advaceSearchTemplate = advanceSearchService.advanceSearch(query);
         vm.openModalPopup(advaceSearchTemplate);
     }
 
     function openModalPopup(modalSetting) {
         var popupSetting = modalSetting;
-        $mdDialog.show(popupSetting);
-    };
-
-    
+        $mdDialog.show(popupSetting).then(function (returnedData) {
+            vm.data = returnedData;
+            vm.isResultDisplay = false;
+            vm.resultscount[0].count = 0;
+            vm.searchText = "";
+        });
+      
+     
+    };   
 }

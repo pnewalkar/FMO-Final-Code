@@ -5,7 +5,7 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-    public interface IPostCodeBussinessService
+    public interface IPostCodeBusinessService
     {
         /// <summary>
         /// Fetch the post code for Basic Search.

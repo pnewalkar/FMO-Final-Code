@@ -7,7 +7,7 @@ angular
                 'routeLogService',
                 '$mdSidenav',
                 '$mdDialog',
-                'sideNavApiService',
+                'sideNavApiService', 'SideNavConstant',
                  sideNavController])
 
 function sideNavController($scope,
@@ -16,7 +16,8 @@ function sideNavController($scope,
                            routeLogService,
                            $mdSidenav,
                            $mdDialog,
-                           sideNavApiService) {
+                           sideNavApiService, SideNavConstant)
+                           {
     vm = this;
     vm.routeLog = routeLog;
     vm.openModalPopup = openModalPopup;
@@ -46,21 +47,8 @@ function sideNavController($scope,
     };
 
     function fetchActionItems() {
-        if (vm.selectedUnit != null) {
-            vm.getItem = sessionStorage.getItem('roleAccessData');
-            vm.RolesActionResult = JSON.parse(vm.getItem);
-            if (vm.RolesActionResult.length != null) {
-                for (i = 0; i < vm.RolesActionResult.length; i++) {
-
-                    for (var j = i + 1; j < vm.RolesActionResult.length; j++) {
-                        if (vm.RolesActionResult[i]["ActionName"] == vm.RolesActionResult[j]["ActionName"]) {
-                            vm.RolesActionResult.splice(j, 1);
-                        }
-                    }
-
-                }
-            }
-        }
+        vm.getItem = sessionStorage.getItem('roleAccessData');
+        vm.RolesActionResult = JSON.parse(vm.getItem);
     }
 
     function closeSideNav() {
@@ -68,12 +56,13 @@ function sideNavController($scope,
     };
 
     function fetchActions(query, selectedUnit) {
-        if (query == "Route Log") {
+        if (query === SideNavConstant.routeLogActionName) {
             vm.routeLog(selectedUnit);
         }
-        if (query == "Route Simulation") {
+        if (query === SideNavConstant.routeSimulationActionName) {
             vm.routeSimulation(selectedUnit);
         }
     }
 
-};
+}
+

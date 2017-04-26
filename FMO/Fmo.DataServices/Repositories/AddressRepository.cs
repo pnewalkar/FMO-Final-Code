@@ -138,7 +138,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>true or false</returns>
         public bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
-            bool saveFlag = false;
+            bool isPostalAddressInserted = false;
             try
             {
                 if (objPostalAddress != null)
@@ -148,7 +148,7 @@ namespace Fmo.DataServices.Repositories
                     DataContext.PostalAddresses.Add(objAddress);
 
                     DataContext.SaveChanges();
-                    saveFlag = true;
+                    isPostalAddressInserted = true;
                 }
             }
             catch (Exception ex)
@@ -157,7 +157,7 @@ namespace Fmo.DataServices.Repositories
                 throw;
             }
 
-            return saveFlag;
+            return isPostalAddressInserted;
         }
 
         /// <summary>

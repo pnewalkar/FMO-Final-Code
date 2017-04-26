@@ -33,7 +33,7 @@ namespace Fmo.BusinessServices.Tests.Services
             accessLinkDTO = new List<AccessLinkDTO>() { new AccessLinkDTO() { AccessLink_Id = 1, features = "DI0001", AccessLinkType_Id = 1, type = "UnitOne" } };
             mockaccessLinkRepository.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDTO>>);
 
-            testCandidate = new AccessLinkBussinessService(mockaccessLinkRepository.Object);
+            testCandidate = new AccessLinkBusinessService(mockaccessLinkRepository.Object);
         }
     }
 }
