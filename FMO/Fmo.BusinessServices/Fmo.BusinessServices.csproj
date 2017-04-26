@@ -84,13 +84,13 @@
     <Compile Include="Services\ActionManager\ActionManagerBussinessService.cs" />
     <Compile Include="Services\ActionManager\UserRoleUnitBussinessService.cs" />
     <Compile Include="Services\DeliveryPointBusinessService.cs" />
+    <Compile Include="Services\StreetNetworkBusinessService.cs" />
     <Compile Include="Services\UnitLocationBusinessService.cs" />
     <Compile Include="Services\PostalAddressBusinessService.cs" />
     <Compile Include="Services\DeliveryRouteBusinessService.cs" />
     <Compile Include="Services\PostCodeBusinessService.cs" />
     <Compile Include="Services\RoadNameBusinessService.cs" />
     <Compile Include="Services\SearchBusinessService.cs" />
-    <Compile Include="Services\StreetNetworkBusinessService.cs" />
     <Compile Include="Services\USRBusinessService.cs" />
   </ItemGroup>
   <ItemGroup>
