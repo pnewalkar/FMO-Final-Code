@@ -1,15 +1,15 @@
-﻿namespace Fmo.BusinessServices.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using Fmo.BusinessServices.Interfaces;
-    using Fmo.Common.Constants;
-    using Fmo.Common.Enums;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
 
+namespace Fmo.BusinessServices.Services
+{
     /// <summary>
     /// This class contains methods for basic and advance search
     /// </summary>

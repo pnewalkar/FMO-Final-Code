@@ -1,17 +1,17 @@
-﻿namespace Fmo.BusinessServices.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Net.Mail;
-    using System.Threading.Tasks;
-    using Common.Constants;
-    using Common.Interface;
-    using DataServices.Repositories.Interfaces;
-    using Fmo.BusinessServices.Interfaces;
-    using Fmo.DTO;
-    using Fmo.DTO.FileProcessing;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
+using Fmo.Common.Interface;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.DTO.FileProcessing;
 
+namespace Fmo.BusinessServices.Services
+{
     /// <summary>
     /// Implements interface for USR Business service
     /// </summary>
@@ -28,7 +28,7 @@
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        #endregion
+        #endregion Property Declarations
 
         #region Constructor
 
@@ -52,7 +52,7 @@
             this.loggingHelper = loggingHelper;
         }
 
-        #endregion
+        #endregion Constructor
 
         #region Save USR Details to Database
 
@@ -194,7 +194,7 @@
             }
         }
 
-        #endregion
+        #endregion Save USR Details to Database
 
         #region Calculate Spatial Location
 
@@ -222,7 +222,7 @@
             }
         }
 
-        #endregion
+        #endregion Calculate Spatial Location
 
         #region Send Email
 
@@ -251,6 +251,6 @@
             }
         }
 
-        #endregion
+        #endregion Send Email
     }
 }

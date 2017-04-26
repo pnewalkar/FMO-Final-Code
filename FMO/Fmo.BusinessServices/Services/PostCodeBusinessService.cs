@@ -2,7 +2,7 @@
 
 namespace Fmo.BusinessServices.Services
 {
-    public class PostCodeBussinessService : IPostCodeBussinessService
+    public class PostCodeBusinessService : IPostCodeBusinessService
     {
         /*
         private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);

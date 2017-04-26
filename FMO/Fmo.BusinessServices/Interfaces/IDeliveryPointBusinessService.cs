@@ -1,4 +1,5 @@
 ﻿using System;
+using Fmo.Helpers;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -13,7 +14,7 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="boundaryBox">Boundarybox as string</param>
         /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>delivery points data as object</returns>
-        object GetDeliveryPoints(string boundaryBox, Guid unitGuid);
+        GeoJson GetDeliveryPoints(string boundaryBox, Guid unitGuid);
 
         /// <summary>
         /// This method is used to fetch delivery points data on the basis of udprn.

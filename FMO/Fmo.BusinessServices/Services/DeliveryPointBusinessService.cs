@@ -1,18 +1,18 @@
-﻿namespace Fmo.BusinessServices.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.SqlTypes;
-    using Common;
-    using Common.Constants;
-    using Common.Enums;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Helpers;
-    using Interfaces;
-    using Microsoft.SqlServer.Types;
-    using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.Common;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Helpers;
+using Microsoft.SqlServer.Types;
+using Newtonsoft.Json.Linq;
 
+namespace Fmo.BusinessServices.Services
+{
     /// <summary>
     /// This class contains methods for fetching Delivery Points data.
     /// </summary>
@@ -31,19 +31,19 @@
         /// <param name="boundaryBox">Boundarybox as string</param>
         /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>Object</returns>
-        public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
+        public GeoJson GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
             try
             {
+                GeoJson deliveryPointsJsonData = null;
+
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                    return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
+                    deliveryPointsJsonData = GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
                 }
-                else
-                {
-                    return null;
-                }
+
+                return deliveryPointsJsonData;
             }
             catch (Exception)
             {
@@ -73,7 +73,7 @@
         /// </summary>
         /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
         /// <returns>lstDeliveryPointDTO</returns>
-        private static object GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
+        private static GeoJson GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
         {
             var deliveryPointGeoJson = new GeoJson
             {

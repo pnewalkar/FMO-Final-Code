@@ -1,14 +1,14 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.Entities;
-    using Fmo.MappingConfiguration;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     public class ScenarioRepository : RepositoryBase<Scenario, FMODBContext>, IScenarioRepository
     {
         /// <summary>

@@ -1,11 +1,11 @@
-﻿namespace Fmo.DataServices.Repositories.Interfaces
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Threading.Tasks;
-    using Fmo.DTO;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
+using Fmo.DTO;
 
+namespace Fmo.DataServices.Repositories.Interfaces
+{
     /// <summary>
     /// This interface contains declarations of methods for fetching, Insertnig Delivery Points data.
     /// </summary>

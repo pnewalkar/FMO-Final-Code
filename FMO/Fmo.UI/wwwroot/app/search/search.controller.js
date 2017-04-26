@@ -4,13 +4,12 @@ angular.module('search')
 
 function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService, $mdDialog, $stateParams) {
     var vm = this;
-
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
     vm.OnChangeItem = OnChangeItem;
     vm.advanceSearch = advanceSearch;
     vm.openModalPopup = openModalPopup;
-
+   
     function querySearch(query) {
         searchApiService.basicSearch(query).then(function (response) {
             vm.resultscount = response.data.searchCounts;
@@ -34,6 +33,10 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
             if (vm.results.length === 1) {
                 OnChangeItem(vm.results);
             }
+            if(vm.results.length>1)
+            {
+                advanceSearch(vm.searchText);
+            }
         }
         else {
             vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
@@ -56,15 +59,20 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
 
     function advanceSearch(query) {
         $stateParams.data = query;
-        var state = $stateParams;
+      //  var state = $stateParams;
         var advaceSearchTemplate = advanceSearchService.advanceSearch(query);
         vm.openModalPopup(advaceSearchTemplate);
     }
 
     function openModalPopup(modalSetting) {
         var popupSetting = modalSetting;
-        $mdDialog.show(popupSetting);     
-    };
-
-    
+        $mdDialog.show(popupSetting).then(function (returnedData) {
+            vm.data = returnedData;
+            vm.isResultDisplay = false;
+            vm.resultscount[0].count = 0;
+            vm.searchText = "";
+        });
+      
+     
+    };   
 }

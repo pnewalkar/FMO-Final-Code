@@ -37,6 +37,7 @@ angular.module('FMOApp')
          controller: "ContextController as vm",
          params: { selectedItem: null, }
      });
+  
 })
 .config(function ($httpProvider) {
     $httpProvider.interceptors.push('authInterceptorService');

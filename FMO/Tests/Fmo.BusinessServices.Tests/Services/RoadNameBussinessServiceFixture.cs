@@ -33,7 +33,7 @@ namespace Fmo.BusinessServices.Tests.Services
 
             mockRoadNameRepository.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<OsRoadLinkDTO>>);
 
-            testCandidate = new RoadNameBussinessService(mockRoadNameRepository.Object);
+            testCandidate = new RoadNameBusinessService(mockRoadNameRepository.Object);
         }
     }
 }
