@@ -75,10 +75,7 @@ function mapToolbarService(mapService) {
     }
 
     function autoSelect()
-    {
-        if (mapService.getMapButtons().length== 1)
-        {
-            vm.setSelectedButton(mapService.getMapButtons()[0]);
-        }
+    {      
+        setSelectedButton(mapService.getMapButtons()[0], 'select');     
     }
 }
