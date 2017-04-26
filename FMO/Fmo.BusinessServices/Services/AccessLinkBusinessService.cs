@@ -1,26 +1,26 @@
-﻿namespace Fmo.BusinessServices.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.SqlTypes;
-    using Common;
-    using Fmo.BusinessServices.Interfaces;
-    using Fmo.Common.Constants;
-    using Fmo.Common.Enums;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Helpers;
-    using Microsoft.SqlServer.Types;
-    using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.Common;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Helpers;
+using Microsoft.SqlServer.Types;
+using Newtonsoft.Json;
 
+namespace Fmo.BusinessServices.Services
+{
     /// <summary>
     /// This class contains methods for fetching data for AccessLinks
     /// </summary>
-    public class AccessLinkBussinessService : IAccessLinkBusinessService
+    public class AccessLinkBusinessService : IAccessLinkBusinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
 
-        public AccessLinkBussinessService(IAccessLinkRepository searchAccessLinkRepository)
+        public AccessLinkBusinessService(IAccessLinkRepository searchAccessLinkRepository)
         {
             this.accessLinkRepository = searchAccessLinkRepository;
         }
@@ -35,15 +35,15 @@
         {
             try
             {
+                string accessLinkJsonData = null;
+
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var accessLinkCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                    return GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates, unitGuid));
+                    accessLinkJsonData = GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates, unitGuid));
                 }
-                else
-                {
-                    return null;
-                }
+
+                return accessLinkJsonData;
             }
             catch (Exception)
             {

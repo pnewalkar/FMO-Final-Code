@@ -1,5 +1,5 @@
 <div layout="column" class="md-padding">    
-    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj.group1" ng-change="vm.selectedRouteStatus()" layout-align="space-around start">
+    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-click="vm.selectedRouteStatus()" layout-align="space-around start">
         <md-radio-button ng-repeat="status in vm.RouteStatusObj" ng-value="status.id">
             <label ng-bind="status.displayText"></label>   <br>
         </md-radio-button>

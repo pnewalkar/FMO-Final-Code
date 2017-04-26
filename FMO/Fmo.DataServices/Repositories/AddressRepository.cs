@@ -114,7 +114,15 @@ namespace Fmo.DataServices.Repositories
                 }
                 catch (Exception ex)
                 {
-                    DataContext.Entry(entity).State = EntityState.Unchanged;
+                    if (objAddress != null)
+                    {
+                        DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                    }
+                    else
+                    {
+                        DataContext.Entry(entity).State = EntityState.Unchanged;
+                    }
+
                     LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
                 }
             }

@@ -1,8 +1,8 @@
-﻿namespace Fmo.DataServices.Repositories.Interfaces
-{
-    using System.Threading.Tasks;
-    using Fmo.DTO;
+﻿using System.Threading.Tasks;
+using Fmo.DTO;
 
+namespace Fmo.DataServices.Repositories.Interfaces
+{
     /// <summary>
     /// INotificationRepository interface to abstract away the NotificationRepository implementation
     /// </summary>

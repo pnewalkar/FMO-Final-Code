@@ -42,7 +42,7 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid</param>
         /// <returns>Task</returns>
-        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText, Guid userUnit);
+        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit);
 
         /// <summary>
         /// Fetch Delivery Route For Advance Search
@@ -51,5 +51,13 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="userUnit">Guid</param>
         /// <returns>Task</returns>
         Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit);
+
+        /// <summary>
+        /// Get the count of delivery route
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">Guid userUnit</param>
+        /// <returns>The total count of delivery route</returns>
+        Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit);
     }
 }

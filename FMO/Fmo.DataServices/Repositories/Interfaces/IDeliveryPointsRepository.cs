@@ -1,11 +1,11 @@
-﻿namespace Fmo.DataServices.Repositories.Interfaces
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Threading.Tasks;
-    using Fmo.DTO;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
+using Fmo.DTO;
 
+namespace Fmo.DataServices.Repositories.Interfaces
+{
     /// <summary>
     /// This interface contains declarations of methods for fetching, Insertnig Delivery Points data.
     /// </summary>
@@ -71,7 +71,7 @@
         /// <summary>
         /// This method is used to fetch Delivery Points data.
         /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="boundingBox">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
         List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);

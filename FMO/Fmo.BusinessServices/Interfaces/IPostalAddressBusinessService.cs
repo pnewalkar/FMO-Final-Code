@@ -1,8 +1,8 @@
-﻿namespace Fmo.BusinessServices.Interfaces
-{
-    using System.Collections.Generic;
-    using Fmo.DTO;
+﻿using System.Collections.Generic;
+using Fmo.DTO;
 
+namespace Fmo.BusinessServices.Interfaces
+{
     /// <summary>
     /// Interface for USR Business service
     /// </summary>
