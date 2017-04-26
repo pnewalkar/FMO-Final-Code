@@ -84,6 +84,13 @@
         List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
 
         /// <summary>
+        /// Get the delivery points by the Postal Address Guid
+        /// </summary>
+        /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
+        /// <returns>DeliveryPointDTO object</returns>
+        DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId);
+
+        /// <summary>
         /// Check if the delivery point exists for a given UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>

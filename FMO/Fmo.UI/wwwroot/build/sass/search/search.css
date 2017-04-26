@@ -22,9 +22,7 @@ i.fa.fa-map-marker.route {
 .searchInput {
   background-color: #ffffff;
   width: 235px;
-  padding: 8px 8px 8px 8px;
-  border-radius: 35px;
-  border: none; }
+  padding: 5px 5px 5px 5px; }
   .searchInput:hover {
     background-color: none; }
 
@@ -46,8 +44,7 @@ i.fa.fa-map-marker.route {
 i.fa.fa-search {
   color: #ffffff;
   margin: 0px 0px 0px 15px;
-  font-size: 25px;
-  margin-left: 15px; }
+  font-size: 18px; }
 
 .viewResult {
   padding: 3px 3px 3px 3px;

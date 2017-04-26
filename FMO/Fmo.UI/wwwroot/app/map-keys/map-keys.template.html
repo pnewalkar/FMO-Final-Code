@@ -1,16 +1,6 @@
 <div layout="row"
      layout-align="center start" ng-show="vm.showKey(pointType.id)"
      ng-repeat="pointType in vm.pointTypes" class="mapKeys">
-     
-    <!--<md-icon ng-style="{'font': pointType.style.text_.font_,
-                        'font-size': '24px',
-                        'text-shadow': '-1px 0 ' + pointType.style.text_.stroke_.color_ + ',' +
-                                     '0 1px ' + pointType.style.text_.stroke_.color_ + ',' +
-                                     '1px 0 ' + pointType.style.text_.stroke_.color_ + ',' +
-                                     '0 -1px ' + pointType.style.text_.stroke_.color_,
-                        'color': pointType.style.text_.fill_.color_}">
-        {{pointType.style.text_.text_}}
-    </md-icon>-->
      <i class="fa fa-map-marker selcetedKey" aria-hidden="true" ng-show="pointType.text=='Selected'"></i>
     <i class="fa fa-map-marker deliveryKey" aria-hidden="true" ng-show="pointType.text=='Delivery Point'"></i>
     <i class="fa fa-long-arrow-right accessKey" aria-hidden="true" ng-show="pointType.text=='Access Link'"></i>

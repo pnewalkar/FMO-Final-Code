@@ -18,12 +18,13 @@
         bool SaveAddress(PostalAddressDTO objPostalAddress, string fileName);
 
         /// <summary>
-        /// Update PostalAddress based on the PostalAddressDTO passed for PAF
+        /// Update PostalAddress based on the PostalAddressDTO passed for PAF depending upon NYB and USR scenerios
         /// </summary>
         /// <param name="objPostalAddress">PostalAddressDTO</param>
         /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
+        /// <param name="pafUpdateType">Passing 'USR' and 'NYB' to update</param>
         /// <returns>return status as bool</returns>
-        bool UpdateAddress(PostalAddressDTO objPostalAddress, string fileName);
+        bool UpdateAddress(PostalAddressDTO objPostalAddress, string fileName, string pafUpdateType);
 
         /// <summary>
         /// Get the existing postal address details based on the UDPRN

@@ -3,3 +3,7 @@
 .baseLayer{
     @extend %body-content;
 }
+
+.panel-body{
+    @include margin(0px 0px 0px 5px);
+}

@@ -50,7 +50,8 @@
 
         #region NYB
 
-        public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : NYB File is not valid, File Name : {0} : Log Time : {1} : UDPRN : {2}";
+        public const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : Invalid NYB file, File Name : {0} : Log Time : {1}";
+        public const string LOADNYBINVALIDDETAILS = "Load NYB Error Message : NYB file contains invalid data, File Name : {0} : Log Time : {1}";
         public const string QUEUENYB = "QUEUE_NYB";
         public const string FMOWebAPIName = "FMOWebAPIName";
         public const string FMOTokenGenerationUrl = "FMOTokenGenerationUrl";
@@ -58,7 +59,7 @@
         public const string ProcessedFilePath = "ProcessedFilePath";
         public const string ErrorFilePath = "ErrorFilePath";
         public const string UserName = "username";
-        public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
+        public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN's: {0}";
 
         #endregion NYB
 
@@ -96,6 +97,9 @@
 
         #region PAF
 
+        public const string LOGMESSAGEFORPAFDATAVALIDATION = "Load PAF Error Message : PAF File Data is not valid, File Name : {0} : Log Time : {1} : UDPRN : {2}";
+        public const string LOGMESSAGEFORPAFWRONGFORMAT = "Load PAF Error Message : PAF File is not valid due to wrong file format or empty records, File Name : {0} : Log Time : {1}";
+        public const string ERRORLOGMESSAGEFORPAFMSMQ = "Load PAF Error Message : Error occurred while processing it to messaging queue, File Name : {0} : Log Time : {1}";
         public const int NoOfCharactersForPAF = 19;
         public const int MaxCharactersForPAF = 534;
         public const string PAFWEBAPIURL = "PAFWebApiurl";
@@ -105,13 +109,16 @@
         public const string PAFINSERT = "I";
         public const string PAFUPDATE = "C";
         public const string PAFDELETE = "D";
+        public const string PAFUPDATEFORNYB = "NYB";
+        public const string PAFUPDATEFORUSR = "USR";
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
         public const string DeliveryPointUseIndicatorPAF = "B";
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
         public const string PAFErrorMessageForUDPRNNotUpdated = "Postal Address for Selected UDPRN not updated";
-        public const string PAFErrorMessageForUnmatchedDeliveryPointForUSRType = "Delivery point not matched for Postal address whose address type is <USR>";
+        public const string PAFErrorMessageForUnmatchedDeliveryPointForUSRType = "Delivery point not present for Postal address whose address type is <USR>";
+        public const string PAFErrorMessageForMatchedDeliveryPointNotUpdatedForUSRType = "Delivery point not updated for Postal address whose address type is <USR>";
         public const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
         public const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
         public const string PAFTaskBodyPreText = "Please position the DP ";

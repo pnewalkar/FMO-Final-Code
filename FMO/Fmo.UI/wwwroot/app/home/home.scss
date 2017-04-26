@@ -4,9 +4,15 @@ h2 span {
  @extend %header-content;
 }
 
-.fa-bars,.fa-inbox{
+.fa-inbox{
     @include font-color($white);
     font-size: $primary-font-size;
+    @include margin(0px 0px 0px 25px);
+}
+
+.fa-bars{
+    @include font-color($white);
+    font-size: $primary-font-size;    
 }
 
 .homeContainer span { 
