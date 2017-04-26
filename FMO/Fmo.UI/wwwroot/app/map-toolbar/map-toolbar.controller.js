@@ -10,6 +10,7 @@ function MapToolbarController(mapToolbarService, $scope) {
     vm.showButton = showButton();
     vm.selectedButton = null;
     vm.mapButtons = mapToolbarService.getMapButtons();
+    vm.autoSelect = autoSelect();
 
     function setSelectedButton(button) {
         var shape = getShapeForButton(button);
@@ -43,4 +44,9 @@ function MapToolbarController(mapToolbarService, $scope) {
         return mapToolbarService.showButton(button);
     }
 
+    function autoSelect() {
+        mapToolbarService.autoSelect();
+        var shape = 'undefined';
+        $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
+    }          
 }
