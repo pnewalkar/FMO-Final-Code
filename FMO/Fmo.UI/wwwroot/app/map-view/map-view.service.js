@@ -63,7 +63,8 @@ function mapService($http, mapFactory,
         setSelections: setSelections,
         getfeature: getfeature,
         selectFeatures: selectFeatures,
-        getSecondaryFeatures: getSecondaryFeatures
+        getSecondaryFeatures: getSecondaryFeatures,
+        setSelectedObjectsVisibility:setSelectedObjectsVisibility,
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -343,6 +344,11 @@ function mapService($http, mapFactory,
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
             layer.layer.changed();
+            //debugger;
+            //if (layer.layerName != "Unit Boundary") {
+            //    setSelections(null, []);
+            //}
+
         });
         vm.layerSummary = getLayerSummary();
     }
@@ -627,6 +633,45 @@ function mapService($http, mapFactory,
 
     function getfeature(feature) {
         vm.features = feature;
+    }
+
+    function test() {
+        if (vm.interactions.select) {
+            debugger;
+            vm.interactions.select.getFeatures().forEach(function (feature) {
+                
+                if (feature.get("type") == "deliverypoint") {
+                    setSelections(null, []);
+                }     
+           
+            });
+
+    }
+    }
+
+    function setSelectedObjectsVisibility(selectedLayer) {
+        debugger;
+        if (vm.interactions.select) {
+            debugger;
+            vm.interactions.select.getFeatures().forEach(function (feature) {
+                vm.featuredType = feature.get("type");
+                if (vm.featuredType === "deliverypoint")
+                {
+                    vm.featuredType = "Delivery Points"
+                }
+                if (vm.featuredType === "accesslink") {
+                    vm.featuredType = "Access Links"
+                }
+                if (vm.featuredType === "deliverypoint") {
+                    vm.featuredType = "Delivery Points"
+                }
+                if (vm.featuredType === selectedLayer) {
+                    setSelections(null, []);
+                }
+
+            });
+
+        }
     }
 
 }
