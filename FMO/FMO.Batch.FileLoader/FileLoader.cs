@@ -51,6 +51,7 @@
         private IConfigurationHelper configurationHelper;
         private bool enableLogging = false;
         private string nybMessage = Constants.LOADNYBDETAILSLOGMESSAGE;
+        private string nybInvalidDetailMessage = Constants.LOADNYBINVALIDDETAILS;
 
         #endregion
 
@@ -101,7 +102,6 @@
                 kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
                 kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
                 kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
-                kernel.Bind<IDatabaseFactory<FMODBContext>>().To<DatabaseFactory<FMODBContext>>();
                 nybLoader = kernel.Get<INYBLoader>();
                 pafLoader = kernel.Get<IPAFLoader>();
                 usrLoader = kernel.Get<IUSRLoader>();
@@ -339,8 +339,7 @@
                             if (invalidRecordsCount > 0)
                             {
                                 File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                string udprn = string.Join(Constants.Comma, lstNYBDetails.Where(n => n.IsValidData == false).Select(n => n.UDPRN).ToList());
-                                this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString(), udprn));
+                                this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
                             }
                             else
                             {
@@ -350,7 +349,8 @@
                         }
                         else
                         {
-                            this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString(), string.Empty));
+                            File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                            this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
                         }
                     }
                 }

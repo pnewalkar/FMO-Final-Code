@@ -77,9 +77,20 @@ namespace Fmo.BusinessServices.Services
         /// <returns>
         /// Task
         /// </returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteforBasicSearch(string searchText, Guid userUnit)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
         {
-            return await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText, userUnit);
+            return await deliveryRouteRepository.FetchDeliveryRouteForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the count of delivery route
+        /// </summary>
+        /// <param name="searchText">The text to be searched</param>
+        /// <param name="userUnit">Guid userUnit</param>
+        /// <returns>The total count of delivery route</returns>
+        public async Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit)
+        {
+            return await deliveryRouteRepository.GetDeliveryRouteCount(searchText, userUnit).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -90,9 +101,9 @@ namespace Fmo.BusinessServices.Services
         /// <returns>
         /// List of <see cref="DeliveryRouteDTO"/>.
         /// </returns>
-        public Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
         {
-            throw new NotImplementedException();
+            return await deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText, unitGuid);
         }
     }
 }

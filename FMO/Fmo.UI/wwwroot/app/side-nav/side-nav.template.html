@@ -10,12 +10,13 @@
     
     <md-content layout-padding="">
         <md-list>
-
-      <md-list-item  ng-repeat="Item in vm.RolesActionResult">
-    <p ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)">{{Item.ActionName}}</p>
+           
+      <md-list-item  ng-repeat="Item in vm.RolesActionResult| unique: 'ActionName'" ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)">
+    <p>{{Item.ActionName}}</p>
+          <md-divider></md-divider>
       </md-list-item>
 
-      <md-divider></md-divider>
+    
 
       </md-list>
         </md-content> 

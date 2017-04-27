@@ -1,15 +1,15 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Entities;
-    using Fmo.MappingConfiguration;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// To interact with the Notification database entity.
     /// </summary>
@@ -69,10 +69,10 @@
         {
             try
             {
-               Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN).SingleOrDefault();
-               NotificationDTO notificationDTO = new NotificationDTO();
-               GenericMapper.Map(notification, notificationDTO);
-               return notificationDTO;
+                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN).SingleOrDefault();
+                NotificationDTO notificationDTO = new NotificationDTO();
+                GenericMapper.Map(notification, notificationDTO);
+                return notificationDTO;
             }
             catch (Exception)
             {

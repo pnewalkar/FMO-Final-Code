@@ -1,9 +1,9 @@
-﻿namespace Fmo.DataServices.Repositories.Interfaces
-{
-    using System;
-    using System.Collections.Generic;
-    using Fmo.DTO;
+﻿using System;
+using System.Collections.Generic;
+using Fmo.DTO;
 
+namespace Fmo.DataServices.Repositories.Interfaces
+{
     /// <summary>
     /// This interface contains declaration of methods for Road Links data.
     /// </summary>

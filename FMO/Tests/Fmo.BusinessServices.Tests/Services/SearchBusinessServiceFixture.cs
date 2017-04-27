@@ -16,10 +16,10 @@
     public class SearchBusinessServiceFixture : TestFixtureBase
     {
         private ISearchBusinessService testCandidate;
-        private Mock<IDeliveryRouteRepository> deliveryRouteRepositoryMock;
-        private Mock<IPostCodeRepository> postCodeRepositoryMock;
-        private Mock<IDeliveryPointsRepository> deliveryPointsRepositoryMock;
-        private Mock<IStreetNetworkRepository> streetNetworkRepositoryMock;
+        private Mock<IDeliveryRouteBusinessService> deliveryRouteRepositoryMock;
+        private Mock<IPostCodeBusinessService> postCodeRepositoryMock;
+        private Mock<IDeliveryPointBusinessService> deliveryPointsRepositoryMock;
+        private Mock<IStreetNetworkBusinessService> streetNetworkRepositoryMock;
         private Guid unitGuid = System.Guid.NewGuid();
 
         [Test]
@@ -234,10 +234,10 @@
 
         protected override void OnSetup()
         {
-            deliveryRouteRepositoryMock = CreateMock<IDeliveryRouteRepository>();
-            postCodeRepositoryMock = CreateMock<IPostCodeRepository>();
-            deliveryPointsRepositoryMock = CreateMock<IDeliveryPointsRepository>();
-            streetNetworkRepositoryMock = CreateMock<IStreetNetworkRepository>();
+            deliveryRouteRepositoryMock = CreateMock<IDeliveryRouteBusinessService>();
+            postCodeRepositoryMock = CreateMock<IPostCodeBusinessService>();
+            deliveryPointsRepositoryMock = CreateMock<IDeliveryPointBusinessService>();
+            streetNetworkRepositoryMock = CreateMock<IStreetNetworkBusinessService>();
             testCandidate = new SearchBusinessService(
                                          deliveryRouteRepositoryMock.Object,
                                          postCodeRepositoryMock.Object,

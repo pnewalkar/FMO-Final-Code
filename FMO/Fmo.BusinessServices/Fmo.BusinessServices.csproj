@@ -74,23 +74,23 @@
     <Compile Include="Interfaces\IDeliveryRouteBusinessService.cs" />
     <Compile Include="Interfaces\IUnitLocationBusinessService.cs" />
     <Compile Include="Interfaces\IPostalAddressBusinessService.cs" />
-    <Compile Include="Interfaces\IPostCodeBussinessService.cs" />
+    <Compile Include="Interfaces\IPostCodeBusinessService.cs" />
     <Compile Include="Interfaces\IRoadNameBusinessService.cs" />
     <Compile Include="Interfaces\ISearchBusinessService.cs" />
     <Compile Include="Interfaces\IStreetNetworkBusinessService.cs" />
     <Compile Include="Interfaces\IUSRBusinessService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\AccessLinkBussinessService.cs" />
+    <Compile Include="Services\AccessLinkBusinessService.cs" />
     <Compile Include="Services\ActionManager\ActionManagerBussinessService.cs" />
     <Compile Include="Services\ActionManager\UserRoleUnitBussinessService.cs" />
     <Compile Include="Services\DeliveryPointBusinessService.cs" />
+    <Compile Include="Services\StreetNetworkBusinessService.cs" />
     <Compile Include="Services\UnitLocationBusinessService.cs" />
     <Compile Include="Services\PostalAddressBusinessService.cs" />
     <Compile Include="Services\DeliveryRouteBusinessService.cs" />
-    <Compile Include="Services\PostCodeBussinessService.cs" />
-    <Compile Include="Services\RoadNameBussinessService.cs" />
+    <Compile Include="Services\PostCodeBusinessService.cs" />
+    <Compile Include="Services\RoadNameBusinessService.cs" />
     <Compile Include="Services\SearchBusinessService.cs" />
-    <Compile Include="Services\StreetNetworkBussinessService.cs" />
     <Compile Include="Services\USRBusinessService.cs" />
   </ItemGroup>
   <ItemGroup>

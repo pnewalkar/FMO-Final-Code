@@ -7,6 +7,7 @@ angular.module('mapView')
 function MapController($scope,
                        mapService, mapFactory) {
     var vm = this;
+    var contextTitle = vm.contextTitle;
     vm.initialise = initialise();
     vm.initialiseMiniMap = initialiseMiniMap;
     vm.toggleActions = toggleActions;
@@ -16,6 +17,7 @@ function MapController($scope,
     vm.selectedDeliveryUnit = unit;
     vm.selectFeatures = selectFeatures
     vm.onEnterKeypress = onEnterKeypress;
+    
 
     $scope.$on('refreshLayers', mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {

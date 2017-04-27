@@ -81,14 +81,17 @@ namespace Fmo.API.Services
             services.AddTransient<ISearchBusinessService, SearchBusinessService>();
             services.AddTransient<IPostalAddressBusinessService, PostalAddressBusinessService>();
             services.AddTransient<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
-            services.AddTransient<IAccessLinkBusinessService, AccessLinkBussinessService>();
+            services.AddTransient<IAccessLinkBusinessService, AccessLinkBusinessService>();
             services.AddTransient<IActionManagerBussinessService, ActionManagerBussinessService>();
             services.AddTransient<IUserRoleUnitBussinessService, UserRoleUnitBussinessService>();
             services.AddTransient<IUSRBusinessService, USRBusinessService>();
             services.AddTransient<IUnitLocationBusinessService, UnitLocationBusinessService>();
+            services.AddTransient<IPostCodeBusinessService, PostCodeBusinessService>();
+            services.AddTransient<IStreetNetworkBusinessService, StreetNetworkBusinessService>();
+
             //Repositories
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
-            services.AddTransient<IRoadNameBusinessService, RoadNameBussinessService>();
+            services.AddTransient<IRoadNameBusinessService, RoadNameBusinessService>();
             services.AddTransient<IRoadNameRepository, RoadNameRepository>();
 
             //Repositories

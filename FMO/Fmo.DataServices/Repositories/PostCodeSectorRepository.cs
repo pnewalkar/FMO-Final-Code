@@ -1,14 +1,14 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Linq;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Entities;
-    using Fmo.MappingConfiguration;
+﻿using System;
+using System.Linq;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     public class PostCodeSectorRepository : RepositoryBase<PostcodeSector, FMODBContext>, IPostCodeSectorRepository
     {
         public PostCodeSectorRepository(IDatabaseFactory<FMODBContext> databaseFactory)
