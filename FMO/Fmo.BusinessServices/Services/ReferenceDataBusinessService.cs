@@ -22,14 +22,22 @@ namespace Fmo.BusinessServices.Services
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
         }
 
-        public List<ReferenceDataDTO> FetchRouteLogSelectionType()
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// Fetch the Route Log Status.
+        /// </summary>
+        /// <returns>List</returns>
         public List<ReferenceDataDTO> FetchRouteLogStatus()
         {
-            throw new NotImplementedException();
+            return referenceDataCategoryRepository.RouteLogStatus();
+        }
+
+        /// <summary>
+        /// Fetch the Route Log Selection Type.
+        /// </summary>
+        /// <returns>List</returns>
+        public List<ReferenceDataDTO> FetchRouteLogSelectionType()
+        {
+            return referenceDataCategoryRepository.RouteLogSelectionType();
         }
     }
 }
