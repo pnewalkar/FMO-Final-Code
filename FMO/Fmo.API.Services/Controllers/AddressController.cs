@@ -11,7 +11,7 @@ namespace Fmo.API.Services.Controllers
     /// Address controller to handle NYB/PAF API request from windows service
     /// </summary>
     [Route("api/[controller]")]
-    public class AddressController : Controller
+    public class AddressController : FmoBaseController
     {
         private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
