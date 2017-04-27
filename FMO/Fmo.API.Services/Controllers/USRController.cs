@@ -12,7 +12,7 @@ namespace Fmo.API.Services.Controllers
     /// USR controller to handle USR API request from windows service
     /// </summary>
     [Route("api/[controller]")]
-    public class USRController : Controller
+    public class USRController : FmoBaseController
     {
         private IUSRBusinessService usrBusinessService = default(IUSRBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
