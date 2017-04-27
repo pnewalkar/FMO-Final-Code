@@ -2,17 +2,17 @@
 
 h2 span {
  @extend %header-content;
+font-size: 24px;
 }
 
 .fa-inbox{
     @include font-color($white);
-    font-size: $primary-font-size;
     @include margin(0px 0px 0px 25px);
+    cursor: pointer;
 }
 
 .fa-bars{
-    @include font-color($white);
-    font-size: $primary-font-size;    
+    @include font-color($white);   
 }
 
 .homeContainer span { 
