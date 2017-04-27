@@ -39,7 +39,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     function loadSelectionType() {
         routeLogAPIService.getSelectionType().then(function (response) {           
             vm.RouteselectionTypeObj = response;
-            vm.selectedRouteSelectionObj = vm.RouteselectionTypeObj[1];
+            vm.selectedRouteSelectionObj = vm.RouteselectionTypeObj[0];
         });
     }
     function selectedRouteStatus() {

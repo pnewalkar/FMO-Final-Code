@@ -64,9 +64,10 @@ namespace Fmo.BusinessServices.Services
         public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
-            try
+
+            foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
             {
-                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
+                try
                 {
                     // Get the udprn id for each USR record.
                     fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
@@ -187,10 +188,10 @@ namespace Fmo.BusinessServices.Services
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
+                catch (Exception ex)
+                {
+                    this.loggingHelper.LogError(ex);
+                }
             }
         }
 

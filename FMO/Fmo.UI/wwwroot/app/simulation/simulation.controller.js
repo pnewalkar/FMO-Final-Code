@@ -41,7 +41,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
         simulationAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
             if (response.length > 0) {
                 vm.RouteScenario = response;
-            } else {
+            } else {                
                 vm.RouteScenario = undefined;
                 vm.deliveryRoute = undefined;
             }

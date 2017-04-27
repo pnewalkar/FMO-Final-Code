@@ -15,6 +15,8 @@ namespace Fmo.DTO
 
         public int UnitAddressUDPRN { get; set; }
 
+        public string Area { get; set; }
+
         public Guid ID { get; set; }
 
         public DbGeometry UnitBoundryPolygon { get; set; }

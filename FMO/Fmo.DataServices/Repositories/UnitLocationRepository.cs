@@ -43,8 +43,16 @@ namespace Fmo.DataServices.Repositories
         /// </returns>
         public List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId)
         {
-            var result = DataContext.UnitLocations.Where(x => x.UserRoleUnits.Any(uru => uru.User_GUID == userId && uru.Unit_GUID == x.ID) && x.UnitBoundryPolygon != null).ToList();
-            return GenericMapper.MapList<UnitLocation, UnitLocationDTO>(result.ToList());
+            var result = (from a in DataContext.UnitLocations.AsNoTracking()
+                          join b in DataContext.PostalAddresses.AsNoTracking() on a.UnitAddressUDPRN equals b.UDPRN
+                          join c in DataContext.Postcodes.AsNoTracking() on b.PostCodeGUID equals c.ID
+                          join d in DataContext.PostcodeSectors.AsNoTracking() on c.SectorGUID equals d.ID
+                          join e in DataContext.PostcodeDistricts.AsNoTracking() on d.DistrictGUID equals e.ID
+                          join f in DataContext.PostcodeAreas.AsNoTracking() on e.AreaGUID equals f.ID
+                          join g in DataContext.UserRoleUnits.AsNoTracking() on a.ID equals g.Unit_GUID
+                          where g.User_GUID == userId && a.UnitBoundryPolygon != null
+                          select new UnitLocationDTO { ID = a.ID, UnitName = a.UnitName, Area = f.Area, UnitAddressUDPRN = a.UnitAddressUDPRN, UnitBoundryPolygon = a.UnitBoundryPolygon, ExternalId = a.ExternalId }).ToList();
+            return result;
         }
     }
 }
