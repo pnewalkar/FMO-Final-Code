@@ -17,6 +17,7 @@
     {
         private IUSRBusinessService testCandidate;
         private Mock<IAddressLocationRepository> addressLocationRepositoryMock;
+        private Mock<IAddressRepository> addressRepositoryMock;
         private Mock<IDeliveryPointsRepository> deliveryPointsRepositoryMock;
         private Mock<INotificationRepository> notificationRepositoryMock;
         private Mock<IPostCodeSectorRepository> postCodeSectorRepositoryMock;
@@ -29,6 +30,7 @@
         public void SaveUSRDetails_Check_New_Address_Location_Existing_DP_With_Null_Location_Existing_Notification()
         {
             this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
+            this.addressRepositoryMock = this.CreateMock<IAddressRepository>();
             this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
             this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
             this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
@@ -38,6 +40,7 @@
             this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
             this.testCandidate = new USRBusinessService(
                                             this.addressLocationRepositoryMock.Object,
+                                            this.addressRepositoryMock.Object,
                                             this.deliveryPointsRepositoryMock.Object,
                                             this.notificationRepositoryMock.Object,
                                             this.postCodeSectorRepositoryMock.Object,
@@ -69,6 +72,7 @@
         {
             this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
             this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
+            this.addressRepositoryMock = this.CreateMock<IAddressRepository>();
             this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
             this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
             this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
@@ -77,6 +81,7 @@
             this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
             this.testCandidate = new USRBusinessService(
                                             this.addressLocationRepositoryMock.Object,
+                                            this.addressRepositoryMock.Object,
                                             this.deliveryPointsRepositoryMock.Object,
                                             this.notificationRepositoryMock.Object,
                                             this.postCodeSectorRepositoryMock.Object,
@@ -92,6 +97,7 @@
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRBody")).Returns("UDPRN - {0} already exists");
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRToEmail")).Returns("sriram.kandade@capgemini.com");
             this.addressLocationRepositoryMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(addressDTOMockNull);
+            this.addressRepositoryMock.Setup(x => x.GetPostalAddress(It.IsAny<int>())).Returns(It.IsAny<PostalAddressDTO>());
             this.addressLocationRepositoryMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(new AddressLocationDTO()
             {
                 Lattitude = It.IsAny<decimal>(),
@@ -108,6 +114,7 @@
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
             this.deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
             this.notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
+            this.addressRepositoryMock.Verify(x => x.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Never);
         }
 
         [Test]
@@ -115,6 +122,7 @@
         {
             this.addressLocationRepositoryMock = this.CreateMock<IAddressLocationRepository>();
             this.deliveryPointsRepositoryMock = this.CreateMock<IDeliveryPointsRepository>();
+            this.addressRepositoryMock = this.CreateMock<IAddressRepository>();
             this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
             this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
             this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
@@ -123,6 +131,7 @@
             this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
             this.testCandidate = new USRBusinessService(
                                             this.addressLocationRepositoryMock.Object,
+                                            this.addressRepositoryMock.Object,
                                             this.deliveryPointsRepositoryMock.Object,
                                             this.notificationRepositoryMock.Object,
                                             this.postCodeSectorRepositoryMock.Object,
@@ -138,6 +147,7 @@
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRBody")).Returns("UDPRN - {0} already exists");
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRToEmail")).Returns("sriram.kandade@capgemini.com");
             this.addressLocationRepositoryMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(addressDTOMockNull);
+            this.addressRepositoryMock.Setup(x => x.GetPostalAddress(It.IsAny<int>())).Returns(It.IsAny<PostalAddressDTO>());
             this.addressLocationRepositoryMock.Setup(x => x.GetAddressLocationByUDPRN(It.IsAny<int>())).Returns(new AddressLocationDTO()
             {
                 Lattitude = It.IsAny<decimal>(),
@@ -154,6 +164,7 @@
             this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
             this.deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
+            this.addressRepositoryMock.Verify(x => x.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Never);
             this.notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
