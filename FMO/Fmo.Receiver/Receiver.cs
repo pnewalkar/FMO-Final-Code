@@ -67,8 +67,8 @@ namespace Fmo.Receiver
                 loggingHelper = kernal.Get<ILoggingHelper>();
             }
 
-            this.PAFWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString();
-            this.USRWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString();
+            this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
+            this.USRWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString() : string.Empty;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
