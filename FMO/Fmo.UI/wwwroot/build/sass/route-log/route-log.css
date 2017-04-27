@@ -1,9 +1,9 @@
-#header #head1, #header #head2, #header #head3, md-dialog h2 {
+#header #head1, #header #head2, #header #head3, md-dialog h2, .md-text {
   color: #ffffff;
   font-family: Chevin;
   font-size: 18px; }
 
-.td1, .td2, .md-text, label {
+.td1, .td2, label {
   color: #2a2a2d;
   font-family: PF DIN;
   font-size: 16px; }

@@ -59,6 +59,7 @@
         public const string ProcessedFilePath = "ProcessedFilePath";
         public const string ErrorFilePath = "ErrorFilePath";
         public const string UserName = "username";
+        public const string TokenResponse = "FMO FileLoader:Request token recieved from authorization: ";
         public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN's: {0}";
 
         #endregion NYB

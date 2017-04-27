@@ -68,16 +68,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     }
 
     function onBlur() {
-        if(vm.results.length === 0)
-        {
-            vm.isResultDisplay = false;
-            vm.searchText = "";
-        }
-        else if(vm.results[0].type === "Warning")
-        {
-            vm.isResultDisplay = false;
-            vm.searchText = "";
-        }
+        vm.isResultDisplay = false;
     }
 
     function advanceSearch(query) {
