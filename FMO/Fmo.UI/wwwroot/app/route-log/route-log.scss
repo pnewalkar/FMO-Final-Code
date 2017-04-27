@@ -88,8 +88,13 @@ md-switch.md-checked .md-thumb {
     @include background(rgb(218,32,42),none);
 }
 
-.md-text, label{
+label{
     @extend %body-content;
+}
+
+.md-text{
+    @extend %header-content;
+    color: default;
 }
 
 .routeSearch{
