@@ -20,6 +20,7 @@ namespace Fmo.BusinessServices.Services
         #region Property Declarations
 
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
+        private IAddressRepository addressRepository = default(IAddressRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
         private IPostCodeSectorRepository postcodeSectorRepository = default(IPostCodeSectorRepository);
@@ -34,6 +35,7 @@ namespace Fmo.BusinessServices.Services
 
         public USRBusinessService(
            IAddressLocationRepository addressLocationRepository,
+           IAddressRepository addressRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
            INotificationRepository notificationRepository,
            IPostCodeSectorRepository postcodeSectorRepository,
@@ -43,6 +45,7 @@ namespace Fmo.BusinessServices.Services
            ILoggingHelper loggingHelper)
         {
             this.addressLocationRepository = addressLocationRepository;
+            this.addressRepository = addressRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.notificationRepository = notificationRepository;
             this.postcodeSectorRepository = postcodeSectorRepository;
@@ -64,9 +67,10 @@ namespace Fmo.BusinessServices.Services
         public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
-            try
+
+            foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
             {
-                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
+                try
                 {
                     // Get the udprn id for each USR record.
                     fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
@@ -161,6 +165,8 @@ namespace Fmo.BusinessServices.Services
                                                                                                                         Constants.USRCATEGORY,
                                                                                                                         Constants.USRREFERENCEDATANAME);
 
+                                    PostalAddressDTO postalAddressDTO = addressRepository.GetPostalAddress(fileUdprn);
+
                                     NotificationDTO notificationDO = new NotificationDTO
                                     {
                                         ID = Guid.NewGuid(),
@@ -169,12 +175,7 @@ namespace Fmo.BusinessServices.Services
                                         NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE),
                                         NotificationSource = Constants.USRNOTIFICATIONSOURCE,
                                         Notification_Heading = Constants.USRACTION,
-                                        Notification_Message = string.Format(
-                                                                                Constants.USRBODY,
-                                                                                addressLocationUSRPOSTDTO.Latitude.ToString(),
-                                                                                addressLocationUSRPOSTDTO.Longitude.ToString(),
-                                                                                addressLocationUSRPOSTDTO.XCoordinate.ToString(),
-                                                                                addressLocationUSRPOSTDTO.YCoordinate.ToString()),
+                                        Notification_Message = AddressFields(postalAddressDTO),
                                         PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null) ? string.Empty : postCodeSectorDTO.District,
                                         PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null) ? string.Empty : postCodeSectorDTO.Sector,
                                         NotificationActionLink = string.Format(Constants.USRNOTIFICATIONLINK, fileUdprn)
@@ -187,10 +188,10 @@ namespace Fmo.BusinessServices.Services
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
+                catch (Exception ex)
+                {
+                    this.loggingHelper.LogError(ex);
+                }
             }
         }
 
@@ -252,5 +253,26 @@ namespace Fmo.BusinessServices.Services
         }
 
         #endregion Send Email
+
+        /// <summary>
+        /// Concatenating address fileds require for notification
+        /// </summary>
+        /// <param name="objPostalAddress">USR create event PostalAddressDTO</param>
+        /// <returns>returns concatenated value of address field</returns>
+        private string AddressFields(PostalAddressDTO objPostalAddress)
+        {
+            return Constants.PAFTaskBodyPreText +
+                        objPostalAddress.OrganisationName + Constants.Comma +
+                        objPostalAddress.DepartmentName + Constants.Comma +
+                        objPostalAddress.BuildingName + Constants.Comma +
+                        objPostalAddress.BuildingNumber + Constants.Comma +
+                        objPostalAddress.SubBuildingName + Constants.Comma +
+                        objPostalAddress.Thoroughfare + Constants.Comma +
+                        objPostalAddress.DependentThoroughfare + Constants.Comma +
+                        objPostalAddress.DependentLocality + Constants.Comma +
+                        objPostalAddress.DoubleDependentLocality + Constants.Comma +
+                        objPostalAddress.PostTown + Constants.Comma +
+                        objPostalAddress.Postcode;
+        }
     }
 }

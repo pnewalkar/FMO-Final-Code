@@ -56,6 +56,7 @@ function sideNavController($scope,
     };
 
     function fetchActions(query, selectedUnit) {
+        vm.closeSideNav();
         if (query === SideNavConstant.routeLogActionName) {
             vm.routeLog(selectedUnit);
         }

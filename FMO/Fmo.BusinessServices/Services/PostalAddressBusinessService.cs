@@ -101,6 +101,7 @@ namespace Fmo.BusinessServices.Services
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             bool isPostalAddressProcessed = false;
+            string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
             try
             {
                 Guid addressTypeUSR = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
@@ -117,6 +118,7 @@ namespace Fmo.BusinessServices.Services
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
+                this.loggingHelper.LogInfo(postalAddressList);
                 throw;
             }
 

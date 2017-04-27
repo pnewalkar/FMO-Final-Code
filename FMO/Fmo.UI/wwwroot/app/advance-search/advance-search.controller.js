@@ -47,7 +47,7 @@ function AdvanceSearchController(searchApiService,
 
 
     function closeWindow() {
-        $mdDialog.cancel();
+        $mdDialog.hide(vm.close);
     }
 
 
