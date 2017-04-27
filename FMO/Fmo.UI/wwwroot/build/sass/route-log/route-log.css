@@ -1,7 +1,7 @@
 #header #head1, #header #head2, #header #head3, md-dialog h2, .md-text {
   color: #ffffff;
   font-family: Chevin;
-  font-size: 24px; }
+  font-size: 18px; }
 
 .td1, .td2, label {
   color: #2a2a2d;
@@ -92,9 +92,6 @@ md-switch.md-checked .md-thumb {
   background-color: #da202a; }
   md-switch.md-checked .md-thumb:hover {
     background-color: none; }
-
-.md-text {
-  color: default; }
 
 .routeSearch {
   width: 97.08738%; }
