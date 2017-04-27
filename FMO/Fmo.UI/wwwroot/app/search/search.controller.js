@@ -2,7 +2,7 @@
 angular.module('search')
 .controller('SearchController', SearchController);
 
-function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService, $mdDialog, $stateParams) {
+function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService, $mdDialog, $stateParams, $timeout) {
     var vm = this;
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
@@ -68,7 +68,10 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     }
 
     function onBlur() {
-        vm.isResultDisplay = false;
+        $timeout(function () {
+            vm.searchText = "";
+            vm.isResultDisplay = false;
+        }, 1000);
     }
 
     function advanceSearch(query) {
