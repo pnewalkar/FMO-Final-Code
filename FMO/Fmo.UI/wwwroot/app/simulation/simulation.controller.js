@@ -19,8 +19,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.deliveryRoute = null;
 
     function selectedRouteStatus() {
-                vm.RouteScenario = undefined;
-                vm.deliveryRoute = undefined;
+         
         loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj.selectedUnit.id);
     }
     function loadRouteLogStatus() {
