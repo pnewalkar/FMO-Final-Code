@@ -1,5 +1,5 @@
 <div layout="column" class="md-padding">
-    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()" layout-align="space-around start">
+    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()"  layout-align="space-around start">
         <md-radio-button ng-repeat="status in vm.RouteStatusObj" ng-value="status.id">
             <label ng-bind="status.displayText"></label>   <br>
         </md-radio-button>
@@ -19,13 +19,8 @@
                 <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
             </md-select-header>
             <md-optgroup>
-                <md-option ng-value="route" ng-repeat="route in vm.deliveryRoute | filter:vm.searchTerm | orderBy : 'routeName' ">{{route.routeName}}</md-option>
-
+                <md-option ng-value="route" ng-repeat="route in vm.deliveryRoute | filter:vm.searchTerm | orderBy : 'routeName' ">{{route.routeName +" "+"("+route.routeNumber+")"}} </md-option>
             </md-optgroup>
-
-            <md-not-found>
-                No states matching "{{ctrl.searchText}}" were found.
-            </md-not-found>
         </md-select>
     </md-input-container>
 

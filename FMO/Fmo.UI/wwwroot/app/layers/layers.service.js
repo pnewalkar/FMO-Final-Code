@@ -41,11 +41,13 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
         }
     }
 
-    function refreshLayer() {
+    function refreshLayer(selectedLayer) {
         mapService.refreshLayers();
+        setSelectedObjectsVisibility(selectedLayer);
     }
 
-    function onChange(changedLayer) {      
+    function onChange(changedLayer) {
+       
         // fetchDeliveryPoints();
         //  fetchAccessLinks();
         if (changedLayer.group) {
@@ -60,7 +62,8 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
             if (otherEnabled)
                 changedLayer.selected = true;
         }
-        refreshLayer();
+        refreshLayer(changedLayer.layerName);
+
     }
 
     function showUngrouped() {
@@ -80,6 +83,10 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
         var data;
         var data = layersApiService.fetchAccessLinks();
         return showGrouped;
+    }
+
+    function setSelectedObjectsVisibility(selectedLayer) {
+        mapService.setSelectedObjectsVisibility(selectedLayer);
     }
 
 }
