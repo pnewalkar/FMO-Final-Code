@@ -102,7 +102,6 @@
                 kernel.Bind<ILoggingHelper>().To<LoggingHelper>();
                 kernel.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
                 kernel.Bind<IFileMover>().To<FileMover>().InSingletonScope();
-                kernel.Bind<IDatabaseFactory<FMODBContext>>().To<DatabaseFactory<FMODBContext>>();
                 nybLoader = kernel.Get<INYBLoader>();
                 pafLoader = kernel.Get<IPAFLoader>();
                 usrLoader = kernel.Get<IUSRLoader>();
