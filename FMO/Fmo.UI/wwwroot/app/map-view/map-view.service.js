@@ -650,9 +650,7 @@ function mapService($http, mapFactory,
     }
 
     function setSelectedObjectsVisibility(selectedLayer) {
-        debugger;
         if (vm.interactions.select) {
-            debugger;
             vm.interactions.select.getFeatures().forEach(function (feature) {
                 vm.featuredType = feature.get("type");
                 if (vm.featuredType === "deliverypoint")
@@ -662,8 +660,8 @@ function mapService($http, mapFactory,
                 if (vm.featuredType === "accesslink") {
                     vm.featuredType = "Access Links"
                 }
-                if (vm.featuredType === "deliverypoint") {
-                    vm.featuredType = "Delivery Points"
+                if (vm.featuredType === "roadlink") {
+                    vm.featuredType = "Roads"
                 }
                 if (vm.featuredType === selectedLayer) {
                     setSelections(null, []);

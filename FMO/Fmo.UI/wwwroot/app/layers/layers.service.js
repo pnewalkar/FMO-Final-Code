@@ -41,9 +41,9 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
         }
     }
 
-    function refreshLayer(val) {
+    function refreshLayer(selectedLayer) {
         mapService.refreshLayers();
-        setSelectedObjectsVisibility(val)
+        setSelectedObjectsVisibility(selectedLayer);
     }
 
     function onChange(changedLayer) {
@@ -85,9 +85,8 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
         return showGrouped;
     }
 
-    function setSelectedObjectsVisibility(layerName) {
-        debugger;
-        mapService.setSelectedObjectsVisibility(layerName);
+    function setSelectedObjectsVisibility(selectedLayer) {
+        mapService.setSelectedObjectsVisibility(selectedLayer);
     }
 
 }
