@@ -15,23 +15,21 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.deliveryRoute = null;
     vm.selectedVegetables;
     vm.searchTerm;
+    vm.RouteScenario = null;
+    vm.deliveryRoute = null;
 
     function selectedRouteStatus() {
-
+         
         loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj.selectedUnit.id);
     }
     function loadRouteLogStatus() {
         simulationAPIService.getStatus().then(function (response) {
             vm.RouteStatusObj = response;
-            vm.selectedRouteStatusObj = vm.RouteStatusObj[0].id;
-            //vm.selectedRouteStatusObj = {
-            //    group1: vm.RouteStatusObj[0].id,
-            //    group2: vm.RouteStatusObj[1].id
-            //};
-
+            vm.selectedRouteStatusObj = vm.RouteStatusObj[0].id;         
             loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj.selectedUnit.id);
         });
     }
+
     function scenarioChange() {
 
         loadDeliveryRoute(vm.selectedRouteStatusObj, vm.selectedRouteScenario.id);
