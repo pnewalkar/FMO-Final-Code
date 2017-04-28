@@ -19,3 +19,9 @@ GO
 
 SET ANSI_PADDING OFF
 GO
+
+-------------------------Alter Script -------------------
+
+
+ALTER TABLE [FMO].[FileProcessingLog]
+ALTER COLUMN [FileName] VARCHAR(100)

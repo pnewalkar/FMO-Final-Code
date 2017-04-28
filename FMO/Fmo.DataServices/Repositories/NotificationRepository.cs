@@ -27,17 +27,10 @@ namespace Fmo.DataServices.Repositories
         /// <returns>Task<int></returns>
         public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
         {
-            try
-            {
-                Notification newNotification = new Notification();
-                GenericMapper.Map(notificationDTO, newNotification);
-                DataContext.Notifications.Add(newNotification);
-                return await DataContext.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            Notification newNotification = new Notification();
+            GenericMapper.Map(notificationDTO, newNotification);
+            DataContext.Notifications.Add(newNotification);
+            return await DataContext.SaveChangesAsync();
         }
 
         /// <summary>

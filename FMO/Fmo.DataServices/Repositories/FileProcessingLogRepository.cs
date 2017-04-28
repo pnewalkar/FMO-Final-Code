@@ -1,4 +1,5 @@
 ﻿using System;
+using Fmo.Common.Interface;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -13,9 +14,12 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class FileProcessingLogRepository : RepositoryBase<FileProcessingLog, FMODBContext>, IFileProcessingLogRepository
     {
-        public FileProcessingLogRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public FileProcessingLogRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -30,9 +34,9 @@ namespace Fmo.DataServices.Repositories
                 DataContext.FileProcessingLogs.Add(entity);
                 DataContext.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                this.loggingHelper.LogError(ex);
             }
         }
     }

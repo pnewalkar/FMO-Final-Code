@@ -479,6 +479,8 @@ function MapStylesFactory() {
                 return selectedPointStyle;
             case "accesslink":
                 return selectedLinkStyle;
+            case "roadlink":
+                return roadLinkStyle;
             default:
                 return defaultStyle;
         }

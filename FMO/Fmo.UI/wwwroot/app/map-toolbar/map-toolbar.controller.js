@@ -16,10 +16,12 @@ function MapToolbarController(mapToolbarService, $scope) {
         var shape = getShapeForButton(button);
         var emit = mapToolbarService.setSelectedButton(button, vm.selectedButton);
         if (emit) {
+            vm.selectedButton = button;
             $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
         }
         else {
-           $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
+            vm.selectedButton = 'select';
+            $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
         }
 
     }
@@ -47,6 +49,7 @@ function MapToolbarController(mapToolbarService, $scope) {
     function autoSelect() {
         mapToolbarService.autoSelect();
         var shape = 'undefined';
+        vm.selectedButton = 'select';
         $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
     }          
 }

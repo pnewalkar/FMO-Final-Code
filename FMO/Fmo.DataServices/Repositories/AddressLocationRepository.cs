@@ -51,17 +51,9 @@ namespace Fmo.DataServices.Repositories
         /// <returns>AddressLocationDTO object</returns>
         public AddressLocationDTO GetAddressLocationByUDPRN(int udprn)
         {
-            try
-            {
-                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefault();
+            var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefault();
 
-                // return context.Students.Find(id);
-                return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
         }
 
         /// <summary>
