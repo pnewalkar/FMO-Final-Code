@@ -51,15 +51,15 @@ namespace Fmo.DataServices.Repositories
                         if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
                             isPostalAddressDeleted = false;
-                            this.loggingHelper.LogInfo(string.Format(nybDeleteMsg, string.Join(Constants.Comma, lstUDPRN)));
+                            this.loggingHelper.LogInfo(string.Format(nybDeleteMsg, postalAddressEntity.UDPRN));
                         }
                         else
                         {
                             DataContext.PostalAddresses.Remove(postalAddressEntity);
-                            DataContext.SaveChanges();
-                            isPostalAddressDeleted = true;
                         }
                     });
+                    DataContext.SaveChanges();
+                    isPostalAddressDeleted = true;
                 }
             }
 
