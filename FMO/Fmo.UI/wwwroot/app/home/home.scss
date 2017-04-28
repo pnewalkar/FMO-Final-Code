@@ -1,6 +1,6 @@
 @import './app/variables';
 
-h2 span {
+.md-toolbar-tools > h2 span{
  @extend %header-content;
 font-size: 24px;
 }
@@ -13,8 +13,4 @@ font-size: 24px;
 
 .fa-bars{
     @include font-color($white);   
-}
-
-.homeContainer span { 
-    @include margin(0px 10px 0px 0px);
 }
