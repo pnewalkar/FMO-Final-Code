@@ -140,6 +140,20 @@ namespace Fmo.Receiver
                 if (postalAddress != null && postalAddress.Count > 0)
                 {
                     httpHandler = new HttpHandler();
+                    postalAddress.ForEach(objPostalAddress =>
+                    {
+                        LogMethodInfoBlock(
+                                            methodName,
+                                            string.Format(
+                                            Constants.REQUESTLOG,
+                                            objPostalAddress.UDPRN == null ? string.Empty : objPostalAddress.UDPRN.ToString(),
+                                            objPostalAddress.Postcode == null ? string.Empty : objPostalAddress.Postcode.ToString(),
+                                            objPostalAddress.AmendmentType == null ? string.Empty : objPostalAddress.AmendmentType.ToString(),
+                                            objPostalAddress.PostTown == null ? string.Empty : objPostalAddress.PostTown.ToString(),
+                                            objPostalAddress.SmallUserOrganisationIndicator == null ? string.Empty : objPostalAddress.SmallUserOrganisationIndicator.ToString(),
+                                            objPostalAddress.DeliveryPointSuffix == null ? string.Empty : objPostalAddress.DeliveryPointSuffix
+                                            ));
+                    });
                     await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
                 }
             }
