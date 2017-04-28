@@ -12,6 +12,8 @@ namespace Fmo.BusinessServices.Services
         private IDeliveryRouteRepository deliveryRouteRepository;
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IScenarioRepository scenarioRepository;
+        private IReferenceDataBusinessService referenceDataBusinessService;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService"/> class and other classes.
@@ -19,11 +21,12 @@ namespace Fmo.BusinessServices.Services
         /// <param name="deliveryRouteRepository">IDeliveryRouteRepository reference</param>
         /// <param name="referenceDataCategoryRepository">IReferenceDataCategoryRepository reference</param>
         /// <param name="scenarioRepository">IScenarioRepository reference</param>
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository)
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository, IReferenceDataBusinessService referenceDataBusinessService)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.scenarioRepository = scenarioRepository;
+            this.referenceDataBusinessService = referenceDataBusinessService;
         }
 
         /// <summary>
@@ -46,7 +49,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>List</returns>
         public List<ReferenceDataDTO> FetchRouteLogStatus()
         {
-            return referenceDataCategoryRepository.RouteLogStatus();
+            return referenceDataBusinessService.FetchRouteLogStatus();
         }
 
         /// <summary>
@@ -55,7 +58,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>List</returns>
         public List<ReferenceDataDTO> FetchRouteLogSelectionType()
         {
-            return referenceDataCategoryRepository.RouteLogSelectionType();
+            return referenceDataBusinessService.FetchRouteLogSelectionType();
         }
 
         /// <summary>
