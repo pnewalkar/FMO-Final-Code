@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Fmo.Common.Interface;
 using Fmo.Common.TestSupport;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
@@ -16,6 +17,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryPointsRepository testCandidate;
+        private Mock<ILoggingHelper> mockLoggingHelper;
 
         protected override void OnSetup()
         {
@@ -24,6 +26,9 @@ namespace Fmo.DataServices.Tests.Repositories
                 new DeliveryPoint() { DeliveryPoint_Id = 1 },
                 new DeliveryPoint() { DeliveryPoint_Id = 2 }
             };
+
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
 
             var mockDeliveryPointDBSet = MockDbSet(deliveryPoint);
 
@@ -34,7 +39,7 @@ namespace Fmo.DataServices.Tests.Repositories
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
 
-            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

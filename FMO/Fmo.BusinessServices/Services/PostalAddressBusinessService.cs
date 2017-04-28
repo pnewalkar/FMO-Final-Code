@@ -203,18 +203,6 @@ namespace Fmo.BusinessServices.Services
                             SaveDeliveryPointProcess(objPostalAddress);
                         }
                     }
-                    else
-                    {
-                        FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
-                        objFileProcessingLog.FileID = Guid.NewGuid();
-                        objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
-                        objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
-                        objFileProcessingLog.FileName = strFileName;
-                        objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
-                        objFileProcessingLog.FileType = FileType.Paf.ToString();
-                        objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForUDPRNNotUpdated;
-                        fileProcessingLogRepository.LogFileException(objFileProcessingLog);
-                    }
                 }
                 else
                 {
@@ -281,7 +269,7 @@ namespace Fmo.BusinessServices.Services
             else
             {
                 objPostalAddress.ID = Guid.NewGuid();
-                addressRepository.InsertAddress(objPostalAddress, string.Empty);
+                addressRepository.InsertAddress(objPostalAddress, strFileName);
                 SaveDeliveryPointProcess(objPostalAddress);
             }
         }

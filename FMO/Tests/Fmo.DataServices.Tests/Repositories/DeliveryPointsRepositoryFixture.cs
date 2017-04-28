@@ -6,6 +6,7 @@
     using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Interface;
     using Fmo.Common.AsyncEnumerator;
     using Fmo.Common.TestSupport;
     using Fmo.DataServices.DBContext;
@@ -28,6 +29,7 @@
         private Guid unit3Guid;
         private Guid user1Id;
         private Guid user2Id;
+        private Mock<ILoggingHelper> mockLoggingHelper;
 
         [Test]
         public async Task TestFetchDeliveryPointsForBasicSearchValid()
@@ -137,6 +139,8 @@
                    LocationXY = unitBoundary
                }
             };
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
 
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
             var mockDeliveryPointRepository = MockDbSet(deliveryPoint);
@@ -163,7 +167,7 @@
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

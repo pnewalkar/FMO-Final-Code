@@ -51,15 +51,15 @@ namespace Fmo.DataServices.Repositories
                         if (postalAddressEntity.DeliveryPoints != null && postalAddressEntity.DeliveryPoints.Count > 0)
                         {
                             isPostalAddressDeleted = false;
-                            this.loggingHelper.LogInfo(string.Format(nybDeleteMsg, string.Join(Constants.Comma, lstUDPRN)));
+                            this.loggingHelper.LogInfo(string.Format(nybDeleteMsg, postalAddressEntity.UDPRN));
                         }
                         else
                         {
                             DataContext.PostalAddresses.Remove(postalAddressEntity);
-                            DataContext.SaveChanges();
-                            isPostalAddressDeleted = true;
                         }
                     });
+                    DataContext.SaveChanges();
+                    isPostalAddressDeleted = true;
                 }
             }
 
@@ -139,22 +139,23 @@ namespace Fmo.DataServices.Repositories
         public bool InsertAddress(PostalAddressDTO objPostalAddress, string strFileName)
         {
             bool isPostalAddressInserted = false;
-            try
+            PostalAddress objAddress = new PostalAddress();
+            if (objPostalAddress != null)
             {
-                if (objPostalAddress != null)
+                try
                 {
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
-                    var objAddress = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
+                    objAddress = GenericMapper.Map<PostalAddressDTO, PostalAddress>(objPostalAddress);
                     DataContext.PostalAddresses.Add(objAddress);
 
                     DataContext.SaveChanges();
                     isPostalAddressInserted = true;
                 }
-            }
-            catch (Exception ex)
-            {
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
-                throw;
+                catch (Exception ex)
+                {
+                    DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                    LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
+                }
             }
 
             return isPostalAddressInserted;
@@ -173,9 +174,10 @@ namespace Fmo.DataServices.Repositories
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                this.loggingHelper.LogError(ex);
+                return null;
             }
         }
 
@@ -200,9 +202,10 @@ namespace Fmo.DataServices.Repositories
                                 && n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null)).FirstOrDefault();
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                this.loggingHelper.LogError(ex);
+                return null;
             }
         }
 
@@ -215,12 +218,12 @@ namespace Fmo.DataServices.Repositories
         /// <returns>true or false</returns>
         public bool UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName, string pafUpdateType)
         {
-            bool saveFlag = false;
-            try
+            bool isPostalAddressUpdated = false;
+            if (objPostalAddress != null)
             {
-                if (objPostalAddress != null)
+                var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                try
                 {
-                    var objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(objPostalAddress.Postcode);
                     if (objAddress != null)
                     {
@@ -228,7 +231,7 @@ namespace Fmo.DataServices.Repositories
                         objAddress.PostTown = objPostalAddress.PostTown;
                         objAddress.DependentLocality = objPostalAddress.DependentLocality;
                         objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
-                        objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
+                        objAddress.Thoroughfare = objPostalAddress.Thoroughfare;
                         objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
                         objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
                         objAddress.BuildingName = objPostalAddress.BuildingName;
@@ -257,16 +260,20 @@ namespace Fmo.DataServices.Repositories
                     }
 
                     DataContext.SaveChanges();
-                    saveFlag = true;
+                    isPostalAddressUpdated = true;
+                }
+                catch (Exception ex)
+                {
+                    if (objAddress != null)
+                    {
+                        DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                    }
+
+                    LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), ex.ToString());
                 }
             }
-            catch (Exception ex)
-            {
-                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
-                throw;
-            }
 
-            return saveFlag;
+            return isPostalAddressUpdated;
         }
 
         /// <summary>

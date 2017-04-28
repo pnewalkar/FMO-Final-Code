@@ -23,7 +23,6 @@
 	        <md-input-container flex="20">
 	        	<label>Scenario</label>
                 <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="customSelector">
-                    <md-option value="empty"><em>No Scenario</em></md-option>
                     <md-option ng-repeat="scenario in vm.RouteScenario" ng-value="scenario">{{scenario.scenarioName}}</md-option>
                 </md-select>           
 	        </md-input-container>
@@ -35,7 +34,7 @@
                         <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
                     </md-select-header>
                     <md-optgroup>
-                        <md-option ng-value="route" ng-repeat="route in vm.deliveryRoute | filter:vm.searchTerm | orderBy : 'routeName' ">{{route.routeName}}</md-option>
+                        <md-option ng-value="route" ng-repeat="route in vm.deliveryRoute | filter:vm.searchTerm | orderBy : 'routeName' ">{{route.routeName +" "+"("+route.routeNumber+")"}} </md-option>
                     </md-optgroup>
                 </md-select>
             </md-input-container>
