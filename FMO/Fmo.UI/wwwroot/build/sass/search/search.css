@@ -37,7 +37,8 @@ i.fa.fa-map-marker.route {
   color: #53535a;
   padding: 5px 5px 5px 5px;
   border-bottom: 1px solid #808080;
-  cursor: pointer; }
+  cursor: pointer;
+  width: 280px; }
   .searchData:hover {
     background-color: none; }
 

@@ -53,3 +53,11 @@ input[name="zoom-scale"] {
     width: width-percent(1.047);
     text-indent: 22px;
 }
+
+.context-panel{
+    height:calc(100% - 30px);
+}
+
+.context-view{
+    height:400px;
+}
