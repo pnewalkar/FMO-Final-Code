@@ -32,7 +32,7 @@ namespace Fmo.Receiver
         private readonly IKernel kernal;
         private IMessageBroker<AddressLocationUSRDTO> msgUSR = default(IMessageBroker<AddressLocationUSRDTO>);
         private IMessageBroker<PostalAddressDTO> msgPAF = default(IMessageBroker<PostalAddressDTO>);
-        private IHttpHandler httpHandler;
+        private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
@@ -59,12 +59,14 @@ namespace Fmo.Receiver
             { 
                 kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
                 kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-                kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
+                kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();                
                 kernal.Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
+                kernel.Bind<IHttpHandler>().To<HttpHandler>();
                 msgUSR = kernel.Get<IMessageBroker<AddressLocationUSRDTO>>();
                 msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
                 configurationHelper = kernal.Get<IConfigurationHelper>();
                 loggingHelper = kernal.Get<ILoggingHelper>();
+                httpHandler = kernal.Get<IHttpHandler>();
             }
 
             this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
@@ -139,7 +141,6 @@ namespace Fmo.Receiver
             {
                 if (postalAddress != null && postalAddress.Count > 0)
                 {
-                    httpHandler = new HttpHandler();
                     await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
                 }
             }
@@ -165,7 +166,6 @@ namespace Fmo.Receiver
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
-                httpHandler = new HttpHandler();
                 var addressLocationUSRPOSTDTO = GenericMapper.MapList<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
                 addressLocationUSRPOSTDTO.ForEach(addressLocation =>
                 {
