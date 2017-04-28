@@ -1,7 +1,7 @@
 <div id="map" class="mapContainer"></div>
 <div id="leftPanel">
     <map-panel class="context-panel"
-               paneltitle="Context"
+               paneltitle={{vm.contextTitle}}
                showheader="true"
                collapsed="false"
                isleftpanel="true">
@@ -19,7 +19,7 @@
     <div id="zoom-scale" md-whiteframe="3dp" ng-class="{'zoom-scale levelDanger':vm.zoomLimitReached ,
           'zoom-scale':!vm.zoomLimitReached}">
         <label class='labletext'>1:</label>
-        <input type="text" name="zoom-scale" ng-model="vm.currentScale" ng-enter="vm.onEnterKeypress(vm.currentScale)" min="100"/>
+        <input type="text" name="zoom-scale" ng-model="vm.currentScale" ng-enter="vm.onEnterKeypress(vm.currentScale)" min="100" />
     </div>
 
 
@@ -28,7 +28,7 @@
 
     <div class="miniMap">
         <map-panel class="layer-panel show-panel"
-                   paneltitle="Mini Map"
+                   paneltitle="MiniMap"
                    showheader="true"
                    collapsed="false"
                    collapsedtext=""
@@ -42,7 +42,7 @@
         <map-panel class="layer-panel show-panel"
                    paneltitle="Layers"
                    showheader="true"
-                   collapsed="true"
+                   collapsed="false"
                    group="SelectorKeyGroup">
             <layers></layers>
         </map-panel>

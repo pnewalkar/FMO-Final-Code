@@ -67,8 +67,8 @@ namespace Fmo.Receiver
                 loggingHelper = kernal.Get<ILoggingHelper>();
             }
 
-            this.PAFWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString();
-            this.USRWebApiName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString();
+            this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
+            this.USRWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString() : string.Empty;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
@@ -140,6 +140,20 @@ namespace Fmo.Receiver
                 if (postalAddress != null && postalAddress.Count > 0)
                 {
                     httpHandler = new HttpHandler();
+                    postalAddress.ForEach(objPostalAddress =>
+                    {
+                        LogMethodInfoBlock(
+                                            methodName,
+                                            string.Format(
+                                            Constants.REQUESTLOG,
+                                            objPostalAddress.UDPRN == null ? string.Empty : objPostalAddress.UDPRN.ToString(),
+                                            objPostalAddress.Postcode == null ? string.Empty : objPostalAddress.Postcode.ToString(),
+                                            objPostalAddress.AmendmentType == null ? string.Empty : objPostalAddress.AmendmentType.ToString(),
+                                            objPostalAddress.PostTown == null ? string.Empty : objPostalAddress.PostTown.ToString(),
+                                            objPostalAddress.SmallUserOrganisationIndicator == null ? string.Empty : objPostalAddress.SmallUserOrganisationIndicator.ToString(),
+                                            objPostalAddress.DeliveryPointSuffix == null ? string.Empty : objPostalAddress.DeliveryPointSuffix
+                                            ));
+                    });
                     await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress);
                 }
             }

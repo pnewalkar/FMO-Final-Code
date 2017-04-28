@@ -1,19 +1,19 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Configuration;
-    using System.Data.Entity;
-    using System.Data.Entity.Spatial;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Common.Constants;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
+using System.Data.Entity.Spatial;
+using System.Linq;
+using System.Threading.Tasks;
+using Fmo.Common.Constants;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// Repository to fetch street network details
     /// </summary>

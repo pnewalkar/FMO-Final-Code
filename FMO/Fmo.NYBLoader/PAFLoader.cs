@@ -74,8 +74,7 @@
                             if (invalidRecordsCount > 0)
                             {
                                 File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                string udprn = string.Join(Constants.Comma, lstPAFDetails.Where(n => n.IsValidData == false).Select(n => n.UDPRN).ToList());
-                                this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.Now.ToString(), udprn));
+                                this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()));
                             }
                             else
                             {
@@ -86,14 +85,14 @@
                                 else
                                 {
                                     File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                    this.loggingHelper.LogInfo(string.Format(Constants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.Now.ToString()));
+                                    this.loggingHelper.LogInfo(string.Format(Constants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()));
                                 }
                             }
                         }
                         else
                         {
                             File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                            this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.Now.ToString()));
+                            this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()));
                         }
                     }
                 }
@@ -122,10 +121,6 @@
             try
             {
                 string[] arrPAFDetails = line.Split(new string[] { Constants.CRLF, Constants.NEWLINE }, StringSplitOptions.None);
-                if (string.IsNullOrEmpty(arrPAFDetails[arrPAFDetails.Length - 1]))
-                {
-                    Array.Resize(ref arrPAFDetails, arrPAFDetails.Length - 1);
-                }
 
                 if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {
@@ -137,7 +132,8 @@
                         ValidatePAFDetails(lstAddressDetails);
 
                         //Remove Channel Island and Isle of Man Addresses are ones where the Postcode starts with one of: GY, JE or IM and Invalid records
-                        lstAddressDetails = lstAddressDetails.SkipWhile(n => (n.Postcode.StartsWith(PostCodePrefix.GY.ToString()) || n.Postcode.StartsWith(PostCodePrefix.JE.ToString()) || n.Postcode.StartsWith(PostCodePrefix.IM.ToString()))).ToList();
+                        lstAddressDetails = lstAddressDetails
+                            .Where(n => !n.Postcode.StartsWith(PostCodePrefix.GY.ToString(), StringComparison.OrdinalIgnoreCase) && !n.Postcode.StartsWith(PostCodePrefix.JE.ToString(), StringComparison.OrdinalIgnoreCase) && !n.Postcode.StartsWith(PostCodePrefix.IM.ToString(), StringComparison.OrdinalIgnoreCase)).ToList();
 
                         //Remove duplicate PAF events which have create and delete instance for same UDPRN
                         lstAddressDetails = lstAddressDetails

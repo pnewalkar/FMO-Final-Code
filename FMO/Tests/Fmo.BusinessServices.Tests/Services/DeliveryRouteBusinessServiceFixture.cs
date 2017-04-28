@@ -15,6 +15,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IDeliveryRouteRepository> mockDeliveryRouteRepository;
         private Mock<IReferenceDataCategoryRepository> mockReferenceDataCategoryRepository;
         private Mock<IScenarioRepository> mockScenarioRepository;
+        private Mock<IReferenceDataBusinessService> mockReferenceDataBusinessService;
 
         private IDeliveryRouteBusinessService testCandidate;
         private List<DeliveryRouteDTO> actualDeliveryRouteResult = null;
@@ -69,7 +70,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockScenarioRepository = CreateMock<IScenarioRepository>();
             mockScenarioRepository.Setup(n => n.FetchScenario(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(actualScenarioResult);
 
-            testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteRepository.Object, mockReferenceDataCategoryRepository.Object, mockScenarioRepository.Object);
+            testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteRepository.Object, mockReferenceDataCategoryRepository.Object, mockScenarioRepository.Object, mockReferenceDataBusinessService.Object);
         }
     }
 }

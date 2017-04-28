@@ -1,15 +1,15 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.Entities;
-    using Fmo.MappingConfiguration;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// To interact with the Notification database entity.
     /// </summary>
@@ -27,17 +27,10 @@
         /// <returns>Task<int></returns>
         public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
         {
-            try
-            {
-                Notification newNotification = new Notification();
-                GenericMapper.Map(notificationDTO, newNotification);
-                DataContext.Notifications.Add(newNotification);
-                return await DataContext.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            Notification newNotification = new Notification();
+            GenericMapper.Map(notificationDTO, newNotification);
+            DataContext.Notifications.Add(newNotification);
+            return await DataContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -69,10 +62,10 @@
         {
             try
             {
-               Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN).SingleOrDefault();
-               NotificationDTO notificationDTO = new NotificationDTO();
-               GenericMapper.Map(notification, notificationDTO);
-               return notificationDTO;
+                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN).SingleOrDefault();
+                NotificationDTO notificationDTO = new NotificationDTO();
+                GenericMapper.Map(notification, notificationDTO);
+                return notificationDTO;
             }
             catch (Exception)
             {

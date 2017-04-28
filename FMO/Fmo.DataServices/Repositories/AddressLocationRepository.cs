@@ -1,15 +1,15 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using DTO;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.Entities;
-    using MappingConfiguration;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// AddressLocation Repository to interact with the AddressLocation entity
     /// </summary>
@@ -51,17 +51,9 @@
         /// <returns>AddressLocationDTO object</returns>
         public AddressLocationDTO GetAddressLocationByUDPRN(int udprn)
         {
-            try
-            {
-                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefault();
+            var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefault();
 
-                // return context.Students.Find(id);
-                return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
         }
 
         /// <summary>

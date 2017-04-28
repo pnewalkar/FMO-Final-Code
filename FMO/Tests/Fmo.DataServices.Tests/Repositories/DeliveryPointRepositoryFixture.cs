@@ -5,6 +5,7 @@ namespace Fmo.DataServices.Tests.Repositories
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
     using Common.AsyncEnumerator;
+    using Common.Interface;
     using Fmo.Common.TestSupport;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -26,6 +27,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private Guid unit3Guid;
         private Guid user1Id;
         private Guid user2Id;
+        private Mock<ILoggingHelper> mockLoggingHelper;
 
         [Test]
         public void Test_GetDeliveryPoints()
@@ -63,6 +65,8 @@ namespace Fmo.DataServices.Tests.Repositories
                    LocationXY = unitBoundary
                }
             };
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
 
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
             var mockDeliveryPointRepository = MockDbSet(deliveryPoint);
@@ -79,7 +83,7 @@ namespace Fmo.DataServices.Tests.Repositories
             mockDeliveryPointRepository2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointRepository2.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

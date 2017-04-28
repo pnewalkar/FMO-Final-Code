@@ -1,17 +1,17 @@
-﻿namespace Fmo.BusinessServices.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Net.Mail;
-    using System.Threading.Tasks;
-    using Common.Constants;
-    using Common.Interface;
-    using DataServices.Repositories.Interfaces;
-    using Fmo.BusinessServices.Interfaces;
-    using Fmo.DTO;
-    using Fmo.DTO.FileProcessing;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Net.Mail;
+using System.Threading.Tasks;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
+using Fmo.Common.Interface;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.DTO.FileProcessing;
 
+namespace Fmo.BusinessServices.Services
+{
     /// <summary>
     /// Implements interface for USR Business service
     /// </summary>
@@ -20,6 +20,7 @@
         #region Property Declarations
 
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
+        private IAddressRepository addressRepository = default(IAddressRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
         private IPostCodeSectorRepository postcodeSectorRepository = default(IPostCodeSectorRepository);
@@ -28,12 +29,13 @@
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        #endregion
+        #endregion Property Declarations
 
         #region Constructor
 
         public USRBusinessService(
            IAddressLocationRepository addressLocationRepository,
+           IAddressRepository addressRepository,
            IDeliveryPointsRepository deliveryPointsRepository,
            INotificationRepository notificationRepository,
            IPostCodeSectorRepository postcodeSectorRepository,
@@ -43,6 +45,7 @@
            ILoggingHelper loggingHelper)
         {
             this.addressLocationRepository = addressLocationRepository;
+            this.addressRepository = addressRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.notificationRepository = notificationRepository;
             this.postcodeSectorRepository = postcodeSectorRepository;
@@ -52,7 +55,7 @@
             this.loggingHelper = loggingHelper;
         }
 
-        #endregion
+        #endregion Constructor
 
         #region Save USR Details to Database
 
@@ -64,9 +67,10 @@
         public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
-            try
+
+            foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
             {
-                foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
+                try
                 {
                     // Get the udprn id for each USR record.
                     fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
@@ -161,6 +165,8 @@
                                                                                                                         Constants.USRCATEGORY,
                                                                                                                         Constants.USRREFERENCEDATANAME);
 
+                                    PostalAddressDTO postalAddressDTO = addressRepository.GetPostalAddress(fileUdprn);
+
                                     NotificationDTO notificationDO = new NotificationDTO
                                     {
                                         ID = Guid.NewGuid(),
@@ -169,12 +175,7 @@
                                         NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE),
                                         NotificationSource = Constants.USRNOTIFICATIONSOURCE,
                                         Notification_Heading = Constants.USRACTION,
-                                        Notification_Message = string.Format(
-                                                                                Constants.USRBODY,
-                                                                                addressLocationUSRPOSTDTO.Latitude.ToString(),
-                                                                                addressLocationUSRPOSTDTO.Longitude.ToString(),
-                                                                                addressLocationUSRPOSTDTO.XCoordinate.ToString(),
-                                                                                addressLocationUSRPOSTDTO.YCoordinate.ToString()),
+                                        Notification_Message = AddressFields(postalAddressDTO),
                                         PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null) ? string.Empty : postCodeSectorDTO.District,
                                         PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null) ? string.Empty : postCodeSectorDTO.Sector,
                                         NotificationActionLink = string.Format(Constants.USRNOTIFICATIONLINK, fileUdprn)
@@ -187,14 +188,14 @@
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
+                catch (Exception ex)
+                {
+                    this.loggingHelper.LogError(ex);
+                }
             }
         }
 
-        #endregion
+        #endregion Save USR Details to Database
 
         #region Calculate Spatial Location
 
@@ -222,7 +223,7 @@
             }
         }
 
-        #endregion
+        #endregion Calculate Spatial Location
 
         #region Send Email
 
@@ -251,6 +252,27 @@
             }
         }
 
-        #endregion
+        #endregion Send Email
+
+        /// <summary>
+        /// Concatenating address fileds require for notification
+        /// </summary>
+        /// <param name="objPostalAddress">USR create event PostalAddressDTO</param>
+        /// <returns>returns concatenated value of address field</returns>
+        private string AddressFields(PostalAddressDTO objPostalAddress)
+        {
+            return Constants.PAFTaskBodyPreText +
+                        objPostalAddress.OrganisationName + Constants.Comma +
+                        objPostalAddress.DepartmentName + Constants.Comma +
+                        objPostalAddress.BuildingName + Constants.Comma +
+                        objPostalAddress.BuildingNumber + Constants.Comma +
+                        objPostalAddress.SubBuildingName + Constants.Comma +
+                        objPostalAddress.Thoroughfare + Constants.Comma +
+                        objPostalAddress.DependentThoroughfare + Constants.Comma +
+                        objPostalAddress.DependentLocality + Constants.Comma +
+                        objPostalAddress.DoubleDependentLocality + Constants.Comma +
+                        objPostalAddress.PostTown + Constants.Comma +
+                        objPostalAddress.Postcode;
+        }
     }
 }

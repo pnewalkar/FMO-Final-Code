@@ -42,10 +42,12 @@ function AdvanceSearchController(searchApiService,
     vm.obj;
     vm.queryAdvanceSearch(vm.searchText);
     vm.closeWindow = closeWindow;
+    vm.closeAlert = closeAlert;
+    vm.close = "close";
 
 
     function closeWindow() {
-        $mdDialog.cancel();
+        $mdDialog.hide(vm.close);
     }
 
 
@@ -105,7 +107,7 @@ function AdvanceSearchController(searchApiService,
                 };
             }
             if (vm.arrStreetNames.length == 1) {
-                var streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': true };
+                vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': true };
             }
             else
             {
@@ -169,7 +171,7 @@ function AdvanceSearchController(searchApiService,
                 });
             $state.go('searchDetails', { selectedItem: selectedItem });
         }
-        $mdDialog.cancel();
+        vm.closeAlert(selectedItem.type);
     }
 
     function advanceSearch() {
@@ -179,6 +181,12 @@ function AdvanceSearchController(searchApiService,
 
     function openAdvanceSearchPopup(modalSetting) {
         var popupSetting = modalSetting;
-        $mdDialog.show(popupSetting)
+        $mdDialog.show(popupSetting);
     };
+
+    function closeAlert(selectedItem) {
+        if (selectedItem === "DeliveryPoint") {
+            $mdDialog.hide(vm.close);
+        }
+    }
 }

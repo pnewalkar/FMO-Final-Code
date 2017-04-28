@@ -9,10 +9,8 @@ insert into [FMO].[ReferenceDataCategory] ([ReferenceDataCategory_Id]
 
 Select @ID = ID from [FMO].[ReferenceDataCategory] WHere CategoryName = 'Route Log Selection Type'
 
+INSERT [FMO].[ReferenceData] ([ReferenceDataCategory_Id], [ReferenceDataName], [ReferenceDataValue], [DataDescription], [DisplayText], [DataParentId], [ID], [ReferenceDataCategory_GUID], [DataParent_GUID]) VALUES ( 19, NULL, NULL, N'Single', N'Single', NULL, NEWID(), @ID, NULL)
 
 INSERT [FMO].[ReferenceData] ([ReferenceDataCategory_Id], [ReferenceDataName], [ReferenceDataValue], [DataDescription], [DisplayText], [DataParentId], [ID], [ReferenceDataCategory_GUID], [DataParent_GUID]) VALUES ( 19, NULL, NULL, N'Multiple', N'Multiple', NULL, NEWID(), @ID, NULL)
-
-
-INSERT [FMO].[ReferenceData] ([ReferenceDataCategory_Id], [ReferenceDataName], [ReferenceDataValue], [DataDescription], [DisplayText], [DataParentId], [ID], [ReferenceDataCategory_GUID], [DataParent_GUID]) VALUES ( 19, NULL, NULL, N'Single', N'Single', NULL, NEWID(), @ID, NULL)
 
 

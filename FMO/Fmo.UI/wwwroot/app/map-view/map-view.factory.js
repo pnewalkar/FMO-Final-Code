@@ -386,6 +386,14 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
     }
 
     function setUnitBoundaries(bbox, center, unitBoundaryGeoJSONData) {
+        view = new ol.View({
+            projection: BNGProjection,
+            center: [400000, 650000],
+            resolutions: defaultResolutions,
+            resolution: defaultResolutions[11]
+        });
+
+        map.setView(view);
 
         map.getView().fit(bbox, map.getSize());
 

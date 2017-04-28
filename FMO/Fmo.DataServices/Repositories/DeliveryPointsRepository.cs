@@ -10,6 +10,7 @@ namespace Fmo.DataServices.Repositories
     using System.Threading.Tasks;
     using AutoMapper;
     using Common.Constants;
+    using Common.Interface;
     using Entities;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -24,9 +25,12 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
-        public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -50,9 +54,10 @@ namespace Fmo.DataServices.Repositories
 
                 return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                this.loggingHelper.LogError(ex);
+                return null;
             }
         }
 
@@ -65,10 +70,9 @@ namespace Fmo.DataServices.Repositories
         public bool UpdateDeliveryPointByAddressId(Guid addressId, int udprn)
         {
             bool isDeliveryPointUpdated = false;
+            var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.Address_GUID == addressId).SingleOrDefault();
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.Address_GUID == addressId).SingleOrDefault();
-
                 if (objDeliveryPoint != null)
                 {
                     objDeliveryPoint.UDPRN = udprn;
@@ -80,9 +84,15 @@ namespace Fmo.DataServices.Repositories
                     isDeliveryPointUpdated = false;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                isDeliveryPointUpdated = false;
+                if (objDeliveryPoint != null)
+                {
+                    DataContext.Entry(objDeliveryPoint).State = EntityState.Unchanged;
+                }
+
+                this.loggingHelper.LogError(ex);
             }
 
             return isDeliveryPointUpdated;
@@ -95,12 +105,12 @@ namespace Fmo.DataServices.Repositories
         /// <returns>bool</returns>
         public bool InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
-            bool saveFlag = false;
-            try
+            bool isDeliveryPointInserted = false;
+            DeliveryPoint newDeliveryPoint = new DeliveryPoint();
+            if (objDeliveryPoint != null)
             {
-                if (objDeliveryPoint != null)
+                try
                 {
-                    DeliveryPoint newDeliveryPoint = new DeliveryPoint();
                     newDeliveryPoint.ID = objDeliveryPoint.ID;
                     newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
                     newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
@@ -110,15 +120,21 @@ namespace Fmo.DataServices.Repositories
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
                     DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     DataContext.SaveChanges();
-                    saveFlag = true;
+                    isDeliveryPointInserted = true;
+                }
+                catch (Exception ex)
+                {
+                    isDeliveryPointInserted = false;
+                    if (objDeliveryPoint != null)
+                    {
+                        DataContext.Entry(newDeliveryPoint).State = EntityState.Unchanged;
+                    }
+
+                    this.loggingHelper.LogError(ex);
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
 
-            return saveFlag;
+            return isDeliveryPointInserted;
         }
 
         /// <summary>
@@ -305,9 +321,10 @@ namespace Fmo.DataServices.Repositories
                 DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId).SingleOrDefault();
                 return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                this.loggingHelper.LogError(ex);
+                return null;
             }
         }
 

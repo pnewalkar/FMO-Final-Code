@@ -20,11 +20,6 @@ namespace Fmo.API.Services.Controllers
             this.loggingHelper = loggingHelper;
         }
 
-        public JsonResult Get()
-        {
-            return Json(Constants.EmptyString);
-        }
-
         /// <summary>
         ///This method is used to Get Delivery Point Object.
         /// </summary>

@@ -1,9 +1,9 @@
-﻿namespace Fmo.BusinessServices.Interfaces
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Fmo.DTO.FileProcessing;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Fmo.DTO.FileProcessing;
 
+namespace Fmo.BusinessServices.Interfaces
+{
     /// <summary>
     /// Interface for USR Business service
     /// </summary>

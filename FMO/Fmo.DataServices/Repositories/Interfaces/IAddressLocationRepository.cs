@@ -1,8 +1,8 @@
-﻿namespace Fmo.DataServices.Repositories.Interfaces
-{
-    using System.Threading.Tasks;
-    using Fmo.DTO;
+﻿using System.Threading.Tasks;
+using Fmo.DTO;
 
+namespace Fmo.DataServices.Repositories.Interfaces
+{
     /// <summary>
     /// Address Location Repository interface to interact with the entities
     /// </summary>

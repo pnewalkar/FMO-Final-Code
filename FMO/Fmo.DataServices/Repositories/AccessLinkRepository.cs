@@ -1,17 +1,17 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using System.Linq;
-    using Common.Constants;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DTO;
-    using Fmo.Entities;
-    using Fmo.MappingConfiguration;
-    using Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Linq;
+using Fmo.Common.Constants;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// This class contains methods of Access Link Repository for fetching Access Link data.
     /// </summary>
