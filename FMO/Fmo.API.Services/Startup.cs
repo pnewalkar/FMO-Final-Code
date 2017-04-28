@@ -113,7 +113,8 @@ namespace Fmo.API.Services
             services.AddTransient<IPostCodeSectorRepository, PostCodeSectorRepository>();
             services.AddTransient<IActionManagerRepository, ActionManagerRepository>();
             services.AddTransient<IUserRoleUnitRepository, UserRoleUnitRepository>();
-
+            services.AddTransient<IReferenceDataBusinessService, ReferenceDataBusinessService>();
+            
             //Others - Helper, Utils etc
             services.AddTransient<ILoggingHelper, LoggingHelper>();
             services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
