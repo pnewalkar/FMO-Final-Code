@@ -1,6 +1,13 @@
 @import './app/variables';
 
-p {
+h2 {
     @extend %header-content;
-    color: $black;
 } 
+
+md-list-item{
+    @extend %body-content;
+}
+
+.md-toolbar-tools > h2 {
+    @extend %header-content;
+}

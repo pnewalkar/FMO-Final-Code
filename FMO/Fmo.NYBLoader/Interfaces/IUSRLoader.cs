@@ -10,6 +10,6 @@
         /// Load the XML data from file to Message Queue.
         /// </summary>
         /// <param name="strPath"></param>
-        void LoadTPFDetailsFromXML(string strPath);
+        void LoadUSRDetailsFromXML(string strPath);
     }
 }

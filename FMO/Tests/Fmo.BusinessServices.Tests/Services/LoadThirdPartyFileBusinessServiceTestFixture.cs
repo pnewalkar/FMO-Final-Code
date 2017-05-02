@@ -53,7 +53,7 @@
                                             loggingHelperMock.Object,
                                             configHelperMock.Object);
 
-            testCandidate.LoadTPFDetailsFromXML(filepath);
+            testCandidate.LoadUSRDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Exactly(2));
             exceptionHelperMock.Verify(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException), Times.Never);
@@ -95,7 +95,7 @@
                                             loggingHelperMock.Object,
                                             configHelperMock.Object);
 
-            testCandidate.LoadTPFDetailsFromXML(filepath);
+            testCandidate.LoadUSRDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Never);
             loggingHelperMock.Verify(x => x.LogError(It.IsAny<string>(), It.IsAny<Exception>()), Times.Once);

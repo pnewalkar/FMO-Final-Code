@@ -45,7 +45,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
                 sessionStorage.setItem("authorizationData", JSON.stringify({ token: response.access_token, userName: response.username[0] }));
                 sessionStorage.setItem("roleAccessData", JSON.stringify((response.roleActions)));
                 if (unitGuid) {
-                    return;
+                    window.location.href = GlobalSettings.indexUrl;
                 } else if (response.access_token || response.access_token !== undefined) {
                     window.location.href = GlobalSettings.indexUrl;
                 }
