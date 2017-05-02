@@ -145,8 +145,8 @@
     <CodeAnalysisDictionary Include="..\..\FmoCodeAnalysisDictionary.xml">
       <Link>FmoCodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
-    <Content Include="TestData\InvalidFile\InvalidTestFile.xml" />
-    <Content Include="TestData\ValidFile\ValidTestFile.xml" />
+    <Content Include="TestData\InvalidFile\OSABP_E702.xml" />
+    <Content Include="TestData\ValidFile\OSABP_E703.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -64,9 +64,9 @@ namespace Fmo.DataServices.Tests.Repositories
             SetUpdataWithDeliverypoints();
             List<int> lstUDPRNS = new List<int>() { 158623, 85963 };
             var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
-            mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Never);
+            mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Once);
             Assert.NotNull(result);
-            Assert.IsFalse(result);
+            Assert.IsTrue(result);
         }
 
         [Test]

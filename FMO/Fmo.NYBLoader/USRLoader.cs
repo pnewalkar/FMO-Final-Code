@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.Schema;
 using Fmo.Common.Interface;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Fmo.NYBLoader
 {
@@ -59,26 +60,29 @@ namespace Fmo.NYBLoader
 
             try
             {
-                if (IsFileValid(strPath))
+                if (CheckFileName(new FileInfo(strPath).Name))
                 {
-                    lstUSRFiles = GetValidRecords(strPath);
-
-                    lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
-                    //lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
-                    //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
-
-                    lstUSRInsertFiles.ForEach(addressLocation =>
+                    if (IsFileValid(strPath))
                     {
-                        IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
-                        msgBroker.SendMessage(USRMsg);
-                    });
+                        lstUSRFiles = GetValidRecords(strPath);
+
+                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
+                        //lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
+                        //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
+
+                        lstUSRInsertFiles.ForEach(addressLocation =>
+                        {
+                            IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
+                            msgBroker.SendMessage(USRMsg);
+                        });
 
 
-                    fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
-                }
-                else
-                {
-                    fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
+                        fileMover.MoveFile(new string[] { strPath }, new string[] { PROCESSED, AppendTimeStamp(new FileInfo(strPath).Name) });
+                    }
+                    else
+                    {
+                        fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
+                    }
                 }
             }
 
@@ -89,6 +93,25 @@ namespace Fmo.NYBLoader
             finally
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+        }
+
+        /// <summary>
+        /// Check file name is valid
+        /// </summary>
+        /// <param name="fileName">File Name</param>
+        /// <returns></returns>
+        private bool CheckFileName(string fileName)
+        {
+            try
+            {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+                Regex reg = new Regex(Constants.USRFILENAME);
+                return reg.IsMatch(fileName);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -216,7 +239,7 @@ namespace Fmo.NYBLoader
                                                             .Element(XName.Get(Constants.USRUDPRN)).Value);
                     }
 
-                    loggingHelper.LogError("UDPRN : " + UDPRN.ToString() + " File Name: " + fileName, e.Exception);                    
+                    loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORUSRDATAVALIDATION, new FileInfo(fileName).Name, DateTime.UtcNow.ToString()));
                     //logger code to write schema mismatch exception 
                     result = false;
                 });
@@ -234,6 +257,11 @@ namespace Fmo.NYBLoader
             }
         }
 
+        /// <summary>
+        /// Append timestamp to the file being moved.
+        /// </summary>
+        /// <param name="strfileName">File Name</param>
+        /// <returns></returns>
         private string AppendTimeStamp(string strfileName)
         {
             return string.Concat(
