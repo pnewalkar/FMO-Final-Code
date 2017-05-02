@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
@@ -9,6 +10,7 @@ using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using System.Text.RegularExpressions;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -169,6 +171,81 @@ namespace Fmo.BusinessServices.Services
                 newDeliveryPoint.Longitude = objAddressLocation.Longitude;
                 newDeliveryPoint.LocationProvider_GUID = locationProviderId;
                 deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
+            }
+        }
+
+        /// <summary>
+        /// Filter PostalAddress based on the search text
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns>List of postcodes</returns>
+        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText)
+        {
+            try
+            {
+                List<string> searchdetails = new List<string>();
+                List<PostalAddressDTO> lstAddress = await addressRepository.GetPostalAddressSearchDetails(searchText);
+                if (lstAddress != null && lstAddress.Count > 0)
+                {
+                    var results = lstAddress.Select(n => new { Street = n.Thoroughfare, Postcode = n.Postcode }).Distinct().ToList();
+                    if (results != null && results.Count > 0)
+                    {
+                        foreach (var result in results)
+                        {
+                            if (!string.IsNullOrEmpty(result.Street))
+                            {
+                                searchdetails.Add(result.Street);
+                            }
+                            else
+                            {
+                                searchdetails.Add(result.Street + ", " + result.Postcode);
+                            }
+                        }
+                    }
+                }
+
+                return searchdetails;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// Filter PostalAddress based on the post code
+        /// </summary>
+        /// <param name="postCode">postCode</param>
+        /// <returns>List of postcodes</returns>
+        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode)
+        {
+            try
+            {
+                Dictionary<Guid, string> nybDetails = new Dictionary<Guid, string>();
+                PostalAddressDTO postalAddressDto = null;
+                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode);
+                Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
+                if (postalAddressDetails != null && postalAddressDetails.Count > 0)
+                {
+                    postalAddressDto = postalAddressDetails[0];
+                    foreach (var postalAddress in postalAddressDetails)
+                    {
+                        if (postalAddress.AddressType_GUID == nybAddressTypeId)
+                        {
+                            string address = string.Join(",", postalAddress.BuildingNumber, postalAddress.BuildingName, postalAddress.SubBuildingName);
+                            nybDetails.Add(postalAddress.ID, Regex.Replace(address, ",+", ",").Trim(','));
+                        }
+                    }
+
+                    postalAddressDto.NybAddressDetails = nybDetails;
+                }
+
+                return postalAddressDto;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
