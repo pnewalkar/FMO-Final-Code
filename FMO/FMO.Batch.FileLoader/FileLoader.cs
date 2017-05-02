@@ -291,7 +291,7 @@
                             break;
 
                         case FileType.Usr:
-                            this.usrLoader.LoadTPFDetailsFromXML(fileName);
+                            this.usrLoader.LoadUSRDetailsFromXML(fileName);
                             break;
                     }
                 }
