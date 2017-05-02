@@ -35,7 +35,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_LoadPAF_Valid()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             Assert.IsNotNull(methodOutput);
@@ -45,7 +45,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_LoadPAF_DuplicateFiles()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             Assert.IsNotNull(methodOutput);
@@ -55,7 +55,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_ValidRecords_Data()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             Assert.IsNotNull(methodOutput);
@@ -65,7 +65,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_InvalidRecords_Data()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ, The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ, The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             Assert.IsNull(methodOutput);
@@ -74,7 +74,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_InvalidRecords_UDPRNNull_Data()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
@@ -85,7 +85,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_SavePAFDetails_Valid()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             msgBrokerMock.Setup(n => n.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
@@ -101,7 +101,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public void Test_SavePAFDetails_InValid()
         {
-            string strLine = "7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A\r\n";
+            string strLine = "7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162428,S, ,1A\r\n7 / 19 / 2016,8:37:00,I,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
             msgBrokerMock.Setup(n => n.CreateMessage(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
