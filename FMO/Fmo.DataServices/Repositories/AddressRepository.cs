@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
@@ -22,13 +23,15 @@ namespace Fmo.DataServices.Repositories
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogRepository fileProcessingLog = default(IFileProcessingLogRepository);
         private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
+        private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
 
-        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog, IPostCodeRepository postCodeRepository)
+        public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog, IPostCodeRepository postCodeRepository, IReferenceDataCategoryRepository refDataRepository)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
             this.fileProcessingLog = fileProcessingLog;
             this.postcodeRepository = postCodeRepository;
+            this.refDataRepository = refDataRepository;
         }
 
         /// <summary>
@@ -274,6 +277,40 @@ namespace Fmo.DataServices.Repositories
             }
 
             return isPostalAddressUpdated;
+        }
+
+        /// <summary>
+        /// Filter PostalAddress based on the search text
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns>List of Postal Address</returns>
+        public async Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText)
+        {
+            List<string> lstPocodes = new List<string>();
+            Guid pafAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString());
+            Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
+
+            var postalAddress = await DataContext.PostalAddresses.Where(n => (n.AddressType_GUID == pafAddressTypeId
+                                                            && n.AddressType_GUID == nybAddressTypeId)
+                                                            || (n.Thoroughfare.Contains(searchText)
+                                                            || n.DependentThoroughfare.Contains(searchText)
+                                                            || n.Postcode.Contains(searchText))).ToListAsync();
+
+            return GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
+        }
+
+        /// <summary>
+        /// Filter PostalAddress based on post code
+        /// </summary>
+        /// <param name="postCode">postCode</param>
+        /// <returns>List of Postal Address</returns>
+        public async Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode)
+        {
+            List<string> lstPocodes = new List<string>();
+
+            var postalAddress = await DataContext.PostalAddresses.Where(n => n.Postcode == postCode).ToListAsync();
+
+            return GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
         }
 
         /// <summary>

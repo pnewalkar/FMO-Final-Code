@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
@@ -9,7 +12,6 @@ using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
-using System.Reflection;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -193,6 +195,91 @@ namespace Fmo.BusinessServices.Services
             }
 
             LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+        }
+
+        /// <summary>
+        /// Filter PostalAddress based on the search text
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns>List of postcodes</returns>
+        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText)
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
+            try
+            {
+                List<string> searchdetails = new List<string>();
+                List<PostalAddressDTO> lstAddress = await addressRepository.GetPostalAddressSearchDetails(searchText);
+                if (lstAddress != null && lstAddress.Count > 0)
+                {
+                    var results = lstAddress.Select(n => new { Street = n.Thoroughfare, Postcode = n.Postcode }).Distinct().ToList();
+                    if (results != null && results.Count > 0)
+                    {
+                        foreach (var result in results)
+                        {
+                            string searchitem = result.Street + ", " + result.Postcode;
+                            string formattedResult = Regex.Replace(searchitem, ",+", ",").Trim(',');
+                            searchdetails.Add(formattedResult);
+                        }
+                    }
+                }
+
+                return searchdetails;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+        }
+
+        /// <summary>
+        /// Filter PostalAddress based on the post code
+        /// </summary>
+        /// <param name="postCode">postCode</param>
+        /// <returns>List of postcodes</returns>
+        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode)
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
+            try
+            {
+                Dictionary<Guid, string> nybDetails = new Dictionary<Guid, string>();
+                PostalAddressDTO postalAddressDto = null;
+                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode);
+                Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
+                if (postalAddressDetails != null && postalAddressDetails.Count > 0)
+                {
+                    postalAddressDto = postalAddressDetails[0];
+                    foreach (var postalAddress in postalAddressDetails)
+                    {
+                        if (postalAddress.AddressType_GUID == nybAddressTypeId)
+                        {
+                            string address = string.Join(",", Convert.ToString(postalAddress.BuildingNumber) ?? string.Empty, postalAddress.BuildingName, postalAddress.SubBuildingName);
+                            string formattedAddress = Regex.Replace(address, ",+", ",").Trim(',');
+                            nybDetails.Add(postalAddress.ID, formattedAddress);
+                        }
+                    }
+
+                    nybDetails.Add(Guid.Empty, Constants.NotShown);
+                    postalAddressDto.NybAddressDetails = nybDetails;
+                }
+
+                return postalAddressDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
         }
 
         #endregion public methods

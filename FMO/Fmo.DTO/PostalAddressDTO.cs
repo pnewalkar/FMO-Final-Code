@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Fmo.DTO
 {
@@ -68,5 +69,7 @@ namespace Fmo.DTO
         public string AmendmentDesc { get; set; }
 
         public string FileName { get; set; }
+
+        public Dictionary<Guid, string> NybAddressDetails { get; set; }
     }
 }

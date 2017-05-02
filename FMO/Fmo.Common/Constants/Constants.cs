@@ -47,6 +47,7 @@
         public const string AccessToken = "access_token";
         public const string Bearer = "bearer";
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
+        public const string NotShown = "Not Shown";
         #endregion Common
 
         #region NYB
