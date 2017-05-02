@@ -42,6 +42,9 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
             } else {                
                 vm.RouteScenario = undefined;
                 vm.deliveryRoute = undefined;
+                vm.selectedVegetables = null;
+                vm.selectedRouteScenario = null;
+                vm.searchTerm = null;
             }
         });
     }
@@ -52,4 +55,5 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
             } else { vm.deliveryRoute = undefined; }
         });
     }
+
 }
