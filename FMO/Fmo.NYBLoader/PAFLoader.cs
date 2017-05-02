@@ -12,6 +12,7 @@
     using System.IO.Compression;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// Load, Validate and process file
@@ -55,6 +56,8 @@
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
+                if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME))
+                { }
                 using (ZipArchive zip = ZipFile.OpenRead(fileName))
                 {
                     foreach (ZipArchiveEntry entry in zip.Entries)
@@ -66,33 +69,41 @@
                         strLine = reader.ReadToEnd();
                         strfileName = entry.Name;
 
-                        List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine, strfileName);
-                        if (lstPAFDetails != null && lstPAFDetails.Count > 0)
+                        if (CheckFileName(new FileInfo(strfileName).Name, Constants.PAFFLATFILENAME))
                         {
-                            var invalidRecordsCount = lstPAFDetails.Where(n => n.IsValidData == false).ToList().Count;
+                            List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine, strfileName);
+                            if (lstPAFDetails != null && lstPAFDetails.Count > 0)
+                            {
+                                var invalidRecordsCount = lstPAFDetails.Where(n => n.IsValidData == false).ToList().Count;
 
-                            if (invalidRecordsCount > 0)
-                            {
-                                File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()));
-                            }
-                            else
-                            {
-                                if (SavePAFDetails(lstPAFDetails))
+                                if (invalidRecordsCount > 0)
                                 {
-                                    File.WriteAllText(Path.Combine(strPAFProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                    File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                    this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()));
                                 }
                                 else
                                 {
-                                    File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                    this.loggingHelper.LogInfo(string.Format(Constants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()));
+                                    if (SavePAFDetails(lstPAFDetails))
+                                    {
+                                        File.WriteAllText(Path.Combine(strPAFProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                        this.loggingHelper.LogInfo(string.Format(Constants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()));
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()));
                             }
                         }
                         else
                         {
                             File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                            this.loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()));
+                            this.loggingHelper.LogInfo(string.Format(Constants.ERRORLOGMESSAGEFORPAFFileName, strfileName, DateTime.UtcNow.ToString()));
                         }
                     }
                 }
@@ -206,6 +217,25 @@
                string.Format(dateTimeFormat, DateTime.UtcNow),
                 Path.GetExtension(strfileName)
                 );
+        }
+
+        /// <summary>
+        /// Check file name is valid
+        /// </summary>
+        /// <param name="fileName">File Name</param>
+        /// <returns></returns>
+        private bool CheckFileName(string fileName, string regex)
+        {
+            try
+            {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+                Regex reg = new Regex(regex);
+                return reg.IsMatch(fileName);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
