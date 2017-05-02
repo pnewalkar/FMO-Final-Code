@@ -167,6 +167,7 @@ namespace Fmo.BusinessServices.Services
                 // Create task
                 var objTask = new NotificationDTO();
                 objTask.ID = Guid.NewGuid();
+                objTask.Notification_Id = objPostalAddress.UDPRN ?? default(int);
                 objTask.NotificationType_GUID = tasktypeId;
                 objTask.NotificationPriority_GUID = null;
                 objTask.NotificationSource = Constants.TASKSOURCE;
