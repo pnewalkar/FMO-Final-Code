@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Fmo.DTO;
+using System.Threading.Tasks;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -28,5 +29,19 @@ namespace Fmo.BusinessServices.Interfaces
         /// </summary>
         /// <param name="objPostalAddress">Postal address DTO object</param>
         void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress);
+
+        /// <summary>
+        /// Filter PostalAddress based on the search text
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns>List of postcodes</returns>
+        Task<List<string>> GetPostalAddressSearchDetails(string searchText);
+
+        /// <summary>
+        /// Get Postal Address based on postcode
+        /// </summary>
+        /// <param name="postCode">postCode</param>
+        /// <returns>List of Postal Address</returns>
+        Task<PostalAddressDTO> GetPostalAddressDetails(string postCode);
     }
 }

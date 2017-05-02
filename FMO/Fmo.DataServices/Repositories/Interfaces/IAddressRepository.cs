@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Fmo.DTO;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Interface to interact with postal address entity
@@ -55,5 +56,20 @@
         /// <param name="addressType">NYB</param>
         /// <returns>true or false</returns>
         bool DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
+
+        /// <summary>
+        /// Filter PostalAddress based on the search text
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns>List of Postal Address</returns>
+        Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText);
+
+        /// <summary>
+        /// Get Postal Address based on postcode
+        /// </summary>
+        /// <param name="postCode">postCode</param>
+        /// <param name="thoroughfare">thoroughfare</param>
+        /// <returns>List of Postal Address</returns>
+        Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode);
     }
 }

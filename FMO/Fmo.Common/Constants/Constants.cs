@@ -47,6 +47,7 @@
         public const string AccessToken = "access_token";
         public const string Bearer = "bearer";
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
+        public const string NotShown = "Not Shown";
         #endregion Common
 
         #region NYB
@@ -103,6 +104,7 @@
         public const string LOGMESSAGEFORPAFDATAVALIDATION = "Load PAF Error Message : PAF File Data is not valid, File Name : {0} : Log Time : {1} ";
         public const string LOGMESSAGEFORPAFWRONGFORMAT = "Load PAF Error Message : PAF File is not valid due to wrong file format or empty records, File Name : {0} : Log Time : {1}";
         public const string ERRORLOGMESSAGEFORPAFMSMQ = "Load PAF Error Message : Error occurred while processing it to messaging queue, File Name : {0} : Log Time : {1}";
+        public const string ERRORLOGMESSAGEFORPAFFileName = "Load PAF Error Message : PAF File Name is not valid, File Name : {0} : Log Time : {1} ";
         public const int NoOfCharactersForPAF = 19;
         public const int MaxCharactersForPAF = 534;
         public const string PAFWEBAPIURL = "PAFWebApiurl";
@@ -127,6 +129,8 @@
         public const string PAFTaskBodyPreText = "Please position the DP ";
         public const string DeliveryPoints = "DeliveryPoints";
         public const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
+        public const string PAFFLATFILENAME = "CSV PAF Changes Single";
+        public const string PAFZIPFILENAME = "Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])";
 
         #endregion PAF
 
