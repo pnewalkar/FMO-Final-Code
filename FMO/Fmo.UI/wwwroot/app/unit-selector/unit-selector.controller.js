@@ -1,6 +1,6 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', 'unitSelectorAPIService', 'mapFactory', 'manageAccessBusinessService', UnitSelectorController])
-function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPIService, mapFactory, manageAccessBusinessService) {
+.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', '$filter', 'unitSelectorAPIService', 'mapFactory', 'manageAccessBusinessService', UnitSelectorController])
+function UnitSelectorController($scope, $stateParams, $state, $filter, unitSelectorAPIService, mapFactory, manageAccessBusinessService) {
     var vm = this;
     vm.BindData = BindData;
     vm.DeliveryUnit = DeliveryUnit;
@@ -17,15 +17,32 @@ function UnitSelectorController($scope, $stateParams, $state, unitSelectorAPISer
 
     function BindData() {
         if (vm.deliveryRouteUnit.length === 0) {
-            unitSelectorAPIService.getDeliveryUnit().then(function (response) {
-                if (response)
-                    {
-                    vm.deliveryRouteUnit = response;
-                vm.selectedUser = vm.deliveryRouteUnit[0];
-                vm.selectedDeliveryUnit = vm.selectedUser;
-                updateMapAfterUnitChange(vm.selectedDeliveryUnit);
-                }
-            });
+            debugger;
+            var authData = sessionStorage.getItem('authorizationData');
+            authData = JSON.parse(authData);
+            if (authData.unitGuid) {
+                debugger;
+
+                unitSelectorAPIService.getDeliveryUnit().then(function (response) {
+                    if (response) {
+                        vm.deliveryRouteUnit = response;
+                        var newTemp = $filter("filter")(vm.deliveryRouteUnit, { id: authData.unitGuid });
+                        vm.selectedUser = newTemp[0];
+                        vm.selectedDeliveryUnit = vm.selectedUser;
+                        updateMapAfterUnitChange(vm.selectedDeliveryUnit);
+                    }
+                });
+
+            } else {
+                unitSelectorAPIService.getDeliveryUnit().then(function (response) {
+                    if (response) {
+                        vm.deliveryRouteUnit = response;
+                        vm.selectedUser = vm.deliveryRouteUnit[0];
+                        vm.selectedDeliveryUnit = vm.selectedUser;
+                        updateMapAfterUnitChange(vm.selectedDeliveryUnit);
+                    }
+                });
+            }
         }
     }
 

@@ -1,5 +1,19 @@
 <md-input-container class="md-block">
-    <md-select ng-model="vm.selectedUser" ng-change="vm.DeliveryUnit()" aria-label="Unit Selector" class="customSelector">
+    <!--<md-select ng-model="vm.selectedUser" ng-change="vm.DeliveryUnit()" aria-label="Unit Selector" class="customSelector">
         <md-option ng-value="unit" ng-repeat="unit in vm.deliveryRouteUnit" class="unitSelector"><i class="fa fa-map-marker delivery" aria-hidden="true"></i> {{unit.area+"    "+ unit.unitName}} </md-option>
+    </md-select>-->
+
+
+    <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedUser"  ng-change="vm.DeliveryUnit()" aria-label="Unit Selector" class="customSelector">
+        <md-select-header>
+            <input type="search" ng-model="vm.searchTerm" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
+        </md-select-header>
+        <md-optgroup>
+            <md-option ng-value="unit" ng-repeat="unit in vm.deliveryRouteUnit | filter:vm.searchTerm | orderBy : 'unitName' "><i class="fa fa-map-marker delivery" aria-hidden="true"></i> {{unit.area+"    "+ unit.unitName}} </md-option>
+        </md-optgroup>
+        <!--<md-not-found>
+            <div>No Results found</div>
+        </md-not-found>-->
     </md-select>
+
 </md-input-container>
