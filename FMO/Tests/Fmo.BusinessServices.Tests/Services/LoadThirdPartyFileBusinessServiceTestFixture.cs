@@ -32,12 +32,14 @@
             exceptionHelperMock = CreateMock<IExceptionHelper>();
             loggingHelperMock = CreateMock<ILoggingHelper>();
             configHelperMock = CreateMock<IConfigurationHelper>();
-            string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidTestFile.xml");
+            string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\OSABP_E703.xml");
 
             Exception mockException = It.IsAny<Exception>();
             fileMoverMock.Setup(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()));
             msgBrokerMock.Setup(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>())).Returns(It.IsAny<IMessage>());
             msgBrokerMock.Setup(x => x.SendMessage(It.IsAny<IMessage>()));
+            loggingHelperMock.Setup(x => x.LogInfo(It.IsAny<string>(), It.IsAny<bool>()));
+            loggingHelperMock.Setup(x => x.LogError(It.IsAny<string>(), It.IsAny<Exception>()));
             exceptionHelperMock.Setup(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException));
             loggingHelperMock.Setup(x => x.LogError(It.IsAny<Exception>()));
             loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
@@ -74,7 +76,7 @@
             loggingHelperMock = CreateMock<ILoggingHelper>();
             configHelperMock = CreateMock<IConfigurationHelper>();
 
-            string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\InvalidTestFile.xml");
+            string filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\InvalidFile\OSABP_E702.xml");
 
             Exception mockException = It.IsAny<Exception>();
             fileMoverMock.Setup(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()));
@@ -83,6 +85,7 @@
             exceptionHelperMock.Setup(x => x.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>(), out mockException));
             loggingHelperMock.Setup(x => x.LogError(It.IsAny<Exception>()));
             loggingHelperMock.Setup(x => x.LogWarn(It.IsAny<string>()));
+            loggingHelperMock.Setup(x => x.LogInfo(It.IsAny<string>(), It.IsAny<bool>()));
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("XSDLocation"))
                 .Returns(Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\Schemas\USRFileSchema.xsd"));
             configHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("TPFProcessedFilePath")).Returns(@"D:\Projects\SourceFiles\TPF\Processed");
@@ -98,7 +101,6 @@
             testCandidate.LoadUSRDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Never);
-            loggingHelperMock.Verify(x => x.LogError(It.IsAny<string>(), It.IsAny<Exception>()), Times.Once);
             fileMoverMock.Verify(x => x.MoveFile(It.IsAny<string[]>(), It.IsAny<string[]>()), Times.Exactly(1));
         }
 

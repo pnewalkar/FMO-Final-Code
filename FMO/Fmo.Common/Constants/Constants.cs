@@ -46,6 +46,7 @@
         public const int SMTPPORT = 25;
         public const string AccessToken = "access_token";
         public const string Bearer = "bearer";
+        public const string USRFILENAME = "OSABP_E[0-9]{3}$";
         #endregion Common
 
         #region NYB
@@ -93,6 +94,7 @@
         public const string USRCHANGETYPE = "changeType";
         public const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
         public const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
+        public const string LOGMESSAGEFORUSRDATAVALIDATION = "Load USR Error Message : USR File Data is not valid, File Name : {0} : Log Time : {1} ";
 
         #endregion USR
 

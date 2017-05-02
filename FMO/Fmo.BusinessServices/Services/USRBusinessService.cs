@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using Fmo.BusinessServices.Interfaces;
-using Fmo.Common.Constants;
-using Fmo.Common.Interface;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.DTO.FileProcessing;
-
-namespace Fmo.BusinessServices.Services
+﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
+    using System.Net.Mail;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Interface;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.DTO.FileProcessing;
+
     /// <summary>
     /// Implements interface for USR Business service
     /// </summary>
@@ -28,6 +29,7 @@ namespace Fmo.BusinessServices.Services
         private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private bool enableLogging = false;
 
         #endregion Property Declarations
 
@@ -53,6 +55,7 @@ namespace Fmo.BusinessServices.Services
             this.emailHelper = emailHelper;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         #endregion Constructor
@@ -67,6 +70,9 @@ namespace Fmo.BusinessServices.Services
         public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
+
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
             foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
             {
@@ -111,7 +117,8 @@ namespace Fmo.BusinessServices.Services
                                     Latitude = addressLocationUSRPOSTDTO.Latitude,
                                     Longitude = addressLocationUSRPOSTDTO.Longitude,
                                     LocationXY = spatialLocationXY,
-                                    LocationProvider_GUID = locationProviderId
+                                    LocationProvider_GUID = locationProviderId,
+                                    UDPRN = fileUdprn
                                 };
 
                                 // Update the location details for the delivery point
@@ -172,7 +179,7 @@ namespace Fmo.BusinessServices.Services
                                         ID = Guid.NewGuid(),
                                         Notification_Id = fileUdprn,
                                         NotificationType_GUID = notificationTypeId_GUID,
-                                        NotificationDueDate = DateTime.Now.AddHours(Constants.NOTIFICATIONDUE),
+                                        NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
                                         NotificationSource = Constants.USRNOTIFICATIONSOURCE,
                                         Notification_Heading = Constants.USRACTION,
                                         Notification_Message = AddressFields(postalAddressDTO),
@@ -187,6 +194,8 @@ namespace Fmo.BusinessServices.Services
                             }
                         }
                     }
+
+                    LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
                 }
                 catch (Exception ex)
                 {
@@ -273,6 +282,17 @@ namespace Fmo.BusinessServices.Services
                         objPostalAddress.DoubleDependentLocality + Constants.Comma +
                         objPostalAddress.PostTown + Constants.Comma +
                         objPostalAddress.Postcode;
+        }
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        /// <param name="separator">separator</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
+        {
+            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
         }
     }
 }
