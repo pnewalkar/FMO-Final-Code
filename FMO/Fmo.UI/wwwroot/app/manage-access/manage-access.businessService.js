@@ -42,7 +42,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
             var accessData = response.data;
             if (response.access_token) {
                 sessionStorage.clear();
-                sessionStorage.setItem("authorizationData", JSON.stringify({ token: response.access_token, userName: response.username[0] }));
+                sessionStorage.setItem("authorizationData", JSON.stringify({ token: response.access_token, userName: response.username[0], unitGuid: unitGuid }));
                 sessionStorage.setItem("roleAccessData", JSON.stringify((response.roleActions)));
                 if (unitGuid) {
                     window.location.href = GlobalSettings.indexUrl;

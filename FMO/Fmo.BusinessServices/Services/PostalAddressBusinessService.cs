@@ -9,6 +9,7 @@ using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using System.Reflection;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -25,7 +26,9 @@ namespace Fmo.BusinessServices.Services
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
         private INotificationRepository notificationRepository = default(INotificationRepository);
         private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
+        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private bool enableLogging = false;
 
         #endregion Property Declarations
 
@@ -38,7 +41,8 @@ namespace Fmo.BusinessServices.Services
             IAddressLocationRepository addressLocationRepository,
             INotificationRepository notificationRepository,
             IFileProcessingLogRepository fileProcessingLogRepository,
-            ILoggingHelper loggingHelper)
+            ILoggingHelper loggingHelper,
+            IConfigurationHelper configurationHelper)
         {
             this.addressRepository = addressRepository;
             this.refDataRepository = refDataRepository;
@@ -47,6 +51,8 @@ namespace Fmo.BusinessServices.Services
             this.notificationRepository = notificationRepository;
             this.fileProcessingLogRepository = fileProcessingLogRepository;
             this.loggingHelper = loggingHelper;
+            this.configurationHelper = configurationHelper;
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         #endregion Constructor
@@ -61,8 +67,12 @@ namespace Fmo.BusinessServices.Services
         /// <returns>returns true or false</returns>
         public bool SavePostalAddress(List<PostalAddressDTO> lstPostalAddress, string strFileName)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
             bool isPostalAddressInserted = false;
             string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
+
             try
             {
                 Guid addressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
@@ -82,6 +92,8 @@ namespace Fmo.BusinessServices.Services
                         isPostalAddressInserted = addressRepository.DeleteNYBPostalAddress(lstUDPRNS, addressTypeId);
                     }
                 }
+
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             catch (Exception ex)
             {
@@ -100,6 +112,9 @@ namespace Fmo.BusinessServices.Services
         /// <returns>returns true or false</returns>
         public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
             bool isPostalAddressProcessed = false;
             string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
             try
@@ -114,6 +129,8 @@ namespace Fmo.BusinessServices.Services
                 }
 
                 isPostalAddressProcessed = true;
+
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
             catch (Exception ex)
             {
@@ -131,6 +148,9 @@ namespace Fmo.BusinessServices.Services
         /// <param name="objPostalAddress">pass PostalAddreesDTO</param>
         public void SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
             var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
             Guid tasktypeId = refDataRepository.GetReferenceDataId(Constants.TASKNOTIFICATION, Constants.TASKACTION);
             Guid locationProviderId = refDataRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.EXTERNAL);
@@ -147,6 +167,7 @@ namespace Fmo.BusinessServices.Services
                 // Create task
                 var objTask = new NotificationDTO();
                 objTask.ID = Guid.NewGuid();
+                objTask.Notification_Id = objPostalAddress.UDPRN ?? default(int);
                 objTask.NotificationType_GUID = tasktypeId;
                 objTask.NotificationPriority_GUID = null;
                 objTask.NotificationSource = Constants.TASKSOURCE;
@@ -170,6 +191,8 @@ namespace Fmo.BusinessServices.Services
                 newDeliveryPoint.LocationProvider_GUID = locationProviderId;
                 deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
             }
+
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
         }
 
         #endregion public methods
@@ -186,6 +209,9 @@ namespace Fmo.BusinessServices.Services
         /// <param name="strFileName">FileName on PAF events to track against DB</param>
         private void SavePAFRecords(PostalAddressDTO objPostalAddress, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
             objPostalAddress.AddressType_GUID = addressTypePAF;
             objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressStatus, PostCodeStatus.Live.GetDescription());
             var objPostalAddressMatchedUDPRN = addressRepository.GetPostalAddress(objPostalAddress.UDPRN);
@@ -272,6 +298,8 @@ namespace Fmo.BusinessServices.Services
                 addressRepository.InsertAddress(objPostalAddress, strFileName);
                 SaveDeliveryPointProcess(objPostalAddress);
             }
+
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
         }
 
         /// <summary>
@@ -296,5 +324,16 @@ namespace Fmo.BusinessServices.Services
         }
 
         #endregion private methods
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        /// <param name="separator">separator</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
+        {
+            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
+        }
     }
 }
