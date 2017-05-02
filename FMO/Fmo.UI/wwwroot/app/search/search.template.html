@@ -9,9 +9,6 @@
                 <a ng-click="vm.OnChangeItem(item)">
                     <span ng-switch on="item.type" ng-if="item.type">
                         <i class="fa fa-map-marker delivery" aria-hidden="true" ng-switch-when="DeliveryPoint"></i>
-                        <!--<i class="fa fa-map-marker postcode" aria-hidden="true" ng-switch-when="Postcode"></i>
-                        <i class="fa fa-map-marker street" aria-hidden="true" ng-switch-when="StreetNetwork"></i>
-                        <i class="fa fa-map-marker route" aria-hidden="true" ng-switch-when="Route"></i>-->
                     </span>
                     <span ng-show="item.type!='Warning'">
                         {{ item.displayText | limitTo: 30 }}

@@ -134,7 +134,7 @@ function mapService($http, mapFactory,
         var deliveryPointsLayer = new ol.layer.Vector({
             source: deliveryPointsVector,
             minResolution: 0,
-            maxResolution: 1
+            maxResolution: 2.1002842005684017
         });
 
         var mockGroupsVector = new ol.source.Vector({
@@ -186,13 +186,13 @@ function mapService($http, mapFactory,
         var accessLinkLayer = new ol.layer.Vector({
             source: accessLinkVector,
             minResolution: 0,
-            maxResolution: 1
+            maxResolution: 2.1002842005684017
         });
 
         var roadLinkLayer = new ol.layer.Vector({
             source: roadLinkVector,
             minResolution: 0,
-            maxResolution: 1
+            maxResolution: 3.9202878405756825
         });
 
 
