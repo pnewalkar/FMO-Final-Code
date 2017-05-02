@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Interface;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
-using Fmo.Common.Interface;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -37,5 +37,26 @@ namespace Fmo.API.Services.Controllers
                 return false;
         }
 
+        /// <summary>
+        /// Api searches pstcode and thorough in postal address entity on basis of searhtext
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns></returns>
+        [HttpGet("SearchAddressdetails")]
+        public async Task<List<string>> SearchAddressdetails(string searchText)
+        {
+            return await businessService.GetPostalAddressSearchDetails(searchText);
+        }
+
+        /// <summary>
+        /// Filters postal address on basis of postcode
+        /// </summary>
+        /// <param name="postCode">postcode</param>
+        /// <returns></returns>
+        [HttpGet("GetAddressdetails")]
+        public async Task<PostalAddressDTO> GetAddressdetails(string postCode)
+        {
+            return await businessService.GetPostalAddressDetails(postCode);
+        }
     }
 }

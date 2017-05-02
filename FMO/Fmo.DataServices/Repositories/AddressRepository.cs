@@ -290,9 +290,9 @@ namespace Fmo.DataServices.Repositories
             Guid pafAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString());
             Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
-            var postalAddress = await DataContext.PostalAddresses.Where(n => n.AddressType_GUID == pafAddressTypeId
-                                                            && n.AddressType_GUID == nybAddressTypeId
-                                                            && (n.Thoroughfare.Contains(searchText)
+            var postalAddress = await DataContext.PostalAddresses.Where(n => (n.AddressType_GUID == pafAddressTypeId
+                                                            && n.AddressType_GUID == nybAddressTypeId)
+                                                            || (n.Thoroughfare.Contains(searchText)
                                                             || n.DependentThoroughfare.Contains(searchText)
                                                             || n.Postcode.Contains(searchText))).ToListAsync();
 
@@ -307,12 +307,8 @@ namespace Fmo.DataServices.Repositories
         public async Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode)
         {
             List<string> lstPocodes = new List<string>();
-            Guid pafAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString());
-            Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
-            var postalAddress = await DataContext.PostalAddresses.Where(n => n.AddressType_GUID == pafAddressTypeId
-                                                            && n.AddressType_GUID == nybAddressTypeId
-                                                            && n.Postcode == postCode).ToListAsync();
+            var postalAddress = await DataContext.PostalAddresses.Where(n => n.Postcode == postCode).ToListAsync();
 
             return GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
         }
