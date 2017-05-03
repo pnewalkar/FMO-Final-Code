@@ -9,11 +9,8 @@
             <input type="search" ng-model="vm.searchTerm" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
         </md-select-header>
         <md-optgroup>
-            <md-option ng-value="unit" ng-repeat="unit in vm.deliveryRouteUnit | filter:vm.searchTerm | orderBy : 'unitName' "><i class="fa fa-map-marker delivery" aria-hidden="true"></i> {{unit.area+"    "+ unit.unitName}} </md-option>
+            <md-option ng-value="unit" ng-repeat="unit in  filterDeliveryRouteUnit= (vm.deliveryRouteUnit | filter:vm.searchTerm | orderBy : 'unitName') "><i class="fa fa-map-marker delivery" aria-hidden="true"></i> {{unit.area+"    "+ unit.unitName}} </md-option>
         </md-optgroup>
-        <!--<md-not-found>
-            <div>No Results found</div>
-        </md-not-found>-->
+        <div ng-show="!filterDeliveryRouteUnit.length">No Result Found</div>
     </md-select>
-
 </md-input-container>

@@ -19,11 +19,9 @@
                 <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
             </md-select-header>
             <md-optgroup>
-                <md-option ng-value="route" ng-repeat="route in vm.deliveryRoute | filter:vm.searchTerm | orderBy : 'routeName' ">{{route.routeName +" "+"("+route.routeNumber+")"}} </md-option>
+                <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute =( vm.deliveryRoute  | filter:vm.searchTerm | orderBy : 'routeName') ">{{route.routeName +" "+"("+route.routeNumber+")"}} </md-option>
             </md-optgroup>
-            <md-not-found>
-                <div>No Results found</div>
-            </md-not-found>
+            <div ng-show="!filterDeliveryRoute.length">No Result Found</div>
         </md-select>
     </md-input-container>
 </div>

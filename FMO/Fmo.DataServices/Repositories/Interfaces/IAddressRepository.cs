@@ -61,8 +61,9 @@
         /// Filter PostalAddress based on the search text
         /// </summary>
         /// <param name="searchText">searchText</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText);
+        Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Get Postal Address based on postcode
