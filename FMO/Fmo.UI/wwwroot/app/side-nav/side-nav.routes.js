@@ -23,11 +23,8 @@ angular.module('FMOApp')
         })
         .state("deliveryPoint", {
             url: "/deliveryPoint",
-            template: `<div layout="row" class="md-padding" layout-align="end start">
-			                <i class="fa fa-plus fa-2x" aria-hidden="true" style="margin-right: 10px;cursor:pointer" ng-click=""></i>
-			                <i class ="fa fa-question-circle fa-2x" aria-hidden="true" style="cursor:pointer"></i>
-	                      </div>`,
-            controller: "DeliveryPointController as vm",
+            templateUrl: "./delivery-point/delivery-point.context.template.html",
+            controller: 'DeliveryPointController as vm',
             params: { selectedUnit: null, }
         })
          .state('manageaccess', {
