@@ -1,5 +1,5 @@
 <div layout="column" class="md-padding">
-    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()"  layout-align="space-around start">
+    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()" layout-align="space-around start">
         <md-radio-button ng-repeat="status in vm.RouteStatusObj" ng-value="status.id">
             <label ng-bind="status.displayText"></label>   <br>
         </md-radio-button>
@@ -8,8 +8,9 @@
     <md-input-container class="md-block">
         <label>Scenario</label>
         <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="simulationSelect">
-            <md-option ng-repeat="scenario in vm.RouteScenario" ng-value="scenario">{{scenario.scenarioName}}</md-option>
+            <md-option ng-repeat="scenario in filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
         </md-select>
+        <div ng-show="!filterScenario.length" class="noResult">No Result Found</div>
     </md-input-container>
 
     <md-input-container class="md-block">
@@ -19,9 +20,9 @@
                 <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
             </md-select-header>
             <md-optgroup>
-                <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute =( vm.deliveryRoute  | filter:vm.searchTerm | orderBy : 'routeName') ">{{route.routeName +" "+"("+route.routeNumber+")"}} </md-option>
+                <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute =( vm.deliveryRoute  | filter:vm.searchTerm | orderBy : 'routeName') ">{{ "("+route.routeNumber+")"+ route.routeName}} </md-option>
             </md-optgroup>
-            <div ng-show="!filterDeliveryRoute.length">No Result Found</div>
+            <div ng-show="!filterDeliveryRoute.length" class="noResult">No Result Found</div>
         </md-select>
     </md-input-container>
 </div>

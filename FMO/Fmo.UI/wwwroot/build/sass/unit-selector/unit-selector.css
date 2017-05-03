@@ -1,7 +1,16 @@
 .unitSelector.md-text {
-  color: #2a2a2d;
-  font-family: PF DIN;
-  font-size: 16px; }
+    color: #2a2a2d;
+    font-family: PF DIN;
+    font-size: 16px;
+}
 
 .unitSelector.md-text {
-  color: #ffffff; }
+    color: #ffffff;
+}
+
+.noResult {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 16px;
+    font-family: PF DIN;
+}
