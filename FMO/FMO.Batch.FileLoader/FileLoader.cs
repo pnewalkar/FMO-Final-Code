@@ -213,8 +213,6 @@
                     // Creates a new instance of FileSystemWatcher
                     FileSystemWatcher fileSWatch = new FileSystemWatcher();
 
-                    try
-                    {
                         // Sets the filter
                         fileSWatch.Filter = customFolder.FolderFilter;
 
@@ -233,19 +231,14 @@
                         // is added to the monitored folder, using a lambda expression
                         // fileSWatch.Created += (senderObj, fileSysArgs) =>
                         //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
+                        fileSWatch.Error += new ErrorEventHandler(OnFileSystemWatcherError); // OnFileSystemWatcherError;
                         fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionArguments.ToString()));
-                        fileSWatch.Error += OnFileSystemWatcherError;
 
                         // Begin watching
                         fileSWatch.EnableRaisingEvents = true;
 
                         // Add the systemWatcher to the list
                         listFileSystemWatcher.Add(fileSWatch);
-                    }
-                    catch (Exception)
-                    {
-                        fileSWatch.Dispose();
-                    }
 
                     // Record a log entry into Windows Event Log
 
@@ -256,15 +249,25 @@
             }
         }
 
+        #region Error Handler
         private void OnFileSystemWatcherError(object sender, ErrorEventArgs e)
         {
-            var watcher = (FileSystemWatcher)sender;
-            watcher.EnableRaisingEvents = false;
-            watcher.Dispose();
-
-            // Log error
-            Start();
+            try
+            {
+                var watcher = (FileSystemWatcher)sender;
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose();
+            }
+            catch (Exception ex)
+            {
+                loggingHelper.LogError(ex);
+            }
+            finally
+            {
+               Start();
+            }
         }
+        #endregion
 
         /// <summary>This event is triggered when a file with the specified
         /// extension is created on the monitored folder</summary>
@@ -327,41 +330,38 @@
                     {
                         foreach (ZipArchiveEntry entry in zip.Entries)
                         {
-                            Stream stream = entry.Open();
-                            var reader = new StreamReader(stream);
-                            string strLine = reader.ReadToEnd();
-                            string strfileName = entry.Name;
-                            if (CheckFileName(new FileInfo(strfileName).Name, Constants.NYBFLATFILENAME))
+                            using (Stream stream = entry.Open())
                             {
-                                List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
-                                string postaLAddress = serializer.Serialize(lstNYBDetails);
-                                LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
-
-                                if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                                var reader = new StreamReader(stream);
+                                string strLine = reader.ReadToEnd();
+                                string strfileName = entry.Name;
+                                if (CheckFileName(new FileInfo(strfileName).Name, Constants.NYBFLATFILENAME))
                                 {
-                                    var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+                                    List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
+                                    string postaLAddress = serializer.Serialize(lstNYBDetails);
+                                    LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
 
-                                    if (invalidRecordsCount > 0)
+                                    if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                                     {
-                                        File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                        this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
+                                        var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                                        if (invalidRecordsCount > 0)
+                                        {
+                                            File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
+                                        }
+                                        else
+                                        {
+                                            File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
+                                        }
                                     }
                                     else
                                     {
-                                        File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                        this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
+                                        File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                        this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
                                     }
                                 }
-                                else
-                                {
-                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                    this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
-                                }
-                            }
-                            else
-                            {
-                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.UtcNow.ToString()));
                             }
                         }
                     }
