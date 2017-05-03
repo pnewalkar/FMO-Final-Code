@@ -26,8 +26,8 @@ else if (GlobalSettings.env === "dev") {
     GlobalSettings.indexUrl = "http://10.246.18.250/fmoui/app/index.html"
 }
 else if (GlobalSettings.env === "test") {
-    GlobalSettings.apiUrl = "http://10.246.17.62/fmoapi/api"; // Here comes test enviroment url
-    GlobalSettings.indexUrl = "http://10.246.17.62/fmoui/app/index.html"
+    GlobalSettings.apiUrl = "http://10.246.18.217/fmoapi/api"; // Here comes test enviroment url
+    GlobalSettings.indexUrl = "http://10.246.18.217/fmoui/app/index.html"
 }
 else if (GlobalSettings.env === "prod") {
     GlobalSettings.apiUrl = ""; // Here comes production enviroment url
