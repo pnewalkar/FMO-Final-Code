@@ -6,7 +6,7 @@
       Files in format PAF corresponding to the example project
     </FolderDescription>
     <FolderFilter>*.zip</FolderFilter>
-    <FolderPath>D:\Project\SourceFiles\ConsoleApplication1\TestData\PAF\</FolderPath>
+    <FolderPath>D:\Akash\Test\PAF\</FolderPath>
     <FolderIncludeSub>false</FolderIncludeSub>
     <ExecutableFile>CMD.EXE</ExecutableFile>
     <!-- The block {0} will be automatically replaced with the
