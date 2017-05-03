@@ -1,7 +1,5 @@
-﻿
-
-
-angular.module('advanceSearch').service('advanceSearchService', function () {
+﻿angular.module('advanceSearch')
+    .service('advanceSearchService', function () {
 
     this.advanceSearch = function (query) {
         return {

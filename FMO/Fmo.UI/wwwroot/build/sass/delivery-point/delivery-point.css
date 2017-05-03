@@ -1,0 +1,24 @@
+.deliveryPointDialog {
+  width: 80%;
+  height: 100%; }
+
+i.fa.fa-times.closeWindow {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: default; }
+
+.deliveryPointSearch {
+  height: 40%;
+  margin-top: 25px; }
+
+.searchInputIcon {
+  margin: 28px 0px 0px 8px;
+  cursor: pointer; }
+
+.searchLabel {
+  position: absolute;
+  margin-top: 6px; }
+
+.deliveryPointInput {
+  width: 100%; }
