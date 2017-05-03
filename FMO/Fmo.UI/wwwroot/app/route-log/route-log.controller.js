@@ -30,7 +30,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         vm.selectedRouteStatusObj = null;
         vm.selectedRouteScenario = null;
         vm.selectedVegetables = null;
-        vm.deliveryRoute = undefined;
+        vm.isSelectionType = false;
         vm.isRouteScenarioDisabled = true;
         vm.isDeliveryRouteDisabled = true;
         vm.isShowMultiSelectionRoute = false;
@@ -75,6 +75,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
             } else {
                 vm.RouteScenario = response;
                 vm.selectedRouteScenario = null;
+                vm.isSelectionType = true;
                 //vm.isRouteScenarioDisabled = true;
                 vm.selectedVegetables = null;
                 vm.isDeliveryRouteDisabled = true;
