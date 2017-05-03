@@ -17,12 +17,9 @@ function UnitSelectorController($scope, $stateParams, $state, $filter, unitSelec
 
     function BindData() {
         if (vm.deliveryRouteUnit.length === 0) {
-            debugger;
             var authData = sessionStorage.getItem('authorizationData');
             authData = JSON.parse(authData);
             if (authData.unitGuid) {
-                debugger;
-
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                     if (response) {
                         vm.deliveryRouteUnit = response;
