@@ -9,6 +9,7 @@
     using System.Reflection;
     using System.ServiceProcess;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Web.Script.Serialization;
     using System.Xml.Serialization;
     using Common;
@@ -320,37 +321,48 @@
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
-                using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME))
                 {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    using (ZipArchive zip = ZipFile.OpenRead(fileName))
                     {
-                        Stream stream = entry.Open();
-                        var reader = new StreamReader(stream);
-                        string strLine = reader.ReadToEnd();
-                        string strfileName = entry.Name;
-                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
-                        string postaLAddress = serializer.Serialize(lstNYBDetails);
-                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
-
-                        if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                        foreach (ZipArchiveEntry entry in zip.Entries)
                         {
-                            var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
-
-                            if (invalidRecordsCount > 0)
+                            Stream stream = entry.Open();
+                            var reader = new StreamReader(stream);
+                            string strLine = reader.ReadToEnd();
+                            string strfileName = entry.Name;
+                            if (CheckFileName(new FileInfo(strfileName).Name, Constants.NYBFLATFILENAME))
                             {
-                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
+                                List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
+                                string postaLAddress = serializer.Serialize(lstNYBDetails);
+                                LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
+
+                                if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                                {
+                                    var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                                    if (invalidRecordsCount > 0)
+                                    {
+                                        File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                        this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                        this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
+                                    }
+                                }
+                                else
+                                {
+                                    File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                    this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
+                                }
                             }
                             else
                             {
-                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
+                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.UtcNow.ToString()));
                             }
-                        }
-                        else
-                        {
-                            File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                            this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
                         }
                     }
                 }
@@ -365,6 +377,26 @@
             }
         }
         #endregion
+
+        /// <summary>
+        /// Check file name is valid
+        /// </summary>
+        /// <param name="fileName">File Name</param>
+        /// <param name="regex">regular expression to pass</param>
+        /// <returns>bool</returns>
+        private bool CheckFileName(string fileName, string regex)
+        {
+            try
+            {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+                Regex reg = new Regex(regex);
+                return reg.IsMatch(fileName);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         /// <summary>
         /// Method level entry exit logging.
