@@ -25,26 +25,28 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         $mdDialog.cancel();
     }
    
-    function selectionTypeChange() {
-        
+    function selectionTypeChange() {      
         var type = vm.selectedRouteSelectionObj;
-        if (type.displayText === "Multiple") {
+            vm.selectedRouteStatusObj = null;
+            vm.selectedRouteScenario = null;
+            vm.selectedVegetables = null;
+            vm.isRouteScenarioDisabled = true;
             vm.isDeliveryRouteDisabled = true;
-            vm.isShowMultiSelectionRoute = true;
-        } else {
-            vm.isDeliveryRouteDisabled = false;
-            vm.isShowMultiSelectionRoute = false;
-        }
+            vm.isShowMultiSelectionRoute = false; 
     }
     function loadSelectionType() {
         routeLogAPIService.getSelectionType().then(function (response) {           
             vm.RouteselectionTypeObj = response;
-            vm.selectedRouteSelectionObj = vm.RouteselectionTypeObj[0];
+            angular.forEach(vm.RouteselectionTypeObj, function (value, key) {
+                if (value.displayText == "Single")
+                    vm.selectedRouteSelectionObj = value;
+            }); 
         });
     }
     function selectedRouteStatus() {
-        
-        //loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj);
+        debugger
+        loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.id);
+        vm.isRouteScenarioDisabled = false;
     }
     function loadRouteLogStatus() {
         routeLogAPIService.getStatus().then(function (response) {            
