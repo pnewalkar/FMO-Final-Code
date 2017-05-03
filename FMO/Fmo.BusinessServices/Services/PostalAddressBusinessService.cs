@@ -201,8 +201,9 @@ namespace Fmo.BusinessServices.Services
         /// Filter PostalAddress based on the search text
         /// </summary>
         /// <param name="searchText">searchText</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText)
+        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
@@ -210,7 +211,7 @@ namespace Fmo.BusinessServices.Services
             try
             {
                 List<string> searchdetails = new List<string>();
-                List<PostalAddressDTO> lstAddress = await addressRepository.GetPostalAddressSearchDetails(searchText);
+                List<PostalAddressDTO> lstAddress = await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
                 if (lstAddress != null && lstAddress.Count > 0)
                 {
                     var results = lstAddress.Select(n => new { Street = n.Thoroughfare, Postcode = n.Postcode }).Distinct().ToList();

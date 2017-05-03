@@ -33,13 +33,14 @@ namespace Fmo.Common.LoggingManagement
         public void LogError(Exception exception)
         {
             string errorMessage = string.Empty;
+            string stackStrace = exception.StackTrace;
             if (exception.InnerException != null)
             {
-                errorMessage = "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+                errorMessage = "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message + Environment.NewLine + "StackTrace: " + stackStrace;
             }
             else
             {
-                errorMessage = "Exception: " + exception.Message;
+                errorMessage = "Exception: " + exception.Message + Environment.NewLine + "StackTrace: " + stackStrace;
             }
 
             Logger.Write(errorMessage, "General", 0, 0, TraceEventType.Error);
@@ -53,13 +54,14 @@ namespace Fmo.Common.LoggingManagement
         public void LogError(string message, Exception exception)
         {
             string errorMessage = string.Empty;
+            string stackStrace = exception.StackTrace;
             if (exception.InnerException != null)
             {
-                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message;
+                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "Inner Exception: " + exception.InnerException.Message + Environment.NewLine + "StackTrace: " + stackStrace;
             }
             else
             {
-                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message;
+                errorMessage = message + Environment.NewLine + "Exception: " + exception.Message + Environment.NewLine + "StackTrace: " + stackStrace;
             }
 
             Logger.Write(errorMessage, "General", 0, 0, TraceEventType.Error);

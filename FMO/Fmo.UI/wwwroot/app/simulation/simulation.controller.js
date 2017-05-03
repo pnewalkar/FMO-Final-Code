@@ -21,6 +21,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     function selectedRouteStatus() {
          
         loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj.selectedUnit.id);
+        vm.isDeliveryRouteDisabled = true;
     }
     function loadRouteLogStatus() {
         simulationAPIService.getStatus().then(function (response) {
@@ -45,6 +46,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
                 vm.selectedVegetables = null;
                 vm.selectedRouteScenario = null;
                 vm.searchTerm = null;
+               
             }
         });
     }

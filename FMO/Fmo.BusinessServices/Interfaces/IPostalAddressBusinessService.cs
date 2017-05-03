@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using Fmo.DTO;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -34,8 +35,9 @@ namespace Fmo.BusinessServices.Interfaces
         /// Filter PostalAddress based on the search text
         /// </summary>
         /// <param name="searchText">searchText</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        Task<List<string>> GetPostalAddressSearchDetails(string searchText);
+        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Get Postal Address based on postcode
