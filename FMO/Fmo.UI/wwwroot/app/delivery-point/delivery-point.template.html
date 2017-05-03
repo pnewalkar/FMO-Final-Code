@@ -4,8 +4,13 @@
     <md-divider></md-divider>
     <div layout="row">
         <label class="searchLabel">Search</label>
-        <input ng-model="" type="email" class="deliveryPointSearch" flex="60">
-        <i class="fa fa-search searchInputIcon" aria-hidden="true" flex="10"></i>            
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="60">
+        <i class="fa fa-search searchInputIcon" aria-hidden="true" flex="10"></i>
+        <div md-whiteframe="3dp">
+            <ul>
+                <li></li>
+            </ul>
+        </div>            
         <md-input-container flex="30">
             <label>Not yet Built</label>
             <md-select ng-model="">
