@@ -12,13 +12,8 @@ namespace Fmo.Batch.FileLoader
         /// </summary>
         private static void Main()
         {
-            using (FileLoader myService = new FileLoader())
-            {
-                myService.OnDebug();
-                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
-            }
-            //ServiceBase[] servicesToRun = new ServiceBase[] { new FileLoader() };
-            //ServiceBase.Run(servicesToRun);
+            ServiceBase[] servicesToRun = new ServiceBase[] { new FileLoader() };
+            ServiceBase.Run(servicesToRun);
         }
     }
 }
