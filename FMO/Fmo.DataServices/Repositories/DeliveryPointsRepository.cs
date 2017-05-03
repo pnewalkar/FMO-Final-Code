@@ -118,6 +118,7 @@ namespace Fmo.DataServices.Repositories
                     newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
+                    newDeliveryPoint.LocationProvider_GUID = objDeliveryPoint.LocationProvider_GUID;
                     DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     DataContext.SaveChanges();
                     isDeliveryPointInserted = true;
