@@ -26,7 +26,6 @@ function sideNavController($scope,
     vm.fetchActions = fetchActions;
     vm.closeSideNav = closeSideNav;
     vm.routeSimulation = routeSimulation;
-    vm.deliveryPoint = deliveryPoint;
     vm.selectedUnit = $stateParams;
     vm.contextTitle = "Context";
     vm.fetchActionItems();
@@ -36,10 +35,6 @@ function sideNavController($scope,
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
     }
 
-    function deliveryPoint(selectedDeliveryUnit) {
-        vm.contextTitle = "Delivery Point";
-        $state.go("deliveryPoint", { selectedUnit: selectedDeliveryUnit });
-    }
                                
     function routeLog(selectedUnit) {
         var state = $stateParams;
@@ -68,9 +63,6 @@ function sideNavController($scope,
         }
         if (query === SideNavConstant.routeSimulationActionName) {
             vm.routeSimulation(selectedUnit);
-        }
-        if (query === SideNavConstant.deliveryPointActionName) {
-            vm.deliveryPoint(selectedUnit);
         }
     }
 

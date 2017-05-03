@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Fmo.DTO
 {
@@ -70,6 +71,7 @@ namespace Fmo.DTO
 
         public string FileName { get; set; }
 
+        [XmlIgnore]
         public Dictionary<Guid, string> NybAddressDetails { get; set; }
     }
 }
