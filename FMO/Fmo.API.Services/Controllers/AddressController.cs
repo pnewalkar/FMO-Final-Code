@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Interface;
@@ -45,7 +46,8 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("SearchAddressdetails")]
         public async Task<List<string>> SearchAddressdetails(string searchText)
         {
-            return await businessService.GetPostalAddressSearchDetails(searchText);
+            var unitGuid = this.CurrentUserUnit;
+            return await businessService.GetPostalAddressSearchDetails(searchText, unitGuid);
         }
 
         /// <summary>

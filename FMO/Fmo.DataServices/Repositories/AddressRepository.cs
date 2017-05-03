@@ -283,18 +283,19 @@ namespace Fmo.DataServices.Repositories
         /// Filter PostalAddress based on the search text
         /// </summary>
         /// <param name="searchText">searchText</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        public async Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText)
+        public async Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
         {
             List<string> lstPocodes = new List<string>();
             Guid pafAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString());
             Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
-            var postalAddress = await DataContext.PostalAddresses.Where(n => (n.AddressType_GUID == pafAddressTypeId
-                                                            && n.AddressType_GUID == nybAddressTypeId)
-                                                            || (n.Thoroughfare.Contains(searchText)
-                                                            || n.DependentThoroughfare.Contains(searchText)
-                                                            || n.Postcode.Contains(searchText))).ToListAsync();
+            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(n => n.Postcode1).Include(n => n.Postcode1.UnitLocationPostcodes).Where(n => ((n.AddressType_GUID == pafAddressTypeId
+                                                                && n.AddressType_GUID == nybAddressTypeId)
+                                                                || (n.Thoroughfare.Contains(searchText)
+                                                                || n.DependentThoroughfare.Contains(searchText)
+                                                                || n.Postcode.Contains(searchText))) && n.Postcode1.UnitLocationPostcodes.Any(m => m.Unit_GUID == unitGuid)).ToListAsync();
 
             return GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
         }
@@ -308,7 +309,7 @@ namespace Fmo.DataServices.Repositories
         {
             List<string> lstPocodes = new List<string>();
 
-            var postalAddress = await DataContext.PostalAddresses.Where(n => n.Postcode == postCode).ToListAsync();
+            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Where(n => n.Postcode == postCode).ToListAsync();
 
             return GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
         }
