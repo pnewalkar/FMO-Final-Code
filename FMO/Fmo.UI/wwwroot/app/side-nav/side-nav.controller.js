@@ -27,7 +27,7 @@ function sideNavController($scope,
     vm.closeSideNav = closeSideNav;
     vm.routeSimulation = routeSimulation;
     vm.selectedUnit = $stateParams;
-    vm.contextTitle = "Context";
+    vm.contextTitle = "Context Panel";
     vm.fetchActionItems();
 
     function routeSimulation(selectedDeliveryUnit) {
