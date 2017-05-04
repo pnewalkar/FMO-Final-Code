@@ -71,7 +71,6 @@ namespace Fmo.DTO
 
         public string FileName { get; set; }
 
-        [XmlIgnore]
-        public Dictionary<Guid, string> NybAddressDetails { get; set; }
+        public List<object> NybAddressDetails { get; set; }
     }
 }

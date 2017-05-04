@@ -46,8 +46,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("SearchAddressdetails")]
         public async Task<List<string>> SearchAddressdetails(string searchText)
         {
-            var unitGuid = this.CurrentUserUnit;
-            return await businessService.GetPostalAddressSearchDetails(searchText, unitGuid);
+            return await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
         }
 
         /// <summary>
@@ -59,6 +58,17 @@ namespace Fmo.API.Services.Controllers
         public async Task<PostalAddressDTO> GetAddressdetails(string postCode)
         {
             return await businessService.GetPostalAddressDetails(postCode);
+        }
+
+        /// <summary>
+        ///  Filters postal address on basis of postal address id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("GetAddressdetails")]
+        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        {
+            return businessService.GetPostalAddressDetails(id);
         }
     }
 }

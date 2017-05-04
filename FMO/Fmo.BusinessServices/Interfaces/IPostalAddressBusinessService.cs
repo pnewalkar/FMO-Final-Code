@@ -45,5 +45,12 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="postCode">postCode</param>
         /// <returns>List of Postal Address</returns>
         Task<PostalAddressDTO> GetPostalAddressDetails(string postCode);
+
+        /// <summary>
+        /// Get Postal Address based on postal address id.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>Postal Address DTO</returns>
+        PostalAddressDTO GetPostalAddressDetails(Guid id);
     }
 }

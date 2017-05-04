@@ -72,6 +72,10 @@ function sideNavController($scope,
         if (query === SideNavConstant.deliveryPointActionName) {
             vm.deliveryPoint(selectedUnit);
         }
+        if (query === "Access Link") {
+            vm.contextTitle = "Reference Data";
+            $state.go("referenceData");
+        }
     }
 
 }
