@@ -226,6 +226,7 @@ namespace Fmo.BusinessServices.Services
                     }
                 }
 
+                searchdetails.Sort();
                 return searchdetails;
             }
             catch (Exception)
@@ -281,6 +282,32 @@ namespace Fmo.BusinessServices.Services
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
+        }
+
+        /// <summary>
+        /// Get Postal Address based on postal address id.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>Postal Address DTO</returns>
+        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
+            try
+            {
+                return addressRepository.GetPostalAddressDetails(id);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+
+            return null;
         }
 
         #endregion public methods

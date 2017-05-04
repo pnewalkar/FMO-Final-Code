@@ -17,8 +17,22 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <returns>Guid</returns>
         Guid GetReferenceDataId(string strCategoryname, string strRefDataName);
 
+        /// <summary>
+        /// Routes the log status.
+        /// </summary>
+        /// <returns>List<ReferenceDataDTO></returns>
         List<ReferenceDataDTO> RouteLogStatus();
 
+        /// <summary>
+        /// Routes the type of the log selection.
+        /// </summary>
+        /// <returns>List<ReferenceDataDTO></returns>
         List<ReferenceDataDTO> RouteLogSelectionType();
+
+        /// <summary>
+        /// Gets all reference category list along with associated reference data.
+        /// </summary>
+        /// <returns>List<ReferenceDataCategoryDTO></returns>
+        List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList();
     }
 }

@@ -20,5 +20,11 @@ namespace Fmo.BusinessServices.Interfaces
         /// </summary>
         /// <returns>List</returns>
         List<ReferenceDataDTO> FetchRouteLogSelectionType();
+
+        /// <summary>
+        /// Gets all reference category list along with associated reference data.
+        /// </summary>
+        /// <returns>List<ReferenceDataCategoryDTO></returns>
+        List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList();
     }
 }
