@@ -400,7 +400,8 @@ function mapService($http, mapFactory,
         vm.interactions.draw = new ol.interaction.Draw({
             source: vm.drawingLayer.layer.getSource(),
             type: button.shape,
-            style: style
+            style: style,
+            condition: ol.events.condition.primaryAction
         });
         switch (button.name) {
             case "measure":
@@ -419,7 +420,6 @@ function mapService($http, mapFactory,
         if (name == "point") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "deliverypoint");
-
             })
         }
         else {
@@ -635,19 +635,6 @@ function mapService($http, mapFactory,
         vm.features = feature;
     }
 
-    function test() {
-        if (vm.interactions.select) {
-            debugger;
-            vm.interactions.select.getFeatures().forEach(function (feature) {
-                
-                if (feature.get("type") == "deliverypoint") {
-                    setSelections(null, []);
-                }     
-           
-            });
-
-    }
-    }
 
     function setSelectedObjectsVisibility(selectedLayer) {
         if (vm.interactions.select) {
