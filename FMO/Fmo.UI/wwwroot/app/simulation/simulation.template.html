@@ -7,7 +7,7 @@
 
     <md-input-container class="md-block">
         <label>Scenario</label>
-        <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="simulationSelect">
+        <md-select ng-model="vm.selectedRouteScenario" ng-disabled="!filterScenario.length" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="simulationSelect">
             <md-option ng-repeat="scenario in filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
         </md-select>
         <div ng-show="!filterScenario.length" class="noResult">No Result Found</div>
