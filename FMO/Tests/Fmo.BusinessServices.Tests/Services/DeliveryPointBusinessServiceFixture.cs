@@ -18,6 +18,7 @@ namespace Fmo.BusinessServices.Tests.Services
     {
         private IDeliveryPointBusinessService testCandidate;
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
+        private Mock<IAddressLocationRepository> mockaddressLocationRepository;
         private Guid unitGuid = Guid.NewGuid();
 
         [Test]
@@ -52,6 +53,7 @@ namespace Fmo.BusinessServices.Tests.Services
         protected override void OnSetup()
         {
             mockDeliveryPointsRepository = new Mock<IDeliveryPointsRepository>();
+            mockaddressLocationRepository = new Mock<IAddressLocationRepository>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
@@ -66,7 +68,7 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
 
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object);
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object);
         }
     }
 }

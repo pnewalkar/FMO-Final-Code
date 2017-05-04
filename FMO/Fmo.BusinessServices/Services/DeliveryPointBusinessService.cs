@@ -20,10 +20,12 @@ namespace Fmo.BusinessServices.Services
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
+        private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
 
-        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository)
+        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
+            this.addressLocationRepository = addressLocationRepository;
         }
 
         /// <summary>
@@ -62,6 +64,23 @@ namespace Fmo.BusinessServices.Services
             try
             {
                 return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPointListByUDPRN(udprn));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to fetch address location data for positioning of Delivery Points on the basis of udprn.
+        /// </summary>
+        /// <param name="udprn">The UDPRN number</param>
+        /// <returns>The coordinates of the delivery point</returns>
+        public AddressLocationDTO GetAddressLocationByUDPRN(int udprn)
+        {
+            try
+            {
+                return addressLocationRepository.GetAddressLocationByUDPRN(udprn);
             }
             catch (Exception)
             {

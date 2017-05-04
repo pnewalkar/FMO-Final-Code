@@ -226,6 +226,7 @@ namespace Fmo.BusinessServices.Services
                     }
                 }
 
+                searchdetails.Sort();
                 return searchdetails;
             }
             catch (Exception)

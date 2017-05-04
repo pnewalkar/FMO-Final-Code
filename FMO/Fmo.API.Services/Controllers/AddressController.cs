@@ -54,8 +54,8 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="postCode">postcode</param>
         /// <returns></returns>
-        [HttpGet("GetAddressdetails")]
-        public async Task<PostalAddressDTO> GetAddressdetails(string postCode)
+        [HttpGet("GetAddressByPostCode")]
+        public async Task<PostalAddressDTO> GetAddressByPostCode(string postCode)
         {
             return await businessService.GetPostalAddressDetails(postCode);
         }
@@ -65,10 +65,10 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("GetAddressdetails")]
-        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        [HttpGet("GetPostalAddressByGuid")]
+        public PostalAddressDTO GetPostalAddressByGuid(Guid addressGuid)
         {
-            return businessService.GetPostalAddressDetails(id);
+            return businessService.GetPostalAddressDetails(addressGuid);
         }
     }
 }
