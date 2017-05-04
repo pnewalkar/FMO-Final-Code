@@ -9,7 +9,7 @@
             <input type="search" ng-model="vm.searchTerm" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
         </md-select-header>
         <md-optgroup>
-            <md-option ng-value="unit" ng-repeat="unit in  filterDeliveryRouteUnit= (vm.deliveryRouteUnit | filter:vm.searchTerm | orderBy : 'unitName') ">{{unit.area+"    "+ unit.unitName}} </md-option>
+            <md-option ng-value="unit" ng-repeat="unit in  filterDeliveryRouteUnit= (vm.deliveryRouteUnit | filter:vm.searchTerm | orderBy : 'unitName') "><i class="fa fa-map-marker delivery"  aria-hidden="true"></i> {{unit.area+"    "+ unit.unitName}} </md-option>
         </md-optgroup>
         <div ng-show="!filterDeliveryRouteUnit.length" class="noResult">No Result Found</div>
     </md-select>
