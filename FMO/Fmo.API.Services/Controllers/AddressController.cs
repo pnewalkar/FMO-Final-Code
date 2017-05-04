@@ -44,11 +44,9 @@ namespace Fmo.API.Services.Controllers
         /// <param name="searchText">searchText</param>
         /// <returns></returns>
         [HttpGet("SearchAddressdetails")]
-        public async Task<JsonResult> SearchAddressdetails(string searchText)
+        public async Task<List<string>> SearchAddressdetails(string searchText)
         {
-            //List<string>
-            var result = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
-            return Json(result);
+            return await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
         }
 
         /// <summary>
