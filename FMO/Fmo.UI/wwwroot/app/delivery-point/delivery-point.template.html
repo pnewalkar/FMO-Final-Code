@@ -6,35 +6,37 @@
         <div layout="row">
             <div layout="column" flex="65">
                 <label>Search</label>
-                <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)" >
-                <div  class="resultPanel" ng-show="vm.results.length>0">
-                        <ul ng-repeat="item in vm.results | limitTo:500">
-                                <li ng-click="vm.OnChangeItem(item)">
-                                    {{item}}
-                                </li>
-                          </ul>
-                    </div>
+                <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)">
+                <div class="resultPanel" ng-show="vm.results.length>0">
+                    <ul ng-repeat="item in vm.results | limitTo:500">
+                        <li ng-click="vm.OnChangeItem(item)">
+                            {{item}}
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
-            <md-input-container flex="30">
+            <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
+            <md-input-container flex="30" ng-show="vm.display">
                 <label>Not yet Built</label>
-                <md-select ng-model="abcd">
-                    <md-option value="default" selected>Not Shown</md-option>
+                <md-select ng-model="vm.postalAddressData.nybAddressDetails" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
+                    <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" selected="{{type.displayText=='Not Shown'?'selected':''}}">
+                        {{type.displayText}}
+                    </md-option>
                 </md-select>
             </md-input-container>
         </div>
-        <div layout="column">
+        <div layout="column" ng-show="vm.display">
             <label>Locality<sub>*</sub></label>
-            <input type="text" >
+            <input ng-model="vm.postalAddressData.dependentLocality" type="text" disabled>
         </div>
-        <div layout="column">
+        <div layout="column" ng-show="vm.display">
             <label>Street<sub>*</sub></label>
-            <input type="text">
+            <input ng-model="vm.postalAddressData.thoroughfare" type="text" disabled>
         </div>
-        <div layout="row">
+        <div layout="row" ng-show="vm.display">
             <div layout="column" flex="30">
                 <label>Postcode<sub>*</sub></label>
-                <input type="text" >
+                <input ng-model="vm.postalAddressData.postcode" type="text" disabled>
             </div>
             <md-input-container flex>
                 <label>Route<sub>*</sub></label>
@@ -47,11 +49,14 @@
                 <input type="text">
             </div>
         </div>
-        <div layout="row">
+        <div layout="row" ng-show="vm.display">
             <md-input-container flex="30">
                 <label>Type</label>
                 <md-select ng-model="uvx">
-                    <md-option value="">Single</md-option>
+                    <md-option value="default" selected>Single</md-option>
+                    <md-option value="Range">Range</md-option>
+                    <md-option value="Subbuilding">Sub-building</md-option>
+                    <md-option value="NumberinName">Number in Name</md-option>
                 </md-select>
             </md-input-container>
         </div>
@@ -67,9 +72,9 @@
             </div>
         </div>-->
         <div layout="row">
-            <md-button  flex="30">Cancel</md-button>
+            <md-button flex="30">Cancel</md-button>
             <span flex></span>
-            <md-button ng-disabled="true" flex="30">Save</md-button>
+            <md-button ng-disabled="vm.disable" flex="30">Save</md-button>
         </div>
     </div>
 </md-dialog>
