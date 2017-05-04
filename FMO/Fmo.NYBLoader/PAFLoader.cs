@@ -56,7 +56,7 @@
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
-                if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME))
+                if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME.ToString()))
                 {
                     using (ZipArchive zip = ZipFile.OpenRead(fileName))
                     {

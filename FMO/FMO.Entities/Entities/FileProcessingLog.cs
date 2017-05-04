@@ -19,7 +19,7 @@ namespace Fmo.Entities
         public DateTime FileProcessing_TimeStamp { get; set; }
 
         [Required]
-        [StringLength(25)]
+        [StringLength(100)]
         public string FileName { get; set; }
 
         [Required]
