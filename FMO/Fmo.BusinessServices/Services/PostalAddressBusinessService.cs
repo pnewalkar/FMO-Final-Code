@@ -250,7 +250,7 @@ namespace Fmo.BusinessServices.Services
 
             try
             {
-                Dictionary<Guid, string> nybDetails = new Dictionary<Guid, string>();
+                List<object> nybDetails = new List<object>();
                 PostalAddressDTO postalAddressDto = null;
                 var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode);
                 Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
@@ -263,11 +263,11 @@ namespace Fmo.BusinessServices.Services
                         {
                             string address = string.Join(",", Convert.ToString(postalAddress.BuildingNumber) ?? string.Empty, postalAddress.BuildingName, postalAddress.SubBuildingName);
                             string formattedAddress = Regex.Replace(address, ",+", ",").Trim(',');
-                            nybDetails.Add(postalAddress.ID, formattedAddress);
+                            nybDetails.Add(new { Value = postalAddress.ID, DisplayText = formattedAddress });
                         }
                     }
 
-                    nybDetails.Add(Guid.Empty, Constants.NotShown);
+                    nybDetails.Add(new { Value = Guid.Empty, DisplayText = Constants.NotShown });
                     postalAddressDto.NybAddressDetails = nybDetails;
                 }
 

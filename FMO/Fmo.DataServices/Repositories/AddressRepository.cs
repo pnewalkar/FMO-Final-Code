@@ -292,7 +292,7 @@ namespace Fmo.DataServices.Repositories
             Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
             var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(n => n.Postcode1).Include(n => n.Postcode1.UnitLocationPostcodes).Where(n => ((n.AddressType_GUID == pafAddressTypeId
-                                                                && n.AddressType_GUID == nybAddressTypeId)
+                                                                || n.AddressType_GUID == nybAddressTypeId)
                                                                 || (n.Thoroughfare.Contains(searchText)
                                                                 || n.DependentThoroughfare.Contains(searchText)
                                                                 || n.Postcode.Contains(searchText))) && n.Postcode1.UnitLocationPostcodes.Any(m => m.Unit_GUID == unitGuid)).ToListAsync();
