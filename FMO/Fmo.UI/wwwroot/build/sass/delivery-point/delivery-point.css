@@ -8,17 +8,17 @@ i.fa.fa-times.closeWindow {
   right: 10px;
   cursor: default; }
 
-.deliveryPointSearch {
-  height: 40%;
-  margin-top: 25px; }
 
 .searchInputIcon {
-  margin: 28px 0px 0px 8px;
+  margin: 20px 0px 0px 5px;
   cursor: pointer; }
 
-.searchLabel {
-  position: absolute;
-  margin-top: 6px; }
+.resultPanel{
+    overflow-y: auto;
+    position: absolute;
+    top: 105px;
+    background: rgba(255,255,255,255);
+    width: 63%;
+    height:25%;
 
-.deliveryPointInput {
-  width: 100%; }
+}

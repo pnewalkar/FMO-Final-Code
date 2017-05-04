@@ -46,8 +46,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("SearchAddressdetails")]
         public async Task<List<string>> SearchAddressdetails(string searchText)
         {
-            var unitGuid = this.CurrentUserUnit;
-            return await businessService.GetPostalAddressSearchDetails(searchText, unitGuid);
+            return await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
         }
 
         /// <summary>
