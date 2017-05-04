@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using AutoMapper;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.Entities;
 using Fmo.MappingConfiguration;
-using Entity = Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
     /// <summary>
     /// To interact with reference data entity
     /// </summary>
-    public class ReferenceDataCategoryRepository : RepositoryBase<Entity.ReferenceDataCategory, FMODBContext>, IReferenceDataCategoryRepository
+    public class ReferenceDataCategoryRepository : RepositoryBase<ReferenceDataCategory, FMODBContext>, IReferenceDataCategoryRepository
     {
         public ReferenceDataCategoryRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
@@ -59,7 +60,7 @@ namespace Fmo.DataServices.Repositories
                 var query = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(categoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                 if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
                 {
-                    lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
+                    lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
                 }
 
                 return lstReferenceDt;
@@ -67,7 +68,7 @@ namespace Fmo.DataServices.Repositories
             catch (Exception)
             {
                 throw;
-            }
+            };
         }
 
         /// <summary>
@@ -80,10 +81,29 @@ namespace Fmo.DataServices.Repositories
             var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("Route Log Selection Type", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
             {
-                lstReferenceDt = GenericMapper.MapList<Entity.ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
+                lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
             }
 
             return lstReferenceDt;
+        }
+
+        /// <summary>
+        /// Gets all reference category list along with associated reference data.
+        /// </summary>
+        /// <returns>List<ReferenceDataCategoryDTO></returns>
+        public List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList()
+        {
+            Guid statusId = Guid.Empty;
+            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).ToList();
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();
+                cfg.CreateMap<ReferenceData, ReferenceDataDTO>();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
+            return referenceDataCategoryListDto;
         }
     }
 }
