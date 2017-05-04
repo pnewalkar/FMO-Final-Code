@@ -55,21 +55,81 @@
                 </md-select>
             </md-input-container>
         </div>
-        <!--<div layout="row">
-            <div layout="row">
-            <label class="searchLabel">Multi Occ<sub>*</sub></label>
-            <input ng-model="" type="text" class="deliveryPointSearch" flex="100">
+        
+        <!--175-->
+      <section layout="row">
+        <div layout="column" flex="65">
+            <fieldset>
+            <legend>Address<sub>*</sub></legend>
+                
+          	<div layout="row">
+          		<div layout="column" flex>
+          			<label>Building Number</label>
+          	                	<input ng-model="" type="text">
+          		</div>
+          	
+          		<span flex="5"></span>
+          	
+          		<div layout="column" flex>
+          			<label>Building Name</label>
+          	                	<input ng-model="" type="text">
+          		</div>
+          	</div>
+          	
+          	<div layout="row">
+          		<div layout="column" flex>
+          			<label>Sub-Building Name</label>
+          	                	<input ng-model="" type="text">
+          		</div>
+          	
+          		<span flex="5"></span>
+          	
+          		<div layout="column" flex>
+          			<label>Organisation</label>
+          	                	<input ng-model="" type="text">
+          		</div>
+          	</div>
+          	<div layout="row">
+          		<div layout="column" flex>
+          			<label>Department Name</label>
+          	                <input ng-model="" type="text">
+          		</div>
+          		<span flex="5"></span>
+          		<span flex></span>
+          	</div>
+
+            </fieldset>
+        </div>
+        <span flex="5"></span>
+        <div layout="column" flex="35">
+        	<div layout="column">
+        	    <label>Add DP Alias</label>
+        	    <input ng-model="" type="text">
+        	</div>
+        	<div layout="column">
+        	    <label>Alias</label>
+        	    <div style="width: 100%;height: 100px; background: red"></div>
+        	</div>
+        </div>
+
+    </section>
+        
+        
+        <div layout="row">
+            <div layout="column">
+            <label>Multi Occ<sub>*</sub></label>
+            <input ng-model="" type="text">
             </div>
             <span flex="5"></span>
-            <div layout="row">
-            <label class="searchLabel">Mail Vol<sub>*</sub></label>
-            <input ng-model="" type="text" class="deliveryPointSearch" flex="100">
+            <div layout="column">
+            <label>Mail Vol<sub>*</sub></label>
+            <input ng-model="" type="text">
             </div>
-        </div>-->
+        </div>
         <div layout="row">
-            <md-button  flex="30">Cancel</md-button>
+            <md-button class="md-raised md-primary" flex="30">Cancel</md-button>
             <span flex></span>
-            <md-button ng-disabled="true" flex="30">Save</md-button>
+            <md-button ng-disabled="true" class="md-raised md-primary" flex="30">Save</md-button>
         </div>
     </div>
 </md-dialog>
