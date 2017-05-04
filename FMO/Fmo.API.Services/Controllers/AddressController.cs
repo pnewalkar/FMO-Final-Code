@@ -60,5 +60,16 @@ namespace Fmo.API.Services.Controllers
         {
             return await businessService.GetPostalAddressDetails(postCode);
         }
+
+        /// <summary>
+        ///  Filters postal address on basis of postal address id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("GetAddressdetails")]
+        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        {
+            return businessService.GetPostalAddressDetails(id);
+        }
     }
 }
