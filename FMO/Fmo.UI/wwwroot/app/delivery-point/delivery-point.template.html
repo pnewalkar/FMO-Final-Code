@@ -6,7 +6,7 @@
         <div layout="row">
             <div layout="column" flex="65">
                 <label>Search</label>
-                <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)">
+                <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)" ng-blur="vm.onBlur()">
                 <div class="resultPanel" ng-show="vm.results.length>0">
                     <ul ng-repeat="item in vm.results | limitTo:500">
                         <li ng-click="vm.OnChangeItem(item)">
@@ -18,7 +18,7 @@
             <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
             <md-input-container flex="30" ng-show="vm.display">
                 <label>Not yet Built</label>
-                <md-select ng-model="vm.postalAddressData.nybAddressDetails" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
+                <md-select ng-model="vm.postalAddressData.nybAddressDetails" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1" select-clear>
                     <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" selected="{{type.displayText=='Not Shown'?'selected':''}}">
                         {{type.displayText}}
                     </md-option>
@@ -52,52 +52,55 @@
         <div layout="row" ng-show="vm.display">
             <md-input-container flex="30">
                 <label>Type</label>
-                <md-select ng-model="uvx">
-                    <md-option value="default" selected>Single</md-option>
+                <md-select ng-model="vm.deliveryPointTypes">
+                    <!--<md-option value="default" selected>Single</md-option>
                     <md-option value="Range">Range</md-option>
                     <md-option value="Subbuilding">Sub-building</md-option>
-                    <md-option value="NumberinName">Number in Name</md-option>
+                    <md-option value="NumberinName">Number in Name</md-option>-->
+                    <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" selected="{{type.displayText=='Single'?'selected':''}}">
+                        {{type.displayText}}
+                    </md-option>
                 </md-select>
             </md-input-container>
         </div>
         
         <!--175-->
       <section layout="row">
-        <div layout="column" flex="65">
+        <div layout="column" flex="65" ng-show="vm.display">
             <fieldset>
             <legend>Address<sub>*</sub></legend>
                 
           	<div layout="row">
           		<div layout="column" flex>
           			<label>Building Number</label>
-          	                	<input ng-model="" type="text">
+          	                	<input ng-model="Number" type="text">
           		</div>
           	
           		<span flex="5"></span>
           	
           		<div layout="column" flex>
           			<label>Building Name</label>
-          	                	<input ng-model="" type="text">
+          	                	<input ng-model="Name" type="text">
           		</div>
           	</div>
           	
           	<div layout="row">
           		<div layout="column" flex>
           			<label>Sub-Building Name</label>
-          	                	<input ng-model="" type="text">
+          	                	<input ng-model="Building" type="text">
           		</div>
           	
           		<span flex="5"></span>
           	
           		<div layout="column" flex>
           			<label>Organisation</label>
-          	                	<input ng-model="" type="text">
+          	                	<input ng-model="Organisation" type="text">
           		</div>
           	</div>
           	<div layout="row">
           		<div layout="column" flex>
           			<label>Department Name</label>
-          	                <input ng-model="" type="text">
+          	                <input ng-model="Name" type="text">
           		</div>
           		<span flex="5"></span>
           		<span flex></span>
@@ -106,10 +109,10 @@
             </fieldset>
         </div>
         <span flex="5"></span>
-        <div layout="column" flex="35">
+        <div layout="column" flex="35" ng-show="vm.display">
         	<div layout="column">
         	    <label>Add DP Alias</label>
-        	    <input ng-model="" type="text">
+        	    <input ng-model="alias" type="text">
         	</div>
         	<div layout="column">
         	    <label>Alias</label>
@@ -120,15 +123,15 @@
     </section>
         
         
-        <div layout="row">
+        <div layout="row" ng-show="vm.display">
             <div layout="column">
             <label>Multi Occ<sub>*</sub></label>
-            <input ng-model="" type="text">
+            <input ng-model="occ" type="text">
             </div>
             <span flex="5"></span>
             <div layout="column">
             <label>Mail Vol<sub>*</sub></label>
-            <input ng-model="" type="text">
+            <input ng-model="vol" type="text">
             </div>
         </div>
         <div layout="row">
