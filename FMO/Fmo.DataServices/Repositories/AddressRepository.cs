@@ -341,7 +341,7 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Postal Address DTO</returns>
-        private PostalAddressDTO GetPostalAddressDetails(Guid id)
+        public PostalAddressDTO GetPostalAddressDetails(Guid id)
         {
             try
             {
