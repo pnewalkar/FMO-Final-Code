@@ -10,6 +10,7 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.closeWindow = closeWindow;
     vm.OnChangeItem = OnChangeItem;
     vm.getPostalAddress = getPostalAddress;
+    vm.getAddressLocation = getAddressLocation;
     vm.display = false;
     vm.disable = true;
 
@@ -56,7 +57,15 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
             vm.disable = false;
     });
 
-}
+    }
+
+    function getAddressLocation(udprn) {
+        deliveryPointApiService.GetAddressLocation(udprn)
+                .then(function (response) {
+                    debugger;
+                    vm.addressLocationData = response.data;
+                });
+    }
 
     function OnChangeItem(selectedItem) {
 

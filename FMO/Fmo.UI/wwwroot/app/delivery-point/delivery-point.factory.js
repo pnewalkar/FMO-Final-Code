@@ -13,6 +13,10 @@ angular.module('deliveryPoint')
         deliveryPointApiService.GetAddressdetails = function (postCode) {
             return $http.get(GlobalSettings.apiUrl + '/address/GetAddressdetails?postCode=' + postCode);
         };
+
+        deliveryPointApiService.GetAddressLocation = function (udprn) {
+            return $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetAddressLocationByUDPRN?udprn=' + udprn);
+        };
         return deliveryPointApiService;
 
     }]);
