@@ -81,6 +81,7 @@ namespace Fmo.NYBLoader
                     }
                     else
                     {
+                        loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORUSRDATAVALIDATION, new FileInfo(strPath).Name, DateTime.UtcNow.ToString()));
                         fileMover.MoveFile(new string[] { strPath }, new string[] { ERROR, AppendTimeStamp(new FileInfo(strPath).Name) });
                     }
                 }
@@ -238,8 +239,6 @@ namespace Fmo.NYBLoader
                         UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
                                                             .Element(XName.Get(Constants.USRUDPRN)).Value);
                     }
-
-                    loggingHelper.LogInfo(string.Format(Constants.LOGMESSAGEFORUSRDATAVALIDATION, new FileInfo(fileName).Name, DateTime.UtcNow.ToString()));
                     //logger code to write schema mismatch exception 
                     result = false;
                 });
