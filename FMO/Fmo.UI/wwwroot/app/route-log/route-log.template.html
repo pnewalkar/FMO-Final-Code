@@ -15,16 +15,17 @@
 
         	<md-input-container flex="20">
 	        	<label>Status</label>
-		        <md-select name="type" ng-model="vm.selectedRouteStatusObj" class="customSelector">
+		        <md-select name="type" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()" class="customSelector">
                     <md-select-label>{{ vm.RouteStatusObj.displayText }}</md-select-label>      
                     <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status" selected="{{ status.displayText === vm.RouteStatusObj.displayText ? 'selected' : '' }}">{{status.displayText}}</md-option>
 		        </md-select>
 	        </md-input-container>
 	        <md-input-container flex="20">
 	        	<label>Scenario</label>
-                <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="customSelector">
-                    <md-option ng-repeat="scenario in vm.RouteScenario" ng-value="scenario">{{scenario.scenarioName}}</md-option>
-                </md-select>           
+                <md-select ng-model="vm.selectedRouteScenario" ng-disabled="vm.isRouteScenarioDisabled" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="customSelector">
+                    <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
+                </md-select>  
+                <div ng-show="!filterScenario.length && vm.isSelectionType" class="noResult">No Result Found</div>         
 	        </md-input-container>
           
             <md-input-container class="40">
@@ -37,7 +38,7 @@
                         <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute =( vm.deliveryRoute  | filter:vm.searchTerm | orderBy : 'routeName') ">{{route.routeName +" "+"("+route.routeNumber+")"}} </md-option>
                     </md-optgroup>
                                     
-                    <div ng-show="!filterDeliveryRoute.length">No Result Found</div>
+                    <div ng-show="!filterDeliveryRoute.length" class="noResult">No Result Found</div>
                 </md-select>
             </md-input-container>
 	    </section>

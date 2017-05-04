@@ -62,6 +62,7 @@
         public const string ErrorFilePath = "ErrorFilePath";
         public const string UserName = "username";
         public const string TokenResponse = "FMO FileLoader:Request token recieved from authorization: ";
+        public const string NYBFLATFILENAME = "CSV Not Yet Built";
         public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
 
         #endregion NYB
@@ -130,7 +131,8 @@
         public const string DeliveryPoints = "DeliveryPoints";
         public const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         public const string PAFFLATFILENAME = "CSV PAF Changes Single";
-        public const string PAFZIPFILENAME = "Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])";
+        public const string PAFZIPFILENAME = "^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
+            //"^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
 
         #endregion PAF
 

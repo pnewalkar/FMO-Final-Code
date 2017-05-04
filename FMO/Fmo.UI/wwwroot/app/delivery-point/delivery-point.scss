@@ -1,0 +1,32 @@
+@import './app/variables';
+
+.deliveryPointDialog{
+    width: width-percent(1.25);
+    height: height-percent(1);
+}
+
+i.fa.fa-times.closeWindow {
+    @include position(absolute);
+    @include top(5px);
+    right: 10px;
+    cursor: default;
+}
+
+.deliveryPointSearch{
+    height: height-percent(2.5);
+    margin-top: 25px;
+}
+
+.searchInputIcon{
+    @include margin(28px 0px 0px 8px);
+    cursor: pointer;
+}
+
+.searchLabel{
+    position: absolute;
+    margin-top: 6px;
+}
+
+.deliveryPointInput{
+    width: 100%;
+}

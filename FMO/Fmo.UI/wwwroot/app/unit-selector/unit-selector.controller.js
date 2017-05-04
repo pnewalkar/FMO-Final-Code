@@ -6,6 +6,7 @@ function UnitSelectorController($scope, $stateParams, $state, $filter, unitSelec
     vm.DeliveryUnit = DeliveryUnit;
     vm.selectedDeliveryUnit = null;
     vm.deliveryRouteUnit = [];
+    vm.isDeliveryUnitDisabled = false;
     BindData();
 
     function DeliveryUnit() {
@@ -33,6 +34,10 @@ function UnitSelectorController($scope, $stateParams, $state, $filter, unitSelec
             } else {
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                     if (response) {
+                        if (response.length === 1)
+                        {
+                            vm.isDeliveryUnitDisabled = true;
+                        }
                         vm.deliveryRouteUnit = response;
                         vm.selectedUser = vm.deliveryRouteUnit[0];
                         vm.selectedDeliveryUnit = vm.selectedUser;

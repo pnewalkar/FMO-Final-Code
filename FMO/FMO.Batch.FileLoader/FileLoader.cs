@@ -9,6 +9,7 @@
     using System.Reflection;
     using System.ServiceProcess;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Web.Script.Serialization;
     using System.Xml.Serialization;
     using Common;
@@ -212,8 +213,6 @@
                     // Creates a new instance of FileSystemWatcher
                     FileSystemWatcher fileSWatch = new FileSystemWatcher();
 
-                    try
-                    {
                         // Sets the filter
                         fileSWatch.Filter = customFolder.FolderFilter;
 
@@ -232,19 +231,14 @@
                         // is added to the monitored folder, using a lambda expression
                         // fileSWatch.Created += (senderObj, fileSysArgs) =>
                         //  fileSWatch_Created(senderObj, fileSysArgs, actionToExecute.ToString(), actionArguments.ToString());
+                        fileSWatch.Error += new ErrorEventHandler(OnFileSystemWatcherError); // OnFileSystemWatcherError;
                         fileSWatch.Created += new FileSystemEventHandler((senderObj, fileSysArgs) => FileSWatch_Created(senderObj, fileSysArgs, actionArguments.ToString()));
-                        fileSWatch.Error += OnFileSystemWatcherError;
 
                         // Begin watching
                         fileSWatch.EnableRaisingEvents = true;
 
                         // Add the systemWatcher to the list
                         listFileSystemWatcher.Add(fileSWatch);
-                    }
-                    catch (Exception)
-                    {
-                        fileSWatch.Dispose();
-                    }
 
                     // Record a log entry into Windows Event Log
 
@@ -255,15 +249,25 @@
             }
         }
 
+        #region Error Handler
         private void OnFileSystemWatcherError(object sender, ErrorEventArgs e)
         {
-            var watcher = (FileSystemWatcher)sender;
-            watcher.EnableRaisingEvents = false;
-            watcher.Dispose();
-
-            // Log error
-            Start();
+            try
+            {
+                var watcher = (FileSystemWatcher)sender;
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose();
+            }
+            catch (Exception ex)
+            {
+                loggingHelper.LogError(ex);
+            }
+            finally
+            {
+               Start();
+            }
         }
+        #endregion
 
         /// <summary>This event is triggered when a file with the specified
         /// extension is created on the monitored folder</summary>
@@ -320,37 +324,45 @@
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
-                using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME))
                 {
-                    foreach (ZipArchiveEntry entry in zip.Entries)
+                    using (ZipArchive zip = ZipFile.OpenRead(fileName))
                     {
-                        Stream stream = entry.Open();
-                        var reader = new StreamReader(stream);
-                        string strLine = reader.ReadToEnd();
-                        string strfileName = entry.Name;
-                        List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
-                        string postaLAddress = serializer.Serialize(lstNYBDetails);
-                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
-
-                        if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                        foreach (ZipArchiveEntry entry in zip.Entries)
                         {
-                            var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+                            using (Stream stream = entry.Open())
+                            {
+                                var reader = new StreamReader(stream);
+                                string strLine = reader.ReadToEnd();
+                                string strfileName = entry.Name;
+                                if (CheckFileName(new FileInfo(strfileName).Name, Constants.NYBFLATFILENAME))
+                                {
+                                    List<PostalAddressDTO> lstNYBDetails = this.nybLoader.LoadNybDetailsFromCsv(strLine.Trim());
+                                    string postaLAddress = serializer.Serialize(lstNYBDetails);
+                                    LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
 
-                            if (invalidRecordsCount > 0)
-                            {
-                                File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
+                                    if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                                    {
+                                        var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                                        if (invalidRecordsCount > 0)
+                                        {
+                                            File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
+                                        }
+                                        else
+                                        {
+                                            File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                        this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
+                                    }
+                                }
                             }
-                            else
-                            {
-                                File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
-                                this.nybLoader.SaveNybDetails(lstNYBDetails, strfileName);
-                            }
-                        }
-                        else
-                        {
-                            File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                            this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
                         }
                     }
                 }
@@ -365,6 +377,26 @@
             }
         }
         #endregion
+
+        /// <summary>
+        /// Check file name is valid
+        /// </summary>
+        /// <param name="fileName">File Name</param>
+        /// <param name="regex">regular expression to pass</param>
+        /// <returns>bool</returns>
+        private bool CheckFileName(string fileName, string regex)
+        {
+            try
+            {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+                Regex reg = new Regex(regex);
+                return reg.IsMatch(fileName);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         /// <summary>
         /// Method level entry exit logging.

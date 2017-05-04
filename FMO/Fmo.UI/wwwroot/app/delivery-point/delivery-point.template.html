@@ -1,1 +1,70 @@
-<h2>Delivery Point</h2>
+<md-dialog aria-label="Delivery Point" class="deliveryPointDialog">
+<div layout="column" class="md-padding">
+    <h2>Add Delivery Points <i class="fa fa-times closeWindow" aria-hidden="true" ng-click="vm.closeWindow()"></i></h2>
+    <md-divider></md-divider>
+    <div layout="row">
+        <label class="searchLabel">Search</label>
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="60">
+        <i class="fa fa-search searchInputIcon" aria-hidden="true" flex="10"></i>
+        <div md-whiteframe="3dp">
+            <ul>
+                <li></li>
+            </ul>
+        </div>            
+        <md-input-container flex="30">
+            <label>Not yet Built</label>
+            <md-select ng-model="">
+                <md-option value="default" selected>Not Shown</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <label class="searchLabel">Locality<sub>*</sub></label>
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="100">           
+    </div>
+    <div layout="row">
+        <label class="searchLabel">Street<sub>*</sub></label>
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="100">           
+    </div>
+    <div layout="row">
+        <div layout="row" flex="30">
+        <label class="searchLabel">Postcode<sub>*</sub></label>
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="100">           
+        </div>
+        <md-input-container flex>
+            <label>Route<sub>*</sub></label>
+            <md-select ng-model="">
+                <md-option value="">select</md-option>
+            </md-select>
+        </md-input-container>
+        <div layout="row" flex="30">
+        <label class="searchLabel">DP Use<sub>*</sub></label>
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="100">           
+        </div>
+    </div>
+    <div layout="row">
+        <md-input-container flex="30">
+            <label>Type</label>
+            <md-select ng-model="">
+                <md-option value="">Single</md-option>
+            </md-select>
+        </md-input-container>           
+    </div>
+    <!--<div layout="row">
+        <div layout="row">
+        <label class="searchLabel">Multi Occ<sub>*</sub></label>
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="100">           
+        </div>
+        <span flex="5"></span>
+        <div layout="row">
+        <label class="searchLabel">Mail Vol<sub>*</sub></label>
+        <input ng-model="" type="text" class="deliveryPointSearch" flex="100">           
+        </div>
+    </div>-->
+    <div layout="row">
+        <md-button class="md-raised md-primary" flex="30">Cancel</md-button>
+        <span flex></span>
+        <md-button ng-disabled="true" class="md-raised md-primary md-block" flex="30">Save</md-button>
+    </div>
+</div>
+</md-dialog>
