@@ -9,17 +9,20 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.openModalPopup = openModalPopup;
     vm.closeWindow = closeWindow;
     vm.OnChangeItem = OnChangeItem;
+    vm.getPostalAddress = getPostalAddress;
+    vm.display = false;
+    vm.disable = true;
 
     querySearch
     function querySearch(query) {
         debugger;
         deliveryPointApiService.GetDeliveryPointsResultSet(query).then(function (response) {
-                        debugger;
-                        vm.results = response.data;
+            debugger;
+            vm.results = response.data;
 
 
 
-                    });
+        });
     }
 
     function deliveryPoint() {
@@ -37,20 +40,37 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
         }
     }
 
+    function getPostalAddress(selectedItem) {
+        var arrSelectedItem = selectedItem.split(',');
+        var postCode;
+        if (arrSelectedItem.length == 2) {
+            postCode = arrSelectedItem[1].trim();
+        }
+        else {
+            postCode = arrSelectedItem[0].trim();
+        }
+        deliveryPointApiService.GetAddressdetails(postCode).then(function (response) {
+            debugger;
+            vm.postalAddressData = response.data;
+            vm.display = true;
+            vm.disable = false;
+    });
 
+}
 
     function OnChangeItem(selectedItem) {
 
         vm.searchText = selectedItem;
-        vm.results = {};
-    }
+        vm.results = {
+    };
+}
 
     function openModalPopup(modalSetting) {
         var popupSetting = modalSetting;
         $mdDialog.show(popupSetting)
-    }
+}
 
     function closeWindow() {
         $mdDialog.hide(vm.close);
-    }
+}
 };

@@ -335,5 +335,24 @@ namespace Fmo.DataServices.Repositories
             };
             fileProcessingLog.LogFileException(objFileProcessingLog);
         }
+
+        /// <summary>
+        /// Filter PostalAddress based on postal address id.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>Postal Address DTO</returns>
+        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        {
+            try
+            {
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
+                return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+                return null;
+            }
+        }
     }
 }

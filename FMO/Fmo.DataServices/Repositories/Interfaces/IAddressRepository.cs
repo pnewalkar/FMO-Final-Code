@@ -72,5 +72,12 @@
         /// <param name="thoroughfare">thoroughfare</param>
         /// <returns>List of Postal Address</returns>
         Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode);
+
+        /// <summary>
+        /// Get Postal Address based on postal address id.
+        /// </summary>
+        /// <param name="id">postCode</param>
+        /// <returns>Postal Address DTO</returns>
+         PostalAddressDTO GetPostalAddressDetails(Guid id);
     }
 }

@@ -33,11 +33,15 @@ angular.module('FMOApp')
              controller: 'manageAccessController as vm',
              params: { username: null, }
          })
-     .state("searchDetails", {
-         templateUrl: "./search/context.template.html",
-         controller: "ContextController as vm",
-         params: { selectedItem: null, }
-     });
+        .state("searchDetails", {
+            templateUrl: "./search/context.template.html",
+            controller: "ContextController as vm",
+            params: { selectedItem: null, }
+        })
+        .state("referenceData", {
+            templateUrl: "./reference-data/reference-data.templete.html",
+            controller: "ReferenceDataController as vm"
+        });
   
 })
 .config(function ($httpProvider) {

@@ -39,5 +39,14 @@ namespace Fmo.BusinessServices.Services
         {
             return referenceDataCategoryRepository.RouteLogSelectionType();
         }
+
+        /// <summary>
+        /// Gets all reference category list along with associated reference data.
+        /// </summary>
+        /// <returns>List<ReferenceDataCategoryDTO></returns>
+        public List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList()
+        {
+            return referenceDataCategoryRepository.GetAllReferenceCategoryList();
+        }
     }
 }

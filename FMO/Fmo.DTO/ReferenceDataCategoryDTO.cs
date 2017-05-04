@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Fmo.DTO
 {
@@ -7,6 +8,8 @@ namespace Fmo.DTO
     /// </summary>
     public class ReferenceDataCategoryDTO
     {
+        public Guid Id { get; set; }
+
         public int ReferenceDataCategory_Id { get; set; }
 
         public string CategoryName { get; set; }
