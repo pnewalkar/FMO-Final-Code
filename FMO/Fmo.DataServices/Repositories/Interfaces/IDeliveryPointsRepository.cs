@@ -84,6 +84,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
 
         /// <summary>
+        /// Get the list of delivery points by the UDPRN id
+        /// </summary>
+        /// <param name="udprn">UDPRN id</param>
+        /// <returns>DeliveryPointDTO object</returns>
+        AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn);
+
+        /// <summary>
         /// Get the delivery points by the Postal Address Guid
         /// </summary>
         /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>

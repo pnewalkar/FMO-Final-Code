@@ -51,9 +51,9 @@ namespace Fmo.API.Services.Controllers
         /// <returns>The coordinates of the delivery point</returns>
         [Route("GetAddressLocationByUDPRN")]
         [HttpGet]
-        public JsonResult GetAddressLocationByUDPRN(int udprn)
+        public JsonResult GetDetailDeliveryPointByUDPRN(int udprn)
         {
-            return Json(businessService.GetAddressLocationByUDPRN(udprn));
+            return Json(businessService.GetDetailDeliveryPointByUDPRN(udprn));
         }
     }
 }
