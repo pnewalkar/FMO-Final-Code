@@ -40,8 +40,10 @@
             </div>
             <md-input-container flex>
                 <label>Route<sub>*</sub></label>
-                <md-select ng-model="xyz">
-                    <md-option value="">select</md-option>
+                <md-select ng-model="vm.postalAddressData.routeDetails" select-clear>
+                    <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
+                        {{route.displayText}}
+                    </md-option>
                 </md-select>
             </md-input-container>
             <div layout="column" flex="30">

@@ -73,6 +73,7 @@
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />
+    <Compile Include="UIDropdowns\BindingEntity.cs" />
     <Compile Include="UnitLocationDTO.cs" />
     <Compile Include="NetworkLinkDTO.cs" />
     <Compile Include="PostalAddressDTO.cs" />
