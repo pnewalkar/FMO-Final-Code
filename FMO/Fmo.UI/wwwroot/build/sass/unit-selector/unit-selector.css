@@ -3,11 +3,12 @@
   font-family: PF DIN;
   font-size: 16px; }
 
-@font-face {
-  font-family: 'Chevin';
-  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot"); }
-
 /*@font-face {
+    font-family: 'Chevin';
+    src:  url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot');
+}
+
+@font-face {
     font-family: 'PF DIN';
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c#iefix') format('embedded-opentype'),
@@ -31,16 +32,13 @@
   color: #ffffff; }
 
 .noResult {
-    text-align: center;
-    margin-top: 8px;
-    font-size: 16px;
-    font-family: PF DIN;
-}
+  text-align: center;
+  margin-top: 8px;
+  font-size: 16px;
+  font-family: PF DIN; }
 
-.unitText  .md-select-value>span:not(.md-select-icon) .md-text > .delivery{
-    display: none;
-} 
+.unitText .md-select-value > span:not(.md-select-icon) .md-text > .delivery {
+  display: none; }
 
-.unitText .md-select-value>span:not(.md-select-icon) .md-text  {
-    color: white;
-} 
+.unitText .md-select-value > span:not(.md-select-icon) .md-text {
+  color: #ffffff; }
