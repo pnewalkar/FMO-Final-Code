@@ -76,6 +76,5 @@ namespace Fmo.DTO
         public List<object> NybAddressDetails { get; set; }
 
         public List<BindingEntity> RouteDetails { get; set; }
-
     }
 }
