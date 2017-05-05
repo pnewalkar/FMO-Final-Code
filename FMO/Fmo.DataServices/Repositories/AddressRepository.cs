@@ -1,4 +1,9 @@
-﻿using Fmo.Common.Constants;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.DataServices.DBContext;
@@ -8,11 +13,6 @@ using Fmo.DTO;
 using Fmo.DTO.UIDropdowns;
 using Fmo.Entities;
 using Fmo.MappingConfiguration;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -194,7 +194,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var postalAddress = DataContext.PostalAddresses
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
                                 .Where(
                                 n => n.Postcode == objPostalAddress.Postcode
                                 && n.BuildingName == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : null)
@@ -210,6 +210,44 @@ namespace Fmo.DataServices.Repositories
             {
                 this.loggingHelper.LogError(ex);
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Checking for duplicatesthat already exists in FMO as a NYB record
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress</param>
+        /// <returns>boolean</returns>
+        public bool CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        {
+            try
+            {
+                bool isduplicate = false;
+                Guid nybAddressID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
+
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                                .Where(n => n.AddressType_GUID == nybAddressID && n.BuildingName == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : null)
+                               && n.BuildingNumber == (objPostalAddress.BuildingNumber != null ? objPostalAddress.BuildingNumber : null)
+                               && n.SubBuildingName == (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName) ? objPostalAddress.SubBuildingName : null)
+                               && n.OrganisationName == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : null)
+                               && n.DepartmentName == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : null)
+                               && n.Thoroughfare == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : null)
+                               && n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null)).SingleOrDefault();
+
+                if (postalAddress != null && postalAddress.Postcode == objPostalAddress.Postcode)
+                {
+                    isduplicate = true;
+                }
+                else if (postalAddress != null && postalAddress.Postcode != objPostalAddress.Postcode)
+                {
+                    isduplicate = false;
+                }
+
+                return isduplicate;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -353,6 +391,25 @@ namespace Fmo.DataServices.Repositories
         }
 
         /// <summary>
+        /// Filter PostalAddress based on postal address id.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>Postal Address DTO</returns>
+        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        {
+            try
+            {
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
+                return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
         /// <param name="uDPRN">UDPRN</param>
@@ -372,25 +429,6 @@ namespace Fmo.DataServices.Repositories
                 NatureOfError = strException
             };
             fileProcessingLog.LogFileException(objFileProcessingLog);
-        }
-
-        /// <summary>
-        /// Filter PostalAddress based on postal address id.
-        /// </summary>
-        /// <param name="id">id</param>
-        /// <returns>Postal Address DTO</returns>
-        public PostalAddressDTO GetPostalAddressDetails(Guid id)
-        {
-            try
-            {
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
-                return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
-                return null;
-            }
         }
     }
 }
