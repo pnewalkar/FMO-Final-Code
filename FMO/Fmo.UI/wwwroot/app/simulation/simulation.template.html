@@ -7,7 +7,7 @@
 
     <md-input-container class="md-block">
         <label>Scenario</label>
-        <md-select ng-model="vm.selectedRouteScenario" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="simulationSelect">
+        <md-select ng-model="vm.selectedRouteScenario" ng-disabled="!filterScenario.length" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="simulationSelect">
             <md-option ng-repeat="scenario in filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
         </md-select>
         <div ng-show="!filterScenario.length" class="noResult">No Result Found</div>
@@ -17,10 +17,12 @@
         <label>Route</label>
         <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" class="simulationSelect">
             <md-select-header>
-                <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
+                <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-blur="vm.clearSearchTerm()" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
             </md-select-header>
             <md-optgroup>
-                <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute =( vm.deliveryRoute  | filter:vm.searchTerm | orderBy : 'routeName') ">{{ "("+route.routeNumber+")"+ route.routeName}} </md-option>
+                <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute = ( vm.deliveryRoute | filter:{routeNameNumber:vm.searchTerm } | orderBy : 'routeName') ">
+                    {{route.routeNameNumber}}
+                </md-option>
             </md-optgroup>
             <div ng-show="!filterDeliveryRoute.length" class="noResult">No Result Found</div>
         </md-select>

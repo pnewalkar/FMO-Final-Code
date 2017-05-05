@@ -268,7 +268,6 @@ namespace Fmo.BusinessServices.Services
                         }
                     }
 
-                    nybDetails.Add(new { Value = Guid.Empty, DisplayText = Constants.NotShown });
                     postalAddressDto.NybAddressDetails = nybDetails;
                 }
 

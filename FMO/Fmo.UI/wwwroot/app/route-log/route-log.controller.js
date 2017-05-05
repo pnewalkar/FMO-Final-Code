@@ -8,6 +8,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.selectionTypeChange = selectionTypeChange;
+
     vm.clearSearchTerm = clearSearchTerm;
     vm.routeChange = routeChange;
     vm.selectedDeliveryUnitObj = items;

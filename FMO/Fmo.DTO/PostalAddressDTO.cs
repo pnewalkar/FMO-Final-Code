@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Fmo.DTO;
+using Fmo.DTO.UIDropdowns;
+using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
@@ -72,5 +74,7 @@ namespace Fmo.DTO
         public string FileName { get; set; }
 
         public List<object> NybAddressDetails { get; set; }
+
+        public List<BindingEntity> RouteDetails { get; set; }
     }
 }
