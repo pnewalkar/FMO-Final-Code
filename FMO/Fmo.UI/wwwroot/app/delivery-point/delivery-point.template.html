@@ -8,7 +8,7 @@
                 <label>Search</label>
                 <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)" ng-blur="vm.onBlur()">
                 <div class="resultPanel" ng-show="vm.results.length>0">
-                    <ul ng-repeat="item in vm.results | limitTo:500">
+                    <ul ng-repeat="item in vm.results">
                         <li ng-click="vm.OnChangeItem(item)">
                             {{item}}
                         </li>
@@ -18,7 +18,7 @@
             <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
             <md-input-container flex="30" ng-show="vm.display">
                 <label>Not yet Built</label>
-                <md-select ng-model="notyetBuilt" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
+                <md-select ng-model="notyetBuilt" ng-disabled="vm.postalAddressData.nybAddressDetails.length==0">
                     <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value">
                         {{type.displayText}}
                     </md-option>
@@ -57,12 +57,8 @@
         <div layout="row" ng-show="vm.display">
             <md-input-container flex="30">
                 <label>Type</label>
-                <md-select ng-model="vm.deliveryPointTypes">
-                    <!--<md-option value="default" selected>Single</md-option>
-                    <md-option value="Range">Range</md-option>
-                    <md-option value="Subbuilding">Sub-building</md-option>
-                    <md-option value="NumberinName">Number in Name</md-option>-->
-                    <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" selected="{{type.displayText=='Single'?'selected':''}}">
+                <md-select ng-model="deliveryPointTypes">
+                    <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.displayText=='Single'?true:false}}">
                         {{type.displayText}}
                     </md-option>
                 </md-select>
