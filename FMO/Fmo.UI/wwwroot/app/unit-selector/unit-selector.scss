@@ -11,3 +11,10 @@
     font-size: 16px;
     font-family: PF DIN;
 }
+
+.unitText  .md-select-value>span:not(.md-select-icon) .md-text > .delivery{
+    display: none;
+} 
+.unitText .md-select-value>span:not(.md-select-icon) .md-text  {
+    @include font-color($white);
+} 

@@ -1,7 +1,9 @@
 angular.module('search')
   .component('search', {
       restrict: 'E',
-      scope: {},
+      bindings: {
+          contextTitle: "="
+      },
       templateUrl: './search/search.template.html',
       controller: 'SearchController as vm'
   });

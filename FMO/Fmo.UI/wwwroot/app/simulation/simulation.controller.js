@@ -8,6 +8,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.selectedDeliveryUnitObj = $stateParams;
+    vm.clearSearchTerm = clearSearchTerm;
     vm.selectedRouteStatusObj = null;
     vm.selectedRouteScenario = null;
     vm.isDeliveryRouteDisabled = true;
@@ -17,7 +18,10 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.searchTerm;
     vm.RouteScenario = null;
     vm.deliveryRoute = null;
-
+    function clearSearchTerm()
+    {
+        vm.searchTerm = "";
+    }
     function selectedRouteStatus() {
          
         loadScenario(vm.selectedRouteStatusObj, vm.selectedDeliveryUnitObj.selectedUnit.id);

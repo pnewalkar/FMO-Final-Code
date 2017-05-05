@@ -59,6 +59,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
                     var long = data.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(long, lat);
                 });
+            vm.contextTitle = "Context Panel";
             $state.go('searchDetails', {
                 selectedItem: selectedItem
             });
@@ -85,6 +86,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
         var popupSetting = modalSetting;
         $mdDialog.show(popupSetting).then(function (returnedData) {
             vm.data = returnedData;
+            vm.contextTitle = "Context Panel";
             vm.isResultDisplay = false;
             vm.resultscount[0].count = 0;
             vm.searchText = "";
