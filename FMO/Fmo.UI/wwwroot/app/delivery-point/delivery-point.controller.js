@@ -2,11 +2,11 @@ angular
     .module('deliveryPoint')
     .controller("DeliveryPointController", ['$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
                 '$filter',
-                'referenceDataConstants'
+                'referenceDataConstants', '$timeout'
 , DeliveryPointController])
 function DeliveryPointController($scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
     $filter,
-    referenceDataConstants
+    referenceDataConstants, $timeout
 ) {
     var vm = this;
     vm.resultSet = resultSet;
@@ -20,6 +20,8 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.onBlur = onBlur;
     vm.display = false;
     vm.disable = true;
+   
+   
 
     referenceData();
 
@@ -45,25 +47,43 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     }
 
     function onBlur() {
+        debugger;
         $timeout(function () {
-             vm.results = { };
+            vm.results = {};
+          
+           
+           // vm.searchText="";
         }, 1000);
         }
 
     function getPostalAddress(selectedItem) {
-        var arrSelectedItem = selectedItem.split(',');
-        var postCode;
-        if (arrSelectedItem.length == 2) {
-            postCode = arrSelectedItem[1].trim();
-        }
-        else {
-            postCode = arrSelectedItem[0].trim();
-        }
-        deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
-            vm.postalAddressData = response.data;
-            vm.display = true;
-            vm.disable = false;
-        });
+      
+        //if (selectedItem.length >= 3) {
+            var arrSelectedItem = selectedItem.split(',');
+            var postCode;
+            if (arrSelectedItem.length == 2) {
+                postCode = arrSelectedItem[1].trim();
+            }
+            else {
+                postCode = arrSelectedItem[0].trim();
+            }
+         
+            deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
+               
+                    vm.postalAddressData = response.data;
+                    if (vm.postalAddressData) {
+                        vm.display = true;
+                        vm.disable = false;
+                    }
+            else {
+            vm.display = false;
+ vm.disable = true;
+    }
+                });
+          //  }
+
+            //}
+        
 
     }
 

@@ -18,9 +18,12 @@
             <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
             <md-input-container flex="30" ng-show="vm.display">
                 <label>Not yet Built</label>
-                <md-select ng-model="vm.postalAddressData.nybAddressDetails" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1" select-clear>
-                    <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" selected="{{type.displayText=='Not Shown'?'selected':''}}">
+                <md-select ng-model="notyetBuilt" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
+                    <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value">
                         {{type.displayText}}
+                    </md-option>
+                    <md-option value="default" selected>
+                        Not Shown
                     </md-option>
                 </md-select>
             </md-input-container>
