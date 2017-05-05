@@ -56,10 +56,6 @@
             <md-input-container flex="30">
                 <label>Type</label>
                 <md-select ng-model="vm.deliveryPointTypes">
-                    <!--<md-option value="default" selected>Single</md-option>
-                    <md-option value="Range">Range</md-option>
-                    <md-option value="Subbuilding">Sub-building</md-option>
-                    <md-option value="NumberinName">Number in Name</md-option>-->
                     <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" selected="{{type.displayText=='Single'?'selected':''}}">
                         {{type.displayText}}
                     </md-option>
@@ -137,11 +133,10 @@
             <input ng-model="vol" type="text">
             </div>
         </div>
-        <div layout="row">
+        <div layout="row" class="dialogAction">
             <md-button class="md-raised md-primary" flex="30">Cancel</md-button>
             <span flex></span>
             <md-button ng-disabled="vm.disable" class="md-raised md-primary" flex="30">Save</md-button>
-            <md-button flex="30" class="md-raised md-primary" ng-click="vm.getAddressLocation(vm.postalAddressData.udprn)">RFMO-175 Save</md-button>
         </div>
     </div>
 </md-dialog>
