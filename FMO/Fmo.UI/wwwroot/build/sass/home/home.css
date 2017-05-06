@@ -3,11 +3,12 @@
   font-family: Chevin;
   font-size: 18px; }
 
-/*@font-face {
-    font-family: 'Chevin';
-    src:  url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot');
-}
+@font-face {
+  font-family: 'Chevin';
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot");
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot?#iefix") format("embedded-opentype"); }
 
+/*
 @font-face {
     font-family: 'PF DIN';
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
@@ -38,3 +39,16 @@
 
 .fa-bars {
   color: #ffffff; }
+
+/*
+@font-face {
+    font-family: 'PF DIN';
+    src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
+    src:  url('../fonts/digicare/digicare-icofont.eot?udm03c#iefix') format('embedded-opentype'),
+    url('../fonts/digicare/digicare-icofont.ttf?udm03c') format('truetype'),
+    url('../fonts/digicare/digicare-icofont.woff?udm03c') format('woff'),
+    url('../fonts/digicare/digicare-icofont.svg?udm03c#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+*/
