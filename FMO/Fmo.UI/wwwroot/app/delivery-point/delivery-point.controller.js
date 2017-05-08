@@ -152,6 +152,7 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     function referenceData() {
         referencedataApiService.getReferenceData().success(function (response) {
             vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
+            vm.dpUse = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
         });
     }
 
@@ -159,6 +160,12 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
         deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
                    vm.nybaddress = response.data;
+                   if (!(vm.nybaddress.organisationName)) {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Residential" });
+                   }
+                   else {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Commercial" });
+                   }
                });
     }
 };
