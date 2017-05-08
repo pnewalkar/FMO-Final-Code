@@ -1,8 +1,15 @@
+.resultPanel, .deliveryPointDialog input {
+  color: #2a2a2d;
+  font-family: PF DIN;
+  font-size: 16px; }
+
 @font-face {
   font-family: 'Chevin';
-  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot"); }
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot");
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot?#iefix") format("embedded-opentype"); }
 
-/*@font-face {
+/*
+@font-face {
     font-family: 'PF DIN';
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c#iefix') format('embedded-opentype'),
@@ -50,6 +57,9 @@ i.fa.fa-times.closeWindow {
 
 .fa {
   cursor: pointer; }
+
+.dialogAction {
+  margin: 100px 0px 0px 0px; }
 
 
  div[ng-message] {

@@ -72,15 +72,15 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        /// This method is used to fetch address location data for positioning of Delivery Points on the basis of udprn.
+        /// This method is used to fetch .......
         /// </summary>
         /// <param name="udprn">The UDPRN number</param>
         /// <returns>The coordinates of the delivery point</returns>
-        public AddressLocationDTO GetAddressLocationByUDPRN(int udprn)
+        public AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
         {
             try
             {
-                return addressLocationRepository.GetAddressLocationByUDPRN(udprn);
+                return deliveryPointsRepository.GetDetailDeliveryPointByUDPRN(udprn);
             }
             catch (Exception)
             {

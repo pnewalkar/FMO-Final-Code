@@ -10,9 +10,11 @@
 
 @font-face {
   font-family: 'Chevin';
-  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot"); }
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot");
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot?#iefix") format("embedded-opentype"); }
 
-/*@font-face {
+/*
+@font-face {
     font-family: 'PF DIN';
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c#iefix') format('embedded-opentype'),
