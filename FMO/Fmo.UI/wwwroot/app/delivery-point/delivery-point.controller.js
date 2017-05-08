@@ -17,12 +17,15 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     vm.OnChangeItem = OnChangeItem;
     vm.getPostalAddress = getPostalAddress;
     vm.getAddressLocation = getAddressLocation;
+    vm.addAlias = addAlias;
+    vm.removeAlias = removeAlias;
     vm.onBlur = onBlur;
     vm.bindAddressDetails = bindAddressDetails;
     vm.display = false;
     vm.disable = true;
     vm.openAlert = openAlert;
-    vm.toggle=toggle;
+    vm.toggle = toggle;
+    vm.alias = null;
     vm.exists =exists;
     vm.deliveryPointList= [{locality:"BN1 Dadar",
                             addressGuid :1, 
@@ -158,13 +161,38 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     function referenceData() {
         referencedataApiService.getReferenceData().success(function (response) {
             vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
+            vm.dpUse = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
         });
+    }
+
+    vm.items = [];
+
+    function addAlias() {
+       
+        vm.items.push({
+            inlineChecked: false,
+            alias: vm.alias
+        });
+        vm.alias = "";
+    };
+
+
+    function removeAlias()
+    {
+        var lastItem = vm.items.length - 1;
+        vm.items.splice(lastItem);
     }
 
     function bindAddressDetails() {
         deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
                    vm.nybaddress = response.data;
+                   if (!(vm.nybaddress.organisationName)) {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Residential" });
+                   }
+                   else {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Commercial" });
+                   }
                });
     }
 };

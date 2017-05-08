@@ -9,10 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.NetworkLinkReference")]
     public partial class NetworkLinkReference
     {
-        public int NetworkReference_Id { get; set; }
-
-        public int NetworkLink_Id { get; set; }
-
         [StringLength(20)]
         public string OSRoadLinkTOID { get; set; }
 

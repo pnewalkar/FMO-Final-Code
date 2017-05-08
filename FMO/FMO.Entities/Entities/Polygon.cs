@@ -17,10 +17,6 @@ namespace Fmo.Entities
             PolygonObjects = new HashSet<PolygonObject>();
         }
 
-        public int Polygon_Id { get; set; }
-
-        public int PolygonType_Id { get; set; }
-
         [Required]
         public DbGeometry PolygonGeometry { get; set; }
 

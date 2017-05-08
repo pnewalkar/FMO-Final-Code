@@ -9,10 +9,7 @@ namespace Fmo.DTO
 {
     public class OsRoadLinkDTO
     {
-
-        public int NetworkLink_Id { get; set; }
-
-        public string TOID { get; set; }
+        public Guid ID { get; set; }
 
         public DbGeometry CentreLineGeometry { get; set; }
 

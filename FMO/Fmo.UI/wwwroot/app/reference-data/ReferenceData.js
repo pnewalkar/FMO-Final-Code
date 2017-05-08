@@ -681,5 +681,35 @@
         "dataParent_GUID": null
     }
     ]
+}, {
+    "id": "5F3D7F7A-9431-E711-83EC-28D244AEF9ED",
+    "referenceDataCategory_Id": 12,
+    "categoryName": "DeliveryPoint Use Indicator",
+    "maintainable": false,
+    "categoryType": 2,
+    "referenceDatas": [{
+        "referenceData_Id": 31,
+        "referenceDataCategory_Id": 12,
+        "referenceDataName": null,
+        "referenceDataValue": null,
+        "dataDescription": "Commercial",
+        "displayText": "Commercial",
+        "dataParentId": null,
+        "id": "990B86A2-9431-E711-83EC-28D244AEF9ED",
+        "referenceDataCategory_GUID": "5F3D7F7A-9431-E711-83EC-28D244AEF9ED",
+        "dataParent_GUID": null
+    }, {
+        "referenceData_Id": 31,
+        "referenceDataCategory_Id": 12,
+        "referenceDataName": null,
+        "referenceDataValue": null,
+        "dataDescription": "Residential",
+        "displayText": "Residential",
+        "dataParentId": null,
+        "id": "178EDCAD-9431-E711-83EC-28D244AEF9ED",
+        "referenceDataCategory_GUID": "5F3D7F7A-9431-E711-83EC-28D244AEF9ED",
+        "dataParent_GUID": null
+    }
+    ]
 }
 ]

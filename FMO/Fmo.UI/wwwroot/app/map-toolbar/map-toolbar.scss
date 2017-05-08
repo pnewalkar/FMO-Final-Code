@@ -1,8 +1,8 @@
 @import './app/variables';
 
 .maptoolBarText{
-    font-family: $secondary-font;
-    font-size: $seondary-font-size;
+    font-family: $pf_din-font;
+    font-size: $secondary-font-size;
 }
 
 .map-toolbar {
@@ -20,9 +20,9 @@
 
 .pad-icon {
     @include margin(0px 5px 0px 10px);
-    font-size: $seondary-font-size;
+    font-size: $secondary-font-size;
 }
 
 .map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button:hover {
-    background-color: #aadaea;
+    background-color: $clear-blue;
 }   

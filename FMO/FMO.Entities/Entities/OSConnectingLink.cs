@@ -32,6 +32,8 @@ namespace Fmo.Entities
 
         public Guid? PathNode_GUID { get; set; }
 
+        public virtual OSConnectingNode OSConnectingNode { get; set; }
+
         public virtual OSPathNode OSPathNode { get; set; }
     }
 }

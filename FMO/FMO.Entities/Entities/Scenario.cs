@@ -15,18 +15,12 @@ namespace Fmo.Entities
             DeliveryRoutes = new HashSet<DeliveryRoute>();
         }
 
-        public int Scenario_Id { get; set; }
-
         [StringLength(50)]
         public string ScenarioName { get; set; }
-
-        public int? OperationalState_Id { get; set; }
 
         public Guid ID { get; set; }
 
         public Guid? OperationalState_GUID { get; set; }
-
-        public int? Unit_Id { get; set; }
 
         public Guid? Unit_GUID { get; set; }
 

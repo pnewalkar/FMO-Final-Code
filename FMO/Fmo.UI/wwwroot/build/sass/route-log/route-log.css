@@ -1,39 +1,13 @@
 #header #head1, #header #head2, #header #head3, md-dialog h2 {
   color: #ffffff;
-  font-family: Chevin;
+  font-family: Chevin_Light;
   font-size: 18px; }
 
 .td1, .td2, label, .md-text {
   color: #2a2a2d;
-  font-family: PF DIN;
+  font-family: PF_DIN;
   font-size: 16px; }
 
-@font-face {
-  font-family: 'Chevin';
-  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot");
-  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot?#iefix") format("embedded-opentype"); }
-
-/*
-@font-face {
-    font-family: 'PF DIN';
-    src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
-    src:  url('../fonts/digicare/digicare-icofont.eot?udm03c#iefix') format('embedded-opentype'),
-    url('../fonts/digicare/digicare-icofont.ttf?udm03c') format('truetype'),
-    url('../fonts/digicare/digicare-icofont.woff?udm03c') format('woff'),
-    url('../fonts/digicare/digicare-icofont.svg?udm03c#icomoon') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'PF DIN';
-    src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
-    src:  url('../fonts/digicare/digicare-icofont.eot?udm03c#iefix') format('embedded-opentype'),
-    url('../fonts/digicare/digicare-icofont.ttf?udm03c') format('truetype'),
-    url('../fonts/digicare/digicare-icofont.woff?udm03c') format('woff'),
-    url('../fonts/digicare/digicare-icofont.svg?udm03c#icomoon') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}*/
 #table_wrapper {
   background-color: #c1c6c8;
   border: #2a2a2d;

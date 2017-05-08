@@ -9,12 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.PolygonObject")]
     public partial class PolygonObject
     {
-        public int Polygon_Id { get; set; }
-
-        public int OperationalObject_Id { get; set; }
-
-        public int OperationalObjectType_Id { get; set; }
-
         public bool ObjectExcluded { get; set; }
 
         [Column(TypeName = "numeric")]

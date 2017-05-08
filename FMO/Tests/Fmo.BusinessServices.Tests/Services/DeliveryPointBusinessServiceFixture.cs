@@ -40,7 +40,7 @@ namespace Fmo.BusinessServices.Tests.Services
             int udprn = 10875813;
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             DeliveryPointDTO objdeliverypointDTO = new DeliveryPointDTO();
-            objdeliverypointDTO.DeliveryPoint_Id = 11820021;
+            objdeliverypointDTO.ID = Guid.NewGuid();
             objdeliverypointDTO.LocationXY = System.Data.Entity.Spatial.DbGeometry.PointFromText("POINT (487431 193658)", 27700);
             objdeliverypointDTO.PostalAddress = new PostalAddressDTO();
             lstDeliveryPointDTO.Add(objdeliverypointDTO);

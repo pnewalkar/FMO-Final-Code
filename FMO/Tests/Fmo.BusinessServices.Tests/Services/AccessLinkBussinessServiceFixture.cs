@@ -30,7 +30,7 @@ namespace Fmo.BusinessServices.Tests.Services
         protected override void OnSetup()
         {
             mockaccessLinkRepository = new Mock<IAccessLinkRepository>();
-            accessLinkDTO = new List<AccessLinkDTO>() { new AccessLinkDTO() { AccessLink_Id = 1, features = "DI0001", AccessLinkType_Id = 1, type = "UnitOne" } };
+            accessLinkDTO = new List<AccessLinkDTO>() { new AccessLinkDTO() { ID = Guid.NewGuid()} };
             mockaccessLinkRepository.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDTO>>);
 
             testCandidate = new AccessLinkBusinessService(mockaccessLinkRepository.Object);

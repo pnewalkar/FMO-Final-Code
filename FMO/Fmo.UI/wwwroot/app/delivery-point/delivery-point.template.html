@@ -19,7 +19,7 @@
                 <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
                 <md-input-container flex="30" ng-show="vm.display">
                     <label>Not yet Built</label>
-                    <md-select ng-model="notyetBuilt" ng-disabled="vm.postalAddressData.nybAddressDetails.length==0">
+                    <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==0">
                         <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value">
                             {{type.displayText}}
                         </md-option>
@@ -52,7 +52,7 @@
                 </md-input-container>
                 <div layout="column" flex="30">
                     <label>DP Use<sub>*</sub></label>
-                    <input type="text">
+                    <input type="text" ng-model="vm.dpUse[0].displayText">
                 </div>
             </div>
             <div layout="row" ng-show="vm.display">
@@ -137,11 +137,23 @@
                 <div layout="column" flex="35" ng-show="vm.display">
                     <div layout="column">
                         <label>Add DP Alias</label>
-                        <input ng-model="alias" type="text">
+                        <div layout="row">
+                            <input ng-model="vm.alias" type="text" style="
+                                   height: 26px;
+                                   ">
+                            <span flex="5"></span>
+                            <i class="fa fa-plus-circle" ng-click="vm.addAlias()" aria-hidden="true" flex></i>
+                        </div>
                     </div>
-                    <div layout="column">
+                    <div layout="column" style="margin-top: 27px;">
                         <label>Alias</label>
-                        <div></div>
+                        <div style="height:130px; overflow-y:auto;border:">
+                            <div ng-repeat="item in vm.items">
+                                <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.alias">
+                                <input type="radio" name="check" value="inline" ng-model="item.inlineChecked">
+                                <i class="fa fa-minus-circle" aria-hidden="true" ng-click="vm.removeAlias()"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
