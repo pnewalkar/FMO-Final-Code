@@ -339,9 +339,9 @@ namespace Fmo.DataServices.Repositories
 
             return new AddDeliveryPointDTO()
             {
-                deliveryPoint = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoints.DeliveryPoint),
-                addressLocation = Mapper.Map<AddressLocation, AddressLocationDTO>(deliveryPoints.AddressLocation),
-                postalAddress = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
+                DeliveryPointDTO = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoints.DeliveryPoint),
+                AddressLocationDTO = Mapper.Map<AddressLocation, AddressLocationDTO>(deliveryPoints.AddressLocation),
+                PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
             };
         }
 

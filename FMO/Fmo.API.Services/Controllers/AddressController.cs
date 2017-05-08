@@ -57,7 +57,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("GetAddressByPostCode")]
         public async Task<PostalAddressDTO> GetAddressByPostCode(string postCode)
         {
-            return await businessService.GetPostalAddressDetails(postCode);
+            return await businessService.GetPostalAddressDetails(postCode, CurrentUserUnit);
         }
 
         /// <summary>

@@ -226,8 +226,9 @@ namespace Fmo.BusinessServices.Services
         /// Filter PostalAddress based on the post code
         /// </summary>
         /// <param name="postCode">postCode</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode)
+        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode, Guid unitGuid)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
@@ -236,7 +237,7 @@ namespace Fmo.BusinessServices.Services
             {
                 List<object> nybDetails = new List<object>();
                 PostalAddressDTO postalAddressDto = null;
-                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode);
+                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode, unitGuid);
                 Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
                 if (postalAddressDetails != null && postalAddressDetails.Count > 0)
                 {
