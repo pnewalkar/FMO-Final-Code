@@ -367,7 +367,13 @@
             List<string> lstPocodes = new List<string>();
             List<PostalAddressDTO> postalAddressDTO = new List<PostalAddressDTO>();
 
-            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(p => p.Postcode1.DeliveryRoutePostcodes).Where(n => n.Postcode == postCode).ToListAsync();
+            var postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                       join pc in DataContext.Postcodes.AsNoTracking()
+                                       on pa.PostCodeGUID equals pc.ID
+                                       join drpc in DataContext.DeliveryRoutePostcodes.AsNoTracking()
+                                       on pc.ID equals drpc.Postcode_GUID
+                                       where pc.PostcodeUnit == postCode
+                                       select pa).ToListAsync();
 
             postalAddressDTO = GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
 
@@ -375,11 +381,12 @@
             {
                 if (d.IsPrimaryRoute)
                 {
-                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).ToList().ForEach(paDTO =>
+                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
                     {
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = "Select", Value = new Guid("00000000-0000-0000-0000-000000000000") });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
@@ -390,11 +397,12 @@
                 }
                 else
                 {
-                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).ToList().ForEach(paDTO =>
+                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
                     {
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = "Select", Value = new Guid("00000000-0000-0000-0000-000000000000") });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
