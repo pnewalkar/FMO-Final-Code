@@ -62,15 +62,16 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// </summary>
         /// <param name="searchText">searchText</param>
         /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of Postal Address</returns>
-        Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
+        /// <returns>List of Postcodes</returns>
+        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Get Postal Address based on postcode
         /// </summary>
         /// <param name="postCode">postCode</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode);
+        Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode, Guid unitGuid);
 
         /// <summary>
         /// Get Postal Address based on postal address id.
@@ -83,7 +84,14 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// Checking for duplicatesthat already exists in FMO as a NYB record
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress</param>
-        /// <returns>boolean</returns>
-        bool CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
+        /// <returns>string</returns>
+        string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
+
+        /// <summary>
+        /// Create delivery point for PAF and NYB details
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
     }
 }

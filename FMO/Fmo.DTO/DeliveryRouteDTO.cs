@@ -35,5 +35,13 @@ namespace Fmo.DTO
 
         public string DeliveryRouteBarcode { get; set; }
 
+        public string RouteNameNumber
+        {
+            get
+            {
+                return "(" + RouteNumber.Trim() + ")" + RouteName;
+            }
+        }
+
     }
 }

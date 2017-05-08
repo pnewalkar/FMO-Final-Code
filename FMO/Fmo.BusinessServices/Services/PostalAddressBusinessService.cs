@@ -210,24 +210,7 @@ namespace Fmo.BusinessServices.Services
 
             try
             {
-                List<string> searchdetails = new List<string>();
-                List<PostalAddressDTO> lstAddress = await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
-                if (lstAddress != null && lstAddress.Count > 0)
-                {
-                    var results = lstAddress.Select(n => new { Street = n.Thoroughfare, Postcode = n.Postcode }).Distinct().ToList();
-                    if (results != null && results.Count > 0)
-                    {
-                        foreach (var result in results)
-                        {
-                            string searchitem = result.Street + ", " + result.Postcode;
-                            string formattedResult = Regex.Replace(searchitem, ",+", ",").Trim(',');
-                            searchdetails.Add(formattedResult);
-                        }
-                    }
-                }
-
-                searchdetails.Sort();
-                return searchdetails;
+                return await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
             }
             catch (Exception)
             {
@@ -243,8 +226,9 @@ namespace Fmo.BusinessServices.Services
         /// Filter PostalAddress based on the post code
         /// </summary>
         /// <param name="postCode">postCode</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode)
+        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode, Guid unitGuid)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
@@ -253,7 +237,7 @@ namespace Fmo.BusinessServices.Services
             {
                 List<object> nybDetails = new List<object>();
                 PostalAddressDTO postalAddressDto = null;
-                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode);
+                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode, unitGuid);
                 Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
                 if (postalAddressDetails != null && postalAddressDetails.Count > 0)
                 {

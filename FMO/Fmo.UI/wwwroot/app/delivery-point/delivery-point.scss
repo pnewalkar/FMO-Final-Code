@@ -27,10 +27,22 @@ i.fa.fa-times.closeWindow {
     overflow-y: auto;
 } 
 
+.resultPanel {
+    @extend %body-content;
+}
+
 .deliveryDialog{
     @include margin(0px 10px 0px 0px);
 }
 
 .fa {
     @include cursor(pointer);
+}
+
+.dialogAction{
+    @include margin(100px 0px 0px 0px);    
+}
+
+.deliveryPointDialog input{
+    @extend %body-content;
 }
