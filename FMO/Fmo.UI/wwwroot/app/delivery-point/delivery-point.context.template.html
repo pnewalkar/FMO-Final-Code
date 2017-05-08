@@ -10,8 +10,8 @@
     <ul>
         <li ng-repeat="item in vm.deliveryPointList" >
            {{item.locality}}
-           <span ng-click="vm.openAlert($event)">
-               <md-checkbox ng-click="toggle(item, vm.positioneddeliveryPointList)" style="float:right"></md-checkbox>
+           <span ng-click="vm.openAlert($event, item)">
+               <md-checkbox style="float:right"></md-checkbox>
            </span>
         </li>
         
