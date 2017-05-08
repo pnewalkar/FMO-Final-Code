@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
@@ -323,20 +324,36 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="searchText">searchText</param>
         /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of Postal Address</returns>
-        public async Task<List<PostalAddressDTO>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
+        /// <returns>List of Postcodes</returns>
+        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
         {
-            List<string> lstPocodes = new List<string>();
+            List<string> searchdetails = new List<string>();
             List<Guid> addresstypeIDs = new List<Guid>()
             {
                 refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString()),
                 refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString())
             };
 
-            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(n => n.Postcode1).Include(n => n.Postcode1.UnitLocationPostcodes).Where(n => addresstypeIDs.Contains(n.AddressType_GUID) &&
-            (n.Thoroughfare.Contains(searchText) || n.DependentThoroughfare.Contains(searchText) || n.Postcode.Contains(searchText)) && n.Postcode1.UnitLocationPostcodes.Any(m => m.Unit_GUID == unitGuid)).ToListAsync();
+            var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                       join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
+                                       join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                       where addresstypeIDs.Contains(pa.AddressType_GUID) &&
+                                       (pa.Thoroughfare.Contains(searchText) || pa.DependentThoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
+                                       ul.Unit_GUID == unitGuid
+                                       select new { pa.Thoroughfare, pa.Postcode }).Distinct().ToListAsync();
 
-            return GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
+            if (searchresults != null && searchresults.Count > 0)
+            {
+                for (var i = 0; i < searchresults.Count; i++)
+                {
+                    string searchitem = searchresults[i].Thoroughfare + ", " + searchresults[i].Postcode;
+                    string formattedResult = Regex.Replace(searchitem, ",+", ",").Trim(',');
+                    searchdetails.Add(formattedResult);
+                }
+            }
+
+            searchdetails.Sort();
+            return searchdetails;
         }
 
         /// <summary>

@@ -210,24 +210,7 @@ namespace Fmo.BusinessServices.Services
 
             try
             {
-                List<string> searchdetails = new List<string>();
-                List<PostalAddressDTO> lstAddress = await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
-                if (lstAddress != null && lstAddress.Count > 0)
-                {
-                    var results = lstAddress.Select(n => new { Street = n.Thoroughfare, Postcode = n.Postcode }).Distinct().ToList();
-                    if (results != null && results.Count > 0)
-                    {
-                        foreach (var result in results)
-                        {
-                            string searchitem = result.Street + ", " + result.Postcode;
-                            string formattedResult = Regex.Replace(searchitem, ",+", ",").Trim(',');
-                            searchdetails.Add(formattedResult);
-                        }
-                    }
-                }
-
-                searchdetails.Sort();
-                return searchdetails;
+                return await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
             }
             catch (Exception)
             {
