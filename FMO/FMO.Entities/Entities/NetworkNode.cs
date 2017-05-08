@@ -17,11 +17,6 @@ namespace Fmo.Entities
             NetworkReferences = new HashSet<NetworkReference>();
         }
 
-        public int NetworkNode_Id { get; set; }
-
-        [StringLength(1)]
-        public string NetworkNodeType { get; set; }
-
         [StringLength(1)]
         public string DataProvider { get; set; }
 
@@ -30,8 +25,6 @@ namespace Fmo.Entities
 
         [StringLength(20)]
         public string TOID { get; set; }
-
-        public int NetworkNodeType_Id { get; set; }
 
         public Guid ID { get; set; }
 

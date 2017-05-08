@@ -16,7 +16,6 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using MappingConfiguration;
     using MappingExtensions;
     using Entity = Fmo.Entities;
 
@@ -114,7 +113,6 @@ namespace Fmo.DataServices.Repositories
                     newDeliveryPoint.ID = objDeliveryPoint.ID;
                     newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
                     newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
-                    newDeliveryPoint.Address_Id = objDeliveryPoint.Address_Id;
                     newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
@@ -360,7 +358,6 @@ namespace Fmo.DataServices.Repositories
                 {
                     cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
                     cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-
                 });
 
                 Mapper.Configuration.CreateMapper();

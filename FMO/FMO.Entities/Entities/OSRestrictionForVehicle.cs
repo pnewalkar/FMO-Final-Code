@@ -13,8 +13,6 @@ namespace Fmo.Entities
         [StringLength(20)]
         public string TOID { get; set; }
 
-        public int? NetworkReference_Id { get; set; }
-
         public double? MeasureInMeters { get; set; }
 
         [Column(TypeName = "xml")]

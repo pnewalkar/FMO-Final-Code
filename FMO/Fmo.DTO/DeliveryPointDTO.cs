@@ -8,10 +8,6 @@ namespace Fmo.DTO
     /// </summary>
     public class DeliveryPointDTO
     {
-        public int DeliveryPoint_Id { get; set; }
-
-        public int Address_Id { get; set; }
-
         public string LocationProvider { get; set; }
 
         public string OperationalStatus { get; set; }
@@ -36,21 +32,9 @@ namespace Fmo.DTO
 
         public string DeliveryPointUseIndicator { get; set; }
 
-        public int? DeliveryGroup_Id { get; set; }
-
         public bool IsUnit { get; set; }
 
         public PostalAddressDTO PostalAddress { get; set; }
-
-        public int? LocationProviderId { get; set; }
-
-        public int? OperationalStatusId { get; set; }
-
-        public int? Temp_DeliveryGroup_Id { get; set; }
-
-        public int? LocationProvider_Id { get; set; }
-
-        public int? OperationalStatus_Id { get; set; }
 
         public Guid ID { get; set; }
 

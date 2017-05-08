@@ -11,8 +11,6 @@ namespace Fmo.Entities
     {
         public Guid ID { get; set; }
 
-        public int? StreetName_Id { get; set; }
-
         public Guid? StreetName_GUID { get; set; }
 
         public Guid? NetworkLink_GUID { get; set; }

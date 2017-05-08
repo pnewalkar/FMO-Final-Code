@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
     public class StreetNameDTO
     {
-        public int StreetName_Id { get; set; }
+        public Guid ID { get; set; }
 
         public string USRN { get; set; }
 
@@ -41,7 +37,5 @@ namespace Fmo.DTO
         public string Town { get; set; }
 
         public string AdministrativeArea { get; set; }
-
-
     }
 }

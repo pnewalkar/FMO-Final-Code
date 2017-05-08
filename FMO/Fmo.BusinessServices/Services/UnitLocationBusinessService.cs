@@ -128,7 +128,7 @@ namespace Fmo.BusinessServices.Services
 
                 var feature = new Feature
                 {
-                    id = unitLocationDTO.DeliveryUnit_Id,
+                    id = unitLocationDTO.ID.ToString(),
                     geometry = geometry
                 };
 

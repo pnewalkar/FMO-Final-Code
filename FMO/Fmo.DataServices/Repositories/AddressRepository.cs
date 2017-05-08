@@ -284,13 +284,16 @@
                         objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
                         objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
                         objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
+
+                        Guid deliveryPointUseIndicator = refDataRepository.GetReferenceDataId(Constants.DeliveryPointUseIndicator, Constants.DeliveryPointUseIndicatorPAF);
+
                         if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
                         {
                             foreach (var objDelPoint in objAddress.DeliveryPoints)
                             {
                                 if (objAddress.OrganisationName.Length > 0)
                                 {
-                                    objDelPoint.DeliveryPointUseIndicator = Constants.DeliveryPointUseIndicatorPAF;
+                                    objDelPoint.DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator;
                                 }
 
                                 objDelPoint.UDPRN = objPostalAddress.UDPRN;
