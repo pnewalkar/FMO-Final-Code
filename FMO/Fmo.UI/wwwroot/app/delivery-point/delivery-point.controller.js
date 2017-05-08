@@ -1,10 +1,10 @@
 angular
     .module('deliveryPoint')
-    .controller("DeliveryPointController", ['$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
+    .controller("DeliveryPointController", ['mapToolbarService', '$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
                 '$filter',
                 'referenceDataConstants', '$timeout'
 , DeliveryPointController])
-function DeliveryPointController($scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
+function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
     $filter,
     referenceDataConstants, $timeout
 ) {
@@ -42,7 +42,7 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
         
         //var idx = vm.deliveryPointList.indexOf(item);
         if (idx.length > 0) {
-        $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
+        //$scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
           vm.deliveryPointList.splice(idx, 1);
           vm.positioneddeliveryPointList.push(item);
         }
@@ -63,7 +63,8 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
         .cancel('No')
 
         $mdDialog.show(confirm).then(function() {
-       alert("Yes");
+            setDP();
+            
             vm.toggle(item);
     }, function() {
       alert("no");
@@ -71,6 +72,11 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
   };
 
     referenceData();
+    
+    function setDP(){
+        var shape = mapToolbarService.getShapeForButton('point');
+        $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+    }
 
     function querySearch(query) {
         deliveryPointApiService.GetDeliveryPointsResultSet(query).then(function (response) {
