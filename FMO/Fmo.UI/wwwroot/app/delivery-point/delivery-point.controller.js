@@ -20,8 +20,46 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.onBlur = onBlur;
     vm.display = false;
     vm.disable = true;
-   
-   
+    vm.openAlert = openAlert;
+    vm.toggle=toggle;
+    vm.exists =exists;
+    vm.deliveryPointList= [{locality:"BN1 Dadar", isPostioned : false},
+                           {locality:"BN2 Dadar", isPostioned : false},
+                           {locality:"BN3 Dadar", isPostioned : false}
+                          ];
+    
+    vm.positioneddeliveryPointList = [];
+    
+    function toggle (item, list) {
+        var idx = list.indexOf(item);
+        if (idx > -1) {
+          list.splice(idx, 1);
+        }
+        else {
+          list.push(item);
+        }
+      };
+
+      function exists (item, list) {
+        return list.indexOf(item) > -1;
+      };
+    
+     function openAlert(ev){
+    var confirm = 
+      $mdDialog.confirm()
+        .clickOutsideToClose(true)
+        .title('Confirm Position')
+        .textContent('Are you sure you want to position this point here?')
+        .ariaLabel('Left to right demo')
+        .ok('Yes')
+        .cancel('No')
+
+        $mdDialog.show(confirm).then(function() {
+       alert("Yes");
+    }, function() {
+      alert("no");
+    });
+  };
 
     referenceData();
 
@@ -47,7 +85,6 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     }
 
     function onBlur() {
-        debugger;
         $timeout(function () {
             vm.results = {};
           
@@ -90,7 +127,6 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     function getAddressLocation(udprn) {
         deliveryPointApiService.GetAddressLocation(udprn)
                 .then(function (response) {
-                    debugger;
                     vm.addressLocationData = response.data;
                 });
     }
@@ -110,9 +146,7 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     }
 
     function referenceData() {
-        debugger;
         referencedataApiService.getReferenceData().success(function (response) {
-            debugger;
             vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
         });
     }

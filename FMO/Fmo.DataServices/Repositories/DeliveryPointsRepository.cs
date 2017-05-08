@@ -355,7 +355,17 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId).SingleOrDefault();
-                return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+
+                });
+
+                Mapper.Configuration.CreateMapper();
+                var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+                return deliveryPointDto;
             }
             catch (Exception ex)
             {
