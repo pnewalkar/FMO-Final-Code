@@ -18,8 +18,6 @@ namespace Fmo.Entities
             UserRoleUnits = new HashSet<UserRoleUnit>();
         }
 
-        public int Unit_Id { get; set; }
-
         [Required]
         [StringLength(50)]
         public string ExternalId { get; set; }

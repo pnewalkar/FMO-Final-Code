@@ -125,7 +125,7 @@ namespace Fmo.BusinessServices.Services
 
                     Feature feature = new Feature();
                     feature.geometry = geometry;
-                    feature.id = i;
+                    feature.id = res.ID.ToString();
                     feature.type = Constants.FeatureType;
                     feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.RoadLink.GetDescription()) } };
                     geoJson.features.Add(feature);

@@ -41,7 +41,7 @@ namespace Fmo.DataServices.Repositories
                     .Where(l => l.Geometry.Intersects(polygon) && (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                     .Select(l => new StreetNameDTO
                     {
-                        StreetName_Id = l.StreetName_Id,
+                        ID = l.ID,
                         StreetType = l.StreetType,
                         NationalRoadCode = l.NationalRoadCode,
                         DesignatedName = l.DesignatedName,
@@ -77,7 +77,7 @@ namespace Fmo.DataServices.Repositories
                     .Take(takeCount)
                     .Select(l => new StreetNameDTO
                     {
-                        StreetName_Id = l.StreetName_Id,
+                        ID = l.ID,
                         StreetType = l.StreetType,
                         NationalRoadCode = l.NationalRoadCode,
                         DesignatedName = l.DesignatedName,

@@ -16,8 +16,6 @@ namespace Fmo.Entities
             OSRoadLinks1 = new HashSet<OSRoadLink>();
         }
 
-        public int NetworkNode_Id { get; set; }
-
         [Required]
         [StringLength(20)]
         public string TOID { get; set; }

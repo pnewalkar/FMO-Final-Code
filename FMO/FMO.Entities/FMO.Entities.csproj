@@ -68,6 +68,7 @@
     <Compile Include="Entities\CollectionRoute.cs" />
     <Compile Include="Entities\DeliveryGroup.cs" />
     <Compile Include="Entities\DeliveryPoint.cs" />
+    <Compile Include="Entities\DeliveryPointAlias.cs" />
     <Compile Include="Entities\DeliveryRoute.cs" />
     <Compile Include="Entities\DeliveryRouteActivity.cs" />
     <Compile Include="Entities\DeliveryRouteBlock.cs" />
@@ -83,9 +84,7 @@
     <Compile Include="Entities\Notification.cs" />
     <Compile Include="Entities\OSAccessRestriction.cs" />
     <Compile Include="Entities\OSConnectingLink.cs" />
-    <Compile Include="Entities\OSConnectingLink_Temp.cs" />
     <Compile Include="Entities\OSConnectingNode.cs" />
-    <Compile Include="Entities\OSConnectingNode_temp.cs" />
     <Compile Include="Entities\OSPathLink.cs" />
     <Compile Include="Entities\OSPathNode.cs" />
     <Compile Include="Entities\OSRestrictionForVehicle.cs" />

@@ -18,12 +18,8 @@ namespace Fmo.Entities
             DeliveryRouteBlocks = new HashSet<DeliveryRouteBlock>();
         }
 
-        public int Block_Id { get; set; }
-
         [StringLength(1)]
         public string BlockType { get; set; }
-
-        public int? PairedBlock_Id { get; set; }
 
         [Column(TypeName = "numeric")]
         public decimal? BlockSpanInMinutes { get; set; }

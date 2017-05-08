@@ -1,6 +1,5 @@
 namespace Fmo.DataServices.DBContext
 {
-    using System.Configuration;
     using System.Data.Entity;
     using Fmo.Entities;
 
@@ -33,6 +32,8 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
 
+        public virtual DbSet<DeliveryPointAlias> DeliveryPointAlias { get; set; }
+
         public virtual DbSet<DeliveryRoute> DeliveryRoutes { get; set; }
 
         public virtual DbSet<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }
@@ -40,6 +41,8 @@ namespace Fmo.DataServices.DBContext
         public virtual DbSet<DeliveryRouteBlock> DeliveryRouteBlocks { get; set; }
 
         public virtual DbSet<DeliveryRouteNetworkLink> DeliveryRouteNetworkLinks { get; set; }
+
+        public virtual DbSet<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
 
         public virtual DbSet<Function> Functions { get; set; }
 
@@ -125,13 +128,9 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<UserRoleUnit> UserRoleUnits { get; set; }
 
-        public virtual DbSet<TempPostalAddress> TempPostalAddresses { get; set; }
-
         public virtual DbSet<AccessFunction> AccessFunctions { get; set; }
 
         public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
-
-        public virtual DbSet<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -142,6 +141,10 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<AccessLink>()
                 .Property(e => e.WorkloadLengthMeter)
                 .HasPrecision(18, 8);
+
+            modelBuilder.Entity<AccessLink>()
+                .Property(e => e.RowVersion)
+                .IsFixedLength();
 
             modelBuilder.Entity<Action>()
                 .Property(e => e.Name)
@@ -179,11 +182,6 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<AMUChangeRequest>()
                 .Property(e => e.AMUClarificationText)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<AMUChangeRequest>()
-                .Property(e => e.RequestPostcode)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Block>()
@@ -273,9 +271,8 @@ namespace Fmo.DataServices.DBContext
                 .HasPrecision(38, 8);
 
             modelBuilder.Entity<DeliveryPoint>()
-                .Property(e => e.DeliveryPointUseIndicator)
-                .IsFixedLength()
-                .IsUnicode(false);
+                .Property(e => e.RowVersion)
+                .IsFixedLength();
 
             modelBuilder.Entity<DeliveryPoint>()
                 .HasMany(e => e.AccessLinks)
@@ -283,10 +280,20 @@ namespace Fmo.DataServices.DBContext
                 .HasForeignKey(e => e.OperationalObject_GUID);
 
             modelBuilder.Entity<DeliveryPoint>()
+                .HasMany(e => e.DeliveryPointAlias)
+                .WithRequired(e => e.DeliveryPoint)
+                .HasForeignKey(e => e.DeliveryPoint_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<DeliveryPoint>()
                 .HasMany(e => e.RMGDeliveryPoints)
                 .WithRequired(e => e.DeliveryPoint)
                 .HasForeignKey(e => e.DeliveryPoint_GUID)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<DeliveryPointAlias>()
+                .Property(e => e.DPAlias)
+                .IsUnicode(false);
 
             modelBuilder.Entity<DeliveryRoute>()
                 .Property(e => e.RouteName)
@@ -322,15 +329,15 @@ namespace Fmo.DataServices.DBContext
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DeliveryRoute>()
-                .HasMany(e => e.DeliveryRouteActivities)
-                .WithOptional(e => e.DeliveryRoute)
-                .HasForeignKey(e => e.DeliveryRoute_GUID);
-
-            modelBuilder.Entity<DeliveryRoute>()
                 .HasMany(e => e.DeliveryRoutePostcodes)
                 .WithRequired(e => e.DeliveryRoute)
                 .HasForeignKey(e => e.DeliveryRoute_GUID)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<DeliveryRoute>()
+                .HasMany(e => e.DeliveryRouteActivities)
+                .WithOptional(e => e.DeliveryRoute)
+                .HasForeignKey(e => e.DeliveryRoute_GUID);
 
             modelBuilder.Entity<DeliveryRouteActivity>()
                 .Property(e => e.RouteActivityOrderIndex)
@@ -373,6 +380,10 @@ namespace Fmo.DataServices.DBContext
                 .HasPrecision(18, 4);
 
             modelBuilder.Entity<NetworkLink>()
+                .Property(e => e.LinkName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<NetworkLink>()
                 .HasMany(e => e.AccessLinks)
                 .WithRequired(e => e.NetworkLink)
                 .HasForeignKey(e => e.NetworkLink_GUID)
@@ -384,6 +395,11 @@ namespace Fmo.DataServices.DBContext
                 .HasForeignKey(e => e.NetworkLink_GUID);
 
             modelBuilder.Entity<NetworkLink>()
+                .HasMany(e => e.NetworkReferences)
+                .WithOptional(e => e.NetworkLink)
+                .HasForeignKey(e => e.PointReferenceNetworkLink_GUID);
+
+            modelBuilder.Entity<NetworkLink>()
                 .HasMany(e => e.NetworkLinkReferences)
                 .WithRequired(e => e.NetworkLink)
                 .HasForeignKey(e => e.NetworkLink_GUID)
@@ -391,11 +407,6 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<NetworkLinkReference>()
                 .Property(e => e.OSRoadLinkTOID)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<NetworkNode>()
-                .Property(e => e.NetworkNodeType)
                 .IsFixedLength()
                 .IsUnicode(false);
 
@@ -531,6 +542,12 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.RoadLinkTOID)
                 .IsFixedLength()
                 .IsUnicode(false);
+
+            modelBuilder.Entity<OSConnectingNode>()
+                .HasMany(e => e.OSConnectingLinks)
+                .WithRequired(e => e.OSConnectingNode)
+                .HasForeignKey(e => e.ConnectingNode_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<OSPathLink>()
                 .Property(e => e.TOID)
@@ -887,6 +904,12 @@ namespace Fmo.DataServices.DBContext
                 .HasForeignKey(e => e.RequestPostcode_GUID);
 
             modelBuilder.Entity<Postcode>()
+                .HasMany(e => e.DeliveryRoutePostcodes)
+                .WithRequired(e => e.Postcode)
+                .HasForeignKey(e => e.Postcode_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Postcode>()
                 .HasMany(e => e.PostalAddresses)
                 .WithRequired(e => e.Postcode1)
                 .HasForeignKey(e => e.PostCodeGUID)
@@ -896,12 +919,6 @@ namespace Fmo.DataServices.DBContext
                 .HasMany(e => e.UnitLocationPostcodes)
                 .WithRequired(e => e.Postcode)
                 .HasForeignKey(e => e.PoscodeUnit_GUID)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Postcode>()
-                .HasMany(e => e.DeliveryRoutePostcodes)
-                .WithRequired(e => e.Postcode)
-                .HasForeignKey(e => e.Postcode_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostcodeArea>()
@@ -1041,6 +1058,12 @@ namespace Fmo.DataServices.DBContext
                 .HasMany(e => e.DeliveryPoints1)
                 .WithOptional(e => e.ReferenceData1)
                 .HasForeignKey(e => e.OperationalStatus_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.DeliveryPoints2)
+                .WithRequired(e => e.ReferenceData2)
+                .HasForeignKey(e => e.DeliveryPointUseIndicator_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryRoutes)
@@ -1431,16 +1454,20 @@ namespace Fmo.DataServices.DBContext
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<AccessFunction>()
-                    .Property(e => e.FunctionName)
-                    .IsUnicode(false);
+                .Property(e => e.RoleName)
+                .IsUnicode(false);
 
             modelBuilder.Entity<AccessFunction>()
-                    .Property(e => e.ActionName)
-                    .IsUnicode(false);
+                .Property(e => e.UserName)
+                .IsUnicode(false);
 
             modelBuilder.Entity<AccessFunction>()
-                    .Property(e => e.RoleName)
-                    .IsUnicode(false);
+                .Property(e => e.FunctionName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AccessFunction>()
+                .Property(e => e.ActionName)
+                .IsUnicode(false);
         }
     }
 }

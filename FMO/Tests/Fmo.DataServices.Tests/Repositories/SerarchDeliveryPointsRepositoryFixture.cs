@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Fmo.Common.Interface;
 using Fmo.Common.TestSupport;
 using Fmo.DataServices.DBContext;
@@ -23,8 +24,8 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             var deliveryPoint = new List<DeliveryPoint>()
             {
-                new DeliveryPoint() { DeliveryPoint_Id = 1 },
-                new DeliveryPoint() { DeliveryPoint_Id = 2 }
+                new DeliveryPoint() { ID = Guid.NewGuid() },
+                new DeliveryPoint() { ID = Guid.NewGuid() }
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();

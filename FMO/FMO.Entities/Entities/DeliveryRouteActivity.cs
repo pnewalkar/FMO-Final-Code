@@ -15,22 +15,8 @@ namespace Fmo.Entities
             DeliveryRouteNetworkLinks = new HashSet<DeliveryRouteNetworkLink>();
         }
 
-        public int DeliveryRouteActivity_Id { get; set; }
-
-        public int? DeliveryRoute_Id { get; set; }
-
-        public int? ActivityType_Id { get; set; }
-
         [Column(TypeName = "numeric")]
         public decimal? RouteActivityOrderIndex { get; set; }
-
-        public int? Block_Id { get; set; }
-
-        public int? OperationalObjectType_Id { get; set; }
-
-        public int? OperationalObject_id { get; set; }
-
-        public int? DeliveryGroup_Id { get; set; }
 
         public Guid ID { get; set; }
 
@@ -43,6 +29,8 @@ namespace Fmo.Entities
         public Guid? OperationalObjectType_GUID { get; set; }
 
         public Guid? DeliveryGroup_GUID { get; set; }
+
+        public Guid? OperationalObject_GUID { get; set; }
 
         public virtual Block Block { get; set; }
 
