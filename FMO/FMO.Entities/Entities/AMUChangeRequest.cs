@@ -9,24 +9,11 @@ namespace Fmo.Entities
     [Table("FMO.AMUChangeRequest")]
     public partial class AMUChangeRequest
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int AMUChangeRequest_Id { get; set; }
-
-        public int? ChangeRequestType_Id { get; set; }
-
-        public int? ChangeRequestStatus_Id { get; set; }
-
         [StringLength(300)]
         public string UnitCommentText { get; set; }
 
-        public int? CurrentAddress_Id { get; set; }
-
         [StringLength(300)]
         public string AddressChanges { get; set; }
-
-        public int? NewAddress_Id { get; set; }
-
-        public int? ChangeReasonCode_Id { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime? RaisedDate { get; set; }
@@ -36,9 +23,6 @@ namespace Fmo.Entities
 
         [StringLength(300)]
         public string AMUClarificationText { get; set; }
-
-        [StringLength(8)]
-        public string RequestPostcode { get; set; }
 
         public Guid ID { get; set; }
 

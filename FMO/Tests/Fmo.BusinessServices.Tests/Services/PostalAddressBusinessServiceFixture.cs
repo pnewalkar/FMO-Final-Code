@@ -50,6 +50,13 @@
         }
 
         [Test]
+        public void Test_GetPostalAddressDetails()
+        {
+            var result = testCandidate.GetPostalAddressDetails(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
         public void SavePAFDetails_Check_MatchPostalAddressOnAddress()
         {
             PostalAddressDTO objPostalAddress = new PostalAddressDTO()
@@ -134,6 +141,16 @@
 
         protected override void OnSetup()
         {
+            PostalAddressDTO postalAddress = new PostalAddressDTO()
+            {
+                Address_Id = 10,
+                AddressType_Id = 2,
+                UDPRN = 14856,
+                BuildingName = "Building one",
+                BuildingNumber = 123,
+                AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
+            };
+
             mockAddressRepository = CreateMock<IAddressRepository>();
             mockrefDataRepository = CreateMock<IReferenceDataCategoryRepository>();
             mockdeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
@@ -145,6 +162,7 @@
             mockrefDataRepository.Setup(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
             mockAddressRepository.Setup(x => x.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>())).Returns(true);
             mockAddressRepository.Setup(x => x.DeleteNYBPostalAddress(It.IsAny<List<int>>(), It.IsAny<Guid>())).Returns(true);
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddress);
             testCandidate = new PostalAddressBusinessService(mockAddressRepository.Object, mockrefDataRepository.Object, mockdeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mocknotificationRepository.Object, mockfileProcessingLogRepository.Object, mockloggingHelper.Object, configurationHelperMock.Object);
         }
 

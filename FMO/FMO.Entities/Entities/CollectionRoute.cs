@@ -9,8 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.CollectionRoute")]
     public partial class CollectionRoute
     {
-        public int CollectionRoute_Id { get; set; }
-
         [StringLength(30)]
         public string RouteName { get; set; }
 

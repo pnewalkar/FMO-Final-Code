@@ -40,6 +40,13 @@ i.fa.fa-times.closeWindow {
 .dialogAction {
   margin: 100px 0px 0px 0px; }
 
+
+ div[ng-message] {
+  font-family: PF DIN;
+  font-size: 16px;
+  color:red;
+ }
+
 .dpCheckBox {
   float: right; }
 

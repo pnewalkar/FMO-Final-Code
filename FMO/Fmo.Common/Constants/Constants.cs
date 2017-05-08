@@ -48,6 +48,7 @@
         public const string Bearer = "bearer";
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
         public const string NotShown = "Not Shown";
+        public const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
         #endregion Common
 
         #region NYB
@@ -119,7 +120,7 @@
         public const string PAFUPDATEFORUSR = "USR";
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
-        public const string DeliveryPointUseIndicatorPAF = "B";
+        public const string DeliveryPointUseIndicatorPAF = "Commercial";
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
         public const string PAFErrorMessageForUDPRNNotUpdated = "Postal Address for Selected UDPRN not updated";
@@ -132,7 +133,6 @@
         public const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         public const string PAFFLATFILENAME = "CSV PAF Changes Single";
         public const string PAFZIPFILENAME = "^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
-            //"^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
 
         #endregion PAF
 

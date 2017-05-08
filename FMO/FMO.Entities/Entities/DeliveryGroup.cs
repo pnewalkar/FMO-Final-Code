@@ -18,14 +18,9 @@ namespace Fmo.Entities
             GroupHazards = new HashSet<GroupHazard>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int DeliveryGroup_Id { get; set; }
-
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
-
-        public int GroupType_Id { get; set; }
 
         public byte? NumberOfFloors { get; set; }
 
@@ -39,10 +34,6 @@ namespace Fmo.Entities
         public bool? OverrideApproved { get; set; }
 
         public bool? ServicePoint { get; set; }
-
-        public int? ServicePointType_Id { get; set; }
-
-        public int Polygon_Id { get; set; }
 
         public Guid ID { get; set; }
 

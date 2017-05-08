@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Reflection;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
+using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Helpers;
@@ -21,11 +23,19 @@ namespace Fmo.BusinessServices.Services
     {
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
+        private IAddressRepository postalAddressRepository = default(IAddressRepository);
+        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private bool enableLogging = false;
 
-        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository)
+        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.addressLocationRepository = addressLocationRepository;
+            this.loggingHelper = loggingHelper;
+            this.configurationHelper = configurationHelper;
+            this.postalAddressRepository = postalAddressRepository;
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         /// <summary>
@@ -126,6 +136,53 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
+        /// Create delivery point for PAF and NYB records.
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>string</returns>
+        public string CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
+            string errorMessage = string.Empty;
+            try
+            {
+                if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
+                {
+                    // check for any duplicate records of the address being created (Note 3)
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == null && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
+                    {
+                        errorMessage = "There is a duplicate of this Delivery Point in the system";
+                    }
+                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == null)
+                    {
+                        // check for duplicate NYB records for the address being created(Note 4)
+                        string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
+                        if (!string.IsNullOrEmpty(postCode))
+                        {
+                            errorMessage = "“This address is in the NYB file under the postcode " + postCode;
+                        }
+                    }
+                    else
+                    {
+                        postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
         /// This method is used to fetch GeoJson data for Delivery Point.
         /// </summary>
         /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
@@ -145,7 +202,7 @@ namespace Fmo.BusinessServices.Services
 
                     var feature = new Feature
                     {
-                        id = point.DeliveryPoint_Id,
+                        id = point.ID.ToString(),
                         properties = new Dictionary<string, JToken>
                     {
                         { Constants.BuildingName, point.PostalAddress.BuildingName },
@@ -192,6 +249,17 @@ namespace Fmo.BusinessServices.Services
             }
 
             return coordinates;
+        }
+
+        /// <summary>
+        /// Method level entry exit logging.
+        /// </summary>
+        /// <param name="methodName">Function Name</param>
+        /// <param name="logMessage">Message</param>
+        /// <param name="separator">separator</param>
+        private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
+        {
+            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
         }
     }
 }

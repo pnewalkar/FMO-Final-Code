@@ -17,8 +17,6 @@ namespace Fmo.Entities
             OSPathLinks1 = new HashSet<OSPathLink>();
         }
 
-        public int NetworkNode_Id { get; set; }
-
         [Required]
         [StringLength(20)]
         public string TOID { get; set; }

@@ -14,25 +14,14 @@ namespace Fmo.Entities
         {
             AccessLinks = new HashSet<AccessLink>();
             DeliveryRouteNetworkLinks = new HashSet<DeliveryRouteNetworkLink>();
+            NetworkReferences = new HashSet<NetworkReference>();
             NetworkLinkReferences = new HashSet<NetworkLinkReference>();
         }
 
         public Guid Id { get; set; }
 
-        public int NetworkLinkType_Id { get; set; }
-
         [StringLength(20)]
         public string TOID { get; set; }
-
-        public int DataProvider_Id { get; set; }
-
-        public int? RoadName_Id { get; set; }
-
-        public int? StreetName_Id { get; set; }
-
-        public int StartNode_Id { get; set; }
-
-        public int EndNode_Id { get; set; }
 
         [Required]
         public DbGeometry LinkGeometry { get; set; }
@@ -54,6 +43,9 @@ namespace Fmo.Entities
 
         public Guid? EndNode_GUID { get; set; }
 
+        [StringLength(255)]
+        public string LinkName { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }
 
@@ -71,6 +63,9 @@ namespace Fmo.Entities
         public virtual ReferenceData ReferenceData1 { get; set; }
 
         public virtual RoadName RoadName { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NetworkReference> NetworkReferences { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkLinkReference> NetworkLinkReferences { get; set; }

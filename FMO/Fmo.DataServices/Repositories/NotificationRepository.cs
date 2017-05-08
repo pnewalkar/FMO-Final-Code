@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Fmo.Common.Constants;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -43,7 +44,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
+                string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+                Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
                 DataContext.Notifications.Remove(notification);
                 return await DataContext.SaveChangesAsync();
             }
@@ -62,7 +64,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                Notification notification = DataContext.Notifications.Where(notific => notific.Notification_Id == uDPRN).SingleOrDefault();
+                string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+                Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefault();
                 NotificationDTO notificationDTO = new NotificationDTO();
                 GenericMapper.Map(notification, notificationDTO);
                 return notificationDTO;
@@ -83,7 +86,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                if (DataContext.Notifications.AsNoTracking().Where(notific => notific.Notification_Id == uDPRN && notific.Notification_Heading.Trim().Equals(action)).Any())
+                if (DataContext.Notifications.AsNoTracking().Where(notific => notific.NotificationSource == uDPRN.ToString() && notific.Notification_Heading.Trim().Equals(action)).Any())
                 {
                     return true;
                 }

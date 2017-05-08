@@ -9,14 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.GroupHazard")]
     public partial class GroupHazard
     {
-        public int Hazard_Id { get; set; }
-
-        public int DeliveryGroup_Id { get; set; }
-
-        public int Category_Id { get; set; }
-
-        public int SubCategory_Id { get; set; }
-
         [Required]
         [StringLength(300)]
         public string Description { get; set; }

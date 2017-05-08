@@ -9,11 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.UnitLocationPostcode")]
     public partial class UnitLocationPostcode
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UnitLocationPostcodeId { get; set; }
-
-        public int Unit_Id { get; set; }
-
         [Required]
         [StringLength(8)]
         public string PostcodeUnit { get; set; }

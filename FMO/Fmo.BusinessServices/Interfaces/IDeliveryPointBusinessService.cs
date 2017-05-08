@@ -59,5 +59,12 @@ namespace Fmo.BusinessServices.Interfaces
         /// Task List of Delivery Point Dto
         /// </returns>
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
+
+        /// <summary>
+        /// Create delivery point for PAF and NYB records.
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>string</returns>
+        string CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
     }
 }

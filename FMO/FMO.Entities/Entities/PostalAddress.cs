@@ -18,9 +18,6 @@ namespace Fmo.Entities
             POBoxes = new HashSet<POBox>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Address_Id { get; set; }
-
         [Required]
         [StringLength(1)]
         public string PostcodeType { get; set; }
@@ -65,13 +62,9 @@ namespace Fmo.Entities
         [StringLength(1)]
         public string SmallUserOrganisationIndicator { get; set; }
 
-        public int? AddressType_Id { get; set; }
-
         public int? UDPRN { get; set; }
 
         public bool? AMUApproved { get; set; }
-
-        public int? AddressStatus_Id { get; set; }
 
         [StringLength(6)]
         public string POBoxNumber { get; set; }
