@@ -7,8 +7,6 @@ namespace Fmo.DTO
 {
     public class UnitLocationDTO
     {
-        public int DeliveryUnit_Id { get; set; }
-
         public string ExternalId { get; set; }
 
         public string UnitName { get; set; }

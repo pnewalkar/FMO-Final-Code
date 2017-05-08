@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
     public class DeliveryRouteDTO
     {
-
-        public int DeliveryRoute_Id { get; set; }
+        public Guid ID { get; set; }
 
         public int? ExternalId { get; set; }
 
@@ -34,6 +29,5 @@ namespace Fmo.DTO
         public int? DeliveryScenario_Id { get; set; }
 
         public string DeliveryRouteBarcode { get; set; }
-
     }
 }

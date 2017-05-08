@@ -56,7 +56,7 @@ namespace Fmo.DataServices.Tests.Repositories
                new AccessLink()
                {
                  AccessLinkLine = unitBoundary,
-                NetworkLink_Id = 55
+                ID = Guid.NewGuid()
                       }
             };
 

@@ -44,11 +44,11 @@ namespace Fmo.BusinessServices.Tests.Services
             userID = System.Guid.Parse("A867065B-B91E-E711-9F8C-28D244AEF9ED");
             deliveryUnitID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
             var unitBoundary = DbGeometry.PolygonFromText("POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))", 27700);
-            actualDeliveryUnitListForUserResult = new List<UnitLocationDTO>() { new UnitLocationDTO() { DeliveryUnit_Id = 1, ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne", UnitBoundryPolygon = unitBoundary } };
+            actualDeliveryUnitListForUserResult = new List<UnitLocationDTO>() { new UnitLocationDTO() { ID = Guid.NewGuid(), ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne", UnitBoundryPolygon = unitBoundary } };
             mockUnitLocationRepository = CreateMock<IUnitLocationRepository>();
             mockUnitLocationRepository.Setup(n => n.FetchDeliveryUnitsForUser(userID)).Returns(actualDeliveryUnitListForUserResult);
 
-            actualDeliveryUnitResult = new UnitLocationDTO() { DeliveryUnit_Id = 1, ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne" };
+            actualDeliveryUnitResult = new UnitLocationDTO() { ID = Guid.NewGuid(), ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne" };
             mockUnitLocationRepository.Setup(n => n.FetchDeliveryUnit(deliveryUnitID)).Returns(actualDeliveryUnitResult);
 
             testCandidate = new UnitLocationBusinessService(mockUnitLocationRepository.Object);

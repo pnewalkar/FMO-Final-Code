@@ -88,13 +88,13 @@ namespace Fmo.DataServices.Tests.Repositories
 
             var streetNames = new List<StreetName>()
             {
-                new StreetName() { StreetName_Id = 1, StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad1", DesignatedName = "XYZ1", Geometry = unitBoundary },
-                new StreetName() { StreetName_Id = 2, StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad2", DesignatedName = "XYZ2", Geometry = unitBoundary },
-                new StreetName() { StreetName_Id = 3, StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad3", DesignatedName = "XYZ3", Geometry = unitBoundary },
-                new StreetName() { StreetName_Id = 4, StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad4", DesignatedName = "XYZ4", Geometry = unitBoundary },
-                new StreetName() { StreetName_Id = 5, StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad5", DesignatedName = "XYZ5", Geometry = unitBoundary },
-                new StreetName() { StreetName_Id = 6, StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad6", DesignatedName = "XYZ6", Geometry = unitBoundary },
-                new StreetName() { StreetName_Id = 7, StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad7", DesignatedName = "XYZ7", Geometry = unitBoundary }
+                new StreetName() { ID = Guid.NewGuid(), StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad1", DesignatedName = "XYZ1", Geometry = unitBoundary },
+                new StreetName() { ID = Guid.NewGuid(), StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad2", DesignatedName = "XYZ2", Geometry = unitBoundary },
+                new StreetName() { ID = Guid.NewGuid(), StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad3", DesignatedName = "XYZ3", Geometry = unitBoundary },
+                new StreetName() { ID = Guid.NewGuid(), StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad4", DesignatedName = "XYZ4", Geometry = unitBoundary },
+                new StreetName() { ID = Guid.NewGuid(), StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad5", DesignatedName = "XYZ5", Geometry = unitBoundary },
+                new StreetName() { ID = Guid.NewGuid(), StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad6", DesignatedName = "XYZ6", Geometry = unitBoundary },
+                new StreetName() { ID = Guid.NewGuid(), StreetType = "t1", Descriptor = "d1", NationalRoadCode = "Testroad7", DesignatedName = "XYZ7", Geometry = unitBoundary }
             };
 
             var unitLocation = new List<UnitLocation>()

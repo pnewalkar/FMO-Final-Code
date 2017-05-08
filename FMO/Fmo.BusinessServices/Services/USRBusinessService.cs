@@ -177,7 +177,6 @@
                                     NotificationDTO notificationDO = new NotificationDTO
                                     {
                                         ID = Guid.NewGuid(),
-                                        Notification_Id = fileUdprn,
                                         NotificationType_GUID = notificationTypeId_GUID,
                                         NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
                                         NotificationSource = Constants.USRNOTIFICATIONSOURCE,

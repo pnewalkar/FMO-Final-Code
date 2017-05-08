@@ -114,7 +114,6 @@ namespace Fmo.DataServices.Repositories
                     newDeliveryPoint.ID = objDeliveryPoint.ID;
                     newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
                     newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
-                    newDeliveryPoint.Address_Id = objDeliveryPoint.Address_Id;
                     newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;

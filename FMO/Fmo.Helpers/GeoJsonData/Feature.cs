@@ -7,7 +7,7 @@ namespace Fmo.Helpers
     {
         public string type { get; set; } = "Feature";
 
-        public int id { get; set; }
+        public string id { get; set; }
 
         public Dictionary<string, JToken> properties { get; set; }
 

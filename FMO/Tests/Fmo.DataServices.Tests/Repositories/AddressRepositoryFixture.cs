@@ -101,13 +101,13 @@ namespace Fmo.DataServices.Tests.Repositories
             {
                 new PostalAddress()
                 {
-                    Address_Id = 10,
+                    ID= Guid.NewGuid(),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     UDPRN = 14856,
                     DeliveryPoints = new List<DeliveryPoint>()
                {
-                new DeliveryPoint() { DeliveryPoint_Id = 1, Address_Id = 10, UDPRN = 14856 },
-                new DeliveryPoint() { DeliveryPoint_Id = 2, Address_Id = 10, UDPRN = 14856 }
+                new DeliveryPoint() { ID = Guid.NewGuid(), Address_GUID = Guid.NewGuid(), UDPRN = 14856 },
+                new DeliveryPoint() { ID = Guid.NewGuid(), Address_GUID = Guid.NewGuid(), UDPRN = 14856 }
             }
                 }
             };
@@ -134,8 +134,7 @@ namespace Fmo.DataServices.Tests.Repositories
             {
                 new PostalAddress()
                 {
-                    Address_Id = 10,
-                    AddressType_Id = 2,
+                    ID = Guid.NewGuid(),
                     UDPRN = 14856,
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
                 }

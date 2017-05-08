@@ -169,7 +169,6 @@ namespace Fmo.BusinessServices.Services
                 // Create task
                 var objTask = new NotificationDTO();
                 objTask.ID = Guid.NewGuid();
-                objTask.Notification_Id = objPostalAddress.UDPRN ?? default(int);
                 objTask.NotificationType_GUID = tasktypeId;
                 objTask.NotificationPriority_GUID = null;
                 objTask.NotificationSource = Constants.TASKSOURCE;
@@ -186,7 +185,6 @@ namespace Fmo.BusinessServices.Services
                 newDeliveryPoint.ID = Guid.NewGuid();
                 newDeliveryPoint.Address_GUID = objPostalAddress.ID;
                 newDeliveryPoint.UDPRN = objAddressLocation.UDPRN;
-                newDeliveryPoint.Address_Id = objPostalAddress.Address_Id;
                 newDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
                 newDeliveryPoint.Latitude = objAddressLocation.Lattitude;
                 newDeliveryPoint.Longitude = objAddressLocation.Longitude;

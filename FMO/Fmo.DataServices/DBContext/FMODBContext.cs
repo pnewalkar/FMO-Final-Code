@@ -1,6 +1,5 @@
 namespace Fmo.DataServices.DBContext
 {
-    using System.Configuration;
     using System.Data.Entity;
     using Fmo.Entities;
 
@@ -40,6 +39,8 @@ namespace Fmo.DataServices.DBContext
         public virtual DbSet<DeliveryRouteBlock> DeliveryRouteBlocks { get; set; }
 
         public virtual DbSet<DeliveryRouteNetworkLink> DeliveryRouteNetworkLinks { get; set; }
+
+        public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
 
         public virtual DbSet<Function> Functions { get; set; }
 
@@ -129,8 +130,6 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<AccessFunction> AccessFunctions { get; set; }
 
-        public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccessLink>()
@@ -140,6 +139,10 @@ namespace Fmo.DataServices.DBContext
             modelBuilder.Entity<AccessLink>()
                 .Property(e => e.WorkloadLengthMeter)
                 .HasPrecision(18, 8);
+
+            modelBuilder.Entity<AccessLink>()
+                .Property(e => e.RowVersion)
+                .IsFixedLength();
 
             modelBuilder.Entity<Action>()
                 .Property(e => e.Name)
@@ -179,9 +182,24 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.AMUClarificationText)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<AMUChangeRequest>()
-                .Property(e => e.RequestPostcode)
-                .IsFixedLength()
+            modelBuilder.Entity<AuditLog>()
+                .Property(e => e.TableName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AuditLog>()
+                .Property(e => e.RecordId)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AuditLog>()
+                .Property(e => e.ColumnName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AuditLog>()
+                .Property(e => e.UserId)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AuditLog>()
+                .Property(e => e.EventType)
                 .IsUnicode(false);
 
             modelBuilder.Entity<Block>()
@@ -276,6 +294,10 @@ namespace Fmo.DataServices.DBContext
                 .IsUnicode(false);
 
             modelBuilder.Entity<DeliveryPoint>()
+                .Property(e => e.RowVersion)
+                .IsFixedLength();
+
+            modelBuilder.Entity<DeliveryPoint>()
                 .HasMany(e => e.AccessLinks)
                 .WithOptional(e => e.DeliveryPoint)
                 .HasForeignKey(e => e.OperationalObject_GUID);
@@ -337,6 +359,27 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.LinkOrderIndex)
                 .HasPrecision(8, 8);
 
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.FileType)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.FileName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.NatureOfError)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.AmendmentType)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<FileProcessingLog>()
+                .Property(e => e.Comments)
+                .IsUnicode(false);
+
             modelBuilder.Entity<Function>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -365,6 +408,10 @@ namespace Fmo.DataServices.DBContext
                 .HasPrecision(18, 4);
 
             modelBuilder.Entity<NetworkLink>()
+                .Property(e => e.LinkName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<NetworkLink>()
                 .HasMany(e => e.AccessLinks)
                 .WithRequired(e => e.NetworkLink)
                 .HasForeignKey(e => e.NetworkLink_GUID)
@@ -376,6 +423,11 @@ namespace Fmo.DataServices.DBContext
                 .HasForeignKey(e => e.NetworkLink_GUID);
 
             modelBuilder.Entity<NetworkLink>()
+                .HasMany(e => e.NetworkReferences)
+                .WithOptional(e => e.NetworkLink)
+                .HasForeignKey(e => e.PointReferenceNetworkLink_GUID);
+
+            modelBuilder.Entity<NetworkLink>()
                 .HasMany(e => e.NetworkLinkReferences)
                 .WithRequired(e => e.NetworkLink)
                 .HasForeignKey(e => e.NetworkLink_GUID)
@@ -383,11 +435,6 @@ namespace Fmo.DataServices.DBContext
 
             modelBuilder.Entity<NetworkLinkReference>()
                 .Property(e => e.OSRoadLinkTOID)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<NetworkNode>()
-                .Property(e => e.NetworkNodeType)
                 .IsFixedLength()
                 .IsUnicode(false);
 
@@ -523,6 +570,12 @@ namespace Fmo.DataServices.DBContext
                 .Property(e => e.RoadLinkTOID)
                 .IsFixedLength()
                 .IsUnicode(false);
+
+            modelBuilder.Entity<OSConnectingNode>()
+                .HasMany(e => e.OSConnectingLinks)
+                .WithRequired(e => e.OSConnectingNode)
+                .HasForeignKey(e => e.ConnectingNode_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<OSPathLink>()
                 .Property(e => e.TOID)
@@ -1417,16 +1470,20 @@ namespace Fmo.DataServices.DBContext
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<AccessFunction>()
-                    .Property(e => e.FunctionName)
-                    .IsUnicode(false);
+                .Property(e => e.RoleName)
+                .IsUnicode(false);
 
             modelBuilder.Entity<AccessFunction>()
-                    .Property(e => e.ActionName)
-                    .IsUnicode(false);
+                .Property(e => e.UserName)
+                .IsUnicode(false);
 
             modelBuilder.Entity<AccessFunction>()
-                    .Property(e => e.RoleName)
-                    .IsUnicode(false);
+                .Property(e => e.FunctionName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<AccessFunction>()
+                .Property(e => e.ActionName)
+                .IsUnicode(false);
         }
     }
 }

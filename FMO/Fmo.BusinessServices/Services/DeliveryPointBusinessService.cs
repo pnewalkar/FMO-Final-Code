@@ -126,7 +126,7 @@ namespace Fmo.BusinessServices.Services
 
                     var feature = new Feature
                     {
-                        id = point.DeliveryPoint_Id,
+                        id = point.ID.ToString(),
                         properties = new Dictionary<string, JToken>
                     {
                         { Constants.BuildingName, point.PostalAddress.BuildingName },

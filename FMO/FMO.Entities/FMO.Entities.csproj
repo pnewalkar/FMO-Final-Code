@@ -82,9 +82,7 @@
     <Compile Include="Entities\Notification.cs" />
     <Compile Include="Entities\OSAccessRestriction.cs" />
     <Compile Include="Entities\OSConnectingLink.cs" />
-    <Compile Include="Entities\OSConnectingLink_Temp.cs" />
     <Compile Include="Entities\OSConnectingNode.cs" />
-    <Compile Include="Entities\OSConnectingNode_temp.cs" />
     <Compile Include="Entities\OSPathLink.cs" />
     <Compile Include="Entities\OSPathNode.cs" />
     <Compile Include="Entities\OSRestrictionForVehicle.cs" />
