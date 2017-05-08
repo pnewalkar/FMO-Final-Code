@@ -23,20 +23,27 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.openAlert = openAlert;
     vm.toggle=toggle;
     vm.exists =exists;
-    vm.deliveryPointList= [{locality:"BN1 Dadar", isPostioned : false},
-                           {locality:"BN2 Dadar", isPostioned : false},
-                           {locality:"BN3 Dadar", isPostioned : false}
+    vm.deliveryPointList= [{locality:"BN1 Dadar",
+                            addressGuid :1, 
+                            isPostioned : false},
+                           {locality:"BN2 Dadar",
+                            addressGuid :2,
+                            isPostioned : false},
+                           {locality:"BN3 Dadar", 
+                            addressGuid :3,
+                            isPostioned : false}
                           ];
     
     vm.positioneddeliveryPointList = [];
     
-    function toggle (item, list) {
-        var idx = list.indexOf(item);
-        if (idx > -1) {
-          list.splice(idx, 1);
-        }
-        else {
-          list.push(item);
+    function toggle (item) {
+        var idx = $filter('filter')(vm.deliveryPointList, {addressGuid: item.addressGuid  });
+        
+        //var idx = vm.deliveryPointList.indexOf(item);
+        if (idx.length > 0) {
+        $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
+          vm.deliveryPointList.splice(idx, 1);
+          vm.positioneddeliveryPointList.push(item);
         }
       };
 
@@ -44,7 +51,7 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
         return list.indexOf(item) > -1;
       };
     
-     function openAlert(ev){
+     function openAlert(ev, item){
     var confirm = 
       $mdDialog.confirm()
         .clickOutsideToClose(true)
@@ -56,6 +63,7 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
 
         $mdDialog.show(confirm).then(function() {
        alert("Yes");
+            vm.toggle(item);
     }, function() {
       alert("no");
     });
