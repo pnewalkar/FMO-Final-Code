@@ -386,7 +386,7 @@
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = "Select", Value = new Guid("00000000-0000-0000-0000-000000000000") });
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
@@ -402,7 +402,7 @@
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = "Select", Value = new Guid("00000000-0000-0000-0000-000000000000") });
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())

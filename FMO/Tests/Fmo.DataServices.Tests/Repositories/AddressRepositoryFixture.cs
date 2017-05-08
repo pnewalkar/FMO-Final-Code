@@ -146,7 +146,7 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.NotNull(results);
             Assert.IsTrue(results.Count == 1);
             Assert.IsTrue(results[0].Postcode == "Postcode1");
-            Assert.IsTrue(results[0].RouteDetails[0].DisplayText == "Secondary - DeliveryRoute1");
+            Assert.IsTrue(results[0].RouteDetails[1].DisplayText == "Secondary - DeliveryRoute1");
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.NotNull(results);
             Assert.IsTrue(results.Count == 1);
             Assert.IsTrue(results[0].Postcode == "Postcode2");
-            Assert.IsTrue(results[0].RouteDetails[0].DisplayText == "Primary - DeliveryRoute2");
+            Assert.IsTrue(results[0].RouteDetails[1].DisplayText == "Primary - DeliveryRoute2");
         }
 
         private void SetUpdataWithDeliverypoints()
@@ -253,9 +253,6 @@ namespace Fmo.DataServices.Tests.Repositories
 
             var deliveryRoute1 = new DeliveryRoute()
             {
-                DeliveryRoute_Id = 10,
-                OperationalStatus_Id = 5,
-                RouteMethodType_Id = 5,
                 ID = new Guid("00000000-0000-0000-0000-000000000001"),
                 OperationalStatus_GUID = new Guid("00000000-0000-0000-0000-000000000001"),
                 RouteMethodType_GUID = new Guid("00000000-0000-0000-0000-000000000001"),
@@ -264,9 +261,6 @@ namespace Fmo.DataServices.Tests.Repositories
 
             var deliveryRoute2 = new DeliveryRoute()
             {
-                DeliveryRoute_Id = 10,
-                OperationalStatus_Id = 5,
-                RouteMethodType_Id = 5,
                 ID = new Guid("00000000-0000-0000-0000-000000000002"),
                 OperationalStatus_GUID = new Guid("00000000-0000-0000-0000-000000000002"),
                 RouteMethodType_GUID = new Guid("00000000-0000-0000-0000-000000000002"),
@@ -276,9 +270,7 @@ namespace Fmo.DataServices.Tests.Repositories
             var unitLocationPostcode1 = new UnitLocationPostcode()
             {
                 ID = new Guid("00000000-0000-0000-0000-000000000000"),
-                UnitLocationPostcodeId = 10,
                 PostcodeUnit = "test",
-                Unit_Id = 10,
                 Unit_GUID = new Guid("00000000-0000-0000-0000-000000000000"),
                 PoscodeUnit_GUID = new Guid("00000000-0000-0000-0000-000000000002")
             };
@@ -286,9 +278,7 @@ namespace Fmo.DataServices.Tests.Repositories
             var unitLocationPostcode2 = new UnitLocationPostcode()
             {
                 ID = new Guid("00000000-0000-0000-0000-000000000001"),
-                UnitLocationPostcodeId = 10,
                 PostcodeUnit = "test",
-                Unit_Id = 10,
                 Unit_GUID = new Guid("00000000-0000-0000-0000-000000000000"),
                 PoscodeUnit_GUID = new Guid("00000000-0000-0000-0000-000000000001")
             };
@@ -354,8 +344,6 @@ namespace Fmo.DataServices.Tests.Repositories
                     DependentThoroughfare = "DependentThoroughFare1",
                     AddressType_GUID = new Guid("222C68A4-D959-4B37-B468-4B1855950A81"),
                     PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000002"),
-                    Address_Id = 10,
-                    AddressType_Id = 2,
                     UDPRN = 14856,
                     PostcodeType = "S",
                     PostTown = "test",
@@ -370,8 +358,6 @@ namespace Fmo.DataServices.Tests.Repositories
                     DependentThoroughfare = "DependentThoroughFare2",
                     AddressType_GUID = new Guid("A21F3E46-2D0D-4989-A5D5-872D23B479A2"),
                     PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000001"),
-                    Address_Id = 10,
-                    AddressType_Id = 2,
                     UDPRN = 14856,
                     PostcodeType = "S",
                     PostTown = "test",
