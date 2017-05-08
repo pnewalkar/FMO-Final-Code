@@ -8,11 +8,12 @@ md-list-item {
   font-family: PF DIN;
   font-size: 16px; }
 
-/*@font-face {
-    font-family: 'Chevin';
-    src:  url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot');
-}
+@font-face {
+  font-family: 'Chevin';
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot");
+  src: url("../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot?#iefix") format("embedded-opentype"); }
 
+/*
 @font-face {
     font-family: 'PF DIN';
     src:  url('../fonts/digicare/digicare-icofont.eot?udm03c');
