@@ -28,7 +28,7 @@ function sideNavController($scope,
     vm.routeSimulation = routeSimulation;
     vm.deliveryPoint = deliveryPoint;
     vm.selectedUnit = $stateParams;
-    vm.contextTitle = "Context";
+    vm.contextTitle = "Context Panel";
     vm.fetchActionItems();
 
     function routeSimulation(selectedDeliveryUnit) {
@@ -71,6 +71,10 @@ function sideNavController($scope,
         }
         if (query === SideNavConstant.deliveryPointActionName) {
             vm.deliveryPoint(selectedUnit);
+        }
+        if (query === "Access Link") {
+            vm.contextTitle = "Reference Data";
+            $state.go("referenceData");
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
+using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
@@ -29,7 +30,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public JsonResult GetDeliveryPoints(string boundaryBox)
         {
-            return Json(businessService.GetDeliveryPoints(boundaryBox,CurrentUserUnit));
+            return Json(businessService.GetDeliveryPoints(boundaryBox, CurrentUserUnit));
         }
 
         /// <summary>
@@ -42,6 +43,30 @@ namespace Fmo.API.Services.Controllers
         public object GetDeliveryPointByUDPRN(int udprn)
         {
             return businessService.GetDeliveryPointByUDPRN(udprn);
+        }
+
+        /// <summary>
+        /// Get mapped address location of delivery point by UDPRN
+        /// </summary>
+        /// <param name="udprn">The UDPRN number</param>
+        /// <returns>The coordinates of the delivery point</returns>
+        [Route("GetAddressLocationByUDPRN")]
+        [HttpGet]
+        public JsonResult GetDetailDeliveryPointByUDPRN(int udprn)
+        {
+            return Json(businessService.GetDetailDeliveryPointByUDPRN(udprn));
+        }
+
+        /// <summary>
+        /// Create delivery point for PAF and NYB records.
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO</param>
+        /// <returns></returns>
+        [Route("CreateDeliveryPoint")]
+        [HttpPost]
+        public string CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
+        {
+            return businessService.CreateDeliveryPoint(deliveryPointDTO);
         }
     }
 }

@@ -3,6 +3,6 @@
   <PropertyGroup>
     <ActiveDebugProfile>IIS Express</ActiveDebugProfile>
     <ShowAllFiles>false</ShowAllFiles>
-    <NameOfLastUsedPublishProfile>FMOUI</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>FMOWEBUI</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

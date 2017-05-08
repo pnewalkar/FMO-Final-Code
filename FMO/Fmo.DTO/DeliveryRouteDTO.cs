@@ -29,5 +29,14 @@ namespace Fmo.DTO
         public int? DeliveryScenario_Id { get; set; }
 
         public string DeliveryRouteBarcode { get; set; }
+
+        public string RouteNameNumber
+        {
+            get
+            {
+                return "(" + RouteNumber.Trim() + ")" + RouteName;
+            }
+        }
+
     }
 }

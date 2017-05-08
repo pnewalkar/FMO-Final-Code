@@ -1,32 +1,48 @@
 @import './app/variables';
 
-.deliveryPointDialog{
-    width: width-percent(1.25);
+
+.deliveryPointDialog {
+    width: width-percent(1);
     height: height-percent(1);
 }
 
 i.fa.fa-times.closeWindow {
     @include position(absolute);
     @include top(5px);
+    @include cursor(default);
     right: 10px;
-    cursor: default;
 }
 
-.deliveryPointSearch{
-    height: height-percent(2.5);
-    margin-top: 25px;
+
+.searchInputIcon {
+    @include margin(20px 0px 0px 5px);
 }
 
-.searchInputIcon{
-    @include margin(28px 0px 0px 8px);
-    cursor: pointer;
+.resultPanel{
+    @include background($white,none);
+    @include position(absolute);
+    width: width-percent(1.587);
+    height: height-percent(4.545);
+    @include top(105px);
+    overflow-y: auto;
+} 
+
+.resultPanel {
+    @extend %body-content;
 }
 
-.searchLabel{
-    position: absolute;
-    margin-top: 6px;
+.deliveryDialog{
+    @include margin(0px 10px 0px 0px);
 }
 
-.deliveryPointInput{
-    width: 100%;
+.fa {
+    @include cursor(pointer);
+}
+
+.dialogAction{
+    @include margin(100px 0px 0px 0px);    
+}
+
+.deliveryPointDialog input{
+    @extend %body-content;
 }

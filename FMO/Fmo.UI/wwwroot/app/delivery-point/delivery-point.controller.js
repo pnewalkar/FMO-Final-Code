@@ -1,7 +1,13 @@
 angular
     .module('deliveryPoint')
-    .controller("DeliveryPointController", ['$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', DeliveryPointController])
-function DeliveryPointController($scope, $mdDialog, deliveryPointService, deliveryPointApiService) {
+    .controller("DeliveryPointController", ['$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
+                '$filter',
+                'referenceDataConstants', '$timeout'
+, DeliveryPointController])
+function DeliveryPointController($scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
+    $filter,
+    referenceDataConstants, $timeout
+) {
     var vm = this;
     vm.resultSet = resultSet;
     vm.querySearch = querySearch;
@@ -9,17 +15,59 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.openModalPopup = openModalPopup;
     vm.closeWindow = closeWindow;
     vm.OnChangeItem = OnChangeItem;
+    vm.getPostalAddress = getPostalAddress;
+    vm.getAddressLocation = getAddressLocation;
+    vm.onBlur = onBlur;
+    vm.bindAddressDetails = bindAddressDetails;
+    vm.display = false;
+    vm.disable = true;
+    vm.openAlert = openAlert;
+    vm.toggle=toggle;
+    vm.exists =exists;
+    vm.deliveryPointList= [{locality:"BN1 Dadar", isPostioned : false},
+                           {locality:"BN2 Dadar", isPostioned : false},
+                           {locality:"BN3 Dadar", isPostioned : false}
+                          ];
+    
+    vm.positioneddeliveryPointList = [];
+    
+    function toggle (item, list) {
+        var idx = list.indexOf(item);
+        if (idx > -1) {
+          list.splice(idx, 1);
+        }
+        else {
+          list.push(item);
+        }
+      };
 
-    querySearch
+      function exists (item, list) {
+        return list.indexOf(item) > -1;
+      };
+    
+     function openAlert(ev){
+    var confirm = 
+      $mdDialog.confirm()
+        .clickOutsideToClose(true)
+        .title('Confirm Position')
+        .textContent('Are you sure you want to position this point here?')
+        .ariaLabel('Left to right demo')
+        .ok('Yes')
+        .cancel('No')
+
+        $mdDialog.show(confirm).then(function() {
+       alert("Yes");
+    }, function() {
+      alert("no");
+    });
+  };
+
+    referenceData();
+
     function querySearch(query) {
-        debugger;
         deliveryPointApiService.GetDeliveryPointsResultSet(query).then(function (response) {
-                        debugger;
-                        vm.results = response.data;
-
-
-
-                    });
+            vm.results = response.data;
+        });
     }
 
     function deliveryPoint() {
@@ -37,10 +85,49 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
         }
     }
 
+    function onBlur() {
+        $timeout(function () {
+            vm.results = {};
+            // vm.searchText="";
+        }, 1000);
+    }
 
+    function getPostalAddress(selectedItem) {
+        //if (selectedItem.length >= 3) {
+        var arrSelectedItem = selectedItem.split(',');
+        var postCode;
+        if (arrSelectedItem.length == 2) {
+            postCode = arrSelectedItem[1].trim();
+        }
+        else {
+            postCode = arrSelectedItem[0].trim();
+        }
+
+        deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
+
+            vm.postalAddressData = response.data;
+            if (vm.postalAddressData) {
+                vm.display = true;
+                vm.disable = false;
+            }
+            else {
+                vm.display = false;
+                vm.disable = true;
+            }
+        });
+        //  }
+
+        //}
+    }
+
+    function getAddressLocation(udprn) {
+        deliveryPointApiService.GetAddressLocation(udprn)
+                .then(function (response) {
+                    vm.addressLocationData = response.data;
+                });
+    }
 
     function OnChangeItem(selectedItem) {
-
         vm.searchText = selectedItem;
         vm.results = {};
     }
@@ -52,5 +139,18 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
 
     function closeWindow() {
         $mdDialog.hide(vm.close);
+    }
+
+    function referenceData() {
+        referencedataApiService.getReferenceData().success(function (response) {
+            vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
+        });
+    }
+
+    function bindAddressDetails() {
+        deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
+               .then(function (response) {
+                   vm.nybaddress = response.data;
+               });
     }
 };

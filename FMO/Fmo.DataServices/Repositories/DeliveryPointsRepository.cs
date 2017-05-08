@@ -310,6 +310,41 @@ namespace Fmo.DataServices.Repositories
         }
 
         /// <summary>
+        /// This method fetches delivery point data for given UDPRN
+        /// </summary>
+        /// <param name="udprn">udprn as int</param>
+        /// <returns>deliveryPoint DTO</returns>
+        public AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
+        {
+            var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
+                                  join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                                  join al in DataContext.AddressLocations.AsNoTracking() on pa.UDPRN equals al.UDPRN
+                                  where dp.UDPRN == udprn
+                                  select new
+                                  {
+                                      DeliveryPoint = dp,
+                                      PostalAddress = pa,
+                                      AddressLocation = al,
+                                  }).SingleOrDefault();
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>();
+                cfg.CreateMap<AddressLocation, AddressLocationDTO>();
+            });
+
+            Mapper.Configuration.CreateMapper();
+
+            return new AddDeliveryPointDTO()
+            {
+                DeliveryPointDTO = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoints.DeliveryPoint),
+                AddressLocationDTO = Mapper.Map<AddressLocation, AddressLocationDTO>(deliveryPoints.AddressLocation),
+                PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
+            };
+        }
+
+        /// <summary>
         /// Get the delivery points by the Postal Address Guid
         /// </summary>
         /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
@@ -319,7 +354,17 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId).SingleOrDefault();
-                return GenericMapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+
+                });
+
+                Mapper.Configuration.CreateMapper();
+                var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+                return deliveryPointDto;
             }
             catch (Exception ex)
             {

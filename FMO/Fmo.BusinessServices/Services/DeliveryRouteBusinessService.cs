@@ -40,7 +40,8 @@ namespace Fmo.BusinessServices.Services
         /// </returns>
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit)
         {
-            return deliveryRouteRepository.FetchDeliveryRoute(operationStateID, deliveryScenarioID, userUnit);
+            var deliveryRoutes = deliveryRouteRepository.FetchDeliveryRoute(operationStateID, deliveryScenarioID, userUnit);
+            return deliveryRoutes;
         }
 
         /// <summary>

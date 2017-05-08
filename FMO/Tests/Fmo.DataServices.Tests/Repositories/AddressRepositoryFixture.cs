@@ -21,7 +21,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IFileProcessingLogRepository> mockFileProcessingLog;
         private Mock<IPostCodeRepository> mockPostCodeRepository;
         private Mock<IReferenceDataCategoryRepository> mockReferenceDataCategoryRepository;
-
+        private Mock<IAddressRepository> mockAddressRepository;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAddressRepository testCandidate;
 
@@ -91,6 +91,15 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsFalse(result);
         }
 
+        [Test]
+        public void Test_GetPostalAddressDetails()
+        {
+            SetUpdataWithDeliverypoints();
+            var result = testCandidate.GetPostalAddressDetails(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
+
+           // Assert.NotNull(result);
+        }
+
         protected override void OnSetup()
         {
         }
@@ -112,6 +121,16 @@ namespace Fmo.DataServices.Tests.Repositories
                 }
             };
 
+            PostalAddressDTO postalAddress = new PostalAddressDTO()
+            {
+                Address_Id = 10,
+                AddressType_Id = 2,
+                UDPRN = 14856,
+                BuildingName = "Building one",
+                BuildingNumber = 123,
+                AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
+            };
+
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockFmoDbContext = CreateMock<FMODBContext>();
@@ -119,12 +138,15 @@ namespace Fmo.DataServices.Tests.Repositories
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockPostCodeRepository = CreateMock<IPostCodeRepository>();
             mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
+            mockAddressRepository = CreateMock<IAddressRepository>();
             mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
             mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddress);
+
             testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object, mockReferenceDataCategoryRepository.Object);
         }
 
@@ -140,6 +162,16 @@ namespace Fmo.DataServices.Tests.Repositories
                 }
             };
 
+            PostalAddressDTO postalAddress = new PostalAddressDTO()
+            {
+                Address_Id = 10,
+                AddressType_Id = 2,
+                UDPRN = 14856,
+                BuildingName = "Building one",
+                BuildingNumber = 123,
+                AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
+            };
+
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockFmoDbContext = CreateMock<FMODBContext>();
@@ -153,6 +185,8 @@ namespace Fmo.DataServices.Tests.Repositories
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
             mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddress);
+
             testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object, mockReferenceDataCategoryRepository.Object);
         }
     }

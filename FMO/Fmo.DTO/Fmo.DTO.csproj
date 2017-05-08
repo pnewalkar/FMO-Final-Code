@@ -62,6 +62,7 @@
     <Compile Include="AccessActionDTO.cs" />
     <Compile Include="ActionManager\RoleAccessDTO.cs" />
     <Compile Include="ActionManager\UserUnitInfoDTO.cs" />
+    <Compile Include="AddDeliveryPointDTO.cs" />
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
     <Compile Include="FileProcessingLogDTO.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="SearchResultDTO.cs" />
     <Compile Include="DeliveryPointDTO.cs" />
     <Compile Include="DeliveryRouteDTO.cs" />
+    <Compile Include="UIDropdowns\BindingEntity.cs" />
     <Compile Include="UnitLocationDTO.cs" />
     <Compile Include="NetworkLinkDTO.cs" />
     <Compile Include="PostalAddressDTO.cs" />

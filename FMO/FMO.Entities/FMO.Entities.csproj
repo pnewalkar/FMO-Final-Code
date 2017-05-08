@@ -72,6 +72,7 @@
     <Compile Include="Entities\DeliveryRouteActivity.cs" />
     <Compile Include="Entities\DeliveryRouteBlock.cs" />
     <Compile Include="Entities\DeliveryRouteNetworkLink.cs" />
+    <Compile Include="Entities\DeliveryRoutePostcode.cs" />
     <Compile Include="Entities\FileProcessingLog.cs" />
     <Compile Include="Entities\Function.cs" />
     <Compile Include="Entities\GroupHazard.cs" />

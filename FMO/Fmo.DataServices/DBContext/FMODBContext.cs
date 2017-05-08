@@ -130,6 +130,10 @@ namespace Fmo.DataServices.DBContext
 
         public virtual DbSet<AccessFunction> AccessFunctions { get; set; }
 
+        public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
+
+        public virtual DbSet<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccessLink>()
@@ -345,6 +349,12 @@ namespace Fmo.DataServices.DBContext
                 .HasMany(e => e.DeliveryRouteActivities)
                 .WithOptional(e => e.DeliveryRoute)
                 .HasForeignKey(e => e.DeliveryRoute_GUID);
+
+            modelBuilder.Entity<DeliveryRoute>()
+                .HasMany(e => e.DeliveryRoutePostcodes)
+                .WithRequired(e => e.DeliveryRoute)
+                .HasForeignKey(e => e.DeliveryRoute_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DeliveryRouteActivity>()
                 .Property(e => e.RouteActivityOrderIndex)
@@ -941,6 +951,12 @@ namespace Fmo.DataServices.DBContext
                 .HasMany(e => e.UnitLocationPostcodes)
                 .WithRequired(e => e.Postcode)
                 .HasForeignKey(e => e.PoscodeUnit_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Postcode>()
+                .HasMany(e => e.DeliveryRoutePostcodes)
+                .WithRequired(e => e.Postcode)
+                .HasForeignKey(e => e.Postcode_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostcodeArea>()

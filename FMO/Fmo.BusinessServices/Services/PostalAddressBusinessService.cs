@@ -208,23 +208,7 @@ namespace Fmo.BusinessServices.Services
 
             try
             {
-                List<string> searchdetails = new List<string>();
-                List<PostalAddressDTO> lstAddress = await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
-                if (lstAddress != null && lstAddress.Count > 0)
-                {
-                    var results = lstAddress.Select(n => new { Street = n.Thoroughfare, Postcode = n.Postcode }).Distinct().ToList();
-                    if (results != null && results.Count > 0)
-                    {
-                        foreach (var result in results)
-                        {
-                            string searchitem = result.Street + ", " + result.Postcode;
-                            string formattedResult = Regex.Replace(searchitem, ",+", ",").Trim(',');
-                            searchdetails.Add(formattedResult);
-                        }
-                    }
-                }
-
-                return searchdetails;
+                return await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
             }
             catch (Exception)
             {
@@ -240,8 +224,9 @@ namespace Fmo.BusinessServices.Services
         /// Filter PostalAddress based on the post code
         /// </summary>
         /// <param name="postCode">postCode</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode)
+        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode, Guid unitGuid)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
@@ -250,7 +235,7 @@ namespace Fmo.BusinessServices.Services
             {
                 List<object> nybDetails = new List<object>();
                 PostalAddressDTO postalAddressDto = null;
-                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode);
+                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode, unitGuid);
                 Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
                 if (postalAddressDetails != null && postalAddressDetails.Count > 0)
                 {
@@ -265,7 +250,6 @@ namespace Fmo.BusinessServices.Services
                         }
                     }
 
-                    nybDetails.Add(new { Value = Guid.Empty, DisplayText = Constants.NotShown });
                     postalAddressDto.NybAddressDetails = nybDetails;
                 }
 
@@ -279,6 +263,32 @@ namespace Fmo.BusinessServices.Services
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
+        }
+
+        /// <summary>
+        /// Get Postal Address based on postal address id.
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>Postal Address DTO</returns>
+        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
+            try
+            {
+                return addressRepository.GetPostalAddressDetails(id);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+
+            return null;
         }
 
         #endregion public methods
