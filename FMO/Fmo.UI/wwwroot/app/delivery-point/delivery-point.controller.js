@@ -18,10 +18,9 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.getPostalAddress = getPostalAddress;
     vm.getAddressLocation = getAddressLocation;
     vm.onBlur = onBlur;
+    vm.bindAddressDetails = bindAddressDetails;
     vm.display = false;
     vm.disable = true;
-   
-   
 
     referenceData();
 
@@ -47,50 +46,43 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     }
 
     function onBlur() {
-        debugger;
         $timeout(function () {
             vm.results = {};
-          
-           
-           // vm.searchText="";
+            // vm.searchText="";
         }, 1000);
-        }
+    }
 
     function getPostalAddress(selectedItem) {
-      
         //if (selectedItem.length >= 3) {
-            var arrSelectedItem = selectedItem.split(',');
-            var postCode;
-            if (arrSelectedItem.length == 2) {
-                postCode = arrSelectedItem[1].trim();
+        var arrSelectedItem = selectedItem.split(',');
+        var postCode;
+        if (arrSelectedItem.length == 2) {
+            postCode = arrSelectedItem[1].trim();
+        }
+        else {
+            postCode = arrSelectedItem[0].trim();
+        }
+
+        deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
+
+            vm.postalAddressData = response.data;
+            if (vm.postalAddressData) {
+                vm.display = true;
+                vm.disable = false;
             }
             else {
-                postCode = arrSelectedItem[0].trim();
+                vm.display = false;
+                vm.disable = true;
             }
-         
-            deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
-               
-                    vm.postalAddressData = response.data;
-                    if (vm.postalAddressData) {
-                        vm.display = true;
-                        vm.disable = false;
-                    }
-            else {
-            vm.display = false;
- vm.disable = true;
-    }
-                });
-          //  }
+        });
+        //  }
 
-            //}
-        
-
+        //}
     }
 
     function getAddressLocation(udprn) {
         deliveryPointApiService.GetAddressLocation(udprn)
                 .then(function (response) {
-                    debugger;
                     vm.addressLocationData = response.data;
                 });
     }
@@ -110,11 +102,15 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     }
 
     function referenceData() {
-        debugger;
         referencedataApiService.getReferenceData().success(function (response) {
-            debugger;
             vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
         });
     }
 
+    function bindAddressDetails() {
+        deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
+               .then(function (response) {
+                   vm.nybaddress = response.data;
+               });
+    }
 };
