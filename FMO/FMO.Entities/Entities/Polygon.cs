@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -16,10 +16,6 @@ namespace Fmo.Entities
             DeliveryGroups = new HashSet<DeliveryGroup>();
             PolygonObjects = new HashSet<PolygonObject>();
         }
-
-        public int Polygon_Id { get; set; }
-
-        public int PolygonType_Id { get; set; }
 
         [Required]
         public DbGeometry PolygonGeometry { get; set; }

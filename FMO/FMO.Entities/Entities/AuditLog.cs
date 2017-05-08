@@ -1,29 +1,40 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Fmo.Entities
+namespace Entity
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
+
     [Table("FMO.AuditLog")]
-    public class AuditLog
+    public partial class AuditLog
     {
         [Key]
         public Guid AuditLog_Id { get; set; }
 
-        public DateTime? EventTimeStamp { get; set; }
-
-        public string EventType { get; set; }
-
-        public string RecordId { get; set; }
-
+        [Required]
+        [StringLength(50)]
         public string TableName { get; set; }
 
-        public string ColumnName { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string RecordId { get; set; }
 
-        public string NewValue { get; set; }
+        [StringLength(50)]
+        public string ColumnName { get; set; }
 
         public string OriginalValue { get; set; }
 
+        public string NewValue { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string UserId { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string EventType { get; set; }
+
+        public DateTime EventTimeStamp { get; set; }
     }
 }

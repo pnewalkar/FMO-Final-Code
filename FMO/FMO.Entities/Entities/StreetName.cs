@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -14,9 +14,6 @@ namespace Fmo.Entities
         {
             NetworkLinks = new HashSet<NetworkLink>();
         }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StreetName_Id { get; set; }
 
         [StringLength(12)]
         public string USRN { get; set; }

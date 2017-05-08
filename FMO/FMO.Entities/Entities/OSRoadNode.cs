@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -15,8 +15,6 @@ namespace Fmo.Entities
             OSRoadLinks = new HashSet<OSRoadLink>();
             OSRoadLinks1 = new HashSet<OSRoadLink>();
         }
-
-        public int NetworkNode_Id { get; set; }
 
         [Required]
         [StringLength(20)]

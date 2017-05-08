@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,10 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.DeliveryRouteNetworkLink")]
     public partial class DeliveryRouteNetworkLink
     {
-        public int? DeliveryRouteActivity_Id { get; set; }
-
-        public int? NetworkLink_Id { get; set; }
-
         [Column(TypeName = "numeric")]
         public decimal? LinkOrderIndex { get; set; }
 

@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -31,6 +31,8 @@ namespace Fmo.Entities
         public Guid ConnectingNode_GUID { get; set; }
 
         public Guid? PathNode_GUID { get; set; }
+
+        public virtual OSConnectingNode OSConnectingNode { get; set; }
 
         public virtual OSPathNode OSPathNode { get; set; }
     }

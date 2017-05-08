@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,10 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.DeliveryRouteBlock")]
     public partial class DeliveryRouteBlock
     {
-        public int Block_Id { get; set; }
-
-        public int DeliveryRoute_Id { get; set; }
-
         public Guid ID { get; set; }
 
         public Guid DeliveryRoute_GUID { get; set; }

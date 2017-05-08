@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,17 +9,10 @@ namespace Fmo.Entities
     [Table("FMO.POBox")]
     public partial class POBox
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int POBox_Id { get; set; }
-
         [Column("UDPRN ")]
         public int UDPRN_ { get; set; }
 
         public long POBoxNumber { get; set; }
-
-        public int? POBoxType_Id { get; set; }
-
-        public int? POBoxLinkedAddress_Id { get; set; }
 
         public Guid ID { get; set; }
 

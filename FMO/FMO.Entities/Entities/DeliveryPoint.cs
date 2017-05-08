@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -15,11 +15,6 @@ namespace Fmo.Entities
             AccessLinks = new HashSet<AccessLink>();
             RMGDeliveryPoints = new HashSet<RMGDeliveryPoint>();
         }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int DeliveryPoint_Id { get; set; }
-
-        public int Address_Id { get; set; }
 
         public DbGeometry LocationXY { get; set; }
 
@@ -44,19 +39,9 @@ namespace Fmo.Entities
         [StringLength(1)]
         public string DeliveryPointUseIndicator { get; set; }
 
-        public int? DeliveryGroup_Id { get; set; }
-
         public bool IsUnit { get; set; }
 
-        public int? LocationProviderId { get; set; }
-
-        public int? OperationalStatusId { get; set; }
-
         public int? Temp_DeliveryGroup_Id { get; set; }
-
-        public int? LocationProvider_Id { get; set; }
-
-        public int? OperationalStatus_Id { get; set; }
 
         public Guid ID { get; set; }
 
@@ -67,6 +52,11 @@ namespace Fmo.Entities
         public Guid? OperationalStatus_GUID { get; set; }
 
         public Guid? DeliveryGroup_GUID { get; set; }
+
+        [Column(TypeName = "timestamp")]
+        [MaxLength(8)]
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }

@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,8 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.RMGNode")]
     public partial class RMGNode
     {
-        public int NetworkNode_Id { get; set; }
-
         public DbGeometry Location { get; set; }
 
         public long? FormofNode { get; set; }

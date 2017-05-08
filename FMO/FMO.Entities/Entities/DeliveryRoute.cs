@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -16,8 +16,6 @@ namespace Fmo.Entities
             DeliveryRouteActivities = new HashSet<DeliveryRouteActivity>();
         }
 
-        public int DeliveryRoute_Id { get; set; }
-
         public int? ExternalId { get; set; }
 
         [StringLength(30)]
@@ -25,14 +23,6 @@ namespace Fmo.Entities
 
         [StringLength(10)]
         public string RouteNumber { get; set; }
-
-        public int OperationalStatus_Id { get; set; }
-
-        public int RouteMethodType_Id { get; set; }
-
-        public int? TravelOutTransportType_Id { get; set; }
-
-        public int? TravelInTransportType_Id { get; set; }
 
         [Column(TypeName = "numeric")]
         public decimal? TravelOutTimeMin { get; set; }
@@ -42,8 +32,6 @@ namespace Fmo.Entities
 
         [Column(TypeName = "numeric")]
         public decimal? SpanTimeMin { get; set; }
-
-        public int? DeliveryScenario_Id { get; set; }
 
         [StringLength(20)]
         public string DeliveryRouteBarcode { get; set; }

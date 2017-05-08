@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -55,11 +55,6 @@ namespace Fmo.Entities
             UnitPostcodeSectors = new HashSet<UnitPostcodeSector>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ReferenceData_Id { get; set; }
-
-        public int ReferenceDataCategory_Id { get; set; }
-
         [StringLength(100)]
         public string ReferenceDataName { get; set; }
 
@@ -71,8 +66,6 @@ namespace Fmo.Entities
 
         [StringLength(100)]
         public string DisplayText { get; set; }
-
-        public int? DataParentId { get; set; }
 
         public Guid ID { get; set; }
 

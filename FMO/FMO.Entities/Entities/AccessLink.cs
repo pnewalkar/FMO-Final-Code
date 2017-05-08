@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,9 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.AccessLink")]
     public partial class AccessLink
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int AccessLink_Id { get; set; }
-
         [Required]
         public DbGeometry OperationalObjectPoint { get; set; }
 
@@ -21,8 +18,6 @@ namespace Fmo.Entities
         [Required]
         public DbGeometry AccessLinkLine { get; set; }
 
-        public int AccessLinkType_Id { get; set; }
-
         public bool? Approved { get; set; }
 
         [Column(TypeName = "numeric")]
@@ -30,16 +25,6 @@ namespace Fmo.Entities
 
         [Column(TypeName = "numeric")]
         public decimal WorkloadLengthMeter { get; set; }
-
-        public int LinkStatus_Id { get; set; }
-
-        public int? NetworkLink_Id { get; set; }
-
-        public int LinkDirection_Id { get; set; }
-
-        public int OperationalObjectId { get; set; }
-
-        public int OperationalObjectType_Id { get; set; }
 
         public Guid ID { get; set; }
 
@@ -54,6 +39,11 @@ namespace Fmo.Entities
         public Guid? OperationalObjectType_GUID { get; set; }
 
         public Guid NetworkLink_GUID { get; set; }
+
+        [Column(TypeName = "timestamp")]
+        [MaxLength(8)]
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public virtual DeliveryGroup DeliveryGroup { get; set; }
 

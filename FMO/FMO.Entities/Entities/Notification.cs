@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,10 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.Notification")]
     public partial class Notification
     {
-        public int Notification_Id { get; set; }
-
-        public int? NotificationType_Id { get; set; }
-
         [Column("Notification Heading")]
         [StringLength(50)]
         public string Notification_Heading { get; set; }
@@ -23,8 +19,6 @@ namespace Fmo.Entities
 
         [Column(TypeName = "datetime2")]
         public DateTime? NotificationDueDate { get; set; }
-
-        public int? NotificationPriority_Id { get; set; }
 
         [StringLength(2000)]
         public string NotificationActionLink { get; set; }

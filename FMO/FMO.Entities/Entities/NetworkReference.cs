@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -18,13 +18,8 @@ namespace Fmo.Entities
             OSTurnRestrictions = new HashSet<OSTurnRestriction>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int NetworkReference_Id { get; set; }
-
         [StringLength(10)]
         public string ReferenceType { get; set; }
-
-        public int? NodeReferenceNetworkNode_Id { get; set; }
 
         [StringLength(20)]
         public string NodeReferenceTOID { get; set; }
@@ -32,8 +27,6 @@ namespace Fmo.Entities
         public DbGeometry NodeReferenceLocation { get; set; }
 
         public DbGeometry PointReferenceLocation { get; set; }
-
-        public int? PointReferenceNetworkLink_Id { get; set; }
 
         [StringLength(20)]
         public string PointReferenceRoadLinkTOID { get; set; }
@@ -45,7 +38,9 @@ namespace Fmo.Entities
 
         public Guid? NetworkNode_GUID { get; set; }
 
-        public int? NetworkNode_Id { get; set; }
+        public Guid? PointReferenceNetworkLink_GUID { get; set; }
+
+        public virtual NetworkLink NetworkLink { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NetworkLinkReference> NetworkLinkReferences { get; set; }

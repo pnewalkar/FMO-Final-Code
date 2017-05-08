@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,18 +9,10 @@ namespace Fmo.Entities
     [Table("FMO.BlockSequence")]
     public partial class BlockSequence
     {
-        public int BlockSequence_Id { get; set; }
-
-        public int Block_Id { get; set; }
-
         [Column(TypeName = "numeric")]
         public decimal? OrderIndex { get; set; }
 
         public int? OperationalObject_Id { get; set; }
-
-        public int? OperationalObjectType_Id { get; set; }
-
-        public int? DeliveryGroup_Id { get; set; }
 
         public Guid ID { get; set; }
 

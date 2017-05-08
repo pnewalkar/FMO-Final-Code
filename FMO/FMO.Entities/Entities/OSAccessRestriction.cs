@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -12,8 +12,6 @@ namespace Fmo.Entities
         [Required]
         [StringLength(20)]
         public string TOID { get; set; }
-
-        public int? NetworkReference_Id { get; set; }
 
         [StringLength(21)]
         public string RestrictionValue { get; set; }

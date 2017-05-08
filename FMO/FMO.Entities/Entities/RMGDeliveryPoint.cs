@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,9 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.RMGDeliveryPoint")]
     public partial class RMGDeliveryPoint
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int RMGDeliveryPoint_Id { get; set; }
-
         public DbGeometry LocationXY { get; set; }
 
         [Column(TypeName = "numeric")]
@@ -19,8 +16,6 @@ namespace Fmo.Entities
 
         [Column(TypeName = "numeric")]
         public decimal? Longitude { get; set; }
-
-        public int DeliveryPoint_Id { get; set; }
 
         public Guid ID { get; set; }
 

@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -14,8 +14,6 @@ namespace Fmo.Entities
         {
             ReferenceDatas = new HashSet<ReferenceData>();
         }
-
-        public int ReferenceDataCategory_Id { get; set; }
 
         [Required]
         [StringLength(50)]

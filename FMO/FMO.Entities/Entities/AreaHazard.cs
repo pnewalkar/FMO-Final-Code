@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,16 +9,8 @@ namespace Fmo.Entities
     [Table("FMO.AreaHazard")]
     public partial class AreaHazard
     {
-        public int Hazard_Id { get; set; }
-
-        public int Category_Id { get; set; }
-
-        public int SubCategory_Id { get; set; }
-
         [Column(TypeName = "date")]
         public DateTime? ValidUntilDate { get; set; }
-
-        public int Polygon_Id { get; set; }
 
         public Guid ID { get; set; }
 

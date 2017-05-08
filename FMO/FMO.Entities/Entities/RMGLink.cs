@@ -1,4 +1,4 @@
-namespace Fmo.Entities
+namespace Entity
 {
     using System;
     using System.Collections.Generic;
@@ -9,8 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.RMGLink")]
     public partial class RMGLink
     {
-        public int NetworkLink_Id { get; set; }
-
         [StringLength(1)]
         public string LinkType { get; set; }
 
