@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Fmo.Common.Constants;
-using Fmo.Common.Enums;
-using Fmo.Common.Interface;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.DTO.UIDropdowns;
-using Fmo.Entities;
-using Fmo.MappingConfiguration;
-
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
+    using Fmo.Common.Interface;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.DTO.UIDropdowns;
+    using Fmo.Entities;
+    using Fmo.MappingConfiguration;
+
     /// <summary>
     /// Repository to interact with postal address entity
     /// </summary>
@@ -360,8 +360,9 @@ namespace Fmo.DataServices.Repositories
         /// Filter PostalAddress based on post code
         /// </summary>
         /// <param name="postCode">postCode</param>
+        /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        public async Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode)
+        public async Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode, Guid unitGuid)
         {
             List<string> lstPocodes = new List<string>();
             List<PostalAddressDTO> postalAddressDTO = new List<PostalAddressDTO>();
@@ -403,6 +404,21 @@ namespace Fmo.DataServices.Repositories
                     });
                 }
             }));
+
+            var postCodes = await DataContext.UnitLocationPostcodes.AsNoTracking().Where(p => p.Unit_GUID == unitGuid).Select(s => s.PoscodeUnit_GUID).Distinct().ToListAsync();
+            if (postalAddressDTO[0].RouteDetails == null || postalAddressDTO[0].RouteDetails.Count == 0)
+            {
+                List<BindingEntity> routeDetails = new List<BindingEntity>();
+                var routes = await DataContext.DeliveryRoutePostcodes.AsNoTracking().Where(dr => postCodes.Contains(dr.Postcode_GUID)).ToListAsync();
+                routes.ForEach(r =>
+                {
+                    if (!routeDetails.Where(rd => rd.Value == r.DeliveryRoute.ID).Any())
+                    {
+                        routeDetails.Add(new BindingEntity() { DisplayText = r.DeliveryRoute.RouteName, Value = r.DeliveryRoute.ID });
+                    }
+                });
+                postalAddressDTO[0].RouteDetails = new List<BindingEntity>(routeDetails.Distinct());
+            }
 
             return postalAddressDTO;
         }
