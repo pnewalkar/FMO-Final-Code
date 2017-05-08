@@ -218,12 +218,12 @@
         /// Checking for duplicatesthat already exists in FMO as a NYB record
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress</param>
-        /// <returns>boolean</returns>
-        public bool CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        /// <returns>string</returns>
+        public string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
         {
             try
             {
-                bool isduplicate = false;
+                string postCode = string.Empty;
                 Guid nybAddressID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
                 var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
@@ -235,16 +235,12 @@
                                && n.Thoroughfare == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : null)
                                && n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null)).SingleOrDefault();
 
-                if (postalAddress != null && postalAddress.Postcode == objPostalAddress.Postcode)
+                if (postalAddress != null && postalAddress.Postcode != objPostalAddress.Postcode)
                 {
-                    isduplicate = true;
-                }
-                else if (postalAddress != null && postalAddress.Postcode != objPostalAddress.Postcode)
-                {
-                    isduplicate = false;
+                    postCode = postalAddress.Postcode;
                 }
 
-                return isduplicate;
+                return postCode;
             }
             catch (Exception)
             {
@@ -440,6 +436,62 @@
                 this.loggingHelper.LogError(ex);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Create delivery point for PAF and NYB details
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        public bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        {
+            bool isPostalAddressInserted = false;
+            if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
+            {
+                var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
+                DeliveryPoint objDeliveryPoint = new DeliveryPoint() { MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount, MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume };
+                try
+                {
+                    objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
+                    if (objPostalAddress != null)
+                    {
+                        objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
+                        objPostalAddress.PostTown = addDeliveryPointDTO.PostalAddressDTO.PostTown;
+                        objPostalAddress.DependentLocality = addDeliveryPointDTO.PostalAddressDTO.DependentLocality;
+                        objPostalAddress.DoubleDependentLocality = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
+                        objPostalAddress.Thoroughfare = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
+                        objPostalAddress.DependentThoroughfare = addDeliveryPointDTO.PostalAddressDTO.DependentThoroughfare;
+                        objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
+                        objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
+                        objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;
+                        objPostalAddress.POBoxNumber = addDeliveryPointDTO.PostalAddressDTO.POBoxNumber;
+                        objPostalAddress.DepartmentName = addDeliveryPointDTO.PostalAddressDTO.DepartmentName;
+                        objPostalAddress.OrganisationName = addDeliveryPointDTO.PostalAddressDTO.OrganisationName;
+                        objPostalAddress.UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN;
+                        objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDTO.PostcodeType;
+                        objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
+                        objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
+                        objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
+                        objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
+                    }
+                    else
+                    {
+                        objPostalAddress.ID = Guid.NewGuid();
+                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(addDeliveryPointDTO.PostalAddressDTO);
+                        entity.DeliveryPoints.Add(objDeliveryPoint);
+                        DataContext.PostalAddresses.Add(entity);
+                    }
+
+                    DataContext.SaveChanges();
+                    isPostalAddressInserted = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return isPostalAddressInserted;
         }
 
         /// <summary>
