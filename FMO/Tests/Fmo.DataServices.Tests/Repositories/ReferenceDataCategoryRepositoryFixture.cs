@@ -50,7 +50,7 @@
             {
                 new ReferenceDataCategory()
                 {
-                    ReferenceDataCategory_Id = 1,
+                    ID = Guid.NewGuid(),
                     CategoryName = "Postal Address Type",
                     ReferenceDatas = new List<ReferenceData>()
                    {
@@ -58,8 +58,7 @@
                         {
                             ReferenceDataName = "PAF",
                             DataDescription = "PAF",
-                            ReferenceDataCategory_Id = 1,
-                            ReferenceData_Id = 3,
+                            ReferenceDataCategory_GUID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD"),
                             ID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD")
                         }
                     }

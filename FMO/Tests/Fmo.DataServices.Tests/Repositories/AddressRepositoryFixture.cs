@@ -25,7 +25,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IFileProcessingLogRepository> mockFileProcessingLog;
         private Mock<IPostCodeRepository> mockPostCodeRepository;
         private Mock<IReferenceDataCategoryRepository> mockReferenceDataCategoryRepository;
-
+        private Mock<IAddressRepository> mockAddressRepository;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAddressRepository testCandidate;
 
@@ -95,6 +95,15 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsFalse(result);
         }
 
+        [Test]
+        public void Test_GetPostalAddressDetails()
+        {
+            SetUpdataWithDeliverypoints();
+            var result = testCandidate.GetPostalAddressDetails(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
+
+           // Assert.NotNull(result);
+        }
+
         protected override void OnSetup()
         {
         }
@@ -157,15 +166,25 @@ namespace Fmo.DataServices.Tests.Repositories
             {
                 new PostalAddress()
                 {
-                    Address_Id = 10,
+                    ID= Guid.NewGuid(),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     UDPRN = 14856,
                     DeliveryPoints = new List<DeliveryPoint>()
                {
-                new DeliveryPoint() { DeliveryPoint_Id = 1, Address_Id = 10, UDPRN = 14856 },
-                new DeliveryPoint() { DeliveryPoint_Id = 2, Address_Id = 10, UDPRN = 14856 }
+                new DeliveryPoint() { ID = Guid.NewGuid(), Address_GUID = Guid.NewGuid(), UDPRN = 14856 },
+                new DeliveryPoint() { ID = Guid.NewGuid(), Address_GUID = Guid.NewGuid(), UDPRN = 14856 }
             }
                 }
+            };
+
+            PostalAddressDTO postalAddress = new PostalAddressDTO()
+            {
+                Address_Id = 10,
+                AddressType_Id = 2,
+                UDPRN = 14856,
+                BuildingName = "Building one",
+                BuildingNumber = 123,
+                AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
             };
 
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
@@ -175,12 +194,15 @@ namespace Fmo.DataServices.Tests.Repositories
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockPostCodeRepository = CreateMock<IPostCodeRepository>();
             mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
+            mockAddressRepository = CreateMock<IAddressRepository>();
             mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
             mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddress);
+
             testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object, mockReferenceDataCategoryRepository.Object);
         }
 
@@ -190,11 +212,20 @@ namespace Fmo.DataServices.Tests.Repositories
             {
                 new PostalAddress()
                 {
-                    Address_Id = 10,
-                    AddressType_Id = 2,
+                    ID = Guid.NewGuid(),
                     UDPRN = 14856,
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
                 }
+            };
+
+            PostalAddressDTO postalAddress = new PostalAddressDTO()
+            {
+                Address_Id = 10,
+                AddressType_Id = 2,
+                UDPRN = 14856,
+                BuildingName = "Building one",
+                BuildingNumber = 123,
+                AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
             };
 
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
@@ -210,6 +241,8 @@ namespace Fmo.DataServices.Tests.Repositories
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
             mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddress);
+
             testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object, mockReferenceDataCategoryRepository.Object);
         }
 

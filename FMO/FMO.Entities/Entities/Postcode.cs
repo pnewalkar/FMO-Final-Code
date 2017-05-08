@@ -13,9 +13,9 @@ namespace Fmo.Entities
         public Postcode()
         {
             AMUChangeRequests = new HashSet<AMUChangeRequest>();
+            DeliveryRoutePostcodes = new HashSet<DeliveryRoutePostcode>();
             PostalAddresses = new HashSet<PostalAddress>();
             UnitLocationPostcodes = new HashSet<UnitLocationPostcode>();
-            DeliveryRoutePostcodes = new HashSet<DeliveryRoutePostcode>();
         }
 
         [Required]
@@ -42,14 +42,14 @@ namespace Fmo.Entities
         public virtual ICollection<AMUChangeRequest> AMUChangeRequests { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PostalAddress> PostalAddresses { get; set; }
 
         public virtual PostcodeSector PostcodeSector { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UnitLocationPostcode> UnitLocationPostcodes { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
     }
 }

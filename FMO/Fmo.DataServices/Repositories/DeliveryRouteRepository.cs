@@ -64,7 +64,7 @@ namespace Fmo.DataServices.Repositories
                                  .Where(l => (l.Scenario.Unit_GUID == userUnit) && (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                                  .Select(l => new DeliveryRouteDTO
                                  {
-                                     DeliveryRoute_Id = l.DeliveryRoute_Id,
+                                     ID = l.ID,
                                      RouteName = l.RouteName,
                                      RouteNumber = l.RouteNumber
                                  }).ToListAsync();
@@ -94,7 +94,7 @@ namespace Fmo.DataServices.Repositories
                     .Take(takeCount)
                     .Select(l => new DeliveryRouteDTO
                     {
-                        DeliveryRoute_Id = l.DeliveryRoute_Id,
+                        ID = l.ID,
                         RouteName = l.RouteName,
                         RouteNumber = l.RouteNumber
                     })

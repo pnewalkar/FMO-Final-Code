@@ -9,16 +9,10 @@ namespace Fmo.Entities
     [Table("FMO.SpecialInstruction")]
     public partial class SpecialInstruction
     {
-        public int SpecialInstruction_Id { get; set; }
-
-        public int? InstructionType_Id { get; set; }
-
         [StringLength(300)]
         public string InstructionText { get; set; }
 
         public int OperationalObject_Id { get; set; }
-
-        public int OperationalObjectType_Id { get; set; }
 
         public short? DaysofTheWeek { get; set; }
 

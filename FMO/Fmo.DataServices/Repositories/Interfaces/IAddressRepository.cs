@@ -84,7 +84,14 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// Checking for duplicatesthat already exists in FMO as a NYB record
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress</param>
-        /// <returns>boolean</returns>
-        bool CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
+        /// <returns>string</returns>
+        string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
+
+        /// <summary>
+        /// Create delivery point for PAF and NYB details
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
     }
 }

@@ -15,8 +15,6 @@ namespace Fmo.Entities
             ReferenceDatas = new HashSet<ReferenceData>();
         }
 
-        public int ReferenceDataCategory_Id { get; set; }
-
         [Required]
         [StringLength(50)]
         public string CategoryName { get; set; }

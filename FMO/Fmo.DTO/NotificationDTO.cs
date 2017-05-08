@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fmo.DTO
 {
     public class NotificationDTO
     {
-        public int Notification_Id { get; set; }
-
-        public int? NotificationType_Id { get; set; }
-
         public string Notification_Heading { get; set; }
 
         public string Notification_Message { get; set; }
@@ -27,12 +19,11 @@ namespace Fmo.DTO
         public string PostcodeDistrict { get; set; }
 
         public string PostcodeSector { get; set; }
-        
+
         public Guid ID { get; set; }
 
         public Guid? NotificationType_GUID { get; set; }
 
         public Guid? NotificationPriority_GUID { get; set; }
-
     }
 }

@@ -1,24 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using Fmo.BusinessServices.Interfaces;
+using Fmo.BusinessServices.Services;
+using Fmo.Common.Interface;
+using Fmo.Common.TestSupport;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.Entities;
+using Fmo.Helpers.Interface;
+using Moq;
+using NUnit.Framework;
 
 namespace Fmo.BusinessServices.Tests.Services
 {
-    using System.Collections.Generic;
-    using BusinessServices.Services;
-    using Entities;
-    using Fmo.BusinessServices.Interfaces;
-    using Fmo.Common.TestSupport;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Helpers.Interface;
-    using Moq;
-    using NUnit.Framework;
-
     [TestFixture]
     public class DeliveryPointBusinessServiceFixture : TestFixtureBase
     {
         private IDeliveryPointBusinessService testCandidate;
         private Mock<IDeliveryPointsRepository> mockDeliveryPointsRepository;
         private Mock<IAddressLocationRepository> mockaddressLocationRepository;
+        private Mock<IConfigurationHelper> mockConfigurationRepository;
+        private Mock<ILoggingHelper> mockLoggingRepository;
+        private Mock<IAddressRepository> mockAddressRepository;
         private Guid unitGuid = Guid.NewGuid();
 
         [Test]
@@ -37,7 +40,7 @@ namespace Fmo.BusinessServices.Tests.Services
             int udprn = 10875813;
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             DeliveryPointDTO objdeliverypointDTO = new DeliveryPointDTO();
-            objdeliverypointDTO.DeliveryPoint_Id = 11820021;
+            objdeliverypointDTO.ID = Guid.NewGuid();
             objdeliverypointDTO.LocationXY = System.Data.Entity.Spatial.DbGeometry.PointFromText("POINT (487431 193658)", 27700);
             objdeliverypointDTO.PostalAddress = new PostalAddressDTO();
             lstDeliveryPointDTO.Add(objdeliverypointDTO);
@@ -54,6 +57,9 @@ namespace Fmo.BusinessServices.Tests.Services
         {
             mockDeliveryPointsRepository = new Mock<IDeliveryPointsRepository>();
             mockaddressLocationRepository = new Mock<IAddressLocationRepository>();
+            mockConfigurationRepository = new Mock<IConfigurationHelper>();
+            mockLoggingRepository = new Mock<ILoggingHelper>();
+            mockAddressRepository = new Mock<IAddressRepository>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
@@ -68,7 +74,7 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
 
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object);
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockAddressRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object);
         }
     }
 }

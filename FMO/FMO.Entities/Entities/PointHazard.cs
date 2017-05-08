@@ -9,16 +9,6 @@ namespace Fmo.Entities
     [Table("FMO.PointHazard")]
     public partial class PointHazard
     {
-        public int Hazard_Id { get; set; }
-
-        public int Category_Id { get; set; }
-
-        public int SubCategory_Id { get; set; }
-
-        public int OperationalObject_Id { get; set; }
-
-        public int OperationalObjectType_Id { get; set; }
-
         [Required]
         [StringLength(300)]
         public string Description { get; set; }
@@ -30,6 +20,8 @@ namespace Fmo.Entities
         public Guid SubCategory_GUID { get; set; }
 
         public Guid OperationalObjectType_GUID { get; set; }
+
+        public Guid OperationalObject_GUID { get; set; }
 
         public virtual ReferenceData ReferenceData { get; set; }
 

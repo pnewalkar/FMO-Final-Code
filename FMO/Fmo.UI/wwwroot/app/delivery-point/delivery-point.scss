@@ -46,3 +46,12 @@ i.fa.fa-times.closeWindow {
 .deliveryPointDialog input{
     @extend %body-content;
 }
+
+.dpCheckBox{
+    @include float(right);
+}
+
+h1{
+    @extend %header-content;
+    @include font-color($black);
+}
