@@ -64,75 +64,87 @@
                 </md-select>
             </md-input-container>
         </div>
-        
+
         <!--175-->
-      <section layout="row">
-        <div layout="column" flex="65" ng-show="vm.display">
-            <fieldset>
-            <legend>Address<sub>*</sub></legend>
-                
-          	<div layout="row">
-          		<div layout="column" flex>
-          			<label>Building Number</label>
-          	                	<input ng-model="Number" type="text">
-          		</div>
-          	
-          		<span flex="5"></span>
-          	
-          		<div layout="column" flex>
-          			<label>Building Name</label>
-          	                	<input ng-model="Name" type="text">
-          		</div>
-          	</div>
-          	
-          	<div layout="row">
-          		<div layout="column" flex>
-          			<label>Sub-Building Name</label>
-          	                	<input ng-model="Building" type="text">
-          		</div>
-          	
-          		<span flex="5"></span>
-          	
-          		<div layout="column" flex>
-          			<label>Organisation</label>
-          	                	<input ng-model="Organisation" type="text">
-          		</div>
-          	</div>
-          	<div layout="row">
-          		<div layout="column" flex>
-          			<label>Department Name</label>
-          	                <input ng-model="Name" type="text">
-          		</div>
-          		<span flex="5"></span>
-          		<span flex></span>
-          	</div>
+        <section layout="row">
+            <div layout="column" flex="65" ng-show="vm.display">
+                <fieldset>
+                    <legend>Address<sub>*</sub></legend>
 
-            </fieldset>
-        </div>
-        <span flex="5"></span>
-        <div layout="column" flex="35" ng-show="vm.display">
-        	<div layout="column">
-        	    <label>Add DP Alias</label>
-        	    <input ng-model="alias" type="text">
-        	</div>
-        	<div layout="column">
-        	    <label>Alias</label>
-        	    <div></div>
-        	</div>
-        </div>
+                    <div layout="row">
+                        <div layout="column" flex>
+                            <label>Building Number</label>
+                            <input ng-model="Number" type="text">
+                        </div>
 
-    </section>
-        
-        
+                        <span flex="5"></span>
+
+                        <div layout="column" flex>
+                            <label>Building Name</label>
+                            <input ng-model="Name" type="text">
+                        </div>
+                    </div>
+
+                    <div layout="row">
+                        <div layout="column" flex>
+                            <label>Sub-Building Name</label>
+                            <input ng-model="Building" type="text">
+                        </div>
+
+                        <span flex="5"></span>
+
+                        <div layout="column" flex>
+                            <label>Organisation</label>
+                            <input ng-model="Organisation" type="text">
+                        </div>
+                    </div>
+                    <div layout="row">
+                        <div layout="column" flex>
+                            <label>Department Name</label>
+                            <input ng-model="Name" type="text">
+                        </div>
+                        <span flex="5"></span>
+                        <span flex></span>
+                    </div>
+
+                </fieldset>
+            </div>
+            <span flex="5"></span>
+            <div layout="column" flex="35" ng-show="vm.display">
+                <div layout="column">
+                    <label>Add DP Alias</label>
+                    <div layout="row">
+                        <input ng-model="vm.alias" type="text" style="
+                               height: 26px;
+                               ">
+                        <span flex="5"></span>
+                        <i class="fa fa-plus-circle" ng-click="vm.addAlias()" aria-hidden="true" flex></i>
+                    </div>
+                </div>
+                <div layout="column" style="margin-top: 27px;">
+                    <label>Alias</label>
+                    <div style="height:130px; overflow-y:auto;border:" >
+                        <div ng-repeat="item in vm.items">
+                            <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.alias">
+                            <input type="radio" name="check" value="inline" ng-model="item.inlineChecked">
+                            <i class="fa fa-minus-circle" aria-hidden="true" ng-click="vm.removeAlias()"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
         <div layout="row" ng-show="vm.display">
             <div layout="column">
-            <label>Multi Occ<sub>*</sub></label>
-            <input ng-model="occ" type="text">
+                <label>Multi Occ<sub>*</sub></label>
+                <input ng-model="occ" type="text">
             </div>
             <span flex="5"></span>
             <div layout="column">
-            <label>Mail Vol<sub>*</sub></label>
-            <input ng-model="vol" type="text">
+                <label>Mail Vol<sub>*</sub></label>
+                <input ng-model="vol" type="text">
             </div>
         </div>
         <div layout="row" class="dialogAction">

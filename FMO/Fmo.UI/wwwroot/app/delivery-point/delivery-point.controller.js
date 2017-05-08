@@ -17,12 +17,15 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.OnChangeItem = OnChangeItem;
     vm.getPostalAddress = getPostalAddress;
     vm.getAddressLocation = getAddressLocation;
+    vm.addAlias = addAlias;
+    vm.removeAlias = removeAlias;
     vm.onBlur = onBlur;
     vm.display = false;
     vm.disable = true;
     vm.openAlert = openAlert;
     vm.toggle=toggle;
-    vm.exists =exists;
+    vm.exists = exists;
+    vm.alias = null;
     vm.deliveryPointList= [{locality:"BN1 Dadar", isPostioned : false},
                            {locality:"BN2 Dadar", isPostioned : false},
                            {locality:"BN3 Dadar", isPostioned : false}
@@ -149,6 +152,24 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
         referencedataApiService.getReferenceData().success(function (response) {
             vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
         });
+    }
+
+    vm.items = [];
+
+    function addAlias() {
+       
+        vm.items.push({
+            inlineChecked: false,
+            alias: vm.alias
+        });
+        vm.alias = "";
+    };
+
+
+    function removeAlias()
+    {
+        var lastItem = vm.items.length - 1;
+        vm.items.splice(lastItem);
     }
 
 };
