@@ -20,9 +20,6 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.onBlur = onBlur;
     vm.display = false;
     vm.disable = true;
-   
-   
-
     referenceData();
 
     function querySearch(query) {
@@ -47,18 +44,12 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     }
 
     function onBlur() {
-        debugger;
         $timeout(function () {
             vm.results = {};
-          
-           
-           // vm.searchText="";
         }, 1000);
         }
 
     function getPostalAddress(selectedItem) {
-      
-        //if (selectedItem.length >= 3) {
             var arrSelectedItem = selectedItem.split(',');
             var postCode;
             if (arrSelectedItem.length == 2) {
@@ -80,17 +71,11 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
  vm.disable = true;
     }
                 });
-          //  }
-
-            //}
-        
-
     }
 
     function getAddressLocation(udprn) {
         deliveryPointApiService.GetAddressLocation(udprn)
                 .then(function (response) {
-                    debugger;
                     vm.addressLocationData = response.data;
                 });
     }
@@ -110,9 +95,7 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     }
 
     function referenceData() {
-        debugger;
         referencedataApiService.getReferenceData().success(function (response) {
-            debugger;
             vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
         });
     }
