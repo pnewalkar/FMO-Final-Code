@@ -16,7 +16,6 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
-    using MappingConfiguration;
     using MappingExtensions;
     using Entity = Fmo.Entities;
 
@@ -359,7 +358,6 @@ namespace Fmo.DataServices.Repositories
                 {
                     cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
                     cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-
                 });
 
                 Mapper.Configuration.CreateMapper();

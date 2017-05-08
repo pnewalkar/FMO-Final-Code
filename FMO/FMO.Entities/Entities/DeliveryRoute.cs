@@ -13,8 +13,8 @@ namespace Fmo.Entities
         public DeliveryRoute()
         {
             DeliveryRouteBlocks = new HashSet<DeliveryRouteBlock>();
-            DeliveryRouteActivities = new HashSet<DeliveryRouteActivity>();
             DeliveryRoutePostcodes = new HashSet<DeliveryRoutePostcode>();
+            DeliveryRouteActivities = new HashSet<DeliveryRouteActivity>();
         }
 
         public int? ExternalId { get; set; }
@@ -56,6 +56,9 @@ namespace Fmo.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryRouteBlock> DeliveryRouteBlocks { get; set; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
+
         public virtual ReferenceData ReferenceData1 { get; set; }
 
         public virtual ReferenceData ReferenceData2 { get; set; }
@@ -64,8 +67,5 @@ namespace Fmo.Entities
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
     }
 }

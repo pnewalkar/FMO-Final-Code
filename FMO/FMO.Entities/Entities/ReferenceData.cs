@@ -26,6 +26,7 @@ namespace Fmo.Entities
             DeliveryGroups1 = new HashSet<DeliveryGroup>();
             DeliveryPoints = new HashSet<DeliveryPoint>();
             DeliveryPoints1 = new HashSet<DeliveryPoint>();
+            DeliveryPoints2 = new HashSet<DeliveryPoint>();
             DeliveryRoutes = new HashSet<DeliveryRoute>();
             DeliveryRoutes1 = new HashSet<DeliveryRoute>();
             DeliveryRoutes2 = new HashSet<DeliveryRoute>();
@@ -73,6 +74,10 @@ namespace Fmo.Entities
 
         public Guid? DataParent_GUID { get; set; }
 
+        public int? OrderingIndex { get; set; }
+
+        public bool? Default { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }
 
@@ -114,6 +119,9 @@ namespace Fmo.Entities
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryPoint> DeliveryPoints1 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryPoint> DeliveryPoints2 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryRoute> DeliveryRoutes { get; set; }

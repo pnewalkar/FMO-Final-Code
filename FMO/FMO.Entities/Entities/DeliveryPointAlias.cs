@@ -1,4 +1,4 @@
-﻿namespace Entity
+﻿namespace Fmo.Entities
 {
     using System;
     using System.Collections.Generic;
@@ -18,5 +18,7 @@
         public string DPAlias { get; set; }
 
         public bool Preferred { get; set; }
+
+        public virtual DeliveryPoint DeliveryPoint { get; set; }
     }
 }

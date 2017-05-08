@@ -13,6 +13,7 @@ namespace Fmo.Entities
         public DeliveryPoint()
         {
             AccessLinks = new HashSet<AccessLink>();
+            DeliveryPointAlias = new HashSet<DeliveryPointAlias>();
             RMGDeliveryPoints = new HashSet<RMGDeliveryPoint>();
         }
 
@@ -36,9 +37,6 @@ namespace Fmo.Entities
 
         public int? MailVolume { get; set; }
 
-        [StringLength(1)]
-        public string DeliveryPointUseIndicator { get; set; }
-
         public bool IsUnit { get; set; }
 
         public int? Temp_DeliveryGroup_Id { get; set; }
@@ -58,6 +56,8 @@ namespace Fmo.Entities
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
+        public Guid DeliveryPointUseIndicator_GUID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLink> AccessLinks { get; set; }
 
@@ -68,6 +68,11 @@ namespace Fmo.Entities
         public virtual ReferenceData ReferenceData { get; set; }
 
         public virtual ReferenceData ReferenceData1 { get; set; }
+
+        public virtual ReferenceData ReferenceData2 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryPointAlias> DeliveryPointAlias { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RMGDeliveryPoint> RMGDeliveryPoints { get; set; }

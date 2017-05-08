@@ -14,8 +14,6 @@ namespace Fmo.DTO
 
         public DbGeometry AccessLinkLine { get; set; }
 
-        public int AccessLinkType_Id { get; set; }
-
         public bool? Approved { get; set; }
 
         public decimal ActualLengthMeter { get; set; }
