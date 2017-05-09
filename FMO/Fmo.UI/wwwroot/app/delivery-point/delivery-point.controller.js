@@ -2,11 +2,11 @@ angular
     .module('deliveryPoint')
     .controller("DeliveryPointController", ['mapToolbarService', '$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
                 '$filter',
-                'referenceDataConstants', '$timeout'
+                'referenceDataConstants', '$timeout', 'searchApiService', 'mapFactory'
 , DeliveryPointController])
 function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
     $filter,
-    referenceDataConstants, $timeout
+    referenceDataConstants, $timeout, searchApiService, mapFactory
 ) {
     var vm = this;
     vm.resultSet = resultSet;
@@ -30,17 +30,17 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     vm.deliveryPointList = [{
         locality: "BN1 Dadar",
         addressGuid: 1,
-        isPostioned: false
+        isPostioned: false, udprn: null
     },
                            {
                                locality: "BN2 Dadar",
                                addressGuid: 2,
-                               isPostioned: false
+                               isPostioned: false, udprn: null
                            },
                            {
                                locality: "BN3 Dadar",
                                addressGuid: 3,
-                               isPostioned: false
+                               isPostioned: false, udprn: null
                            }
     ];
 
@@ -55,6 +55,8 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
             //$scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
             vm.deliveryPointList.splice(idx, 1);
             vm.positioneddeliveryPointList.push(item);
+            item.udprn = '10897101';
+            locateDeliveryPoint(item);
         }
     };
 
@@ -265,7 +267,16 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                        vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, {
                            displayText: "Commercial"
                        });
-                   }
-               });
+               }
+        });
+    }
+    function locateDeliveryPoint(selectedItem) {
+        searchApiService.GetDeliveryPointByUDPRN(selectedItem.udprn)
+            .then(function (response) {
+                var data = response.data;
+                var lat = data.features[0].geometry.coordinates[1];
+                var long = data.features[0].geometry.coordinates[0];
+                mapFactory.locateDeliveryPoint(long, lat);
+            });
     }
 };
