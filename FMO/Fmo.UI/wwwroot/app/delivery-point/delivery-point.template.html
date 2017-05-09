@@ -186,7 +186,7 @@
             <div layout="row" class="dialogAction">
                 <md-button class="md-raised md-primary" flex="30">Cancel</md-button>
                 <span flex></span>
-                <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" class="md-raised md-primary" flex="30">Save</md-button>
+                <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" class="md-raised md-primary" flex="30" ng-click="vm.createDeliveryPoint()">Save</md-button>
             </div>
         </div>
     </form>

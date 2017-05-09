@@ -195,7 +195,7 @@
         {
             try
             {
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                /*var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
                                 .Where(
                                 n => n.Postcode == objPostalAddress.Postcode
                                 && (!string.IsNullOrEmpty(n.BuildingName) ? n.BuildingName : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : string.Empty)
@@ -204,7 +204,30 @@
                                 && (!string.IsNullOrEmpty(n.OrganisationName) ? n.OrganisationName : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : string.Empty)
                                 && (!string.IsNullOrEmpty(n.DepartmentName) ? n.DepartmentName : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : string.Empty)
                                 && (!string.IsNullOrEmpty(n.Thoroughfare) ? n.Thoroughfare : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : string.Empty)
-                                && (!string.IsNullOrEmpty(n.DependentThoroughfare) ? n.DependentThoroughfare : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : string.Empty)).FirstOrDefault();
+                                && (!string.IsNullOrEmpty(n.DependentThoroughfare) ? n.DependentThoroughfare : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : string.Empty)).FirstOrDefault();*/
+
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                                .Where(
+                                n => n.Postcode == objPostalAddress.Postcode
+                                && ((n.BuildingName == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : null))
+                                    ||
+                                    ((!string.IsNullOrEmpty(n.BuildingName) ? n.BuildingName : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : string.Empty)))
+                                && n.BuildingNumber == (objPostalAddress.BuildingNumber != null ? objPostalAddress.BuildingNumber : null)
+                                && ((n.SubBuildingName == (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName) ? objPostalAddress.SubBuildingName : null))
+                                    ||
+                                    ((!string.IsNullOrEmpty(n.SubBuildingName) ? n.SubBuildingName : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName) ? objPostalAddress.SubBuildingName : string.Empty)))
+                                && ((n.OrganisationName == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : null))
+                                    ||
+                                    ((!string.IsNullOrEmpty(n.OrganisationName) ? n.OrganisationName : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : string.Empty)))
+                                && ((n.DepartmentName == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : null))
+                                    ||
+                                    ((!string.IsNullOrEmpty(n.DepartmentName) ? n.DepartmentName : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : string.Empty)))
+                                && ((n.Thoroughfare == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : null))
+                                    ||
+                                    ((!string.IsNullOrEmpty(n.Thoroughfare) ? n.Thoroughfare : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : string.Empty)))
+                                && ((n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null))
+                                    ||
+                                    ((!string.IsNullOrEmpty(n.DependentThoroughfare) ? n.DependentThoroughfare : string.Empty) == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : string.Empty)))).FirstOrDefault();
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
@@ -461,10 +484,11 @@
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
-                DeliveryPoint objDeliveryPoint = new DeliveryPoint() { MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount, MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume };
+                DeliveryPoint objDeliveryPoint = DeliveryPointAlaisMapping(addDeliveryPointDTO.DeliveryPointDTO);
                 try
                 {
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
+                    objPostalAddress.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
                     if (objPostalAddress != null)
                     {
                         objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
@@ -526,6 +550,25 @@
                 NatureOfError = strException
             };
             fileProcessingLog.LogFileException(objFileProcessingLog);
+        }
+
+        private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
+        {
+            Guid deliveryPointID = Guid.NewGuid();
+            return new DeliveryPoint()
+            {
+                ID = deliveryPointID,
+                DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
+                MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
+                MailVolume = deliveryPointDTO.MailVolume,
+                DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
+                {
+                    ID = Guid.NewGuid(),
+                    DeliveryPoint_GUID = deliveryPointID,
+                    DPAlias = n.DPAlias,
+                    Preferred = n.Preferred
+                }).ToList()
+            };
         }
     }
 }

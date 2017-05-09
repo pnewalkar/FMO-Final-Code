@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 
 namespace Fmo.DTO
@@ -36,6 +37,8 @@ namespace Fmo.DTO
 
         public PostalAddressDTO PostalAddress { get; set; }
 
+        public List<DeliveryPointAliasDTO> DeliveryPointAliasDTO { get; set; }
+
         public Guid ID { get; set; }
 
         public Guid Address_GUID { get; set; }
@@ -45,5 +48,7 @@ namespace Fmo.DTO
         public Guid? OperationalStatus_GUID { get; set; }
 
         public Guid? DeliveryGroup_GUID { get; set; }
+
+        public Guid DeliveryPointUseIndicator_GUID { get; set; }
     }
 }
