@@ -1,5 +1,11 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using Fmo.Common.Constants;
     using Fmo.Common.Enums;
     using Fmo.Common.Interface;
@@ -10,12 +16,6 @@
     using Fmo.DTO.UIDropdowns;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -255,47 +255,17 @@
                 Guid nybAddressID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
                 var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
-                                .Where(n => n.AddressType_GUID == nybAddressID);
+                                .Where(n => n.AddressType_GUID == nybAddressID && n.BuildingName == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : null)
+                               && n.BuildingNumber == (objPostalAddress.BuildingNumber != null ? objPostalAddress.BuildingNumber : null)
+                               && n.SubBuildingName == (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName) ? objPostalAddress.SubBuildingName : null)
+                               && n.OrganisationName == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : null)
+                               && n.DepartmentName == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : null)
+                               && n.Thoroughfare == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : null)
+                               && n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null)).SingleOrDefault();
 
-                if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
+                if (postalAddress != null && postalAddress.Postcode != objPostalAddress.Postcode)
                 {
-                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (objPostalAddress.BuildingNumber != null)
-                {
-                    postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
-                {
-                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
-                {
-                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
-                {
-                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
-                {
-                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
-                {
-                    postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
-                }
-
-                var address = postalAddress.SingleOrDefault();
-                if (address != null && address.Postcode != address.Postcode)
-                {
-                    postCode = address.Postcode;
+                    postCode = postalAddress.Postcode;
                 }
 
                 return postCode;
@@ -550,7 +520,7 @@
                         DataContext.PostalAddresses.Add(entity);
                     }
 
-                    //DataContext.SaveChanges();
+                    DataContext.SaveChanges();
                     isPostalAddressInserted = true;
                 }
                 catch (Exception)

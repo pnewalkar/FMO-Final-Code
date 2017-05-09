@@ -24,7 +24,6 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IConfigurationHelper> mockConfigurationRepository;
         private Mock<ILoggingHelper> mockLoggingRepository;
         private Mock<IAddressRepository> mockAddressRepository;
-        private Mock<IUnitOfWork<FMODBContext>> unitOfWorkMock;
         private Guid unitGuid = Guid.NewGuid();
 
         [Test]
@@ -63,8 +62,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockConfigurationRepository = CreateMock<IConfigurationHelper>();
             mockLoggingRepository = CreateMock<ILoggingHelper>();
             mockAddressRepository = CreateMock<IAddressRepository>();
-
-            unitOfWorkMock = CreateMock<IUnitOfWork<FMODBContext>>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
