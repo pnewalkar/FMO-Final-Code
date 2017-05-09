@@ -86,7 +86,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                if (DataContext.Notifications.AsNoTracking().Where(notific => notific.NotificationSource == uDPRN.ToString() && notific.Notification_Heading.Trim().Equals(action)).Any())
+                string notificationActionlink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN.ToString());
+                if (DataContext.Notifications.AsNoTracking().Where(notific => notific.NotificationActionLink.Equals(notificationActionlink) && notific.Notification_Heading.Trim().Equals(action)).Any())
                 {
                     return true;
                 }
