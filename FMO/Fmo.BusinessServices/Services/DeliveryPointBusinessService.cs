@@ -8,6 +8,8 @@ using Fmo.Common;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Helpers;
@@ -27,8 +29,9 @@ namespace Fmo.BusinessServices.Services
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private bool enableLogging = false;
+        private IUnitOfWork<FMODBContext> unitOfWork = default(IUnitOfWork<FMODBContext>);
 
-        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
+        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper, IUnitOfWork<FMODBContext> unitOfWork)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.addressLocationRepository = addressLocationRepository;
@@ -36,6 +39,7 @@ namespace Fmo.BusinessServices.Services
             this.configurationHelper = configurationHelper;
             this.postalAddressRepository = postalAddressRepository;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
+            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -145,28 +149,30 @@ namespace Fmo.BusinessServices.Services
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
-            string errorMessage = string.Empty;
+            string message = string.Empty;
             try
             {
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
+                    string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
                     // check for any duplicate records of the address being created (Note 3)
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == null && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
                     {
-                        errorMessage = "There is a duplicate of this Delivery Point in the system";
+                        message = "There is a duplicate of this Delivery Point in the system";
                     }
-                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == null)
+                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
                     {
                         // check for duplicate NYB records for the address being created(Note 4)
-                        string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
-                        if (!string.IsNullOrEmpty(postCode))
-                        {
-                            errorMessage = "“This address is in the NYB file under the postcode " + postCode;
-                        }
+                        message = "This address is in the NYB file under the postcode " + postCode;
                     }
                     else
                     {
-                        postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                        using (unitOfWork)
+                        {
+                            message = "Delivery Point created successfully";
+                            postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            unitOfWork.Commit();
+                        }
                     }
                 }
             }
@@ -179,7 +185,7 @@ namespace Fmo.BusinessServices.Services
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
-            return string.Empty;
+            return message;
         }
 
         /// <summary>
