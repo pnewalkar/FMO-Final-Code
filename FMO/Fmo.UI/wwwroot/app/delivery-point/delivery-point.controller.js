@@ -109,8 +109,8 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                 }, "AddressLocationDTO": null
             };
         deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-             vm.nybaddress = "";
-             vm.errorMessage = response;
+            vm.nybaddress = "";
+            vm.errorMessage = response;
 
         });
     }
@@ -128,18 +128,30 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                 "Postcode": vm.postalAddressData.postcode
             }
         }
-        else {
-            return vm.nybaddress;
+        else if (vm.nybaddress && !vm.nybaddress.id) {
+             return vm.nybaddress = {
+                "OrganisationName": vm.nybaddress.organisationName,
+                "DepartmentName" : vm.nybaddress.departmentName,
+                "BuildingName": vm.nybaddress.buildingName,
+                "BuildingNumber": vm.nybaddress.buildingNumber,
+                "SubBuildingName": vm.nybaddress.subBuildingName,
+                "Thoroughfare" : vm.postalAddressData.thoroughfare,
+                "DependentLocality": vm.postalAddressData.dependentLocality,
+                "Postcode": vm.postalAddressData.postcode
+            }
         }
-
+        else {
+        return vm.nybaddress;
     }
+
+}
 
 
 
     function deliveryPoint() {
         var deliveryPointTemplate = deliveryPointService.deliveryPoint();
         vm.openModalPopup(deliveryPointTemplate);
-    }
+}
 
     function resultSet(query) {
         if (query.length >= 3) {
@@ -147,20 +159,21 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
         }
         else {
             vm.results = {
-            };
+        };
             vm.resultscount = {
-                0: { count: 0 }
-            };
-        }
+                0: { count: 0
+            }
+        };
     }
+}
 
     function onBlur() {
         $timeout(function () {
             vm.results = {
-            };
+        };
             // vm.searchText="";
         }, 1000);
-    }
+}
 
     function getPostalAddress(selectedItem) {
         //if (selectedItem.length >= 3) {
@@ -171,7 +184,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
         }
         else {
             postCode = arrSelectedItem[0].trim();
-        }
+    }
 
         deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
             vm.nybaddress = "";
@@ -183,60 +196,60 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
             else {
                 vm.display = false;
                 vm.disable = true;
-            }
+        }
         });
         //  }
 
         //}
-    }
+}
 
     function getAddressLocation(udprn) {
         deliveryPointApiService.GetAddressLocation(udprn)
                 .then(function (response) {
                     vm.addressLocationData = response.data;
-                });
-    }
+        });
+}
 
     function OnChangeItem(selectedItem) {
         vm.searchText = selectedItem;
         vm.results = {
-        };
-    }
+    };
+}
 
     function openModalPopup(modalSetting) {
         var popupSetting = modalSetting;
         $mdDialog.show(popupSetting)
-    }
+}
 
     function closeWindow() {
         $mdDialog.hide(vm.close);
-    }
+}
 
     function referenceData() {
         referencedataApiService.getReferenceData().success(function (response) {
             vm.deliveryPointTypes = $filter('filter')(response, {
-                categoryName: referenceDataConstants.DeliveryPointType
+                    categoryName: referenceDataConstants.DeliveryPointType
             });
             vm.dpUseType = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
         });
-    }
+}
 
     vm.items = [];
 
     function addAlias() {
 
         vm.items.push({
-            Preferred: false,
-            DPAlias: vm.alias
+                Preferred: false,
+                DPAlias: vm.alias
         });
         vm.alias = "";
-    };
+};
 
 
     function removeAlias() {
-        var lastItem = vm.items.length - 1;
+        var lastItem = vm.items.length -1;
         vm.items.splice(lastItem);
-    }
+}
 
     function bindAddressDetails() {
         debugger;
@@ -252,7 +265,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                        vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                            displayText: "Commercial"
                        });
-                   }
-               });
-    }
+               }
+        });
+}
 };
