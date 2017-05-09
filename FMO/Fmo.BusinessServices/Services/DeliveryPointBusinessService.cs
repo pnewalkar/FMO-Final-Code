@@ -155,6 +155,7 @@ namespace Fmo.BusinessServices.Services
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
                     string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
+
                     // check for any duplicate records of the address being created (Note 3)
                     if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
                     {
@@ -167,12 +168,8 @@ namespace Fmo.BusinessServices.Services
                     }
                     else
                     {
-                        using (unitOfWork)
-                        {
-                            message = "Delivery Point created successfully";
-                            postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                            unitOfWork.Commit();
-                        }
+                        message = "Delivery Point created successfully";
+                        postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
                     }
                 }
             }

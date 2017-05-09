@@ -1,22 +1,22 @@
-﻿namespace Fmo.DataServices.Repositories
-{
-    using Fmo.Common.Constants;
-    using Fmo.Common.Enums;
-    using Fmo.Common.Interface;
-    using Fmo.DataServices.DBContext;
-    using Fmo.DataServices.Infrastructure;
-    using Fmo.DataServices.Repositories.Interfaces;
-    using Fmo.DTO;
-    using Fmo.DTO.UIDropdowns;
-    using Fmo.Entities;
-    using Fmo.MappingConfiguration;
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.Common.Interface;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
+using Fmo.DataServices.Repositories.Interfaces;
+using Fmo.DTO;
+using Fmo.DTO.UIDropdowns;
+using Fmo.Entities;
+using Fmo.MappingConfiguration;
 
+namespace Fmo.DataServices.Repositories
+{
     /// <summary>
     /// Repository to interact with postal address entity
     /// </summary>
@@ -516,11 +516,19 @@
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
-                DeliveryPoint objDeliveryPoint = DeliveryPointAlaisMapping(addDeliveryPointDTO.DeliveryPointDTO);
+                DeliveryPoint objDeliveryPoint = new DeliveryPoint()
+                {
+                    ID = Guid.NewGuid(),
+                    UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN,
+                    DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID,
+                    MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
+                    MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
+                };
+
                 try
                 {
-                    objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
-                    objPostalAddress.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
+                    addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
+                    addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
                     if (objPostalAddress != null)
                     {
                         objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
@@ -540,17 +548,18 @@
                         objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
                         objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
                         objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
+                        objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
                         objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
                     }
                     else
                     {
-                        objPostalAddress.ID = Guid.NewGuid();
+                        addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
                         var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(addDeliveryPointDTO.PostalAddressDTO);
                         entity.DeliveryPoints.Add(objDeliveryPoint);
                         DataContext.PostalAddresses.Add(entity);
                     }
 
-                    //DataContext.SaveChanges();
+                    DataContext.SaveChanges();
                     isPostalAddressInserted = true;
                 }
                 catch (Exception)
@@ -584,23 +593,23 @@
             fileProcessingLog.LogFileException(objFileProcessingLog);
         }
 
-        private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
-        {
-            Guid deliveryPointID = Guid.NewGuid();
-            return new DeliveryPoint()
-            {
-                ID = deliveryPointID,
-                DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
-                MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
-                MailVolume = deliveryPointDTO.MailVolume,
-                DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
-                {
-                    ID = Guid.NewGuid(),
-                    DeliveryPoint_GUID = deliveryPointID,
-                    DPAlias = n.DPAlias,
-                    Preferred = n.Preferred
-                }).ToList()
-            };
-        }
+        //private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
+        //{
+        //    Guid deliveryPointID = Guid.NewGuid();
+        //    return new DeliveryPoint()
+        //    {
+        //        ID = deliveryPointID,
+        //        DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
+        //        MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
+        //        MailVolume = deliveryPointDTO.MailVolume,
+        //        DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
+        //        {
+        //            ID = Guid.NewGuid(),
+        //            DeliveryPoint_GUID = deliveryPointID,
+        //            DPAlias = n.DPAlias,
+        //            Preferred = n.Preferred
+        //        }).ToList()
+        //    };
+        //}
     }
 }

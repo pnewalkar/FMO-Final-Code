@@ -4,17 +4,17 @@
         <i class="fa fa-plus deliveryDialog" aria-hidden="true" ng-click="vm.deliveryPoint()"></i>
         <i class="fa fa-arrow-left deliveryDialog" aria-hidden="true"></i>
         <i class="fa fa-floppy-o deliveryDialog" aria-hidden="true"></i>
-        <i class ="fa fa-question-circle " aria-hidden="true"></i>
+        <i class="fa fa-question-circle " aria-hidden="true"></i>
     </div>
 
     <div layout="column">
         <h1>Points not positioned by 3rd party</h1>
         <ul>
-            <li ng-repeat="item in vm.deliveryPointList" >
-               {{item.locality}}
-               <span ng-click="vm.openAlert($event)">
-                   <md-checkbox ng-click="toggle(item, vm.positioneddeliveryPointList)" class="dpCheckBox"></md-checkbox>
-               </span>
+            <li ng-repeat="item in vm.deliveryPointList">
+                {{item.locality}}
+                <span ng-click="vm.openAlert($event, item)">
+                    <md-checkbox class="dpCheckBox"></md-checkbox>
+                </span>
             </li>
 
         </ul>
@@ -23,7 +23,7 @@
         <h1>Positioned points</h1>
         <ul>
             <li ng-repeat="item in vm.positioneddeliveryPointList">
-            {{item.locality}}
+                {{item.locality}}
             </li>
         </ul>
     </div>
@@ -31,9 +31,9 @@
         <h1>3rd Party</h1>
         <ul>
             <li ng-repeat="item in vm.positioneddeliveryPointList">
-            {{item.locality}}
+                {{item.locality}}
             </li>
         </ul>
     </div>
-    
+
 </div>
