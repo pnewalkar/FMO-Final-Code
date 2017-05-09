@@ -527,11 +527,8 @@ function mapService($http, mapFactory,
 			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
-			    evt.feature.setId(0);
-			    $timeout(function () {
-			        vm.setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
-			        onDrawEnd("deliverypoint", evt.feature)
-			    });
+			    evt.feature.set("type", "deliverypoint");
+			    var coord = evt.feature.getGeometry().getCoordinates();
 			});
     }
     function clearDrawingLayer(keepCurrentInteraction) {

@@ -30,9 +30,9 @@
           
             <md-input-container class="40">
                 <label>Route</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" class="routeSelect">
+                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" md-on-close="vm.clearSearchTerm()" class="routeSelect">
                     <md-select-header>
-                        <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-blur="vm.clearSearchTerm()" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
+                        <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected"  ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
                     </md-select-header>
                     <md-optgroup>
                         <!--<md-option ng-value="route" ng-repeat="route in filterDeliveryRoute =( vm.deliveryRoute  | filter:vm.searchTerm | orderBy : 'routeName') ">{{route.routeName +" "+"("+route.routeNumber+")"}} </md-option>-->

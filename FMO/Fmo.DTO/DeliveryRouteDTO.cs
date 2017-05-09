@@ -38,5 +38,17 @@ namespace Fmo.DTO
             }
         }
 
+        public string Method { get; set; }
+        public string DeliveryOffice { get; set; }
+        public int Aliases { get; set; }
+        public int Blocks { get; set; }
+        public string ScenarioName { get; set; }
+        public int DPs { get; set; }
+        public int BusinessDPs { get; set; }
+        public int ResidentialDPs { get; set; }
+        public string AccelarationIn { get; set; }
+        public string AccelarationOut { get; set; }
+        public string PairedRoute { get; set; }
+        public string Totaltime { get; set; }
     }
 }

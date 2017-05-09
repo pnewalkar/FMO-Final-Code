@@ -148,24 +148,22 @@ namespace Fmo.BusinessServices.Services
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
-            string errorMessage = string.Empty;
+            string message = string.Empty;
             try
             {
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
+                    string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
+
                     // check for any duplicate records of the address being created (Note 3)
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == null && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
                     {
-                        errorMessage = "There is a duplicate of this Delivery Point in the system";
+                        message = "There is a duplicate of this Delivery Point in the system";
                     }
-                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == null)
+                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
                     {
                         // check for duplicate NYB records for the address being created(Note 4)
-                        string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
-                        if (!string.IsNullOrEmpty(postCode))
-                        {
-                            errorMessage = "This address is in the NYB file under the postcode " + postCode;
-                        }
+                        message = "This address is in the NYB file under the postcode " + postCode;
                     }
                     else
                     {
@@ -173,6 +171,7 @@ namespace Fmo.BusinessServices.Services
                         {
                             postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
                             scope.Complete();
+                            message = "Delivery Point created successfully";
                         }
                     }
                 }
@@ -186,7 +185,7 @@ namespace Fmo.BusinessServices.Services
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
-            return string.Empty;
+            return message;
         }
 
         /// <summary>
