@@ -452,10 +452,11 @@
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
-                DeliveryPoint objDeliveryPoint = new DeliveryPoint() { MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount, MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume };
+                DeliveryPoint objDeliveryPoint = DeliveryPointAlaisMapping(addDeliveryPointDTO.DeliveryPointDTO);
                 try
                 {
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
+                    objPostalAddress.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
                     if (objPostalAddress != null)
                     {
                         objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
@@ -517,6 +518,25 @@
                 NatureOfError = strException
             };
             fileProcessingLog.LogFileException(objFileProcessingLog);
+        }
+
+        private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
+        {
+            Guid deliveryPointID = Guid.NewGuid();
+            return new DeliveryPoint()
+            {
+                ID = deliveryPointID,
+                DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
+                MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
+                MailVolume = deliveryPointDTO.MailVolume,
+                DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
+                {
+                    ID = Guid.NewGuid(),
+                    DeliveryPoint_GUID = deliveryPointID,
+                    DPAlias = n.DPAlias,
+                    Preferred = n.Preferred
+                }).ToList()
+            };
         }
     }
 }

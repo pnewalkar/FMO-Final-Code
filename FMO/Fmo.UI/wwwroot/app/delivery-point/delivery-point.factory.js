@@ -19,6 +19,10 @@ angular.module('deliveryPoint')
             return $http.get(GlobalSettings.apiUrl + '/address/GetPostalAddressByGuid?addressGuid=' + addressGuid);
         };
 
+        deliveryPointApiService.CreateDeliveryPoint = function (addDeliveryPointDTO) {
+            return $http.post(GlobalSettings.apiUrl + '/deliveryPoints/CreateDeliveryPoint/', addDeliveryPointDTO);
+        };
+
         return deliveryPointApiService;
 
     }]);

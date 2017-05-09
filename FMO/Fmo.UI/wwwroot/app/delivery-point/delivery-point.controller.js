@@ -22,58 +22,72 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.display = false;
     vm.disable = true;
     vm.openAlert = openAlert;
-    vm.toggle=toggle;
-    vm.exists =exists;
-    vm.deliveryPointList= [{locality:"BN1 Dadar",
-                            addressGuid :1, 
-                            isPostioned : false},
-                           {locality:"BN2 Dadar",
-                            addressGuid :2,
-                            isPostioned : false},
-                           {locality:"BN3 Dadar", 
-                            addressGuid :3,
-                            isPostioned : false}
-                          ];
-    
+    vm.toggle = toggle;
+    vm.exists = exists;
+    vm.deliveryPointList = [{
+        locality: "BN1 Dadar",
+        addressGuid: 1,
+        isPostioned: false
+    },
+                           {
+                               locality: "BN2 Dadar",
+                               addressGuid: 2,
+                               isPostioned: false
+                           },
+                           {
+                               locality: "BN3 Dadar",
+                               addressGuid: 3,
+                               isPostioned: false
+                           }
+    ];
+
     vm.positioneddeliveryPointList = [];
-    
-    function toggle (item) {
-        var idx = $filter('filter')(vm.deliveryPointList, {addressGuid: item.addressGuid  });
-        
+    vm.createDeliveryPoint = createDeliveryPoint;
+
+    function toggle(item) {
+        var idx = $filter('filter')(vm.deliveryPointList, { addressGuid: item.addressGuid });
+
         //var idx = vm.deliveryPointList.indexOf(item);
         if (idx.length > 0) {
-        $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
-          vm.deliveryPointList.splice(idx, 1);
-          vm.positioneddeliveryPointList.push(item);
+            $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
+            vm.deliveryPointList.splice(idx, 1);
+            vm.positioneddeliveryPointList.push(item);
         }
-      };
+    };
 
-      function exists (item, list) {
+    function exists(item, list) {
         return list.indexOf(item) > -1;
-      };
-    
-     function openAlert(ev, item){
-    var confirm = 
-      $mdDialog.confirm()
-        .clickOutsideToClose(true)
-        .title('Confirm Position')
-        .textContent('Are you sure you want to position this point here?')
-        .ariaLabel('Left to right demo')
-        .ok('Yes')
-        .cancel('No')
+    };
 
-        $mdDialog.show(confirm).then(function() {
-       alert("Yes");
+    function openAlert(ev, item) {
+        var confirm =
+          $mdDialog.confirm()
+            .clickOutsideToClose(true)
+            .title('Confirm Position')
+            .textContent('Are you sure you want to position this point here?')
+            .ariaLabel('Left to right demo')
+            .ok('Yes')
+            .cancel('No')
+
+        $mdDialog.show(confirm).then(function () {
+            alert("Yes");
             vm.toggle(item);
-    }, function() {
-      alert("no");
-    });
-  };
+        }, function () {
+            alert("no");
+        });
+    };
 
     referenceData();
 
     function querySearch(query) {
         deliveryPointApiService.GetDeliveryPointsResultSet(query).then(function (response) {
+            vm.results = response.data;
+        });
+    }
+
+    function createDeliveryPoint() {
+        var addDeliveryPointDTO = { "PostalAddressDTO": vm.nybaddress, "DeliveryPointDTO": { "LocationProvider": null, "OperationalStatus": null, "LocationXY": null, "Latitude": null, "Longitude": null, "Positioned": false, "AccessLinkPresent": false, "RMGDeliveryPointPresent": false, "UDPRN": null, "MultipleOccupancyCount": vm.mailvol, "MailVolume": vm.multiocc, "DeliveryPointUseIndicator": null, "IsUnit": false, "PostalAddress": null, "DeliveryPointAliasDTO": [{ "ID": "00000000-0000-0000-0000-000000000000", "DeliveryPoint_GUID": "00000000-0000-0000-0000-000000000000", "DPAlias": 'Virendra', "Preferred": false }], "ID": "00000000-0000-0000-0000-000000000000", "Address_GUID": "00000000-0000-0000-0000-000000000000", "LocationProvider_GUID": null, "OperationalStatus_GUID": null, "DeliveryGroup_GUID": null, "DeliveryPointUseIndicator_GUID": '178EDCAD-9431-E711-83EC-28D244AEF9ED' }, "AddressLocationDTO": null };
+        deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
             vm.results = response.data;
         });
     }
