@@ -70,6 +70,7 @@
     <Compile Include="Interfaces\ActionManager\IActionManagerBussinessService.cs" />
     <Compile Include="Interfaces\ActionManager\IUserRoleUnitBussinessService.cs" />
     <Compile Include="Interfaces\IAccessLinkBusinessService.cs" />
+    <Compile Include="Interfaces\IAddressLocationBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryPointBusinessService.cs" />
     <Compile Include="Interfaces\IDeliveryRouteBusinessService.cs" />
     <Compile Include="Interfaces\IUnitLocationBusinessService.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Services\AccessLinkBusinessService.cs" />
     <Compile Include="Services\ActionManager\ActionManagerBussinessService.cs" />
     <Compile Include="Services\ActionManager\UserRoleUnitBussinessService.cs" />
+    <Compile Include="Services\AddressLocationBusinessService.cs" />
     <Compile Include="Services\DeliveryPointBusinessService.cs" />
     <Compile Include="Services\ReferenceDataBusinessService.cs" />
     <Compile Include="Services\StreetNetworkBusinessService.cs" />
