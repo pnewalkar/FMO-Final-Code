@@ -147,6 +147,9 @@
         public const string SECONDARYROUTE = "Secondary - ";
         public const string SELECT = "Select";
         public const string DEFAULTGUID = "00000000-0000-0000-0000-000000000000";
+        public const string UDPRN = "udprn";
+        public const string Latitude = "latitude";
+        public const string Longitude = "longitude";
 
         #endregion OtherLayers
     }
