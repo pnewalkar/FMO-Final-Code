@@ -4,25 +4,78 @@ angular.module('deliveryPoint')
         var deliveryPointApiService = {};
 
         deliveryPointApiService.GetDeliveryPointsResultSet = function (searchText) {
-            return $http.get(GlobalSettings.apiUrl + '/address/SearchAddressdetails?searchText=' + searchText);
+            var deferred = $q.defer();
+
+            $http.get(GlobalSettings.apiUrl + '/address/SearchAddressdetails?searchText=' + searchText).success(function (response) {
+                deferred.resolve(response);
+
+            }).error(function (err, status) {
+                console.log(err);
+                deferred.reject(err);
+            });
+
+            return deferred.promise;
         };
 
         deliveryPointApiService.GetAddressByPostCode = function (postCode) {
-            return $http.get(GlobalSettings.apiUrl + '/address/GetAddressByPostCode?postCode=' + postCode);
+            var deferred = $q.defer();
+
+            $http.get(GlobalSettings.apiUrl + '/address/GetAddressByPostCode?postCode=' + postCode).success(function (response) {
+                deferred.resolve(response);
+
+            }).error(function (err, status) {
+                console.log(err);
+                deferred.reject(err);
+            });
+
+            return deferred.promise;
         };
 
         deliveryPointApiService.GetAddressLocation = function (udprn) {
-            return $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetAddressLocationByUDPRN?udprn=' + udprn);
+
+            var deferred = $q.defer();
+
+            $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetAddressLocationByUDPRN?udprn=' + udprn).success(function (response) {
+                deferred.resolve(response);
+
+            }).error(function (err, status) {
+                console.log(err);
+                deferred.reject(err);
+            });
+
+            return deferred.promise;
+
+
         };
 
         deliveryPointApiService.GetPostalAddressByGuid = function (addressGuid) {
-            return $http.get(GlobalSettings.apiUrl + '/address/GetPostalAddressByGuid?addressGuid=' + addressGuid);
+            var deferred = $q.defer();
+
+            $http.get(GlobalSettings.apiUrl + '/address/GetPostalAddressByGuid?addressGuid=' + addressGuid).success(function (response) {
+                deferred.resolve(response);
+
+            }).error(function (err, status) {
+                console.log(err);
+                deferred.reject(err);
+            });
+
+            return deferred.promise;
         };
 
         deliveryPointApiService.CreateDeliveryPoint = function (addDeliveryPointDTO) {
-            return $http.post(GlobalSettings.apiUrl + '/deliveryPoints/CreateDeliveryPoint/', addDeliveryPointDTO);
+            var deferred = $q.defer();
+
+            $http.post(GlobalSettings.apiUrl + '/deliveryPoints/CreateDeliveryPoint/', addDeliveryPointDTO).success(function (response) {
+                deferred.resolve(response);
+
+            }).error(function (err, status) {
+                console.log(err);
+                deferred.reject(err);
+            });
+
+            return deferred.promise;
         };
 
         return deliveryPointApiService;
 
-    }]);
+        }]);
