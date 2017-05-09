@@ -4,6 +4,8 @@ using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
 using Fmo.Common.Interface;
 using Fmo.Common.TestSupport;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Entities;
@@ -22,6 +24,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IConfigurationHelper> mockConfigurationRepository;
         private Mock<ILoggingHelper> mockLoggingRepository;
         private Mock<IAddressRepository> mockAddressRepository;
+        private Mock<IUnitOfWork<FMODBContext>> unitOfWorkMock;
         private Guid unitGuid = Guid.NewGuid();
 
         [Test]
@@ -55,11 +58,13 @@ namespace Fmo.BusinessServices.Tests.Services
 
         protected override void OnSetup()
         {
-            mockDeliveryPointsRepository = new Mock<IDeliveryPointsRepository>();
-            mockaddressLocationRepository = new Mock<IAddressLocationRepository>();
-            mockConfigurationRepository = new Mock<IConfigurationHelper>();
-            mockLoggingRepository = new Mock<ILoggingHelper>();
-            mockAddressRepository = new Mock<IAddressRepository>();
+            mockDeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
+            mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
+            mockConfigurationRepository = CreateMock<IConfigurationHelper>();
+            mockLoggingRepository = CreateMock<ILoggingHelper>();
+            mockAddressRepository = CreateMock<IAddressRepository>();
+
+            unitOfWorkMock = CreateMock<IUnitOfWork<FMODBContext>>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
@@ -74,7 +79,7 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
 
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockAddressRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object);
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockAddressRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, unitOfWorkMock.Object);
         }
     }
 }
