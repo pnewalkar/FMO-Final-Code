@@ -8,6 +8,8 @@ using Fmo.Common;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
+using Fmo.DataServices.DBContext;
+using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Helpers;
@@ -27,8 +29,9 @@ namespace Fmo.BusinessServices.Services
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private bool enableLogging = false;
+        private IUnitOfWork<FMODBContext> unitOfWork = default(IUnitOfWork<FMODBContext>);
 
-        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
+        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper, IUnitOfWork<FMODBContext> unitOfWork)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.addressLocationRepository = addressLocationRepository;
@@ -36,6 +39,7 @@ namespace Fmo.BusinessServices.Services
             this.configurationHelper = configurationHelper;
             this.postalAddressRepository = postalAddressRepository;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
+            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -166,7 +170,11 @@ namespace Fmo.BusinessServices.Services
                     }
                     else
                     {
-                        postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                        using (unitOfWork)
+                        {
+                            postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            unitOfWork.Commit();
+                        }
                     }
                 }
             }
