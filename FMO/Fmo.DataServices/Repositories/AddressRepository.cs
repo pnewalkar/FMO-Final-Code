@@ -393,8 +393,6 @@
             var postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
                                        join pc in DataContext.Postcodes.AsNoTracking()
                                        on pa.PostCodeGUID equals pc.ID
-                                       join drpc in DataContext.DeliveryRoutePostcodes.AsNoTracking()
-                                       on pc.ID equals drpc.Postcode_GUID
                                        where pc.PostcodeUnit == postCode
                                        select pa).ToListAsync();
 
@@ -437,7 +435,7 @@
             }));
 
             var postCodes = await DataContext.UnitLocationPostcodes.AsNoTracking().Where(p => p.Unit_GUID == unitGuid).Select(s => s.PoscodeUnit_GUID).Distinct().ToListAsync();
-            if (postalAddressDTO[0].RouteDetails == null || postalAddressDTO[0].RouteDetails.Count == 0)
+            if (postalAddressDTO != null && postalAddressDTO.Count > 0 && (postalAddressDTO[0].RouteDetails == null || postalAddressDTO[0].RouteDetails.Count == 0))
             {
                 List<BindingEntity> routeDetails = new List<BindingEntity>();
                 var routes = await DataContext.DeliveryRoutePostcodes.AsNoTracking().Where(dr => postCodes.Contains(dr.Postcode_GUID)).ToListAsync();
