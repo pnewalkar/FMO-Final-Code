@@ -1,9 +1,16 @@
-
 <md-dialog aria-label="Delivery Point" class="deliveryPointDialog">
     <form name="vm.deliveryPointForm">
-        <div layout="column" class="md-padding">
-            <h2>Add Delivery Points <i class="fa fa-times closeWindow" aria-hidden="true" ng-click="vm.closeWindow()"></i></h2>
-            <md-divider></md-divider>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add Delivery Points</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.closeWindow()">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </md-button>
+            </div>
+        </md-toolbar>
+            
+           <md-dialog-content layout-padding> 
             <div layout="row">
                 <div layout="column" flex="65">
                     <label>Search</label>
@@ -42,6 +49,7 @@
                     <label>Postcode<sub>*</sub></label>
                     <input ng-model="vm.postalAddressData.postcode" type="text" disabled>
                 </div>
+                <span flex="5"></span>
                 <md-input-container flex>
                     <label>Route<sub>*</sub></label>
                     <md-select ng-model="vm.postalAddressData.routeDetails" select-clear>
@@ -50,6 +58,7 @@
                         </md-option>
                     </md-select>
                 </md-input-container>
+                <span flex="5"></span>
                 <div layout="column" flex="30">
                     <label>DP Use<sub>*</sub></label>
                     <input type="text">
@@ -65,14 +74,14 @@
                     </md-select>
                 </md-input-container>
             </div>
-
-            <!--175-->
-            <section layout="row">
-                <div layout="column" flex="65" ng-show="vm.display">
+               
+            <div layout="row">
+                <div layout="column" flex="60" ng-show="vm.display">
                     <fieldset>
+                        
                         <legend>Address<sub>*</sub></legend>
 
-                        <div layout="row">
+                        <div layout="row" class="addressRow">
                             <div layout="column" flex>
                                 <label>Building Number</label>
                                 <input name="buildingNumber" ng-model="vm.nybaddress.buildingNumber" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
@@ -97,7 +106,7 @@
                             </div>
                         </div>
 
-                        <div layout="row">
+                        <div layout="row" class="addressRow">
                             <div layout="column" flex>
                                 <label>Sub-Building Name</label>
                                 <input ng-model="vm.nybaddress.subBuildingName" type="text" ng-maxlength="50">
@@ -134,22 +143,20 @@
                     </fieldset>
                 </div>
                 <span flex="5"></span>
-                <div layout="column" flex="35" ng-show="vm.display">
-                    <div layout="column">
+                <div layout="column" flex="40" ng-show="vm.display">
+                    <div layout="column" class="addressRow">
                         <label>Add DP Alias</label>
                         <div layout="row">
-                            <input ng-model="vm.alias" type="text" style="
-                                   height: 26px;
-                                   ">
+                            <input ng-model="vm.alias" type="text" flex="90">
                             <span flex="5"></span>
                             <i class="fa fa-plus-circle" ng-click="vm.addAlias()" aria-hidden="true" flex></i>
                         </div>
                     </div>
-                    <div layout="column" style="margin-top: 27px;">
+                    <div layout="column">
                         <label>Alias</label>
-                        <div style="height:130px; overflow-y:auto;border:">
+                        <div class="aliasBox">
                             <div ng-repeat="item in vm.items">
-                                <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.alias">
+                                <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.alias" class="aliasinput">
                                 <input type="radio" name="check" value="inline" ng-model="item.inlineChecked">
                                 <i class="fa fa-minus-circle" aria-hidden="true" ng-click="vm.removeAlias()"></i>
                             </div>
@@ -157,10 +164,10 @@
                     </div>
                 </div>
 
-            </section>
+            </div>
 
 
-            <div layout="row" ng-show="vm.display">
+            <div layout="row" ng-show="vm.display" class="occRow">
                 <div layout="column">
                     <label>Multi Occ<sub>*</sub></label>
                     <input name="multiocc" ng-model="vm.multiocc" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
@@ -183,11 +190,17 @@
                     </div>
                 </div>
             </div>
-            <div layout="row" class="dialogAction">
-                <md-button class="md-raised md-primary" flex="30">Cancel</md-button>
-                <span flex></span>
-                <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" class="md-raised md-primary" flex="30">Save</md-button>
-            </div>
-        </div>
+        
+    </md-dialog-content>
+        
+        <md-dialog-actions layout="row">
+            <md-button class="md-raised md-primary" flex="40" >
+                Cancel
+            </md-button>
+            <span flex></span>
+            <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" class="md-raised md-primary" flex="40">
+                Save
+            </md-button>
+        </md-dialog-actions>
     </form>
 </md-dialog>
