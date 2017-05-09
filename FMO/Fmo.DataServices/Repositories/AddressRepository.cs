@@ -1,11 +1,5 @@
 ﻿namespace Fmo.DataServices.Repositories
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
     using Fmo.Common.Constants;
     using Fmo.Common.Enums;
     using Fmo.Common.Interface;
@@ -16,6 +10,12 @@
     using Fmo.DTO.UIDropdowns;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -259,31 +259,37 @@
 
                 if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
                 {
-                    postalAddress = postalAddress.Where(n => n.BuildingName == objPostalAddress.BuildingName);
+                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
                 }
-                else if (objPostalAddress.BuildingNumber != null)
+
+                if (objPostalAddress.BuildingNumber != null)
                 {
                     postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
                 }
-                else if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
+
+                if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
                 {
-                    postalAddress = postalAddress.Where(n => n.SubBuildingName == objPostalAddress.SubBuildingName);
+                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
                 }
-                else if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
+
+                if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
                 {
-                    postalAddress = postalAddress.Where(n => n.OrganisationName == objPostalAddress.OrganisationName);
+                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
                 }
-                else if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
                 {
-                    postalAddress = postalAddress.Where(n => n.DepartmentName == objPostalAddress.DepartmentName);
+                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
                 }
-                else if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
+
+                if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
                 {
-                    postalAddress = postalAddress.Where(n => n.Thoroughfare == objPostalAddress.Thoroughfare);
+                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
                 }
-                else if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
                 {
-                    postalAddress = postalAddress.Where(n => n.DependentThoroughfare == objPostalAddress.DependentThoroughfare);
+                    postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
                 }
 
                 var address = postalAddress.SingleOrDefault();
