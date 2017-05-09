@@ -38,5 +38,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="searchText">searchText as string </param>
         /// <returns>The total count of delivery route</returns>
         Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit);
+
+        List<DeliveryRouteDTO> FetchDeliveryRouteDetailsforPDF(Guid deliveryRouteId, Guid operationalObjectTypeForDP, Guid operationalObjectTypeForDPCommercial, Guid operationalObjectTypeForDPResidential);
     }
 }
