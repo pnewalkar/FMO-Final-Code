@@ -1,12 +1,31 @@
 angular
     .module('deliveryPoint')
-    .controller("DeliveryPointController", ['mapToolbarService', '$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
-                '$filter',
-                'referenceDataConstants', '$timeout', 'searchApiService', 'mapFactory'
+    .controller("DeliveryPointController",
+    [
+        'mapToolbarService',
+        '$scope',
+        '$mdDialog',
+        'deliveryPointService',
+        'deliveryPointApiService',
+        'referencedataApiService',
+        '$filter',
+        'referenceDataConstants',
+        '$timeout',
+        'mapFactory',
+        'coordinatesService'
 , DeliveryPointController])
-function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
+function DeliveryPointController(
+    mapToolbarService,
+    $scope,
+    $mdDialog,
+    deliveryPointService,
+    deliveryPointApiService,
+    referencedataApiService,
     $filter,
-    referenceDataConstants, $timeout, searchApiService, mapFactory
+    referenceDataConstants,
+    $timeout,
+    mapFactory,
+    coordinatesService
 ) {
     var vm = this;
     vm.resultSet = resultSet;
@@ -21,6 +40,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     vm.removeAlias = removeAlias;
     vm.onBlur = onBlur;
     vm.bindAddressDetails = bindAddressDetails;
+    vm.savePositionedDeliveryPoint = savePositionedDeliveryPoint;
     vm.display = false;
     vm.disable = true;
     vm.openAlert = openAlert;
@@ -88,6 +108,10 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+    }
+
+    function savePositionedDeliveryPoint() {
+        var coordinates = coordinatesService.getCordinates();
     }
 
     function querySearch(query) {
@@ -270,7 +294,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
         });
     }
     function locateDeliveryPoint(selectedItem) {
-        searchApiService.GetDeliveryPointByUDPRN(selectedItem.udprn)
+        deliveryPointApiService.GetAddressLocation(selectedItem.udprn)
             .then(function (response) {
                 var data = response.data;
                 var lat = data.features[0].geometry.coordinates[1];
