@@ -3,7 +3,6 @@
 
 .deliveryPointDialog {
     width: width-percent(1);
-    height: height-percent(1);
 }
 
 i.fa.fa-times.closeWindow {
@@ -20,10 +19,9 @@ i.fa.fa-times.closeWindow {
 
 .resultPanel{
     @include background($white,none);
-    @include position(absolute);
-    width: width-percent(1.587);
-    height: height-percent(4.545);
-    @include top(105px);
+    width: 636px;
+    height: 100px;
+    @include top(120px);
     overflow-y: auto;
 } 
 
@@ -54,4 +52,26 @@ i.fa.fa-times.closeWindow {
 h1{
     @extend %header-content;
     @include font-color($black);
+}
+
+md-input-container{
+ margin-top: 8px;   
+}
+
+fieldset{
+    border: 2px solid black;
+    padding: 5px;
+}
+
+.addressRow{
+    margin-bottom: 10px;
+}
+
+.aliasinput{
+    margin-bottom: 5px;
+}
+
+.aliasBox{
+    height:100px;
+    overflow-y:auto;
 }

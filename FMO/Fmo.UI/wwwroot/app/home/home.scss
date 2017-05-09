@@ -23,7 +23,7 @@ font-size: 24px;
           url('../../fonts/Chevin_webfontkit/chevinstd-light-webfont.svg') format('svg'),
           url('../../fonts/Chevin_webfontkit/chevinstd-light-webfont.ttf') format('truetype'),
           url('../../fonts/Chevin_webfontkit/chevinstd-light-webfont.woff') format('woff'),
-          url('../../fonts/Chevin_webfontkit/chevinstd-light-webfont.woff2') format('woff2');;
+          url('../../fonts/Chevin_webfontkit/chevinstd-light-webfont.woff2') format('woff2');
 }
 
 /*Chevin Medium Font*/
@@ -34,7 +34,8 @@ font-size: 24px;
           url('../../fonts/Chevin_webfontkit/chevinstd-medium-webfont.svg') format('svg'),
           url('../../fonts/Chevin_webfontkit/chevinstd-medium-webfont.ttf') format('truetype'),
           url('../../fonts/Chevin_webfontkit/chevinstd-medium-webfont.woff') format('woff'),
-          url('../../fonts/Chevin_webfontkit/chevinstd-medium-webfont.woff2') format('woff2');;
+          url('../../fonts/Chevin_webfontkit/chevinstd-medium-webfont.woff2') format('woff2');
+    font-weight:400;
 }
 
 /*PF DIN Font*/
@@ -45,17 +46,17 @@ font-size: 24px;
           url('../../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.svg') format('svg'),
           url('../../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.ttf') format('truetype'),
           url('../../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.woff') format('woff'),
-          url('../../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.woff2') format('woff2');;
+          url('../../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.woff2') format('woff2');
 }
 
 
-/*Chevin Bold Font*/
+/*Chevin Bold TTF Font*/
 @font-face {
-    font-family: 'Chevin_Bold';
+    font-family: 'Chevin_Bold_TTF';
     src:  url('../../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.eot');
     src:  url('../../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.eot?#iefix') format('embedded-opentype')
           url('../../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.svg') format('svg'),
           url('../../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.ttf') format('truetype'),
           url('../../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.woff') format('woff'),
-          url('../../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.woff2') format('woff2');;
+          url('../../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.woff2') format('woff2');
 }
