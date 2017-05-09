@@ -45,5 +45,7 @@ namespace Fmo.DTO
         public Guid? OperationalStatus_GUID { get; set; }
 
         public Guid? DeliveryGroup_GUID { get; set; }
+
+        public Guid DeliveryPointUseIndicator_GUID { get; set; }
     }
 }

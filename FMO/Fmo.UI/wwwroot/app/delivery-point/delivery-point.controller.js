@@ -28,13 +28,13 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     vm.alias = null;
     vm.exists =exists;
     vm.deliveryPointList= [{locality:"BN1 Dadar",
-                            addressGuid :1, 
+                            addressGuid : 1, 
                             isPostioned : false},
                            {locality:"BN2 Dadar",
-                            addressGuid :2,
+                            addressGuid : 2,
                             isPostioned : false},
                            {locality:"BN3 Dadar", 
-                            addressGuid :3,
+                            addressGuid : 3,
                             isPostioned : false}
                           ];
     
