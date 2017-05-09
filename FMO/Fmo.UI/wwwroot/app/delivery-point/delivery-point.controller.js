@@ -27,6 +27,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     vm.toggle = toggle;
     vm.alias = null;
     vm.exists = exists;
+    vm.setOrganisation = setOrganisation;
     vm.deliveryPointList = [{
         locality: "BN1 Dadar",
         addressGuid: 1,
@@ -267,5 +268,12 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                        });
                }
         });
-}
+    }
+
+    function setOrganisation(val) {
+        if(val)
+        {
+            vm.dpUse[0].displayText = "Commercial";
+        }
+    }
 };

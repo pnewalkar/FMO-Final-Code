@@ -120,7 +120,7 @@
 
                             <div layout="column" flex>
                                 <label>Organisation</label>
-                                <input ng-model="vm.nybaddress.organisationName" type="text" ng-maxlength="60" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
+                                <input ng-model="vm.nybaddress.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation(vm.nybaddress.organisationName)" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
@@ -198,7 +198,8 @@
                 Cancel
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40">
+          
+            <md-button ng-disabled="!(vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40">
                 Save
             </md-button>
         </md-dialog-actions>
