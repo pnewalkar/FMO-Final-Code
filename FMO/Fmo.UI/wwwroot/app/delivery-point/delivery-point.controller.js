@@ -1,10 +1,10 @@
 angular
     .module('deliveryPoint')
-    .controller("DeliveryPointController", ['$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
+    .controller("DeliveryPointController", ['mapToolbarService', '$scope', '$mdDialog', 'deliveryPointService', 'deliveryPointApiService', 'referencedataApiService',
                 '$filter',
                 'referenceDataConstants', '$timeout'
 , DeliveryPointController])
-function DeliveryPointController($scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
+function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryPointService, deliveryPointApiService, referencedataApiService,
     $filter,
     referenceDataConstants, $timeout
 ) {
@@ -17,30 +17,27 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     vm.OnChangeItem = OnChangeItem;
     vm.getPostalAddress = getPostalAddress;
     vm.getAddressLocation = getAddressLocation;
+    vm.addAlias = addAlias;
+    vm.removeAlias = removeAlias;
     vm.onBlur = onBlur;
     vm.bindAddressDetails = bindAddressDetails;
     vm.display = false;
     vm.disable = true;
     vm.openAlert = openAlert;
     vm.toggle = toggle;
-    vm.exists = exists;
-    vm.deliveryPointList = [{
-        locality: "BN1 Dadar",
-        addressGuid: 1,
-        isPostioned: false
-    },
-                           {
-                               locality: "BN2 Dadar",
-                               addressGuid: 2,
-                               isPostioned: false
-                           },
-                           {
-                               locality: "BN3 Dadar",
-                               addressGuid: 3,
-                               isPostioned: false
-                           }
-    ];
-
+    vm.alias = null;
+    vm.exists =exists;
+    vm.deliveryPointList= [{locality:"BN1 Dadar",
+                            addressGuid :1, 
+                            isPostioned : false},
+                           {locality:"BN2 Dadar",
+                            addressGuid :2,
+                            isPostioned : false},
+                           {locality:"BN3 Dadar", 
+                            addressGuid :3,
+                            isPostioned : false}
+                          ];
+    
     vm.positioneddeliveryPointList = [];
     vm.createDeliveryPoint = createDeliveryPoint;
 
@@ -49,9 +46,9 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
 
         //var idx = vm.deliveryPointList.indexOf(item);
         if (idx.length > 0) {
-            $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
-            vm.deliveryPointList.splice(idx, 1);
-            vm.positioneddeliveryPointList.push(item);
+        //$scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
+          vm.deliveryPointList.splice(idx, 1);
+          vm.positioneddeliveryPointList.push(item);
         }
     };
 
@@ -69,8 +66,9 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
             .ok('Yes')
             .cancel('No')
 
-        $mdDialog.show(confirm).then(function () {
-            alert("Yes");
+        $mdDialog.show(confirm).then(function() {
+            setDP();
+            
             vm.toggle(item);
         }, function () {
             alert("no");
@@ -78,6 +76,11 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     };
 
     referenceData();
+    
+    function setDP(){
+        var shape = mapToolbarService.getShapeForButton('point');
+        $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+    }
 
     function querySearch(query) {
         deliveryPointApiService.GetDeliveryPointsResultSet(query).then(function (response) {
@@ -166,13 +169,38 @@ function DeliveryPointController($scope, $mdDialog, deliveryPointService, delive
     function referenceData() {
         referencedataApiService.getReferenceData().success(function (response) {
             vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
+            vm.dpUse = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
         });
+    }
+
+    vm.items = [];
+
+    function addAlias() {
+       
+        vm.items.push({
+            inlineChecked: false,
+            alias: vm.alias
+        });
+        vm.alias = "";
+    };
+
+
+    function removeAlias()
+    {
+        var lastItem = vm.items.length - 1;
+        vm.items.splice(lastItem);
     }
 
     function bindAddressDetails() {
         deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
                    vm.nybaddress = response.data;
+                   if (!(vm.nybaddress.organisationName)) {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Residential" });
+                   }
+                   else {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Commercial" });
+                   }
                });
     }
 };

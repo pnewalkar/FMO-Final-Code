@@ -21,7 +21,8 @@ var referenceDataConstants = {
     PostalAddressType: "Postal Address Type",
     AccessLinkDirection: "Access Link Direction",
     OperationalObjectType: "Operational Object Type",
-    DeliveryPointType:"Delivery Point Type"
+    DeliveryPointType: "Delivery Point Type",
+    DeliveryPointUseIndicator: "DeliveryPoint Use Indicator"
 };
 
 angular.module('FMOApp')
