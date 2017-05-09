@@ -217,7 +217,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
             vm.deliveryPointTypes = $filter('filter')(response, {
                 categoryName: referenceDataConstants.DeliveryPointType
             });
-            vm.dpUse = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
+            vm.dpUseType = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
         });
     }
 
@@ -244,12 +244,12 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                .then(function (response) {
                    vm.nybaddress = response;
                    if (vm.nybaddress && !(vm.nybaddress.organisationName)) {
-                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, {
+                       vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                            displayText: "Residential"
                        });
                    }
                    else {
-                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, {
+                       vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                            displayText: "Commercial"
                        });
                    }
