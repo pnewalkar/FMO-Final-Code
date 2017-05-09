@@ -88,6 +88,7 @@ namespace Fmo.API.Services
             services.AddTransient<IUnitLocationBusinessService, UnitLocationBusinessService>();
             services.AddTransient<IPostCodeBusinessService, PostCodeBusinessService>();
             services.AddTransient<IStreetNetworkBusinessService, StreetNetworkBusinessService>();
+            services.AddTransient<IAddressLocationBusinessService, AddressLocationBusinessService>();
 
             //Repositories
             services.AddTransient<IAccessLinkRepository, AccessLinkRepository>();
