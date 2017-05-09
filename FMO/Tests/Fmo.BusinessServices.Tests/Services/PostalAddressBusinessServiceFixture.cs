@@ -139,6 +139,52 @@
             mocknotificationRepository.Verify(n => n.AddNewNotification(It.IsAny<NotificationDTO>()), Times.Never());
         }
 
+        [Test]
+        public async Task Test_SearchByPostcode()
+        {
+            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            {
+                Time = "7/19/2016",
+                Date = "8:37:00",
+                AmendmentType = "I",
+                AmendmentDesc = "new insert",
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+            };
+
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>() { objPostalAddress };
+
+            await testCandidate.GetPostalAddressDetails("Postcode1", new Guid("00000000-0000-0000-0000-000000000000"));
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(lstPostalAddress));
+            mockAddressRepository.Verify(x => x.GetPostalAddressDetails(It.IsAny<string>(), It.IsAny<Guid>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Test_PostalAddressSearchDetails()
+        {
+            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            {
+                Time = "7/19/2016",
+                Date = "8:37:00",
+                AmendmentType = "I",
+                AmendmentDesc = "new insert",
+                Postcode = "YO23 1DQ",
+                PostTown = "York",
+                UDPRN = 54162429,
+                DeliveryPointSuffix = "1A",
+                AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
+            };
+
+            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>() { objPostalAddress };
+
+            await testCandidate.GetPostalAddressSearchDetails("Postcode1", new Guid("00000000-0000-0000-0000-000000000000"));
+            mockAddressRepository.Setup(x => x.GetPostalAddressSearchDetails(It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(It.IsAny<List<string>>()));
+            mockAddressRepository.Verify(x => x.GetPostalAddressSearchDetails(It.IsAny<string>(), It.IsAny<Guid>()), Times.Once);
+        }
+
         protected override void OnSetup()
         {
             PostalAddressDTO postalAddress = new PostalAddressDTO()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 
 namespace Fmo.DTO
@@ -35,6 +36,8 @@ namespace Fmo.DTO
         public bool IsUnit { get; set; }
 
         public PostalAddressDTO PostalAddress { get; set; }
+
+        public List<DeliveryPointAliasDTO> DeliveryPointAliasDTO { get; set; }
 
         public Guid ID { get; set; }
 

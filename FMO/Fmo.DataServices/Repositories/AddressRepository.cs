@@ -390,7 +390,13 @@
             List<string> lstPocodes = new List<string>();
             List<PostalAddressDTO> postalAddressDTO = new List<PostalAddressDTO>();
 
-            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(p => p.Postcode1.DeliveryRoutePostcodes).Where(n => n.Postcode == postCode).ToListAsync();
+            var postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                       join pc in DataContext.Postcodes.AsNoTracking()
+                                       on pa.PostCodeGUID equals pc.ID
+                                       join drpc in DataContext.DeliveryRoutePostcodes.AsNoTracking()
+                                       on pc.ID equals drpc.Postcode_GUID
+                                       where pc.PostcodeUnit == postCode
+                                       select pa).ToListAsync();
 
             postalAddressDTO = GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
 
@@ -398,11 +404,12 @@
             {
                 if (d.IsPrimaryRoute)
                 {
-                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).ToList().ForEach(paDTO =>
+                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
                     {
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
@@ -413,11 +420,12 @@
                 }
                 else
                 {
-                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).ToList().ForEach(paDTO =>
+                    postalAddressDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
                     {
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
@@ -476,10 +484,11 @@
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
-                DeliveryPoint objDeliveryPoint = new DeliveryPoint() { MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount, MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume };
+                DeliveryPoint objDeliveryPoint = DeliveryPointAlaisMapping(addDeliveryPointDTO.DeliveryPointDTO);
                 try
                 {
                     objPostalAddress.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
+                    objPostalAddress.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
                     if (objPostalAddress != null)
                     {
                         objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
@@ -541,6 +550,25 @@
                 NatureOfError = strException
             };
             fileProcessingLog.LogFileException(objFileProcessingLog);
+        }
+
+        private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
+        {
+            Guid deliveryPointID = Guid.NewGuid();
+            return new DeliveryPoint()
+            {
+                ID = deliveryPointID,
+                DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
+                MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
+                MailVolume = deliveryPointDTO.MailVolume,
+                DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
+                {
+                    ID = Guid.NewGuid(),
+                    DeliveryPoint_GUID = deliveryPointID,
+                    DPAlias = n.DPAlias,
+                    Preferred = n.Preferred
+                }).ToList()
+            };
         }
     }
 }
