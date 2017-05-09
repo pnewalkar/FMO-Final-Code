@@ -25,6 +25,12 @@
         private Guid deliveryScenarioID = new Guid("D771E341-8FE8-4980-BE96-A339AE014B4E");
         private Guid operationalStateID = new Guid("1FC7DAB1-D4D7-45BD-BA2E-E8AE6737E1EB");
         private Guid invalidId = new Guid("4A2DE1A4-BC19-4DB8-A8D9-DAA828E1B526");
+        private Guid refDataId = new Guid("4A2DE1A4-BC19-4DB8-A8D9-DAA828E1B526");
+        private Guid scenarioId = new Guid("4A2DE1A4-BC19-4DB8-A8D9-DAA828E1B527");
+        private Guid deliveryRouteId = new Guid("B13D545D-2DE7-4E62-8DAD-00EC2B7FF8B8");
+        private Guid operationalObjectTypeForDP = new Guid("9F82733D-C72C-4111-815D-8813790B5CFB");
+        private Guid operationalObjectTypeForDPCommercial = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED");
+        private Guid operationalObjectTypeForDPResidential = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED");
 
         [Test]
         public void TestFetchDeliveryRoute()
@@ -81,6 +87,15 @@
             Assert.IsTrue(actualResultCount == 7);
         }
 
+        [Test]
+        public void FetchDeliveryRouteDetailsforPDF()
+        {
+            SetUp();
+            var actualResultCount = testCandidate.FetchDeliveryRouteDetailsforPDF(deliveryRouteId,operationalObjectTypeForDP,operationalObjectTypeForDPCommercial,operationalObjectTypeForDPResidential);
+            Assert.IsNotNull(actualResultCount);
+            Assert.IsTrue(actualResultCount.Count == 1);
+        }
+
         protected override void OnSetup()
         {
             var deliveryRoute = new List<DeliveryRoute>()
@@ -108,6 +123,44 @@
             mockFmoDbContext.Setup(x => x.DeliveryRoutes).Returns(mockDeliveryRouteDBSet.Object);
 
             mockFmoDbContext.Setup(c => c.DeliveryRoutes.AsNoTracking()).Returns(mockDeliveryRouteDBSet.Object);
+
+            mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
+            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object);
+        }
+
+        protected void SetUp()
+        {
+            var scenario = new List<Scenario>() { new Scenario() { ScenarioName = "ScanarioName", ID = scenarioId } };
+            var referenceData = new List<ReferenceData>() { new ReferenceData() { DisplayText = "shared van", ID = refDataId } };
+            var deliveryRoute = new List<DeliveryRoute>()
+            { new DeliveryRoute()
+                {
+                    ID=deliveryRouteId,
+                    RouteName = "Linkroad",
+                    RouteNumber = "1",
+                    Scenario = scenario[0],
+                    ReferenceData = referenceData[0],
+                    RouteMethodType_GUID = refDataId,
+                    DeliveryScenario_GUID = scenarioId
+                }
+            };
+
+            var mockDeliveryRouteDBSet = MockDbSet(deliveryRoute);
+            mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFmoDbContext.Setup(x => x.Set<DeliveryRoute>()).Returns(mockDeliveryRouteDBSet.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryRoutes).Returns(mockDeliveryRouteDBSet.Object);
+            mockFmoDbContext.Setup(c => c.DeliveryRoutes.AsNoTracking()).Returns(mockDeliveryRouteDBSet.Object);
+
+            var mockReferenceDataDBSet = MockDbSet(referenceData);
+            mockFmoDbContext.Setup(x => x.Set<ReferenceData>()).Returns(mockReferenceDataDBSet.Object);
+            mockFmoDbContext.Setup(x => x.ReferenceDatas).Returns(mockReferenceDataDBSet.Object);
+            mockFmoDbContext.Setup(c => c.ReferenceDatas.AsNoTracking()).Returns(mockReferenceDataDBSet.Object);
+
+            var mockScenarioDBSet = MockDbSet(scenario);
+            mockFmoDbContext.Setup(x => x.Set<Scenario>()).Returns(mockScenarioDBSet.Object);
+            mockFmoDbContext.Setup(x => x.Scenarios).Returns(mockScenarioDBSet.Object);
+            mockFmoDbContext.Setup(c => c.Scenarios.AsNoTracking()).Returns(mockScenarioDBSet.Object);
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
