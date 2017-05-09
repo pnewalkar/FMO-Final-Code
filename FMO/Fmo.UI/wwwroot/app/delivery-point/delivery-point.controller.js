@@ -218,15 +218,18 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                .then(function (response) {
                    vm.nybaddress = response;
                    if (vm.nybaddress && !(vm.nybaddress.organisationName)) {
-                       vm.dpUse = $filter('filter') (vm.dpUse.referenceDatas, { displayText: "Residential"
-                   });
-               }
-               else {
-                       vm.dpUse = $filter('filter') (vm.dpUse.referenceDatas, { displayText: "Commercial"
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, {
+                           displayText: "Residential"
+                       });
+                   }
+                   else {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, {
+                           displayText: "Commercial"
+                       });
+                   }
                });
-        }
-});
     }
+
     function locateDeliveryPoint(selectedItem) {
         searchApiService.GetDeliveryPointByUDPRN(selectedItem.udprn)
             .then(function (response) {
