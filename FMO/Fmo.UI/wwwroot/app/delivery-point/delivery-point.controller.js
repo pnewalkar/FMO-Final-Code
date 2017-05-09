@@ -26,18 +26,24 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     vm.openAlert = openAlert;
     vm.toggle = toggle;
     vm.alias = null;
-    vm.exists =exists;
-    vm.deliveryPointList= [{locality:"BN1 Dadar",
-                            addressGuid : 1, 
-                            isPostioned : false},
-                           {locality:"BN2 Dadar",
-                            addressGuid : 2,
-                            isPostioned : false},
-                           {locality:"BN3 Dadar", 
-                            addressGuid : 3,
-                            isPostioned : false}
-                          ];
-    
+    vm.exists = exists;
+    vm.deliveryPointList = [{
+        locality: "BN1 Dadar",
+        addressGuid: 1,
+        isPostioned: false
+    },
+                           {
+                               locality: "BN2 Dadar",
+                               addressGuid: 2,
+                               isPostioned: false
+                           },
+                           {
+                               locality: "BN3 Dadar",
+                               addressGuid: 3,
+                               isPostioned: false
+                           }
+    ];
+
     vm.positioneddeliveryPointList = [];
     vm.createDeliveryPoint = createDeliveryPoint;
 
@@ -84,7 +90,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
 
     function querySearch(query) {
         deliveryPointApiService.GetDeliveryPointsResultSet(query).then(function (response) {
-            vm.results = response.data;
+            vm.results = response;
         });
     }
 
@@ -106,7 +112,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                 }, "AddressLocationDTO": null
             };
         deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-            vm.results = response.data;
+          
         });
     }
 
@@ -145,7 +151,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
 
         deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
 
-            vm.postalAddressData = response.data;
+            vm.postalAddressData = response;
             if (vm.postalAddressData) {
                 vm.display = true;
                 vm.disable = false;
@@ -206,15 +212,18 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     }
 
     function bindAddressDetails() {
+        debugger;
         deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
-                   vm.nybaddress = response.data;
-                   if (!(vm.nybaddress.organisationName)) {
-                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Residential" });
-                   }
-                   else {
-                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, { displayText: "Commercial" });
-                   }
+                   vm.nybaddress = response;
+                   if (vm.nybaddress && !(vm.nybaddress.organisationName)) {
+                       vm.dpUse = $filter('filter') (vm.dpUse.referenceDatas, { displayText: "Residential"
+                   });
+               }
+               else {
+                       vm.dpUse = $filter('filter') (vm.dpUse.referenceDatas, { displayText: "Commercial"
                });
-    }
+        }
+});
+}
 };

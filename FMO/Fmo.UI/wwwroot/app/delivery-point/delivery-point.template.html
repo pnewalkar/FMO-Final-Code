@@ -156,7 +156,7 @@
                         <label>Alias</label>
                         <div class="aliasBox">
                             <div ng-repeat="item in vm.items">
-                                <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.alias" class="aliasinput">
+                                <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.DPAlias" class="aliasinput">
                                 <input type="radio" name="check" value="inline" ng-model="item.Preferred">
                                 <i class="fa fa-minus-circle" aria-hidden="true" ng-click="vm.removeAlias()"></i>
                             </div>
