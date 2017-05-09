@@ -151,17 +151,18 @@ namespace Fmo.BusinessServices.Services
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
                     // check for any duplicate records of the address being created (Note 3)
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == null && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
                     {
                         errorMessage = "There is a duplicate of this Delivery Point in the system";
                     }
-                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == null)
+
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty)
                     {
                         // check for duplicate NYB records for the address being created(Note 4)
                         string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
                         if (!string.IsNullOrEmpty(postCode))
                         {
-                            errorMessage = "“This address is in the NYB file under the postcode " + postCode;
+                            errorMessage = "This address is in the NYB file under the postcode " + postCode;
                         }
                     }
                     else

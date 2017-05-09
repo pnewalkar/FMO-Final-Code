@@ -251,17 +251,41 @@
                 Guid nybAddressID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
                 var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
-                                .Where(n => n.AddressType_GUID == nybAddressID && n.BuildingName == (!string.IsNullOrEmpty(objPostalAddress.BuildingName) ? objPostalAddress.BuildingName : null)
-                               && n.BuildingNumber == (objPostalAddress.BuildingNumber != null ? objPostalAddress.BuildingNumber : null)
-                               && n.SubBuildingName == (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName) ? objPostalAddress.SubBuildingName : null)
-                               && n.OrganisationName == (!string.IsNullOrEmpty(objPostalAddress.OrganisationName) ? objPostalAddress.OrganisationName : null)
-                               && n.DepartmentName == (!string.IsNullOrEmpty(objPostalAddress.DepartmentName) ? objPostalAddress.DepartmentName : null)
-                               && n.Thoroughfare == (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare) ? objPostalAddress.Thoroughfare : null)
-                               && n.DependentThoroughfare == (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare) ? objPostalAddress.DependentThoroughfare : null)).SingleOrDefault();
+                                .Where(n => n.AddressType_GUID == nybAddressID);
 
-                if (postalAddress != null && postalAddress.Postcode != objPostalAddress.Postcode)
+                if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
                 {
-                    postCode = postalAddress.Postcode;
+                    postalAddress = postalAddress.Where(n => n.BuildingName == objPostalAddress.BuildingName);
+                }
+                else if (objPostalAddress.BuildingNumber != null)
+                {
+                    postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
+                }
+                else if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
+                {
+                    postalAddress = postalAddress.Where(n => n.SubBuildingName == objPostalAddress.SubBuildingName);
+                }
+                else if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
+                {
+                    postalAddress = postalAddress.Where(n => n.OrganisationName == objPostalAddress.OrganisationName);
+                }
+                else if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
+                {
+                    postalAddress = postalAddress.Where(n => n.DepartmentName == objPostalAddress.DepartmentName);
+                }
+                else if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
+                {
+                    postalAddress = postalAddress.Where(n => n.Thoroughfare == objPostalAddress.Thoroughfare);
+                }
+                else if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
+                {
+                    postalAddress = postalAddress.Where(n => n.DependentThoroughfare == objPostalAddress.DependentThoroughfare);
+                }
+
+                var address = postalAddress.SingleOrDefault();
+                if (address != null && address.Postcode != address.Postcode)
+                {
+                    postCode = address.Postcode;
                 }
 
                 return postCode;

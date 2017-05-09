@@ -95,26 +95,46 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     }
 
     function createDeliveryPoint() {
+        debugger;
+        var postalAddress = createDeliveryPointDTO();
         var addDeliveryPointDTO =
             {
-                "PostalAddressDTO": vm.nybaddress,
+                "PostalAddressDTO": postalAddress,
                 "DeliveryPointDTO":
                 {
                     "MultipleOccupancyCount": vm.mailvol,
                     "MailVolume": vm.multiocc,
                     "DeliveryPointAliasDTO": vm.items,
-                    "ID": "00000000-0000-0000-0000-000000000000",
-                    "Address_GUID": "00000000-0000-0000-0000-000000000000",
-                    "LocationProvider_GUID": null,
-                    "OperationalStatus_GUID": null,
-                    "DeliveryGroup_GUID": null,
                     "DeliveryPointUseIndicator_GUID": '178EDCAD-9431-E711-83EC-28D244AEF9ED'
                 }, "AddressLocationDTO": null
             };
         deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-          
+             vm.nybaddress = "";
+             vm.errorMessage = response;
+
         });
     }
+
+    function createDeliveryPointDTO() {
+        if (!vm.nybaddress) {
+            return vm.nybaddress = {
+                "OrganisationName": vm.nybaddress.organisationName,
+                "DepartmentName": vm.nybaddress.departmentName,
+                "BuildingName": vm.nybaddress.buildingName,
+                "BuildingNumber": vm.nybaddress.buildingNumber,
+                "SubBuildingName": vm.nybaddress.subBuildingName,
+                "Thoroughfare": vm.postalAddressData.thoroughfare,
+                "DependentLocality": vm.postalAddressData.dependentLocality,
+                "Postcode": vm.postalAddressData.postcode
+            }
+        }
+        else {
+            return vm.nybaddress;
+        }
+
+    }
+
+
 
     function deliveryPoint() {
         var deliveryPointTemplate = deliveryPointService.deliveryPoint();
@@ -126,14 +146,18 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
             querySearch(query);
         }
         else {
-            vm.results = {};
-            vm.resultscount = { 0: { count: 0 } };
+            vm.results = {
+            };
+            vm.resultscount = {
+                0: { count: 0 }
+            };
         }
     }
 
     function onBlur() {
         $timeout(function () {
-            vm.results = {};
+            vm.results = {
+            };
             // vm.searchText="";
         }, 1000);
     }
@@ -150,7 +174,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
         }
 
         deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
-
+            vm.nybaddress = "";
             vm.postalAddressData = response;
             if (vm.postalAddressData) {
                 vm.display = true;
@@ -175,7 +199,8 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
 
     function OnChangeItem(selectedItem) {
         vm.searchText = selectedItem;
-        vm.results = {};
+        vm.results = {
+        };
     }
 
     function openModalPopup(modalSetting) {
@@ -189,7 +214,9 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
 
     function referenceData() {
         referencedataApiService.getReferenceData().success(function (response) {
-            vm.deliveryPointTypes = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointType });
+            vm.deliveryPointTypes = $filter('filter')(response, {
+                categoryName: referenceDataConstants.DeliveryPointType
+            });
             vm.dpUse = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
         });
     }
@@ -217,13 +244,15 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                .then(function (response) {
                    vm.nybaddress = response;
                    if (vm.nybaddress && !(vm.nybaddress.organisationName)) {
-                       vm.dpUse = $filter('filter') (vm.dpUse.referenceDatas, { displayText: "Residential"
-                   });
-               }
-               else {
-                       vm.dpUse = $filter('filter') (vm.dpUse.referenceDatas, { displayText: "Commercial"
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, {
+                           displayText: "Residential"
+                       });
+                   }
+                   else {
+                       vm.dpUse = $filter('filter')(vm.dpUse.referenceDatas, {
+                           displayText: "Commercial"
+                       });
+                   }
                });
-        }
-});
-}
+    }
 };
