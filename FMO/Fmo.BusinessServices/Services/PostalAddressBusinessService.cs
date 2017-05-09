@@ -156,6 +156,7 @@ namespace Fmo.BusinessServices.Services
             var objAddressLocation = addressLocationRepository.GetAddressLocationByUDPRN(objPostalAddress.UDPRN ?? 0);
             Guid tasktypeId = refDataRepository.GetReferenceDataId(Constants.TASKNOTIFICATION, Constants.TASKACTION);
             Guid locationProviderId = refDataRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.EXTERNAL);
+            Guid deliveryPointUseIndicator = refDataRepository.GetReferenceDataId(Constants.DeliveryPointUseIndicator, Constants.DeliveryPointUseIndicatorPAF);
             string postCodeDistrict = objPostalAddress.Postcode.Substring(0, objPostalAddress.Postcode.Length - 4);
 
             if (objAddressLocation == null)
@@ -164,6 +165,7 @@ namespace Fmo.BusinessServices.Services
                 newDeliveryPoint.ID = Guid.NewGuid();
                 newDeliveryPoint.Address_GUID = objPostalAddress.ID;
                 newDeliveryPoint.UDPRN = objPostalAddress.UDPRN;
+                newDeliveryPoint.DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator;
                 deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
 
                 // Create task
@@ -189,6 +191,7 @@ namespace Fmo.BusinessServices.Services
                 newDeliveryPoint.Latitude = objAddressLocation.Lattitude;
                 newDeliveryPoint.Longitude = objAddressLocation.Longitude;
                 newDeliveryPoint.LocationProvider_GUID = locationProviderId;
+                newDeliveryPoint.DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator;
                 deliveryPointsRepository.InsertDeliveryPoint(newDeliveryPoint);
             }
 
@@ -347,20 +350,8 @@ namespace Fmo.BusinessServices.Services
                     var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
                     if (objDeliveryPoint != null)
                     {
+                        // Update address and delivery point
                         addressRepository.UpdateAddress(objPostalAddress, strFileName, Constants.PAFUPDATEFORUSR);
-                        var isDeliveryPointUpdated = deliveryPointsRepository.UpdateDeliveryPointByAddressId(objPostalAddressMatchedAddress.ID, objPostalAddress.UDPRN ?? default(int));
-                        if (!isDeliveryPointUpdated)
-                        {
-                            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
-                            objFileProcessingLog.FileID = Guid.NewGuid();
-                            objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
-                            objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
-                            objFileProcessingLog.FileName = strFileName;
-                            objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
-                            objFileProcessingLog.FileType = FileType.Paf.ToString();
-                            objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForMatchedDeliveryPointNotUpdatedForUSRType;
-                            fileProcessingLogRepository.LogFileException(objFileProcessingLog);
-                        }
                     }
                     else
                     {

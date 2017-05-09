@@ -53,7 +53,7 @@
                 <md-input-container flex>
                     <label>Route<sub>*</sub></label>
                     <md-select ng-model="vm.postalAddressData.routeDetails" select-clear>
-                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
+                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value" ng-selected="{{route.displayText=='Select'?true:false}}">
                             {{route.displayText}}
                         </md-option>
                     </md-select>
@@ -61,7 +61,7 @@
                 <span flex="5"></span>
                 <div layout="column" flex="30">
                     <label>DP Use<sub>*</sub></label>
-                    <input type="text">
+                    <input type="text" ng-model="vm.dpUse[0].displayText">
                 </div>
             </div>
             <div layout="row" ng-show="vm.display">
@@ -198,7 +198,7 @@
                 Cancel
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" class="md-raised md-primary" flex="40">
+            <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40">
                 Save
             </md-button>
         </md-dialog-actions>
