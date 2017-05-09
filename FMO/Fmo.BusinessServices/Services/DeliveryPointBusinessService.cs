@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Transactions;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -29,7 +30,6 @@ namespace Fmo.BusinessServices.Services
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private bool enableLogging = false;
-        private IUnitOfWork<FMODBContext> unitOfWork = default(IUnitOfWork<FMODBContext>);
 
         public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper, IUnitOfWork<FMODBContext> unitOfWork)
         {
@@ -39,7 +39,6 @@ namespace Fmo.BusinessServices.Services
             this.configurationHelper = configurationHelper;
             this.postalAddressRepository = postalAddressRepository;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
-            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -165,15 +164,15 @@ namespace Fmo.BusinessServices.Services
                         string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
                         if (!string.IsNullOrEmpty(postCode))
                         {
-                            errorMessage = "“This address is in the NYB file under the postcode " + postCode;
+                            errorMessage = "This address is in the NYB file under the postcode " + postCode;
                         }
                     }
                     else
                     {
-                        using (unitOfWork)
+                        using (TransactionScope scope = new TransactionScope())
                         {
                             postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                            unitOfWork.Commit();
+                            scope.Complete();
                         }
                     }
                 }

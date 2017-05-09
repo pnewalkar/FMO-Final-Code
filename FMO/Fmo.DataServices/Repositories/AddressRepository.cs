@@ -520,7 +520,7 @@
                         DataContext.PostalAddresses.Add(entity);
                     }
 
-                    //DataContext.SaveChanges();
+                    DataContext.SaveChanges();
                     isPostalAddressInserted = true;
                 }
                 catch (Exception)
