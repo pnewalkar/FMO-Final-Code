@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Transactions;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -29,7 +30,6 @@ namespace Fmo.BusinessServices.Services
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private bool enableLogging = false;
-        private IUnitOfWork<FMODBContext> unitOfWork = default(IUnitOfWork<FMODBContext>);
 
         public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper, IUnitOfWork<FMODBContext> unitOfWork)
         {
@@ -39,7 +39,6 @@ namespace Fmo.BusinessServices.Services
             this.configurationHelper = configurationHelper;
             this.postalAddressRepository = postalAddressRepository;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
-            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -155,6 +154,7 @@ namespace Fmo.BusinessServices.Services
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
                     string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
+
                     // check for any duplicate records of the address being created (Note 3)
                     if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
                     {
@@ -167,11 +167,11 @@ namespace Fmo.BusinessServices.Services
                     }
                     else
                     {
-                        using (unitOfWork)
+                        using (TransactionScope scope = new TransactionScope())
                         {
-                            message = "Delivery Point created successfully";
                             postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                            unitOfWork.Commit();
+                            scope.Complete();
+                            message = "Delivery Point created successfully";
                         }
                     }
                 }
