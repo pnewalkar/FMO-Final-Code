@@ -155,7 +155,7 @@ function DeliveryPointController(
         deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
 
             if (response && response == "Delivery Point created successfully") {
-                debugger;
+                setDeliveryPoint();
                 vm.onCloseDeliveryPoint();
             }
             else {
@@ -163,43 +163,45 @@ function DeliveryPointController(
                 vm.errorMessageDisplay = true;
                 vm.errorMessage = response;
             }
-
-            if (vm.postalAddressData.udprn) {
-                
-
-                var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber : '';
-                var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName : '';
-                var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName : '';
-                var street = vm.postalAddressData.thoroughfare != null && vm.postalAddressData.thoroughfare !== undefined ? vm.postalAddressData.thoroughfare : '';
-                var postCode = vm.postalAddressData.postcode != null && vm.postalAddressData.postcode !== undefined ? vm.postalAddressData.postcode : '';
-                var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== undefined ? vm.nybaddress.departmentName : '';
-                var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== undefined ? vm.nybaddress.organisationName : '';
-                
-                var address = buildingNumber + ' ' + buildingName + ' ' + subBuildingName + ' ' + organisationName + ' ' + departmentName + ' ' + street + ' ' + postCode;
-                var positionedThirdPartyDeliverypointObj = {
-                    locality: address, addressGuid: vm.postalAddressData.id
-                };
-
-                var positionedThirdPartyDeliveryPointListTemp = [];
-
-                if (vm.positionedThirdPartyDeliveryPointList != null) {
-                    positionedThirdPartyDeliveryPointListTemp = vm.positionedThirdPartyDeliveryPointList;
-                }
-                
-                
-                positionedThirdPartyDeliveryPointListTemp.push(positionedThirdPartyDeliverypointObj);
-
-                vm.positionedThirdPartyDeliveryPointList = positionedThirdPartyDeliveryPointListTemp;
-
-                locateDeliveryPoint(vm.postalAddressData.udprn);
-
-                $state.go("deliveryPoint", { positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList })
-            }
-            else {
-                setDP();
-            }
         });
 
+    }
+
+    function setDeliveryPoint() {
+        if (vm.postalAddressData.udprn) {
+
+
+            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber : '';
+            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName : '';
+            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName : '';
+            var street = vm.postalAddressData.thoroughfare != null && vm.postalAddressData.thoroughfare !== undefined ? vm.postalAddressData.thoroughfare : '';
+            var postCode = vm.postalAddressData.postcode != null && vm.postalAddressData.postcode !== undefined ? vm.postalAddressData.postcode : '';
+            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== undefined ? vm.nybaddress.departmentName : '';
+            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== undefined ? vm.nybaddress.organisationName : '';
+
+            var address = buildingNumber + ' ' + buildingName + ' ' + subBuildingName + ' ' + organisationName + ' ' + departmentName + ' ' + street + ' ' + postCode;
+            var positionedThirdPartyDeliverypointObj = {
+                locality: address, addressGuid: vm.postalAddressData.id
+            };
+
+            var positionedThirdPartyDeliveryPointListTemp = [];
+
+            if (vm.positionedThirdPartyDeliveryPointList != null) {
+                positionedThirdPartyDeliveryPointListTemp = vm.positionedThirdPartyDeliveryPointList;
+            }
+
+
+            positionedThirdPartyDeliveryPointListTemp.push(positionedThirdPartyDeliverypointObj);
+
+            vm.positionedThirdPartyDeliveryPointList = positionedThirdPartyDeliveryPointListTemp;
+
+            locateDeliveryPoint(vm.postalAddressData.udprn);
+
+            $state.go("deliveryPoint", { positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList })
+        }
+        else {
+            setDP();
+        }
     }
 
     function createDeliveryPointDTO() {
@@ -259,7 +261,7 @@ function DeliveryPointController(
         }
     }
 
-  
+
 
     function getPostalAddress(selectedItem) {
         var arrSelectedItem = selectedItem.split(',');
