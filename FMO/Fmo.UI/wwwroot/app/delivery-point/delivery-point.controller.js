@@ -51,6 +51,7 @@ function DeliveryPointController(
     vm.toggle = toggle;
     vm.alias = null;
     vm.exists = exists;
+    vm.positionedCoOrdinates = [];
     vm.deliveryPointList = [{
         locality: "BN1 Dadar",
         addressGuid: 1,
@@ -71,16 +72,26 @@ function DeliveryPointController(
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
     vm.createDeliveryPoint = createDeliveryPoint;
 
+    $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
+        if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
+            openAlert();
+    }, true);
+
     function toggle(item) {
         var idx = $filter('filter')(vm.deliveryPointList, { addressGuid: item.addressGuid });
-
-        //var idx = vm.deliveryPointList.indexOf(item);
         if (idx.length > 0) {
-            //$scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
             vm.deliveryPointList.splice(idx, 1);
-            vm.positioneddeliveryPointList.push(item);
-            item.udprn = '10897101';
-            locateDeliveryPoint(item);
+
+            var positionedDeliveryPointListTemp = [];
+
+            if (vm.positionedDeliveryPointList != null) {
+                positionedDeliveryPointListTemp = vm.positionedDeliveryPointList;
+            }
+            positionedDeliveryPointListTemp.push(item);
+            vm.positionedDeliveryPointList = positionedDeliveryPointListTemp;
+            setDP();
+            //item.udprn = '54471821';
+            //locateDeliveryPoint(item.udprn);
         }
     };
 
@@ -88,7 +99,7 @@ function DeliveryPointController(
         return list.indexOf(item) > -1;
     };
 
-    function openAlert(ev, item) {
+    function openAlert() {
         var confirm =
           $mdDialog.confirm()
             .clickOutsideToClose(true)
@@ -99,11 +110,8 @@ function DeliveryPointController(
             .cancel('No')
 
         $mdDialog.show(confirm).then(function () {
-            setDP();
-
-            vm.toggle(item);
+            vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
         }, function () {
-            alert("no");
         });
     };
 
@@ -115,7 +123,7 @@ function DeliveryPointController(
     }
 
     function savePositionedDeliveryPoint() {
-        var coordinates = coordinatesService.getCordinates();
+        var coordinates = vm.positionedCoOrdinates;
     }
 
     function querySearch(query) {
@@ -334,7 +342,7 @@ function DeliveryPointController(
     function locateDeliveryPoint(selectedItem) {
         deliveryPointApiService.GetAddressLocation(selectedItem)
             .then(function (response) {
-                var data = response.data;
+                var data = response;
                 var lat = data.features[0].geometry.coordinates[1];
                 var long = data.features[0].geometry.coordinates[0];
                 mapFactory.locateDeliveryPoint(long, lat);
