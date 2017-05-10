@@ -35,7 +35,7 @@ angular.module('deliveryPoint')
 
             var deferred = $q.defer();
 
-            $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetAddressLocationByUDPRN?udprn=' + udprn).success(function (response) {
+            $http.get(GlobalSettings.apiUrl + '/addresslocation/GetAddressLocationByUDPRN?udprn=' + udprn).success(function (response) {
                 deferred.resolve(response);
 
             }).error(function (err, status) {
