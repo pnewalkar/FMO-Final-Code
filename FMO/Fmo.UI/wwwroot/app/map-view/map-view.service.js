@@ -1,9 +1,9 @@
 angular.module('mapView')
         .service('mapService', ['$http', 'mapFactory',
-                                'mapStylesFactory', '$timeout', 'GlobalSettings',
+                                'mapStylesFactory', '$timeout', 'GlobalSettings', 'coordinatesService',
                                  mapService])
 function mapService($http, mapFactory,
-                    mapStylesFactory, $timeout, GlobalSettings) {
+                    mapStylesFactory, $timeout, GlobalSettings, coordinatesService) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
@@ -528,7 +528,9 @@ function mapService($http, mapFactory,
         vm.interactions.draw.on('drawend',
 			function (evt) {
 			    evt.feature.set("type", "deliverypoint");
-			    var coord = evt.feature.getGeometry().getCoordinates();
+			    var coordinates = evt.feature.getGeometry().getCoordinates();
+			    coordinatesService.setCordinates(coordinates);
+
 			});
     }
     function clearDrawingLayer(keepCurrentInteraction) {

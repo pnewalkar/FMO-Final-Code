@@ -18,7 +18,7 @@
                     <div class="resultPanel" ng-show="vm.results.length>0">
                         <ul ng-repeat="item in vm.results">
                             <li ng-click="vm.OnChangeItem(item)">
-                                {{item}}
+                                {{::item}}
                             </li>
                         </ul>
                     </div>

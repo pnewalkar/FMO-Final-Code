@@ -24,7 +24,6 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IConfigurationHelper> mockConfigurationRepository;
         private Mock<ILoggingHelper> mockLoggingRepository;
         private Mock<IAddressRepository> mockAddressRepository;
-        private Mock<IUnitOfWork<FMODBContext>> unitOfWorkMock;
         private Guid unitGuid = Guid.NewGuid();
 
         [Test]
@@ -64,8 +63,6 @@ namespace Fmo.BusinessServices.Tests.Services
             mockLoggingRepository = CreateMock<ILoggingHelper>();
             mockAddressRepository = CreateMock<IAddressRepository>();
 
-            unitOfWorkMock = CreateMock<IUnitOfWork<FMODBContext>>();
-
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
             List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>()
@@ -79,7 +76,7 @@ namespace Fmo.BusinessServices.Tests.Services
             };
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
 
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockAddressRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, unitOfWorkMock.Object);
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockAddressRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object);
         }
     }
 }

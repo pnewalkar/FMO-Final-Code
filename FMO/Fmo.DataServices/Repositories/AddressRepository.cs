@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Fmo.Common.Constants;
-using Fmo.Common.Enums;
-using Fmo.Common.Interface;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.DTO.UIDropdowns;
-using Fmo.Entities;
-using Fmo.MappingConfiguration;
-
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
+    using Fmo.Common.Interface;
+    using Fmo.DataServices.DBContext;
+    using Fmo.DataServices.Infrastructure;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.DTO.UIDropdowns;
+    using Fmo.Entities;
+    using Fmo.MappingConfiguration;
+
     /// <summary>
     /// Repository to interact with postal address entity
     /// </summary>
@@ -397,20 +397,9 @@ namespace Fmo.DataServices.Repositories
                                        where addresstypeIDs.Contains(pa.AddressType_GUID) &&
                                        (pa.Thoroughfare.Contains(searchText) || pa.DependentThoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
                                        ul.Unit_GUID == unitGuid
-                                       select new { pa.Thoroughfare, pa.Postcode }).Distinct().ToListAsync();
+                                       select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
-            if (searchresults != null && searchresults.Count > 0)
-            {
-                for (var i = 0; i < searchresults.Count; i++)
-                {
-                    string searchitem = searchresults[i].Thoroughfare + ", " + searchresults[i].Postcode;
-                    string formattedResult = Regex.Replace(searchitem, ",+", ",").Trim(',');
-                    searchdetails.Add(formattedResult);
-                }
-            }
-
-            searchdetails.Sort();
-            return searchdetails;
+            return searchresults.Select(n => n.SearchResult).ToList();
         }
 
         /// <summary>
@@ -570,7 +559,6 @@ namespace Fmo.DataServices.Repositories
 
             return isPostalAddressInserted;
         }
-
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
@@ -593,23 +581,23 @@ namespace Fmo.DataServices.Repositories
             fileProcessingLog.LogFileException(objFileProcessingLog);
         }
 
-        //private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
-        //{
-        //    Guid deliveryPointID = Guid.NewGuid();
-        //    return new DeliveryPoint()
-        //    {
-        //        ID = deliveryPointID,
-        //        DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
-        //        MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
-        //        MailVolume = deliveryPointDTO.MailVolume,
-        //        DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
-        //        {
-        //            ID = Guid.NewGuid(),
-        //            DeliveryPoint_GUID = deliveryPointID,
-        //            DPAlias = n.DPAlias,
-        //            Preferred = n.Preferred
-        //        }).ToList()
-        //    };
-        //}
+        private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
+        {
+            Guid deliveryPointID = Guid.NewGuid();
+            return new DeliveryPoint()
+            {
+                ID = deliveryPointID,
+                DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
+                MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
+                MailVolume = deliveryPointDTO.MailVolume,
+                DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
+                {
+                    ID = Guid.NewGuid(),
+                    DeliveryPoint_GUID = deliveryPointID,
+                    DPAlias = n.DPAlias,
+                    Preferred = n.Preferred
+                }).ToList()
+            };
+        }
     }
 }
