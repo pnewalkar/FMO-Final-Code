@@ -1,4 +1,4 @@
-﻿angular.module('routeLog')
+angular.module('routeLog')
 .controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', '$mdDialog', 'items', RouteLogController])
 function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService, $mdDialog, items) {
     var vm = this;
@@ -46,7 +46,6 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         });
     }
     function selectedRouteStatus() {
-        debugger
         loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.id);
         vm.isRouteScenarioDisabled = false;
     }

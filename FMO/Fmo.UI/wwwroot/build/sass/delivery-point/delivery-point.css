@@ -3,12 +3,12 @@ h1 {
   font-family: Chevin_Light;
   font-size: 18px; }
 
-.resultPanel, .deliveryPointDialog input {
+.resultPanel, .mdDialog input {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
 
-.deliveryPointDialog {
+.mdDialog {
   width: 100%; }
 
 i.fa.fa-times.closeWindow {
@@ -22,7 +22,7 @@ i.fa.fa-times.closeWindow {
   margin: 20px 0px 0px 5px; }
 
 .resultPanel {
-  height: 45px;
+  height: 100px;
   margin-top: -44px; }
 
 .deliveryDialog {
@@ -46,9 +46,6 @@ md-input-container {
 fieldset {
   border: 2px solid black;
   padding: 5px; }
-
-.addressRow {
-  margin-bottom: 10px; }
 
 .aliasinput {
   margin-bottom: 5px; }
