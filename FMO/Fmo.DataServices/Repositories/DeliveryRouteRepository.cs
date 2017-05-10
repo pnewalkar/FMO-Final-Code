@@ -148,7 +148,11 @@ namespace Fmo.DataServices.Repositories
                                              RouteName = dr.RouteName,
                                              RouteNumber = dr.RouteNumber,
                                              ScenarioName = sr.ScenarioName,
-                                             Method = rd.DisplayText,
+                                             Method = rd.DisplayText
+                                         })
+                                         .AsEnumerable()
+                                         .Select(x => new DeliveryRouteDTO
+                                         {
                                              Aliases = GetAliases(deliveryRouteId),
                                              Blocks = GetNumberOfBlocks(deliveryRouteId),
                                              PairedRoute = GetPairedRoute(deliveryRouteId),
