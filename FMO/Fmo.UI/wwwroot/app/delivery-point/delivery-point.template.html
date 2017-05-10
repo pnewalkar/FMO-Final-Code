@@ -194,14 +194,17 @@
     </md-dialog-content>
         
         <md-dialog-actions layout="row">
-            <md-button class="md-raised md-primary" flex="40" >
+            <md-button class="md-raised md-primary"  ng-click="vm.closeWindow()"    flex="40" >
                 Cancel
             </md-button>
             <span flex></span>
           
-            <md-button ng-disabled="!(vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40">
+            <md-button ng-disabled="!(vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
                 Save
             </md-button>
+            <div ng-if="vm.errorMessageDisplay">
+              <span>{{vm.errorMessage}}</span>  
+            </div>
         </md-dialog-actions>
     </form>
 </md-dialog>

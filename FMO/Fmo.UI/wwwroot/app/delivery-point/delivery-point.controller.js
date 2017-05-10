@@ -9,6 +9,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     referenceDataConstants, $timeout, searchApiService, mapFactory
 ) {
     var vm = this;
+   
     vm.resultSet = resultSet;
     vm.querySearch = querySearch;
     vm.deliveryPoint = deliveryPoint;
@@ -28,6 +29,9 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
     vm.alias = null;
     vm.exists = exists;
     vm.setOrganisation = setOrganisation;
+    vm.onCloseDeliveryPoint = onCloseDeliveryPoint;
+    vm.errorMessageDisplay = false;
+    vm.BuildingName = "";
     vm.deliveryPointList = [{
         locality: "BN1 Dadar",
         addressGuid: 1,
@@ -112,8 +116,20 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                 }, "AddressLocationDTO": null
             };
         deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-            vm.nybaddress = "";
-            vm.errorMessage = response;
+            //  vm.nybaddress.Postcode = "";
+           
+            if (response && response=="Delivery Point created successfully") {
+                debugger;
+                vm.onCloseDeliveryPoint();
+                      }
+            else {
+                console.log(vm.nybaddress);
+                vm.BuildingName = vm.nybaddress.BuildingName;
+                vm.errorMessageDisplay = true;
+                vm.errorMessage = response;
+            }
+      
+          
 
         });
     }
@@ -258,6 +274,7 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
         
         deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
+                   debugger;
                    vm.nybaddress = response;
                    if (vm.nybaddress && !(vm.nybaddress.organisationName)) {
                        vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
@@ -277,9 +294,9 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
         {
             vm.dpUse[0].displayText = "Commercial";
         }
-    }
-        });
-    }
+    } 
+      
+    
     function locateDeliveryPoint(selectedItem) {
         searchApiService.GetDeliveryPointByUDPRN(selectedItem.udprn)
             .then(function (response) {
@@ -289,4 +306,9 @@ function DeliveryPointController(mapToolbarService, $scope, $mdDialog, deliveryP
                 mapFactory.locateDeliveryPoint(long, lat);
             });
     }
+
+    function onCloseDeliveryPoint() {
+        $mdDialog.hide(vm.close);
+    }
+
 };
