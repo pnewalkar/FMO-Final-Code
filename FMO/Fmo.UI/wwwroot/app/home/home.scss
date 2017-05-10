@@ -1,6 +1,6 @@
 @import './app/variables';
 
-.md-toolbar-tools > h2 span{
+.brandName{
  @extend %header-content;
 font-size: 24px;
 }

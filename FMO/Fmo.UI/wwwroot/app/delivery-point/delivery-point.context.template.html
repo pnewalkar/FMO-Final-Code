@@ -12,7 +12,7 @@
         <ul>
             <li ng-repeat="item in vm.deliveryPointList">
                 {{item.locality}}
-                <span ng-click="vm.openAlert($event, item)">
+                <span ng-click="vm.toggle(item)">
                     <md-checkbox class="dpCheckBox"></md-checkbox>
                 </span>
             </li>
@@ -22,7 +22,7 @@
     <div layout="column">
         <h1>Positioned points</h1>
         <ul>
-            <li ng-repeat="item in vm.positioneddeliveryPointList">
+            <li ng-repeat="item in vm.positionedDeliveryPointList">
                 {{item.locality}}
             </li>
         </ul>
@@ -30,7 +30,7 @@
     <div layout="column">
         <h1>3rd Party</h1>
         <ul>
-            <li ng-repeat="item in vm.positioneddeliveryPointList">
+            <li ng-repeat="item in vm.positionedThirdPartyDeliveryPointList">
                 {{item.locality}}
             </li>
         </ul>

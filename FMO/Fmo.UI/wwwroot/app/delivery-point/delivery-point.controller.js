@@ -12,7 +12,9 @@ angular
         'referenceDataConstants',
         '$timeout',
         'mapFactory',
-        'coordinatesService'
+        'coordinatesService',
+        '$state',
+        '$stateParams'
 , DeliveryPointController])
 function DeliveryPointController(
     mapToolbarService,
@@ -25,7 +27,9 @@ function DeliveryPointController(
     referenceDataConstants,
     $timeout,
     mapFactory,
-    coordinatesService
+    coordinatesService,
+    $state,
+    $stateParams
 ) {
     var vm = this;
 
@@ -47,6 +51,7 @@ function DeliveryPointController(
     vm.toggle = toggle;
     vm.alias = null;
     vm.exists = exists;
+    vm.positionedCoOrdinates = [];
     vm.setOrganisation = setOrganisation;
     vm.onCloseDeliveryPoint = onCloseDeliveryPoint;
     vm.errorMessageDisplay = false;
@@ -68,19 +73,30 @@ function DeliveryPointController(
                            }
     ];
 
-    vm.positioneddeliveryPointList = [];
+    vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
     vm.createDeliveryPoint = createDeliveryPoint;
+    vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
+
+    $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
+        if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
+            openAlert();
+    }, true);
 
     function toggle(item) {
         var idx = $filter('filter')(vm.deliveryPointList, { addressGuid: item.addressGuid });
-
-        //var idx = vm.deliveryPointList.indexOf(item);
         if (idx.length > 0) {
-            //$scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
             vm.deliveryPointList.splice(idx, 1);
-            vm.positioneddeliveryPointList.push(item);
-            item.udprn = '10897101';
-            locateDeliveryPoint(item);
+
+            var positionedDeliveryPointListTemp = [];
+
+            if (vm.positionedDeliveryPointList != null) {
+                positionedDeliveryPointListTemp = vm.positionedDeliveryPointList;
+            }
+            positionedDeliveryPointListTemp.push(item);
+            vm.positionedDeliveryPointList = positionedDeliveryPointListTemp;
+            setDP();
+            //item.udprn = '54471821';
+            //locateDeliveryPoint(item.udprn);
         }
     };
 
@@ -88,7 +104,7 @@ function DeliveryPointController(
         return list.indexOf(item) > -1;
     };
 
-    function openAlert(ev, item) {
+    function openAlert() {
         var confirm =
           $mdDialog.confirm()
             .clickOutsideToClose(true)
@@ -99,11 +115,8 @@ function DeliveryPointController(
             .cancel('No')
 
         $mdDialog.show(confirm).then(function () {
-            setDP();
-
-            vm.toggle(item);
+            vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
         }, function () {
-            alert("no");
         });
     };
 
@@ -115,7 +128,7 @@ function DeliveryPointController(
     }
 
     function savePositionedDeliveryPoint() {
-        var coordinates = coordinatesService.getCordinates();
+        var coordinates = vm.positionedCoOrdinates;
     }
 
     function querySearch(query) {
@@ -151,9 +164,42 @@ function DeliveryPointController(
                 vm.errorMessage = response;
             }
 
+            if (vm.postalAddressData.udprn) {
+                
 
+                var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber : '';
+                var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName : '';
+                var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName : '';
+                var street = vm.postalAddressData.thoroughfare != null && vm.postalAddressData.thoroughfare !== undefined ? vm.postalAddressData.thoroughfare : '';
+                var postCode = vm.postalAddressData.postcode != null && vm.postalAddressData.postcode !== undefined ? vm.postalAddressData.postcode : '';
+                var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== undefined ? vm.nybaddress.departmentName : '';
+                var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== undefined ? vm.nybaddress.organisationName : '';
+                
+                var address = buildingNumber + ' ' + buildingName + ' ' + subBuildingName + ' ' + organisationName + ' ' + departmentName + ' ' + street + ' ' + postCode;
+                var positionedThirdPartyDeliverypointObj = {
+                    locality: address, addressGuid: vm.postalAddressData.id
+                };
 
+                var positionedThirdPartyDeliveryPointListTemp = [];
+
+                if (vm.positionedThirdPartyDeliveryPointList != null) {
+                    positionedThirdPartyDeliveryPointListTemp = vm.positionedThirdPartyDeliveryPointList;
+                }
+                
+                
+                positionedThirdPartyDeliveryPointListTemp.push(positionedThirdPartyDeliverypointObj);
+
+                vm.positionedThirdPartyDeliveryPointList = positionedThirdPartyDeliveryPointListTemp;
+
+                locateDeliveryPoint(vm.postalAddressData.udprn);
+
+                $state.go("deliveryPoint", { positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList })
+            }
+            else {
+                setDP();
+            }
         });
+
     }
 
     function createDeliveryPointDTO() {
@@ -323,11 +369,10 @@ function DeliveryPointController(
 
 
     function locateDeliveryPoint(selectedItem) {
-        deliveryPointApiService.GetAddressLocation(selectedItem.udprn)
+        deliveryPointApiService.GetAddressLocation(selectedItem)
             .then(function (response) {
-                var data = response.data;
-                var lat = data.features[0].geometry.coordinates[1];
-                var long = data.features[0].geometry.coordinates[0];
+                var lat = response.features[0].geometry.coordinates[1];
+                var long = response.features[0].geometry.coordinates[0];
                 mapFactory.locateDeliveryPoint(long, lat);
             });
     }
