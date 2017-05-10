@@ -27,7 +27,7 @@
                         </div>
                     </md-virtual-repeat-container>
                 </div>               
-                <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
+                <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
                 
                 <md-input-container flex="30" ng-show="vm.display">
                     <label>Not yet Built</label>
@@ -141,7 +141,7 @@
 
                             <div layout="column" flex>
                                 <label>Organisation</label>
-                                <input ng-model="vm.nybaddress.organisationName" type="text" ng-maxlength="60" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
+                                <input ng-model="vm.nybaddress.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation(vm.nybaddress.organisationName)" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
@@ -215,13 +215,17 @@
     </md-dialog-content>
         
         <md-dialog-actions layout="row">
-            <md-button class="md-raised md-primary" flex="40" >
+            <md-button class="md-raised md-primary"  ng-click="vm.closeWindow()"    flex="40" >
                 Cancel
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(vm.disable) && !(deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40">
+          
+            <md-button ng-disabled="!(vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
                 Save
             </md-button>
+            <div ng-if="vm.errorMessageDisplay">
+              <span>{{vm.errorMessage}}</span>  
+            </div>
         </md-dialog-actions>
     </form>
 </md-dialog>

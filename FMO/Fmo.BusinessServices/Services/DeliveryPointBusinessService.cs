@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Transactions;
+using System.Web.Script.Serialization;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -147,23 +148,20 @@ namespace Fmo.BusinessServices.Services
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-
+            string addDeliveryDtoLogDetails = new JavaScriptSerializer().Serialize(addDeliveryPointDTO);
             string message = string.Empty;
             try
             {
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
                     string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
-
-                    // check for any duplicate records of the address being created (Note 3)
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO.PostalAddressDTO))
                     {
-                        message = "There is a duplicate of this Delivery Point in the system";
+                        message = Constants.DUPLICATEDELIVERYPOINT;
                     }
                     else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
                     {
-                        // check for duplicate NYB records for the address being created(Note 4)
-                        message = "This address is in the NYB file under the postcode " + postCode;
+                        message = Constants.DUPLICATENYBRECORDS + postCode;
                     }
                     else
                     {
@@ -171,17 +169,19 @@ namespace Fmo.BusinessServices.Services
                         {
                             postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
                             scope.Complete();
-                            message = "Delivery Point created successfully";
+                            message = Constants.DELIVERYPOINTCREATED;
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.loggingHelper.LogInfo(ex.ToString());
                 throw;
             }
             finally
             {
+                this.loggingHelper.LogInfo(addDeliveryDtoLogDetails);
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
