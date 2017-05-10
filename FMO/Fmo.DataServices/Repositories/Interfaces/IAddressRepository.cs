@@ -93,5 +93,12 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
         bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+
+        /// <summary>
+        /// Check For Duplicate Address With DeliveryPoints
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress</param>
+        /// <returns>bool</returns>
+        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
     }
 }

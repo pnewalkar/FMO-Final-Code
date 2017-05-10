@@ -14,16 +14,16 @@
             <div layout="row">
                 <div layout="column" flex="65">
                     <label>Search</label>
-                    <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)" ng-blur="vm.onBlur()">
+                    <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)" >
                     <div class="resultPanel" ng-show="vm.results.length>0">
                         <ul ng-repeat="item in vm.results">
                             <li ng-click="vm.OnChangeItem(item)">
-                                {{::item}}
+                                {{item}}
                             </li>
                         </ul>
                     </div>
                 </div>
-                <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
+                <i class="fa fa-search searchInputIcon" aria-hidden="true"  flex></i>
                 <md-input-container flex="30" ng-show="vm.display">
                     <label>Not yet Built</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==0">
