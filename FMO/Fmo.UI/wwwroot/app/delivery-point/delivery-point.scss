@@ -1,7 +1,7 @@
 @import './app/variables';
 
 
-.deliveryPointDialog {
+.mdDialog {
     width: width-percent(1);
 }
 
@@ -39,7 +39,7 @@ i.fa.fa-times.closeWindow {
     @include margin(100px 0px 0px 0px);    
 }
 
-.deliveryPointDialog input{
+.mdDialog input{
     @extend %body-content;
 }
 

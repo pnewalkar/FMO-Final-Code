@@ -3,12 +3,12 @@ h1 {
   font-family: Chevin_Light;
   font-size: 18px; }
 
-.resultPanel, .deliveryPointDialog input {
+.resultPanel, .mdDialog input {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
 
-.deliveryPointDialog {
+.mdDialog {
   width: 100%; }
 
 i.fa.fa-times.closeWindow {
