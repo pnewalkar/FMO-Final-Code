@@ -17,6 +17,8 @@ using Fmo.DTO;
 using Fmo.Helpers;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
+using Fmo.DTO.Model;
+using System.Data.Entity.Spatial;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -30,15 +32,23 @@ namespace Fmo.BusinessServices.Services
         private IAddressRepository postalAddressRepository = default(IAddressRepository);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private bool enableLogging = false;
 
-        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
+        public DeliveryPointBusinessService(
+            IDeliveryPointsRepository deliveryPointsRepository,
+            IAddressLocationRepository addressLocationRepository,
+            IAddressRepository postalAddressRepository,
+            ILoggingHelper loggingHelper,
+            IConfigurationHelper configurationHelper,
+            IReferenceDataCategoryRepository referenceDataCategoryRepository)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.addressLocationRepository = addressLocationRepository;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
             this.postalAddressRepository = postalAddressRepository;
+            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
@@ -144,12 +154,14 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>string</returns>
-        public string CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             string addDeliveryDtoLogDetails = new JavaScriptSerializer().Serialize(addDeliveryPointDTO);
             string message = string.Empty;
+            Guid returnGuid = new Guid(Constants.DEFAULTGUID);
+            byte[] rowVersion = null;
             try
             {
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
@@ -167,7 +179,8 @@ namespace Fmo.BusinessServices.Services
                     {
                         using (TransactionScope scope = new TransactionScope())
                         {
-                            postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            returnGuid = postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(returnGuid);
                             scope.Complete();
                             message = Constants.DELIVERYPOINTCREATED;
                         }
@@ -185,7 +198,39 @@ namespace Fmo.BusinessServices.Services
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
-            return message;
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message,  RowVersion = rowVersion };
+        }
+
+        /// <summary>
+        /// This Method is used to Update Delivery Points Co-ordinates.
+        /// </summary>
+        /// <param name="deliveryPointModelDTO">DeliveryPointModelDTO</param>
+        /// <returns>message</returns>
+        public async Task UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO)
+        {
+            string sbLocationXY = string.Format(
+                                                Constants.USRGEOMETRYPOINT,
+                                                Convert.ToString(deliveryPointModelDTO.XCoordinate),
+                                                Convert.ToString(deliveryPointModelDTO.YCoordinate));
+
+            // Convert the location from string type to geometry type
+            DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
+            using (TransactionScope scope = new TransactionScope())
+            {
+                Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.INTERNAL);
+
+                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
+                {
+                    UDPRN = deliveryPointModelDTO.UDPRN,
+                    Latitude = deliveryPointModelDTO.Latitude,
+                    Longitude = deliveryPointModelDTO.Longitude,
+                    LocationXY = spatialLocationXY,
+                    LocationProvider_GUID = locationProviderId,
+                    RowVersion = deliveryPointModelDTO.RowVersion
+                };
+
+                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+            }
         }
 
         /// <summary>

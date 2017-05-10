@@ -76,6 +76,20 @@ angular.module('deliveryPoint')
             return deferred.promise;
         };
 
+        deliveryPointApiService.UpdateDeliverypoint = function (deliveryPointModelDTO) {
+            var deferred = $q.defer();
+
+            $http.post(GlobalSettings.apiUrl + '/deliveryPoints/UpdateDeliveryPoint/', deliveryPointModelDTO).success(function (response) {
+                deferred.resolve(response);
+
+            }).error(function (err, status) {
+                console.log(err);
+                deferred.reject(err);
+            });
+
+            return deferred.promise;
+        };
+
         return deliveryPointApiService;
 
         }]);

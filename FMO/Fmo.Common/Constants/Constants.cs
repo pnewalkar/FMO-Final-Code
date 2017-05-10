@@ -158,6 +158,7 @@
 
         public const string DUPLICATENYBRECORDS = "This address is in the NYB file under the postcode ";
         public const string DELIVERYPOINTCREATED = "Delivery Point created successfully";
+        public const string INTERNAL = "Internal";
         #endregion DeliveryPoints
     }
 }

@@ -10,5 +10,6 @@ namespace Fmo.DTO.Model
     {
         public string Message { get; set; }
         public Guid ID { get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }

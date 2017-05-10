@@ -111,5 +111,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="newPoint">DbGeometry object</param>
         /// <returns>double?</returns>
         double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint);
+
+        /// <summary>
+        /// Get the delivery point row version
+        /// </summary>
+        /// <param name="id">Guid</param>
+        /// <returns>byte[]</returns>
+        byte[] GetDeliveryPointRowVersion(Guid id);
+
     }
 }

@@ -562,9 +562,10 @@
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        public bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public Guid CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             bool isPostalAddressInserted = false;
+            Guid returnGuid = new Guid(Constants.DEFAULTGUID);
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
@@ -613,6 +614,7 @@
 
                     DataContext.SaveChanges();
                     isPostalAddressInserted = true;
+                    returnGuid = objDeliveryPoint.ID;
                 }
                 catch (Exception)
                 {
@@ -620,8 +622,9 @@
                 }
             }
 
-            return isPostalAddressInserted;
+            return returnGuid;
         }
+
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
