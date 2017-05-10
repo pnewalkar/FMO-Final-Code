@@ -1,12 +1,10 @@
 //for header & action menu
-$chevin-light-font: Chevin_Light;
-$chevin-medium-font: Chevin_Medium;
+$chevin: Chevin;
 $primary-font-size: 18px;
 
 
 //for body content & others
-$pf_din-font: PF_DIN;
-$chevin_bold_ttf-font: Chevin_Bold_TTF;
+$pf-din-font: PF_DIN;
 $secondary-font-size: 16px;
 
 //colors combo:-
@@ -125,14 +123,14 @@ $red:red;
 //header-content
 %header-content{
     color: $white;
-    font-family: $chevin-light-font;
+    font-family: $chevin;
     font-size: $primary-font-size;
 }
 
 //body-content
 %body-content{
     color: $black;
-    font-family: $pf_din-font;
+    font-family: $pf-din-font;
     font-size: $secondary-font-size;
 }
 

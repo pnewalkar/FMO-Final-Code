@@ -46,45 +46,71 @@ i.fa.fa-times {
 
 /*Chevin Light Font*/
 @font-face {
-    font-family: 'Chevin_Light';
-    src:  url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot');
-    src:  url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.eot?#iefix') format('embedded-opentype')
-          url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.svg') format('svg'),
-          url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.ttf') format('truetype'),
-          url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.woff') format('woff'),
-          url('../fonts/Chevin_webfontkit/chevinstd-light-webfont.woff2') format('woff2');
+    font-family: 'Chevin';
+    src:  url('../fonts/Chevin/Chevin_Light.eot');
+    src:  url('../fonts/Chevin/Chevin_Light.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/Chevin/Chevin_Light.svg') format('svg'),
+          url('../fonts/Chevin/Chevin_Light.ttf') format('truetype'),
+          url('../fonts/Chevin/Chevin_Light.woff') format('woff'),
+          url('../fonts/Chevin/Chevin_Light.woff2') format('woff2');
+    font-weight: 300;
 }
 
 /*Chevin Medium Font*/
 @font-face {
-    font-family: 'Chevin_Medium';
-    src:  url('../fonts/Chevin_webfontkit/chevinstd-medium-webfont.eot');
-    src:  url('../fonts/Chevin_webfontkit/chevinstd-medium-webfont.eot?#iefix') format('embedded-opentype')
-          url('../fonts/Chevin_webfontkit/chevinstd-medium-webfont.svg') format('svg'),
-          url('../fonts/Chevin_webfontkit/chevinstd-medium-webfont.ttf') format('truetype'),
-          url('../fonts/Chevin_webfontkit/chevinstd-medium-webfont.woff') format('woff'),
-          url('../fonts/Chevin_webfontkit/chevinstd-medium-webfont.woff2') format('woff2');
+    font-family: 'Chevin';
+    src:  url('../fonts/Chevin/Chevin_Medium.eot');
+    src:  url('../fonts/Chevin/Chevin_Medium.eot?#iefix') format('embedded_opentype'),
+          url('../fonts/Chevin/Chevin_Medium.svg') format('svg'),
+          url('../fonts/Chevin/Chevin_Medium.ttf') format('truetype'),
+          url('../fonts/Chevin/Chevin_Medium.woff') format('woff'),
+          url('../fonts/Chevin/Chevin_Medium.woff2') format('woff2');
+    font-weight:normal;
+}
+
+/*Chevin Bold TTF Font*/
+@font-face {
+    font-family: 'Chevin';
+    src:  url('../fonts/Chevin/Chevin_Bold.eot');
+    src:  url('../fonts/Chevin/Chevin_Bold.eot?#iefix') format('embedded_opentype'),
+          url('../fonts/Chevin/Chevin_Bold.svg') format('svg'),
+          url('../fonts/Chevin/Chevin_Bold.ttf') format('truetype'),
+          url('../fonts/Chevin/Chevin_Bold.woff') format('woff'),
+          url('../fonts/Chevin/Chevin_Bold.woff2') format('woff2');
+    font-weight: bold;
 }
 
 /*PF DIN Font*/
 @font-face {
     font-family: 'PF_DIN';
-    src:  url('../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.eot');
-    src:  url('../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.eot?#iefix') format('embedded-opentype')
-          url('../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.svg') format('svg'),
-          url('../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.ttf') format('truetype'),
-          url('../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.woff') format('woff'),
-          url('../fonts/PF_DIN_webfontkit/pfdintextstd-reg-webfont.woff2') format('woff2');
+    src:  url('../fonts/PF_DIN/PF_DIN.eot');
+    src:  url('../fonts/PF_DIN/PF_DIN.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/PF_DIN/PF_DIN.svg') format('svg'),
+          url('../fonts/PF_DIN/PF_DIN.ttf') format('truetype'),
+          url('../fonts/PF_DIN/PF_DIN.woff') format('woff'),
+          url('../fonts/PF_DIN/PF_DIN.woff2') format('woff2');
+    font-weight: normal;
 }
 
-
-/*Chevin Bold TTF Font*/
+/* PF DIN BOLD */
 @font-face {
-    font-family: 'Chevin_Bold_TTF';
-    src:  url('../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.eot');
-    src:  url('../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.eot?#iefix') format('embedded-opentype')
-          url('../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.svg') format('svg'),
-          url('../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.ttf') format('truetype'),
-          url('../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.woff') format('woff'),
-          url('../fonts/Chevin_Bold_TTF_webfontkit/chevinstd-bold-webfont.woff2') format('woff2');
+    font-family: 'PF_DIN';
+    src:  url('../fonts/PF_DIN/PF_DIN_BOLD.eot');
+    src:  url('../fonts/PF_DIN/PF_DIN_BOLD.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/PF_DIN/PF_DIN_BOLD.svg') format('svg'),
+          url('../fonts/PF_DIN/PF_DIN_BOLD.ttf') format('truetype'),
+          url('../fonts/PF_DIN/PF_DIN_BOLD.woff') format('woff'),
+          url('../fonts/PF_DIN/PF_DIN_BOLD.woff2') format('woff2');
+    font-weight:bold;
+}
+
+@font-face {
+    font-family: 'PF_DIN';
+    src:  url('../fonts/PF_DIN/PF_DIN_ITALIC.eot');
+    src:  url('../fonts/PF_DIN/PF_DIN_ITALIC.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/PF_DIN/PF_DIN_ITALIC.svg') format('svg'),
+          url('../fonts/PF_DIN/PF_DIN_ITALIC.ttf') format('truetype'),
+          url('../fonts/PF_DIN/PF_DIN_ITALIC.woff') format('woff'),
+          url('../fonts/PF_DIN/PF_DIN_ITALIC.woff2') format('woff2');
+    font-style:italic;
 }
