@@ -56,6 +56,7 @@ function DeliveryPointController(
     vm.onCloseDeliveryPoint = onCloseDeliveryPoint;
     vm.errorMessageDisplay = false;
     vm.BuildingName = "";
+    vm.selectedItem = null;
     vm.deliveryPointList = [{
         locality: "BN1 Dadar",
         addressGuid: 1,
@@ -83,21 +84,8 @@ function DeliveryPointController(
     }, true);
 
     function toggle(item) {
-        var idx = $filter('filter')(vm.deliveryPointList, { addressGuid: item.addressGuid });
-        if (idx.length > 0) {
-            vm.deliveryPointList.splice(idx, 1);
-
-            var positionedDeliveryPointListTemp = [];
-
-            if (vm.positionedDeliveryPointList != null) {
-                positionedDeliveryPointListTemp = vm.positionedDeliveryPointList;
-            }
-            positionedDeliveryPointListTemp.push(item);
-            vm.positionedDeliveryPointList = positionedDeliveryPointListTemp;
-            setDP();
-            //item.udprn = '54471821';
-            //locateDeliveryPoint(item.udprn);
-        }
+        vm.selectedItem = item;
+        setDP();
     };
 
     function exists(item, list) {
@@ -115,7 +103,23 @@ function DeliveryPointController(
             .cancel('No')
 
         $mdDialog.show(confirm).then(function () {
-            vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
+            var idx = $filter('filter')(vm.deliveryPointList, { addressGuid: vm.selectedItem.addressGuid });
+            if (idx.length > 0) {
+                vm.deliveryPointList.splice(idx, 1);
+
+                var positionedDeliveryPointListTemp = [];
+
+                if (vm.positionedDeliveryPointList != null) {
+                    positionedDeliveryPointListTemp = vm.positionedDeliveryPointList;
+                }
+                positionedDeliveryPointListTemp.push(vm.selectedItem);
+                vm.positionedDeliveryPointList = positionedDeliveryPointListTemp;
+                vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
+                var shape = mapToolbarService.getShapeForButton('point');
+                $scope.$emit('mapToolChange', {
+                    "name": 'select', "shape": shape, "enabled": true
+                });
+            }
         }, function () {
         });
     };
