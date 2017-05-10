@@ -13,17 +13,22 @@
            <md-dialog-content layout-padding> 
             <div layout="row">
                 <div layout="column" flex="65">
-                    <label>Search</label>
-                    <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)" ng-blur="vm.onBlur()">
-                    <div class="resultPanel" ng-show="vm.results.length>0">
-                        <ul ng-repeat="item in vm.results">
-                            <li ng-click="vm.OnChangeItem(item)">
-                                {{::item}}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                    <md-input-container>
+                        <label>Search</label>
+                        <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)">
+                    </md-input-container>
+                    <md-virtual-repeat-container class="resultPanel" ng-show="vm.results.length>0">
+                        <div md-virtual-repeat="item in vm.results" flex>
+                            <ul>
+                                <li ng-click="vm.OnChangeItem(item)">
+                                    {{item}}
+                                </li>
+                            </ul>
+                        </div>
+                    </md-virtual-repeat-container>
+                </div>               
                 <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.getPostalAddress(vm.searchText)" flex></i>
+                
                 <md-input-container flex="30" ng-show="vm.display">
                     <label>Not yet Built</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==0">
@@ -36,20 +41,32 @@
                     </md-select>
                 </md-input-container>
             </div>
+               
             <div layout="column" ng-show="vm.display">
-                <label>Locality<sub>*</sub></label>
-                <input ng-model="vm.postalAddressData.dependentLocality" type="text" disabled>
+                <md-input-container>
+                    <label>Locality<sub>*</sub></label>
+                    <input ng-model="vm.postalAddressData.dependentLocality" type="text" disabled>
+                </md-input-container>
             </div>
+               
             <div layout="column" ng-show="vm.display">
-                <label>Street<sub>*</sub></label>
-                <input ng-model="vm.postalAddressData.thoroughfare" type="text" disabled>
+                <md-input-container>
+                    <label>Street<sub>*</sub></label>
+                    <input ng-model="vm.postalAddressData.thoroughfare" type="text" disabled>
+                </md-input-container>
             </div>
+               
             <div layout="row" ng-show="vm.display">
                 <div layout="column" flex="30">
-                    <label>Postcode<sub>*</sub></label>
-                    <input ng-model="vm.postalAddressData.postcode" type="text" disabled>
+                    <md-input-container>
+                        <label>Postcode<sub>*</sub></label>
+                        <input ng-model="vm.postalAddressData.postcode" type="text" disabled>
+                    </md-input-container>
                 </div>
+                
+                
                 <span flex="5"></span>
+                
                 <md-input-container flex>
                     <label>Route<sub>*</sub></label>
                     <md-select ng-model="vm.postalAddressData.routeDetails" select-clear>
@@ -58,10 +75,14 @@
                         </md-option>
                     </md-select>
                 </md-input-container>
+                
                 <span flex="5"></span>
+                
                 <div layout="column" flex="30">
-                    <label>DP Use<sub>*</sub></label>
-                    <input type="text" ng-model="vm.dpUse[0].displayText">
+                    <md-input-container>
+                        <label>DP Use<sub>*</sub></label>
+                        <input type="text" ng-model="vm.dpUse[0].displayText">
+                    </md-input-container>
                 </div>
             </div>
             <div layout="row" ng-show="vm.display">
