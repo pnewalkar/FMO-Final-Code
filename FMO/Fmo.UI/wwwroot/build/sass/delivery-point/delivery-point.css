@@ -12,6 +12,7 @@ h1 {
   width: 100%; }
 
 i.fa.fa-times.closeWindow {
+  color: #ffffff;
   position: absolute;
   top: 5px;
   cursor: default;
@@ -21,13 +22,8 @@ i.fa.fa-times.closeWindow {
   margin: 20px 0px 0px 5px; }
 
 .resultPanel {
-  background-color: #ffffff;
-  width: 636px;
-  height: 100px;
-  top: 120px;
-  overflow-y: auto; }
-  .resultPanel:hover {
-    background-color: none; }
+  height: 45px;
+  margin-top: -44px; }
 
 .deliveryDialog {
   margin: 0px 10px 0px 0px; }
