@@ -5,6 +5,8 @@ using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Interface;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Fmo.Common.Constants;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -43,6 +45,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="searchText">searchText</param>
         /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("SearchAddressdetails")]
         public async Task<List<string>> SearchAddressdetails(string searchText)
         {
@@ -54,6 +57,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="postCode">postcode</param>
         /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("GetAddressByPostCode")]
         public async Task<PostalAddressDTO> GetAddressByPostCode(string postCode)
         {
