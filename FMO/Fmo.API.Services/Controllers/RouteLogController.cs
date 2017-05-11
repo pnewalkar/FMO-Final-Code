@@ -66,5 +66,27 @@ namespace Fmo.API.Services.Controllers
         {
             return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
         }
+
+        /// <summary>
+        /// Fetch Delivery Route details by route GUID
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("FetchRouteDetailsByGUID")]
+        public DeliveryRouteDTO FetchRouteDetailsByGUID(Guid routeId)
+        {
+            return new DeliveryRouteDTO
+            {
+                RouteName = "CedarCraft Road",
+                RouteNumber = "6",
+                Totaltime = "1.50 mins",
+                Aliases = 4,
+                Blocks = 6,
+                PairedRoute = "2001",
+                Method = "Shared Van",
+                DPs = 20,
+                BusinessDPs = 12,
+                ResidentialDPs = 8
+            };
+        }
     }
 }

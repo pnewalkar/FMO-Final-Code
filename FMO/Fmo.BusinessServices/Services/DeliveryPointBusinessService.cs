@@ -181,6 +181,7 @@ namespace Fmo.BusinessServices.Services
                         {
                             CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
                             rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
+                            returnGuid = createDeliveryPointModelDTO.ID;
                             scope.Complete();
                             if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
                             {
@@ -221,24 +222,21 @@ namespace Fmo.BusinessServices.Services
                                                 Convert.ToString(deliveryPointModelDTO.YCoordinate));
 
             DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
-            using (TransactionScope scope = new TransactionScope())
+
+            Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.INTERNAL);
+
+            DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
             {
-                Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.INTERNAL);
+                ID = deliveryPointModelDTO.ID,
+                UDPRN = deliveryPointModelDTO.UDPRN,
+                Latitude = deliveryPointModelDTO.Latitude,
+                Longitude = deliveryPointModelDTO.Longitude,
+                LocationXY = spatialLocationXY,
+                LocationProvider_GUID = locationProviderId,
+                RowVersion = deliveryPointModelDTO.RowVersion
+            };
 
-                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
-                {
-                    ID = deliveryPointModelDTO.ID,
-                    UDPRN = deliveryPointModelDTO.UDPRN,
-                    Latitude = deliveryPointModelDTO.Latitude,
-                    Longitude = deliveryPointModelDTO.Longitude,
-                    LocationXY = spatialLocationXY,
-                    LocationProvider_GUID = locationProviderId,
-                    RowVersion = deliveryPointModelDTO.RowVersion
-                };
-
-                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
-                scope.Complete();
-            }
+            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
         }
 
         /// <summary>
