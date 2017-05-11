@@ -1,5 +1,5 @@
 angular.module('routeLog')
-.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', '$mdDialog', 'items', RouteLogController])
+.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', '$mdDialog', 'items', RouteLogController]);
 function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService, $mdDialog, items) {
     var vm = this;
     vm.loadSelectionType = loadSelectionType();
@@ -40,7 +40,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         routeLogAPIService.getSelectionType().then(function (response) {
             vm.RouteselectionTypeObj = response;
             angular.forEach(vm.RouteselectionTypeObj, function (value, key) {
-                if (value.displayText == "Single")
+                if (value.displayText === "Single")
                     vm.selectedRouteSelectionObj = value;
             });
         });
@@ -85,7 +85,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            if (vm.selectedRouteSelectionObj.displayText == "Single") {
+            if (vm.selectedRouteSelectionObj.displayText === "Single") {
                 vm.multiSelectiondeliveryRoute = null;
                 vm.deliveryRoute = response;
             } else {
@@ -101,6 +101,6 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function clearSearchTerm() {
         vm.searchTerm = '';
-    };
+    }
 
 }

@@ -37,6 +37,14 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsNotNull(actualResult);
         }
 
+        [Test]
+        public void Test_GetDeliveryPointRowVersion()
+        {
+            DeliveryPointRowVersionSetup();
+            var actualResult = testCandidate.GetDeliveryPointRowVersion(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
+            Assert.IsNotNull(actualResult);
+        }
+
         protected override void OnSetup()
         {
             unit1Guid = Guid.NewGuid();
@@ -81,6 +89,31 @@ namespace Fmo.DataServices.Tests.Repositories
             mockFmoDbContext.Setup(x => x.UnitLocations).Returns(mockDeliveryPointRepository2.Object);
             mockFmoDbContext.Setup(c => c.UnitLocations.AsNoTracking()).Returns(mockDeliveryPointRepository2.Object);
             mockDeliveryPointRepository2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointRepository2.Object);
+            mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
+            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
+        }
+
+        protected void DeliveryPointRowVersionSetup()
+        {
+            var deliveryPoint = new List<DeliveryPoint>()
+            {
+               new DeliveryPoint()
+               {
+                   ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                   RowVersion = BitConverter.GetBytes(1)
+               }
+            };
+
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
+
+            var mockDeliveryPointRepository = MockDbSet(deliveryPoint);
+            mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFmoDbContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointRepository.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointRepository.Object);
+            mockDeliveryPointRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointRepository.Object);
+
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
             testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);

@@ -1,7 +1,7 @@
 ﻿
 angular.module('simulation')
         .service('simulationBusinessService', ['simulationAPIService',
-                                                simulationBusinessService])
+                                                simulationBusinessService]);
 function simulationBusinessService(simulationAPIService) {
     var vm = this;
     vm.Test = "ABC";
@@ -13,7 +13,7 @@ function simulationBusinessService(simulationAPIService) {
         loadRouteLogStatus: loadRouteLogStatus,
         loadScenario: loadScenario,
         loadDeliveryRoute: loadDeliveryRoute
-    }
+    };
 
     function loadRouteLogStatus()
     {

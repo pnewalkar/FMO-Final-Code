@@ -34,5 +34,12 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// </summary>
         /// <returns>List<ReferenceDataCategoryDTO></returns>
         List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList();
+
+        /// <summary>
+        /// Gets the name of the reference data categories by category.
+        /// </summary>
+        /// <param name="categoryNames">The category names.</param>
+        /// <returns></returns>
+        List<ReferenceDataCategoryDTO> GetReferenceDataCategoriesByCategoryNames(List<string> categoryNames);
     }
 }

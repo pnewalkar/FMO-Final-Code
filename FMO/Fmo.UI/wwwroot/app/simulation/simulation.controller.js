@@ -1,5 +1,5 @@
 ﻿angular.module('simulation')
-.controller('SimulationController', ['$scope', '$state', '$stateParams', 'simulationBusinessService', 'simulationAPIService', SimulationController])
+.controller('SimulationController', ['$scope', '$state', '$stateParams', 'simulationBusinessService', 'simulationAPIService', SimulationController]);
 function SimulationController($scope, $state, $stateParams, simulationBusinessService, simulationAPIService) {
 
     var vm = this;
