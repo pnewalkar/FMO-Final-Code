@@ -19,7 +19,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
         else {
             var userName = getParameterValues('username');
             vm.userdata = "username=" + userName + "&unitguid=" + unitGuid;
-            if (userName === undefined) {
+            if (angular.isUndefined(userName)) {
                 if (aValue) {
                     return;
                 }
@@ -46,7 +46,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
                 sessionStorage.setItem("roleAccessData", JSON.stringify((response.roleActions)));
                 if (unitGuid) {
                     window.location.href = GlobalSettings.indexUrl;
-                } else if (response.access_token || response.access_token !== undefined) {
+                } else if (response.access_token || angular.isDefined(response.access_token)) {
                     window.location.href = GlobalSettings.indexUrl;
                 }
             }
