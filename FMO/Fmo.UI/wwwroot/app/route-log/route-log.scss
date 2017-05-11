@@ -19,7 +19,7 @@ table{
     border-collapse:collapse;
 }
 
-td{
+#table_wrapper td{
     @include border-bottom(1px solid $black);
     @include padding(1px 5px 1px 5px);
     border-right:1px solid black;
@@ -68,9 +68,9 @@ md-dialog h2{
     height: height-percent(1);
 }
 
-.routeSelect {
+/*.routeSelect {
     @include width(280px);
-  }
+  }*/
 
 .routeSelectSearch {
     width: width-percent(1.03);
@@ -110,3 +110,15 @@ span.closeRouteWindow {
 .logTable{
     margin-bottom:55px;
 }
+
+.routeDetailsList{
+    border:1px solid black;
+}
+
+.routeDetailsItem{
+    border-right:1px solid black;
+}
+.routeGenerate{
+    margin-left: 20px;
+}
+

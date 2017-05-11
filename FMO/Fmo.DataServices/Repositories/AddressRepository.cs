@@ -254,7 +254,7 @@
                 string postCode = string.Empty;
                 Guid nybAddressID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking()
                                 .Where(n => n.AddressType_GUID == nybAddressID);
 
                 if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
@@ -293,12 +293,75 @@
                 }
 
                 var address = postalAddress.SingleOrDefault();
-                if (address != null && address.Postcode != address.Postcode)
+                if (address != null && address.Postcode != objPostalAddress.Postcode)
                 {
                     postCode = address.Postcode;
                 }
 
                 return postCode;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Check For Duplicate Address With DeliveryPoints
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress</param>
+        /// <returns>bool</returns>
+        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        {
+            try
+            {
+                bool isDuplicate = false;
+
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                                .Where(n => n.Postcode == objPostalAddress.Postcode);
+
+                if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
+                {
+                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (objPostalAddress.BuildingNumber != null)
+                {
+                    postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
+                {
+                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
+                {
+                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
+                {
+                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
+                {
+                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
+                {
+                    postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                var address = postalAddress.SingleOrDefault();
+                if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
+                {
+                    isDuplicate = true;
+                }
+
+                return isDuplicate;
             }
             catch (Exception)
             {
@@ -499,9 +562,10 @@
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        public bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public Guid CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             bool isPostalAddressInserted = false;
+            Guid returnGuid = new Guid(Constants.DEFAULTGUID);
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
@@ -550,6 +614,7 @@
 
                     DataContext.SaveChanges();
                     isPostalAddressInserted = true;
+                    returnGuid = objDeliveryPoint.ID;
                 }
                 catch (Exception)
                 {
@@ -557,8 +622,9 @@
                 }
             }
 
-            return isPostalAddressInserted;
+            return returnGuid;
         }
+
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>

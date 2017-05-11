@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Transactions;
+using System.Web.Script.Serialization;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -16,6 +17,8 @@ using Fmo.DTO;
 using Fmo.Helpers;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
+using Fmo.DTO.Model;
+using System.Data.Entity.Spatial;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -29,15 +32,23 @@ namespace Fmo.BusinessServices.Services
         private IAddressRepository postalAddressRepository = default(IAddressRepository);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private bool enableLogging = false;
 
-        public DeliveryPointBusinessService(IDeliveryPointsRepository deliveryPointsRepository, IAddressLocationRepository addressLocationRepository, IAddressRepository postalAddressRepository, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
+        public DeliveryPointBusinessService(
+            IDeliveryPointsRepository deliveryPointsRepository,
+            IAddressLocationRepository addressLocationRepository,
+            IAddressRepository postalAddressRepository,
+            ILoggingHelper loggingHelper,
+            IConfigurationHelper configurationHelper,
+            IReferenceDataCategoryRepository referenceDataCategoryRepository)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.addressLocationRepository = addressLocationRepository;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
             this.postalAddressRepository = postalAddressRepository;
+            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
@@ -143,49 +154,83 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>string</returns>
-        public string CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-
+            string addDeliveryDtoLogDetails = new JavaScriptSerializer().Serialize(addDeliveryPointDTO);
             string message = string.Empty;
+            Guid returnGuid = new Guid(Constants.DEFAULTGUID);
+            byte[] rowVersion = null;
             try
             {
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
                     string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
-
-                    // check for any duplicate records of the address being created (Note 3)
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.GetPostalAddress(addDeliveryPointDTO.PostalAddressDTO) != null)
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO.PostalAddressDTO))
                     {
-                        message = "There is a duplicate of this Delivery Point in the system";
+                        message = Constants.DUPLICATEDELIVERYPOINT;
                     }
                     else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
                     {
-                        // check for duplicate NYB records for the address being created(Note 4)
-                        message = "This address is in the NYB file under the postcode " + postCode;
+                        message = Constants.DUPLICATENYBRECORDS + postCode;
                     }
                     else
                     {
                         using (TransactionScope scope = new TransactionScope())
                         {
-                            postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            returnGuid = postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(returnGuid);
                             scope.Complete();
-                            message = "Delivery Point created successfully";
+                            message = Constants.DELIVERYPOINTCREATED;
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.loggingHelper.LogInfo(ex.ToString());
                 throw;
             }
             finally
             {
+                this.loggingHelper.LogInfo(addDeliveryDtoLogDetails);
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
-            return message;
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message,  RowVersion = rowVersion };
+        }
+
+        /// <summary>
+        /// This Method is used to Update Delivery Points Co-ordinates.
+        /// </summary>
+        /// <param name="deliveryPointModelDTO">DeliveryPointModelDTO</param>
+        /// <returns>message</returns>
+        public async Task UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO)
+        {
+            string sbLocationXY = string.Format(
+                                                Constants.USRGEOMETRYPOINT,
+                                                Convert.ToString(deliveryPointModelDTO.XCoordinate),
+                                                Convert.ToString(deliveryPointModelDTO.YCoordinate));
+
+            // Convert the location from string type to geometry type
+            DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
+            using (TransactionScope scope = new TransactionScope())
+            {
+                Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.INTERNAL);
+
+                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
+                {
+                    UDPRN = deliveryPointModelDTO.UDPRN,
+                    Latitude = deliveryPointModelDTO.Latitude,
+                    Longitude = deliveryPointModelDTO.Longitude,
+                    LocationXY = spatialLocationXY,
+                    LocationProvider_GUID = locationProviderId,
+                    RowVersion = deliveryPointModelDTO.RowVersion
+                };
+
+                await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+            }
         }
 
         /// <summary>

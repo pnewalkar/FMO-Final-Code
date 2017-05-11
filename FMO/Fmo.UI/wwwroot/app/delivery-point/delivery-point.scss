@@ -1,11 +1,12 @@
 @import './app/variables';
 
 
-.deliveryPointDialog {
+.mdDialog {
     width: width-percent(1);
 }
 
 i.fa.fa-times.closeWindow {
+    @include font-color($white);
     @include position(absolute);
     @include top(5px);
     @include cursor(default);
@@ -18,11 +19,8 @@ i.fa.fa-times.closeWindow {
 }
 
 .resultPanel{
-    @include background($white,none);
-    width: 636px;
     height: 100px;
-    @include top(120px);
-    overflow-y: auto;
+    margin-top: -44px;
 } 
 
 .resultPanel {
@@ -41,7 +39,7 @@ i.fa.fa-times.closeWindow {
     @include margin(100px 0px 0px 0px);    
 }
 
-.deliveryPointDialog input{
+.mdDialog input{
     @extend %body-content;
 }
 
@@ -63,9 +61,6 @@ fieldset{
     padding: 5px;
 }
 
-.addressRow{
-    margin-bottom: 10px;
-}
 
 .aliasinput{
     margin-bottom: 5px;

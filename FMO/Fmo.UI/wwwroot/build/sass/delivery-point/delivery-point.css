@@ -1,17 +1,18 @@
 h1 {
   color: #ffffff;
-  font-family: Chevin_Medium;
+  font-family: Chevin_Light;
   font-size: 18px; }
 
-.resultPanel, .deliveryPointDialog input {
+.resultPanel, .mdDialog input {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
 
-.deliveryPointDialog {
+.mdDialog {
   width: 100%; }
 
 i.fa.fa-times.closeWindow {
+  color: #ffffff;
   position: absolute;
   top: 5px;
   cursor: default;
@@ -21,13 +22,8 @@ i.fa.fa-times.closeWindow {
   margin: 20px 0px 0px 5px; }
 
 .resultPanel {
-  background-color: #ffffff;
-  width: 636px;
   height: 100px;
-  top: 120px;
-  overflow-y: auto; }
-  .resultPanel:hover {
-    background-color: none; }
+  margin-top: -44px; }
 
 .deliveryDialog {
   margin: 0px 10px 0px 0px; }
@@ -50,9 +46,6 @@ md-input-container {
 fieldset {
   border: 2px solid black;
   padding: 5px; }
-
-.addressRow {
-  margin-bottom: 10px; }
 
 .aliasinput {
   margin-bottom: 5px; }

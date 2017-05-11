@@ -35,7 +35,7 @@ angular.module('deliveryPoint')
 
             var deferred = $q.defer();
 
-            $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetAddressLocationByUDPRN?udprn=' + udprn).success(function (response) {
+            $http.get(GlobalSettings.apiUrl + '/addresslocation/GetAddressLocationByUDPRN?udprn=' + udprn).success(function (response) {
                 deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -66,6 +66,20 @@ angular.module('deliveryPoint')
             var deferred = $q.defer();
 
             $http.post(GlobalSettings.apiUrl + '/deliveryPoints/CreateDeliveryPoint/', addDeliveryPointDTO).success(function (response) {
+                deferred.resolve(response);
+
+            }).error(function (err, status) {
+                console.log(err);
+                deferred.reject(err);
+            });
+
+            return deferred.promise;
+        };
+
+        deliveryPointApiService.UpdateDeliverypoint = function (deliveryPointModelDTO) {
+            var deferred = $q.defer();
+
+            $http.post(GlobalSettings.apiUrl + '/deliveryPoints/UpdateDeliveryPoint/', deliveryPointModelDTO).success(function (response) {
                 deferred.resolve(response);
 
             }).error(function (err, status) {

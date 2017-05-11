@@ -2,6 +2,7 @@
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
@@ -64,9 +65,22 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Route("CreateDeliveryPoint")]
         [HttpPost]
-        public string CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
         {
             return businessService.CreateDeliveryPoint(deliveryPointDTO);
+        }
+
+
+        /// <summary>
+        /// Update delivery point
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO</param>
+        /// <returns></returns>
+        [Route("UpdateDeliveryPoint")]
+        [HttpPost]
+        public void UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDTO)
+        {
+            businessService.UpdateDeliveryPointLocation(deliveryPointModelDTO);
         }
     }
 }
