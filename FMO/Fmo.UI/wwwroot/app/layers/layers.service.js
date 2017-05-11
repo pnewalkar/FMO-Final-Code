@@ -25,7 +25,7 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
                 vm.ungrouped.push(layer);         
             }
             else{
-                if (vm.groupNames[layer.group.toString()] === undefined) {
+                if (angular.isUndefined(vm.groupNames[layer.group.toString()])) {
                     var id = vm.groups.length;
                     vm.groupNames[layer.group.toString()] = id;
                     vm.groups[id] = { name: layer.group.toString(), layers: [] };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
 using Fmo.Common.Interface;
@@ -27,6 +28,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private AddDeliveryPointDTO addDeliveryPointDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
         private List<PostalAddressDTO> postalAddressesDTO;
+        private DeliveryPointModelDTO deliveryPointModelDTO;
 
         [Test]
         public void Test_GetDeliveryPoints()
@@ -53,8 +55,6 @@ namespace Fmo.BusinessServices.Tests.Services
             var coordinates = testCandidate.GetDeliveryPointByUDPRN(udprn);
             mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>()), Times.Once);
             Assert.IsNotNull(coordinates);
-
-            // Assert.AreEqual(lstDeliveryPointDTO, coordinates);
         }
 
         [Test]
@@ -68,9 +68,26 @@ namespace Fmo.BusinessServices.Tests.Services
         [Test]
         public void Test_CreateDeliveryPoint_Duplicate()
         {
+            mockAddressRepository.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(true);
+            var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Message == "There is a duplicate of this Delivery Point in the system");
+        }
+
+        [Test]
+        public void Test_CreateDeliveryPoint_Duplicate_WithPostCode()
+        {
+            mockAddressRepository.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(false);
             var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Message == "This address is in the NYB file under the postcode 123");
+        }
+
+        [Test]
+        public void Test_UpdateDeliveryPointLocation()
+        {
+            var result = testCandidate.UpdateDeliveryPointLocation(deliveryPointModelDTO);
+            Assert.IsNotNull(result);
         }
 
         protected override void OnSetup()
@@ -153,9 +170,22 @@ namespace Fmo.BusinessServices.Tests.Services
                 DeliveryPointDTO = deliveryPointDTO
             };
 
+            deliveryPointModelDTO = new DeliveryPointModelDTO()
+            {
+                ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                XCoordinate = 12,
+                YCoordinate = 10,
+                UDPRN = 123,
+                Latitude = 1,
+                Longitude = 2,
+                RowVersion = BitConverter.GetBytes(1)
+            };
+
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
             mockAddressRepository.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns("123");
             mockAddressRepository.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
+            referenceDataCategoryRepository.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
+            mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockAddressRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataCategoryRepository.Object);
         }
     }

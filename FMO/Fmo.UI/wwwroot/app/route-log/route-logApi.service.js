@@ -11,8 +11,9 @@ function routeLogAPIService($http, $q, GlobalSettings) {
         getSelectionType: getSelectionType,
         getStatus: getStatus,
         getScenario: getScenario,
-        getRoutes: getRoutes
-    };
+        getRoutes: getRoutes,
+        getRouteDetailsByGUID: getRouteDetailsByGUID
+    }
 
     function getSelectionType() {
         var deferred = $q.defer();
@@ -64,5 +65,19 @@ function routeLogAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    }
+    };
+
+    function getRouteDetailsByGUID(routeId) {
+        var deferred = $q.defer();
+
+        $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchRouteDetailsByGUID?routeId=' + routeId).success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+            console.log(err);
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
 }

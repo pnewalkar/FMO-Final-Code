@@ -8,6 +8,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.selectionTypeChange = selectionTypeChange;
+    vm.deliveryRouteChange = deliveryRouteChange;
 
     vm.clearSearchTerm = clearSearchTerm;
     vm.routeChange = routeChange;
@@ -17,7 +18,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.isDeliveryRouteDisabled = true;
     vm.selectedDeliveryRoute;
     vm.deliveryRoute = null;
-    vm.selectedVegetables;
+    vm.selectedRoute;
     vm.searchTerm;
     vm.isShowMultiSelectionRoute = false;
     vm.closeWindow = closeWindow;
@@ -30,7 +31,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         var type = vm.selectedRouteSelectionObj;
         vm.selectedRouteStatusObj = null;
         vm.selectedRouteScenario = null;
-        vm.selectedVegetables = null;
+        vm.selectedRoute = null;
         vm.isSelectionType = false;
         vm.isRouteScenarioDisabled = true;
         vm.isDeliveryRouteDisabled = true;
@@ -77,7 +78,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
                 vm.selectedRouteScenario = null;
                 vm.isSelectionType = true;
                 //vm.isRouteScenarioDisabled = true;
-                vm.selectedVegetables = null;
+                vm.selectedRoute = null;
                 vm.isDeliveryRouteDisabled = true;
                 vm.isShowMultiSelectionRoute = false;
             }
@@ -103,4 +104,10 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         vm.searchTerm = '';
     }
 
+    function deliveryRouteChange() {
+        //alert(vm.selectedVegetables);
+        routeLogAPIService.getRouteDetailsByGUID(vm.selectedVegetables.id).then(function (response) {
+            vm.routeDetails = response;
+        });
+    }
 }
