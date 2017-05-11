@@ -176,7 +176,7 @@ function DeliveryPointController(
                 vm.onCloseDeliveryPoint();
             }
             else {
-                console.log(vm.nybaddress);
+              
                 vm.errorMessageDisplay = true;
                 vm.errorMessage = response.message;
             }
