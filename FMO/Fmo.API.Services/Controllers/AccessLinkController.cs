@@ -28,7 +28,6 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public string GetAccessLinks(string boundaryBox)
         {
-            return "";
             return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
         }
 
