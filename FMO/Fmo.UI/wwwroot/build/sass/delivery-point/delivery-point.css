@@ -1,34 +1,14 @@
-h1 {
-  color: #ffffff;
-  font-family: Chevin_Light;
-  font-size: 18px; }
-
-.resultPanel, .deliveryPointDialog input {
+.resultPanel {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
-
-.deliveryPointDialog {
-  width: 100%; }
-
-i.fa.fa-times.closeWindow {
-  color: #ffffff;
-  position: absolute;
-  top: 5px;
-  cursor: default;
-  right: 10px; }
 
 .searchInputIcon {
   margin: 20px 0px 0px 5px; }
 
 .resultPanel {
-  height: 45px;
-  margin-top: -44px; }
-
-.deliveryDialog {
-  margin: 0px 10px 0px 0px; }
-
-.fa {
+  margin: -44px 0px 0px 0px;
+  height: 100px;
   cursor: pointer; }
 
 .dialogAction {
@@ -37,22 +17,13 @@ i.fa.fa-times.closeWindow {
 .dpCheckBox {
   float: right; }
 
-h1 {
-  color: #2a2a2d; }
-
-md-input-container {
-  margin-top: 8px; }
-
 fieldset {
-  border: 2px solid black;
-  padding: 5px; }
-
-.addressRow {
-  margin-bottom: 10px; }
+  padding: 5px 5px 5px 5px;
+  border: 2px solid #2a2a2d; }
 
 .aliasinput {
-  margin-bottom: 5px; }
+  margin: 0px 0px 5px 0px; }
 
 .aliasBox {
-  height: 100px;
+  height: 150px;
   overflow-y: auto; }

@@ -87,14 +87,14 @@
             Assert.IsTrue(actualResultCount == 7);
         }
 
-        [Test]
-        public void FetchDeliveryRouteDetailsforPDF()
-        {
-            SetUp();
-            var actualResultCount = testCandidate.FetchDeliveryRouteDetailsforPDF(deliveryRouteId,operationalObjectTypeForDP,operationalObjectTypeForDPCommercial,operationalObjectTypeForDPResidential);
-            Assert.IsNotNull(actualResultCount);
-            Assert.IsTrue(actualResultCount.Count == 1);
-        }
+        //[Test]
+        //public void FetchDeliveryRouteDetailsforPDF()
+        //{
+        //    SetUp();
+        //    var actualResultCount = testCandidate.FetchDeliveryRouteDetailsforPDF(deliveryRouteId,operationalObjectTypeForDP,operationalObjectTypeForDPCommercial,operationalObjectTypeForDPResidential);
+        //    Assert.IsNotNull(actualResultCount);
+        //    Assert.IsTrue(actualResultCount.Count == 1);
+        //}
 
         protected override void OnSetup()
         {

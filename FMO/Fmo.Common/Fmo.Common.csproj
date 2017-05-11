@@ -128,6 +128,7 @@
       <DependentUpon>FmoMessagesConstants.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="SqlGeometry\SqlGeometry.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="TestSupport\RepositoryFixtureBase.cs" />
     <Compile Include="TestSupport\TestFixtureBase.cs" />

@@ -78,7 +78,7 @@ namespace Fmo.DataServices.Repositories
         public List<ReferenceDataDTO> RouteLogSelectionType()
         {
             List<ReferenceDataDTO> lstReferenceDt = null;
-            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("Route Log Selection Type", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("UI_RouteLogSearch_SelectionType", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
             {
                 lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
@@ -95,6 +95,25 @@ namespace Fmo.DataServices.Repositories
         {
             Guid statusId = Guid.Empty;
             var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).ToList();
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();
+                cfg.CreateMap<ReferenceData, ReferenceDataDTO>();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
+            return referenceDataCategoryListDto;
+        }
+
+        /// <summary>
+        /// Gets the name of the reference data categories by category.
+        /// </summary>
+        /// <param name="categoryNames">The category names.</param>
+        /// <returns>List ReferenceDataCategoryDTO</returns>
+        public List<ReferenceDataCategoryDTO> GetReferenceDataCategoriesByCategoryNames(List<string> categoryNames)
+        {
+            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(m => categoryNames.Contains(m.CategoryName.Trim())).ToList();
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();

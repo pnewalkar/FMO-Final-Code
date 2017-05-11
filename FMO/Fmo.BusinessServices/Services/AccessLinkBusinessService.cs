@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Reflection;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -133,6 +134,29 @@ namespace Fmo.BusinessServices.Services
             }
 
             return coordinates;
+        }
+
+        /// <summary>
+        /// Create auto access link creation after delivery point creation.
+        /// </summary>
+        /// <param name="operationalObject_GUID">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        public bool CreateAccessLink(System.Guid operationalObject_GUID)
+        {
+            bool isAccessLinkCreated = false;
+            try
+            {
+                if (operationalObject_GUID != null)
+                {
+                    isAccessLinkCreated = accessLinkRepository.CreateAutoAccessLink(operationalObject_GUID);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return isAccessLinkCreated;
         }
     }
 }

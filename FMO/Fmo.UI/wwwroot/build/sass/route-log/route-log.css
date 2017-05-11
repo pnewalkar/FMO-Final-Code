@@ -28,7 +28,7 @@ table {
   width: 100%;
   border-collapse: collapse; }
 
-td {
+#table_wrapper td {
   border-bottom: 1px solid #2a2a2d;
   padding: 1px 5px 1px 5px;
   border-right: 1px solid black; }
@@ -71,9 +71,9 @@ md-dialog h2 {
   width: 58.82353%;
   height: 100%; }
 
-.routeSelect {
-  width: 280px; }
-
+/*.routeSelect {
+    @include width(280px);
+  }*/
 .routeSelectSearch {
   width: 97.08738%;
   background-color: none;
@@ -104,3 +104,12 @@ span.closeRouteWindow {
 
 .logTable {
   margin-bottom: 55px; }
+
+.routeDetailsList {
+  border: 1px solid black; }
+
+.routeDetailsItem {
+  border-right: 1px solid black; }
+
+.routeGenerate {
+  margin-left: 20px; }

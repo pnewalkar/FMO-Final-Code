@@ -1,5 +1,5 @@
-﻿angular.module('routeLog')
-.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', '$mdDialog', 'items', RouteLogController])
+angular.module('routeLog')
+.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', '$mdDialog', 'items', RouteLogController]);
 function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService, $mdDialog, items) {
     var vm = this;
     vm.loadSelectionType = loadSelectionType();
@@ -8,6 +8,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.selectionTypeChange = selectionTypeChange;
+    vm.deliveryRouteChange = deliveryRouteChange;
 
     vm.clearSearchTerm = clearSearchTerm;
     vm.routeChange = routeChange;
@@ -40,13 +41,12 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         routeLogAPIService.getSelectionType().then(function (response) {
             vm.RouteselectionTypeObj = response;
             angular.forEach(vm.RouteselectionTypeObj, function (value, key) {
-                if (value.displayText == "Single")
+                if (value.displayText === "Single")
                     vm.selectedRouteSelectionObj = value;
             });
         });
     }
     function selectedRouteStatus() {
-        debugger
         loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.id);
         vm.isRouteScenarioDisabled = false;
     }
@@ -86,7 +86,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            if (vm.selectedRouteSelectionObj.displayText == "Single") {
+            if (vm.selectedRouteSelectionObj.displayText === "Single") {
                 vm.multiSelectiondeliveryRoute = null;
                 vm.deliveryRoute = response;
             } else {
@@ -102,6 +102,12 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function clearSearchTerm() {
         vm.searchTerm = '';
-    };
+    }
 
+    function deliveryRouteChange() {
+        //alert(vm.selectedVegetables);
+        routeLogAPIService.getRouteDetailsByGUID(vm.selectedVegetables.id).then(function (response) {
+            vm.routeDetails = response;
+        });
+    }
 }

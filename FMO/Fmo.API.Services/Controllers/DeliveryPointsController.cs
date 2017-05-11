@@ -1,7 +1,10 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System.Net;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
 using Fmo.DTO;
+using Fmo.DTO.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
@@ -26,6 +29,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
         /// <returns>Json Result of Delivery Points</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
         [Route("GetDeliveryPoints")]
         [HttpGet]
         public JsonResult GetDeliveryPoints(string boundaryBox)
@@ -38,6 +42,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="udprn">The UDPRN number</param>
         /// <returns>The coordinates of the delivery point</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
         [Route("GetDeliveryPointByUDPRN")]
         [HttpGet]
         public object GetDeliveryPointByUDPRN(int udprn)
@@ -50,6 +55,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="udprn">The UDPRN number</param>
         /// <returns>The coordinates of the delivery point</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
         [Route("GetAddressLocationByUDPRN")]
         [HttpGet]
         public JsonResult GetDetailDeliveryPointByUDPRN(int udprn)
@@ -62,11 +68,25 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="deliveryPointDTO">deliveryPointDTO</param>
         /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("CreateDeliveryPoint")]
         [HttpPost]
-        public string CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
         {
             return businessService.CreateDeliveryPoint(deliveryPointDTO);
+        }
+
+
+        /// <summary>
+        /// Update delivery point
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO</param>
+        /// <returns></returns>
+        [Route("UpdateDeliveryPoint")]
+        [HttpPost]
+        public void UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDTO)
+        {
+            businessService.UpdateDeliveryPointLocation(deliveryPointModelDTO);
         }
     }
 }

@@ -53,6 +53,7 @@ function AdvanceSearchController(searchApiService,
 
 
     function queryAdvanceSearch(query) {
+       
         searchApiService.advanceSearch(query).then(function (response) {
 
             vm.results = response.data;

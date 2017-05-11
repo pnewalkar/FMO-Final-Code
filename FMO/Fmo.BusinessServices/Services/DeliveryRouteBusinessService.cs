@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -108,6 +109,23 @@ namespace Fmo.BusinessServices.Services
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
         {
             return await deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText, unitGuid);
+        }
+
+        public DeliveryRouteDTO GetDeliveryRouteDetails(Guid deliveryRouteId)
+        {
+            //TODO: Move this to resource file
+            List<string> categoryNames = new List<string>
+            {
+                "DeliveryPoint Use Indicator",
+                "Operational Object Type",
+                "Delivery Route Method Type",
+                "Delivery Route Transport Type"
+            };
+
+            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+
+            var deliveryRouteDto = deliveryRouteRepository.GetDeliveryRouteDetails(deliveryRouteId, referenceDataCategoryList);
+            return deliveryRouteDto.Result;
         }
     }
 }

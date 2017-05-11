@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -65,6 +66,13 @@ namespace Fmo.BusinessServices.Interfaces
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>string</returns>
-        string CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+        CreateDeliveryPointModelDTO CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+
+        /// <summary>
+        /// This Method is used to Update Delivery Points Co-ordinates.
+        /// </summary>
+        /// <param name="deliveryPointDTO">DeliveryPointDTO</param>
+        /// <returns>message</returns>
+        Task UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO);
     }
 }

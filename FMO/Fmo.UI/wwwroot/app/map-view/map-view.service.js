@@ -17,9 +17,9 @@ function mapService($http, mapFactory,
 
     vm.selectionListeners = [];
     vm.features = null;
-    vm.onDeleteButton = function (featureId, layer) { console.log({ "featureID": featureId, "layer": layer }) };
-    vm.onModify = function (feature) { console.log(feature) };
-    vm.onDrawEnd = function (buttonName, feature) { console.log(buttonName, feature) };
+    vm.onDeleteButton = function (featureId, layer) { };
+    vm.onModify = function (feature) { };
+    vm.onDrawEnd = function (buttonName, feature) { };
     vm.pointerMoveHandler = function (evt) {
         if (evt.dragging || vm.activeTool != 'measure') {
             return;

@@ -16,6 +16,7 @@
     using Fmo.DTO.UIDropdowns;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using DTO.Model;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -292,10 +293,17 @@
                     postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
                 }
 
-                var address = postalAddress.SingleOrDefault();
-                if (address != null && address.Postcode != objPostalAddress.Postcode)
+                var addressDetails = postalAddress.ToList();
+                if (addressDetails != null && addressDetails.Count > 0)
                 {
-                    postCode = address.Postcode;
+                    foreach (var address in addressDetails)
+                    {
+                        if (address != null && address.Postcode != objPostalAddress.Postcode)
+                        {
+                            postCode = address.Postcode;
+                            break;
+                        }
+                    }
                 }
 
                 return postCode;
@@ -355,10 +363,17 @@
                     postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
                 }
 
-                var address = postalAddress.SingleOrDefault();
-                if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
+                var addressDetails = postalAddress.ToList();
+                if (addressDetails != null && addressDetails.Count > 0)
                 {
-                    isDuplicate = true;
+                    foreach (var address in addressDetails)
+                    {
+                        if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
+                        {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
                 }
 
                 return isDuplicate;
@@ -479,7 +494,8 @@
             var postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
                                        join pc in DataContext.Postcodes.AsNoTracking()
                                        on pa.PostCodeGUID equals pc.ID
-                                       where pc.PostcodeUnit == postCode
+                                       join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                       where pc.PostcodeUnit == postCode && ul.Unit_GUID == unitGuid
                                        select pa).ToListAsync();
 
             postalAddressDTO = GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
@@ -562,12 +578,21 @@
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        public bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             bool isPostalAddressInserted = false;
+            bool isAddressLocationAvailable = false;
+            Guid returnGuid = new Guid(Constants.DEFAULTGUID);
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
+                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN).SingleOrDefault();
+
+                if (objAddressLocation != null)
+                {
+                    isAddressLocationAvailable = true;
+                }
+
                 DeliveryPoint objDeliveryPoint = new DeliveryPoint()
                 {
                     ID = Guid.NewGuid(),
@@ -576,6 +601,13 @@
                     MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
                     MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
                 };
+
+                if (isAddressLocationAvailable)
+                {
+                    objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
+                    objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
+                    objDeliveryPoint.Longitude = objAddressLocation.Longitude;
+                }
 
                 try
                 {
@@ -613,6 +645,7 @@
 
                     DataContext.SaveChanges();
                     isPostalAddressInserted = true;
+                    returnGuid = objDeliveryPoint.ID;
                 }
                 catch (Exception)
                 {
@@ -620,8 +653,9 @@
                 }
             }
 
-            return isPostalAddressInserted;
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable };
         }
+
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
