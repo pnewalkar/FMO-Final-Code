@@ -33,6 +33,9 @@ fieldset{
 }
 
 .aliasBox{
-    @include height(150px);
+    @include height(230px);
     overflow-y:auto;
+}
+.aliasInputContainer{
+    width: width-percent(1.205);
 }
