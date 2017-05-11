@@ -14,5 +14,12 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="unitGuid">Unit unique identifier.</param>
         /// <returns>Access Links as string</returns>
         string GetAccessLinks(string boundaryBox, Guid unitGuid);
+
+        /// <summary>
+        /// Create auto access link creation after delivery point creation.
+        /// </summary>
+        /// <param name="operationalObject_GUID">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        bool CreateAccessLink(System.Guid operationalObject_GUID);
     }
 }

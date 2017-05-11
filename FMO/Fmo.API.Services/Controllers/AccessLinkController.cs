@@ -7,7 +7,7 @@ namespace Fmo.API.Services.Controllers
     /// This class contains methods used to fetch Access Links data.
     /// </summary>
     [Route("api/[controller]")]
-    public class AccessLinkController : FmoBaseController
+    public class AccessLinkController : Controller
     {
         private IAccessLinkBusinessService accessLinkBussinessService = default(IAccessLinkBusinessService);
 
@@ -25,7 +25,20 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public string GetAccessLinks(string boundaryBox)
         {
-            return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+            return "";
+            //return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+        }
+
+        /// <summary>
+        /// This method is used to create Access Link for auto.
+        /// </summary>
+        /// <param name="boundaryBox">boundaryBox as string</param>
+        /// <returns>string of Access link data</returns>
+        [Route("CreateAccessLink")]
+        [HttpPost]
+        public bool CreateAccessLink([FromBody] System.Guid operationalObject_GUID)
+        {
+            return accessLinkBussinessService.CreateAccessLink(operationalObject_GUID);
         }
     }
 }

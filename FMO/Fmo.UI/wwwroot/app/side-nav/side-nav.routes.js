@@ -25,7 +25,7 @@ angular.module('FMOApp')
             url: "/deliveryPoint",
             templateUrl: "./delivery-point/delivery-point.context.template.html",
             controller: 'DeliveryPointController as vm',
-            params: { selectedUnit: null, positionedDeliveryPointList: null, positionedThirdPartyDeliveryPointList : null}
+            params: { selectedUnit: null, deliveryPointList : null , positionedDeliveryPointList: null, positionedThirdPartyDeliveryPointList : null}
         })
          .state('manageaccess', {
              url: '/',
