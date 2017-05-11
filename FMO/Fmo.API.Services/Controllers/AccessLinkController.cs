@@ -9,7 +9,7 @@ namespace Fmo.API.Services.Controllers
     /// This class contains methods used to fetch Access Links data.
     /// </summary>
     [Route("api/[controller]")]
-    public class AccessLinkController : Controller
+    public class AccessLinkController : FmoBaseController
     {
         private IAccessLinkBusinessService accessLinkBussinessService = default(IAccessLinkBusinessService);
 
@@ -28,8 +28,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet]
         public string GetAccessLinks(string boundaryBox)
         {
-            return "";
-            //return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+            return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
         }
 
         /// <summary>

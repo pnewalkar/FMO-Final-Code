@@ -1373,7 +1373,7 @@
           "System.Xml.XDocument": "4.3.0"
         }
       },
-      "Newtonsoft.Json/10.0.1-beta1": {
+      "Newtonsoft.Json/10.0.2": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -3170,12 +3170,13 @@
         "dotnet_library_license.txt"
       ]
     },
-    "Newtonsoft.Json/10.0.1-beta1": {
-      "sha512": "ndkuU1nxhuHZjsZQgn7PJUB7GQVBwZEiPu8BNkOuCVqF8V3ayiEvG1Du4i3i70e7dU1uGWrxw/A1nU1KmaMhFw==",
+    "Newtonsoft.Json/10.0.2": {
+      "sha512": "iwElSU2IXmwGvytJsezyDML2ZWDkG2JzTYzlU/BNlmzMdlmRvbnwITsGGY74gwVEpDli1UdOLkMT7/3jxWvXzA==",
       "type": "package",
-      "path": "Newtonsoft.Json/10.0.1-beta1",
+      "path": "Newtonsoft.Json/10.0.2",
       "files": [
-        "Newtonsoft.Json.10.0.1-beta1.nupkg.sha512",
+        "LICENSE.md",
+        "Newtonsoft.Json.10.0.2.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
@@ -3187,8 +3188,10 @@
         "lib/net45/Newtonsoft.Json.xml",
         "lib/netstandard1.0/Newtonsoft.Json.dll",
         "lib/netstandard1.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.1/Newtonsoft.Json.dll",
-        "lib/netstandard1.1/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/portable-net40+sl5+win8+wpa81+wp8/Newtonsoft.Json.dll",
+        "lib/portable-net40+sl5+win8+wpa81+wp8/Newtonsoft.Json.xml",
         "lib/portable-net45+win8+wpa81+wp8/Newtonsoft.Json.dll",
         "lib/portable-net45+win8+wpa81+wp8/Newtonsoft.Json.xml",
         "tools/install.ps1"
@@ -5725,7 +5728,7 @@
       "Microsoft.Extensions.Options.ConfigurationExtensions >= 1.1.1",
       "Microsoft.IdentityModel.Tokens >= 5.1.3",
       "Microsoft.SqlServer.Types >= 14.0.314.76",
-      "Newtonsoft.Json >= 10.0.1-beta1",
+      "Newtonsoft.Json >= 10.0.2",
       "System.IdentityModel.Tokens.Jwt >= 5.1.3",
       "System.Net.Http >= 4.3.0"
     ],

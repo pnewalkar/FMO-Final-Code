@@ -435,7 +435,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         deliveryPointsLayer.layer.getSource().clear();
         deliveryPointsLayer.selected = true;
         deliveryPointsLayer.layer.setVisible(true)
-        var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
         $http({
             method: 'GET',
             url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + map.getView().calculateExtent(map.getSize()).join(','),

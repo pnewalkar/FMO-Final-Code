@@ -68,6 +68,16 @@ namespace Fmo.BusinessServices.Tests.Services
         [Test]
         public void Test_CreateDeliveryPoint_Duplicate()
         {
+            mockAddressRepository.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(true);
+            var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Message == "There is a duplicate of this Delivery Point in the system");
+        }
+
+        [Test]
+        public void Test_CreateDeliveryPoint_Duplicate_WithPostCode()
+        {
+            mockAddressRepository.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(false);
             var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Message == "This address is in the NYB file under the postcode 123");
@@ -152,7 +162,7 @@ namespace Fmo.BusinessServices.Tests.Services
                 PostalAddressDTO = postalAddressesDTO[1],
                 DeliveryPointDTO = deliveryPointDTO
             };
-
+  
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
             mockAddressRepository.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns("123");
             mockAddressRepository.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
