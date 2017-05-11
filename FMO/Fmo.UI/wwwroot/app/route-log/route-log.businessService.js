@@ -1,5 +1,5 @@
 angular.module('routeLog')
-    .service('routeLogService', ['routeLogAPIService', routeLogService])
+    .service('routeLogService', ['routeLogAPIService', routeLogService]);
 function routeLogService(routeLogAPIService) {
     var vm = this;
     vm.RouteStatusObj = null;
@@ -41,11 +41,11 @@ function routeLogService(routeLogAPIService) {
     function routeLog(selectedUnit) {
         return {
             templateUrl: './route-log/route-log.template.html',
-            clickOutsideToClose: true,           
+            clickOutsideToClose: true,
             locals: {
                 items: selectedUnit
             },
             controller: 'RouteLogController as vm'
-        }
+        };
     }
 }

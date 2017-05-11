@@ -1,5 +1,5 @@
 angular.module('routeLog')
-.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', '$mdDialog', 'items', RouteLogController])
+.controller('RouteLogController', ['$scope', '$state', '$stateParams', 'routeLogAPIService', 'routeLogService', '$mdDialog', 'items', RouteLogController]);
 function RouteLogController($scope, $state, $stateParams, routeLogAPIService, routeLogService, $mdDialog, items) {
     var vm = this;
     vm.loadSelectionType = loadSelectionType();
@@ -8,6 +8,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.selectionTypeChange = selectionTypeChange;
+    vm.deliveryRouteChange = deliveryRouteChange;
 
     vm.clearSearchTerm = clearSearchTerm;
     vm.routeChange = routeChange;
@@ -17,7 +18,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.isDeliveryRouteDisabled = true;
     vm.selectedDeliveryRoute;
     vm.deliveryRoute = null;
-    vm.selectedVegetables;
+    vm.selectedRoute;
     vm.searchTerm;
     vm.isShowMultiSelectionRoute = false;
     vm.closeWindow = closeWindow;
@@ -30,7 +31,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         var type = vm.selectedRouteSelectionObj;
         vm.selectedRouteStatusObj = null;
         vm.selectedRouteScenario = null;
-        vm.selectedVegetables = null;
+        vm.selectedRoute = null;
         vm.isSelectionType = false;
         vm.isRouteScenarioDisabled = true;
         vm.isDeliveryRouteDisabled = true;
@@ -40,7 +41,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         routeLogAPIService.getSelectionType().then(function (response) {
             vm.RouteselectionTypeObj = response;
             angular.forEach(vm.RouteselectionTypeObj, function (value, key) {
-                if (value.displayText == "Single")
+                if (value.displayText === "Single")
                     vm.selectedRouteSelectionObj = value;
             });
         });
@@ -77,7 +78,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
                 vm.selectedRouteScenario = null;
                 vm.isSelectionType = true;
                 //vm.isRouteScenarioDisabled = true;
-                vm.selectedVegetables = null;
+                vm.selectedRoute = null;
                 vm.isDeliveryRouteDisabled = true;
                 vm.isShowMultiSelectionRoute = false;
             }
@@ -85,7 +86,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            if (vm.selectedRouteSelectionObj.displayText == "Single") {
+            if (vm.selectedRouteSelectionObj.displayText === "Single") {
                 vm.multiSelectiondeliveryRoute = null;
                 vm.deliveryRoute = response;
             } else {
@@ -101,6 +102,12 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function clearSearchTerm() {
         vm.searchTerm = '';
-    };
+    }
 
+    function deliveryRouteChange() {
+        //alert(vm.selectedVegetables);
+        routeLogAPIService.getRouteDetailsByGUID(vm.selectedVegetables.id).then(function (response) {
+            vm.routeDetails = response;
+        });
+    }
 }

@@ -1,8 +1,9 @@
 angular.module('sideNav')
-    .factory('sideNavApiService',
-    ['$http', 'GlobalSettings', function ($http, GlobalSettings) {
-        var sideNavApiService = {};
-       
-        return sideNavApiService;
+    .factory('sideNavApiService', sideNavApiService);
+sideNavApiService.$inject = ['$http', 'GlobalSettings'];
+function sideNavApiService($http, GlobalSettings) {
+    var sideNavApiService = {};
 
-    }]);
+    return sideNavApiService;
+
+}

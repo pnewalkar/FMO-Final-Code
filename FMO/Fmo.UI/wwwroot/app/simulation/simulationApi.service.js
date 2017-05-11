@@ -24,7 +24,7 @@ function simulationAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    };
+    }
 
     function getScenario(operationStateID, deliveryUnitID) {
         var deferred = $q.defer();
@@ -37,7 +37,7 @@ function simulationAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    };
+    }
 
     function getRoutes(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
@@ -50,5 +50,5 @@ function simulationAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    };
+    }
 }
