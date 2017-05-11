@@ -8,6 +8,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.selectionTypeChange = selectionTypeChange;
+    vm.deliveryRouteChange = deliveryRouteChange;
 
     vm.clearSearchTerm = clearSearchTerm;
     vm.routeChange = routeChange;
@@ -103,4 +104,10 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         vm.searchTerm = '';
     };
 
+    function deliveryRouteChange() {
+        //alert(vm.selectedVegetables);
+        routeLogAPIService.getRouteDetailsByGUID(vm.selectedVegetables.id).then(function (response) {
+            vm.routeDetails = response;
+        });
+    }
 }

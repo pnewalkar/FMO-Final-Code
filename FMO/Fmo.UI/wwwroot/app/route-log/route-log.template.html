@@ -48,7 +48,7 @@
             
             <md-input-container flex="40">
                 <label>Route</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" md-on-close="vm.clearSearchTerm()">
+                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" md-on-close="vm.clearSearchTerm()" ng-change="vm.deliveryRouteChange()">
                     <md-select-header>
                         <input type="text" ng-model="vm.searchTerm" placeholder="No Route Selected"  ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
                     </md-select-header>
@@ -84,7 +84,7 @@
             </div>
 	   </div>
         
-        <md-list>
+        <md-list ng-hide="!vm.routeDetails">
             <md-subheader>Route Details</md-subheader>
             <div layout="row">
                 <md-list-item flex="30" class="routeDetailsList">
@@ -93,23 +93,60 @@
                             Name
                         </li>
                         <li class="routeDetailsItem">
-                            Name
+                            Route Number
                         </li>
                         <li class="routeDetailsItem">
-                            Name
+                            Delivery Method
+                        </li>
+                        <li class="routeDetailsItem">
+                            Total Time
+                        </li>
+                        <li class="routeDetailsItem">
+                            Hazards
+                        </li>
+                        <li class="routeDetailsItem">
+                            Special Instructions
+                        </li>
+                        <li class="routeDetailsItem">
+                            Aliases *
+                        </li>
+                        <li class="routeDetailsItem">
+                            Blocks
+                        </li>
+                        <li class="routeDetailsItem">
+                            Paired Route
                         </li>
                     </ul>
                     <span flex="20"></span>
                     <ul flex="40">
                         <li>
-                            Name
+                            {{::vm.routeDetails.routeName}}
                         </li>
                         <li>
-                            Name
+                            ({{::vm.routeDetails.routeNumber}})
                         </li>
                         <li>
-                            Name
+                            {{::vm.routeDetails.method}}
                         </li>
+                        <li>
+                            {{::vm.routeDetails.totaltime}}
+                        </li>
+                        <li>
+                            
+                        </li>
+                        <li>
+
+                        </li>
+                        <li>
+                            {{::vm.routeDetails.aliases}}
+                        </li>
+                        <li>
+                            {{::vm.routeDetails.blocks}}
+                        </li>
+                        <li>
+                            {{::vm.routeDetails.pairedRoute}}
+                        </li>
+                       
                     </ul>
                 </md-list-item>
                 
@@ -118,25 +155,31 @@
                 <md-list-item flex="30" class="routeDetailsList">
                     <ul flex="40">
                         <li class="routeDetailsItem">
-                            Name
+                            CPs
                         </li>
                         <li class="routeDetailsItem">
-                            Name
+                            DPs
                         </li>
                         <li class="routeDetailsItem">
-                            Name
+                            Business DPs
+                        </li>
+                        <li class="routeDetailsItem">
+                            Residential DPs
                         </li>
                     </ul>
                     <span flex="20"></span>
                     <ul flex="40">
                         <li>
-                            Name
+                           
                         </li>
                         <li>
-                            Name
+                            {{::vm.routeDetails.dPs}}
                         </li>
                         <li>
-                            Name
+                            {{::vm.routeDetails.businessDPs}}
+                        </li>
+                        <li>
+                            {{::vm.routeDetails.residentialDPs}}
                         </li>
                     </ul>
                 </md-list-item>
@@ -147,7 +190,7 @@
             </div>
       </md-list>
         
-        <md-list>
+        <md-list  ng-hide="!vm.routeDetails">
             <md-subheader>Generate</md-subheader>
             <md-list-item>
                 <md-checkbox></md-checkbox>
