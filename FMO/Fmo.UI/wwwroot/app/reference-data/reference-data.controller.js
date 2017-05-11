@@ -26,7 +26,7 @@ function ReferenceDataController(
 
     function referenceData() {
         referencedataApiService.getReferenceData().success(function (response) {
-            $scope.filtereditems = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointOperationalStatus });
+            vm.filtereditems = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointOperationalStatus });
         });
     }
 }

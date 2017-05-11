@@ -1,9 +1,21 @@
 angular.module('mapView')
-        .service('mapService', ['$http', 'mapFactory',
-                                'mapStylesFactory', '$timeout', 'GlobalSettings', 'coordinatesService',
-                                 mapService])
-function mapService($http, mapFactory,
-                    mapStylesFactory, $timeout, GlobalSettings, coordinatesService) {
+        .factory('mapService', mapService);
+
+mapService.$inject = ['$http',
+                     'mapFactory',
+                     'mapStylesFactory',
+                     '$timeout',
+                     'GlobalSettings',
+                     'coordinatesService',
+                     '$document'];
+
+function mapService($http,
+                    mapFactory,
+                    mapStylesFactory,
+                    $timeout,
+                    GlobalSettings,
+                    coordinatesService,
+                    $document) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
@@ -64,7 +76,7 @@ function mapService($http, mapFactory,
         getfeature: getfeature,
         selectFeatures: selectFeatures,
         getSecondaryFeatures: getSecondaryFeatures,
-        setSelectedObjectsVisibility:setSelectedObjectsVisibility,
+        setSelectedObjectsVisibility: setSelectedObjectsVisibility,
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -178,7 +190,7 @@ function mapService($http, mapFactory,
                 });
             }
         });
-        
+
         var mockGroupsLayer = new ol.layer.Vector({
             source: mockGroupsVector
         });
@@ -548,7 +560,7 @@ function mapService($http, mapFactory,
         if (vm.measureTooltipElement) {
             vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
         }
-        vm.measureTooltipElement = document.createElement('div');
+        vm.measureTooltipElement = $document.createElement('div');
         vm.measureTooltipElement.className = 'tooltip tooltip-measure';
         vm.measureTooltip = new ol.Overlay({
             element: vm.measureTooltipElement,
@@ -639,8 +651,7 @@ function mapService($http, mapFactory,
         if (vm.interactions.select) {
             vm.interactions.select.getFeatures().forEach(function (feature) {
                 vm.featuredType = feature.get("type");
-                if (vm.featuredType === "deliverypoint")
-                {
+                if (vm.featuredType === "deliverypoint") {
                     vm.featuredType = "Delivery Points"
                 }
                 if (vm.featuredType === "accesslink") {

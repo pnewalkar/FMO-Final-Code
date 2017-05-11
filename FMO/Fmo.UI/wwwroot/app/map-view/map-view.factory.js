@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('mapView')
-.factory('mapFactory', ['$http', 'mapStylesFactory', '$rootScope','GlobalSettings', MapFactory]);
+.factory('mapFactory',MapFactory);
 
-
-function MapFactory($http, mapStylesFactory, $rootScope) {
+MapFactory.$inject = ['$http', 'mapStylesFactory', '$rootScope', 'GlobalSettings','$document'];
+function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $document) {
     var map = null;
     var miniMap = null;
     var view = null;
@@ -86,7 +86,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         map.addControl(getCustomScaleLine());
 
         var external_control = new ol.control.Zoom({
-            target: document.getElementById('zoom-control')
+            target: $document.getElementById('zoom-control')
         });
         map.addControl(external_control);
 
@@ -323,7 +323,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         customScaleLine = function (opt_options) {
             var options = opt_options ? opt_options : {};
             var className = options.className !== undefined ? options.className : 'ol-scale-line';
-            this.element_ = document.createElement('DIV');
+            this.element_ = $document.createElement('DIV');
             this.renderedVisible_ = false;
             this.viewState_ = null;
             this.renderedHTML_ = '';
@@ -342,8 +342,8 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
             var index = definedScales.indexOf(scale);
             var maxScaleIndex = definedScales.indexOf(maxScale);
             if (index > -1) {
-                var zoomInButtons = document.getElementsByClassName("ol-zoom-in");
-                var zoomOutButtons = document.getElementsByClassName("ol-zoom-out");
+                var zoomInButtons = $document.getElementsByClassName("ol-zoom-in");
+                var zoomOutButtons = $document.getElementsByClassName("ol-zoom-out");
 
                 if (index == definedScales.length - 1) {
                     setZoomButtonStatus(zoomInButtons, true);
@@ -372,7 +372,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         return new customScaleLine({
             render: customScaleLine.render,
             className: 'zoom-scale',
-            target: document.getElementById('zoom-scale')
+            target: $document.getElementById('zoom-scale')
         });
     }
 
