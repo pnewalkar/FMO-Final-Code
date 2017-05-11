@@ -17,7 +17,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     vm.isDeliveryRouteDisabled = true;
     vm.selectedDeliveryRoute;
     vm.deliveryRoute = null;
-    vm.selectedVegetables;
+    vm.selectedRoute;
     vm.searchTerm;
     vm.isShowMultiSelectionRoute = false;
     vm.closeWindow = closeWindow;
@@ -30,7 +30,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         var type = vm.selectedRouteSelectionObj;
         vm.selectedRouteStatusObj = null;
         vm.selectedRouteScenario = null;
-        vm.selectedVegetables = null;
+        vm.selectedRoute = null;
         vm.isSelectionType = false;
         vm.isRouteScenarioDisabled = true;
         vm.isDeliveryRouteDisabled = true;
@@ -77,7 +77,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
                 vm.selectedRouteScenario = null;
                 vm.isSelectionType = true;
                 //vm.isRouteScenarioDisabled = true;
-                vm.selectedVegetables = null;
+                vm.selectedRoute = null;
                 vm.isDeliveryRouteDisabled = true;
                 vm.isShowMultiSelectionRoute = false;
             }

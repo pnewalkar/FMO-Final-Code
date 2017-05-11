@@ -48,7 +48,7 @@
             
             <md-input-container flex="40">
                 <label>Route</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" md-on-close="vm.clearSearchTerm()">
+                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-close="vm.clearSearchTerm()">
                     <md-select-header>
                         <input type="text" ng-model="vm.searchTerm" placeholder="No Route Selected"  ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
                     </md-select-header>
@@ -188,7 +188,7 @@
           
             <md-input-container class="40">
                 <label>Route</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedVegetables" md-on-close="vm.clearSearchTerm()" class="routeSelect">
+                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-close="vm.clearSearchTerm()" class="routeSelect">
                     <md-select-header>
                         <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected"  ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
                     </md-select-header>
