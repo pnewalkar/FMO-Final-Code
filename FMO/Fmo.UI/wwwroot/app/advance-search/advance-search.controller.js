@@ -54,13 +54,10 @@ function AdvanceSearchController(searchApiService,
 
     function queryAdvanceSearch(query) {
        
-   
-        console.log(query);
         searchApiService.advanceSearch(query).then(function (response) {
 
             vm.results = response.data;
             vm.searchCount = vm.results.searchCounts;
-            console.log(vm.results.searchCounts);
             vm.searchItem = vm.results.searchResultItems;
             vm.arrRoutes = [];
 
