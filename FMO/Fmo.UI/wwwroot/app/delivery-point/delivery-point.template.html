@@ -102,8 +102,8 @@
                         
                         <legend>Address<sub>*</sub></legend>
 
-                        <div layout="row" class="addressRow">
-                            <div layout="column" flex>
+                        <div layout="row">
+                            <md-input-container flex="45">
                                 <label>Building Number</label>
                                 <input name="buildingNumber" ng-model="vm.nybaddress.buildingNumber" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
                                        ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
@@ -112,11 +112,11 @@
                                     <div ng-message="maxlength">Value entered is longer than 4</div>
                                     <div ng-message="pattern">Value entered is not valid</div>
                                 </div>
-                            </div>
+                            </md-input-container>
 
                             <span flex="5"></span>
 
-                            <div layout="column" flex>
+                            <md-input-container flex="50">
                                 <label>Building Name</label>
                                 <input name="buildingName" ng-model="vm.nybaddress.buildingName" type="text" ng-maxlength="50"
                                        ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
@@ -124,60 +124,59 @@
                                      ng-show="vm.deliveryPointForm.buildingName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
                                 </div>
-                            </div>
+                            </md-input-container>
                         </div>
 
-                        <div layout="row" class="addressRow">
-                            <div layout="column" flex>
+                        <div layout="row">
+                            <md-input-container flex="45">
                                 <label>Sub-Building Name</label>
                                 <input ng-model="vm.nybaddress.subBuildingName" type="text" ng-maxlength="50">
                                 <div ng-messages="vm.deliveryPointForm.subBuildingName.$error"
                                      ng-show="vm.deliveryPointForm.subBuildingName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
                                 </div>
-                            </div>
+                            </md-input-container>
 
                             <span flex="5"></span>
 
-                            <div layout="column" flex>
+                            <md-input-container flex="50">
                                 <label>Organisation</label>
                                 <input ng-model="vm.nybaddress.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation(vm.nybaddress.organisationName)" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
-                                    <div ng-message="maxlength">Value entered is longer than 60</div>
+                                <div ng-message="maxlength">Value entered is longer than 60</div>
                                 </div>
-                            </div>
+                            </md-input-container>
                         </div>
                         <div layout="row">
-                            <div layout="column" flex>
+                            <md-input-container flex="45">
                                 <label>Department Name</label>
                                 <input ng-model="vm.nybaddress.departmentName" type="text" ng-maxlength="60" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
                                 </div>
-                            </div>
-                            <span flex="5"></span>
-                            <span flex></span>
+                            </md-input-container>
                         </div>
 
                     </fieldset>
                 </div>
                 <span flex="5"></span>
                 <div layout="column" flex="40" ng-show="vm.display">
-                    <div layout="column" class="addressRow">
-                        <label>Add DP Alias</label>
-                        <div layout="row">
+                    <div layout="row" class="addressRow">
+                        <md-input-container flex="90">
+                            <label>Add DP Alias</label>
                             <input ng-model="vm.alias" type="text" flex="90">
-                            <span flex="5"></span>
-                            <i class="fa fa-plus-circle" ng-click="vm.addAlias()" aria-hidden="true" flex></i>
-                        </div>
+                        </md-input-container>
+                        <i class="fa fa-plus-circle pathLengthUnit" ng-click="vm.addAlias()" aria-hidden="true" flex></i>
                     </div>
                     <div layout="column">
                         <label>Alias</label>
-                        <div class="aliasBox">
+                        <div class="aliasBox" flex="90">
                             <div ng-repeat="item in vm.items">
-                                <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.DPAlias" class="aliasinput">
+                                <md-input-container class="aliasInputContainer">
+                                    <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.DPAlias" class="aliasinput">
+                                </md-input-container>
                                 <input type="radio" name="check" value="inline" ng-model="item.Preferred">
                                 <i class="fa fa-minus-circle" aria-hidden="true" ng-click="vm.removeAlias()"></i>
                             </div>
@@ -189,7 +188,7 @@
 
 
             <div layout="row" ng-show="vm.display" class="occRow">
-                <div layout="column">
+                <md-input-container>
                     <label>Multi Occ<sub>*</sub></label>
                     <input name="multiocc" ng-model="vm.multiocc" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.multiocc.$error"
@@ -198,9 +197,13 @@
                         <div ng-message="maxlength">Value entered is longer than 4</div>
                         <div ng-message="pattern">Value entered is not valid</div>
                     </div>
-                </div>
+                </md-input-container>
                 <span flex="5"></span>
-                <div layout="column">
+                <!--
+                        <label>DP Use<sub>*</sub></label>
+                        <input type="text" ng-model="vm.dpUse[0].displayText">-->
+                    
+                <md-input-container>
                     <label>Mail Vol<sub>*</sub></label>
                     <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.mailvol.$error"
@@ -209,7 +212,7 @@
                         <div ng-message="maxlength">Value entered is longer than 4</div>
                         <div ng-message="pattern">Value entered is not valid</div>
                     </div>
-                </div>
+                </md-input-container>
             </div>
         
     </md-dialog-content>

@@ -13,13 +13,13 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
         var aValue = sessionStorage.getItem('authorizationData');
         if (unitGuid) {
 
-            var jobject = JSON.parse(aValue)
+            var jobject = angular.fromJson(aValue)
             vm.userdata = "username=" + jobject.userName + "&unitguid=" + unitGuid;
         }
         else {
             var userName = getParameterValues('username');
             vm.userdata = "username=" + userName + "&unitguid=" + unitGuid;
-            if (userName === undefined) {
+            if (angular.isUndefined(userName)) {
                 if (aValue) {
                     return;
                 }
@@ -30,7 +30,7 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
             }
             else {
                 if (aValue) {
-                    var jobject = JSON.parse(aValue)
+                    var jobject = angular.fromJson(aValue)
                     if (jobject.userName !== userName) {
                         sessionStorage.clear();
                     }
@@ -42,11 +42,11 @@ function manageAccessBusinessService($stateParams, $state, manageAccessService, 
             var accessData = response.data;
             if (response.access_token) {
                 sessionStorage.clear();
-                sessionStorage.setItem("authorizationData", JSON.stringify({ token: response.access_token, userName: response.username[0], unitGuid: unitGuid }));
-                sessionStorage.setItem("roleAccessData", JSON.stringify((response.roleActions)));
+                sessionStorage.setItem("authorizationData", angular.toJson({ token: response.access_token, userName: response.username[0], unitGuid: unitGuid }));
+                sessionStorage.setItem("roleAccessData", angular.toJson((response.roleActions)));
                 if (unitGuid) {
                     window.location.href = GlobalSettings.indexUrl;
-                } else if (response.access_token || response.access_token !== undefined) {
+                } else if (response.access_token || angular.isDefined(response.access_token)) {
                     window.location.href = GlobalSettings.indexUrl;
                 }
             }

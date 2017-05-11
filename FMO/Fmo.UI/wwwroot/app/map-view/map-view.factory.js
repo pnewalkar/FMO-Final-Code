@@ -279,7 +279,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         layerObj.selectorVisible = layerObj.selectorVisible == undefined ? true : layerObj.selectorVisible;
 
         layerObj.layer.set('name', layerObj.layerName);
-        if (layerObj.layer.setZIndex != undefined)
+        if (angular.isDefined(layerObj.layer.setZIndex))
             layerObj.layer.setZIndex(layerObj.zIndex * 100);
 
         layerObj.restyle();
@@ -435,7 +435,7 @@ function MapFactory($http, mapStylesFactory, $rootScope) {
         deliveryPointsLayer.layer.getSource().clear();
         deliveryPointsLayer.selected = true;
         deliveryPointsLayer.layer.setVisible(true)
-        var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
         $http({
             method: 'GET',
             url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + map.getView().calculateExtent(map.getSize()).join(','),
@@ -507,7 +507,7 @@ MapFactory.LayerSelector = function () {
     this.style = null;
 
     this.restyle = function () {
-        if (this.style != null && this.layer.setStyle != undefined) {
+        if (this.style != null && angular.isDefined(this.layer.setStyle)) {
             this.layer.setStyle(this.style);
         }
     }

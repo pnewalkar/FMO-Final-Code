@@ -31,7 +31,7 @@ function mapToolbarService(mapStylesFactory,mapService) {
     function initialize() {
         var activeStyle = mapStylesFactory.getStyle();
 
-        vm.pointTypes = [
+         var pointTypes = [
             {
                 "text": "Selected",
                 "id": "",
@@ -52,7 +52,7 @@ function mapToolbarService(mapStylesFactory,mapService) {
                 "style": activeStyle("roadlink")
             }
         ];
-        return vm.pointTypes;
+        return pointTypes;
       
     }
   
