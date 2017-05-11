@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace Fmo.API.Services.Controllers
         /// <param name="operationStateID"> operationState ID</param>
         /// <param name="deliveryScenarioID">deliveryScenario ID</param>
         /// <returns>List</returns>
-        [Authorize]
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("FetchDeliveryRoute")]
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
@@ -59,6 +60,7 @@ namespace Fmo.API.Services.Controllers
         /// <param name="operationStateID">operation State ID</param>
         /// <param name="deliveryUnitID">delivery Unit ID</param>
         /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("FetchDeliveryScenario")]
         public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {

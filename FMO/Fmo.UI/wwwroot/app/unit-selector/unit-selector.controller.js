@@ -1,5 +1,5 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', '$filter', 'unitSelectorAPIService', 'mapFactory', 'manageAccessBusinessService', UnitSelectorController])
+.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', '$filter', 'unitSelectorAPIService', 'mapFactory', 'manageAccessBusinessService', UnitSelectorController]);
 function UnitSelectorController($scope, $stateParams, $state, $filter, unitSelectorAPIService, mapFactory, manageAccessBusinessService) {
     var vm = this;
     vm.BindData = BindData;

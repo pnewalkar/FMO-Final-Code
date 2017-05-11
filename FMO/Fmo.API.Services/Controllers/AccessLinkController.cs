@@ -1,4 +1,6 @@
 ﻿using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
@@ -7,7 +9,7 @@ namespace Fmo.API.Services.Controllers
     /// This class contains methods used to fetch Access Links data.
     /// </summary>
     [Route("api/[controller]")]
-    public class AccessLinkController : Controller
+    public class AccessLinkController : FmoBaseController
     {
         private IAccessLinkBusinessService accessLinkBussinessService = default(IAccessLinkBusinessService);
 
@@ -21,12 +23,12 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
         /// <returns>string of Access link data</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [Route("GetAccessLinks")]
         [HttpGet]
         public string GetAccessLinks(string boundaryBox)
         {
-            return "";
-            //return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+            return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
         }
 
         /// <summary>

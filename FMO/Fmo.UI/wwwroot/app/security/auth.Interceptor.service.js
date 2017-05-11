@@ -1,11 +1,14 @@
 ﻿'use strict';
 angular.module('FMOApp')
-.factory('authInterceptorService', ['$q', '$injector', '$location', function ($q, $injector, $location) {
+.factory('authInterceptorService', authInterceptorService);
+authInterceptorService.$inject = ['$q', '$injector', '$location'];
+
+function authInterceptorService($q, $injector, $location) {
 
     var authInterceptorServiceFactory = {};
 
     var _request = function (config) {
-     
+
         config.headers = config.headers || {};
 
         var authData = sessionStorage.getItem('authorizationData');
@@ -18,7 +21,7 @@ angular.module('FMOApp')
     }
 
     var _responseError = function (rejection) {
-        
+
         if (rejection.status === 401) {
             var authService = $injector.get('authService');
             var authData = sessionStorage.getItem('authorizationData');
@@ -36,4 +39,4 @@ angular.module('FMOApp')
     authInterceptorServiceFactory.responseError = _responseError;
 
     return authInterceptorServiceFactory;
-}]);
+}

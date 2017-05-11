@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Fmo.Common.Constants;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
@@ -133,37 +134,60 @@ namespace Fmo.DataServices.Repositories
 
         #region Public Methods
 
-        public List<DeliveryRouteDTO> FetchDeliveryRouteDetailsforPDF(Guid deliveryRouteId, Guid operationalObjectTypeForDP, Guid operationalObjectTypeForDPCommercial, Guid operationalObjectTypeForDPResidential)
+        public async Task<DeliveryRouteDTO> GetDeliveryRouteDetails(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList)
         {
+            // TODO: Move this to resource file
             // TODO: get the operationalObjectTypeForDP from CategoryName name as 'Operational Object Type'(table : ReferenceDataCategory) and DisplayText as 'DP' (table; ReferenceData)
             // TODO: get the operationalObjectTypeForDP Commercial/Residential from CategoryName as 'DeliveryPoint Use Indicator' and DisplayText as 'Commercial'/'Residential'
             try
             {
-                var deliveryRoutesDto = (from dr in DataContext.DeliveryRoutes.AsNoTracking()
-                                         join rd in DataContext.ReferenceDatas.AsNoTracking() on dr.RouteMethodType_GUID equals rd.ID
-                                         join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                         where dr.ID == deliveryRouteId
-                                         select new DeliveryRouteDTO
-                                         {
-                                             RouteName = dr.RouteName,
-                                             RouteNumber = dr.RouteNumber,
-                                             ScenarioName = sr.ScenarioName,
-                                             Method = rd.DisplayText
-                                         })
-                                         .AsEnumerable()
-                                         .Select(x => new DeliveryRouteDTO
-                                         {
-                                             Aliases = GetAliases(deliveryRouteId),
-                                             Blocks = GetNumberOfBlocks(deliveryRouteId),
-                                             PairedRoute = GetPairedRoute(deliveryRouteId),
-                                             DPs = GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDP),
-                                             BusinessDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDPCommercial),
-                                             ResidentialDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDPResidential),
-                                             AccelarationIn = "AccelarationIn",
-                                             AccelarationOut = "AccelarationOut",
-                                             Totaltime = "h:mm"
-                                         })
-                                         .ToList();
+                Guid operationalObjectTypeForDp = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName == "Operational Object Type").SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == "DP").Select(x => x.ID).SingleOrDefault();
+
+                Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName == "DeliveryPoint Use Indicator").SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == "Organisation").Select(x => x.ID).SingleOrDefault();
+
+                Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName == "DeliveryPoint Use Indicator").SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == "Residential").Select(x => x.ID).SingleOrDefault();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<ReferenceDataCategoryDTO, ReferenceDataCategory>();
+                    cfg.CreateMap<ReferenceDataDTO, ReferenceData>();
+                });
+
+                Mapper.Configuration.CreateMapper();
+                List<ReferenceDataCategory> referenceDataCategoryList= Mapper.Map<List<ReferenceDataCategoryDTO>, List<ReferenceDataCategory>>(referenceDataCategoryDtoList);
+
+                var referenceData =
+                    referenceDataCategoryList.Where(x => x.CategoryName == "Delivery Route Method Type").SelectMany(x => x.ReferenceDatas);
+
+                var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
+                                               join rd in referenceData on dr.RouteMethodType_GUID equals rd.ID
+                                               join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                    where dr.ID == deliveryRouteId
+                    select new DeliveryRouteDTO
+                    {
+                        RouteName = dr.RouteName,
+                        RouteNumber = dr.RouteNumber,
+                        ScenarioName = sr.ScenarioName,
+                        Method = rd.DisplayText
+                    }).Select(x => new DeliveryRouteDTO
+                                          {
+                                              Aliases = GetAliases(deliveryRouteId),
+                                              Blocks = GetNumberOfBlocks(deliveryRouteId),
+                                              PairedRoute = GetPairedRoute(deliveryRouteId),
+                                              DPs = GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp),
+                                              BusinessDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation),
+                                              ResidentialDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential),
+                                              AccelarationIn = "AccelarationIn",
+                                              AccelarationOut = "AccelarationOut",
+                                              Totaltime = "h:mm"
+                                          })
+                                         .SingleOrDefaultAsync();
                 return deliveryRoutesDto;
             }
             catch (Exception)
@@ -192,14 +216,14 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        private int GetNumberOfDPs(Guid deliveryRouteId, Guid operationalObjectTypeForDP)
+        private int GetNumberOfDPs(Guid deliveryRouteId, Guid operationalObjectTypeForDp)
         {
             try
             {
                 int numberOfDPs = (from blkseq in DataContext.BlockSequences.AsNoTracking()
                                    join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on blkseq.Block_GUID equals drb.Block_GUID
                                    join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                                   where blkseq.OperationalObjectType_GUID == operationalObjectTypeForDP && dr.ID == deliveryRouteId
+                                   where blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId
                                    select blkseq.OperationalObject_GUID).Count();
                 return numberOfDPs;
             }
@@ -209,7 +233,7 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
-        private int GetNumberOfCommercialResidentialDPs(Guid deliveryRouteId, Guid operationalObjectTypeForDP)
+        private int GetNumberOfCommercialResidentialDPs(Guid deliveryRouteId, Guid operationalObjectTypeForDp)
         {
             try
             {
@@ -217,7 +241,7 @@ namespace Fmo.DataServices.Repositories
                                                         join blkseq in DataContext.BlockSequences.AsNoTracking() on del.ID equals blkseq.OperationalObject_GUID
                                                         join dr in DataContext.DeliveryRoutes.AsNoTracking() on deliveryRouteId equals dr.ID
                                                         join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
-                                                        where del.DeliveryPointUseIndicator_GUID == operationalObjectTypeForDP && drb.DeliveryRoute_GUID == deliveryRouteId
+                                                        where del.DeliveryPointUseIndicator_GUID == operationalObjectTypeForDp && drb.DeliveryRoute_GUID == deliveryRouteId
                                                         select del.DeliveryPointUseIndicator_GUID).Count();
                 return numberOfCommercialResidentialDPs;
             }
