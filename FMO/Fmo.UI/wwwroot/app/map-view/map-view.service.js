@@ -465,7 +465,7 @@ function mapService($http, mapFactory,
         persistSelection();
     }
     function persistSelection() {
-        if (getActiveFeature() != null && vm.interactions.select != null && vm.interactions.select != undefined) {
+        if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
             var features = vm.interactions.select.getFeatures();
             features.push(getActiveFeature());
             getSecondaryFeatures().forEach(function (feature) {
@@ -616,7 +616,7 @@ function mapService($http, mapFactory,
 
 
     function selectFeatures() {
-        if (vm.interactions.select == null || vm.interactions.select == undefined) {
+        if (vm.interactions.select == null || angular.isUndefined(vm.interactions.select)) {
             vm.interactions.select = new ol.interaction.Select({
                 condition: ol.events.condition.never,
                 style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)
