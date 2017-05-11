@@ -19,7 +19,6 @@ function unitSelectorAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 

@@ -15,6 +15,35 @@ font-size: 24px;
     @include font-color($white);   
 }
 
+
+/*commom sass*/
+h1{
+    @extend %header-content;
+    @include font-color($black);
+}
+
+.mdDialog {
+    width: width-percent(1);
+}
+
+.fa {
+    @include cursor(pointer);
+}
+
+i.fa.fa-times {
+    color: white;
+}
+
+.deliveryDialog{
+    @include margin(0px 10px 0px 0px);
+}
+
+.mdDialog input{
+    @extend %body-content;
+}
+
+/*fonts*/
+
 /*Chevin Light Font*/
 @font-face {
     font-family: 'Chevin_Light';

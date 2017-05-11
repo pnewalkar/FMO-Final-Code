@@ -21,7 +21,6 @@ function routeLogAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
@@ -35,7 +34,6 @@ function routeLogAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
@@ -49,7 +47,6 @@ function routeLogAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
@@ -63,7 +60,6 @@ function routeLogAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
