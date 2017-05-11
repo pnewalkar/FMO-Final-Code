@@ -12,6 +12,7 @@ using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.DTO.UIDropdowns;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -236,7 +237,7 @@ namespace Fmo.BusinessServices.Services
 
             try
             {
-                List<object> nybDetails = new List<object>();
+                List<BindingEntity> nybDetails = new List<BindingEntity>();
                 PostalAddressDTO postalAddressDto = null;
                 var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode, unitGuid);
                 Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
@@ -249,7 +250,7 @@ namespace Fmo.BusinessServices.Services
                         {
                             string address = string.Join(",", Convert.ToString(postalAddress.BuildingNumber) ?? string.Empty, postalAddress.BuildingName, postalAddress.SubBuildingName);
                             string formattedAddress = Regex.Replace(address, ",+", ",").Trim(',');
-                            nybDetails.Add(new { Value = postalAddress.ID, DisplayText = formattedAddress });
+                            nybDetails.Add(new BindingEntity { Value = postalAddress.ID, DisplayText = formattedAddress });
                         }
                     }
 

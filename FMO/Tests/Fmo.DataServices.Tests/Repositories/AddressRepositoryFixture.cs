@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Threading.Tasks;
+using Fmo.Common.AsyncEnumerator;
 using Fmo.Common.Interface;
 using Fmo.Common.TestSupport;
 using Fmo.DataServices.DBContext;
@@ -10,10 +14,6 @@ using Fmo.DTO;
 using Fmo.Entities;
 using Moq;
 using NUnit.Framework;
-using System.Linq;
-using System.Data.Entity.Infrastructure;
-using Fmo.Common.AsyncEnumerator;
-using System.Threading.Tasks;
 
 namespace Fmo.DataServices.Tests.Repositories
 {
@@ -28,6 +28,10 @@ namespace Fmo.DataServices.Tests.Repositories
         private Mock<IAddressRepository> mockAddressRepository;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IAddressRepository testCandidate;
+        private List<PostalAddressDTO> postalAddressesDTO;
+        private AddDeliveryPointDTO addDeliveryPointDTO1;
+        private AddDeliveryPointDTO addDeliveryPointDTO2;
+        private AddDeliveryPointDTO addDeliveryPointDTO3;
 
         [Test]
         public void Test_UpdateAddressValidTestCase()
@@ -101,11 +105,7 @@ namespace Fmo.DataServices.Tests.Repositories
             SetUpdataWithDeliverypoints();
             var result = testCandidate.GetPostalAddressDetails(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
 
-           // Assert.NotNull(result);
-        }
-
-        protected override void OnSetup()
-        {
+            // Assert.NotNull(result);
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Fmo.DataServices.Tests.Repositories
             List<string> results = await testCandidate.GetPostalAddressSearchDetails("Postcode1", new Guid("00000000-0000-0000-0000-000000000000"));
             Assert.NotNull(results);
             Assert.IsTrue(results.Count == 1);
-            Assert.IsTrue(results[0] == "ThoroughFare1, Postcode1");
+            Assert.IsTrue(results[0] == "ThoroughFare1,Postcode1");
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace Fmo.DataServices.Tests.Repositories
             List<string> results = await testCandidate.GetPostalAddressSearchDetails("ThoroughFare2", new Guid("00000000-0000-0000-0000-000000000000"));
             Assert.NotNull(results);
             Assert.IsTrue(results.Count == 1);
-            Assert.IsTrue(results[0] == "ThoroughFare2, Postcode2");
+            Assert.IsTrue(results[0] == "ThoroughFare2,Postcode2");
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace Fmo.DataServices.Tests.Repositories
             List<string> results = await testCandidate.GetPostalAddressSearchDetails("DependentThoroughFare1", new Guid("00000000-0000-0000-0000-000000000000"));
             Assert.NotNull(results);
             Assert.IsTrue(results.Count == 1);
-            Assert.IsTrue(results[0] == "ThoroughFare1, Postcode1");
+            Assert.IsTrue(results[0] == "ThoroughFare1,Postcode1");
         }
 
         [Test]
@@ -160,13 +160,326 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsTrue(results[0].RouteDetails[1].DisplayText == "Primary - DeliveryRoute2");
         }
 
+        [Test]
+        public void Test_CheckForDuplicateNybRecords_Duplicate()
+        {
+            SetUpDataForDeliveryPoints();
+            string results = testCandidate.CheckForDuplicateNybRecords(postalAddressesDTO[0]);
+            Assert.NotNull(results);
+            Assert.IsTrue(results == "Postcode");
+        }
+
+        [Test]
+        public void Test_CheckForDuplicateNybRecords_NotDuplicate()
+        {
+            SetUpDataForDeliveryPoints();
+            string results = testCandidate.CheckForDuplicateNybRecords(postalAddressesDTO[1]);
+            Assert.NotNull(results);
+            Assert.IsTrue(results == string.Empty);
+        }
+
+        [Test]
+        public void Test_CheckForDuplicateAddressWithDeliveryPoints_Duplicate()
+        {
+            SetUpDataForDeliveryPoints();
+            bool results = testCandidate.CheckForDuplicateAddressWithDeliveryPoints(postalAddressesDTO[1]);
+            Assert.NotNull(results);
+            Assert.IsTrue(results == true);
+        }
+
+        [Test]
+        public void Test_CheckForDuplicateAddressWithDeliveryPoints_NotDuplicate()
+        {
+            SetUpDataForDeliveryPoints();
+            bool results = testCandidate.CheckForDuplicateAddressWithDeliveryPoints(postalAddressesDTO[0]);
+            Assert.NotNull(results);
+            Assert.IsTrue(results == false);
+        }
+
+        [Test]
+        public void Test_CreateAddressAndDeliveryPoint_SamePostcode()
+        {
+            SetUpDataForCreateAddressAndDeliveryPoint();
+            var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO2);
+            Assert.NotNull(results.ID);
+            Assert.IsTrue(results.ID != Guid.Empty);
+        }
+
+        [Test]
+        public void Test_CreateAddressAndDeliveryPoint_DifferentPostcode()
+        {
+            SetUpDataForCreateAddressAndDeliveryPoint();
+            var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO1);
+            Assert.NotNull(results);
+            Assert.IsTrue(results.ID != Guid.Empty);
+        }
+
+        [Test]
+        public void Test_CreateAddressAndDeliveryPoint_Null()
+        {
+            SetUpDataForCreateAddressAndDeliveryPoint();
+            var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO3);
+            Assert.NotNull(results);
+            Assert.IsTrue(results.ID == Guid.Empty);
+        }
+
+        protected override void OnSetup()
+        {
+        }
+
+        private void SetUpDataForDeliveryPoints()
+        {
+            postalAddressesDTO = new List<PostalAddressDTO>()
+            {
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "PostcodeNew",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
+            },
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "Postcode",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
+            }
+            };
+
+            List<DeliveryPoint> deliveryPoint = new List<DeliveryPoint>()
+            {
+                new DeliveryPoint()
+                {
+                }
+            };
+
+            List<PostalAddress> postalAddresses = new List<PostalAddress>()
+            {
+                new PostalAddress()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    Postcode = "Postcode",
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    DeliveryPoints = deliveryPoint
+            }
+            };
+
+            DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO()
+            {
+                ID = Guid.NewGuid()
+            };
+
+            addDeliveryPointDTO1 = new AddDeliveryPointDTO()
+            {
+                PostalAddressDTO = postalAddressesDTO[0],
+                DeliveryPointDTO = deliveryPointDTO
+            };
+
+            var mockPostalAddressDBSet = MockDbSet(postalAddresses);
+            var mockDeliveryPointsDBSet = MockDbSet(deliveryPoint);
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFileProcessingLog = CreateMock<IFileProcessingLogRepository>();
+            mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockPostCodeRepository = CreateMock<IPostCodeRepository>();
+            mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
+            mockAddressRepository = CreateMock<IAddressRepository>();
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
+
+            mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
+            mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
+            mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
+            mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
+            mockFmoDbContext.Setup(x => x.PostalAddresses.AsNoTracking()).Returns(mockPostalAddressDBSet.Object);
+
+            mockFmoDbContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointsDBSet.Object);
+            mockDeliveryPointsDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointsDBSet.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointsDBSet.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryPoints.AsNoTracking()).Returns(mockDeliveryPointsDBSet.Object);
+
+            mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddressesDTO[0]);
+
+            mockReferenceDataCategoryRepository.Setup(x => x.GetReferenceDataId("Postal Address Type", "Nyb")).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
+
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object, mockReferenceDataCategoryRepository.Object);
+        }
+
+        private void SetUpDataForCreateAddressAndDeliveryPoint()
+        {
+            postalAddressesDTO = new List<PostalAddressDTO>()
+            {
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "PostcodeNew",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
+            },
+                new PostalAddressDTO()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "Postcode",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
+            }
+            };
+
+            List<DeliveryPoint> deliveryPoint = new List<DeliveryPoint>()
+            {
+                new DeliveryPoint()
+                {
+                }
+            };
+
+            List<PostalAddress> postalAddresses = new List<PostalAddress>()
+            {
+                new PostalAddress()
+                {
+                    BuildingName = "bldg1",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    Postcode = "Postcode",
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                    DeliveryPoints = deliveryPoint
+            }
+            };
+
+            DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO()
+            {
+                ID = Guid.NewGuid()
+            };
+
+            addDeliveryPointDTO1 = new AddDeliveryPointDTO()
+            {
+                PostalAddressDTO = postalAddressesDTO[0],
+                DeliveryPointDTO = deliveryPointDTO
+            };
+            addDeliveryPointDTO2 = new AddDeliveryPointDTO()
+            {
+                PostalAddressDTO = postalAddressesDTO[1],
+                DeliveryPointDTO = deliveryPointDTO
+            };
+            addDeliveryPointDTO3 = new AddDeliveryPointDTO()
+            {
+                PostalAddressDTO = null,
+                DeliveryPointDTO = null
+            };
+
+            List<AddressLocation> addressLocation = new List<AddressLocation>()
+            {
+                new AddressLocation()
+                {
+                    UDPRN = 12345
+                }
+            };
+
+            var mockPostalAddressDBSet = MockDbSet(postalAddresses);
+            var mockDeliveryPointsDBSet = MockDbSet(deliveryPoint);
+            var mockAddressLocationsDBSet = MockDbSet(addressLocation);
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFileProcessingLog = CreateMock<IFileProcessingLogRepository>();
+            mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockPostCodeRepository = CreateMock<IPostCodeRepository>();
+            mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
+            mockAddressRepository = CreateMock<IAddressRepository>();
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
+
+            mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
+            mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
+            mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
+            mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
+
+            mockFmoDbContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointsDBSet.Object);
+            mockDeliveryPointsDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointsDBSet.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointsDBSet.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryPoints.AsNoTracking()).Returns(mockDeliveryPointsDBSet.Object);
+
+            mockFmoDbContext.Setup(x => x.Set<AddressLocation>()).Returns(mockAddressLocationsDBSet.Object);
+            mockDeliveryPointsDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointsDBSet.Object);
+            mockFmoDbContext.Setup(x => x.AddressLocations).Returns(mockAddressLocationsDBSet.Object);
+
+            mockPostCodeRepository.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Guid.NewGuid);
+            mockAddressRepository.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddressesDTO[0]);
+
+            mockReferenceDataCategoryRepository.Setup(x => x.GetReferenceDataId("Postal Address Type", "Nyb")).Returns(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
+
+            testCandidate = new AddressRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object, mockPostCodeRepository.Object, mockReferenceDataCategoryRepository.Object);
+        }
+
         private void SetUpdataWithDeliverypoints()
         {
             List<PostalAddress> lstPostalAddress = new List<PostalAddress>()
             {
                 new PostalAddress()
                 {
-                    ID= Guid.NewGuid(),
+                    ID = Guid.NewGuid(),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     UDPRN = 14856,
                     DeliveryPoints = new List<DeliveryPoint>()

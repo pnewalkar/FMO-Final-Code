@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
@@ -92,6 +93,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+
+        /// <summary>
+        /// Check For Duplicate Address With DeliveryPoints
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress</param>
+        /// <returns>bool</returns>
+        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
     }
 }

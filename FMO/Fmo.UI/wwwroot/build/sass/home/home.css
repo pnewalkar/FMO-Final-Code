@@ -1,7 +1,12 @@
-.brandName {
+.brandName, h1 {
   color: #ffffff;
   font-family: Chevin_Light;
   font-size: 18px; }
+
+.mdDialog input {
+  color: #2a2a2d;
+  font-family: PF_DIN;
+  font-size: 16px; }
 
 .brandName {
   font-size: 24px; }
@@ -14,6 +19,23 @@
 .fa-bars {
   color: #ffffff; }
 
+/*commom sass*/
+h1 {
+  color: #2a2a2d; }
+
+.mdDialog {
+  width: 100%; }
+
+.fa {
+  cursor: pointer; }
+
+i.fa.fa-times {
+  color: white; }
+
+.deliveryDialog {
+  margin: 0px 10px 0px 0px; }
+
+/*fonts*/
 /*Chevin Light Font*/
 @font-face {
   font-family: 'Chevin_Light';

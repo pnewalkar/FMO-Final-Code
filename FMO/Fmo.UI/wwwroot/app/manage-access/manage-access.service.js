@@ -21,7 +21,6 @@ function manageAccessService($http, $q, GlobalSettings) {
 
         }).error(function (err, status) {
             alert(err);
-            console.log(err);
             deferred.reject(err);
         });
 

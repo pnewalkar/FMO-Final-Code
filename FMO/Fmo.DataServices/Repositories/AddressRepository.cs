@@ -16,6 +16,7 @@
     using Fmo.DTO.UIDropdowns;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
+    using DTO.Model;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -254,7 +255,7 @@
                 string postCode = string.Empty;
                 Guid nybAddressID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
 
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking()
                                 .Where(n => n.AddressType_GUID == nybAddressID);
 
                 if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
@@ -292,13 +293,90 @@
                     postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
                 }
 
-                var address = postalAddress.SingleOrDefault();
-                if (address != null && address.Postcode != address.Postcode)
+                var addressDetails = postalAddress.ToList();
+                if (addressDetails != null && addressDetails.Count > 0)
                 {
-                    postCode = address.Postcode;
+                    foreach (var address in addressDetails)
+                    {
+                        if (address != null && address.Postcode != objPostalAddress.Postcode)
+                        {
+                            postCode = address.Postcode;
+                            break;
+                        }
+                    }
                 }
 
                 return postCode;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Check For Duplicate Address With DeliveryPoints
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress</param>
+        /// <returns>bool</returns>
+        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        {
+            try
+            {
+                bool isDuplicate = false;
+
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                                .Where(n => n.Postcode == objPostalAddress.Postcode);
+
+                if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
+                {
+                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (objPostalAddress.BuildingNumber != null)
+                {
+                    postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
+                {
+                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
+                {
+                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
+                {
+                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
+                {
+                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
+                {
+                    postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
+                }
+
+                var addressDetails = postalAddress.ToList();
+                if (addressDetails != null && addressDetails.Count > 0)
+                {
+                    foreach (var address in addressDetails)
+                    {
+                        if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
+                        {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+                }
+
+                return isDuplicate;
             }
             catch (Exception)
             {
@@ -416,7 +494,8 @@
             var postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
                                        join pc in DataContext.Postcodes.AsNoTracking()
                                        on pa.PostCodeGUID equals pc.ID
-                                       where pc.PostcodeUnit == postCode
+                                       join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                       where pc.PostcodeUnit == postCode && ul.Unit_GUID == unitGuid
                                        select pa).ToListAsync();
 
             postalAddressDTO = GenericMapper.MapList<PostalAddress, PostalAddressDTO>(postalAddress);
@@ -499,12 +578,21 @@
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        public bool CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             bool isPostalAddressInserted = false;
+            bool isAddressLocationAvailable = false;
+            Guid returnGuid = new Guid(Constants.DEFAULTGUID);
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
+                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN).SingleOrDefault();
+
+                if (objAddressLocation != null)
+                {
+                    isAddressLocationAvailable = true;
+                }
+
                 DeliveryPoint objDeliveryPoint = new DeliveryPoint()
                 {
                     ID = Guid.NewGuid(),
@@ -513,6 +601,13 @@
                     MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
                     MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
                 };
+
+                if (isAddressLocationAvailable)
+                {
+                    objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
+                    objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
+                    objDeliveryPoint.Longitude = objAddressLocation.Longitude;
+                }
 
                 try
                 {
@@ -550,6 +645,7 @@
 
                     DataContext.SaveChanges();
                     isPostalAddressInserted = true;
+                    returnGuid = objDeliveryPoint.ID;
                 }
                 catch (Exception)
                 {
@@ -557,8 +653,9 @@
                 }
             }
 
-            return isPostalAddressInserted;
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable };
         }
+
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>

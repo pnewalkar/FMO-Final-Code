@@ -152,5 +152,15 @@
         public const string Longitude = "longitude";
 
         #endregion OtherLayers
+
+        #region DeliveryPoints
+        public const string DUPLICATEDELIVERYPOINT = "There is a duplicate of this Delivery Point in the system";
+
+        public const string DUPLICATENYBRECORDS = "This address is in the NYB file under the postcode ";
+        public const string DELIVERYPOINTCREATED = "Delivery Point created successfully";
+        public const string DELIVERYPOINTCREATEDWITHOUTLOCATION = "Delivery Point created successfully without location";
+        public const string INTERNAL = "Internal";
+        public const string ROWVERSION = "RowVersion";
+        #endregion DeliveryPoints
     }
 }

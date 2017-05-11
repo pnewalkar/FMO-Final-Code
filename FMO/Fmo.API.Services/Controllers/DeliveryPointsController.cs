@@ -3,6 +3,7 @@ using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,9 +71,22 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("CreateDeliveryPoint")]
         [HttpPost]
-        public string CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
         {
             return businessService.CreateDeliveryPoint(deliveryPointDTO);
+        }
+
+
+        /// <summary>
+        /// Update delivery point
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO</param>
+        /// <returns></returns>
+        [Route("UpdateDeliveryPoint")]
+        [HttpPost]
+        public void UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDTO)
+        {
+            businessService.UpdateDeliveryPointLocation(deliveryPointModelDTO);
         }
     }
 }

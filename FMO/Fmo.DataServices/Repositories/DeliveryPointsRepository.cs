@@ -18,6 +18,7 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using MappingExtensions;
     using Entity = Fmo.Entities;
+    using System.Data.Entity.Infrastructure;
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
@@ -273,14 +274,22 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN) == deliveryPointDTO.UDPRN).SingleOrDefault();
+                using (FMODBContext fmoDBContext = new FMODBContext())
+                {
+                    DeliveryPoint deliveryPoint = fmoDBContext.DeliveryPoints.Where(dp => dp.ID == deliveryPointDTO.ID).SingleOrDefault();
 
-                deliveryPoint.Longitude = deliveryPointDTO.Longitude;
-                deliveryPoint.Latitude = deliveryPointDTO.Latitude;
-                deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
-                deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
-
-                return await DataContext.SaveChangesAsync();
+                    deliveryPoint.Longitude = deliveryPointDTO.Longitude;
+                    deliveryPoint.Latitude = deliveryPointDTO.Latitude;
+                    deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
+                    deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
+                    fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
+                    fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
+                    return await fmoDBContext.SaveChangesAsync();
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -413,6 +422,24 @@ namespace Fmo.DataServices.Repositories
                 }
 
                 return distance;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get the delivery point row version
+        /// </summary>
+        /// <param name="id">Guid</param>
+        /// <returns>byte[]</returns>
+        public byte[] GetDeliveryPointRowVersion(Guid id)
+        {
+            try
+            {
+                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.ID == id).SingleOrDefault();
+                return deliveryPoint.RowVersion;
             }
             catch (Exception)
             {

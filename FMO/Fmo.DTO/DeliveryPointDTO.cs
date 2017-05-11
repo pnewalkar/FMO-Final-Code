@@ -50,5 +50,7 @@ namespace Fmo.DTO
         public Guid? DeliveryGroup_GUID { get; set; }
 
         public Guid DeliveryPointUseIndicator_GUID { get; set; }
+
+        public byte[] RowVersion { get; set; }
     }
 }

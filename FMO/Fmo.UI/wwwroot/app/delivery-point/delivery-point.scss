@@ -1,77 +1,38 @@
 @import './app/variables';
 
-
-.deliveryPointDialog {
-    width: width-percent(1);
-}
-
-i.fa.fa-times.closeWindow {
-    @include position(absolute);
-    @include top(5px);
-    @include cursor(default);
-    right: 10px;
-}
-
-
 .searchInputIcon {
     @include margin(20px 0px 0px 5px);
 }
 
 .resultPanel{
-    @include background($white,none);
-    width: 636px;
-    height: 100px;
-    @include top(120px);
-    overflow-y: auto;
+    @include margin(-44px 0px 0px 0px);
+    @include height(100px);
+    @include cursor(pointer);
 } 
 
 .resultPanel {
     @extend %body-content;
 }
 
-.deliveryDialog{
-    @include margin(0px 10px 0px 0px);
-}
-
-.fa {
-    @include cursor(pointer);
-}
-
 .dialogAction{
     @include margin(100px 0px 0px 0px);    
-}
-
-.deliveryPointDialog input{
-    @extend %body-content;
 }
 
 .dpCheckBox{
     @include float(right);
 }
 
-h1{
-    @extend %header-content;
-    @include font-color($black);
-}
-
-md-input-container{
- margin-top: 8px;   
-}
-
 fieldset{
-    border: 2px solid black;
-    padding: 5px;
+    @include padding(5px 5px 5px 5px);
+    @include border(2px solid $black);
 }
 
-.addressRow{
-    margin-bottom: 10px;
-}
 
 .aliasinput{
-    margin-bottom: 5px;
+    @include margin(0px 0px 5px 0px);
 }
 
 .aliasBox{
-    height:100px;
+    @include height(150px);
     overflow-y:auto;
 }
