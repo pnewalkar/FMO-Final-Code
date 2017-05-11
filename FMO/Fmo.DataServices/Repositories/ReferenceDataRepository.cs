@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.MappingConfiguration;
-using Entity = Fmo.Entities;
+using Fmo.Entities;
 
 namespace Fmo.DataServices.Repositories
 {
-    public class ReferenceDataRepository : RepositoryBase<Entity.ReferenceData, FMODBContext>, IReferenceDataRepository
+    public class ReferenceDataRepository : RepositoryBase<ReferenceData, FMODBContext>, IReferenceDataRepository
     {
         public ReferenceDataRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
@@ -18,17 +19,19 @@ namespace Fmo.DataServices.Repositories
 
         public ReferenceDataDTO GetReferenceDataId(string strDataDesc, string strDisplayText)
         {
-            try
-            {
-                Entity.ReferenceData referenceData = DataContext.ReferenceDatas.Where(refData => refData.DataDescription.Equals(strDataDesc) && refData.DisplayText.Equals(strDisplayText)).FirstOrDefault();
-                ReferenceDataDTO referenceDataDTO = new ReferenceDataDTO();
-                GenericMapper.Map(referenceData, referenceDataDTO);
-                return referenceDataDTO;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            ReferenceData referenceData = DataContext.ReferenceDatas.Where(refData => refData.DataDescription.Equals(strDataDesc) && refData.DisplayText.Equals(strDisplayText)).FirstOrDefault();
+            return GenericMapper.Map<ReferenceData, ReferenceDataDTO>(referenceData);
+        }
+
+        /// <summary>
+        /// Gets the name of the reference data by category.
+        /// </summary>
+        /// <param name="categoryName">The string categoryname.</param>
+        /// <returns>List ReferenceDataDTO</returns>
+        public List<ReferenceDataDTO> GetReferenceDataByCategoryName(string categoryName)
+        {
+            var referenceData = DataContext.ReferenceDatas.AsNoTracking().Where(n => n.ReferenceDataCategory.CategoryName.Trim().Equals(categoryName, StringComparison.OrdinalIgnoreCase)).ToList();
+            return GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(referenceData);
         }
     }
 }
