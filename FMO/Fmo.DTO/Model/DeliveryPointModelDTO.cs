@@ -19,5 +19,7 @@ namespace Fmo.DTO.Model
         public decimal? YCoordinate { get; set; }
 
         public byte[] RowVersion { get; set; }
+
+        public Guid ID { get; set; }
     }
 }

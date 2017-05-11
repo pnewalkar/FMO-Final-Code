@@ -276,14 +276,14 @@ namespace Fmo.DataServices.Repositories
             {
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
-                    DeliveryPoint deliveryPoint = fmoDBContext.DeliveryPoints.Where(dp => ((int)dp.UDPRN) == deliveryPointDTO.UDPRN).SingleOrDefault();
+                    DeliveryPoint deliveryPoint = fmoDBContext.DeliveryPoints.Where(dp => dp.ID == deliveryPointDTO.ID).SingleOrDefault();
 
                     deliveryPoint.Longitude = deliveryPointDTO.Longitude;
                     deliveryPoint.Latitude = deliveryPointDTO.Latitude;
                     deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
                     deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
                     fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
-                    fmoDBContext.Entry(deliveryPoint).OriginalValues["RowVersion"] = deliveryPointDTO.RowVersion;
+                    fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
                     return await fmoDBContext.SaveChangesAsync();
                 }
             }

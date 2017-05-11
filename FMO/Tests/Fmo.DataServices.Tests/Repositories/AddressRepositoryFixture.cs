@@ -200,27 +200,27 @@ namespace Fmo.DataServices.Tests.Repositories
         public void Test_CreateAddressAndDeliveryPoint_SamePostcode()
         {
             SetUpDataForCreateAddressAndDeliveryPoint();
-            bool results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO2);
+            Guid results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO2);
             Assert.NotNull(results);
-            Assert.IsTrue(results == true);
+            Assert.IsTrue(results != Guid.Empty);
         }
 
         [Test]
         public void Test_CreateAddressAndDeliveryPoint_DifferentPostcode()
         {
             SetUpDataForCreateAddressAndDeliveryPoint();
-            bool results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO1);
+            Guid results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO1);
             Assert.NotNull(results);
-            Assert.IsTrue(results == true);
+            Assert.IsTrue(results != Guid.Empty);
         }
 
         [Test]
         public void Test_CreateAddressAndDeliveryPoint_Null()
         {
             SetUpDataForCreateAddressAndDeliveryPoint();
-            bool results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO3);
+            Guid results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO3);
             Assert.NotNull(results);
-            Assert.IsTrue(results == false);
+            Assert.IsTrue(results == Guid.Empty);
         }
 
         protected override void OnSetup()

@@ -179,10 +179,17 @@ namespace Fmo.BusinessServices.Services
                     {
                         using (TransactionScope scope = new TransactionScope())
                         {
-                            returnGuid = postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                            rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(returnGuid);
+                            CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
                             scope.Complete();
-                            message = Constants.DELIVERYPOINTCREATED;
+                            if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
+                            {
+                                message = Constants.DELIVERYPOINTCREATED;
+                            }
+                            else
+                            {
+                                message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
+                            }
                         }
                     }
                 }
@@ -213,7 +220,6 @@ namespace Fmo.BusinessServices.Services
                                                 Convert.ToString(deliveryPointModelDTO.XCoordinate),
                                                 Convert.ToString(deliveryPointModelDTO.YCoordinate));
 
-            // Convert the location from string type to geometry type
             DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
             using (TransactionScope scope = new TransactionScope())
             {
@@ -221,6 +227,7 @@ namespace Fmo.BusinessServices.Services
 
                 DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
                 {
+                    ID = deliveryPointModelDTO.ID,
                     UDPRN = deliveryPointModelDTO.UDPRN,
                     Latitude = deliveryPointModelDTO.Latitude,
                     Longitude = deliveryPointModelDTO.Longitude,
@@ -230,6 +237,7 @@ namespace Fmo.BusinessServices.Services
                 };
 
                 await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+                scope.Complete();
             }
         }
 

@@ -73,7 +73,7 @@ namespace Fmo.DTO
 
         public string FileName { get; set; }
 
-        public List<object> NybAddressDetails { get; set; }
+        public List<BindingEntity> NybAddressDetails { get; set; }
 
         public List<BindingEntity> RouteDetails { get; set; }
     }
