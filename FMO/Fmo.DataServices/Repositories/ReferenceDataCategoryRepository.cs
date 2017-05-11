@@ -105,5 +105,24 @@ namespace Fmo.DataServices.Repositories
             List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
             return referenceDataCategoryListDto;
         }
+
+        /// <summary>
+        /// Gets the name of the reference data categories by category.
+        /// </summary>
+        /// <param name="categoryNames">The category names.</param>
+        /// <returns>List ReferenceDataCategoryDTO</returns>
+        public List<ReferenceDataCategoryDTO> GetReferenceDataCategoriesByCategoryNames(List<string> categoryNames)
+        {
+            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(m => categoryNames.Contains(m.CategoryName.Trim())).ToList();
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();
+                cfg.CreateMap<ReferenceData, ReferenceDataDTO>();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
+            return referenceDataCategoryListDto;
+        }
     }
 }
