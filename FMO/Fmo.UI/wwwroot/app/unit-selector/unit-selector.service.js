@@ -1,26 +1,27 @@
 
 // Just for reference
 angular.module('unitSelector')
-    .factory('unitSelectorAPIService', ['$http', '$q', 'GlobalSettings', function ($http, $q,GlobalSettings) {
-        var unitSelectorAPIService = {};
+    .factory('unitSelectorAPIService', unitSelectorAPIService);
 
-        unitSelectorAPIService.getDeliveryUnit = function () {
-            var deferred = $q.defer();
+unitSelectorAPIService.$inject = ['$http', '$q', 'GlobalSettings'];
+function unitSelectorAPIService($http, $q, GlobalSettings) {
+    return {
+        getDeliveryUnit: getDeliveryUnit
+    };
 
-            $http({
-                method: 'GET',
-                url: GlobalSettings.apiUrl + '/UnitLocation/DeliveryUnitsForUser'
-            }).success(function (response) {
+    function getDeliveryUnit() {
+        var deferred = $q.defer();
+
+        $http({
+            method: 'GET',
+            url: GlobalSettings.apiUrl + '/UnitLocation/DeliveryUnitsForUser'
+        }).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
-            return deferred.promise;
-
-        }
-
-        return unitSelectorAPIService;
-    }]);
+        return deferred.promise;
+    }
+}

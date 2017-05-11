@@ -13,13 +13,13 @@ angular.module('FMOApp')
             url: "/routeLog",
             templateUrl: "./route-log/route-log.template.html",
             controller: "RouteLogController as vm",
-            params: { selectedUnit: null, }
+            params: { selectedUnit: null }
         })
         .state("routeSimulation", {
             url: "/routeSimulation",
             templateUrl: "./simulation/simulation.template.html",
             controller: "SimulationController as vm",
-            params: { selectedUnit: null, }
+            params: { selectedUnit: null }
         })
         .state("deliveryPoint", {
             url: "/deliveryPoint",
@@ -31,12 +31,12 @@ angular.module('FMOApp')
              url: '/',
              templateUrl: '/app/manage-access/manage-access.html',
              controller: 'manageAccessController as vm',
-             params: { username: null, }
+             params: { username: null }
          })
         .state("searchDetails", {
             templateUrl: "./search/context.template.html",
             controller: "ContextController as vm",
-            params: { selectedItem: null, }
+            params: { selectedItem: null }
         })
         .state("referenceData", {
             templateUrl: "./reference-data/reference-data.templete.html",

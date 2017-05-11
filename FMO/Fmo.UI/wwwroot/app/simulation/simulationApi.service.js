@@ -20,12 +20,11 @@ function simulationAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
         return deferred.promise;
-    };
+    }
 
     function getScenario(operationStateID, deliveryUnitID) {
         var deferred = $q.defer();
@@ -34,12 +33,11 @@ function simulationAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
         return deferred.promise;
-    };
+    }
 
     function getRoutes(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
@@ -48,10 +46,9 @@ function simulationAPIService($http, $q, GlobalSettings) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
         return deferred.promise;
-    };
+    }
 }
