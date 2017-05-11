@@ -276,7 +276,7 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
         layerObj.disabled = layerObj.disabled ? true : false;
         layerObj.onMiniMap = layerObj.onMiniMap ? true : false;
         layerObj.keys = layerObj.keys ? layerObj.keys : [];
-        layerObj.selectorVisible = layerObj.selectorVisible == undefined ? true : layerObj.selectorVisible;
+        layerObj.selectorVisible = layerObj.selectorVisible == angular.isUndefined(undefined)  ? true : layerObj.selectorVisible;
 
         layerObj.layer.set('name', layerObj.layerName);
         if (angular.isDefined(layerObj.layer.setZIndex))
@@ -322,7 +322,7 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
     function getCustomScaleLine() {
         customScaleLine = function (opt_options) {
             var options = opt_options ? opt_options : {};
-            var className = options.className !== undefined ? options.className : 'ol-scale-line';
+            var className = options.className !== angular.isUndefined(undefined)  ? options.className : 'ol-scale-line';
             this.element_ = $document.createElement('DIV');
             this.renderedVisible_ = false;
             this.viewState_ = null;
