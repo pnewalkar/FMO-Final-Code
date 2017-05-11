@@ -560,7 +560,7 @@ function mapService($http,
         if (vm.measureTooltipElement) {
             vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
         }
-        vm.measureTooltipElement = $document.createElement('div');
+        vm.measureTooltipElement = $document[0].createElement('div');
         vm.measureTooltipElement.className = 'tooltip tooltip-measure';
         vm.measureTooltip = new ol.Overlay({
             element: vm.measureTooltipElement,

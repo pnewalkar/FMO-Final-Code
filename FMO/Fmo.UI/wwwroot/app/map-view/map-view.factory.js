@@ -86,7 +86,7 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
         map.addControl(getCustomScaleLine());
 
         var external_control = new ol.control.Zoom({
-            target: $document.getElementById('zoom-control')
+            target: $document[0].getElementById('zoom-control')
         });
         map.addControl(external_control);
 
@@ -323,7 +323,7 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
         customScaleLine = function (opt_options) {
             var options = opt_options ? opt_options : {};
             var className = options.className !== angular.isUndefined(undefined)  ? options.className : 'ol-scale-line';
-            this.element_ = $document.createElement('DIV');
+            this.element_ = $document[0].createElement('DIV');
             this.renderedVisible_ = false;
             this.viewState_ = null;
             this.renderedHTML_ = '';
@@ -342,8 +342,8 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
             var index = definedScales.indexOf(scale);
             var maxScaleIndex = definedScales.indexOf(maxScale);
             if (index > -1) {
-                var zoomInButtons = $document.getElementsByClassName("ol-zoom-in");
-                var zoomOutButtons = $document.getElementsByClassName("ol-zoom-out");
+                var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
+                var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
 
                 if (index == definedScales.length - 1) {
                     setZoomButtonStatus(zoomInButtons, true);
@@ -372,7 +372,7 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
         return new customScaleLine({
             render: customScaleLine.render,
             className: 'zoom-scale',
-            target: $document.getElementById('zoom-scale')
+            target: $document[0].getElementById('zoom-scale')
         });
     }
 
