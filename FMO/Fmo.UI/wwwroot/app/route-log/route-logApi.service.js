@@ -12,7 +12,7 @@ function routeLogAPIService($http, $q, GlobalSettings) {
         getStatus: getStatus,
         getScenario: getScenario,
         getRoutes: getRoutes
-    }
+    };
 
     function getSelectionType() {
         var deferred = $q.defer();
@@ -26,7 +26,7 @@ function routeLogAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    };
+    }
 
     function getStatus() {
         var deferred = $q.defer();
@@ -40,7 +40,7 @@ function routeLogAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    };
+    }
 
     function getScenario(operationStateID, deliveryUnitID) {
         var deferred = $q.defer();
@@ -54,7 +54,7 @@ function routeLogAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    };
+    }
 
     function getRoutes(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
@@ -68,5 +68,5 @@ function routeLogAPIService($http, $q, GlobalSettings) {
         });
 
         return deferred.promise;
-    };
+    }
 }
