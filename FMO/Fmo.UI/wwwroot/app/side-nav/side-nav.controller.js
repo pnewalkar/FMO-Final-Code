@@ -19,7 +19,7 @@ function sideNavController($scope,
                            sideNavApiService,
                            SideNavConstant)
                            {
-    vm = this;
+   var vm = this;
     vm.routeLog = routeLog;
     vm.openModalPopup = openModalPopup;
     vm.fetchActionItems = fetchActionItems;
@@ -54,7 +54,7 @@ function sideNavController($scope,
 
     function fetchActionItems() {
         vm.getItem = sessionStorage.getItem('roleAccessData');
-        vm.RolesActionResult = JSON.parse(vm.getItem);
+        vm.RolesActionResult = angular.fromJson(vm.getItem);
     }
 
     function closeSideNav() {

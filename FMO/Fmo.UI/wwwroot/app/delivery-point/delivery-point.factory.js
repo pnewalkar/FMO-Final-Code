@@ -10,7 +10,7 @@ angular.module('deliveryPoint')
                 deferred.resolve(response);
 
             }).error(function (err, status) {
-                console.log(err);
+              
                 deferred.reject(err);
             });
 
@@ -24,7 +24,7 @@ angular.module('deliveryPoint')
                 deferred.resolve(response);
 
             }).error(function (err, status) {
-                console.log(err);
+               
                 deferred.reject(err);
             });
 
@@ -39,7 +39,7 @@ angular.module('deliveryPoint')
                 deferred.resolve(response);
 
             }).error(function (err, status) {
-                console.log(err);
+               
                 deferred.reject(err);
             });
 
@@ -55,7 +55,7 @@ angular.module('deliveryPoint')
                 deferred.resolve(response);
 
             }).error(function (err, status) {
-                console.log(err);
+                
                 deferred.reject(err);
             });
 
@@ -69,7 +69,7 @@ angular.module('deliveryPoint')
                 deferred.resolve(response);
 
             }).error(function (err, status) {
-                console.log(err);
+                
                 deferred.reject(err);
             });
 

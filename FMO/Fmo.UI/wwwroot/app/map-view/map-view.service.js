@@ -117,7 +117,7 @@ function mapService($http, mapFactory,
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
-                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 $http({
                     method: 'GET',
                     url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','),
@@ -147,7 +147,7 @@ function mapService($http, mapFactory,
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
-                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 $http({
                     method: 'GET',
                     url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','),
@@ -165,7 +165,7 @@ function mapService($http, mapFactory,
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
-                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 $http({
                     method: 'GET',
                     url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','),

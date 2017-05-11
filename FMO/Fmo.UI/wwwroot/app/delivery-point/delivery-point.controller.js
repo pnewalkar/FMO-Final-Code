@@ -76,6 +76,7 @@ function DeliveryPointController(
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
     vm.createDeliveryPoint = createDeliveryPoint;
     vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
+    vm.openErrorAlert = openErrorAlert;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
@@ -170,7 +171,7 @@ function DeliveryPointController(
         if (vm.postalAddressData.udprn) {
 
 
-            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber : '';
+            var buildingNumber = vm.nybaddress.buildingNumber != null && angular.isDefined(vm.nybaddress.buildingNumber) ? vm.nybaddress.buildingNumber : '';
             var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName : '';
             var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName : '';
             var street = vm.postalAddressData.thoroughfare != null && vm.postalAddressData.thoroughfare !== undefined ? vm.postalAddressData.thoroughfare : '';
@@ -381,5 +382,20 @@ function DeliveryPointController(
     function onCloseDeliveryPoint() {
         $mdDialog.hide(vm.close);
     }
+
+    function openErrorAlert() {
+        var confirm =
+          $mdDialog.confirm()
+            .clickOutsideToClose(true)
+            .title('Duplicates Found')
+            .textContent('One or more addresses in the given range already exist.')
+            .ariaLabel('Left to right demo')
+            .ok('ok')
+           
+        $mdDialog.show(confirm).then(function () {
+            vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
+        }, function () {
+        });
+    };
 
 };
