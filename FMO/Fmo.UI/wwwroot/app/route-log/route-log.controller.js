@@ -106,7 +106,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
 
     function deliveryRouteChange() {
         //alert(vm.selectedVegetables);
-        routeLogAPIService.getRouteDetailsByGUID(vm.selectedVegetables.id).then(function (response) {
+        routeLogAPIService.getRouteDetailsByGUID(vm.selectedRoute.id).then(function (response) {
             vm.routeDetails = response;
         });
     }
