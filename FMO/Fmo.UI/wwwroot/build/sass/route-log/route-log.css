@@ -3,7 +3,7 @@
   font-family: Chevin_Light;
   font-size: 18px; }
 
-.td1, .td2, label, .md-text {
+.td1, .td2, label, .md-text, .routeDetailstable table {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
@@ -113,3 +113,18 @@ span.closeRouteWindow {
 
 .routeGenerate {
   margin-left: 20px; }
+
+.routeDetailstable table {
+  width: 100%;
+  border-collapse: collapse; }
+
+.routeDetailstable td, th {
+  border: 1px solid #2a2a2d;
+  padding: 8px 8px 8px 8px;
+  text-align: left; }
+
+.routeDetailstable tr:nth-child(even) {
+  background-color: #f5f5f5; }
+  .routeDetailstable tr:nth-child(even):hover {
+    background-color: none; }
+
