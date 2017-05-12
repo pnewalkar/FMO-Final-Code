@@ -20,13 +20,16 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
+        private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteRepository"/> class.
         /// </summary>
         /// <param name="databaseFactory">IDatabaseFactory reference</param>
-        public DeliveryRouteRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        public DeliveryRouteRepository(IDatabaseFactory<FMODBContext> databaseFactory, IReferenceDataCategoryRepository _refDataRepository)
             : base(databaseFactory)
         {
+            refDataRepository = _refDataRepository;
         }
 
         /// <summary>
@@ -160,7 +163,7 @@ namespace Fmo.DataServices.Repositories
                 });
 
                 Mapper.Configuration.CreateMapper();
-                List<ReferenceDataCategory> referenceDataCategoryList= Mapper.Map<List<ReferenceDataCategoryDTO>, List<ReferenceDataCategory>>(referenceDataCategoryDtoList);
+                List<ReferenceDataCategory> referenceDataCategoryList = Mapper.Map<List<ReferenceDataCategoryDTO>, List<ReferenceDataCategory>>(referenceDataCategoryDtoList);
 
                 var referenceData =
                     referenceDataCategoryList.Where(x => x.CategoryName == "Delivery Route Method Type").SelectMany(x => x.ReferenceDatas);
@@ -168,25 +171,25 @@ namespace Fmo.DataServices.Repositories
                 var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
                                                join rd in referenceData on dr.RouteMethodType_GUID equals rd.ID
                                                join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                    where dr.ID == deliveryRouteId
-                    select new DeliveryRouteDTO
-                    {
-                        RouteName = dr.RouteName,
-                        RouteNumber = dr.RouteNumber,
-                        ScenarioName = sr.ScenarioName,
-                        Method = rd.DisplayText
-                    }).Select(x => new DeliveryRouteDTO
-                                          {
-                                              Aliases = GetAliases(deliveryRouteId),
-                                              Blocks = GetNumberOfBlocks(deliveryRouteId),
-                                              PairedRoute = GetPairedRoute(deliveryRouteId),
-                                              DPs = GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp),
-                                              BusinessDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation),
-                                              ResidentialDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential),
-                                              AccelarationIn = "AccelarationIn",
-                                              AccelarationOut = "AccelarationOut",
-                                              Totaltime = "h:mm"
-                                          })
+                                               where dr.ID == deliveryRouteId
+                                               select new DeliveryRouteDTO
+                                               {
+                                                   RouteName = dr.RouteName,
+                                                   RouteNumber = dr.RouteNumber,
+                                                   ScenarioName = sr.ScenarioName,
+                                                   Method = rd.DisplayText
+                                               }).Select(x => new DeliveryRouteDTO
+                                               {
+                                                   Aliases = GetAliases(deliveryRouteId),
+                                                   Blocks = GetNumberOfBlocks(deliveryRouteId),
+                                                   PairedRoute = GetPairedRoute(deliveryRouteId),
+                                                   DPs = GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp),
+                                                   BusinessDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation),
+                                                   ResidentialDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential),
+                                                   AccelarationIn = "AccelarationIn",
+                                                   AccelarationOut = "AccelarationOut",
+                                                   Totaltime = "h:mm"
+                                               })
                                          .SingleOrDefaultAsync();
                 return deliveryRoutesDto;
             }
@@ -261,6 +264,36 @@ namespace Fmo.DataServices.Repositories
         {
             int numberOfAliases = 0;
             return numberOfAliases;
+        }
+
+        /// <summary>
+        /// retrieve Route Sequenced Point By passing RouteID specific to unit
+        /// </summary>
+        /// <param name="deliveryRouteId">deliveryRouteId</param>
+        /// <param name="userUnitID">userUnitID</param>
+        /// <returns>List of route log sequenced points</returns>
+        private List<RouteLogSequencedPointsDTO> GetDeliveryRouteSequencedPointsByRouteID(Guid deliveryRouteId, Guid userUnitID)
+        {
+            Guid operationalObjectTypeForDp = refDataRepository.GetReferenceDataId("Operational Object Type", "DP");
+
+            var deliveryRoutes = (from dr in DataContext.DeliveryRoutes.AsNoTracking()
+                                  join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
+                                  join b in DataContext.Blocks.AsNoTracking() on drb.Block_GUID equals b.ID
+                                  join bs in DataContext.BlockSequences.AsNoTracking() on b.ID equals bs.Block_GUID
+                                  join dp in DataContext.DeliveryPoints.AsNoTracking() on bs.OperationalObject_GUID equals dp.ID
+                                  join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                                  join sc in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sc.ID
+                                  where bs.OperationalObjectType_GUID == operationalObjectTypeForDp && sc.Unit_GUID == userUnitID && dr.ID == deliveryRouteId
+                                  group new { pa, dp } by new { pa.Thoroughfare, pa.BuildingNumber } into grpAddress
+                                  select new RouteLogSequencedPointsDTO
+                                  {
+                                      StreetName = grpAddress.Key.Thoroughfare,
+                                      BuildingNumer = grpAddress.Key.BuildingNumber,
+                                      DeliveryPointCount = grpAddress.Select(n => n.dp.ID).Count(),
+                                      MultipleOccupancy = grpAddress.Sum(n => n.dp.MultipleOccupancyCount)
+                                  }).AsQueryable();
+
+            return deliveryRoutes.ToList();
         }
 
         #endregion Private Methods
