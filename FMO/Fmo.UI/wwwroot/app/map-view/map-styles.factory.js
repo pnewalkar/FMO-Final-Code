@@ -361,7 +361,7 @@ function MapStylesFactory() {
             })
         });
 
-        var blockId = feature.get != undefined  ? feature.getId() : feature;
+        var blockId = angular.isDefined(feature.get) ? feature.getId() : feature;
         if (blockStyles[blockId]) {
             blockStyleOl = blockStyles[blockId];
         } else {
@@ -384,7 +384,7 @@ function MapStylesFactory() {
             })
         });
 
-        var block = feature.get('block') != undefined  ? feature.get('block') : feature;
+        var block = angular.isDefined(feature.get('block')) ? feature.get('block') : feature;
         if (block.deadhead) {
             blockStyleOl = new ol.style.Style({
                 stroke: new ol.style.Stroke({
@@ -406,7 +406,7 @@ function MapStylesFactory() {
 
     function activeStyle(feature) {
 
-        var type = feature.get != undefined  ? feature.get('type') : feature;
+        var type = angular.isDefined(feature.get) ? feature.get('type') : feature;
         switch (type) {
             case "pathlink":
                 return pathLinkStyle;
@@ -419,7 +419,7 @@ function MapStylesFactory() {
             case "splitroute":
                 return splitRouteStyle;
             case "group":
-                if (feature.get != undefined ) {
+                if (angular.isDefined(feature.get)) {
                     return getGroupStyle(feature, false, feature.get('group'));
                 }
                 return null;
@@ -445,9 +445,7 @@ function MapStylesFactory() {
     }
 
     function inactiveStyle(feature) {
-
-
-        var type = feature.get != undefined  ? feature.get('type') : feature;
+        var type = angular.isDefined(feature.get) ? feature.get('type') : feature;
         switch (type) {
             case "measure":
                 return inactiveMeasureStyle;
@@ -467,7 +465,7 @@ function MapStylesFactory() {
     }
 
     function selectedStyle(feature) {
-        var type = feature.get != undefined  ? feature.get('type') : feature;
+        var type = angular.isDefined(feature.get) ? feature.get('type') : feature;
         switch (type) {
             case "group":
                 return getGroupStyle(feature, true);
@@ -487,11 +485,9 @@ function MapStylesFactory() {
     }
 
     function getGroupStyle(feature, selected, simGroup) {
-
-
-        var groupType = feature.get != undefined  ? feature.get('groupType') : feature;
+        var groupType = angular.isDefined(feature.get) ? feature.get('groupType') : feature;
         if (simGroup) {
-            var point = feature.get != undefined  ? feature.get('point') : feature;
+            var point = angular.isDefined(feature.get) ? feature.get('point') : feature;
             groupType = point.type;
         }
         if (selected) {
