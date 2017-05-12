@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.DTO;
@@ -15,9 +16,9 @@ namespace Fmo.API.Services.Controllers
     {
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 
-        public RouteLogController(IDeliveryRouteBusinessService _deliveryRouteBusinessService)
+        public RouteLogController(IDeliveryRouteBusinessService deliveryRouteBusinessService)
         {
-            deliveryRouteBusinessService = _deliveryRouteBusinessService;
+            this.deliveryRouteBusinessService = deliveryRouteBusinessService;
         }
 
         /// <summary>
@@ -65,6 +66,18 @@ namespace Fmo.API.Services.Controllers
         public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {
             return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
+        }
+
+        /// <summary>
+        /// Gets the delivery route details.
+        /// </summary>
+        /// <param name="deliveryRouteId">The delivery route identifier.</param>
+        /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
+        [HttpGet("deliveryRoute/{deliveryRouteId}")]
+        public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsForPdf(Guid deliveryRouteId)
+        {
+            return await deliveryRouteBusinessService.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, CurrentUserUnit);
         }
     }
 }

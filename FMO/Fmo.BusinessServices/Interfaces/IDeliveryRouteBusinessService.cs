@@ -59,5 +59,15 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="userUnit">Guid userUnit</param>
         /// <returns>The total count of delivery route</returns>
         Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit);
+
+        /// <summary>
+        /// Gets the delivery route details for Pdf Generation.
+        /// </summary>
+        /// <param name="deliveryRouteId">The delivery route identifier.</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// DeliveryRouteDTO
+        /// </returns>
+        Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid);
     }
 }
