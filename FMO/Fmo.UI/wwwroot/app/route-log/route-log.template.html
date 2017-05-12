@@ -82,112 +82,77 @@
             </div>
 	   </div>
         
-        <md-list ng-hide="!vm.routeDetails">
-            <md-subheader>Route Details</md-subheader>
-            <div layout="row">
-                <md-list-item flex="30" class="routeDetailsList">
-                    <ul flex="40">
-                        <li class="routeDetailsItem">
-                            Name
-                        </li>
-                        <li class="routeDetailsItem">
-                            Route Number
-                        </li>
-                        <li class="routeDetailsItem">
-                            Delivery Method
-                        </li>
-                        <li class="routeDetailsItem">
-                            Total Time
-                        </li>
-                        <li class="routeDetailsItem">
-                            Hazards
-                        </li>
-                        <li class="routeDetailsItem">
-                            Special Instructions
-                        </li>
-                        <li class="routeDetailsItem">
-                            Aliases *
-                        </li>
-                        <li class="routeDetailsItem">
-                            Blocks
-                        </li>
-                        <li class="routeDetailsItem">
-                            Paired Route
-                        </li>
-                    </ul>
-                    <span flex="20"></span>
-                    <ul flex="40">
-                        <li>
-                            {{::vm.routeDetails.routeName}}
-                        </li>
-                        <li>
-                            ({{::vm.routeDetails.routeNumber}})
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.method}}
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.totaltime}}
-                        </li>
-                        <li>
-                            
-                        </li>
-                        <li>
+            <md-list ng-hide="!vm.routeDetails">
+                <md-subheader>Route Details</md-subheader>
+                <div layout="row">
+                    <div flex="35" class="routeDetailstable">
+                        <table>
+                            <tr>
+                                <td>Name</td>
+                                <td>{{::vm.routeDetails.routeName}}</td>
+                            </tr>
+                            <tr>
+                                <td>Route Number</td>
+                                <td>{{::vm.routeDetails.routeNumber}}</td>
+                            </tr>
+                            <tr>
+                                <td>Delivery Method</td>
+                                <td>{{::vm.routeDetails.method}}</td>
+                            </tr>
+                            <tr>
+                                <td>Total Time</td>
+                                <td>{{::vm.routeDetails.totaltime}}</td>
+                            </tr>
+                            <tr>
+                                <td>Hazards</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Special Instructions</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Aliases<sub>*</sub></td>
+                                <td>{{::vm.routeDetails.aliases}}</td>
+                            </tr>
+                            <tr>
+                                <td>Blocks</td>
+                                <td>{{::vm.routeDetails.blocks}}</td>
+                            </tr>
+                            <tr>
+                                <td>Paired Route</td>
+                                <td>{{::vm.routeDetails.pairedRoute}}</td>
+                            </tr>
+                        </table>
+                    </div>
 
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.aliases}}
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.blocks}}
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.pairedRoute}}
-                        </li>
-                       
-                    </ul>
-                </md-list-item>
-                
-                <span flex="5"></span>
-                
-                <md-list-item flex="30" class="routeDetailsList">
-                    <ul flex="40">
-                        <li class="routeDetailsItem">
-                            CPs
-                        </li>
-                        <li class="routeDetailsItem">
-                            DPs
-                        </li>
-                        <li class="routeDetailsItem">
-                            Business DPs
-                        </li>
-                        <li class="routeDetailsItem">
-                            Residential DPs
-                        </li>
-                    </ul>
-                    <span flex="20"></span>
-                    <ul flex="40">
-                        <li>
-                           
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.dPs}}
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.businessDPs}}
-                        </li>
-                        <li>
-                            {{::vm.routeDetails.residentialDPs}}
-                        </li>
-                    </ul>
-                </md-list-item>
-                
-                <span flex="5"></span>
-                
-                <div flex="30" class="md-text">All available actions</div>
-            </div>
-      </md-list>
-        
+                    <span flex="5"></span>
+
+                    <div flex="35" class="routeDetailstable">
+                        <table>
+                            <tr>
+                                <td>CPs</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>DPs</td>
+                                <td>{{::vm.routeDetails.dPs}}</td>
+                            </tr>
+                            <tr>
+                                <td>Business DPs</td>
+                                <td>{{::vm.routeDetails.businessDPs}}</td>
+                            </tr>
+                            <tr>
+                                <td>Residential DPs</td>
+                                <td>{{::vm.routeDetails.residentialDPs}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <span flex="5"></span>
+
+                    <div flex="20" class="md-text"><sub>*</sub>All Alias information is shown on detailed route log </div>
+                </div>
+            </md-list>
         <md-list  ng-hide="!vm.routeDetails">
             <md-subheader>Generate</md-subheader>
             <md-list-item>
