@@ -122,3 +122,18 @@ span.closeRouteWindow {
     margin-left: 20px;
 }
 
+.routeDetailstable table {
+    @extend %body-content;
+    width: width-percent(1);
+    border-collapse: collapse;
+}
+
+.routeDetailstable td, th {
+    @include border(1px solid $black);
+    @include padding(8px 8px 8px 8px);
+    text-align: left;
+}
+
+.routeDetailstable tr:nth-child(even) {
+    @include background($white-smoke,none);
+}

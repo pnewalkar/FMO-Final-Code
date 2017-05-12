@@ -40,13 +40,14 @@ namespace Fmo.DataServices.Repositories.Interfaces
         Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit);
 
         /// <summary>
-        /// Gets the delivery route details.
+        /// Gets the delivery route details for Pdf Generation.
         /// </summary>
         /// <param name="deliveryRouteId">The delivery route identifier.</param>
         /// <param name="referenceDataCategoryDtoList">The reference data category dto list.</param>
+        /// <param name="userUnit">The user unit.</param>
         /// <returns>
         /// DeliveryRouteDTO
         /// </returns>
-        Task<DeliveryRouteDTO> GetDeliveryRouteDetails(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList);
+        Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid userUnit);
     }
 }
