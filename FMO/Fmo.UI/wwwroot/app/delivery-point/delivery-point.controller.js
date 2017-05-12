@@ -63,7 +63,8 @@ function DeliveryPointController(
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
     vm.createDeliveryPoint = createDeliveryPoint;
     vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
-    vm.positionedThirdPartyDeliveryPoint = []
+    vm.positionedThirdPartyDeliveryPoint = [];
+    vm.accessLink = accessLink;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
@@ -112,6 +113,7 @@ function DeliveryPointController(
                 $scope.$emit('mapToolChange', {
                     "name": 'select', "shape": shape, "enabled": true
                 });
+                accessLink();
             }
         }, function () {
         });
@@ -140,6 +142,7 @@ function DeliveryPointController(
         deliveryPointApiService.UpdateDeliverypoint(deliveryPointModelDTO).then(function (result) {
             vm.positionedDeliveryPointList = null;
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+          
         });
     }
 
@@ -429,6 +432,11 @@ function DeliveryPointController(
 
     function onCloseDeliveryPoint() {
         $mdDialog.hide(vm.close);
+    }
+
+ function accessLink(selectedDeliveryUnit) {
+        vm.contextTitle = "Access Link";
+        $state.go("accessLink");
     }
 
 };
