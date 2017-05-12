@@ -1,9 +1,21 @@
 angular.module('mapView')
-        .service('mapService', ['$http', 'mapFactory',
-                                'mapStylesFactory', '$timeout', 'GlobalSettings', 'coordinatesService',
-                                 mapService])
-function mapService($http, mapFactory,
-                    mapStylesFactory, $timeout, GlobalSettings, coordinatesService) {
+        .factory('mapService', mapService);
+
+mapService.$inject = ['$http',
+                     'mapFactory',
+                     'mapStylesFactory',
+                     '$timeout',
+                     'GlobalSettings',
+                     'coordinatesService',
+                     '$document'];
+
+function mapService($http,
+                    mapFactory,
+                    mapStylesFactory,
+                    $timeout,
+                    GlobalSettings,
+                    coordinatesService,
+                    $document) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
@@ -64,7 +76,7 @@ function mapService($http, mapFactory,
         getfeature: getfeature,
         selectFeatures: selectFeatures,
         getSecondaryFeatures: getSecondaryFeatures,
-        setSelectedObjectsVisibility:setSelectedObjectsVisibility,
+        setSelectedObjectsVisibility: setSelectedObjectsVisibility,
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -117,7 +129,7 @@ function mapService($http, mapFactory,
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
-                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 $http({
                     method: 'GET',
                     url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','),
@@ -147,7 +159,7 @@ function mapService($http, mapFactory,
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
-                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 $http({
                     method: 'GET',
                     url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','),
@@ -165,7 +177,7 @@ function mapService($http, mapFactory,
             format: new ol.format.GeoJSON({ defaultDataProjection: 'EPSG:27700' }),
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
-                var authData = JSON.parse(sessionStorage.getItem('authorizationData'));
+                var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 $http({
                     method: 'GET',
                     url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','),
@@ -178,7 +190,7 @@ function mapService($http, mapFactory,
                 });
             }
         });
-        
+
         var mockGroupsLayer = new ol.layer.Vector({
             source: mockGroupsVector
         });
@@ -465,7 +477,7 @@ function mapService($http, mapFactory,
         persistSelection();
     }
     function persistSelection() {
-        if (getActiveFeature() != null && vm.interactions.select != null && vm.interactions.select != undefined) {
+        if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
             var features = vm.interactions.select.getFeatures();
             features.push(getActiveFeature());
             getSecondaryFeatures().forEach(function (feature) {
@@ -548,7 +560,7 @@ function mapService($http, mapFactory,
         if (vm.measureTooltipElement) {
             vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
         }
-        vm.measureTooltipElement = document.createElement('div');
+        vm.measureTooltipElement = $document[0].createElement('div');
         vm.measureTooltipElement.className = 'tooltip tooltip-measure';
         vm.measureTooltip = new ol.Overlay({
             element: vm.measureTooltipElement,
@@ -616,7 +628,7 @@ function mapService($http, mapFactory,
 
 
     function selectFeatures() {
-        if (vm.interactions.select == null || vm.interactions.select == undefined) {
+        if (vm.interactions.select == null || angular.isUndefined(vm.interactions.select)) {
             vm.interactions.select = new ol.interaction.Select({
                 condition: ol.events.condition.never,
                 style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)
@@ -639,8 +651,7 @@ function mapService($http, mapFactory,
         if (vm.interactions.select) {
             vm.interactions.select.getFeatures().forEach(function (feature) {
                 vm.featuredType = feature.get("type");
-                if (vm.featuredType === "deliverypoint")
-                {
+                if (vm.featuredType === "deliverypoint") {
                     vm.featuredType = "Delivery Points"
                 }
                 if (vm.featuredType === "accesslink") {

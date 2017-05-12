@@ -1,5 +1,7 @@
 angular.module('routeLog')
-    .service('routeLogService', ['routeLogAPIService', routeLogService]);
+    .factory('routeLogService', routeLogService);
+routeLogService.$inject = ['routeLogAPIService'];
+
 function routeLogService(routeLogAPIService) {
     var vm = this;
     vm.RouteStatusObj = null;

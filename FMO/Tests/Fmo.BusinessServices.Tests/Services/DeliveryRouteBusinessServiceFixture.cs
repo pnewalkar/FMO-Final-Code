@@ -55,6 +55,15 @@
             Assert.AreEqual(expectedDeliveryRouteResult, actualDeliveryRouteResult);
         }
 
+        [Test]
+        public async void TestGetDeliveryRouteDetailsforPdfGeneration()
+        {
+            var deliveryRouteGuid = System.Guid.Parse("B13D545D-2DE7-4E62-8DAD-00EC2B7FF8B8");
+            var unitGuid = Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
+            DeliveryRouteDTO expectedDeliveryRouteResult = await testCandidate.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteGuid, unitGuid);
+            Assert.NotNull(expectedDeliveryRouteResult);
+        }
+
         protected override void OnSetup()
         {
             deliveryUnitID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");

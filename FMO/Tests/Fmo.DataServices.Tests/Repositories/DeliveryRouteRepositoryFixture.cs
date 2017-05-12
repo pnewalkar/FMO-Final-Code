@@ -21,6 +21,7 @@
         private Mock<FMODBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<FMODBContext>> mockDatabaseFactory;
         private IDeliveryRouteRepository testCandidate;
+        private Mock<IReferenceDataCategoryRepository> mockReferenceDataCategoryRepository;
         private Guid deliveryUnitID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44");
         private Guid deliveryScenarioID = new Guid("D771E341-8FE8-4980-BE96-A339AE014B4E");
         private Guid operationalStateID = new Guid("1FC7DAB1-D4D7-45BD-BA2E-E8AE6737E1EB");
@@ -112,7 +113,7 @@
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryRoute>(deliveryRoute);
 
             var mockDeliveryRouteDBSet = MockDbSet(deliveryRoute);
-
+            mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
             mockDeliveryRouteDBSet.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable.AsQueryable().Provider);
             mockDeliveryRouteDBSet.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynEnumerable.AsQueryable().Expression);
             mockDeliveryRouteDBSet.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable.AsQueryable().ElementType);
@@ -126,7 +127,7 @@
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object, mockReferenceDataCategoryRepository.Object);
         }
 
         protected void SetUp()
@@ -147,6 +148,7 @@
             };
 
             var mockDeliveryRouteDBSet = MockDbSet(deliveryRoute);
+            mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockFmoDbContext.Setup(x => x.Set<DeliveryRoute>()).Returns(mockDeliveryRouteDBSet.Object);
             mockFmoDbContext.Setup(x => x.DeliveryRoutes).Returns(mockDeliveryRouteDBSet.Object);
@@ -164,7 +166,7 @@
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object, mockReferenceDataCategoryRepository.Object);
         }
     }
 }

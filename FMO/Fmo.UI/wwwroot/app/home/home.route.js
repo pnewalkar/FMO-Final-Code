@@ -1,4 +1,5 @@
-app.config(function ($stateProvider, $urlRouterProvider) {
+angular.module('FMOApp')
+.config(function ($stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise('/manageaccess');
     $stateProvider.state('home', {
@@ -14,7 +15,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       .state('user', {
         url: '/fmo',
         templateUrl: '/app/fmo/fmo.html',
-        controller: 'fmocontroller'
+        controller: 'fmocontroller as vm'
     });
 });
 

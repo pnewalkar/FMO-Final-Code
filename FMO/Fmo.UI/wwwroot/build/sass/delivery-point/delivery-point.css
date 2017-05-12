@@ -25,5 +25,8 @@ fieldset {
   margin: 0px 0px 5px 0px; }
 
 .aliasBox {
-  height: 150px;
+  height: 230px;
   overflow-y: auto; }
+
+.aliasInputContainer {
+  width: 82.98755%; }

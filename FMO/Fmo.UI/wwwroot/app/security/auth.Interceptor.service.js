@@ -12,7 +12,7 @@ function authInterceptorService($q, $injector, $location) {
         config.headers = config.headers || {};
 
         var authData = sessionStorage.getItem('authorizationData');
-        authData = JSON.parse(authData);
+        authData = angular.fromJson(authData);
         if (authData) {
             config.headers.Authorization = 'Bearer ' + authData.token;
         }

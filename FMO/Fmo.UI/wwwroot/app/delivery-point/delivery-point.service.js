@@ -1,5 +1,5 @@
 angular.module('deliveryPoint')
-    .service('deliveryPointService', function () {
+    .factory('deliveryPointService', function () {
 
         this.deliveryPoint = function () {
             return {
@@ -11,7 +11,7 @@ angular.module('deliveryPoint')
     });
 
 angular.module('deliveryPoint')
-    .service('coordinatesService', function () {
+    .factory('coordinatesService', function () {
 
         var coordinates = '';
         return {

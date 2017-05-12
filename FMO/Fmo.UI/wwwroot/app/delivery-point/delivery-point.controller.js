@@ -176,7 +176,7 @@ function DeliveryPointController(
                 vm.onCloseDeliveryPoint();
             }
             else {
-                console.log(vm.nybaddress);
+              
                 vm.errorMessageDisplay = true;
                 vm.errorMessage = response.message;
             }
@@ -187,26 +187,26 @@ function DeliveryPointController(
     function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
 
         if (vm.nybaddress.udprn && hasLocation) {
-            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber: '';
-            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName: '';
-            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName: '';
-            var street = vm.nybaddress.thoroughfare != null && vm.nybaddress.thoroughfare !== undefined ? vm.nybaddress.thoroughfare: '';
-            var postCode = vm.nybaddress.postcode != null && vm.nybaddress.postcode !== undefined ? vm.nybaddress.postcode: '';
-            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== undefined ? vm.nybaddress.departmentName: '';
-            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== undefined ? vm.nybaddress.organisationName: '';
+            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingNumber: '';
+            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingName: '';
+            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.subBuildingName: '';
+            var street = vm.nybaddress.thoroughfare != null && vm.nybaddress.thoroughfare !== angular.isUndefined(undefined)  ? vm.nybaddress.thoroughfare: '';
+            var postCode = vm.nybaddress.postcode != null && vm.nybaddress.postcode !== angular.isUndefined(undefined)  ? vm.nybaddress.postcode: '';
+            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== angular.isUndefined(undefined)  ? vm.nybaddress.departmentName: '';
+            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== angular.isUndefined(undefined)  ? vm.nybaddress.organisationName: '';
 
             var address = buildingNumber + ' ' +buildingName + ' ' +subBuildingName + ' ' + organisationName + ' ' +departmentName + ' ' +street + ' ' +postCode;
             locateDeliveryPoint(vm.nybaddress.udprn, address, vm.nybaddress.id, id, rowversion);
         }
         else {
 
-            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber: '';
-            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName: '';
-            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName: '';
-            var street = postalAddress.Thoroughfare != null && postalAddress.Thoroughfare !== undefined ? postalAddress.Thoroughfare : '';
-            var postCode = postalAddress.Postcode != null && postalAddress.Postcode !== undefined ? postalAddress.Postcode : '';
-            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== undefined ? vm.nybaddress.departmentName: '';
-            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== undefined ? vm.nybaddress.organisationName: '';
+            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingNumber: '';
+            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingName: '';
+            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.subBuildingName: '';
+            var street = postalAddress.Thoroughfare != null && postalAddress.Thoroughfare !== angular.isUndefined(undefined)  ? postalAddress.Thoroughfare : '';
+            var postCode = postalAddress.Postcode != null && postalAddress.Postcode !== angular.isUndefined(undefined)  ? postalAddress.Postcode : '';
+            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== angular.isUndefined(undefined)  ? vm.nybaddress.departmentName: '';
+            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== angular.isUndefined(undefined)  ? vm.nybaddress.organisationName: '';
 
             var address = buildingNumber + ' ' +buildingName + ' ' +subBuildingName + ' ' +organisationName + ' ' +departmentName + ' ' +street + ' ' +postCode;
             
