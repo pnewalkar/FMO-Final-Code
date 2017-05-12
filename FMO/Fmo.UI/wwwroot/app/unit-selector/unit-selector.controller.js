@@ -1,5 +1,5 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', '$filter', 'unitSelectorAPIService', 'mapFactory', 'manageAccessBusinessService', UnitSelectorController])
+.controller('UnitSelectorController', ['$scope', '$stateParams', '$state', '$filter', 'unitSelectorAPIService', 'mapFactory', 'manageAccessBusinessService', UnitSelectorController]);
 function UnitSelectorController($scope, $stateParams, $state, $filter, unitSelectorAPIService, mapFactory, manageAccessBusinessService) {
     var vm = this;
     vm.BindData = BindData;
@@ -19,7 +19,7 @@ function UnitSelectorController($scope, $stateParams, $state, $filter, unitSelec
     function BindData() {
         if (vm.deliveryRouteUnit.length === 0) {
             var authData = sessionStorage.getItem('authorizationData');
-            authData = JSON.parse(authData);
+            authData = angular.fromJson(authData);
             if (authData.unitGuid) {
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                     if (response) {

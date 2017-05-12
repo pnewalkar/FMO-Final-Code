@@ -8,8 +8,8 @@
         "bin/Debug/Fmo.BusinessServices.dll": {}
       },
       "runtime": {
-        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
-        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "../packages/System.ValueTuple.4.3.0/lib/netstandard1.0/System.ValueTuple.dll": {},
@@ -97,7 +97,6 @@
       "runtime": {
         "../packages/AutoMapper.6.0.2/lib/net45/AutoMapper.dll": {},
         "../packages/DelegateDecompiler.0.23.0/lib/net40-client/DelegateDecompiler.dll": {},
-        "../packages/DelegateDecompiler.EntityFramework.0.23.0/lib/net45/DelegateDecompiler.EntityFramework.dll": {},
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
@@ -122,8 +121,8 @@
         "bin/Debug/Fmo.DTO.dll": {}
       },
       "runtime": {
-        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
-        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "bin/Debug/Fmo.DTO.dll": {}
@@ -143,8 +142,8 @@
         "bin/Debug/Fmo.Helpers.dll": {}
       },
       "runtime": {
-        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.SqlServer.dll": {},
-        "../packages/EntityFramework.6.0.0/lib/net45/EntityFramework.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "bin/Debug/Fmo.Helpers.dll": {},

@@ -1,20 +1,12 @@
-angular
-    .module('home')
-    .controller("homeController", ['$scope', '$mdSidenav', homeController])
-function homeController($scope, $mdSidenav) {
+angular.module('home')
+    .controller('HomeController', ['$scope', '$mdSidenav', HomeController]);
+function HomeController($scope, $mdSidenav) {
     var vm = this;
-    var deliveryunit = vm.selectedDeliveryUnit;
-    vm.deliveryUnit = deliveryUnit;
+    vm.deliveryUnit = vm.selectedDeliveryUnit;
     var title = vm.contextTitle;
     vm.toggleSideNav = toggleSideNav;
 
-
     function toggleSideNav() {
         $mdSidenav('left').toggle();
-        //vm.fetchActionItems();
-    }
-
-    function deliveryUnit() {
-      
     }
 };

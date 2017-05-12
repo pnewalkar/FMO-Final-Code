@@ -8,7 +8,7 @@ angular
                 '$mdSidenav',
                 '$mdDialog',
                 'sideNavApiService', 'SideNavConstant',
-                 sideNavController])
+                 sideNavController]);
 
 function sideNavController($scope,
                            $state,
@@ -19,7 +19,7 @@ function sideNavController($scope,
                            sideNavApiService,
                            SideNavConstant)
                            {
-    vm = this;
+   var vm = this;
     vm.routeLog = routeLog;
     vm.openModalPopup = openModalPopup;
     vm.fetchActionItems = fetchActionItems;
@@ -49,17 +49,17 @@ function sideNavController($scope,
 
     function openModalPopup(modalSetting) {
         var popupSetting = modalSetting;
-        $mdDialog.show(popupSetting)
-    };
+        $mdDialog.show(popupSetting);
+    }
 
     function fetchActionItems() {
         vm.getItem = sessionStorage.getItem('roleAccessData');
-        vm.RolesActionResult = JSON.parse(vm.getItem);
+        vm.RolesActionResult = angular.fromJson(vm.getItem);
     }
 
     function closeSideNav() {
         $mdSidenav('left').close();
-    };
+    }
 
     function fetchActions(query, selectedUnit) {
         vm.closeSideNav();

@@ -1,12 +1,15 @@
 ﻿angular.module('mapKey')
-        .service('mapKeyService', ['mapStylesFactory','mapService', mapToolbarService])
+        .factory('mapKeyService', mapToolbarService);
+mapToolbarService.$inject = ['mapStylesFactory',
+                             'mapService'];
 
-function mapToolbarService(mapStylesFactory,mapService) {
+function mapToolbarService(mapStylesFactory,
+                           mapService) {
    
-    return{
-        showKey:showKey,
-        initialize:initialize      
-    }
+    return {
+        showKey: showKey,
+        initialize: initialize
+    };
 
     function showKey(id) {
         if (id == "") {
@@ -31,7 +34,7 @@ function mapToolbarService(mapStylesFactory,mapService) {
     function initialize() {
         var activeStyle = mapStylesFactory.getStyle();
 
-        vm.pointTypes = [
+         var pointTypes = [
             {
                 "text": "Selected",
                 "id": "",
@@ -52,7 +55,7 @@ function mapToolbarService(mapStylesFactory,mapService) {
                 "style": activeStyle("roadlink")
             }
         ];
-        return vm.pointTypes;
+        return pointTypes;
       
     }
   

@@ -1,7 +1,8 @@
 ﻿
 angular.module('simulation')
-        .service('simulationBusinessService', ['simulationAPIService',
-                                                simulationBusinessService])
+        .factory('simulationBusinessService', simulationBusinessService);
+simulationBusinessService.$inject = ['simulationAPIService'];
+
 function simulationBusinessService(simulationAPIService) {
     var vm = this;
     vm.Test = "ABC";
@@ -13,11 +14,10 @@ function simulationBusinessService(simulationAPIService) {
         loadRouteLogStatus: loadRouteLogStatus,
         loadScenario: loadScenario,
         loadDeliveryRoute: loadDeliveryRoute
-    }
+    };
 
-    function loadRouteLogStatus()
-    {
-       
+    function loadRouteLogStatus() {
+
         simulationAPIService.getStatus().then(function (response) {
             vm.RouteStatusObj = response;
             vm.selectedRouteStatusObj = {
@@ -25,13 +25,12 @@ function simulationBusinessService(simulationAPIService) {
                 group2: vm.RouteStatusObj[1].id
             };
             return vm.RouteStatusObj;
-           // loadScenario(vm.selectedRouteStatusObj.group1, vm.selectedDeliveryUnitObj.selectedUnit.id);
+            // loadScenario(vm.selectedRouteStatusObj.group1, vm.selectedDeliveryUnitObj.selectedUnit.id);
         });
-       
+
     }
 
-    function loadScenario(operationStateID, deliveryUnitID)
-    {
+    function loadScenario(operationStateID, deliveryUnitID) {
         simulationAPIService.getScenario(operationStateID, deliveryUnitID).then(function (response) {
             vm.RouteScenario = response;
         });
@@ -42,6 +41,6 @@ function simulationBusinessService(simulationAPIService) {
             vm.deliveryRoute = response;
         });
     }
-    
-    
+
+
 }

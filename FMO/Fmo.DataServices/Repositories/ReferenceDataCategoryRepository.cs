@@ -48,6 +48,31 @@ namespace Fmo.DataServices.Repositories
         }
 
         /// <summary>
+        ///  Retreive GUIDs for specified categories
+        /// </summary>
+        /// <param name="strCategoryname">categoryname</param>
+        /// <param name="lstRefDataName">Reference data Names</param>
+        /// <returns>List<Guid></returns>
+        public List<Guid> GetReferenceDataIds(string strCategoryname, List<string> lstRefDataName)
+        {
+            List<Guid> statusIds = new List<Guid>();
+            var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            if (result != null)
+            {
+                if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+                {
+                    var referenceData = result.ReferenceDatas.Where(n => lstRefDataName.Contains(n.DataDescription.Trim().ToUpper())).ToList();
+                    if (referenceData != null)
+                    {
+                        referenceData.ForEach(r => statusIds.Add(r.ID));
+                    }
+                }
+            }
+
+            return statusIds;
+        }
+
+        /// <summary>
         /// Fetch the Route log status.
         /// </summary>
         /// <returns>List</returns>
@@ -78,7 +103,7 @@ namespace Fmo.DataServices.Repositories
         public List<ReferenceDataDTO> RouteLogSelectionType()
         {
             List<ReferenceDataDTO> lstReferenceDt = null;
-            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("Route Log Selection Type", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("UI_RouteLogSearch_SelectionType", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
             {
                 lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());

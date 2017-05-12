@@ -1,13 +1,18 @@
 ﻿angular.module('advanceSearch')
-    .service('advanceSearchService', function () {
+    .factory('advanceSearchService', advanceSearchService);
 
-    this.advanceSearch = function (query) {
+function advanceSearchService()
+{
+    return {
+        advanceSearch: advanceSearch
+    };
+      function advanceSearch(query) {
         return {
             templateUrl: './advance-search/advance-search.template.html',
             clickOutsideToClose: false,
             controller: 'advanceSearchController as vm',
-            params: { searchText: query, }
+            params: { searchText: query }
         }
-    };
-});
+    }
+};
 

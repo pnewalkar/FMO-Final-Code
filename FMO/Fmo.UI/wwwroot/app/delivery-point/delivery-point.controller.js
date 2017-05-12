@@ -3,7 +3,6 @@ angular
     .controller("DeliveryPointController",
     [
         'mapToolbarService',
-        '$rootScope',
         '$scope',
         '$mdDialog',
         'deliveryPointService',
@@ -18,8 +17,7 @@ angular
         '$stateParams'
 , DeliveryPointController])
 function DeliveryPointController(
-    mapToolbarService,
-    $rootScope,
+    mapToolbarService,    
     $scope,
     $mdDialog,
     deliveryPointService,
@@ -96,13 +94,6 @@ function DeliveryPointController(
             if (idx.length > 0) {
                 vm.deliveryPointList.splice(idx, 1);
 
-                //var positionedDeliveryPointListTemp = [];
-
-                //if (vm.positionedDeliveryPointList != null) {
-                //    positionedDeliveryPointListTemp = vm.positionedDeliveryPointList;
-                //}
-
-                //positionedDeliveryPointListTemp.push(vm.selectedItem);
                 vm.positionedDeliveryPointList = [];
                 vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
                 var latlong = ol.proj.transform(vm.positionedCoOrdinates[0], 'EPSG:27700', 'EPSG:4326');
@@ -111,8 +102,12 @@ function DeliveryPointController(
                 };
 
                 vm.positionedDeliveryPointList.push(positionedDeliveryPointListObj);
-                $rootScope.positionedSaveDeliveryPointList = vm.positionedDeliveryPointList;
                 
+                $state.go("deliveryPoint", {
+                    deliveryPointList : vm.deliveryPointList,
+                    positionedDeliveryPointList: vm.positionedDeliveryPointList
+                })
+
                 var shape = mapToolbarService.getShapeForButton('point');
                 $scope.$emit('mapToolChange', {
                     "name": 'select', "shape": shape, "enabled": true
@@ -129,19 +124,22 @@ function DeliveryPointController(
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
     }
 
-    function savePositionedDeliveryPoint(positionedDeliveryPoint) {
+    function savePositionedDeliveryPoint() {
         
+        vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList
+
         var deliveryPointModelDTO = {
-            "ID": positionedDeliveryPoint.deliveryPointGuid,
-            "UDPRN": positionedDeliveryPoint.udprn,
-            "Latitude": positionedDeliveryPoint.latitude,
-            "Longitude": positionedDeliveryPoint.longitude,
-            "XCoordinate": positionedDeliveryPoint.xCoordinate,
-            "YCoordinate": positionedDeliveryPoint.yCoordinate,
-            "RowVersion": positionedDeliveryPoint.rowversion
+            "ID": vm.positionedDeliveryPointList[0].deliveryPointGuid,
+            "UDPRN": vm.positionedDeliveryPointList[0].udprn,
+            "Latitude": vm.positionedDeliveryPointList[0].latitude,
+            "Longitude": vm.positionedDeliveryPointList[0].longitude,
+            "XCoordinate": vm.positionedDeliveryPointList[0].xCoordinate,
+            "YCoordinate": vm.positionedDeliveryPointList[0].yCoordinate,
+            "RowVersion": vm.positionedDeliveryPointList[0].rowversion
         }
         deliveryPointApiService.UpdateDeliverypoint(deliveryPointModelDTO).then(function (result) {
-
+            vm.positionedDeliveryPointList = null;
+            $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
         });
     }
 
@@ -169,16 +167,16 @@ function DeliveryPointController(
         deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
 
             if (response.message && response.message == "Delivery Point created successfully") {
-                setDeliveryPoint(response.id, response.rowVersion, postalAddress);
+                setDeliveryPoint(response.id, response.rowVersion, postalAddress, true);
                 vm.onCloseDeliveryPoint();
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
-                setDeliveryPoint(response.id, response.rowVersion, postalAddress);
+                setDeliveryPoint(response.id, response.rowVersion, postalAddress, false);
                 setDP();
                 vm.onCloseDeliveryPoint();
             }
             else {
-                console.log(vm.nybaddress);
+              
                 vm.errorMessageDisplay = true;
                 vm.errorMessage = response.message;
             }
@@ -186,29 +184,29 @@ function DeliveryPointController(
 
     }
 
-    function setDeliveryPoint(id, rowversion, postalAddress) {
+    function setDeliveryPoint(id, rowversion, postalAddress, hasLocation) {
 
-        if(vm.nybaddress.udprn) {
-            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber: '';
-            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName: '';
-            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName: '';
-            var street = vm.nybaddress.thoroughfare != null && vm.nybaddress.thoroughfare !== undefined ? vm.nybaddress.thoroughfare: '';
-            var postCode = vm.nybaddress.postcode != null && vm.nybaddress.postcode !== undefined ? vm.nybaddress.postcode: '';
-            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== undefined ? vm.nybaddress.departmentName: '';
-            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== undefined ? vm.nybaddress.organisationName: '';
+        if (vm.nybaddress.udprn && hasLocation) {
+            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingNumber: '';
+            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingName: '';
+            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.subBuildingName: '';
+            var street = vm.nybaddress.thoroughfare != null && vm.nybaddress.thoroughfare !== angular.isUndefined(undefined)  ? vm.nybaddress.thoroughfare: '';
+            var postCode = vm.nybaddress.postcode != null && vm.nybaddress.postcode !== angular.isUndefined(undefined)  ? vm.nybaddress.postcode: '';
+            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== angular.isUndefined(undefined)  ? vm.nybaddress.departmentName: '';
+            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== angular.isUndefined(undefined)  ? vm.nybaddress.organisationName: '';
 
             var address = buildingNumber + ' ' +buildingName + ' ' +subBuildingName + ' ' + organisationName + ' ' +departmentName + ' ' +street + ' ' +postCode;
             locateDeliveryPoint(vm.nybaddress.udprn, address, vm.nybaddress.id, id, rowversion);
         }
         else {
 
-            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== undefined ? vm.nybaddress.buildingNumber: '';
-            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== undefined ? vm.nybaddress.buildingName: '';
-            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== undefined ? vm.nybaddress.subBuildingName: '';
-            var street = postalAddress.Thoroughfare != null && postalAddress.Thoroughfare !== undefined ? postalAddress.Thoroughfare : '';
-            var postCode = postalAddress.Postcode != null && postalAddress.Postcode !== undefined ? postalAddress.Postcode : '';
-            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== undefined ? vm.nybaddress.departmentName: '';
-            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== undefined ? vm.nybaddress.organisationName: '';
+            var buildingNumber = vm.nybaddress.buildingNumber != null && vm.nybaddress.buildingNumber !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingNumber: '';
+            var buildingName = vm.nybaddress.buildingName != null && vm.nybaddress.buildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.buildingName: '';
+            var subBuildingName = vm.nybaddress.subBuildingName != null && vm.nybaddress.subBuildingName !== angular.isUndefined(undefined)  ? vm.nybaddress.subBuildingName: '';
+            var street = postalAddress.Thoroughfare != null && postalAddress.Thoroughfare !== angular.isUndefined(undefined)  ? postalAddress.Thoroughfare : '';
+            var postCode = postalAddress.Postcode != null && postalAddress.Postcode !== angular.isUndefined(undefined)  ? postalAddress.Postcode : '';
+            var departmentName = vm.nybaddress.departmentName != null && vm.nybaddress.departmentName !== angular.isUndefined(undefined)  ? vm.nybaddress.departmentName: '';
+            var organisationName = vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !== angular.isUndefined(undefined)  ? vm.nybaddress.organisationName: '';
 
             var address = buildingNumber + ' ' +buildingName + ' ' +subBuildingName + ' ' +organisationName + ' ' +departmentName + ' ' +street + ' ' +postCode;
             

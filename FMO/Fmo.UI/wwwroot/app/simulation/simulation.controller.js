@@ -1,5 +1,5 @@
 ﻿angular.module('simulation')
-.controller('SimulationController', ['$scope', '$state', '$stateParams', 'simulationBusinessService', 'simulationAPIService', SimulationController])
+.controller('SimulationController', ['$scope', '$state', '$stateParams', 'simulationBusinessService', 'simulationAPIService', SimulationController]);
 function SimulationController($scope, $state, $stateParams, simulationBusinessService, simulationAPIService) {
 
     var vm = this;
@@ -14,7 +14,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
     vm.isDeliveryRouteDisabled = true;
     vm.selectedDeliveryRoute = null;
     vm.deliveryRoute = null;
-    vm.selectedVegetables;
+    vm.selectedRoute;
     vm.searchTerm;
     vm.RouteScenario = null;
     vm.deliveryRoute = null;
@@ -47,7 +47,7 @@ function SimulationController($scope, $state, $stateParams, simulationBusinessSe
             } else {                
                 vm.RouteScenario = undefined;
                 vm.deliveryRoute = undefined;
-                vm.selectedVegetables = null;
+                vm.selectedRoute = null;
                 vm.selectedRouteScenario = null;
                 vm.searchTerm = null;
                
