@@ -10,6 +10,7 @@ using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 using Fmo.Entities;
 using Fmo.MappingConfiguration;
 
@@ -214,6 +215,12 @@ namespace Fmo.DataServices.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit)
+        {
+            //TODO: add implementation for Route log story pdf generation.
+            throw new NotImplementedException();
         }
 
         #endregion Public Methods
