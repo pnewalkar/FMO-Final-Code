@@ -91,16 +91,9 @@ namespace Fmo.BusinessServices.Services
                    ReferenceDataCategoryNames.AccessLinkDirection,
                    ReferenceDataCategoryNames.AccessLinkStatus,
                    ReferenceDataCategoryNames.AccessLinkType,
-                   ReferenceDataCategoryNames.AccessLinkParameters
-                    "Operational Object Type",
-                    "Access Link Direction",
-                    "Access Link Status",
-                    "Access Link Type",
-                    "Access Link Rules",
-                    "Access Link Parameters",
-                    "Network Link Type",
-                    "DeliveryPoint Use Indicator"
-
+                   ReferenceDataCategoryNames.AccessLinkParameters,
+                    ReferenceDataCategoryNames.NetworkLinkType,
+                    ReferenceDataCategoryNames.DeliveryPointUseIndicator
                 };
 
                 DbGeometry operationalObjectPoint = default(DbGeometry);
