@@ -159,7 +159,6 @@ function DeliveryPointController(
     }
 
     function createDeliveryPoint() {
-
         var postalAddress = createDeliveryPointDTO();
         var addDeliveryPointDTO =
             {
@@ -188,6 +187,7 @@ function DeliveryPointController(
 
                 vm.errorMessageDisplay = true;
                 vm.errorMessage = response.message;
+                errorAlert();
             }
         });
 
@@ -479,7 +479,7 @@ function DeliveryPointController(
             .title('Duplicates Found')
             .textContent('Duplicates of Delivery Point Found.')
             .ariaLabel('Left to right demo')
-            .ok('Yes')
+            .ok('Ok')
          
             
 

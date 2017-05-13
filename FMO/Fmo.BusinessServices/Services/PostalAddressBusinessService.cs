@@ -312,6 +312,7 @@ namespace Fmo.BusinessServices.Services
             }
             catch (Exception ex)
             {
+                this.loggingHelper.LogInfo(ex.ToString());
                 throw ex;
             }
         }
@@ -329,6 +330,7 @@ namespace Fmo.BusinessServices.Services
             }
             catch (Exception ex)
             {
+                this.loggingHelper.LogInfo(ex.ToString());
                 throw ex;
             }
         }
@@ -346,6 +348,7 @@ namespace Fmo.BusinessServices.Services
             }
             catch (Exception ex)
             {
+                this.loggingHelper.LogInfo(ex.ToString());
                 throw ex;
             }
         }
