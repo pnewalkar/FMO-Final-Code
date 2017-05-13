@@ -58,6 +58,7 @@ function DeliveryPointController(
     vm.selectedItem = null;
     vm.deliveryPointList = $stateParams.deliveryPointList;
     vm.positionedSaveDeliveryPointList = [];
+    vm.errorAlert = errorAlert;
     
 
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
@@ -437,6 +438,22 @@ function DeliveryPointController(
  function accessLink(selectedDeliveryUnit) {
         vm.contextTitle = "Access Link";
         $state.go("accessLink");
-    }
+ }
+
+      function errorAlert() {
+        var confirm =
+          $mdDialog.confirm()
+            .clickOutsideToClose(true)
+            .title('Duplicates Found')
+            .textContent('Duplicates of Delivery Point Found.')
+            .ariaLabel('Left to right demo')
+            .ok('Yes')
+            
+
+        $mdDialog.show(confirm).then(function () {
+          
+        }, function () {
+        });
+    };
 
 };
