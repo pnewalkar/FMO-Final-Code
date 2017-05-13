@@ -310,6 +310,7 @@ function DeliveryPointController(
 
     function OnChangeItem(selectedItem) {
         if (selectedItem) {
+            vm.postalAddressData = {};
             vm.searchText = selectedItem;
             getPostalAddress(selectedItem);
             vm.results = {

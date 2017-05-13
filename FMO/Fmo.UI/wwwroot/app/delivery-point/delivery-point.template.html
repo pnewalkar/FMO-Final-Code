@@ -32,12 +32,12 @@
                 <md-input-container flex="30" ng-show="vm.display">
                     <label>Not yet Built</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==0">
-                        <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value">
+                        <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" ng-selected="{{ $index==0? 'selected' : '' }}">
                             {{type.displayText}}
                         </md-option>
-                        <md-option value="default" selected>
+                        <md-option value="default" selected="{{ vm.postalAddressData.nybAddressDetails.length==0 ? 'selected' : '' }}">
                             Not Shown
-                        </md-option>
+                        </md-option> 
                     </md-select>
                 </md-input-container>
             </div>
@@ -69,8 +69,8 @@
                 
                 <md-input-container flex>
                     <label>Route<sub>*</sub></label>
-                    <md-select ng-model="vm.postalAddressData.routeDetails" select-clear>
-                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value" ng-selected="{{route.displayText=='Select'?true:false}}">
+                    <md-select ng-model="vm.postalAddressData.route" select-clear required> 
+                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
                     </md-select>
@@ -222,8 +222,7 @@
                 Cancel
             </md-button>
             <span flex></span>
-          
-            <md-button ng-disabled="!(vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
                 Save
             </md-button>
             <div ng-if="vm.errorMessageDisplay">

@@ -469,7 +469,7 @@
                                        join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
                                        join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
                                        where addresstypeIDs.Contains(pa.AddressType_GUID) &&
-                                       (pa.Thoroughfare.Contains(searchText) || pa.DependentThoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
+                                       (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
                                        ul.Unit_GUID == unitGuid
                                        select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
@@ -542,6 +542,11 @@
                 {
                     if (!routeDetails.Where(rd => rd.Value == r.DeliveryRoute.ID).Any())
                     {
+                        if (!routeDetails.Where(rd => rd.Value == new Guid(Constants.DEFAULTGUID)).Any())
+                        {
+                            routeDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
+                        }
+
                         routeDetails.Add(new BindingEntity() { DisplayText = r.DeliveryRoute.RouteName, Value = r.DeliveryRoute.ID });
                     }
                 });
