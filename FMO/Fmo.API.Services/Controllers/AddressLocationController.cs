@@ -24,7 +24,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="uDPRN">The u DPRN.</param>
         /// <returns>object</returns>
-        [HttpGet("{UDPRN:int}")]
+        [HttpGet("GetAddressLocationByUDPRN")]
         public object GetAddressLocationByUDPRN(int uDPRN)
         {
             return this.addressLocationBussinessService.GetAddressLocationByUDPRN(uDPRN);

@@ -69,8 +69,8 @@ namespace Fmo.API.Services.Controllers
         /// <param name="deliveryPointDto">deliveryPointDto</param>
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [Route("CreateDeliveryPoint")]
         //[Route("CreateDeliveryPoint")]
-        [Route("{ID: guid}")]
         [HttpPost]
         public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
         {
@@ -83,7 +83,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="deliveryPointModelDto">deliveryPointDTO</param>
         /// <returns></returns>
-        [Route("{ID: guid}")]
+        [Route("UpdateDeliveryPoint")]
         [HttpPut]
         public void UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDto)
         {
