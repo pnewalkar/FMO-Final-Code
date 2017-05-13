@@ -167,6 +167,11 @@ namespace Fmo.DataServices.Repositories
                     .Where(x => x.CategoryName == "DeliveryPoint Use Indicator").SelectMany(x => x.ReferenceDatas)
                     .Where(x => x.ReferenceDataValue == "Residential").Select(x => x.ID).SingleOrDefault();
 
+                // Delivery Route Method Type
+                Guid sharedDeliveryRouteMethodType = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName == "Delivery Route Method Type").SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == "RM Van (Shared)").Select(x => x.ID).SingleOrDefault();
+
                 Mapper.Initialize(cfg =>
                 {
                     cfg.CreateMap<ReferenceDataCategoryDTO, ReferenceDataCategory>();
@@ -180,15 +185,15 @@ namespace Fmo.DataServices.Repositories
                     referenceDataCategoryList.Where(x => x.CategoryName == "Delivery Route Method Type").SelectMany(x => x.ReferenceDatas);
 
                 var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
-                                               join rd in referenceData on dr.RouteMethodType_GUID equals rd.ID
+                                               join rd in DataContext.ReferenceDatas on dr.RouteMethodType_GUID equals rd.ID
                                                join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                               where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit
+                                               where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit && dr.RouteMethodType_GUID == sharedDeliveryRouteMethodType
                                                select new DeliveryRouteDTO
                                                {
                                                    RouteName = dr.RouteName,
                                                    RouteNumber = dr.RouteNumber,
                                                    ScenarioName = sr.ScenarioName,
-                                                   Method = rd.DisplayText,
+                                                   Method = rd.ReferenceDataValue,
                                                    Totaltime = dr.TravelOutTimeMin - dr.TravelOutTimeMin
                                                }).SingleOrDefaultAsync();
 
@@ -238,10 +243,9 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 int numberOfBlocks = await (from drb in DataContext.DeliveryRouteBlocks.AsNoTracking()
-                                            join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                                            join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                            where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit
-                                            select drb.Block_GUID).Distinct().CountAsync();
+                                            //join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                            where drb.DeliveryRoute_GUID == deliveryRouteId // && sr.Unit_GUID == userUnit
+                                            select drb.Block_GUID).CountAsync();
                 return numberOfBlocks;
             }
             catch (Exception)
@@ -264,8 +268,8 @@ namespace Fmo.DataServices.Repositories
                 int numberOfDPs = await (from blkseq in DataContext.BlockSequences.AsNoTracking()
                                          join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on blkseq.Block_GUID equals drb.Block_GUID
                                          join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                                         join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                         where sr.Unit_GUID == userUnit && blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId
+                                         //join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                         where blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId //&& sr.Unit_GUID == userUnit
                                          select blkseq.OperationalObject_GUID).CountAsync();
                 return numberOfDPs;
             }
@@ -289,9 +293,10 @@ namespace Fmo.DataServices.Repositories
                 int numberOfCommercialResidentialDPs = await (from del in DataContext.DeliveryPoints.AsNoTracking()
                                                               join blkseq in DataContext.BlockSequences.AsNoTracking() on del.ID equals blkseq.OperationalObject_GUID
                                                               join dr in DataContext.DeliveryRoutes.AsNoTracking() on deliveryRouteId equals dr.ID
-                                                              join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                                              //join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
                                                               join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
-                                                              where sr.Unit_GUID == userUnit && del.DeliveryPointUseIndicator_GUID == operationalObjectTypeForDp && drb.DeliveryRoute_GUID == deliveryRouteId
+                                                              where del.DeliveryPointUseIndicator_GUID == operationalObjectTypeForDp && drb.DeliveryRoute_GUID == deliveryRouteId
+                                                              && blkseq.Block_GUID == drb.Block_GUID // && sr.Unit_GUID == userUnit
                                                               select del.DeliveryPointUseIndicator_GUID).CountAsync();
                 return numberOfCommercialResidentialDPs;
             }
