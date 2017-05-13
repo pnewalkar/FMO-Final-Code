@@ -334,7 +334,7 @@ namespace Fmo.BusinessServices.Services
                                             .Where(x => x.CategoryName == ReferenceDataCategoryNames.NetworkLinkType).SelectMany(x => x.ReferenceDatas)
                                             .Where(x => x.ID == networkObject.NetworkLinkType_GUID).Select(x => x.ReferenceDataValue).SingleOrDefault();
 
-            if (networkLinkType == ReferenceDataValues.NetworkLinkType_RoadLink)
+            if (networkLinkType == ReferenceDataValues.NetworkLinkRoadLink)
             {
                 // get road type such as A road, B Road
                 string roadType = osroadLinkRepository.GetOSRoadLink(networkObject.TOID);
@@ -343,7 +343,7 @@ namespace Fmo.BusinessServices.Services
                                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
                                         .Where(x => x.ReferenceDataName == roadType).Select(x => x.ReferenceDataValue).SingleOrDefault());
             }
-            else if (networkLinkType == ReferenceDataValues.NetworkLinkType_PathLink)
+            else if (networkLinkType == ReferenceDataValues.NetworkLinkPathLink)
             {
                 roadWidth = Convert.ToDouble(referenceDataCategoryList
                                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
