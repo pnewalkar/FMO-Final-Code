@@ -22,7 +22,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IAddressLocationRepository> mockaddressLocationRepository;
         private Mock<IConfigurationHelper> mockConfigurationRepository;
         private Mock<ILoggingHelper> mockLoggingRepository;
-        private Mock<IAddressRepository> mockAddressRepository;
+        private Mock<IPostalAddressBusinessService> mockPostalAddressBusinessService;
         private Mock<IReferenceDataCategoryRepository> referenceDataCategoryRepository;
         private Guid unitGuid = Guid.NewGuid();
         private AddDeliveryPointDTO addDeliveryPointDTO;
@@ -68,7 +68,7 @@ namespace Fmo.BusinessServices.Tests.Services
         [Test]
         public void Test_CreateDeliveryPoint_Duplicate()
         {
-            mockAddressRepository.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(true);
+            mockPostalAddressBusinessService.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(true);
             var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Message == "There is a duplicate of this Delivery Point in the system");
@@ -77,7 +77,7 @@ namespace Fmo.BusinessServices.Tests.Services
         [Test]
         public void Test_CreateDeliveryPoint_Duplicate_WithPostCode()
         {
-            mockAddressRepository.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(false);
+            mockPostalAddressBusinessService.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(false);
             var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Message == "This address is in the NYB file under the postcode 123");
@@ -96,7 +96,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockaddressLocationRepository = CreateMock<IAddressLocationRepository>();
             mockConfigurationRepository = CreateMock<IConfigurationHelper>();
             mockLoggingRepository = CreateMock<ILoggingHelper>();
-            mockAddressRepository = CreateMock<IAddressRepository>();
+            mockPostalAddressBusinessService = CreateMock<IPostalAddressBusinessService>();
             referenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
@@ -182,11 +182,11 @@ namespace Fmo.BusinessServices.Tests.Services
             };
 
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
-            mockAddressRepository.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns("123");
-            mockAddressRepository.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
+            mockPostalAddressBusinessService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns("123");
+            mockPostalAddressBusinessService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
             referenceDataCategoryRepository.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
             mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockAddressRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataCategoryRepository.Object);
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataCategoryRepository.Object);
         }
     }
 }

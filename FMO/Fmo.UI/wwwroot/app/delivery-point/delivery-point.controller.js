@@ -32,6 +32,7 @@ function DeliveryPointController(
     $stateParams
 ) {
     var vm = this;
+    debugger;
     vm.resultSet = resultSet;
     vm.querySearch = querySearch;
     vm.deliveryPoint = deliveryPoint;
@@ -61,6 +62,9 @@ function DeliveryPointController(
     vm.positionedSaveDeliveryPointList = [];
     vm.defaultNYBValue = "00000000-0000-0000-0000-000000000000";
 
+    vm.errorAlert = errorAlert;
+    vm.opendeliveryPoint = opendeliveryPoint;
+    
 
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
     vm.createDeliveryPoint = createDeliveryPoint;
@@ -155,7 +159,6 @@ function DeliveryPointController(
     }
 
     function createDeliveryPoint() {
-
         var postalAddress = createDeliveryPointDTO();
         var addDeliveryPointDTO =
             {
@@ -184,6 +187,7 @@ function DeliveryPointController(
 
                 vm.errorMessageDisplay = true;
                 vm.errorMessage = response.message;
+                errorAlert();
             }
         });
 
@@ -260,6 +264,7 @@ function DeliveryPointController(
     function deliveryPoint() {
         var deliveryPointTemplate = deliveryPointService.deliveryPoint();
         vm.openModalPopup(deliveryPointTemplate);
+
     }
 
     function resultSet(query) {
@@ -452,7 +457,7 @@ function DeliveryPointController(
     function accessLink(selectedDeliveryUnit) {
         vm.contextTitle = "Access Link";
         $state.go("accessLink");
-    }
+ }
 
     function getCommaSeparatedVale(value1, value2) {
         if (value1 && value2) {
@@ -466,4 +471,30 @@ function DeliveryPointController(
         }
     }
 
+    function errorAlert() {
+        $mdDialog.hide(vm.close);
+        var confirm =
+          $mdDialog.confirm()
+            .clickOutsideToClose(true)
+            .title('Duplicates Found')
+            .textContent('Duplicates of Delivery Point Found.')
+            .ariaLabel('Left to right demo')
+            .ok('Ok')
+         
+            
+
+        $mdDialog.show(confirm).then(function () {
+            preserveScope: true
+           
+            
+            deliveryPoint();
+        }, function () {
+        });
+    };
+
+      function opendeliveryPoint(selectedDeliveryUnit) {
+          debugger;
+          //vm.contextTitle = "Delivery Point";
+          $state.go("deliveryPoint");
+      }
 };
