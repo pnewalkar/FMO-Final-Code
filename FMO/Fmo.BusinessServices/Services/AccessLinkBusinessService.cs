@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
 using System.Linq;
-using System.Reflection;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -95,7 +94,6 @@ namespace Fmo.BusinessServices.Services
                    ReferenceDataCategoryNames.AccessLinkRules,
                    ReferenceDataCategoryNames.NetworkLinkType,
                    ReferenceDataCategoryNames.DeliveryPointUseIndicator
-
                 };
 
                 DbGeometry operationalObjectPoint = default(DbGeometry);
@@ -194,6 +192,7 @@ namespace Fmo.BusinessServices.Services
                       .Single(x => x.ReferenceDataValue == "DP").ID == operationObjectTypeId)
                     {
                         DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
+
                         // TODO: calculate access link work length here
                         accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, actualLength, networkLink, referenceDataCategoryList));
                     }
@@ -233,7 +232,6 @@ namespace Fmo.BusinessServices.Services
 
             return isAccessLinkCreated;
         }
-
 
         /// <summary>
         /// This method fetches geojson data for access link
