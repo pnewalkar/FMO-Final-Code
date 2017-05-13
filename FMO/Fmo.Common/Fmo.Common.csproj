@@ -90,6 +90,8 @@
     <Compile Include="AsyncEnumerator\DbAsyncEnumerator.cs" />
     <Compile Include="AsyncEnumerator\DbAsyncQueryProvider.cs" />
     <Compile Include="ConfigurationManagement\ConfigurationHelper.cs" />
+    <Compile Include="Constants\ReferenceDataValues.cs" />
+    <Compile Include="Constants\ReferenceDataCategoryNames.cs" />
     <Compile Include="Constants\UserAccessFunctionsConstants.cs" />
     <Compile Include="EmailManagement\EmailHelper.cs" />
     <Compile Include="EnumExtensions.cs" />
