@@ -69,5 +69,13 @@ namespace Fmo.BusinessServices.Interfaces
         /// DeliveryRouteDTO
         /// </returns>
         Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid);
+
+        /// <summary>
+        /// Generates the route log.
+        /// </summary>
+        /// <param name="deliveryRouteDto">The delivery route dto.</param>
+        /// <param name="userUnit">The user unit.</param>
+        /// <returns>byte[]</returns>
+        Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit);
     }
 }

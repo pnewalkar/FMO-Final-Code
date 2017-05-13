@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccesLinkMinimumLength" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="AccessLinkDiffRoadMaxDistance" xml:space="preserve">
+    <value>40</value>
+  </data>
+  <data name="AccessLinkSameRoadMaxDistance" xml:space="preserve">
+    <value>40</value>
+  </data>
+  <data name="ActionRequired" xml:space="preserve">
+    <value>Action Required</value>
+  </data>
+  <data name="Amber" xml:space="preserve">
+    <value>Amber</value>
+  </data>
+  <data name="ARoad" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="Authorization" xml:space="preserve">
+    <value>Authorization</value>
+  </data>
+  <data name="Both" xml:space="preserve">
+    <value>Both</value>
+  </data>
+  <data name="BRoad" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="BRoadPrimary" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="BusinessPavementWidthMultiplicationFactor" xml:space="preserve">
+    <value>0.66</value>
+  </data>
+  <data name="BusinessRoadWidthMultiplicationFactor" xml:space="preserve">
+    <value>0.5</value>
+  </data>
+  <data name="CollectionUnit" xml:space="preserve">
+    <value>Collection Unit</value>
+  </data>
+  <data name="ConnectingLink" xml:space="preserve">
+    <value>Connecting Link</value>
+  </data>
+  <data name="ConnectingNode" xml:space="preserve">
+    <value>Connecting Node</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="DeliveryPointOperationalStatus_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="DeliveryUnit" xml:space="preserve">
+    <value>Delivery Unit</value>
+  </data>
+  <data name="DeliveryUnitStatus_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="DeliveryUnitStatus_Planned" xml:space="preserve">
+    <value>Planned</value>
+  </data>
+  <data name="DP" xml:space="preserve">
+    <value>DP</value>
+  </data>
+  <data name="DraftPendingApproval" xml:space="preserve">
+    <value>Draft Pending Approval</value>
+  </data>
+  <data name="DraftPendingReview" xml:space="preserve">
+    <value>Draft Pending Review</value>
+  </data>
+  <data name="External" xml:space="preserve">
+    <value>External</value>
+  </data>
+  <data name="Green" xml:space="preserve">
+    <value>Green</value>
+  </data>
+  <data name="HighCapacityTrolley" xml:space="preserve">
+    <value>High Capacity Trolley</value>
+  </data>
+  <data name="In" xml:space="preserve">
+    <value>In</value>
+  </data>
+  <data name="Informational" xml:space="preserve">
+    <value>Informational</value>
+  </data>
+  <data name="Internal" xml:space="preserve">
+    <value>Internal</value>
+  </data>
+  <data name="Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="LiveRoute" xml:space="preserve">
+    <value>Live Route</value>
+  </data>
+  <data name="LocalAccessRoad" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="LocalRoad" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="MinorRoad" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="Multiple" xml:space="preserve">
+    <value>Multiple</value>
+  </data>
+  <data name="NetworkLinkType_PathLink" xml:space="preserve">
+    <value>Path Link</value>
+  </data>
+  <data name="NotLive" xml:space="preserve">
+    <value>Not Live</value>
+  </data>
+  <data name="NumberinName" xml:space="preserve">
+    <value>Number in Name</value>
+  </data>
+  <data name="NYB" xml:space="preserve">
+    <value>NYB</value>
+  </data>
+  <data name="Organisation" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="Out" xml:space="preserve">
+    <value>Out</value>
+  </data>
+  <data name="PAF" xml:space="preserve">
+    <value>PAF</value>
+  </data>
+  <data name="PathLink" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="PathNode" xml:space="preserve">
+    <value>Path Node</value>
+  </data>
+  <data name="PavementWidth" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="PendingDeleteinFMO" xml:space="preserve">
+    <value>Pending Delete in FMO</value>
+  </data>
+  <data name="PendingDeleteinPAF" xml:space="preserve">
+    <value>Pending Delete in PAF</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Planned</value>
+  </data>
+  <data name="PlannedRoute" xml:space="preserve">
+    <value>Planned Route</value>
+  </data>
+  <data name="POBOX" xml:space="preserve">
+    <value>PO BOX</value>
+  </data>
+  <data name="PostalAddressStatus_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="PropertyDepth" xml:space="preserve">
+    <value>?</value>
+  </data>
+  <data name="Range" xml:space="preserve">
+    <value>Range</value>
+  </data>
+  <data name="Red" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Residential" xml:space="preserve">
+    <value>Residential</value>
+  </data>
+  <data name="ResidentialHouseDepthMultiplicationFactor" xml:space="preserve">
+    <value>0.5</value>
+  </data>
+  <data name="ResidentialPavementWidthMultiplicationFactor" xml:space="preserve">
+    <value>0.66</value>
+  </data>
+  <data name="ResidentialRoadWidthMultiplicationFactor" xml:space="preserve">
+    <value>0.5</value>
+  </data>
+  <data name="RestrictedLocalAccessRoad" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="RestrictedSecondaryAccessRoad" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="RMGDP" xml:space="preserve">
+    <value>RMG DP</value>
+  </data>
+  <data name="RMGNode" xml:space="preserve">
+    <value>RMG Node</value>
+  </data>
+  <data name="RMGPath" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="RMGRoad" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="RMVan" xml:space="preserve">
+    <value>RM Van</value>
+  </data>
+  <data name="RMVanShared" xml:space="preserve">
+    <value>RM Van (Shared)</value>
+  </data>
+  <data name="RoadARoadPrimary" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="RoadLink" xml:space="preserve">
+    <value>Road Link</value>
+  </data>
+  <data name="RoadMotorway" xml:space="preserve">
+    <value>30</value>
+  </data>
+  <data name="RoadNode" xml:space="preserve">
+    <value>Road Node</value>
+  </data>
+  <data name="SecondaryAccessRoad" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="Single" xml:space="preserve">
+    <value>Single</value>
+  </data>
+  <data name="Subbuilding" xml:space="preserve">
+    <value>Sub building</value>
+  </data>
+  <data name="Suppressed" xml:space="preserve">
+    <value>Suppressed</value>
+  </data>
+  <data name="TransportType_HighCapacityTrolley" xml:space="preserve">
+    <value>HighCapacityTrolley</value>
+  </data>
+  <data name="TransportType_RMVan" xml:space="preserve">
+    <value>RMVan</value>
+  </data>
+  <data name="TransportType_RMVanShared" xml:space="preserve">
+    <value>RMVan(Shared)</value>
+  </data>
+  <data name="UI_DeliveryPoint_Type_Single" xml:space="preserve">
+    <value>Single</value>
+  </data>
+  <data name="UI_MinNumSearchCharacters" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="UI_RouteLog_Status_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="UserDefined" xml:space="preserve">
+    <value>User Defined</value>
+  </data>
+  <data name="USR" xml:space="preserve">
+    <value>USR</value>
+  </data>
+</root>
