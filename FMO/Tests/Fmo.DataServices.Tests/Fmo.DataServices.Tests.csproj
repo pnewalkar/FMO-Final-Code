@@ -64,6 +64,7 @@
     <Compile Include="Repositories\DeliveryPointRepositoryFixture.cs" />
     <Compile Include="Repositories\DeliveryPointsRepositoryFixture.cs" />
     <Compile Include="Repositories\DeliveryRouteRepositoryFixture.cs" />
+    <Compile Include="Repositories\OSRoadLinkRepositoryFixture.cs" />
     <Compile Include="Repositories\UnitLocationRepositoryFixture.cs" />
     <Compile Include="Repositories\PostCodeRepositoryFixture.cs" />
     <Compile Include="Repositories\ReferenceDataCategoryRepositoryFixture.cs" />
