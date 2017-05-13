@@ -66,7 +66,7 @@
                 <span flex="5"></span>
 
                 <md-input-container flex="30">
-                    <label>Route<sub>*</sub></label>
+                    <label>Route</label>
                     <md-select name="route" ng-model="vm.postalAddressData.route" select-clear required> 
                         <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
                             {{route.displayText}}
@@ -191,7 +191,7 @@
 
             <div layout="row" ng-show="vm.display" class="occRow">
                 <md-input-container>
-                    <label>Multi Occ<sub>*</sub></label>
+                    <label>Multi Occ</label>
                     <input name="multiocc" ng-model="vm.multiocc" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.multiocc.$error"
                          ng-show="vm.deliveryPointForm.multiocc.$touched" role="alert">
@@ -206,7 +206,7 @@
                         <input type="text" ng-model="vm.dpUse[0].displayText">-->
 
                 <md-input-container>
-                    <label>Mail Vol<sub>*</sub></label>
+                    <label>Mail Vol</label>
                     <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.mailvol.$error"
                          ng-show="vm.deliveryPointForm.mailvol.$touched" role="alert">
