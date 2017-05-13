@@ -19,7 +19,12 @@ namespace Fmo.API.Services.Controllers
             this.addressLocationBussinessService = addressLocationBussinessService;
         }
 
-        [HttpGet("GetAddressLocationByUDPRN")]
+        /// <summary>
+        /// Gets the address location by udprn.
+        /// </summary>
+        /// <param name="uDPRN">The u DPRN.</param>
+        /// <returns>object</returns>
+        [HttpGet("{UDPRN:int}")]
         public object GetAddressLocationByUDPRN(int uDPRN)
         {
             return this.addressLocationBussinessService.GetAddressLocationByUDPRN(uDPRN);

@@ -1,10 +1,14 @@
-﻿namespace Fmo.DataServices.Repositories
+﻿using System.CodeDom;
+using System.Text;
+
+namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Spatial;
     using System.Linq;
+    using System.Transactions;
     using System.Threading.Tasks;
     using AutoMapper;
     using Common.SqlGeometryExtension;
@@ -41,6 +45,35 @@
         }
 
         /// <summary>
+        /// Creates access link.
+        /// </summary>
+        /// <param name="accessLinkDto">Access link data object.</param>
+        /// <returns>Success.</returns>
+        public bool CreateAccessLink(AccessLinkDTO accessLinkDto)
+        {
+            bool accessLinkCreationSuccess = false;
+
+            AccessLink accessLink = new AccessLink
+            {
+                ID = Guid.NewGuid(),
+                OperationalObjectPoint = accessLinkDto.OperationalObjectPoint,
+                NetworkIntersectionPoint = accessLinkDto.NetworkIntersectionPoint,
+                AccessLinkLine = accessLinkDto.AccessLinkLine,
+                ActualLengthMeter = accessLinkDto.ActualLengthMeter,
+                WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
+                Approved = accessLinkDto.Approved,
+                OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
+                NetworkLink_GUID = accessLinkDto.NetworkLink_GUID
+            };
+
+            DataContext.AccessLinks.Add(accessLink);
+
+            accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
+
+            return accessLinkCreationSuccess;
+        }
+
+        /// <summary>
         /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
@@ -61,15 +94,16 @@
             }
         }
 
+        /*
         /// <summary>
         /// Create auto access link
         /// </summary>
-        /// <param name="operationalObject_GUID">Delivery Point Guid </param>
+        /// <param name="operationalObjectId">operational point unique identifier.</param>
         /// <returns>bool</returns>
-        public bool CreateAutoAccessLink(Guid operationalObject_GUID)
+        public bool CreateAutoAccessLink(Guid operationalObjectId)
         {
             bool isAccessLinkCreated = false;
-            if (operationalObject_GUID != null)
+            if (operationalObjectId != Guid.Empty)
             {
                 using (var transaction = DataContext.Database.BeginTransaction())
                 {
@@ -78,21 +112,19 @@
                         // get corresponding dp and postal address data
                         var deliveryPoint = DataContext.DeliveryPoints
                             .Include(l => l.PostalAddress)
-                            .Where(x => x.Positioned == true && x.AccessLinkPresent == false && x.ID == operationalObject_GUID)
+                            .Where(x => x.Positioned == true && x.AccessLinkPresent == false && x.ID == operationalObjectId)
                             .SingleOrDefault();
 
                         // connect with nearest point on road of related street (rule 1)
                         if (deliveryPoint.LocationXY != null)
                         {
                             var operationalObjectPoint = deliveryPoint.LocationXY;
-                            var sqlOperationalObjectPoint = deliveryPoint.LocationXY.ToSqlGeometry();
                             var thoroughfare = deliveryPoint.PostalAddress.Thoroughfare;
 
                             var pathIntersectionCount = 0;
                             var roadIntersectionCount = 0;
                             SqlGeometry accessLinkLine = null;
                             double? actualLengthMeter = null;
-                            NetworkLink networkLink = null;
                             Guid networkLinkGuid = default(Guid);
 
                             var streetName = DataContext.StreetNames
@@ -105,7 +137,7 @@
 
                             if (streetName != null)
                             {
-                                networkLink = DataContext.NetworkLinks
+                                NetworkLink networkLink = DataContext.NetworkLinks
                                 .Where(m => m.StreetName_GUID == streetName.ID)
                                 .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
                                 .FirstOrDefault();
@@ -132,7 +164,8 @@
                                                             && m.NetworkLinkType_GUID == networkPathLinkType)
                                                 .Count();
                             }
-                            else if (accessLinkLine == null || actualLengthMeter > 40 || pathIntersectionCount != 0 || roadIntersectionCount > 1)
+
+                            if (accessLinkLine == null || actualLengthMeter > 40 || pathIntersectionCount != 0 || roadIntersectionCount > 1)
                             {
                                 var networkLinkRoad = DataContext.NetworkLinks
                                     .Where(m => m.StreetName_GUID == streetName.ID
@@ -164,7 +197,7 @@
                                     ActualLengthMeter = (decimal)actualLengthMeter,
                                     WorkloadLengthMeter = (decimal)workloadLengthMeter,
                                     Approved = true,
-                                    OperationalObject_GUID = operationalObject_GUID,
+                                    OperationalObject_GUID = operationalObjectId,
                                     NetworkLink_GUID = networkLinkGuid
                                 };
 
@@ -194,5 +227,8 @@
 
             return isAccessLinkCreated;
         }
+        */
+
+       
     }
 }

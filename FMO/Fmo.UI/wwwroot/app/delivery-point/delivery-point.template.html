@@ -65,13 +65,17 @@
 
                 <span flex="5"></span>
 
-                <md-input-container flex>
-                    <label>Route<sub>*</sub></label>
-                    <md-select ng-model="vm.postalAddressData.routeDetails" select-clear>
-                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value" ng-selected="{{route.displayText=='Select'?true:false}}">
+                <md-input-container flex="30">
+                    <label>Route</label>
+                    <md-select name="route" ng-model="vm.postalAddressData.route" select-clear required> 
+                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
                     </md-select>
+                    <div ng-messages="vm.deliveryPointForm.route.$error"
+                         ng-show="vm.deliveryPointForm.route.$touched" role="alert">
+                        <div ng-message="required">This field is required*</div>
+                    </div>
                 </md-input-container>
 
                 <span flex="5"></span>
@@ -86,7 +90,7 @@
             <div layout="row" ng-show="vm.display">
                 <md-input-container flex="30">
                     <label>Type</label>
-                    <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != 'default'">
+                    <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != vm.defaultNYBValue">
                         <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.displayText=='Single'?true:false}}">
                             {{type.displayText}}
                         </md-option>
@@ -187,7 +191,7 @@
 
             <div layout="row" ng-show="vm.display" class="occRow">
                 <md-input-container>
-                    <label>Multi Occ<sub>*</sub></label>
+                    <label>Multi Occ</label>
                     <input name="multiocc" ng-model="vm.multiocc" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.multiocc.$error"
                          ng-show="vm.deliveryPointForm.multiocc.$touched" role="alert">
@@ -202,7 +206,7 @@
                         <input type="text" ng-model="vm.dpUse[0].displayText">-->
 
                 <md-input-container>
-                    <label>Mail Vol<sub>*</sub></label>
+                    <label>Mail Vol</label>
                     <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.mailvol.$error"
                          ng-show="vm.deliveryPointForm.mailvol.$touched" role="alert">
@@ -220,8 +224,7 @@
                 Cancel
             </md-button>
             <span flex></span>
-
-            <md-button ng-disabled="!(vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
                 Save
             </md-button>
             <div ng-if="vm.errorMessageDisplay">
