@@ -119,5 +119,18 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <returns>byte[]</returns>
         byte[] GetDeliveryPointRowVersion(Guid id);
 
+        /// <summary>
+        /// This method is used to fetch Delivery Point by unique identifier.
+        /// </summary>
+        /// <param name="deliveryPointGuid">Delivery point unique identifier.</param>
+        /// <returns>DeliveryPointDTO</returns>
+        DeliveryPointDTO GetDeliveryPoint(Guid deliveryPointGuid);
+
+        /// <summary>
+        /// This method updates delivery point access link status
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
+        /// <returns>updated delivery point</returns>
+        void UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
     }
 }
