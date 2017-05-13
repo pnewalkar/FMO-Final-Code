@@ -107,6 +107,7 @@
     <Compile Include="ExceptionManagement\ExceptionHelper.cs" />
     <Compile Include="ExceptionManagement\Exceptions\BusinessLogicException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\DataAccessException.cs" />
+    <Compile Include="ExceptionManagement\Exceptions\DbConcurrencyException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\EntityAlreadyExistsException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\InfrastructureException.cs" />

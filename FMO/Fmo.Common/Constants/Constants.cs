@@ -162,5 +162,9 @@
         public const string INTERNAL = "Internal";
         public const string ROWVERSION = "RowVersion";
         #endregion DeliveryPoints
+
+        #region MyRegion
+        public const string ConcurrencyMessage = "Data has been already updated by another user";
+        #endregion
     }
 }

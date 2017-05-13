@@ -1,15 +1,15 @@
-﻿using Fmo.Common.TestSupport;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Fmo.Common.Enums;
+using Fmo.Common.Interface;
+using Fmo.Common.TestSupport;
 using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using NYB = Fmo.NYBLoader;
-using System.Linq;
-using Fmo.Common.Interface;
-using Fmo.Common.Enums;
 
 namespace Fmo.NYBLoader.Tests
 {
@@ -40,7 +40,7 @@ namespace Fmo.NYBLoader.Tests
         [Test]
         public async Task Test_FailureHttpClientCall()
         {
-            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
+            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { ID = Guid.NewGuid() } };
 
             httpHandlerMock.Setup(x => x.SetBaseAddress(It.IsAny<Uri>()));
             httpHandlerMock.Setup(x => x.PostAsJsonAsync(It.IsAny<string>(), It.IsAny<List<PostalAddressDTO>>())).Throws<Exception>();
@@ -96,5 +96,4 @@ namespace Fmo.NYBLoader.Tests
             Assert.IsTrue(InValidReccount == 1);
         }
     }
-
 }

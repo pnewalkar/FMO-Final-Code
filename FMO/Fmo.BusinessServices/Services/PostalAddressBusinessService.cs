@@ -287,13 +287,12 @@ namespace Fmo.BusinessServices.Services
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
+                throw;
             }
             finally
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
-
-            return null;
         }
 
         #endregion public methods

@@ -1,3 +1,5 @@
+using Fmo.Common.ExceptionManagement;
+
 namespace Fmo.DataServices.Repositories
 {
     using System;
@@ -276,12 +278,16 @@ namespace Fmo.DataServices.Repositories
             {
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
-                    DeliveryPoint deliveryPoint = fmoDBContext.DeliveryPoints.Where(dp => dp.ID == deliveryPointDTO.ID).SingleOrDefault();
+                    DeliveryPoint deliveryPoint =await fmoDBContext.DeliveryPoints
+                        .Where(dp => dp.ID == deliveryPointDTO.ID)
+                        .Select(x => new DeliveryPoint
+                        {
+                            Longitude = deliveryPointDTO.Longitude,
+                            Latitude = deliveryPointDTO.Latitude,
+                            LocationXY = deliveryPointDTO.LocationXY,
+                            LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID
+                        }).SingleOrDefaultAsync();
 
-                    deliveryPoint.Longitude = deliveryPointDTO.Longitude;
-                    deliveryPoint.Latitude = deliveryPointDTO.Latitude;
-                    deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
-                    deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
                     fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
                     fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
                     return await fmoDBContext.SaveChangesAsync();
@@ -289,11 +295,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw;
-            }
-            catch (Exception)
-            {
-                throw;
+                throw new DbConcurrencyException(Constants.ConcurrencyMessage);
             }
         }
 
@@ -377,7 +379,7 @@ namespace Fmo.DataServices.Repositories
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
-                return null;
+                throw;
             }
         }
 
@@ -482,8 +484,8 @@ namespace Fmo.DataServices.Repositories
 
                 Mapper.Initialize(cfg =>
                 {
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>();
                     cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
                 });
 
                 Mapper.Configuration.CreateMapper();
@@ -507,7 +509,7 @@ namespace Fmo.DataServices.Repositories
             {
                 DeliveryPoint deliveryPoint = fmoDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
 
-                deliveryPoint.AccessLinkPresent = deliveryPoint.AccessLinkPresent;
+                deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
 
                 fmoDbContext.Entry(deliveryPoint).State = EntityState.Modified;
                 fmoDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
