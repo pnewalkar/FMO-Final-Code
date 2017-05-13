@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
 using System.Linq;
-using System.Reflection;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -24,7 +23,6 @@ namespace Fmo.BusinessServices.Services
     public class AccessLinkBusinessService : IAccessLinkBusinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
-        private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IOSRoadLinkRepository osroadLinkRepository;
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
@@ -72,7 +70,7 @@ namespace Fmo.BusinessServices.Services
             }
         }
 
-      /// <summary>
+        /// <summary>
         /// Create automatic access link creation after delivery point creation.
         /// </summary>
         /// <param name="operationalObjectId">Operational Object unique identifier.</param>
@@ -215,7 +213,6 @@ namespace Fmo.BusinessServices.Services
             return isAccessLinkCreated;
         }
 
-
         /// <summary>
         /// This method fetches geojson data for accesslink
         /// </summary>
@@ -298,10 +295,6 @@ namespace Fmo.BusinessServices.Services
             }
 
             return coordinates;
-        }
-
-
-            return isAccessLinkCreated;
         }
 
         /// <summary>

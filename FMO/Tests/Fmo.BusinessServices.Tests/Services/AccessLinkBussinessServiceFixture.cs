@@ -21,6 +21,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IStreetNetworkBusinessService> streetNetworkBusinessServiceMock;
         private Mock<IAccessLinkRepository> mockaccessLinkRepository;
         private Mock<IOSRoadLinkRepository> mockosroadLinkRepository;
+        private Mock<ILoggingHelper> loggingHelperMock;
         private List<AccessLinkDTO> accessLinkDTO = null;
 
         [Test]
@@ -34,7 +35,7 @@ namespace Fmo.BusinessServices.Tests.Services
 
         protected override void OnSetup()
         {
-            accessLinkDTO = new List<AccessLinkDTO>() { new AccessLinkDTO() { ID = Guid.NewGuid()} };
+            accessLinkDTO = new List<AccessLinkDTO>() { new AccessLinkDTO() { ID = Guid.NewGuid() } };
             List<string> categoryNames = new List<string>
                 {
                     "Access Link Parameters"
@@ -43,8 +44,8 @@ namespace Fmo.BusinessServices.Tests.Services
             mockaccessLinkRepository = new Mock<IAccessLinkRepository>();
             mockaccessLinkRepository.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDTO>>);
 
-            mockreferenceDataCategoryRepository = new Mock<IReferenceDataCategoryRepository>();
-            mockreferenceDataCategoryRepository.Setup(x => x.GetReferenceDataCategoriesByCategoryNames(It.IsAny<List<string>>())).Returns(It.IsAny<List<ReferenceDataCategoryDTO>>());
+            referenceDataCategoryRepositoryMock = new Mock<IReferenceDataCategoryRepository>();
+            referenceDataCategoryRepositoryMock.Setup(x => x.GetReferenceDataCategoriesByCategoryNames(It.IsAny<List<string>>())).Returns(It.IsAny<List<ReferenceDataCategoryDTO>>());
 
             mockosroadLinkRepository = new Mock<IOSRoadLinkRepository>();
             mockosroadLinkRepository.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).Returns(It.IsAny<string>());
