@@ -32,15 +32,12 @@ namespace Fmo.DataServices.Repositories
         {
             Guid statusId = Guid.Empty;
             var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-            if (result != null)
+            if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
             {
-                if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+                var referenceData = result.ReferenceDatas.Where(n => n.DataDescription.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                if (referenceData != null)
                 {
-                    var referenceData = result.ReferenceDatas.Where(n => n.DataDescription.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                    if (referenceData != null)
-                    {
-                        statusId = referenceData.ID;
-                    }
+                    statusId = referenceData.ID;
                 }
             }
 
@@ -57,16 +54,10 @@ namespace Fmo.DataServices.Repositories
         {
             List<Guid> statusIds = new List<Guid>();
             var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-            if (result != null)
+            if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
             {
-                if (result.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
-                {
-                    var referenceData = result.ReferenceDatas.Where(n => lstRefDataName.Contains(n.DataDescription.Trim().ToUpper())).ToList();
-                    if (referenceData != null)
-                    {
-                        referenceData.ForEach(r => statusIds.Add(r.ID));
-                    }
-                }
+                var referenceData = result.ReferenceDatas.Where(n => lstRefDataName.Contains(n.DataDescription.Trim().ToUpper())).ToList();
+                referenceData.ForEach(r => statusIds.Add(r.ID));
             }
 
             return statusIds;
