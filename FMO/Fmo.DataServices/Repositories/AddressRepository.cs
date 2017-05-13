@@ -505,8 +505,7 @@
                     {
                         if (paDTO.RouteDetails == null)
                         {
-                            paDTO.RouteDetails = new List<BindingEntity>();
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
+                            paDTO.RouteDetails = new List<BindingEntity>();                            
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
@@ -522,7 +521,6 @@
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
@@ -542,11 +540,6 @@
                 {
                     if (!routeDetails.Where(rd => rd.Value == r.DeliveryRoute.ID).Any())
                     {
-                        if (!routeDetails.Where(rd => rd.Value == new Guid(Constants.DEFAULTGUID)).Any())
-                        {
-                            routeDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
-                        }
-
                         routeDetails.Add(new BindingEntity() { DisplayText = r.DeliveryRoute.RouteName, Value = r.DeliveryRoute.ID });
                     }
                 });
