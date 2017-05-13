@@ -108,6 +108,7 @@ namespace Fmo.API.Services
             services.AddTransient<IStreetNetworkRepository, StreetNetworkRepository>();
             services.AddTransient<INotificationRepository, NotificationRepository>();
             services.AddTransient<IUnitLocationRepository, UnitLocationRepository>();
+            services.AddTransient<IOSRoadLinkRepository, OSRoadLinkRepository>();
 
             //services.AddTransient<IFileProcessingLogRepository, FileProcessingLogRepository>();
             services.AddTransient<IReferenceDataRepository, ReferenceDataRepository>();
