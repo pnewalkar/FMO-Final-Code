@@ -41,7 +41,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         routeLogAPIService.getSelectionType().then(function (response) {
             vm.RouteselectionTypeObj = response;
             angular.forEach(vm.RouteselectionTypeObj, function (value, key) {
-                if (value.displayText === "Single")
+                if (value.referenceDataValue === "Single")
                     vm.selectedRouteSelectionObj = value;
             });
         });
@@ -59,7 +59,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function scenarioChange() {
         var type = vm.selectedRouteSelectionObj;
-        if (type.displayText === "Multiple") {
+        if (type.referenceDataValue === "Multiple") {
             loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
             vm.isDeliveryRouteDisabled = true;
             vm.isShowMultiSelectionRoute = true;
@@ -86,7 +86,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            if (vm.selectedRouteSelectionObj.displayText === "Single") {
+            if (vm.selectedRouteSelectionObj.referenceDataValue === "Single") {
                 vm.multiSelectiondeliveryRoute = null;
                 vm.deliveryRoute = response;
             } else {

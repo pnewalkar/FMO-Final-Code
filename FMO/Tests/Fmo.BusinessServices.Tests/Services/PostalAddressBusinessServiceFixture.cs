@@ -28,7 +28,7 @@
         [Test]
         public void Test_ValidPostalAddressData()
         {
-            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10, UDPRN = 14856 } };
+            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { ID = Guid.NewGuid(), UDPRN = 14856 } };
             var result = testCandidate.SavePostalAddress(lstPostalAddressDTO, "NYB.CSV");
             mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeastOnce());
             mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Once());
@@ -40,7 +40,7 @@
         [Test]
         public void Test_InvalidPostalAddressData()
         {
-            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { Address_Id = 10 } };
+            List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { ID = Guid.NewGuid() } };
             var result = testCandidate.SavePostalAddress(lstPostalAddressDTO, "NYB.CSV");
             mockrefDataRepository.Verify(x => x.GetReferenceDataId(It.IsAny<string>(), It.IsAny<string>()), Times.AtLeast(2));
             mockAddressRepository.Verify(x => x.SaveAddress(It.IsAny<PostalAddressDTO>(), It.IsAny<string>()), Times.Never());
@@ -189,8 +189,7 @@
         {
             PostalAddressDTO postalAddress = new PostalAddressDTO()
             {
-                Address_Id = 10,
-                AddressType_Id = 2,
+                ID = Guid.NewGuid(),
                 UDPRN = 14856,
                 BuildingName = "Building one",
                 BuildingNumber = 123,

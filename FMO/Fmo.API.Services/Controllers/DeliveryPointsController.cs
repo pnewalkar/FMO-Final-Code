@@ -66,27 +66,28 @@ namespace Fmo.API.Services.Controllers
         /// <summary>
         /// Create delivery point for PAF and NYB records.
         /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDTO</param>
+        /// <param name="deliveryPointDto">deliveryPointDto</param>
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        [Route("CreateDeliveryPoint")]
+        //[Route("CreateDeliveryPoint")]
+        [Route("{ID: guid}")]
         [HttpPost]
-        public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
         {
-            return businessService.CreateDeliveryPoint(deliveryPointDTO);
+            return businessService.CreateDeliveryPoint(deliveryPointDto);
         }
 
 
         /// <summary>
         /// Update delivery point
         /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDTO</param>
+        /// <param name="deliveryPointModelDto">deliveryPointDTO</param>
         /// <returns></returns>
-        [Route("UpdateDeliveryPoint")]
-        [HttpPost]
-        public void UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDTO)
+        [Route("{ID: guid}")]
+        [HttpPut]
+        public void UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDto)
         {
-            businessService.UpdateDeliveryPointLocation(deliveryPointModelDTO);
+            businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
         }
     }
 }

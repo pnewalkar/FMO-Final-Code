@@ -16,10 +16,10 @@
        			<label>Selection Type</label>
 	          	<md-select name="type" ng-model="vm.selectedRouteSelectionObj" ng-change="vm.selectionTypeChange()">   
                     <md-select-label>
-                        {{ vm.RouteselectionTypeObj.displayText }}
+                        {{ vm.RouteselectionTypeObj.referenceDataValue }}
                     </md-select-label>                
-                    <md-option ng-repeat="type in vm.RouteselectionTypeObj" ng-value="type" selected="{{ type.displayText === vm.RouteselectionTypeObj.displayText ? 'selected' : '' }}">
-                      {{type.displayText}}
+                    <md-option ng-repeat="type in vm.RouteselectionTypeObj" ng-value="type" selected="{{ type.referenceDataValue === vm.RouteselectionTypeObj.referenceDataValue ? 'selected' : '' }}">
+                      {{type.referenceDataValue}}
                     </md-option>
 	          	</md-select>
         	</md-input-container>
@@ -29,8 +29,8 @@
             <md-input-container flex="15">
 	        	<label>Status</label>
 		        <md-select name="type" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()">
-                    <md-select-label>{{ vm.RouteStatusObj.displayText }}</md-select-label>      
-                    <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status" selected="{{ status.displayText === vm.RouteStatusObj.displayText ? 'selected' : '' }}">{{status.displayText}}</md-option>
+                    <md-select-label>{{ vm.RouteStatusObj.referenceDataValue }}</md-select-label>      
+                    <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status" selected="{{ status.referenceDataValue === vm.RouteStatusObj.referenceDataValue ? 'selected' : '' }}">{{status.referenceDataValue}}</md-option>
 		        </md-select>
 	        </md-input-container>
             

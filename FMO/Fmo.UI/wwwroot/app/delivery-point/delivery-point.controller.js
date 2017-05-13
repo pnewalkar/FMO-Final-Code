@@ -316,6 +316,7 @@ function DeliveryPointController(
 
     function OnChangeItem(selectedItem) {
         if (selectedItem) {
+            vm.postalAddressData = {};
             vm.searchText = selectedItem;
             vm.postalAddressData = {};
             getPostalAddress(selectedItem);
@@ -364,15 +365,18 @@ function DeliveryPointController(
         deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
                    vm.nybaddress = response;
-                   if (!(vm.nybaddress.organisationName)) {
-                       vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                           displayText: "Residential"
-                       });
-                   }
-                   else {
-                       vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                           displayText: "Commercial"
-                       });
+                   vm.dpUse = null;
+                   if (vm.notyetBuilt !== '00000000-0000-0000-0000-000000000000') {
+                       if (!(vm.nybaddress.organisationName)) {
+                           vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
+                               displayText: "Residential"
+                           });
+                       }
+                       else {
+                           vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
+                               displayText: "Commercial"
+                           });
+                       }
                    }
                });
     }
@@ -459,6 +463,6 @@ function DeliveryPointController(
         else {
             return value2;
         }
-}
+    }
 
 };

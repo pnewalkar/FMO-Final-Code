@@ -1,9 +1,12 @@
+using Fmo.Common.ExceptionManagement;
+
 namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
     using System.Data.Entity.SqlServer;
     using System.Linq;
@@ -18,7 +21,6 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using MappingExtensions;
     using Entity = Fmo.Entities;
-    using System.Data.Entity.Infrastructure;
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
@@ -276,12 +278,16 @@ namespace Fmo.DataServices.Repositories
             {
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
-                    DeliveryPoint deliveryPoint = fmoDBContext.DeliveryPoints.Where(dp => dp.ID == deliveryPointDTO.ID).SingleOrDefault();
+                    DeliveryPoint deliveryPoint =await fmoDBContext.DeliveryPoints
+                        .Where(dp => dp.ID == deliveryPointDTO.ID)
+                        .Select(x => new DeliveryPoint
+                        {
+                            Longitude = deliveryPointDTO.Longitude,
+                            Latitude = deliveryPointDTO.Latitude,
+                            LocationXY = deliveryPointDTO.LocationXY,
+                            LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID
+                        }).SingleOrDefaultAsync();
 
-                    deliveryPoint.Longitude = deliveryPointDTO.Longitude;
-                    deliveryPoint.Latitude = deliveryPointDTO.Latitude;
-                    deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
-                    deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
                     fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
                     fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
                     return await fmoDBContext.SaveChangesAsync();
@@ -289,11 +295,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw;
-            }
-            catch (Exception)
-            {
-                throw;
+                throw new DbConcurrencyException(Constants.ConcurrencyMessage);
             }
         }
 
@@ -377,7 +379,7 @@ namespace Fmo.DataServices.Repositories
             catch (Exception ex)
             {
                 this.loggingHelper.LogError(ex);
-                return null;
+                throw;
             }
         }
 
@@ -466,6 +468,53 @@ namespace Fmo.DataServices.Repositories
             else
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to fetch Delivery Point by unique identifier.
+        /// </summary>
+        /// <param name="deliveryPointGuid">Delivery point unique identifier.</param>
+        /// <returns>DeliveryPointDTO</returns>
+        public DeliveryPointDTO GetDeliveryPoint(Guid deliveryPointGuid)
+        {
+            try
+            {
+                var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.PostalAddress).AsNoTracking().Single(n => n.ID == deliveryPointGuid);
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>();
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                });
+
+                Mapper.Configuration.CreateMapper();
+
+                return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// This method updates delivery point access link status
+        /// </summary>
+        /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
+        public void UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO)
+        {
+            using (FMODBContext fmoDbContext = new FMODBContext())
+            {
+                DeliveryPoint deliveryPoint = fmoDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
+
+                deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
+
+                fmoDbContext.Entry(deliveryPoint).State = EntityState.Modified;
+                fmoDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
+
+                fmoDbContext.SaveChanges();
             }
         }
     }

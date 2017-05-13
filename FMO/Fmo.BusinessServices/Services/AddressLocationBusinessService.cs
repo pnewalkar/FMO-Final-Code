@@ -20,54 +20,51 @@
             this.addressLocationRepository = addressLocationRepository;
         }
 
+        /// <summary>
+        /// This method is used to fetch data for Access Links.
+        /// </summary>
+        /// <param name="uDPRN">UDPRN</param>
+        /// <returns>
+        /// Address Location DTO
+        /// </returns>
         public object GetAddressLocationByUDPRN(int uDPRN)
         {
-            try
-            {
-                AddressLocationDTO addressLocationDTO = this.addressLocationRepository.GetAddressLocationByUDPRN(uDPRN);
-                return GetAddressLocationJsonData(addressLocationDTO);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AddressLocationDTO addressLocationDto = this.addressLocationRepository.GetAddressLocationByUDPRN(uDPRN);
+            return GetAddressLocationJsonData(addressLocationDto);
         }
 
         /// <summary>
         /// This method is used to fetch GeoJson data for Address Location.
         /// </summary>
-        /// <param name="addressLocationDTO">Address Location DTO</param>
+        /// <param name="addressLocationDto">Address Location DTO</param>
         /// <returns>lstDeliveryPointDTO</returns>
-        private static object GetAddressLocationJsonData(AddressLocationDTO addressLocationDTO)
+        private static object GetAddressLocationJsonData(AddressLocationDTO addressLocationDto)
         {
             var addressLocationGeoJson = new GeoJson
             {
                 features = new List<Feature>()
             };
 
-            if (addressLocationDTO != null)
+            if (addressLocationDto?.LocationXY != null)
             {
-                if (addressLocationDTO.LocationXY != null)
+                SqlGeometry addressLocationSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(addressLocationDto.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
+
+                var feature = new Feature
                 {
-                    SqlGeometry addressLocationSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(addressLocationDTO.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
-
-                    var feature = new Feature
+                    id = addressLocationDto.ID.ToString(),
+                    properties = new Dictionary<string, JToken>
                     {
-                        id = addressLocationDTO.ID.ToString(),
-                        properties = new Dictionary<string, JToken>
-                        {
-                            { Constants.UDPRN, addressLocationDTO.UDPRN },
-                            { Constants.Latitude, addressLocationDTO.Lattitude },
-                            { Constants.Longitude, addressLocationDTO.Longitude },
-                        },
-                        geometry = new Geometry
-                        {
-                            coordinates = new double[] { addressLocationSqlGeometry.STX.Value, addressLocationSqlGeometry.STY.Value }
-                        }
-                    };
+                        { Constants.UDPRN, addressLocationDto.UDPRN },
+                        { Constants.Latitude, addressLocationDto.Lattitude },
+                        { Constants.Longitude, addressLocationDto.Longitude },
+                    },
+                    geometry = new Geometry
+                    {
+                        coordinates = new double[] { addressLocationSqlGeometry.STX.Value, addressLocationSqlGeometry.STY.Value }
+                    }
+                };
 
-                    addressLocationGeoJson.features.Add(feature);
-                }
+                addressLocationGeoJson.features.Add(feature);
             }
 
             return addressLocationGeoJson;

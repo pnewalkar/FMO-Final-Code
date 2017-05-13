@@ -1,4 +1,5 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,15 +33,15 @@ namespace Fmo.API.Services.Controllers
         }
 
         /// <summary>
-        /// This method is used to create Access Link for auto.
+        /// This method is used to create automatic Access Link .
         /// </summary>
-        /// <param name="boundaryBox">boundaryBox as string</param>
-        /// <returns>string of Access link data</returns>
-        [Route("CreateAccessLink")]
-        [HttpPost]
-        public bool CreateAccessLink([FromBody] System.Guid operationalObject_GUID)
+        /// <param name="operationalObjectId">Operational Object unique identifier.</param>
+        /// <param name="operationalObjectTypeId">Operational Object type unique identifier.</param>
+        /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
+        [HttpPost("Create")]
+        public bool CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
-            return accessLinkBussinessService.CreateAccessLink(operationalObject_GUID);
+            return accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
         }
     }
 }
