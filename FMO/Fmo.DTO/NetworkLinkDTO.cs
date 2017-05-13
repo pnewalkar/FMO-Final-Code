@@ -12,7 +12,7 @@ namespace Fmo.DTO
 
         public string NetworkLinkType { get; set; }
 
-        public string ExternalTOID { get; set; }
+        public string TOID { get; set; }
 
         public string DataProvider { get; set; }
 
@@ -29,5 +29,7 @@ namespace Fmo.DTO
         public decimal LinkLength { get; set; }
 
         public int? LinkGradientType { get; set; }
+
+        public Guid? NetworkLinkType_GUID { get; set; }
     }
 }

@@ -79,5 +79,17 @@ namespace Fmo.API.Services.Controllers
         {
             return await deliveryRouteBusinessService.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, CurrentUserUnit);
         }
+
+        /// <summary>
+        /// Generates the delivery route log PDF.
+        /// </summary>
+        /// <param name="deliveryRouteDto">The delivery route dto.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("routelog/summary")]
+        public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        {
+            return await deliveryRouteBusinessService.GenerateRouteLog(deliveryRouteDto, CurrentUserUnit);
+        }
     }
 }

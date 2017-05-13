@@ -46,7 +46,8 @@ namespace Fmo.API.Services.Controllers
         /// <param name="searchText">searchText</param>
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        [HttpGet("SearchAddressdetails")]
+        //[HttpGet("/SearchAddressdetails")]
+        [HttpGet("search/postaladdress/{searchText}")]
         public async Task<List<string>> SearchAddressdetails(string searchText)
         {
             return await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
@@ -58,7 +59,8 @@ namespace Fmo.API.Services.Controllers
         /// <param name="postCode">postcode</param>
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        [HttpGet("GetAddressByPostCode")]
+        //[HttpGet("GetAddressByPostCode")]
+        [HttpGet("postaladdress/{postcode}")]
         public async Task<PostalAddressDTO> GetAddressByPostCode(string postCode)
         {
             return await businessService.GetPostalAddressDetails(postCode, CurrentUserUnit);
@@ -69,6 +71,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        //[HttpGet("GetPostalAddressByGuid")]
         [HttpGet("GetPostalAddressByGuid")]
         public PostalAddressDTO GetPostalAddressByGuid(Guid addressGuid)
         {
