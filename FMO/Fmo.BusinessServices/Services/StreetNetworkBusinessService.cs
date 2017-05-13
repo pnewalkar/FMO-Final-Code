@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Microsoft.SqlServer.Types;
@@ -67,7 +68,7 @@ namespace Fmo.BusinessServices.Services
         {
             List<string> categoryNames = new List<string>
             {
-                "Network Link Type"
+                ReferenceDataCategoryNames.NetworkLinkType
             };
             var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
@@ -83,7 +84,7 @@ namespace Fmo.BusinessServices.Services
         {
             List<string> categoryNames = new List<string>
             {
-                "Network Link Type"
+               ReferenceDataCategoryNames.NetworkLinkType
             };
             var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 

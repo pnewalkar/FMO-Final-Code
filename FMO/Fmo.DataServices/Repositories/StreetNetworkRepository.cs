@@ -167,11 +167,11 @@ namespace Fmo.DataServices.Repositories
                 // check if the there are no intersections with any other roads and the access link intersection point
                 Guid networkPathLinkType = referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.NetworkLinkType)
                                                                     .SelectMany(x => x.ReferenceDatas)
-                                                                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.PathLink).ID;
+                                                                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkPathLink).ID;
 
                 Guid networkRoadLinkType = referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.NetworkLinkType)
                                                                     .SelectMany(x => x.ReferenceDatas)
-                                                                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.RoadLink).ID;
+                                                                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).ID;
 
                 networkLink = DataContext.NetworkLinks.Where(m => m.StreetName_GUID == nearestNamedRoad.ID)
                    .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
@@ -189,14 +189,16 @@ namespace Fmo.DataServices.Repositories
 
                     if (accessLinkLine != SqlGeometry.Null)
                     {
+                        DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
+
                         // find any road segment intersects with the planned access link.
                         var roadIntersectionCount = DataContext.NetworkLinks
-                            .Count(m => m.LinkGeometry.Intersects(accessLinkLine.ToDbGeometry())
+                            .Count(m => m.LinkGeometry.Intersects(accessLinkDbGeometry)
                                         && m.NetworkLinkType_GUID == networkRoadLinkType);
 
                         // find any path segment intersects with the planned access link.
                         var pathIntersectionCount = DataContext.NetworkLinks
-                            .Count(m => m.LinkGeometry.Intersects(accessLinkLine.ToDbGeometry())
+                            .Count(m => m.LinkGeometry.Intersects(accessLinkDbGeometry)
                                         && m.NetworkLinkType_GUID == networkPathLinkType);
 
                         if (pathIntersectionCount == 0 && roadIntersectionCount == 0)
@@ -221,13 +223,12 @@ namespace Fmo.DataServices.Repositories
             SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
 
             Guid networkPathLinkType = referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.NetworkLinkType)
-                .SelectMany(x => x.ReferenceDatas)
-                .Single(x => x.ReferenceDataValue == ReferenceDataValues.PathLink).ID;
+                                                                     .SelectMany(x => x.ReferenceDatas)
+                                                                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkPathLink).ID;
 
             Guid networkRoadLinkType = referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.NetworkLinkType)
-                .SelectMany(x => x.ReferenceDatas)
-                .Single(x => x.ReferenceDataValue == ReferenceDataValues.RoadLink).ID;
-
+                                                                .SelectMany(x => x.ReferenceDatas)
+                                                                .Single(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).ID;
             var networkLinkRoad = DataContext.NetworkLinks
                 .Where(m => m.NetworkLinkType_GUID == networkRoadLinkType || m.NetworkLinkType_GUID == networkPathLinkType)
                 .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))

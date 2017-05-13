@@ -104,7 +104,7 @@ namespace Fmo.BusinessServices.Services
                 // Get delivery point name for the OO
                 if (referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.DP).ID == operationObjectTypeId)
+                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
                 {
                     var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectId);
                     operationalObjectPoint = deliveryPointOperationalObject.LocationXY;
@@ -140,12 +140,12 @@ namespace Fmo.BusinessServices.Services
 
                     var accessLinkSameRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters)
                                                                                                  .SelectMany(x => x.ReferenceDatas)
-                                                                                                 .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkSameRoadMaxDistance)
+                                                                                                 .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkSameRoadMaxDistance)
                                                                                                  .ReferenceDataValue);
                     matchFound = actualLength <= accessLinkSameRoadMaxDistance;
 
-                    accessLinkStatus = ReferenceDataValues.Live;
-                    accessLinkType = ReferenceDataValues.Both;
+                    accessLinkStatus = ReferenceDataValues.AccessLinkStatusLive;
+                    accessLinkType = ReferenceDataValues.AccessLinkDirectionBoth;
                 }
                 else
                 {
@@ -159,21 +159,17 @@ namespace Fmo.BusinessServices.Services
                     networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple.Item2;
                     if (networkLink != null && networkIntersectionPoint != SqlGeometry.Null)
                     {
-                        actualLength =
-                            (double)operationalObjectPoint.ToSqlGeometry()
-                                .ShortestLineTo(
-                                    nearestStreetNetworkObjectWithIntersectionTuple.Item1.LinkGeometry.ToSqlGeometry())
-                                .STLength();
+                        actualLength = (double)operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry()).STLength();
 
                         var accessLinkDiffRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters)
                                                                                                      .SelectMany(x => x.ReferenceDatas)
-                                                                                                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkDiffRoadMaxDistance)
+                                                                                                     .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkDiffRoadMaxDistance)
                                                                                                      .ReferenceDataValue);
 
                         matchFound = actualLength <= accessLinkDiffRoadMaxDistance;
 
-                        accessLinkStatus = ReferenceDataValues.DraftPendingApproval;
-                        accessLinkType = ReferenceDataValues.Both;
+                        accessLinkStatus = ReferenceDataValues.AccessLinkStatusDraftPendingApproval;
+                        accessLinkType = ReferenceDataValues.AccessLinkDirectionBoth;
                     }
                 }
 
@@ -202,7 +198,7 @@ namespace Fmo.BusinessServices.Services
 
                     accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.Default).ID;
+                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkTypeDefault).ID;
 
                     accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
@@ -219,7 +215,7 @@ namespace Fmo.BusinessServices.Services
                     {
                         if (referenceDataCategoryList
                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                       .Single(x => x.ReferenceDataValue == ReferenceDataValues.DP).ID == operationObjectTypeId)
+                       .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
                         {
                             DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
                             deliveryPointDto.AccessLinkPresent = true;

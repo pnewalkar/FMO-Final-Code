@@ -1,8 +1,6 @@
-﻿using Fmo.DTO;
-using Fmo.DTO.UIDropdowns;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
+using Fmo.DTO.UIDropdowns;
 
 namespace Fmo.DTO
 {
@@ -11,8 +9,6 @@ namespace Fmo.DTO
         /// <summary>
         /// This class represents data transfer object for PostalAddress entity
         /// </summary>
-        public int Address_Id { get; set; }
-
         public string PostcodeType { get; set; }
 
         public string OrganisationName { get; set; }
@@ -41,13 +37,9 @@ namespace Fmo.DTO
 
         public string SmallUserOrganisationIndicator { get; set; }
 
-        public int? AddressType_Id { get; set; }
-
         public int? UDPRN { get; set; }
 
         public bool? AMUApproved { get; set; }
-
-        public int? AddressStatus_Id { get; set; }
 
         public string POBoxNumber { get; set; }
 
