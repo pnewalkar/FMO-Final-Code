@@ -449,18 +449,26 @@
         /// <returns>List of Postcodes</returns>
         public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
         {
-            List<string> searchdetails = new List<string>();
-            List<Guid> addresstypeIDs = refDataRepository.GetReferenceDataIds(Constants.PostalAddressType, new List<string> { FileType.Paf.ToString().ToUpper(), FileType.Nyb.ToString().ToUpper() });
+            try
+            {
+                List<string> searchdetails = new List<string>();
+                List<Guid> addresstypeIDs = refDataRepository.GetReferenceDataIds(Constants.PostalAddressType, new List<string> { FileType.Paf.ToString().ToUpper(), FileType.Nyb.ToString().ToUpper() });
 
-            var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                       join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
-                                       join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-                                       where addresstypeIDs.Contains(pa.AddressType_GUID) &&
-                                       (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
-                                       ul.Unit_GUID == unitGuid
-                                       select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
+                var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                           join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
+                                           join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                           where addresstypeIDs.Contains(pa.AddressType_GUID) &&
+                                           (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
+                                           ul.Unit_GUID == unitGuid
+                                           select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
-            return searchresults.Select(n => n.SearchResult).ToList();
+                return searchresults.Select(n => n.SearchResult).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogError(ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -495,7 +503,7 @@
                             paDTO.RouteDetails = new List<BindingEntity>();                            
                         }
 
-                        if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
+                        if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()))
                         {
                             paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.ID });
                         }
@@ -510,7 +518,7 @@
                             paDTO.RouteDetails = new List<BindingEntity>();
                         }
 
-                        if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
+                        if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()))
                         {
                             paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.ID });
                         }

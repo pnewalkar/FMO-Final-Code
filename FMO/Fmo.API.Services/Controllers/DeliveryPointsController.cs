@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Fmo.BusinessServices.Interfaces;
+﻿using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
 using Fmo.DTO;
@@ -69,6 +68,7 @@ namespace Fmo.API.Services.Controllers
         /// <param name="deliveryPointDto">deliveryPointDto</param>
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+
         //[Route("CreateDeliveryPoint")]
         [Route("{ID: guid}")]
         [HttpPost]
@@ -76,7 +76,6 @@ namespace Fmo.API.Services.Controllers
         {
             return businessService.CreateDeliveryPoint(deliveryPointDto);
         }
-
 
         /// <summary>
         /// Update delivery point
