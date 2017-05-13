@@ -15,5 +15,7 @@ namespace Fmo.DTO
         public int DeliveryPointCount { get; set; }
 
         public int? MultipleOccupancy { get; set; }
+
+        public string FormattedBuildingNumber { get; set; }
     }
 }

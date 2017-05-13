@@ -90,6 +90,8 @@
     <Compile Include="Repositories\AddressLocationRepository.cs" />
     <Compile Include="Repositories\AccessLinkRepository.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IOSRoadLinkRepository.cs" />
+    <Compile Include="Repositories\OSRoadLinkRepository.cs" />
     <Compile Include="Repositories\UnitLocationRepository.cs" />
     <Compile Include="Repositories\FileProcessingLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressLocationRepository.cs" />

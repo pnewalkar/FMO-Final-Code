@@ -253,7 +253,8 @@ namespace Fmo.BusinessServices.Services
                             nybDetails.Add(new BindingEntity { Value = postalAddress.ID, DisplayText = formattedAddress });
                         }
                     }
-
+                    nybDetails.OrderBy(n => n.DisplayText);
+                    nybDetails.Add(new BindingEntity { Value = Guid.Empty, DisplayText = "Not Shown" });
                     postalAddressDto.NybAddressDetails = nybDetails;
                 }
 

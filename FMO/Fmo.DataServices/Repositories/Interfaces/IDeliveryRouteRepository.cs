@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 
 namespace Fmo.DataServices.Repositories.Interfaces
 {
@@ -49,5 +50,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// DeliveryRouteDTO
         /// </returns>
         Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid userUnit);
+
+        /// <summary>
+        /// Generates the route log.
+        /// </summary>
+        /// <param name="deliveryRouteDto">The delivery route dto.</param>
+        /// <param name="userUnit">The user unit.</param>
+        /// <returns>RouteLogSummaryModelDTO</returns>
+        Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit);
     }
 }

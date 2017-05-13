@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
@@ -132,6 +133,13 @@ namespace Fmo.BusinessServices.Services
 
             var deliveryRouteDto = await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
             return deliveryRouteDto;
+        }
+
+        public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit)
+        {
+            //Todo: Add pdf genetation logic
+            await deliveryRouteRepository.GenerateRouteLog(deliveryRouteDto, userUnit);
+            throw new NotImplementedException();
         }
     }
 }
