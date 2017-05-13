@@ -338,7 +338,7 @@ namespace Fmo.DataServices.Repositories
         private List<RouteLogSequencedPointsDTO> GetDeliveryRouteSequencedPointsByRouteID(Guid deliveryRouteId, Guid userUnitID)
         {
             Guid operationalObjectTypeForDp = refDataRepository.GetReferenceDataId("Operational Object Type", "DP");
-
+            List<RouteLogSequencedPointsDTO> deliveryRouteResult = null;
             var deliveryRoutes = (from dr in DataContext.DeliveryRoutes.AsNoTracking()
                                   join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
                                   join b in DataContext.Blocks.AsNoTracking() on drb.Block_GUID equals b.ID
@@ -354,9 +354,42 @@ namespace Fmo.DataServices.Repositories
                                       BuildingNumer = grpAddress.Key.BuildingNumber,
                                       DeliveryPointCount = grpAddress.Select(n => n.dp.ID).Count(),
                                       MultipleOccupancy = grpAddress.Sum(n => n.dp.MultipleOccupancyCount)
-                                  }).AsQueryable();
+                                  }).ToList();
 
-            return deliveryRoutes.ToList();
+            if (deliveryRoutes != null && deliveryRoutes.Count > 0)
+            {
+                deliveryRouteResult = (from records in deliveryRoutes
+                                       where records.BuildingNumer % 2 == 0
+                                       group new { records } by new { records.StreetName } into g
+                                       select new RouteLogSequencedPointsDTO
+                                       {
+                                           StreetName = g.Key.StreetName,
+                                           FormattedBuildingNumber = g.Select(n => n.records.BuildingNumer).FirstOrDefault().ToString() + " to " + g.Select(n => n.records.BuildingNumer).LastOrDefault().ToString() + " evens",
+                                           DeliveryPointCount = g.Select(n => n.records.DeliveryPointCount).Count(),
+                                           MultipleOccupancy = g.Sum(n => n.records.MultipleOccupancy)
+                                       }).Union(
+                      from records in deliveryRoutes
+                      where records.BuildingNumer % 2 != 0 && records.BuildingNumer != null
+                      group new { records } by new { records.StreetName } into g
+                      select new RouteLogSequencedPointsDTO
+                      {
+                          StreetName = g.Key.StreetName,
+                          FormattedBuildingNumber = g.Select(n => n.records.BuildingNumer).FirstOrDefault().ToString() + " to " + g.Select(n => n.records.BuildingNumer).LastOrDefault().ToString() + " odds",
+                          DeliveryPointCount = g.Select(n => n.records.DeliveryPointCount).Count(),
+                          MultipleOccupancy = g.Sum(n => n.records.MultipleOccupancy)
+                      }).Union(
+                       from records in deliveryRoutes
+                       where records.BuildingNumer == null
+                       select new RouteLogSequencedPointsDTO
+                       {
+                           StreetName = records.StreetName,
+                           FormattedBuildingNumber = Convert.ToString(records.BuildingNumer) ?? string.Empty,
+                           DeliveryPointCount = records.DeliveryPointCount,
+                           MultipleOccupancy = records.MultipleOccupancy
+                       }).OrderBy(n => n.StreetName).ToList();
+            }
+
+            return deliveryRouteResult;
         }
 
         #endregion Private Methods
