@@ -115,6 +115,15 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 12.
+        /// </summary>
+        internal static string ARoadPrimary {
+            get {
+                return ResourceManager.GetString("ARoadPrimary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorization.
         /// </summary>
         internal static string Authorization {
@@ -367,6 +376,15 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 30.
+        /// </summary>
+        internal static string Motorway {
+            get {
+                return ResourceManager.GetString("Motorway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Multiple.
         /// </summary>
         internal static string Multiple {
@@ -520,7 +538,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ?.
+        ///   Looks up a localized string similar to 1.
         /// </summary>
         internal static string PropertyDepth {
             get {
@@ -655,29 +673,11 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 12.
-        /// </summary>
-        internal static string RoadARoadPrimary {
-            get {
-                return ResourceManager.GetString("RoadARoadPrimary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Road Link.
         /// </summary>
         internal static string RoadLink {
             get {
                 return ResourceManager.GetString("RoadLink", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 30.
-        /// </summary>
-        internal static string RoadMotorway {
-            get {
-                return ResourceManager.GetString("RoadMotorway", resourceCulture);
             }
         }
         

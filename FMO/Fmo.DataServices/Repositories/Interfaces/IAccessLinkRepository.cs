@@ -17,11 +17,12 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <returns>List of Access Link dto</returns>
         List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid);
 
+     
         /// <summary>
-        /// Create auto access link
+        /// Creates access link.
         /// </summary>
-        /// <param name="operationalObject_GUID">Delivery Point Guid </param>
-        /// <returns>bool</returns>
-        bool CreateAutoAccessLink(Guid operationalObject_GUID);
+        /// <param name="accessLinkDto">Access link data object.</param>
+        /// <returns>Success.</returns>
+        bool CreateAccessLink(AccessLinkDTO accessLinkDto);
     }
 }
