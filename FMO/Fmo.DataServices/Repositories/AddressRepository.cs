@@ -469,7 +469,7 @@
                                        join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
                                        join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
                                        where addresstypeIDs.Contains(pa.AddressType_GUID) &&
-                                       (pa.Thoroughfare.Contains(searchText) || pa.DependentThoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
+                                       (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
                                        ul.Unit_GUID == unitGuid
                                        select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
@@ -505,8 +505,7 @@
                     {
                         if (paDTO.RouteDetails == null)
                         {
-                            paDTO.RouteDetails = new List<BindingEntity>();
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
+                            paDTO.RouteDetails = new List<BindingEntity>();                            
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())
@@ -522,7 +521,6 @@
                         if (paDTO.RouteDetails == null)
                         {
                             paDTO.RouteDetails = new List<BindingEntity>();
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SELECT, Value = new Guid(Constants.DEFAULTGUID) });
                         }
 
                         if (!paDTO.RouteDetails.Where(b => b.DisplayText == Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()).Any())

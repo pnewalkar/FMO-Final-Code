@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Microsoft.SqlServer.Types;
 
 namespace Fmo.BusinessServices.Services
 {
     public class StreetNetworkBusinessService : IStreetNetworkBusinessService
     {
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
+        private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
 
-        public StreetNetworkBusinessService(IStreetNetworkRepository streetNetworkRepository)
+        public StreetNetworkBusinessService(IStreetNetworkRepository streetNetworkRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository)
         {
             this.streetNetworkRepository = streetNetworkRepository;
+            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
         }
 
         /// <summary>
@@ -51,6 +55,39 @@ namespace Fmo.BusinessServices.Services
         public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
         {
             return await streetNetworkRepository.FetchStreetNamesForAdvanceSearch(searchText, unitGuid);
+        }
+
+        /// <summary>
+        /// Get the nearest street for operational object.
+        /// </summary>
+        /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
+        /// <param name="streetName">Street name.</param>
+        /// <returns>Nearest street and the intersection point.</returns>
+        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoadForOperationalObject(DbGeometry operationalObjectPoint, string streetName)
+        {
+            List<string> categoryNames = new List<string>
+            {
+                "Network Link Type"
+            };
+            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+
+            return streetNetworkRepository.GetNearestNamedRoadForOperationalObject(operationalObjectPoint, streetName, referenceDataCategoryList);
+        }
+
+        /// <summary>
+        /// Get the nearest street for operational object.
+        /// </summary>
+        /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
+        /// <returns>Nearest street and the intersection point.</returns>
+        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestRoadForOperationalObject(DbGeometry operationalObjectPoint)
+        {
+            List<string> categoryNames = new List<string>
+            {
+                "Network Link Type"
+            };
+            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+
+            return streetNetworkRepository.GetNearestRoadForOperationalObject(operationalObjectPoint, referenceDataCategoryList);
         }
     }
 }

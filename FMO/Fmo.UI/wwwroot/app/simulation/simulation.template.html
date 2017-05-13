@@ -1,7 +1,7 @@
 <div layout="column" class="md-padding">
     <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()" layout-align="space-around start">
         <md-radio-button ng-repeat="status in vm.RouteStatusObj" ng-value="status.id">
-            <label ng-bind="status.displayText"></label>   <br>
+            <label ng-bind="status.referenceDataValue"></label>   <br>
         </md-radio-button>
     </md-radio-group>
 

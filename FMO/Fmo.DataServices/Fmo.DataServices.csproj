@@ -63,6 +63,7 @@
     <Reference Include="System.Data.Entity">
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -90,6 +91,8 @@
     <Compile Include="Repositories\AddressLocationRepository.cs" />
     <Compile Include="Repositories\AccessLinkRepository.cs" />
     <Compile Include="Repositories\AddressRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IOSRoadLinkRepository.cs" />
+    <Compile Include="Repositories\OSRoadLinkRepository.cs" />
     <Compile Include="Repositories\UnitLocationRepository.cs" />
     <Compile Include="Repositories\FileProcessingLogRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAddressLocationRepository.cs" />

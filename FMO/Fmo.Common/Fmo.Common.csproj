@@ -90,6 +90,8 @@
     <Compile Include="AsyncEnumerator\DbAsyncEnumerator.cs" />
     <Compile Include="AsyncEnumerator\DbAsyncQueryProvider.cs" />
     <Compile Include="ConfigurationManagement\ConfigurationHelper.cs" />
+    <Compile Include="Constants\ReferenceDataCategoryNames.cs" />
+    <Compile Include="Constants\ReferenceDataValues.cs" />
     <Compile Include="Constants\UserAccessFunctionsConstants.cs" />
     <Compile Include="EmailManagement\EmailHelper.cs" />
     <Compile Include="EnumExtensions.cs" />
@@ -127,6 +129,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FmoMessagesConstants.resx</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="ResourceFile\FmoReferenceDataCategoryNames.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FmoReferenceDataCategoryNames.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceFile\FmoReferenceDataValues.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FmoReferenceDataValues.resx</DependentUpon>
     </Compile>
     <Compile Include="SqlGeometry\SqlGeometry.cs" />
     <Compile Include="SqlServerTypes\Loader.cs" />
@@ -168,6 +180,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FmoMessagesConstants.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceFile\FmoReferenceDataCategoryNames.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FmoReferenceDataCategoryNames.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceFile\FmoReferenceDataValues.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FmoReferenceDataValues.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

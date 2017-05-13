@@ -25,7 +25,7 @@ angular.module('FMOApp')
             url: "/deliveryPoint",
             templateUrl: "./delivery-point/delivery-point.context.template.html",
             controller: 'DeliveryPointController as vm',
-            params: { selectedUnit: null, deliveryPointList : null , positionedDeliveryPointList: null, positionedThirdPartyDeliveryPointList : null}
+            params: { selectedUnit: null, deliveryPointList: null, positionedDeliveryPointList: null, positionedThirdPartyDeliveryPointList: null }
         })
          .state('manageaccess', {
              url: '/',
@@ -41,8 +41,14 @@ angular.module('FMOApp')
         .state("referenceData", {
             templateUrl: "./reference-data/reference-data.templete.html",
             controller: "ReferenceDataController as vm"
-        });
-  
+        })
+      .state("accessLink", {
+          url: "/accessLink",
+          templateUrl: "./access-link/acccess-link.template.html",
+          controller: 'AccessLinkController as vm'
+        
+      });
+   
 })
 .config(function ($httpProvider) {
     $httpProvider.interceptors.push('authInterceptorService');
