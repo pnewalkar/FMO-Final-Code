@@ -37,7 +37,7 @@ namespace Fmo.DataServices.Tests.Repositories
         public void Test_UpdateAddressValidTestCase()
         {
             SetUpdataWithDeliverypoints();
-            PostalAddressDTO objstPostalAddressDTO = new PostalAddressDTO() { Address_Id = 28, UDPRN = 14856 };
+            PostalAddressDTO objstPostalAddressDTO = new PostalAddressDTO() { UDPRN = 14856 };
             var result = testCandidate.SaveAddress(objstPostalAddressDTO, "NYB.CSV");
             mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Once);
             Assert.NotNull(result);
@@ -48,7 +48,7 @@ namespace Fmo.DataServices.Tests.Repositories
         public void Test_CreateAddressValidTestCase()
         {
             SetUpdataWithDeliverypoints();
-            PostalAddressDTO objstPostalAddressDTO = new PostalAddressDTO() { Address_Id = 326, UDPRN = 15862 };
+            PostalAddressDTO objstPostalAddressDTO = new PostalAddressDTO() { UDPRN = 15862 };
             var result = testCandidate.SaveAddress(objstPostalAddressDTO, "NYB.CSV");
             mockFmoDbContext.Verify(n => n.SaveChanges(), Times.Once);
             Assert.NotNull(result);
@@ -492,8 +492,6 @@ namespace Fmo.DataServices.Tests.Repositories
 
             PostalAddressDTO postalAddress = new PostalAddressDTO()
             {
-                Address_Id = 10,
-                AddressType_Id = 2,
                 UDPRN = 14856,
                 BuildingName = "Building one",
                 BuildingNumber = 123,
@@ -533,8 +531,7 @@ namespace Fmo.DataServices.Tests.Repositories
 
             PostalAddressDTO postalAddress = new PostalAddressDTO()
             {
-                Address_Id = 10,
-                AddressType_Id = 2,
+                ID = Guid.NewGuid(),
                 UDPRN = 14856,
                 BuildingName = "Building one",
                 BuildingNumber = 123,

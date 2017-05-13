@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.BusinessServices.Services;
     using Fmo.Common.TestSupport;
@@ -28,15 +29,14 @@
         private Guid operationalStateID = System.Guid.NewGuid();
         private Guid deliveryScenarioID = System.Guid.NewGuid();
 
-        //[Test]
-        //public void TestRouteLogStatus()
-        //{
+        // [Test]
+        // public void TestRouteLogStatus()
+        // {
         //    List<ReferenceDataDTO> expectedReferenceDataResult = testCandidate.FetchRouteLogStatus();
         //    Assert.NotNull(expectedReferenceDataResult);
         //    Assert.NotNull(actualReferenceDataCategoryResult);
         //    Assert.AreEqual(expectedReferenceDataResult, actualReferenceDataCategoryResult);
-        //}
-
+        // }
         [Test]
         public void TestFetchDeliveryScenario()
         {
@@ -56,11 +56,11 @@
         }
 
         [Test]
-        public async void TestGetDeliveryRouteDetailsforPdfGeneration()
+        public void TestGetDeliveryRouteDetailsforPdfGeneration()
         {
             var deliveryRouteGuid = System.Guid.Parse("B13D545D-2DE7-4E62-8DAD-00EC2B7FF8B8");
             var unitGuid = Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
-            DeliveryRouteDTO expectedDeliveryRouteResult = await testCandidate.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteGuid, unitGuid);
+            var expectedDeliveryRouteResult = testCandidate.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteGuid, unitGuid);
             Assert.NotNull(expectedDeliveryRouteResult);
         }
 
@@ -84,6 +84,7 @@
             mockReferenceDataBusinessService = CreateMock<IReferenceDataBusinessService>();
 
             mockFmoDbContext = CreateMock<FMODBContext>();
+            mockDeliveryRouteRepository.Setup(n => n.GetDeliveryRouteDetailsforPdfGeneration(It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>(), It.IsAny<Guid>())).Returns(Task.FromResult(new DeliveryRouteDTO() { }));
 
             testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteRepository.Object, mockReferenceDataCategoryRepository.Object, mockScenarioRepository.Object, mockReferenceDataBusinessService.Object);
         }

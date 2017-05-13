@@ -39,7 +39,7 @@ namespace Fmo.API.Services.Controllers
         /// <param name="operationalObjectTypeId">Operational Object type unique identifier.</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
         [HttpPost("Create")]
-        public bool CreateAccessLink([FromBody] System.Guid operationalObjectId, Guid operationalObjectTypeId)
+        public bool CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
             return accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
         }

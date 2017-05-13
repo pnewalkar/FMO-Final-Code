@@ -1,17 +1,9 @@
-﻿using System.CodeDom;
-using System.Text;
-
-namespace Fmo.DataServices.Repositories
+﻿namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Data.Entity.Spatial;
     using System.Linq;
-    using System.Transactions;
-    using System.Threading.Tasks;
-    using AutoMapper;
-    using Common.SqlGeometryExtension;
     using Fmo.Common.Constants;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -19,7 +11,6 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DTO;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using Microsoft.SqlServer.Types;
 
     /// <summary>
     /// This class contains methods of Access Link Repository for fetching Access Link data.
@@ -95,6 +86,7 @@ namespace Fmo.DataServices.Repositories
         }
 
         /*
+
         /// <summary>
         /// Create auto access link
         /// </summary>
@@ -228,7 +220,5 @@ namespace Fmo.DataServices.Repositories
             return isAccessLinkCreated;
         }
         */
-
-       
     }
 }

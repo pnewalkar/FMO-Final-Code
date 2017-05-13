@@ -34,7 +34,6 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             testObject = new PostalAddressDTO()
             {
-                Address_Id = 10,
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                 UDPRN = 14856
             };
@@ -49,7 +48,6 @@ namespace Fmo.DataServices.Tests.Repositories
         {
             testObject = new PostalAddressDTO()
             {
-                Address_Id = 10,
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                 UDPRN = 14856
             };

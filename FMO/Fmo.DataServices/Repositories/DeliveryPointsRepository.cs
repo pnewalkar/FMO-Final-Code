@@ -484,8 +484,8 @@ namespace Fmo.DataServices.Repositories
 
                 Mapper.Initialize(cfg =>
                 {
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>();
                     cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
                 });
 
                 Mapper.Configuration.CreateMapper();
@@ -509,7 +509,7 @@ namespace Fmo.DataServices.Repositories
             {
                 DeliveryPoint deliveryPoint = fmoDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
 
-                deliveryPoint.AccessLinkPresent = deliveryPoint.AccessLinkPresent;
+                deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
 
                 fmoDbContext.Entry(deliveryPoint).State = EntityState.Modified;
                 fmoDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
