@@ -32,6 +32,7 @@ function DeliveryPointController(
     $stateParams
 ) {
     var vm = this;
+    debugger;
     vm.resultSet = resultSet;
     vm.querySearch = querySearch;
     vm.deliveryPoint = deliveryPoint;
@@ -60,6 +61,7 @@ function DeliveryPointController(
     vm.getCommaSeparatedVale = getCommaSeparatedVale;
     vm.positionedSaveDeliveryPointList = [];
     vm.errorAlert = errorAlert;
+    vm.opendeliveryPoint = opendeliveryPoint;
     
 
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
@@ -260,6 +262,7 @@ function DeliveryPointController(
     function deliveryPoint() {
         var deliveryPointTemplate = deliveryPointService.deliveryPoint();
         vm.openModalPopup(deliveryPointTemplate);
+
     }
 
     function resultSet(query) {
@@ -461,7 +464,8 @@ function DeliveryPointController(
         }
 }
 
-      function errorAlert() {
+    function errorAlert() {
+        $mdDialog.hide(vm.close);
         var confirm =
           $mdDialog.confirm()
             .clickOutsideToClose(true)
@@ -469,12 +473,21 @@ function DeliveryPointController(
             .textContent('Duplicates of Delivery Point Found.')
             .ariaLabel('Left to right demo')
             .ok('Yes')
+         
             
 
         $mdDialog.show(confirm).then(function () {
-          
+            preserveScope: true
+           
+            
+            deliveryPoint();
         }, function () {
         });
     };
 
+      function opendeliveryPoint(selectedDeliveryUnit) {
+          debugger;
+          //vm.contextTitle = "Delivery Point";
+          $state.go("deliveryPoint");
+      }
 };

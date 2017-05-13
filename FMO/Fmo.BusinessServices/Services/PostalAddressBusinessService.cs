@@ -214,8 +214,9 @@ namespace Fmo.BusinessServices.Services
             {
                 return await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.loggingHelper.LogError(ex);
                 throw;
             }
             finally
