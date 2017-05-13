@@ -1,18 +1,22 @@
 ﻿angular.module('layers')
-        .service('layersService', ['mapService', 'mapStylesFactory', 'layersApiService', layersService])
+        .factory('layersService', layersService);
+layersService.$inject = ['mapService',
+                         'mapStylesFactory',
+                         'layersApiService'];
 
-function layersService(mapService, mapStylesFactory, layersApiService) {
+function layersService(mapService,
+                       mapStylesFactory,
+                       layersApiService) {
     var vm = this;
 
-    return{
+    return {
         getLayerData: getLayerData,
         refreshLayer: refreshLayer,
         onChange: onChange,
         showUngrouped: showUngrouped,
         fetchDeliveryPoints: fetchDeliveryPoints,
         fetchAccessLinks: fetchAccessLinks,
-    }
-
+    };
 
     function getLayerData() {
         vm.layers = [];
@@ -21,11 +25,11 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
         vm.groupNames = {};
         vm.layers = mapService.mapLayers();
         vm.layers.forEach(function (layer) {
-            if (!layer.group){
-                vm.ungrouped.push(layer);         
+            if (!layer.group) {
+                vm.ungrouped.push(layer);
             }
-            else{
-                if (vm.groupNames[layer.group.toString()] === undefined) {
+            else {
+                if (angular.isUndefined(vm.groupNames[layer.group.toString()])) {
                     var id = vm.groups.length;
                     vm.groupNames[layer.group.toString()] = id;
                     vm.groups[id] = { name: layer.group.toString(), layers: [] };
@@ -35,9 +39,9 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
                 vm.groups[id].layers.push(layer);
             }
         });
-        return {           
-            groups:vm.groups,
-            ungroup:vm.ungrouped            
+        return {
+            groups: vm.groups,
+            ungroup: vm.ungrouped
         }
     }
 
@@ -47,7 +51,7 @@ function layersService(mapService, mapStylesFactory, layersApiService) {
     }
 
     function onChange(changedLayer) {
-       
+
         // fetchDeliveryPoints();
         //  fetchAccessLinks();
         if (changedLayer.group) {

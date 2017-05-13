@@ -463,17 +463,13 @@
         public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
         {
             List<string> searchdetails = new List<string>();
-            List<Guid> addresstypeIDs = new List<Guid>()
-            {
-                refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Paf.ToString()),
-                refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString())
-            };
+            List<Guid> addresstypeIDs = refDataRepository.GetReferenceDataIds(Constants.PostalAddressType, new List<string> { FileType.Paf.ToString().ToUpper(), FileType.Nyb.ToString().ToUpper() });
 
             var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
                                        join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
                                        join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
                                        where addresstypeIDs.Contains(pa.AddressType_GUID) &&
-                                       (pa.Thoroughfare.Contains(searchText) || pa.DependentThoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
+                                       (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
                                        ul.Unit_GUID == unitGuid
                                        select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
@@ -481,7 +477,8 @@
         }
 
         /// <summary>
-        /// Filter PostalAddress based on post code
+        /// Filter PostalAddress based on post code. Also, it fetches the route information based on the postcode and if there are no matching routes then the routes for 
+        /// the unit is fetched.
         /// </summary>
         /// <param name="postCode">postCode</param>
         /// <param name="unitGuid">unitGuid</param>

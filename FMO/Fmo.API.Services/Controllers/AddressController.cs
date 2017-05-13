@@ -5,6 +5,8 @@ using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Interface;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Fmo.Common.Constants;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -43,7 +45,9 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="searchText">searchText</param>
         /// <returns></returns>
-        [HttpGet("SearchAddressdetails")]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        //[HttpGet("/SearchAddressdetails")]
+        [HttpGet("search/postaladdress/{searchText}")]
         public async Task<List<string>> SearchAddressdetails(string searchText)
         {
             return await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
@@ -54,7 +58,9 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="postCode">postcode</param>
         /// <returns></returns>
-        [HttpGet("GetAddressByPostCode")]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        //[HttpGet("GetAddressByPostCode")]
+        [HttpGet("postaladdress/{postcode}")]
         public async Task<PostalAddressDTO> GetAddressByPostCode(string postCode)
         {
             return await businessService.GetPostalAddressDetails(postCode, CurrentUserUnit);
@@ -65,6 +71,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        //[HttpGet("GetPostalAddressByGuid")]
         [HttpGet("GetPostalAddressByGuid")]
         public PostalAddressDTO GetPostalAddressByGuid(Guid addressGuid)
         {

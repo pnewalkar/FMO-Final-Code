@@ -7,7 +7,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
     deliveryPointApiService.GetDeliveryPointsResultSet = function (searchText) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/address/SearchAddressdetails?searchText=' + searchText).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + '/address/search/postaladdress/' + searchText).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -21,7 +21,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
     deliveryPointApiService.GetAddressByPostCode = function (postCode) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/address/GetAddressByPostCode?postCode=' + postCode).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + '/address/postaladdress/' + postCode).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -84,12 +84,12 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
-            console.log(err);
             deferred.reject(err);
         });
 
         return deferred.promise;
     };
+    
 
     return deliveryPointApiService;
 

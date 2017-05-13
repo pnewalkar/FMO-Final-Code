@@ -41,5 +41,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="categoryNames">The category names.</param>
         /// <returns></returns>
         List<ReferenceDataCategoryDTO> GetReferenceDataCategoriesByCategoryNames(List<string> categoryNames);
+
+        /// <summary>
+        ///  Retreive GUIDs for specified categories
+        /// </summary>
+        /// <param name="strCategoryname">categoryname</param>
+        /// <param name="lstRefDataName">Reference data Names</param>
+        /// <returns>List<Guid></returns>
+        List<Guid> GetReferenceDataIds(string strCategoryname, List<string> lstRefDataName);
     }
 }

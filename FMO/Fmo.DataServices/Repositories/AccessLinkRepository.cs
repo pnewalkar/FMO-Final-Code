@@ -9,6 +9,8 @@ namespace Fmo.DataServices.Repositories
     using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Transactions;
+    using System.Threading.Tasks;
+    using AutoMapper;
     using Common.SqlGeometryExtension;
     using Fmo.Common.Constants;
     using Fmo.DataServices.DBContext;
@@ -24,14 +26,9 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class AccessLinkRepository : RepositoryBase<AccessLink, FMODBContext>, IAccessLinkRepository
     {
-        // private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
-        public AccessLinkRepository(
-            IDatabaseFactory<FMODBContext> databaseFactory
-            // IReferenceDataCategoryRepository referenceDataCategoryRepository
-            )
+        public AccessLinkRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
-            // this.referenceDataCategoryRepository = referenceDataCategoryRepository;
         }
 
         /// <summary>

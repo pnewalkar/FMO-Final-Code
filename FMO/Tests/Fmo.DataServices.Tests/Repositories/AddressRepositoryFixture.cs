@@ -759,7 +759,7 @@ namespace Fmo.DataServices.Tests.Repositories
             mockFmoDbContext.Setup(x => x.DeliveryRoutes).Returns(mockDeliveryRoute.Object);
             mockFmoDbContext.Setup(x => x.DeliveryRoutes.AsNoTracking()).Returns(mockDeliveryRoute.Object);
 
-            mockReferenceDataCategoryRepository.Setup(x => x.GetReferenceDataId("Postal Address Type", "Paf")).Returns(new Guid("A21F3E46-2D0D-4989-A5D5-872D23B479A2"));
+            mockReferenceDataCategoryRepository.Setup(x => x.GetReferenceDataIds(It.IsAny<string>(), It.IsAny<List<string>>())).Returns(new List<Guid>() { new Guid("222C68A4-D959-4B37-B468-4B1855950A81"), new Guid("A21F3E46-2D0D-4989-A5D5-872D23B479A2") });
             mockReferenceDataCategoryRepository.Setup(x => x.GetReferenceDataId("Postal Address Type", "Nyb")).Returns(new Guid("222C68A4-D959-4B37-B468-4B1855950A81"));
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();

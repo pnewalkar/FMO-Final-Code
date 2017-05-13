@@ -1,18 +1,21 @@
 ﻿angular.module('mapToolbar')
-        .service('mapToolbarService', ['mapService', mapToolbarService])
+        .factory('mapToolbarService', mapToolbarService);
+
+mapToolbarService.$inject=['mapService'];
 
 function mapToolbarService(mapService) {
     var vm = this;
        vm.selectedButton = null;
    
-    return{
-        setSelectedButton:setSelectedButton,
-        deselectButton:deselectButton,
-        getShapeForButton:getShapeForButton,
-        showButton : showButton,
-        autoSelect: autoSelect,
-        getMapButtons: getMapButtons
-    }
+       return {
+           setSelectedButton: setSelectedButton,
+           deselectButton: deselectButton,
+           getShapeForButton: getShapeForButton,
+           showButton: showButton,
+           autoSelect: autoSelect,
+           getMapButtons: getMapButtons
+       };
+
     function getMapButtons()
     {
         vm.mapButtons = mapService.getMapButtons();

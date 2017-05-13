@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Reflection;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
@@ -23,6 +24,8 @@ namespace Fmo.BusinessServices.Services
     public class AccessLinkBusinessService : IAccessLinkBusinessService
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
+        private IReferenceDataCategoryRepository referenceDataCategoryRepository;
+        private IOSRoadLinkRepository osroadLinkRepository;
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
@@ -32,13 +35,15 @@ namespace Fmo.BusinessServices.Services
             IReferenceDataCategoryRepository referenceDataCategoryRepository,
             IDeliveryPointsRepository deliveryPointsRepository,
             IStreetNetworkBusinessService streetNetworkBusinessService,
-            ILoggingHelper loggingHelper)
+            ILoggingHelper loggingHelper,
+            IOSRoadLinkRepository osroadLinkRepository)
         {
             this.accessLinkRepository = accessLinkRepository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.streetNetworkBusinessService = streetNetworkBusinessService;
             this.loggingHelper = loggingHelper;
+            this.osroadLinkRepository = osroadLinkRepository;
         }
 
         /// <summary>
@@ -296,5 +301,105 @@ namespace Fmo.BusinessServices.Services
         }
 
 
+            return isAccessLinkCreated;
+        }
+
+        /// <summary>
+        /// Calculate CalculateWorkloadLength
+        /// </summary>
+        /// <param name="pointDto">Delivery Point DTO object</param>
+        /// <param name="actualLength">Actual Distance between two objects calculated by geometry function</param>
+        /// <param name="networkObject">NetworkLink which is linked with access link</param>
+        /// <returns>double</returns>
+        private double CalculateWorkloadLength(DeliveryPointDTO pointDto, double actualLength, NetworkLinkDTO networkObject)
+        {
+            double workloadLengthMeter = 0;
+            double roadWidth = 0;
+
+            List<string> categoryNames = new List<string>
+                {
+                    "Access Link Rules",
+                    "Access Link Parameters",
+                    "Network Link Type",
+                    "Network Link Width in Meter",
+                    "DeliveryPoint Use Indicator",
+                    "Operational Object Type",
+                    "Delivery Route Method Type",
+                    "Delivery Route Transport Type"
+                };
+
+            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+
+            // network link type whether it is road, path or connecting link
+            string networkLinkType = referenceDataCategoryList
+                                            .Where(x => x.CategoryName == "Network Link Type").SelectMany(x => x.ReferenceDatas)
+                                            .Where(x => x.ID == networkObject.NetworkLinkType_GUID).Select(x => x.ReferenceDataValue).SingleOrDefault();
+
+            if (networkLinkType == "Road Link")
+            {
+                // get road type such as A road, B Road
+                string roadType = osroadLinkRepository.GetOSRoadLink(networkObject.TOID);
+
+                roadWidth = Convert.ToDouble(referenceDataCategoryList
+                                        .Where(x => x.CategoryName == "Access Link Parameters").SelectMany(x => x.ReferenceDatas)
+                                        .Where(x => x.ReferenceDataName == roadType).Select(x => x.ReferenceDataValue).SingleOrDefault());
+            }
+            else if (networkLinkType == "Path Link")
+            {
+                roadWidth = Convert.ToDouble(referenceDataCategoryList
+                                        .Where(x => x.CategoryName == "Access Link Parameters").SelectMany(x => x.ReferenceDatas)
+                                        .Where(x => x.ReferenceDataName == "PathLink").Select(x => x.ReferenceDataValue).SingleOrDefault());
+            }
+
+            double pavementDepth = Convert.ToDouble(referenceDataCategoryList
+                                                    .Where(x => x.CategoryName == "Access Link Parameters").SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName == "Pavement Width").Select(x => x.ReferenceDataValue).SingleOrDefault());
+            double houseDepth = Convert.ToDouble(referenceDataCategoryList
+                                                .Where(x => x.CategoryName == "Access Link Parameters").SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.ReferenceDataName == "Property Depth").Select(x => x.ReferenceDataValue).SingleOrDefault());
+
+            // selected dp is Residential or coomercial
+            string dpUseIndicatorType = referenceDataCategoryList
+                                                .Where(x => x.CategoryName == "DeliveryPoint Use Indicator").SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.ID == pointDto.DeliveryPointUseIndicator_GUID).Select(x => x.ReferenceDataValue).SingleOrDefault();
+
+            if (dpUseIndicatorType == "Residential")
+            {
+                double residentialRoadWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
+                                                .Where(x => x.CategoryName == "Access Link Rules").SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.ReferenceDataName == "Residential - Road Width Multiplication Factor").Select(x => x.ReferenceDataValue).SingleOrDefault());
+                double residentialPavementWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
+                                                    .Where(x => x.CategoryName == "Access Link Rules").SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName == "Residential - Pavement Width Multiplication Factor").Select(x => x.ReferenceDataValue).SingleOrDefault());
+                double residentialHouseDepthMultFactor = Convert.ToDouble(referenceDataCategoryList
+                                                    .Where(x => x.CategoryName == "Access Link Rules").SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName == "Residential - House Depth Multiplication Factor").Select(x => x.ReferenceDataValue).SingleOrDefault());
+
+                workloadLengthMeter = actualLength -
+                                                (residentialRoadWidthMultFactor * roadWidth) -
+                                                (residentialPavementWidthMultFactor * pavementDepth) -
+                                                (residentialHouseDepthMultFactor * houseDepth);
+            }
+            else if (dpUseIndicatorType == "Organisation")
+            {
+                double businessRoadWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
+                                                .Where(x => x.CategoryName == "Access Link Rules").SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.ReferenceDataName == "Business - Road Width Multiplication Factor").Select(x => x.ReferenceDataValue).SingleOrDefault());
+                double businessPavementWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
+                                                    .Where(x => x.CategoryName == "Access Link Rules").SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName == "Business - Pavement Width Multiplication Factor").Select(x => x.ReferenceDataValue).SingleOrDefault());
+
+                workloadLengthMeter = actualLength -
+                                                (businessRoadWidthMultFactor * roadWidth) -
+                                                (businessPavementWidthMultFactor * pavementDepth);
+            }
+
+            if (workloadLengthMeter <= 0)
+            {
+                workloadLengthMeter = 1;
+            }
+
+            return workloadLengthMeter;
+        }
     }
 }

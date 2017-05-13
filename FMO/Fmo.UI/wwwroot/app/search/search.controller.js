@@ -32,7 +32,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     function onEnterKeypress(searchText) {
         vm.isResultDisplay = true;
 
-        if (searchText === undefined) {
+        if (angular.isUndefined(searchText)) {
             vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
         }
         else {
