@@ -90,7 +90,11 @@ namespace Fmo.BusinessServices.Services
                     "Access Link Direction",
                     "Access Link Status",
                     "Access Link Type",
-                    "Access Link Rules"
+                    "Access Link Rules",
+                    "Access Link Parameters",
+                    "Network Link Type",
+                    "DeliveryPoint Use Indicator"
+
                 };
 
                 DbGeometry operationalObjectPoint = default(DbGeometry);
@@ -111,6 +115,7 @@ namespace Fmo.BusinessServices.Services
                 }
 
                 double actualLength = 0;
+                double workloadLength = 0;
                 bool matchFound = false;
                 string accessLinkStatus = string.Empty;
                 string accessLinkType = string.Empty;
@@ -133,7 +138,6 @@ namespace Fmo.BusinessServices.Services
                             .ShortestLineTo(
                                 nearestNamedStreetNetworkObjectWithIntersectionTuple.Item1.LinkGeometry.ToSqlGeometry())
                             .STLength();
-
                     matchFound = actualLength <= 40;
                     accessLinkStatus = "Live";
                     accessLinkType = "Both";
@@ -176,7 +180,15 @@ namespace Fmo.BusinessServices.Services
                     accessLinkDto.OperationalObjectPoint = operationalObjectPoint;
                     accessLinkDto.OperationalObject_GUID = operationalObjectId;
 
-                    // TODO: calculate access link work length here
+                    if (referenceDataCategoryList
+                      .Where(x => x.CategoryName == "Operational Object Type").SelectMany(x => x.ReferenceDatas)
+                      .Single(x => x.ReferenceDataValue == "DP").ID == operationObjectTypeId)
+                    {
+                        DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
+                        // TODO: calculate access link work length here
+                        accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, actualLength, networkLink, referenceDataCategoryList));
+                    }
+
                     accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == "Access Link Type").SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == "Default").ID;
@@ -195,8 +207,8 @@ namespace Fmo.BusinessServices.Services
                     if (isAccessLinkCreated)
                     {
                         if (referenceDataCategoryList
-                       .Where(x => x.CategoryName == "Operational Object Type").SelectMany(x => x.ReferenceDatas)
-                       .Single(x => x.ReferenceDataValue == "DP").ID == operationObjectTypeId)
+                      .Where(x => x.CategoryName == "Operational Object Type").SelectMany(x => x.ReferenceDatas)
+                      .Single(x => x.ReferenceDataValue == "DP").ID == operationObjectTypeId)
                         {
                             DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
                             deliveryPointDto.AccessLinkPresent = true;
@@ -308,20 +320,6 @@ namespace Fmo.BusinessServices.Services
         {
             double workloadLengthMeter = 0;
             double roadWidth = 0;
-
-            List<string> categoryNames = new List<string>
-                {
-                    "Access Link Rules",
-                    "Access Link Parameters",
-                    "Network Link Type",
-                    "Network Link Width in Meter",
-                    "DeliveryPoint Use Indicator",
-                    "Operational Object Type",
-                    "Delivery Route Method Type",
-                    "Delivery Route Transport Type"
-                };
-
-            referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
             // network link type whether it is road, path or connecting link
             string networkLinkType = referenceDataCategoryList
