@@ -478,7 +478,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking().Single(n => n.ID == deliveryPointGuid);
+                var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.PostalAddress).AsNoTracking().Single(n => n.ID == deliveryPointGuid);
 
                 Mapper.Initialize(cfg =>
                 {
