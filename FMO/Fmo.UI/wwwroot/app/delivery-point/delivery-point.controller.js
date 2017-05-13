@@ -59,6 +59,7 @@ function DeliveryPointController(
     vm.deliveryPointList = $stateParams.deliveryPointList;
     vm.getCommaSeparatedVale = getCommaSeparatedVale;
     vm.positionedSaveDeliveryPointList = [];
+    vm.defaultNYBValue = "00000000-0000-0000-0000-000000000000";
 
 
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
