@@ -83,14 +83,14 @@
                 <div layout="column" flex="30">
                     <md-input-container>
                         <label>DP Use<sub>*</sub></label>
-                        <input type="text" ng-model="vm.dpUse[0].displayText">
+                        <input type="text" disabled ng-model="vm.dpUse[0].displayText">
                     </md-input-container>
                 </div>
             </div>
             <div layout="row" ng-show="vm.display">
                 <md-input-container flex="30">
                     <label>Type</label>
-                    <md-select ng-model="deliveryPointTypes">
+                    <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != vm.defaultNYBValue">
                         <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.displayText=='Single'?true:false}}">
                             {{type.displayText}}
                         </md-option>

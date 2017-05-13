@@ -135,6 +135,9 @@
   <data name="ARoad" xml:space="preserve">
     <value>12</value>
   </data>
+  <data name="ARoadPrimary" xml:space="preserve">
+    <value>12</value>
+  </data>
   <data name="Authorization" xml:space="preserve">
     <value>Authorization</value>
   </data>
@@ -219,6 +222,9 @@
   <data name="MinorRoad" xml:space="preserve">
     <value>6</value>
   </data>
+  <data name="Motorway" xml:space="preserve">
+    <value>30</value>
+  </data>
   <data name="Multiple" xml:space="preserve">
     <value>Multiple</value>
   </data>
@@ -271,7 +277,7 @@
     <value>Live</value>
   </data>
   <data name="PropertyDepth" xml:space="preserve">
-    <value>?</value>
+    <value>1</value>
   </data>
   <data name="Range" xml:space="preserve">
     <value>Range</value>
@@ -315,14 +321,8 @@
   <data name="RMVanShared" xml:space="preserve">
     <value>RM Van (Shared)</value>
   </data>
-  <data name="RoadARoadPrimary" xml:space="preserve">
-    <value>12</value>
-  </data>
   <data name="RoadLink" xml:space="preserve">
     <value>Road Link</value>
-  </data>
-  <data name="RoadMotorway" xml:space="preserve">
-    <value>30</value>
   </data>
   <data name="RoadNode" xml:space="preserve">
     <value>Road Node</value>

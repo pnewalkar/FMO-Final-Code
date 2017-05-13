@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using Microsoft.SqlServer.Types;
 
 namespace Fmo.BusinessServices.Interfaces
 {
-   public interface IStreetNetworkBusinessService
+    public interface IStreetNetworkBusinessService
     {
         /// <summary>
         /// Fetch the street name for Basic Search.
@@ -34,5 +36,20 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>StreetNames</returns>
         Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
+
+        /// <summary>
+        /// Get the nearest street for operational object.
+        /// </summary>
+        /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
+        /// <param name="streetName">Street name.</param>
+        /// <returns>Nearest street and the intersection point.</returns>
+        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoadForOperationalObject(DbGeometry operationalObjectPoint, string streetName);
+
+        /// <summary>
+        /// Get the nearest street for operational object.
+        /// </summary>
+        /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
+        /// <returns>Nearest street and the intersection point.</returns>
+        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestRoadForOperationalObject(DbGeometry operationalObjectPoint);
     }
 }
