@@ -27,6 +27,7 @@
         public const string LiveRoute = "Live Route";
         public const string Multiple = "Multiple";
         public const string NetworkLinkType_PathLink = "Path Link";
+        public const string NetworkLinkType_RoadLink = "Road Link";
         public const string NotLive = "Not Live";
         public const string NumberinName = "Number in Name";
         public const string NYB = "NYB";
