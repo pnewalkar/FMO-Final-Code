@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.DTO;
@@ -15,9 +16,9 @@ namespace Fmo.API.Services.Controllers
     {
         protected IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
 
-        public RouteLogController(IDeliveryRouteBusinessService _deliveryRouteBusinessService)
+        public RouteLogController(IDeliveryRouteBusinessService deliveryRouteBusinessService)
         {
-            deliveryRouteBusinessService = _deliveryRouteBusinessService;
+            this.deliveryRouteBusinessService = deliveryRouteBusinessService;
         }
 
         /// <summary>
@@ -68,25 +69,27 @@ namespace Fmo.API.Services.Controllers
         }
 
         /// <summary>
-        /// Fetch Delivery Route details by route GUID
+        /// Gets the delivery route details.
         /// </summary>
+        /// <param name="deliveryRouteId">The delivery route identifier.</param>
         /// <returns></returns>
-        [HttpGet("FetchRouteDetailsByGUID")]
-        public DeliveryRouteDTO FetchRouteDetailsByGUID(Guid routeId)
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
+        [HttpGet("deliveryRoute/{deliveryRouteId}")]
+        public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsForPdf(Guid deliveryRouteId)
         {
-            return new DeliveryRouteDTO
-            {
-                RouteName = "CedarCraft Road",
-                RouteNumber = "6",
-                Totaltime = "1.50 mins",
-                Aliases = 4,
-                Blocks = 6,
-                PairedRoute = "2001",
-                Method = "Shared Van",
-                DPs = 20,
-                BusinessDPs = 12,
-                ResidentialDPs = 8
-            };
+            return await deliveryRouteBusinessService.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, CurrentUserUnit);
+        }
+
+        /// <summary>
+        /// Generates the delivery route log PDF.
+        /// </summary>
+        /// <param name="deliveryRouteDto">The delivery route dto.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("routelog/summary")]
+        public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        {
+            return await deliveryRouteBusinessService.GenerateRouteLog(deliveryRouteDto, CurrentUserUnit);
         }
     }
 }

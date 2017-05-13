@@ -1,17 +1,21 @@
 angular.module('deliveryPoint')
-    .service('deliveryPointService', function () {
-
-        this.deliveryPoint = function () {
+    .factory('deliveryPointService', function () {
+      
+        return {
+            deliveryPoint: deliveryPoint
+        };
+        function deliveryPoint() {
             return {
                 templateUrl: './delivery-point/delivery-point.template.html',
                 clickOutsideToClose: false,
                 controller: "DeliveryPointController as vm"
             }
         };
+      
     });
 
 angular.module('deliveryPoint')
-    .service('coordinatesService', function () {
+    .factory('coordinatesService', function () {
 
         var coordinates = '';
         return {

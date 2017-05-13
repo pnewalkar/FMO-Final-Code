@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -14,7 +14,6 @@ namespace Fmo.BusinessServices.Services
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IScenarioRepository scenarioRepository;
         private IReferenceDataBusinessService referenceDataBusinessService;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService"/> class and other classes.
@@ -111,9 +110,17 @@ namespace Fmo.BusinessServices.Services
             return await deliveryRouteRepository.FetchDeliveryRouteForAdvanceSearch(searchText, unitGuid);
         }
 
-        public DeliveryRouteDTO GetDeliveryRouteDetails(Guid deliveryRouteId)
+        /// <summary>
+        /// Gets the delivery route details for Pdf Generation.
+        /// </summary>
+        /// <param name="deliveryRouteId">The delivery route identifier.</param>
+        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <returns>
+        /// DeliveryRouteDTO
+        /// </returns>
+        public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid)
         {
-            //TODO: Move this to resource file
+            // TODO: Move this to resource file
             List<string> categoryNames = new List<string>
             {
                 "DeliveryPoint Use Indicator",
@@ -124,8 +131,15 @@ namespace Fmo.BusinessServices.Services
 
             var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
-            var deliveryRouteDto = deliveryRouteRepository.GetDeliveryRouteDetails(deliveryRouteId, referenceDataCategoryList);
-            return deliveryRouteDto.Result;
+            var deliveryRouteDto = await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
+            return deliveryRouteDto;
+        }
+
+        public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit)
+        {
+            //Todo: Add pdf genetation logic
+            await deliveryRouteRepository.GenerateRouteLog(deliveryRouteDto, userUnit);
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿angular.module('mapKey')
-        .service('mapKeyService', ['mapStylesFactory','mapService', mapToolbarService])
+        .factory('mapKeyService', mapToolbarService);
+mapToolbarService.$inject = ['mapStylesFactory',
+                             'mapService'];
 
-function mapToolbarService(mapStylesFactory,mapService) {
+function mapToolbarService(mapStylesFactory,
+                           mapService) {
    
-    return{
-        showKey:showKey,
-        initialize:initialize      
-    }
+    return {
+        showKey: showKey,
+        initialize: initialize
+    };
 
     function showKey(id) {
         if (id == "") {

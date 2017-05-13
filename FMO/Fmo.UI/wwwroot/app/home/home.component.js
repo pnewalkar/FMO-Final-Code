@@ -5,5 +5,5 @@ angular.module('home')
 
     },
     templateUrl: './home/home.template.html',
-    controller: 'homeController as vm'
+    controller: 'HomeController as vm'
   });
