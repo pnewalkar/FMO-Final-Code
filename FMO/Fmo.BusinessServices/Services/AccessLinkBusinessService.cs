@@ -175,7 +175,7 @@ namespace Fmo.BusinessServices.Services
         /// <param name="actualLength">Actual Distance between two objects calculated by geometry function</param>
         /// <param name="networkObject">NetworkLink which is linked with access link</param>
         /// <returns>double</returns>
-        public double CalculateWorkloadLength(DeliveryPointDTO pointDto, double actualLength, NetworkLinkDTO networkObject)
+        public double CalculateWorkloadLength(DeliveryPointDTO pointDto, double actualLength, NetworkLinkDTO networkObject, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             double workloadLengthMeter = 0;
             double roadWidth = 0;
@@ -192,7 +192,7 @@ namespace Fmo.BusinessServices.Services
                     "Delivery Route Transport Type"
                 };
 
-            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+            referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
             // network link type whether it is road, path or connecting link
             string networkLinkType = referenceDataCategoryList
