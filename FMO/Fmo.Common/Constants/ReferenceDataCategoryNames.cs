@@ -6,6 +6,7 @@
         public const string AccessLinkParameters = "Access Link Parameters";
         public const string AccessLinkStatus = "Access Link Status";
         public const string AccessLinkType = "Access Link Type";
+        public const string AccessLinkRules = "Access Link Rules";
         public const string DataProvider = "Data Provider";
         public const string DeliveryPointOperationalStatus = "Delivery Point Operational Status";
         public const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
