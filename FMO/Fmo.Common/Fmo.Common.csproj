@@ -93,7 +93,6 @@
     <Compile Include="Constants\ReferenceDataCategoryNames.cs" />
     <Compile Include="Constants\ReferenceDataValues.cs" />
     <Compile Include="Constants\UserAccessFunctionsConstants.cs" />
-    <Compile Include="EmailManagement\EmailHelper.cs" />
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="Enums\GeometryType.cs" />
     <Compile Include="Enums\OtherLayersType.cs" />
@@ -115,7 +114,6 @@
     <Compile Include="ExceptionManagement\Exceptions\ServiceException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\WebServiceException.cs" />
     <Compile Include="Interface\IConfigurationHelper.cs" />
-    <Compile Include="Interface\IEmailHelper.cs" />
     <Compile Include="Interface\IExceptionHelper.cs" />
     <Compile Include="Interface\ILoggingHelper.cs" />
     <Compile Include="LoggingManagement\LoggingHelper.cs" />
