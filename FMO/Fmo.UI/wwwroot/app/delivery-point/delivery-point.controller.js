@@ -285,16 +285,8 @@ function DeliveryPointController(
 
 
     function getPostalAddress(selectedItem) {
-        var arrSelectedItem = selectedItem.split(',');
-        var postCode;
-        if (arrSelectedItem.length == 2) {
-            postCode = arrSelectedItem[1].trim();
-        }
-        else {
-            postCode = arrSelectedItem[0].trim();
-        }
-
-        deliveryPointApiService.GetAddressByPostCode(postCode).then(function (response) {
+       
+        deliveryPointApiService.GetAddressByPostCode(selectedItem).then(function (response) {
             vm.nybaddress = "";
             vm.postalAddressData = response;
             if (vm.postalAddressData && vm.postalAddressData.nybAddressDetails) {
