@@ -42,12 +42,11 @@ fieldset{
 
 .alertPopup{
     @include height(165px);
-    @include width(400px);
-    @include border(1px solid $black);
     @include padding(5px 5px 5px 5px);
     @include border-radius(15px);
     @include position(absolute);
     @include background($white,none);
+    @include margin(-50PX 0PX 0PX 400PX);
     z-index: 1;
     text-align:center;
 }

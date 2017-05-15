@@ -71,7 +71,6 @@ function DeliveryPointController(
     vm.positionedThirdPartyDeliveryPoint = [];
     vm.accessLink = accessLink;
     vm.isError = false;
-    vm.test = test;
     vm.Ok = Ok;
     vm.isDisable = false;
 
@@ -193,7 +192,7 @@ function DeliveryPointController(
                 //errorAlert();
                 vm.isError = true;
                 vm.isDisable = true;
-                vm.errorMessage = "One or more address in the given range already exists";
+                vm.errorMessage = response.message;
                 vm.errorMessageTitle = "Duplicates found";
 
             }
@@ -496,13 +495,6 @@ function DeliveryPointController(
           debugger;
           //vm.contextTitle = "Delivery Point";
           $state.go("deliveryPoint");
-      }
-
-      function test() {
-          vm.isError = true;
-          vm.isDisable = true;
-          vm.errorMessage = "One or more address in the given range already exists";
-          vm.errorMessageTitle = "Duplicates found";
       }
 
       function Ok() {
