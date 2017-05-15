@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
@@ -26,5 +22,12 @@ namespace Fmo.BusinessServices.Interfaces
         /// </summary>
         /// <returns>List<ReferenceDataCategoryDTO></returns>
         List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList();
+
+        /// <summary>
+        /// Gets the name of the reference data categories by category.
+        /// </summary>
+        /// <param name="categoryNames">The category names.</param>
+        /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
+        List<ReferenceDataCategoryDTO> GetReferenceDataCategoriesByCategoryNames(List<string> categoryNames);
     }
 }
