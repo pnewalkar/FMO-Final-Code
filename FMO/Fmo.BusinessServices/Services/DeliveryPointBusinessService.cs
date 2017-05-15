@@ -183,6 +183,7 @@ namespace Fmo.BusinessServices.Services
                             if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
                             {
                                 message = Constants.DELIVERYPOINTCREATED;
+                                //TODO: Create access link
                             }
                             else
                             {
@@ -234,6 +235,8 @@ namespace Fmo.BusinessServices.Services
             };
 
             await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+
+            //TODO: Create access link
         }
 
         /// <summary>
