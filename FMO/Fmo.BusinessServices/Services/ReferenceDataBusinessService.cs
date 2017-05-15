@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Common.Constants;
+using System;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -17,7 +14,7 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="ReferenceDataBusinessService"/> class and other classes.
         /// </summary>
-        /// <param name="referenceDataCategoryRepository">IReferenceDataCategoryRepository reference</param>   
+        /// <param name="referenceDataCategoryRepository">IReferenceDataCategoryRepository reference</param>
         public ReferenceDataBusinessService(IReferenceDataCategoryRepository referenceDataCategoryRepository)
         {
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
@@ -59,6 +56,16 @@ namespace Fmo.BusinessServices.Services
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
             return referenceDataCategoryRepository.GetReferenceDataId(strCategoryname, strRefDataName);
+        }
+
+        /// <summary>
+        /// Gets the name of the reference data categories by category.
+        /// </summary>
+        /// <param name="categoryNames">The category names.</param>
+        /// <returns>List of <see cref="ReferenceDataCategoryDTO"/>.</returns>
+        public List<ReferenceDataCategoryDTO> GetReferenceDataCategoriesByCategoryNames(List<string> categoryNames)
+        {
+            return referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
         }
     }
 }

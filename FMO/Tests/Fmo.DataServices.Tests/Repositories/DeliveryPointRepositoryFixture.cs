@@ -15,6 +15,7 @@ namespace Fmo.DataServices.Tests.Repositories
     using Moq;
     using NUnit.Framework;
 
+    [TestFixture]
     public class DeliveryPointRepositoryFixture : RepositoryFixtureBase
     {
         private Mock<FMODBContext> mockFmoDbContext;
@@ -32,6 +33,7 @@ namespace Fmo.DataServices.Tests.Repositories
         [Test]
         public void Test_GetDeliveryPoints()
         {
+            OnSetup();
             coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
             var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
             Assert.IsNotNull(actualResult);
