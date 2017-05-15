@@ -2,6 +2,7 @@
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.Common.Constants;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -43,6 +44,17 @@ namespace Fmo.BusinessServices.Services
         public List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList()
         {
             return referenceDataCategoryRepository.GetAllReferenceCategoryList();
+        }
+
+        /// <summary>
+        /// Get Reference datav Guid by Categoryname and RefDataName
+        /// </summary>
+        /// <param name="strCategoryname"></param>
+        /// <param name="strRefDataName"></param>
+        /// <returns>Guid</returns>
+        public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
+        {
+            return referenceDataCategoryRepository.GetReferenceDataId(strCategoryname, strRefDataName);
         }
 
         /// <summary>

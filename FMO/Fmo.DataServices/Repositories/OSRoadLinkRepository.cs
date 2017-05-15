@@ -27,7 +27,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>returns Route Hierarchy as string</returns>
         public string GetOSRoadLink(string toid)
         {
-            var result = DataContext.OSRoadLinks.Where(x => x.TOID == toid).Select(z => z.RouteHierarchy).ToString();
+            var result = DataContext.OSRoadLinks.Where(x => x.TOID == toid).Select(z => z.RouteHierarchy).SingleOrDefault();
             return result;
         }
     }

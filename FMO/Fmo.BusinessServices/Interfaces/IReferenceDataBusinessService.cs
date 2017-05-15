@@ -24,6 +24,14 @@ namespace Fmo.BusinessServices.Interfaces
         List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList();
 
         /// <summary>
+        /// Get Reference datav Guid by Categoryname and RefDataName
+        /// </summary>
+        /// <param name="strCategoryname"></param>
+        /// <param name="strRefDataName"></param>
+        /// <returns>Guid</returns>
+        Guid GetReferenceDataId(string strCategoryname, string strRefDataName);
+
+        /// <summary>
         /// Gets the name of the reference data categories by category.
         /// </summary>
         /// <param name="categoryNames">The category names.</param>
