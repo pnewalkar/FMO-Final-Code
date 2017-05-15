@@ -109,7 +109,7 @@ namespace Fmo.BusinessServices.Services
                     var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectId);
 
                     // if the delivery point is not positioned then return failure
-                    if (deliveryPointOperationalObject.Positioned)
+                    if (!deliveryPointOperationalObject.Positioned)
                     {
                         return false;
                     }
