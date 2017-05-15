@@ -2,15 +2,6 @@
 
 namespace Fmo.MessageBrokerCore.Messaging
 {
-    public enum MessageType
-    {
-        PostalAddress,
-        NotYetBuilt,
-        AddressLocation,
-        ReceivedMessage,
-        ThirdParty
-    }
-
     /// <summary>
     /// IMessageBroker, exposes the Message queue functionality to the client.
     /// </summary>
@@ -18,7 +9,6 @@ namespace Fmo.MessageBrokerCore.Messaging
 
     public interface IMessageBroker<T>
     {
-
         /// <summary>
         /// takes an object, serialises it and returns a message
         /// </summary>
@@ -65,7 +55,5 @@ namespace Fmo.MessageBrokerCore.Messaging
         /// <param name="queueRootPath">Queue path</param>
         /// <returns>boolean value true if message exists in queue</returns>
         bool HasMessage(string queueName, string queueRootPath);
-
-
     }
 }
