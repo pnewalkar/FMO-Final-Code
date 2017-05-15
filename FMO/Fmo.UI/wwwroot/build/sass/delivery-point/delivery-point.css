@@ -35,3 +35,19 @@ fieldset {
 
 .aliasInputContainer {
   width: 82.98755%; }
+
+.alertPopup {
+  height: 165px;
+  width: 400px;
+  border: 1px solid #2a2a2d;
+  padding: 5px 5px 5px 5px;
+  border-radius: 15px;
+  position: absolute;
+  background-color: #ffffff;
+  z-index: 1;
+  text-align: center; }
+  .alertPopup:hover {
+    background-color: none; }
+
+.overlay {
+  background-color: #bdbdbd; }

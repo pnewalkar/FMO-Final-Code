@@ -39,3 +39,18 @@ fieldset{
 .aliasInputContainer{
     width: width-percent(1.205);
 }
+
+.alertPopup{
+    @include height(165px);
+    @include padding(5px 5px 5px 5px);
+    @include border-radius(15px);
+    @include position(absolute);
+    @include background($white,none);
+    @include margin(-50PX 0PX 0PX 400PX);
+    z-index: 1;
+    text-align:center;
+}
+
+.overlay {
+    background-color: rgb(189,189,189);
+}
