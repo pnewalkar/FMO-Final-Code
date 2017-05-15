@@ -32,6 +32,7 @@ namespace Fmo.BusinessServices.Services
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
+        private IAccessLinkBusinessService accessLinkBusinessService = default(IAccessLinkBusinessService);
         private bool enableLogging = false;
 
         public DeliveryPointBusinessService(
@@ -39,13 +40,15 @@ namespace Fmo.BusinessServices.Services
             IPostalAddressBusinessService postalAddressBusinessService,
             ILoggingHelper loggingHelper,
             IConfigurationHelper configurationHelper,
-            IReferenceDataBusinessService referenceDataBusinessService)
+            IReferenceDataBusinessService referenceDataBusinessService,
+            IAccessLinkBusinessService accessLinkBusinessService)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
             this.postalAddressBusinessService = postalAddressBusinessService;
             this.referenceDataBusinessService = referenceDataBusinessService;
+            this.accessLinkBusinessService = accessLinkBusinessService;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
@@ -180,9 +183,13 @@ namespace Fmo.BusinessServices.Services
                             rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
                             returnGuid = createDeliveryPointModelDTO.ID;
                             scope.Complete();
+
                             if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
                             {
-                                message = Constants.DELIVERYPOINTCREATED;
+                                var deliveryOperationObjectTypeId = referenceDataBusinessService.GetReferenceDataId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
+                                var isAccessLinkCreated = accessLinkBusinessService.CreateAccessLink(createDeliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+
+                                message = isAccessLinkCreated ? Constants.DELIVERYPOINTCREATED : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
                             }
                             else
                             {
@@ -195,7 +202,7 @@ namespace Fmo.BusinessServices.Services
             catch (Exception ex)
             {
                 this.loggingHelper.LogInfo(ex.ToString());
-                throw ex;
+                throw;
             }
             finally
             {
@@ -203,7 +210,7 @@ namespace Fmo.BusinessServices.Services
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message,  RowVersion = rowVersion };
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion };
         }
 
         /// <summary>
@@ -230,10 +237,15 @@ namespace Fmo.BusinessServices.Services
                 Longitude = deliveryPointModelDTO.Longitude,
                 LocationXY = spatialLocationXY,
                 LocationProvider_GUID = locationProviderId,
-                RowVersion = deliveryPointModelDTO.RowVersion
+                RowVersion = deliveryPointModelDTO.RowVersion,
+                Positioned = true
             };
 
             await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+
+            var deliveryOperationObjectTypeId = referenceDataBusinessService.GetReferenceDataId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
+
+            accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
         }
 
         /// <summary>

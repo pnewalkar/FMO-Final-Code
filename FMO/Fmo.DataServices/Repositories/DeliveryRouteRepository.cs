@@ -12,6 +12,7 @@ using Fmo.DTO;
 using Fmo.DTO.Model;
 using Fmo.Entities;
 using Fmo.MappingConfiguration;
+using System.Text.RegularExpressions;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -210,13 +211,15 @@ namespace Fmo.DataServices.Repositories
                 Task<int> taskNumberOfDPs = GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp, userUnit);
                 Task<int> taskBusinessDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation, userUnit);
                 Task<int> taskResidentialDPs = GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential, userUnit);
+                Task<string> pairedRoutes = GetPairedRoutesByRouteID(deliveryRouteId, sharedDeliveryRouteMethodType, operationalObjectTypeForDp, userUnit);
 
-                Task.WaitAll(taskAliases, taskBlocks, taskNumberOfDPs, taskBusinessDPs, taskResidentialDPs);
+                Task.WaitAll(taskAliases, taskBlocks, taskNumberOfDPs, taskBusinessDPs, taskResidentialDPs, pairedRoutes);
                 deliveryRoutesDto.Aliases = taskAliases.Result;
                 deliveryRoutesDto.Blocks = taskBlocks.Result;
                 deliveryRoutesDto.DPs = taskNumberOfDPs.Result;
                 deliveryRoutesDto.BusinessDPs = taskBusinessDPs.Result;
                 deliveryRoutesDto.ResidentialDPs = taskResidentialDPs.Result;
+                deliveryRoutesDto.PairedRoute = pairedRoutes.Result;
 
                 return deliveryRoutesDto;
             }
@@ -402,6 +405,53 @@ namespace Fmo.DataServices.Repositories
             }
 
             return deliveryRouteResult;
+        }
+
+        /// <summary>
+        /// Get paried routes specific to route
+        /// </summary>
+        /// <param name="deliveryRouteId">deliveryRouteId</param>
+        /// <param name="sharedVanId">sharedVanId</param>
+        /// <param name="operationalObjectId">operationalObjectId</param>
+        /// <param name="userUnitId">userUnitId</param>
+        /// <returns>Comma separated value of paried routes</returns>
+        private async Task<string> GetPairedRoutesByRouteID(Guid deliveryRouteId, Guid sharedVanId, Guid operationalObjectId, Guid userUnitId)
+        {
+            string pairedRoute = string.Empty;
+
+            var routeResults = await (from dr in DataContext.DeliveryRoutes
+                                      join drb in DataContext.DeliveryRouteBlocks on dr.ID equals drb.DeliveryRoute_GUID
+                                      join b in DataContext.Blocks on drb.Block_GUID equals b.ID
+                                      join bs in DataContext.BlockSequences on b.ID equals bs.Block_GUID
+                                      join dp in DataContext.DeliveryPoints on bs.OperationalObject_GUID equals dp.ID
+                                      join pa in DataContext.PostalAddresses on dp.Address_GUID equals pa.ID
+                                      join sc in DataContext.Scenarios on dr.DeliveryScenario_GUID equals sc.ID
+                                      let postCodeIds = from dr in DataContext.DeliveryRoutes
+                                                        join drb in DataContext.DeliveryRouteBlocks on dr.ID equals drb.DeliveryRoute_GUID
+                                                        join b in DataContext.Blocks on drb.Block_GUID equals b.ID
+                                                        join bs in DataContext.BlockSequences on b.ID equals bs.Block_GUID
+                                                        join dp in DataContext.DeliveryPoints on bs.OperationalObject_GUID equals dp.ID
+                                                        join pa in DataContext.PostalAddresses on dp.Address_GUID equals pa.ID
+                                                        join sc in DataContext.Scenarios on dr.DeliveryScenario_GUID equals sc.ID
+                                                        join pc in DataContext.Postcodes on pa.PostCodeGUID equals pc.ID
+                                                        where bs.OperationalObjectType_GUID == operationalObjectId &&
+                                                        dr.RouteMethodType_GUID == sharedVanId && sc.Unit_GUID == userUnitId && dr.ID == deliveryRouteId
+                                                        select pc.ID
+                                      where bs.OperationalObjectType_GUID == operationalObjectId &&
+                                      dr.RouteMethodType_GUID == sharedVanId && sc.Unit_GUID == userUnitId && dr.ID != deliveryRouteId && postCodeIds.Contains(pa.PostCodeGUID)
+                                      group new { dr } by new { dr.RouteNumber } into grpRoutes
+                                      select new
+                                      {
+                                          RouteNumber = grpRoutes.Key.RouteNumber
+                                      }).ToListAsync();
+
+            if (routeResults != null && routeResults.Count > 0)
+            {
+                pairedRoute = string.Join(",", routeResults);
+                pairedRoute = Regex.Replace(pairedRoute, ",+", ",").Trim(',');
+            }
+
+            return pairedRoute;
         }
 
         #endregion Private Methods

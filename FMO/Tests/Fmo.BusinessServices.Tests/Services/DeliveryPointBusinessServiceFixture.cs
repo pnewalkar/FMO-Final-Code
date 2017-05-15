@@ -24,6 +24,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<ILoggingHelper> mockLoggingRepository;
         private Mock<IPostalAddressBusinessService> mockPostalAddressBusinessService;
         private Mock<IReferenceDataBusinessService> referenceDataBusinessService;
+        private Mock<IAccessLinkBusinessService> accessLinkBusinessServiceMock;
         private Guid unitGuid = Guid.NewGuid();
         private AddDeliveryPointDTO addDeliveryPointDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
@@ -186,7 +187,8 @@ namespace Fmo.BusinessServices.Tests.Services
             mockPostalAddressBusinessService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
             referenceDataBusinessService.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
             mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object,mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object);
+            accessLinkBusinessServiceMock = CreateMock<IAccessLinkBusinessService>();
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object, accessLinkBusinessServiceMock.Object);
         }
     }
 }

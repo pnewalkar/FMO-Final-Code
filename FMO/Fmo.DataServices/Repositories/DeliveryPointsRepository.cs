@@ -278,14 +278,15 @@ namespace Fmo.DataServices.Repositories
             {
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
-                    DeliveryPoint deliveryPoint =await fmoDBContext.DeliveryPoints
+                    DeliveryPoint deliveryPoint = await fmoDBContext.DeliveryPoints
                         .Where(dp => dp.ID == deliveryPointDTO.ID)
                         .Select(x => new DeliveryPoint
                         {
                             Longitude = deliveryPointDTO.Longitude,
                             Latitude = deliveryPointDTO.Latitude,
                             LocationXY = deliveryPointDTO.LocationXY,
-                            LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID
+                            LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID,
+                            Positioned = deliveryPointDTO.Positioned
                         }).SingleOrDefaultAsync();
 
                     fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
