@@ -73,6 +73,7 @@ function DeliveryPointController(
     vm.isError = false;
     vm.Ok = Ok;
     vm.isDisable = false;
+    vm.getSelectedText = getSelectedText;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
@@ -500,5 +501,15 @@ function DeliveryPointController(
       function Ok() {
           vm.isError = false;
           vm.isDisable = false;
+      }
+
+      function getSelectedText() {
+          if (angular.isUndefined(vm.postalAddressData)) {
+              return "Select...";
+          }
+          else {
+              return "Route";
+          }
+
       }
 };
