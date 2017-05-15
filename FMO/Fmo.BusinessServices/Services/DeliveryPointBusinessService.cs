@@ -28,27 +28,24 @@ namespace Fmo.BusinessServices.Services
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
-        private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
-        private IAddressRepository postalAddressRepository = default(IAddressRepository);
+        private IPostalAddressBusinessService postalAddressBusinessService = default(IPostalAddressBusinessService);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
+        private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
         private bool enableLogging = false;
 
         public DeliveryPointBusinessService(
             IDeliveryPointsRepository deliveryPointsRepository,
-            IAddressLocationRepository addressLocationRepository,
-            IAddressRepository postalAddressRepository,
+            IPostalAddressBusinessService postalAddressBusinessService,
             ILoggingHelper loggingHelper,
             IConfigurationHelper configurationHelper,
-            IReferenceDataCategoryRepository referenceDataCategoryRepository)
+            IReferenceDataBusinessService referenceDataBusinessService)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
-            this.addressLocationRepository = addressLocationRepository;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
-            this.postalAddressRepository = postalAddressRepository;
-            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
+            this.postalAddressBusinessService = postalAddressBusinessService;
+            this.referenceDataBusinessService = referenceDataBusinessService;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
@@ -166,8 +163,8 @@ namespace Fmo.BusinessServices.Services
             {
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
                 {
-                    string postCode = postalAddressRepository.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressRepository.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO.PostalAddressDTO))
+                    string postCode = postalAddressBusinessService.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
+                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressBusinessService.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO.PostalAddressDTO))
                     {
                         message = Constants.DUPLICATEDELIVERYPOINT;
                     }
@@ -179,7 +176,7 @@ namespace Fmo.BusinessServices.Services
                     {
                         using (TransactionScope scope = new TransactionScope())
                         {
-                            CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                            CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
                             rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
                             returnGuid = createDeliveryPointModelDTO.ID;
                             scope.Complete();
@@ -198,7 +195,7 @@ namespace Fmo.BusinessServices.Services
             catch (Exception ex)
             {
                 this.loggingHelper.LogInfo(ex.ToString());
-                throw;
+                throw ex;
             }
             finally
             {
@@ -223,7 +220,7 @@ namespace Fmo.BusinessServices.Services
 
             DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
 
-            Guid locationProviderId = referenceDataCategoryRepository.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.INTERNAL);
+            Guid locationProviderId = referenceDataBusinessService.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.INTERNAL);
 
             DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
             {

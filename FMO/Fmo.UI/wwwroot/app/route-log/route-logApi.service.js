@@ -70,7 +70,7 @@ function routeLogAPIService($http, $q, GlobalSettings) {
     function getRouteDetailsByGUID(routeId) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchRouteDetailsByGUID?routeId=' + routeId).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + '/RouteLog/deliveryRoute/'+ routeId).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
