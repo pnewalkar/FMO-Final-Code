@@ -428,18 +428,18 @@ function DeliveryPointController(
     }
 
     function manualDeliveryPointPosition(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
-        if (udprn == null) {
-            var deliveryPointListObj = {
-                udprn: udprn, locality: locality, addressGuid: addressGuid, deliveryPointGuid: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
-            };
-            if (vm.deliveryPointList == null) {
-                vm.deliveryPointList = [];
-            }
-            vm.deliveryPointList.push(deliveryPointListObj);
-            $state.go("deliveryPoint", {
-                deliveryPointList: vm.deliveryPointList
-            })
+       
+        var deliveryPointListObj = {
+            udprn: udprn, locality: locality, addressGuid: addressGuid, deliveryPointGuid: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
+        };
+        if (vm.deliveryPointList == null) {
+            vm.deliveryPointList = [];
         }
+        vm.deliveryPointList.push(deliveryPointListObj);
+        $state.go("deliveryPoint", {
+            deliveryPointList: vm.deliveryPointList
+        })
+        
     }
 
     function onCloseDeliveryPoint() {
