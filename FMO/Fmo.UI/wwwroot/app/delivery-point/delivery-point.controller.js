@@ -364,7 +364,7 @@ function DeliveryPointController(
                .then(function (response) {
                    vm.nybaddress = response;
                    vm.dpUse = null;
-                   if (vm.notyetBuilt !== defaultNYBValue) {
+                   if (vm.notyetBuilt !== vm.defaultNYBValue) {
                        if (!(vm.nybaddress.organisationName)) {
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                                displayText: "Residential"
