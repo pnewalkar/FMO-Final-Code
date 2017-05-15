@@ -23,7 +23,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IConfigurationHelper> mockConfigurationRepository;
         private Mock<ILoggingHelper> mockLoggingRepository;
         private Mock<IPostalAddressBusinessService> mockPostalAddressBusinessService;
-        private Mock<IReferenceDataCategoryRepository> referenceDataCategoryRepository;
+        private Mock<IReferenceDataBusinessService> referenceDataBusinessService;
         private Guid unitGuid = Guid.NewGuid();
         private AddDeliveryPointDTO addDeliveryPointDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
@@ -97,7 +97,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockConfigurationRepository = CreateMock<IConfigurationHelper>();
             mockLoggingRepository = CreateMock<ILoggingHelper>();
             mockPostalAddressBusinessService = CreateMock<IPostalAddressBusinessService>();
-            referenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
+            referenceDataBusinessService = CreateMock<IReferenceDataBusinessService>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
@@ -184,9 +184,9 @@ namespace Fmo.BusinessServices.Tests.Services
             mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
             mockPostalAddressBusinessService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns("123");
             mockPostalAddressBusinessService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
-            referenceDataCategoryRepository.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
+            referenceDataBusinessService.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
             mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockaddressLocationRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataCategoryRepository.Object);
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object,mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object);
         }
     }
 }

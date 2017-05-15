@@ -64,7 +64,7 @@ namespace Fmo.BusinessServices.Services
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="streetName">Street name.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoadForOperationalObject(DbGeometry operationalObjectPoint, string streetName)
+        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName)
         {
             List<string> categoryNames = new List<string>
             {
@@ -72,7 +72,7 @@ namespace Fmo.BusinessServices.Services
             };
             var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
-            return streetNetworkRepository.GetNearestNamedRoadForOperationalObject(operationalObjectPoint, streetName, referenceDataCategoryList);
+            return streetNetworkRepository.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestRoadForOperationalObject(DbGeometry operationalObjectPoint)
+        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint)
         {
             List<string> categoryNames = new List<string>
             {
@@ -88,7 +88,7 @@ namespace Fmo.BusinessServices.Services
             };
             var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
-            return streetNetworkRepository.GetNearestRoadForOperationalObject(operationalObjectPoint, referenceDataCategoryList);
+            return streetNetworkRepository.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
         }
     }
 }

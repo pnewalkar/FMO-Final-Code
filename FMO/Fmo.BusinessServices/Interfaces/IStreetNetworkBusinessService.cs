@@ -43,13 +43,13 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="streetName">Street name.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoadForOperationalObject(DbGeometry operationalObjectPoint, string streetName);
+        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName);
 
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestRoadForOperationalObject(DbGeometry operationalObjectPoint);
+        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint);
     }
 }
