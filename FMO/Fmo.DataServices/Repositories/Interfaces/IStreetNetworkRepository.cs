@@ -43,7 +43,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="streetName">Street name.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and intersection point.</returns>
-        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoadForOperationalObject(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
+        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
 
         /// <summary>
         /// Get the nearest street for operational object.
@@ -51,6 +51,6 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and intersection point.</returns>
-        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestRoadForOperationalObject(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
+        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
     }
 }
