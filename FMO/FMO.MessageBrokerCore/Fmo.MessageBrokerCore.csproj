@@ -58,6 +58,7 @@
     <Compile Include="Messaging\MessageAdapterFactory.cs" />
     <Compile Include="Messaging\MessageBroker.cs" />
     <Compile Include="Messaging\MessageEventArgs.cs" />
+    <Compile Include="Messaging\MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
