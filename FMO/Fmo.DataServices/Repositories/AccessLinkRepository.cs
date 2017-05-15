@@ -54,7 +54,11 @@
                 WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
                 Approved = accessLinkDto.Approved,
                 OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
-                NetworkLink_GUID = accessLinkDto.NetworkLink_GUID
+                NetworkLink_GUID = accessLinkDto.NetworkLink_GUID,
+                AccessLinkType_GUID = accessLinkDto.AccessLinkType_GUID,
+                LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
+                LinkDirection_GUID = accessLinkDto.LinkDirection_GUID,
+                OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
             };
 
             DataContext.AccessLinks.Add(accessLink);

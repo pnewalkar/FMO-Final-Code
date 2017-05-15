@@ -19,6 +19,7 @@ using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
 using Fmo.DTO.Model;
 using System.Data.Entity.Spatial;
+using System.Linq;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -177,24 +178,27 @@ namespace Fmo.BusinessServices.Services
                     }
                     else
                     {
-                        using (TransactionScope scope = new TransactionScope())
+                        CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                        rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
+                        returnGuid = createDeliveryPointModelDTO.ID;
+
+                        if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
                         {
-                            CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                            rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
-                            returnGuid = createDeliveryPointModelDTO.ID;
-                            scope.Complete();
+                            var referenceDataCategoryList =
+                   referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string> { ReferenceDataCategoryNames.OperationalObjectType });
 
-                            if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
-                            {
-                                var deliveryOperationObjectTypeId = referenceDataBusinessService.GetReferenceDataId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
-                                var isAccessLinkCreated = accessLinkBusinessService.CreateAccessLink(createDeliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                            var deliveryOperationObjectTypeId = referenceDataCategoryList
+                                .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                                .SelectMany(x => x.ReferenceDatas)
+                                .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-                                message = isAccessLinkCreated ? Constants.DELIVERYPOINTCREATED : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
-                            }
-                            else
-                            {
-                                message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
-                            }
+                            var isAccessLinkCreated = accessLinkBusinessService.CreateAccessLink(createDeliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+
+                            message = isAccessLinkCreated ? Constants.DELIVERYPOINTCREATED : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
+                        }
+                        else
+                        {
+                            message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
                         }
                     }
                 }
@@ -241,11 +245,24 @@ namespace Fmo.BusinessServices.Services
                 Positioned = true
             };
 
-            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO).ContinueWith(t =>
+             {
+                 if (t.Result > 0)
+                 {
+                     var referenceDataCategoryList =
+                         referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
+                         {
+                             ReferenceDataCategoryNames.OperationalObjectType
+                         });
 
-            var deliveryOperationObjectTypeId = referenceDataBusinessService.GetReferenceDataId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
+                     var deliveryOperationObjectTypeId = referenceDataCategoryList
+                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                         .SelectMany(x => x.ReferenceDatas)
+                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-            accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                     accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                 }
+             });
         }
 
         /// <summary>

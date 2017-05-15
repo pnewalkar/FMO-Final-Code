@@ -278,16 +278,14 @@ namespace Fmo.DataServices.Repositories
             {
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
-                    DeliveryPoint deliveryPoint = await fmoDBContext.DeliveryPoints
-                        .Where(dp => dp.ID == deliveryPointDTO.ID)
-                        .Select(x => new DeliveryPoint
-                        {
-                            Longitude = deliveryPointDTO.Longitude,
-                            Latitude = deliveryPointDTO.Latitude,
-                            LocationXY = deliveryPointDTO.LocationXY,
-                            LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID,
-                            Positioned = deliveryPointDTO.Positioned
-                        }).SingleOrDefaultAsync();
+                    DeliveryPoint deliveryPoint =
+                        fmoDBContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
+
+                    deliveryPoint.Longitude = deliveryPointDTO.Longitude;
+                    deliveryPoint.Latitude = deliveryPointDTO.Latitude;
+                    deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
+                    deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
+                    deliveryPoint.Positioned = deliveryPointDTO.Positioned;
 
                     fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
                     fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
@@ -297,6 +295,10 @@ namespace Fmo.DataServices.Repositories
             catch (DbUpdateConcurrencyException)
             {
                 throw new DbConcurrencyException(Constants.ConcurrencyMessage);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
