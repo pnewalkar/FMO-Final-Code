@@ -1,8 +1,10 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 
@@ -123,13 +125,16 @@ namespace Fmo.BusinessServices.Services
             // TODO: Move this to resource file
             List<string> categoryNames = new List<string>
             {
-                "DeliveryPoint Use Indicator",
-                "Operational Object Type",
-                "Delivery Route Method Type",
-                "Delivery Route Transport Type"
+                ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                ReferenceDataCategoryNames.OperationalObjectType,
+                ReferenceDataCategoryNames.DeliveryRouteMethodType
             };
 
             var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+
+            var referenceDataDeliveryMethodTypes =
+                referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryRouteMethodType)
+                    .SelectMany(x => x.ReferenceDatas).ToList();
 
             var deliveryRouteDto = await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
             return deliveryRouteDto;

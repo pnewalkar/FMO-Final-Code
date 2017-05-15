@@ -25,5 +25,6 @@
         public const string AccessLinkSameRoadMaxDistance = "Access Link Same Road Max Distance";
 
         public const string OperationalObjectTypeDP = "DP";
+        public const string DeliveryRouteMethodTypeRmVanShared = "RM Van (Shared)";
     }
 }

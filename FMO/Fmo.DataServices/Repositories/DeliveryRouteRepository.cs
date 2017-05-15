@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Fmo.Common.Constants;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
@@ -21,16 +20,13 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class DeliveryRouteRepository : RepositoryBase<DeliveryRoute, FMODBContext>, IDeliveryRouteRepository
     {
-        private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteRepository"/> class.
         /// </summary>
         /// <param name="databaseFactory">IDatabaseFactory reference</param>
-        public DeliveryRouteRepository(IDatabaseFactory<FMODBContext> databaseFactory, IReferenceDataCategoryRepository _refDataRepository)
+        public DeliveryRouteRepository(IDatabaseFactory<FMODBContext> databaseFactory)
             : base(databaseFactory)
         {
-            refDataRepository = _refDataRepository;
         }
 
         /// <summary>
@@ -154,48 +150,60 @@ namespace Fmo.DataServices.Repositories
             {
                 // No of DPs
                 Guid operationalObjectTypeForDp = referenceDataCategoryDtoList
-                    .Where(x => x.CategoryName == "Operational Object Type").SelectMany(x => x.ReferenceDatas)
-                    .Where(x => x.ReferenceDataValue == "DP").Select(x => x.ID).SingleOrDefault();
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).Select(x => x.ID).SingleOrDefault();
 
                 // No. Organisation DP
                 Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
-                    .Where(x => x.CategoryName == "DeliveryPoint Use Indicator").SelectMany(x => x.ReferenceDatas)
-                    .Where(x => x.ReferenceDataValue == "Organisation").Select(x => x.ID).SingleOrDefault();
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator).SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID).SingleOrDefault();
 
                 // No. Residential DP
                 Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
-                    .Where(x => x.CategoryName == "DeliveryPoint Use Indicator").SelectMany(x => x.ReferenceDatas)
-                    .Where(x => x.ReferenceDataValue == "Residential").Select(x => x.ID).SingleOrDefault();
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator).SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID).SingleOrDefault();
 
                 // Delivery Route Method Type
-                Guid sharedDeliveryRouteMethodType = referenceDataCategoryDtoList
-                    .Where(x => x.CategoryName == "Delivery Route Method Type").SelectMany(x => x.ReferenceDatas)
-                    .Where(x => x.ReferenceDataValue == "RM Van (Shared)").Select(x => x.ID).SingleOrDefault();
+                var referenceDataDeliveryMethodTypes = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryRouteMethodType).SelectMany(x => x.ReferenceDatas).ToList();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<ReferenceDataCategoryDTO, ReferenceDataCategory>();
-                    cfg.CreateMap<ReferenceDataDTO, ReferenceData>();
-                });
-
-                Mapper.Configuration.CreateMapper();
-                List<ReferenceDataCategory> referenceDataCategoryList = Mapper.Map<List<ReferenceDataCategoryDTO>, List<ReferenceDataCategory>>(referenceDataCategoryDtoList);
-
-                var referenceData =
-                    referenceDataCategoryList.Where(x => x.CategoryName == "Delivery Route Method Type").SelectMany(x => x.ReferenceDatas);
+                Guid sharedDeliveryRouteMethodTypeGuid = referenceDataDeliveryMethodTypes
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.DeliveryRouteMethodTypeRmVanShared).Select(x => x.ID).SingleOrDefault();
 
                 var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
-                                               join rd in DataContext.ReferenceDatas on dr.RouteMethodType_GUID equals rd.ID
                                                join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                               where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit && dr.RouteMethodType_GUID == sharedDeliveryRouteMethodType
+                                               where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit && dr.RouteMethodType_GUID == sharedDeliveryRouteMethodTypeGuid
                                                select new DeliveryRouteDTO
                                                {
                                                    RouteName = dr.RouteName,
                                                    RouteNumber = dr.RouteNumber,
                                                    ScenarioName = sr.ScenarioName,
-                                                   Method = rd.ReferenceDataValue,
-                                                   Totaltime = dr.TravelOutTimeMin - dr.TravelOutTimeMin
+                                                   MethodReferenceGuid = dr.RouteMethodType_GUID,
+                                                   Totaltime = dr.TravelOutTimeMin - dr.TravelOutTimeMin,
+                                                   TravelOutTransportType_GUID = dr.TravelOutTransportType_GUID,
+                                                   TravelInTransportType_GUID = dr.TravelInTransportType_GUID
                                                }).SingleOrDefaultAsync();
+
+                var methodType = referenceDataDeliveryMethodTypes
+                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.MethodReferenceGuid);
+                if (methodType != null)
+                {
+                    deliveryRoutesDto.Method = methodType.ReferenceDataValue;
+                }
+
+                var travelInType = referenceDataDeliveryMethodTypes
+                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelInTransportType_GUID);
+                if (travelInType != null)
+                {
+                    deliveryRoutesDto.AccelarationIn = travelInType.ReferenceDataValue;
+                }
+
+                var travelOutType = referenceDataDeliveryMethodTypes
+                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelOutTransportType_GUID);
+                if (travelOutType != null)
+                {
+                    deliveryRoutesDto.AccelarationOut = travelOutType.ReferenceDataValue;
+                }
 
                 Task<int> taskAliases = GetAliases(deliveryRouteId, operationalObjectTypeForDp, userUnit);
                 Task<int> taskBlocks = GetNumberOfBlocks(deliveryRouteId, userUnit);
@@ -209,10 +217,6 @@ namespace Fmo.DataServices.Repositories
                 deliveryRoutesDto.DPs = taskNumberOfDPs.Result;
                 deliveryRoutesDto.BusinessDPs = taskBusinessDPs.Result;
                 deliveryRoutesDto.ResidentialDPs = taskResidentialDPs.Result;
-
-                //deliveryRoutesDto.PairedRoute =  GetPairedRoute(deliveryRouteId);
-                //deliveryRoutesDto.AccelarationIn = "AccelarationIn";
-                //deliveryRoutesDto.AccelarationOut = "AccelarationOut";
 
                 return deliveryRoutesDto;
             }
@@ -243,8 +247,9 @@ namespace Fmo.DataServices.Repositories
             try
             {
                 int numberOfBlocks = await (from drb in DataContext.DeliveryRouteBlocks.AsNoTracking()
-                                            //join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                            where drb.DeliveryRoute_GUID == deliveryRouteId // && sr.Unit_GUID == userUnit
+                                            join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
+                                            join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                            where drb.DeliveryRoute_GUID == deliveryRouteId && sr.Unit_GUID == userUnit
                                             select drb.Block_GUID).CountAsync();
                 return numberOfBlocks;
             }
@@ -268,8 +273,8 @@ namespace Fmo.DataServices.Repositories
                 int numberOfDPs = await (from blkseq in DataContext.BlockSequences.AsNoTracking()
                                          join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on blkseq.Block_GUID equals drb.Block_GUID
                                          join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                                         //join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                         where blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId //&& sr.Unit_GUID == userUnit
+                                         join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                         where blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit
                                          select blkseq.OperationalObject_GUID).CountAsync();
                 return numberOfDPs;
             }
@@ -293,10 +298,10 @@ namespace Fmo.DataServices.Repositories
                 int numberOfCommercialResidentialDPs = await (from del in DataContext.DeliveryPoints.AsNoTracking()
                                                               join blkseq in DataContext.BlockSequences.AsNoTracking() on del.ID equals blkseq.OperationalObject_GUID
                                                               join dr in DataContext.DeliveryRoutes.AsNoTracking() on deliveryRouteId equals dr.ID
-                                                              //join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                                              join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
                                                               join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
                                                               where del.DeliveryPointUseIndicator_GUID == operationalObjectTypeForDp && drb.DeliveryRoute_GUID == deliveryRouteId
-                                                              && blkseq.Block_GUID == drb.Block_GUID // && sr.Unit_GUID == userUnit
+                                                              && blkseq.Block_GUID == drb.Block_GUID && sr.Unit_GUID == userUnit
                                                               select del.DeliveryPointUseIndicator_GUID).CountAsync();
                 return numberOfCommercialResidentialDPs;
             }
@@ -338,11 +343,13 @@ namespace Fmo.DataServices.Repositories
         /// retrieve Route Sequenced Point By passing RouteID specific to unit
         /// </summary>
         /// <param name="deliveryRouteId">deliveryRouteId</param>
-        /// <param name="userUnitID">userUnitID</param>
-        /// <returns>List of route log sequenced points</returns>
-        private List<RouteLogSequencedPointsDTO> GetDeliveryRouteSequencedPointsByRouteID(Guid deliveryRouteId, Guid userUnitID)
+        /// <param name="userUnitIdGuid">userUnitIdGuid</param>
+        /// <param name="operationalObjectTypeForDp">The operational object type for dp.</param>
+        /// <returns>
+        /// List of route log sequenced points
+        /// </returns>
+        private List<RouteLogSequencedPointsDTO> GetDeliveryRouteSequencedPointsByRouteID(Guid deliveryRouteId, Guid userUnitIdGuid, Guid operationalObjectTypeForDp)
         {
-            Guid operationalObjectTypeForDp = refDataRepository.GetReferenceDataId("Operational Object Type", "DP");
             List<RouteLogSequencedPointsDTO> deliveryRouteResult = null;
             var deliveryRoutes = (from dr in DataContext.DeliveryRoutes.AsNoTracking()
                                   join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
@@ -351,7 +358,7 @@ namespace Fmo.DataServices.Repositories
                                   join dp in DataContext.DeliveryPoints.AsNoTracking() on bs.OperationalObject_GUID equals dp.ID
                                   join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
                                   join sc in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sc.ID
-                                  where bs.OperationalObjectType_GUID == operationalObjectTypeForDp && sc.Unit_GUID == userUnitID && dr.ID == deliveryRouteId
+                                  where bs.OperationalObjectType_GUID == operationalObjectTypeForDp && sc.Unit_GUID == userUnitIdGuid && dr.ID == deliveryRouteId
                                   group new { pa, dp } by new { pa.Thoroughfare, pa.BuildingNumber } into grpAddress
                                   select new RouteLogSequencedPointsDTO
                                   {
