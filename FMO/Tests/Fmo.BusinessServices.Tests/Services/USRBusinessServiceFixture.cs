@@ -22,7 +22,6 @@
         private Mock<INotificationRepository> notificationRepositoryMock;
         private Mock<IPostCodeSectorRepository> postCodeSectorRepositoryMock;
         private Mock<IReferenceDataCategoryRepository> referenceDataCategoryRepositoryMock;
-        private Mock<IEmailHelper> emailHelperMock;
         private Mock<IConfigurationHelper> configurationHelperMock;
         private Mock<ILoggingHelper> loggingHelperMock;
 
@@ -35,7 +34,7 @@
             this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
             this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
             this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
-            this.emailHelperMock = this.CreateMock<IEmailHelper>();
+
             this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
             this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
             this.testCandidate = new USRBusinessService(
@@ -45,7 +44,6 @@
                                             this.notificationRepositoryMock.Object,
                                             this.postCodeSectorRepositoryMock.Object,
                                             this.referenceDataCategoryRepositoryMock.Object,
-                                            this.emailHelperMock.Object,
                                             this.configurationHelperMock.Object,
                                             this.loggingHelperMock.Object);
             AddressLocationDTO addressDTOMockNull = null;
@@ -61,7 +59,6 @@
             this.notificationRepositoryMock.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).Returns(true);
             this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 0 } });
 
-            this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
             this.deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
             this.notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
@@ -76,7 +73,7 @@
             this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
             this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
             this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
-            this.emailHelperMock = this.CreateMock<IEmailHelper>();
+
             this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
             this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
             this.testCandidate = new USRBusinessService(
@@ -86,7 +83,6 @@
                                             this.notificationRepositoryMock.Object,
                                             this.postCodeSectorRepositoryMock.Object,
                                             this.referenceDataCategoryRepositoryMock.Object,
-                                            this.emailHelperMock.Object,
                                             this.configurationHelperMock.Object,
                                             this.loggingHelperMock.Object);
             AddressLocationDTO addressDTOMockNull = null;
@@ -110,7 +106,6 @@
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
             this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 0 } });
 
-            this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
             this.deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
             this.notificationRepositoryMock.Verify(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
@@ -126,7 +121,6 @@
             this.notificationRepositoryMock = this.CreateMock<INotificationRepository>();
             this.postCodeSectorRepositoryMock = this.CreateMock<IPostCodeSectorRepository>();
             this.referenceDataCategoryRepositoryMock = this.CreateMock<IReferenceDataCategoryRepository>();
-            this.emailHelperMock = this.CreateMock<IEmailHelper>();
             this.configurationHelperMock = this.CreateMock<IConfigurationHelper>();
             this.loggingHelperMock = this.CreateMock<ILoggingHelper>();
             this.testCandidate = new USRBusinessService(
@@ -136,7 +130,6 @@
                                             this.notificationRepositoryMock.Object,
                                             this.postCodeSectorRepositoryMock.Object,
                                             this.referenceDataCategoryRepositoryMock.Object,
-                                            this.emailHelperMock.Object,
                                             this.configurationHelperMock.Object,
                                             this.loggingHelperMock.Object);
             AddressLocationDTO addressDTOMockNull = null;
@@ -160,8 +153,6 @@
             this.deliveryPointsRepositoryMock.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new DeliveryPointDTO());
             this.deliveryPointsRepositoryMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(true);
             this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 5 } });
-
-            this.emailHelperMock.Verify(x => x.SendMessage(It.IsAny<MailMessage>()), Times.Never);
             this.addressLocationRepositoryMock.Verify(x => x.SaveNewAddressLocation(It.IsAny<AddressLocationDTO>()), Times.Once);
             this.deliveryPointsRepositoryMock.Verify(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>()), Times.Once);
             this.addressRepositoryMock.Verify(x => x.GetPostalAddress(It.IsAny<PostalAddressDTO>()), Times.Never);
