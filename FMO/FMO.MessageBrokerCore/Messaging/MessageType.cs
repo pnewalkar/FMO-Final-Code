@@ -1,6 +1,6 @@
 ﻿namespace Fmo.MessageBrokerCore.Messaging
 {
-    public enum MessageType1
+    public enum MessageType
     {
         PostalAddress,
         NotYetBuilt,
