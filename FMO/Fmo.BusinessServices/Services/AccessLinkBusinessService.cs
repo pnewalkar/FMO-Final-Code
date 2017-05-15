@@ -242,7 +242,7 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        /// Create automatic access link creation after delivery point creation.
+        /// Create manual access link creation after delivery point creation.
         /// </summary>
         /// <param name="accessLinkDto">access link object to be stored</param>
         /// <returns>bool</returns>
