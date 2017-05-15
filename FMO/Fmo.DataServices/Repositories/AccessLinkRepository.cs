@@ -54,7 +54,11 @@
                 WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
                 Approved = accessLinkDto.Approved,
                 OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
-                NetworkLink_GUID = accessLinkDto.NetworkLink_GUID
+                NetworkLink_GUID = accessLinkDto.NetworkLink_GUID,
+                AccessLinkType_GUID = accessLinkDto.AccessLinkType_GUID,
+                LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
+                LinkDirection_GUID = accessLinkDto.LinkDirection_GUID,
+                OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
             };
 
             DataContext.AccessLinks.Add(accessLink);
@@ -84,141 +88,5 @@
                 return null;
             }
         }
-
-        /*
-
-        /// <summary>
-        /// Create auto access link
-        /// </summary>
-        /// <param name="operationalObjectId">operational point unique identifier.</param>
-        /// <returns>bool</returns>
-        public bool CreateAutoAccessLink(Guid operationalObjectId)
-        {
-            bool isAccessLinkCreated = false;
-            if (operationalObjectId != Guid.Empty)
-            {
-                using (var transaction = DataContext.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        // get corresponding dp and postal address data
-                        var deliveryPoint = DataContext.DeliveryPoints
-                            .Include(l => l.PostalAddress)
-                            .Where(x => x.Positioned == true && x.AccessLinkPresent == false && x.ID == operationalObjectId)
-                            .SingleOrDefault();
-
-                        // connect with nearest point on road of related street (rule 1)
-                        if (deliveryPoint.LocationXY != null)
-                        {
-                            var operationalObjectPoint = deliveryPoint.LocationXY;
-                            var thoroughfare = deliveryPoint.PostalAddress.Thoroughfare;
-
-                            var pathIntersectionCount = 0;
-                            var roadIntersectionCount = 0;
-                            SqlGeometry accessLinkLine = null;
-                            double? actualLengthMeter = null;
-                            Guid networkLinkGuid = default(Guid);
-
-                            var streetName = DataContext.StreetNames
-                                .Where(m => (m.Descriptor == thoroughfare
-                                            || m.DesignatedName == thoroughfare
-                                            || m.LocalName == thoroughfare)
-                                            && (operationalObjectPoint.Distance(m.Geometry) <= 40))
-                                .OrderBy(n => operationalObjectPoint.Distance(n.Geometry))
-                                .FirstOrDefault();
-
-                            if (streetName != null)
-                            {
-                                NetworkLink networkLink = DataContext.NetworkLinks
-                                .Where(m => m.StreetName_GUID == streetName.ID)
-                                .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
-                                .FirstOrDefault();
-
-                                networkLinkGuid = networkLink.Id;
-
-                                accessLinkLine = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry());
-                                actualLengthMeter = networkLink.LinkGeometry.Distance(operationalObjectPoint);
-                            }
-
-                            Guid networkPathLinkType = default(Guid); // referenceDataCategoryRepository.GetReferenceDataId("Network Link Type", "Path Link");
-                            Guid networkRoadLinkType = default(Guid); // referenceDataCategoryRepository.GetReferenceDataId("Network Link Type", "Road Link");
-
-                            if (accessLinkLine != null)
-                            {
-                                roadIntersectionCount = DataContext.NetworkLinks
-                                                .Where(m => m.LinkGeometry.Intersects(accessLinkLine.ToDbGeometry()) == true
-                                                            && m.LinkGeometry.Distance(accessLinkLine.ToDbGeometry()) <= 40
-                                                            && m.NetworkLinkType_GUID == networkRoadLinkType)
-                                                .Count();
-                                pathIntersectionCount = DataContext.NetworkLinks
-                                                .Where(m => m.LinkGeometry.Intersects(accessLinkLine.ToDbGeometry()) == true
-                                                            && m.LinkGeometry.Distance(accessLinkLine.ToDbGeometry()) <= 40
-                                                            && m.NetworkLinkType_GUID == networkPathLinkType)
-                                                .Count();
-                            }
-
-                            if (accessLinkLine == null || actualLengthMeter > 40 || pathIntersectionCount != 0 || roadIntersectionCount > 1)
-                            {
-                                var networkLinkRoad = DataContext.NetworkLinks
-                                    .Where(m => m.StreetName_GUID == streetName.ID
-                                                && m.NetworkLinkType_GUID == networkRoadLinkType
-                                                && m.NetworkLinkType_GUID == networkPathLinkType
-                                                && (operationalObjectPoint.Distance(m.LinkGeometry) <= 40))
-                                    .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
-                                    .FirstOrDefault();
-
-                                networkLinkGuid = networkLinkRoad.Id;
-
-                                accessLinkLine = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLinkRoad.LinkGeometry.ToSqlGeometry());
-                                actualLengthMeter = networkLinkRoad.LinkGeometry.Distance(operationalObjectPoint);
-                            }
-
-                            // Insert access link
-                            if (accessLinkLine != null && actualLengthMeter <= 40 && actualLengthMeter > 0)
-                            {
-                                // substract 66 % of Pavement Width(2) and 50 % of House depth(5) from actual length
-                                var workloadLengthMeter = actualLengthMeter - 7;
-                                var networkIntersectionPoint = accessLinkLine.STEndPoint();
-
-                                AccessLink accessLink = new AccessLink
-                                {
-                                    ID = Guid.NewGuid(),
-                                    OperationalObjectPoint = operationalObjectPoint,
-                                    NetworkIntersectionPoint = networkIntersectionPoint.ToDbGeometry(),
-                                    AccessLinkLine = accessLinkLine.ToDbGeometry(),
-                                    ActualLengthMeter = (decimal)actualLengthMeter,
-                                    WorkloadLengthMeter = (decimal)workloadLengthMeter,
-                                    Approved = true,
-                                    OperationalObject_GUID = operationalObjectId,
-                                    NetworkLink_GUID = networkLinkGuid
-                                };
-
-                                deliveryPoint.AccessLinkPresent = true;
-                                DataContext.AccessLinks.Add(accessLink);
-
-                                DataContext.SaveChanges();
-                            }
-                            else
-                            {
-                                string message = "Access link not created, no feature found";
-                            }
-                        }
-                        else
-                        {
-                            string message = "Operational object details insufficient";
-                        }
-
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                    }
-                }
-            }
-
-            return isAccessLinkCreated;
-        }
-        */
     }
 }

@@ -1,11 +1,28 @@
-<md-dialog aria-label="Delivery Point" class="mdDialog">
+<div ng-if="vm.isError" class="alertPopup" layout="column">
+    <div>
+        <h1>{{vm.errorMessageTitle}}</h1> 
+    </div>
+    <md-divider></md-divider>
+    <span flex></span>
+    <div layout="row">
+        {{vm.errorMessage}}
+    </div>
+    <span flex></span>
+    <div layout="row">
+        <md-button class="md-raised md-primary" ng-click="vm.Ok()" flex aria-label="Delivery Point">
+            Ok
+        </md-button>
+    </div>
+</div>
+
+<md-dialog ng-class="{'mdDialog overlay':vm.isError === true, 'mdDialog': vm.isError === false}" aria-label="Delivery Point">
     <form name="vm.deliveryPointForm">
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h2>Add Delivery Points</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-click="vm.closeWindow()">
-                    <i class="fa fa-times"   aria-hidden="true"></i>
+                <md-button class="md-icon-button" ng-disabled="vm.isDisable" ng-click="vm.closeWindow()" >
+                    <i class="fa fa-times" aria-hidden="true"></i>
                 </md-button>
             </div>
         </md-toolbar>
@@ -27,7 +44,7 @@
                         </div>
                     </md-virtual-repeat-container>
                 </div>               
-                <i class="fa fa-search searchInputIcon"    aria-hidden="true" flex></i>
+                <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
                 
                 <md-input-container flex="30" ng-show="vm.display">
                     <label>Not yet Built</label>
@@ -84,6 +101,7 @@
                     <md-input-container>
                         <label>DP Use<sub>*</sub></label>
                         <input type="text" disabled ng-model="vm.dpUse[0].displayText">
+
                     </md-input-container>
                 </div>
             </div>
@@ -220,7 +238,7 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40">
+            <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" ng-disabled="vm.isDisable">
                 Cancel
             </md-button>
             <span flex></span>

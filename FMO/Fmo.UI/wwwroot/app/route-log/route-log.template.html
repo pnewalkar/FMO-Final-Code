@@ -89,19 +89,19 @@
                         <table>
                             <tr>
                                 <td>Name</td>
-                                <td>{{::vm.routeDetails.routeName}}</td>
+                                <td>{{vm.routeDetails.routeName}}</td>
                             </tr>
                             <tr>
                                 <td>Route Number</td>
-                                <td>{{::vm.routeDetails.routeNumber}}</td>
+                                <td>{{vm.routeDetails.routeNumber}}</td>
                             </tr>
                             <tr>
                                 <td>Delivery Method</td>
-                                <td>{{::vm.routeDetails.method}}</td>
+                                <td>{{vm.routeDetails.method}}</td>
                             </tr>
                             <tr>
                                 <td>Total Time</td>
-                                <td>{{::vm.routeDetails.totaltime}}</td>
+                                <td>{{vm.routeDetails.totaltime}}</td>
                             </tr>
                             <tr>
                                 <td>Hazards</td>
@@ -113,15 +113,15 @@
                             </tr>
                             <tr>
                                 <td>Aliases<sub>*</sub></td>
-                                <td>{{::vm.routeDetails.aliases}}</td>
+                                <td>{{vm.routeDetails.aliases}}</td>
                             </tr>
                             <tr>
                                 <td>Blocks</td>
-                                <td>{{::vm.routeDetails.blocks}}</td>
+                                <td>{{vm.routeDetails.blocks}}</td>
                             </tr>
                             <tr>
                                 <td>Paired Route</td>
-                                <td>{{::vm.routeDetails.pairedRoute}}</td>
+                                <td>{{vm.routeDetails.pairedRoute}}</td>
                             </tr>
                         </table>
                     </div>
@@ -136,15 +136,15 @@
                             </tr>
                             <tr>
                                 <td>DPs</td>
-                                <td>{{::vm.routeDetails.dPs}}</td>
+                                <td>{{vm.routeDetails.dPs}}</td>
                             </tr>
                             <tr>
                                 <td>Business DPs</td>
-                                <td>{{::vm.routeDetails.businessDPs}}</td>
+                                <td>{{vm.routeDetails.businessDPs}}</td>
                             </tr>
                             <tr>
                                 <td>Residential DPs</td>
-                                <td>{{::vm.routeDetails.residentialDPs}}</td>
+                                <td>{{vm.routeDetails.residentialDPs}}</td>
                             </tr>
                         </table>
                     </div>
@@ -159,7 +159,7 @@
                 <md-checkbox></md-checkbox>
                 <p>Route Log Summary</p>
             </md-list-item>
-            <md-button class="md-raised routeGenerate" md-whiteframe="3dp">Generate</md-button>
+            <md-button class="md-raised routeGenerate" md-whiteframe="3dp" ng-disabled="true">Generate</md-button>
       </md-list>
     </md-dialog-content>
 </md-dialog>    

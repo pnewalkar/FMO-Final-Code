@@ -16,7 +16,7 @@ namespace Fmo.BusinessServices.Tests.Services
     public class AccessLinkBussinessServiceFixture : TestFixtureBase
     {
         private IAccessLinkBusinessService testCandidate;
-        private Mock<IReferenceDataCategoryRepository> referenceDataCategoryRepositoryMock;
+        private Mock<IReferenceDataBusinessService> referenceDataCategoryBusinessServiceMock;
         private Mock<IDeliveryPointsRepository> deliveryPointsRepositoryMock;
         private Mock<IStreetNetworkBusinessService> streetNetworkBusinessServiceMock;
         private Mock<IAccessLinkRepository> mockaccessLinkRepository;
@@ -44,8 +44,8 @@ namespace Fmo.BusinessServices.Tests.Services
             mockaccessLinkRepository = new Mock<IAccessLinkRepository>();
             mockaccessLinkRepository.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDTO>>);
 
-            referenceDataCategoryRepositoryMock = new Mock<IReferenceDataCategoryRepository>();
-            referenceDataCategoryRepositoryMock.Setup(x => x.GetReferenceDataCategoriesByCategoryNames(It.IsAny<List<string>>())).Returns(It.IsAny<List<ReferenceDataCategoryDTO>>());
+            referenceDataCategoryBusinessServiceMock = new Mock<IReferenceDataBusinessService>();
+            referenceDataCategoryBusinessServiceMock.Setup(x => x.GetReferenceDataCategoriesByCategoryNames(It.IsAny<List<string>>())).Returns(It.IsAny<List<ReferenceDataCategoryDTO>>());
 
             mockosroadLinkRepository = new Mock<IOSRoadLinkRepository>();
             mockosroadLinkRepository.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).Returns(It.IsAny<string>());
@@ -54,7 +54,7 @@ namespace Fmo.BusinessServices.Tests.Services
             streetNetworkBusinessServiceMock = new Mock<IStreetNetworkBusinessService>();
             loggingHelperMock = new Mock<ILoggingHelper>();
 
-            testCandidate = new AccessLinkBusinessService(mockaccessLinkRepository.Object, referenceDataCategoryRepositoryMock.Object, deliveryPointsRepositoryMock.Object, streetNetworkBusinessServiceMock.Object, loggingHelperMock.Object, mockosroadLinkRepository.Object);
+            testCandidate = new AccessLinkBusinessService(mockaccessLinkRepository.Object, referenceDataCategoryBusinessServiceMock.Object, deliveryPointsRepositoryMock.Object, streetNetworkBusinessServiceMock.Object, loggingHelperMock.Object, mockosroadLinkRepository.Object);
         }
     }
 }

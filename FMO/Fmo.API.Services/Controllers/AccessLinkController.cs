@@ -1,6 +1,7 @@
 ﻿using System;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
+using Fmo.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,6 +43,17 @@ namespace Fmo.API.Services.Controllers
         public bool CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
             return accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
+        }
+
+        /// <summary>
+        /// This method is used to create manual Access Link .
+        /// </summary>
+        ///<param name="accessLinkDto">access link object to be stored</param>
+        /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
+        [HttpPost("Create")]
+        public bool CreateManualAccessLink([FromBody]AccessLinkDTO accessLinkDto)
+        {
+            return accessLinkBussinessService.CreateAccessLink(accessLinkDto);
         }
     }
 }

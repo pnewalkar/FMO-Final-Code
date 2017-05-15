@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Fmo.Common.Constants;
 using Fmo.Common.SqlGeometryExtension;
 using Fmo.DataServices.DBContext;
@@ -253,6 +254,25 @@ namespace Fmo.DataServices.Repositories
             }
 
             return new Tuple<NetworkLinkDTO, SqlGeometry>(networkLinkRoad, networkIntersectionPoint);
+        }
+
+        /// <summary>
+        /// Get the street DTO for operational object.
+        /// </summary>
+        /// <param name="networkLinkID">networkLink unique identifier Guid.</param>
+        /// <returns>NetworkLink object.</returns>
+        public NetworkLinkDTO GetNetworkLink(Guid networkLinkID)
+        {
+            var networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => x.Id == networkLinkID).SingleOrDefault();
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<NetworkLink, NetworkLinkDTO>();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            var networkLinkDTO = Mapper.Map<NetworkLink, NetworkLinkDTO>(networkLink);
+
+            return networkLinkDTO;
         }
     }
 }
