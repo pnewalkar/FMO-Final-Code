@@ -142,7 +142,7 @@ namespace Fmo.DataServices.Repositories
         /// <param name="streetName">Street name.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoadForOperationalObject(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
             NetworkLinkDTO networkLink = null;
@@ -179,7 +179,8 @@ namespace Fmo.DataServices.Repositories
                    {
                        Id = l.Id,
                        LinkGeometry = l.LinkGeometry,
-                       NetworkLinkType_GUID = l.NetworkLinkType_GUID
+                       NetworkLinkType_GUID = l.NetworkLinkType_GUID,
+                       TOID = l.TOID
                    }).FirstOrDefault();
 
                 if (networkLink != null)
@@ -213,12 +214,12 @@ namespace Fmo.DataServices.Repositories
         }
 
         /// <summary>
-        /// Get the nearest street for operational object.
+        /// Get the nearest segment for operational object.
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestRoadForOperationalObject(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
 
@@ -236,7 +237,8 @@ namespace Fmo.DataServices.Repositories
                 {
                     Id = l.Id,
                     LinkGeometry = l.LinkGeometry,
-                    NetworkLinkType_GUID = l.NetworkLinkType_GUID
+                    NetworkLinkType_GUID = l.NetworkLinkType_GUID,
+                    TOID = l.TOID
                 }).FirstOrDefault();
 
             if (networkLinkRoad != null)
