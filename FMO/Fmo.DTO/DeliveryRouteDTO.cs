@@ -59,6 +59,6 @@ namespace Fmo.DTO
         public string AccelarationIn { get; set; }
         public string AccelarationOut { get; set; }
         public string PairedRoute { get; set; }
-        public decimal? Totaltime { get; set; }
+        public string Totaltime { get; set; }
     }
 }
