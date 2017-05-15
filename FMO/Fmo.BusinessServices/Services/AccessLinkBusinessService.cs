@@ -24,20 +24,20 @@ namespace Fmo.BusinessServices.Services
     {
         private IAccessLinkRepository accessLinkRepository = default(IAccessLinkRepository);
         private IOSRoadLinkRepository osroadLinkRepository;
-        private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
+        private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public AccessLinkBusinessService(IAccessLinkRepository accessLinkRepository,
-            IReferenceDataCategoryRepository referenceDataCategoryRepository,
+            IReferenceDataBusinessService referenceDataBusinessService,
             IDeliveryPointsRepository deliveryPointsRepository,
             IStreetNetworkBusinessService streetNetworkBusinessService,
             ILoggingHelper loggingHelper,
             IOSRoadLinkRepository osroadLinkRepository)
         {
             this.accessLinkRepository = accessLinkRepository;
-            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
+            this.referenceDataBusinessService = referenceDataBusinessService;
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.streetNetworkBusinessService = streetNetworkBusinessService;
             this.loggingHelper = loggingHelper;
@@ -99,7 +99,7 @@ namespace Fmo.BusinessServices.Services
                 DbGeometry operationalObjectPoint = default(DbGeometry);
                 string roadName = string.Empty;
                 var referenceDataCategoryList =
-                    referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+                    referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
                 // Get details for the OO
                 if (referenceDataCategoryList

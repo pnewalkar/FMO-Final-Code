@@ -589,18 +589,12 @@
         /// <returns>bool</returns>
         public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            bool isPostalAddressInserted = false;
             bool isAddressLocationAvailable = false;
             Guid returnGuid = new Guid(Constants.DEFAULTGUID);
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
-                var objPostalAddress = DataContext.PostalAddresses.Where(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID).SingleOrDefault();
-                var objAddressLocation = DataContext.AddressLocations.Where(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN).SingleOrDefault();
-
-                if (objAddressLocation != null)
-                {
-                    isAddressLocationAvailable = true;
-                }
+                var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID);
+                var objAddressLocation = DataContext.AddressLocations.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
 
                 DeliveryPoint objDeliveryPoint = new DeliveryPoint()
                 {
@@ -611,55 +605,49 @@
                     MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
                 };
 
-                if (isAddressLocationAvailable)
+                if (objAddressLocation != null)
                 {
                     objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
                     objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
                     objDeliveryPoint.Longitude = objAddressLocation.Longitude;
+                    objDeliveryPoint.Positioned = true;
+                    isAddressLocationAvailable = true;
                 }
 
-                try
+                addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
+                addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
+                if (objPostalAddress != null)
                 {
-                    addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
-                    addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
-                    if (objPostalAddress != null)
-                    {
-                        objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
-                        objPostalAddress.PostTown = addDeliveryPointDTO.PostalAddressDTO.PostTown;
-                        objPostalAddress.DependentLocality = addDeliveryPointDTO.PostalAddressDTO.DependentLocality;
-                        objPostalAddress.DoubleDependentLocality = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
-                        objPostalAddress.Thoroughfare = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
-                        objPostalAddress.DependentThoroughfare = addDeliveryPointDTO.PostalAddressDTO.DependentThoroughfare;
-                        objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
-                        objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
-                        objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;
-                        objPostalAddress.POBoxNumber = addDeliveryPointDTO.PostalAddressDTO.POBoxNumber;
-                        objPostalAddress.DepartmentName = addDeliveryPointDTO.PostalAddressDTO.DepartmentName;
-                        objPostalAddress.OrganisationName = addDeliveryPointDTO.PostalAddressDTO.OrganisationName;
-                        objPostalAddress.UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN;
-                        objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDTO.PostcodeType;
-                        objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
-                        objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
-                        objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
-                        objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
-                        objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
-                    }
-                    else
-                    {
-                        addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
-                        var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(addDeliveryPointDTO.PostalAddressDTO);
-                        entity.DeliveryPoints.Add(objDeliveryPoint);
-                        DataContext.PostalAddresses.Add(entity);
-                    }
+                    objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
+                    objPostalAddress.PostTown = addDeliveryPointDTO.PostalAddressDTO.PostTown;
+                    objPostalAddress.DependentLocality = addDeliveryPointDTO.PostalAddressDTO.DependentLocality;
+                    objPostalAddress.DoubleDependentLocality = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
+                    objPostalAddress.Thoroughfare = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
+                    objPostalAddress.DependentThoroughfare = addDeliveryPointDTO.PostalAddressDTO.DependentThoroughfare;
+                    objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
+                    objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
+                    objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;
+                    objPostalAddress.POBoxNumber = addDeliveryPointDTO.PostalAddressDTO.POBoxNumber;
+                    objPostalAddress.DepartmentName = addDeliveryPointDTO.PostalAddressDTO.DepartmentName;
+                    objPostalAddress.OrganisationName = addDeliveryPointDTO.PostalAddressDTO.OrganisationName;
+                    objPostalAddress.UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN;
+                    objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDTO.PostcodeType;
+                    objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
+                    objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
+                    objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
+                    objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
+                    objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
+                }
+                else
+                {
+                    addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
+                    var entity = GenericMapper.Map<PostalAddressDTO, PostalAddress>(addDeliveryPointDTO.PostalAddressDTO);
+                    entity.DeliveryPoints.Add(objDeliveryPoint);
+                    DataContext.PostalAddresses.Add(entity);
+                }
 
-                    DataContext.SaveChanges();
-                    isPostalAddressInserted = true;
-                    returnGuid = objDeliveryPoint.ID;
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                DataContext.SaveChanges();
+                returnGuid = objDeliveryPoint.ID;
             }
 
             return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable };
