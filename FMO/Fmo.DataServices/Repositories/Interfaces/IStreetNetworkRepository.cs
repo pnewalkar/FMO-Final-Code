@@ -52,5 +52,12 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and intersection point.</returns>
         Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
+
+        /// <summary>
+        /// Get the street DTO for operational object.
+        /// </summary>
+        /// <param name="networkLinkID">networkLink unique identifier Guid.</param>
+        /// <returns>Nearest street and the intersection point.</returns>
+        NetworkLinkDTO GetNetworkLink(Guid networkLinkID);
     }
 }

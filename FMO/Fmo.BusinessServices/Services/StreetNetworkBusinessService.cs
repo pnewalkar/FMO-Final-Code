@@ -90,5 +90,15 @@ namespace Fmo.BusinessServices.Services
 
             return streetNetworkRepository.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
         }
+
+        /// <summary>
+        /// Get the street DTO for operational object.
+        /// </summary>
+        /// <param name="networkLinkID">networkLink unique identifier Guid.</param>
+        /// <returns>Nearest street and the intersection point.</returns>
+        public NetworkLinkDTO GetNetworkLink(Guid networkLinkID)
+        {
+            return streetNetworkRepository.GetNetworkLink(networkLinkID);
+        }
     }
 }
