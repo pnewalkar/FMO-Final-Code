@@ -80,7 +80,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
     deliveryPointApiService.UpdateDeliverypoint = function (deliveryPointModelDTO) {
         var deferred = $q.defer();
 
-        $http.post(GlobalSettings.apiUrl + '/deliveryPoints/UpdateDeliveryPoint/', deliveryPointModelDTO).success(function (response) {
+        $http.put(GlobalSettings.apiUrl + '/deliveryPoints/UpdateDeliveryPoint/', deliveryPointModelDTO).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

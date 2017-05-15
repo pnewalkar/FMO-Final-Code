@@ -81,7 +81,6 @@ namespace Fmo.BusinessServices.Services
             bool isAccessLinkCreated = false;
             try
             {
-                // TODO: Move all the reference data service calls to respective service.
                 object operationalObject = new object();
 
                 List<string> categoryNames = new List<string>
@@ -194,14 +193,13 @@ namespace Fmo.BusinessServices.Services
                     accessLinkDto.NetworkLink_GUID = networkLink.Id;
                     accessLinkDto.OperationalObjectPoint = operationalObjectPoint;
                     accessLinkDto.OperationalObject_GUID = operationalObjectId;
+                    accessLinkDto.OperationalObjectType_GUID = operationObjectTypeId;
                     accessLinkDto.Approved = accessLinkApproved;
                     if (referenceDataCategoryList
                       .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                       .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
                     {
                         DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
-
-                        // TODO: calculate access link work length here
                         accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, actualLength, networkLink, referenceDataCategoryList));
                     }
 

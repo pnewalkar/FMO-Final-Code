@@ -32,7 +32,6 @@ function DeliveryPointController(
     $stateParams
 ) {
     var vm = this;
-    debugger;
     vm.resultSet = resultSet;
     vm.querySearch = querySearch;
     vm.deliveryPoint = deliveryPoint;
@@ -119,7 +118,7 @@ function DeliveryPointController(
                 $scope.$emit('mapToolChange', {
                     "name": 'select', "shape": shape, "enabled": true
                 });
-                accessLink();
+               // accessLink();
             }
         }, function () {
         });
