@@ -32,7 +32,6 @@ function DeliveryPointController(
     $stateParams
 ) {
     var vm = this;
-    debugger;
     vm.resultSet = resultSet;
     vm.querySearch = querySearch;
     vm.deliveryPoint = deliveryPoint;
@@ -71,6 +70,10 @@ function DeliveryPointController(
     vm.positionedThirdPartyDeliveryPointList = $stateParams.positionedThirdPartyDeliveryPointList;
     vm.positionedThirdPartyDeliveryPoint = [];
     vm.accessLink = accessLink;
+    vm.isError = false;
+    vm.test = test;
+    vm.Ok = Ok;
+    vm.isDisable = false;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
@@ -185,9 +188,14 @@ function DeliveryPointController(
             }
             else {
 
-                vm.errorMessageDisplay = true;
-                vm.errorMessage = response.message;
-                errorAlert();
+                //vm.errorMessageDisplay = true;
+                //vm.errorMessage = response.message;
+                //errorAlert();
+                vm.isError = true;
+                vm.isDisable = true;
+                vm.errorMessage = "One or more address in the given range already exists";
+                vm.errorMessageTitle = "Duplicates found";
+
             }
         });
 
@@ -488,5 +496,17 @@ function DeliveryPointController(
           debugger;
           //vm.contextTitle = "Delivery Point";
           $state.go("deliveryPoint");
+      }
+
+      function test() {
+          vm.isError = true;
+          vm.isDisable = true;
+          vm.errorMessage = "One or more address in the given range already exists";
+          vm.errorMessageTitle = "Duplicates found";
+      }
+
+      function Ok() {
+          vm.isError = false;
+          vm.isDisable = false;
       }
 };
