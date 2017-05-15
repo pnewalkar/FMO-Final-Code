@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Fmo.BusinessServices.Interfaces;
+﻿using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
 using Fmo.DTO;
@@ -76,7 +75,6 @@ namespace Fmo.API.Services.Controllers
         {
             return businessService.CreateDeliveryPoint(deliveryPointDto);
         }
-
 
         /// <summary>
         /// Update delivery point

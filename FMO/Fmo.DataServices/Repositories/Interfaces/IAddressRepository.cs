@@ -69,10 +69,10 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <summary>
         /// Get Postal Address based on postcode
         /// </summary>
-        /// <param name="postCode">postCode</param>
+        /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<List<PostalAddressDTO>> GetPostalAddressDetails(string postCode, Guid unitGuid);
+        Task<List<PostalAddressDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
 
         /// <summary>
         /// Get Postal Address based on postal address id.
