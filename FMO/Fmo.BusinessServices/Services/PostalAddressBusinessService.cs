@@ -12,6 +12,7 @@ using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 using Fmo.DTO.UIDropdowns;
 
 namespace Fmo.BusinessServices.Services
@@ -214,8 +215,9 @@ namespace Fmo.BusinessServices.Services
             {
                 return await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.loggingHelper.LogError(ex);
                 throw;
             }
             finally
@@ -227,10 +229,10 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Filter PostalAddress based on the post code
         /// </summary>
-        /// <param name="postCode">postCode</param>
+        /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        public async Task<PostalAddressDTO> GetPostalAddressDetails(string postCode, Guid unitGuid)
+        public async Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
@@ -239,7 +241,7 @@ namespace Fmo.BusinessServices.Services
             {
                 List<BindingEntity> nybDetails = new List<BindingEntity>();
                 PostalAddressDTO postalAddressDto = null;
-                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(postCode, unitGuid);
+                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(selectedItem, unitGuid);
                 Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
                 if (postalAddressDetails != null && postalAddressDetails.Count > 0)
                 {
@@ -260,7 +262,7 @@ namespace Fmo.BusinessServices.Services
 
                 return postalAddressDto;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -292,6 +294,62 @@ namespace Fmo.BusinessServices.Services
             finally
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+        }
+
+        /// <summary>
+        /// This method is used to check Duplicate NYB records
+        /// </summary>
+        /// <param name="objPostalAddress">PostalAddressDTO as input</param>
+        /// <returns>string</returns>
+        public string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        {
+            try
+            {
+                string postCode = string.Empty;
+                postCode = addressRepository.CheckForDuplicateNybRecords(objPostalAddress);
+                return postCode;
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogInfo(ex.ToString());
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to check for Duplicate Address with Delivery Points.
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Addess Dto as input</param>
+        /// <returns>bool</returns>
+        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        {
+            try
+            {
+                return addressRepository.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogInfo(ex.ToString());
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Create delivery point for PAF and NYB details
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+       public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        {
+            try
+            {
+                return addressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.LogInfo(ex.ToString());
+                throw ex;
             }
         }
 

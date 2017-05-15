@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -42,10 +43,10 @@ namespace Fmo.BusinessServices.Interfaces
         /// <summary>
         /// Get Postal Address based on postcode
         /// </summary>
-        /// <param name="postCode">postCode</param>
+        /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<PostalAddressDTO> GetPostalAddressDetails(string postCode, Guid unitGuid);
+        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
 
         /// <summary>
         /// Get Postal Address based on postal address id.
@@ -53,5 +54,26 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="id">id</param>
         /// <returns>Postal Address DTO</returns>
         PostalAddressDTO GetPostalAddressDetails(Guid id);
+
+        /// <summary>
+        /// This method is used to check Duplicate NYB records
+        /// </summary>
+        /// <param name="objPostalAddress">objPostalAddress as input</param>
+        /// <returns>string</returns>
+        string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
+
+        /// <summary>
+        /// This method is used to check for Duplicate Address with Delivery Points.
+        /// </summary>
+        /// <param name="objPostalAddress">Postal Addess Dto as input</param>
+        /// <returns>bool</returns>
+        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
+
+        /// <summary>
+        /// This method is used to Create Address and Delivery Point.
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">AddDeliveryPointDTO as input</param>
+        /// <returns>CreateDeliveryPointModelDTO</returns>
+        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
     }
 }

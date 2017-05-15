@@ -61,9 +61,9 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("GetAddressByPostCode")]
        // [HttpGet("postaladdress/filter/{postcode: string}")]
-        public async Task<PostalAddressDTO> GetAddressByPostCode(string postCode)
+        public async Task<PostalAddressDTO> GetAddressByPostCode(string selectedItem)
         {
-            return await businessService.GetPostalAddressDetails(postCode, CurrentUserUnit);
+            return await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
         }
 
         /// <summary>
