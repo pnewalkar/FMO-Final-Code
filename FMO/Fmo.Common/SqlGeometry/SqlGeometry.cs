@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
+﻿using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 
 namespace Fmo.Common.SqlGeometryExtension
@@ -18,7 +13,7 @@ namespace Fmo.Common.SqlGeometryExtension
 
         public static SqlGeometry ToSqlGeometry(this DbGeometry dbGeometry)
         {
-            return SqlGeometry.STGeomFromWKB(new SqlBytes(dbGeometry.AsBinary()), dbGeometry.CoordinateSystemId);
+            return SqlGeometry.STGeomFromWKB(new SqlBytes(dbGeometry.AsBinary()), Constants.Constants.BNGCOORDINATESYSTEM);
         }
     }
 }
