@@ -121,7 +121,7 @@ function DeliveryPointController(
                 $scope.$emit('mapToolChange', {
                     "name": 'select', "shape": shape, "enabled": true
                 });
-                accessLink();
+               // accessLink();
             }
         }, function () {
         });

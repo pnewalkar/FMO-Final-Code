@@ -160,13 +160,14 @@ namespace Fmo.DataServices.Repositories
                                                RouteNumber = dr.RouteNumber,
                                                ScenarioName = sr.ScenarioName,
                                                MethodReferenceGuid = dr.RouteMethodType_GUID,
-                                               Totaltime = dr.TravelOutTimeMin - dr.TravelInTimeMin,
+                                               Totaltime = Math.Abs(dr.TravelOutTimeMin.Value - dr.TravelInTimeMin.Value).ToString(),
                                                TravelOutTransportType_GUID = dr.TravelOutTransportType_GUID,
                                                TravelInTransportType_GUID = dr.TravelInTransportType_GUID
                                            }).SingleOrDefaultAsync();
 
             if (deliveryRoutesDto != null)
             {
+                deliveryRoutesDto.Totaltime = ConvertToMinutes(Convert.ToDouble(deliveryRoutesDto.Totaltime));
                 var methodType = referenceDataDeliveryMethodTypes
                     .SingleOrDefault(x => x.ID == deliveryRoutesDto.MethodReferenceGuid);
                 if (methodType != null)
@@ -404,6 +405,17 @@ namespace Fmo.DataServices.Repositories
             }
 
             return pairedRoute;
+        }
+
+        /// <summary>
+        /// Convert hours in minutes
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns>string</returns>
+        private string ConvertToMinutes(double value)
+        {
+            TimeSpan timeSpan = TimeSpan.FromMinutes(value);
+            return timeSpan.ToString(@"h\:mm") + " mins";
         }
 
         #endregion Private Methods
