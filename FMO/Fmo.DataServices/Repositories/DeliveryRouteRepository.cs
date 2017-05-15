@@ -153,62 +153,53 @@ namespace Fmo.DataServices.Repositories
 
             var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
                                            join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                           where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit &&
-                                                 dr.RouteMethodType_GUID == sharedDeliveryRouteMethodTypeGuid
+                                           where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit
                                            select new DeliveryRouteDTO
                                            {
                                                RouteName = dr.RouteName,
                                                RouteNumber = dr.RouteNumber,
                                                ScenarioName = sr.ScenarioName,
                                                MethodReferenceGuid = dr.RouteMethodType_GUID,
-                                               Totaltime = dr.TravelOutTimeMin - dr.TravelOutTimeMin,
+                                               Totaltime = dr.TravelOutTimeMin - dr.TravelInTimeMin,
                                                TravelOutTransportType_GUID = dr.TravelOutTransportType_GUID,
                                                TravelInTransportType_GUID = dr.TravelInTransportType_GUID
                                            }).SingleOrDefaultAsync();
 
-            var methodType = referenceDataDeliveryMethodTypes
-                .SingleOrDefault(x => x.ID == deliveryRoutesDto.MethodReferenceGuid);
-            if (methodType != null)
+            if (deliveryRoutesDto != null)
             {
-                deliveryRoutesDto.Method = methodType.ReferenceDataValue;
+                var methodType = referenceDataDeliveryMethodTypes
+                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.MethodReferenceGuid);
+                if (methodType != null)
+                {
+                    deliveryRoutesDto.Method = methodType.ReferenceDataValue;
+                }
+
+                var travelInType = referenceDataDeliveryMethodTypes
+                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelInTransportType_GUID);
+                if (travelInType != null)
+                {
+                    deliveryRoutesDto.AccelarationIn = travelInType.ReferenceDataValue;
+                }
+
+                var travelOutType = referenceDataDeliveryMethodTypes
+                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelOutTransportType_GUID);
+                if (travelOutType != null)
+                {
+                    deliveryRoutesDto.AccelarationOut = travelOutType.ReferenceDataValue;
+                }
             }
 
-            var travelInType = referenceDataDeliveryMethodTypes
-                .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelInTransportType_GUID);
-            if (travelInType != null)
-            {
-                deliveryRoutesDto.AccelarationIn = travelInType.ReferenceDataValue;
-            }
-
-            var travelOutType = referenceDataDeliveryMethodTypes
-                .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelOutTransportType_GUID);
-            if (travelOutType != null)
-            {
-                deliveryRoutesDto.AccelarationOut = travelOutType.ReferenceDataValue;
-            }
-
-            Task<int> taskAliases = GetAliases(deliveryRouteId, operationalObjectTypeForDp, userUnit);
-            Task<int> taskBlocks = GetNumberOfBlocks(deliveryRouteId, userUnit);
-            Task<int> taskNumberOfDPs = GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp, userUnit);
-            Task<int> taskBusinessDPs =
-                GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation, userUnit);
-            Task<int> taskResidentialDPs =
-                GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential, userUnit);
-            Task<string> pairedRoutes = GetPairedRoutesByRouteID(deliveryRouteId, sharedDeliveryRouteMethodTypeGuid,
-                operationalObjectTypeForDp, userUnit);
-
-            Task.WaitAll(taskAliases, taskBlocks, taskNumberOfDPs, taskBusinessDPs, taskResidentialDPs, pairedRoutes);
             if (deliveryRoutesDto == null)
             {
                 deliveryRoutesDto = new DeliveryRouteDTO();
             }
 
-            deliveryRoutesDto.Aliases = taskAliases.Result;
-            deliveryRoutesDto.Blocks = taskBlocks.Result;
-            deliveryRoutesDto.DPs = taskNumberOfDPs.Result;
-            deliveryRoutesDto.BusinessDPs = taskBusinessDPs.Result;
-            deliveryRoutesDto.ResidentialDPs = taskResidentialDPs.Result;
-            deliveryRoutesDto.PairedRoute = pairedRoutes.Result;
+            deliveryRoutesDto.Aliases = await GetAliases(deliveryRouteId, operationalObjectTypeForDp, userUnit);
+            deliveryRoutesDto.Blocks = await GetNumberOfBlocks(deliveryRouteId, userUnit);
+            deliveryRoutesDto.DPs = await GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp, userUnit);
+            deliveryRoutesDto.BusinessDPs = await GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation, userUnit);
+            deliveryRoutesDto.ResidentialDPs = await GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential, userUnit);
+            deliveryRoutesDto.PairedRoute = await GetPairedRoutesByRouteID(deliveryRouteId, sharedDeliveryRouteMethodTypeGuid, operationalObjectTypeForDp, userUnit);
 
             return deliveryRoutesDto;
         }

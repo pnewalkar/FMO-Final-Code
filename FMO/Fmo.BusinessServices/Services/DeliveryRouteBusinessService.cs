@@ -122,22 +122,29 @@ namespace Fmo.BusinessServices.Services
         /// </returns>
         public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid)
         {
-            // TODO: Move this to resource file
-            List<string> categoryNames = new List<string>
+            try
+            {
+                // TODO: Move this to resource file
+                List<string> categoryNames = new List<string>
             {
                 ReferenceDataCategoryNames.DeliveryPointUseIndicator,
                 ReferenceDataCategoryNames.OperationalObjectType,
                 ReferenceDataCategoryNames.DeliveryRouteMethodType
             };
 
-            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+                var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
-            var referenceDataDeliveryMethodTypes =
-                referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryRouteMethodType)
-                    .SelectMany(x => x.ReferenceDatas).ToList();
+                var referenceDataDeliveryMethodTypes =
+                    referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryRouteMethodType)
+                        .SelectMany(x => x.ReferenceDatas).ToList();
 
-            var deliveryRouteDto = await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
-            return deliveryRouteDto;
+                var deliveryRouteDto = await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
+                return deliveryRouteDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit)
