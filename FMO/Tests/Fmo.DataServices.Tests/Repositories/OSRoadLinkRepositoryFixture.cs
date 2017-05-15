@@ -18,16 +18,9 @@ namespace Fmo.DataServices.Tests.Repositories
         private IOSRoadLinkRepository testCandidate;
 
         [Test]
-        public void Test_GetDeliveryPointRowVersion()
+        public void Test_GetOSRoadLink()
         {
             var actualResult = testCandidate.GetOSRoadLink("123");
-            Assert.IsNotNull(actualResult);
-        }
-
-        [Test]
-        public void Test_GetDeliveryPointRowVersion_Null()
-        {
-            var actualResult = testCandidate.GetOSRoadLink(null);
             Assert.IsNotNull(actualResult);
         }
 
