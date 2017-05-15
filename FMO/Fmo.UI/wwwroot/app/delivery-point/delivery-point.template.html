@@ -84,7 +84,7 @@
 
                 <md-input-container flex="30">
                     <label>Route</label>
-                    <md-select name="route" ng-model="vm.postalAddressData.route" select-clear required> 
+                    <md-select name="route" ng-model="vm.postalAddressData.route" select-clear md-selected-text="vm.getSelectedText()" required> 
                         <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
