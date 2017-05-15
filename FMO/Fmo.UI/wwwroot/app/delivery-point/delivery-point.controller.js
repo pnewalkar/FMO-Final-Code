@@ -63,7 +63,7 @@ function DeliveryPointController(
 
     vm.errorAlert = errorAlert;
     vm.opendeliveryPoint = opendeliveryPoint;
-    
+
 
     vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList;
     vm.createDeliveryPoint = createDeliveryPoint;
@@ -293,7 +293,7 @@ function DeliveryPointController(
 
 
     function getPostalAddress(selectedItem) {
-       
+
         deliveryPointApiService.GetAddressByPostCode(selectedItem).then(function (response) {
             vm.nybaddress = "";
             vm.postalAddressData = response;
@@ -322,7 +322,7 @@ function DeliveryPointController(
     function OnChangeItem(selectedItem) {
         if (selectedItem) {
             vm.postalAddressData = {};
-            vm.notyetBuilt="";
+            vm.notyetBuilt = "";
             vm.searchText = selectedItem;
             vm.postalAddressData = {};
             getPostalAddress(selectedItem);
@@ -372,7 +372,7 @@ function DeliveryPointController(
                .then(function (response) {
                    vm.nybaddress = response;
                    vm.dpUse = null;
-                   if (vm.notyetBuilt !== '00000000-0000-0000-0000-000000000000') {
+                   if (vm.notyetBuilt !== vm.defaultNYBValue) {
                        if (!(vm.nybaddress.organisationName)) {
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                                displayText: "Residential"
@@ -387,8 +387,8 @@ function DeliveryPointController(
                });
     }
 
-    function setOrganisation(val) {
-        if (val) {
+    function setOrganisation() {
+        if (vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !="") {
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                 displayText: "Commercial"
             });
@@ -457,7 +457,7 @@ function DeliveryPointController(
     function accessLink(selectedDeliveryUnit) {
         vm.contextTitle = "Access Link";
         $state.go("accessLink");
- }
+    }
 
     function getCommaSeparatedVale(value1, value2) {
         if (value1 && value2) {
@@ -480,13 +480,13 @@ function DeliveryPointController(
             .textContent('Duplicates of Delivery Point Found.')
             .ariaLabel('Left to right demo')
             .ok('Ok')
-         
-            
+
+
 
         $mdDialog.show(confirm).then(function () {
             preserveScope: true
-           
-            
+
+
             deliveryPoint();
         }, function () {
         });

@@ -17,7 +17,6 @@
     using Common.Enums;
     using Common.ExceptionManagement;
     using Fmo.Common.ConfigurationManagement;
-    using Fmo.Common.EmailManagement;
     using Fmo.Common.Interface;
     using Fmo.Common.LoggingManagement;
     using Fmo.DataServices.DBContext;
@@ -95,7 +94,6 @@
                 kernel.Bind<IPAFLoader>().To<PAFLoader>();
                 kernel.Bind<IUSRLoader>().To<USRLoader>();
                 kernel.Bind<IExceptionHelper>().To<ExceptionHelper>();
-                kernel.Bind<IEmailHelper>().To<EmailHelper>();
                 kernel.Bind<IFileProcessingLogRepository>().To<FileProcessingLogRepository>();
                 kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
                 kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();

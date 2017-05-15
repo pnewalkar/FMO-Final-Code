@@ -15,12 +15,12 @@ namespace Fmo.BusinessServices.Services
     public class StreetNetworkBusinessService : IStreetNetworkBusinessService
     {
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
-        private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
+        private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
 
-        public StreetNetworkBusinessService(IStreetNetworkRepository streetNetworkRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository)
+        public StreetNetworkBusinessService(IStreetNetworkRepository streetNetworkRepository, IReferenceDataBusinessService referenceDataBusinessService)
         {
             this.streetNetworkRepository = streetNetworkRepository;
-            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
+            this.referenceDataBusinessService = referenceDataBusinessService;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Fmo.BusinessServices.Services
             {
                 ReferenceDataCategoryNames.NetworkLinkType
             };
-            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+            var referenceDataCategoryList = referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
             return streetNetworkRepository.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
         }
@@ -86,7 +86,7 @@ namespace Fmo.BusinessServices.Services
             {
                ReferenceDataCategoryNames.NetworkLinkType
             };
-            var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+            var referenceDataCategoryList = referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
             return streetNetworkRepository.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
         }
