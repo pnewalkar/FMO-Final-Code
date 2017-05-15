@@ -8,12 +8,12 @@ namespace Fmo.Common.SqlGeometryExtension
     {
         public static DbGeometry ToDbGeometry(this SqlGeometry sqlGeometry)
         {
-            return DbGeometry.FromBinary(sqlGeometry.STAsBinary().Buffer);
+            return DbGeometry.FromBinary(sqlGeometry.STAsBinary().Buffer, (int)sqlGeometry.STSrid);
         }
 
         public static SqlGeometry ToSqlGeometry(this DbGeometry dbGeometry)
         {
-            return SqlGeometry.STGeomFromWKB(new SqlBytes(dbGeometry.AsBinary()), Constants.Constants.BNGCOORDINATESYSTEM);
+            return SqlGeometry.STGeomFromWKB(new SqlBytes(dbGeometry.AsBinary()), dbGeometry.CoordinateSystemId);
         }
     }
 }
