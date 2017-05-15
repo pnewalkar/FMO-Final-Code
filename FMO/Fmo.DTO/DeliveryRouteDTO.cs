@@ -34,7 +34,14 @@ namespace Fmo.DTO
         {
             get
             {
-                return "(" + RouteNumber.Trim() + ")" + RouteName;
+                if (!string.IsNullOrEmpty(RouteNumber) && !string.IsNullOrEmpty(RouteName))
+                {
+                    return "(" + RouteNumber.Trim() + ")" + RouteName;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
         }
 

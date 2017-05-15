@@ -127,7 +127,8 @@
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object, mockReferenceDataCategoryRepository.Object);
+            //testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object, mockReferenceDataCategoryRepository.Object);
+            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object);
         }
 
         protected void SetUp()
@@ -166,7 +167,7 @@
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object, mockReferenceDataCategoryRepository.Object);
+            testCandidate = new DeliveryRouteRepository(mockDatabaseFactory.Object);
         }
     }
 }
