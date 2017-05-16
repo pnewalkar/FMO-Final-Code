@@ -1,6 +1,6 @@
 <div ng-if="vm.isError" class="alertPopup" layout="column">
     <div>
-        <h1>{{vm.errorMessageTitle}}</h1> 
+        <h1>{{vm.errorMessageTitle}}</h1>
     </div>
     <md-divider></md-divider>
     <span flex></span>
@@ -21,7 +21,7 @@
             <div class="md-toolbar-tools">
                 <h2>Add Delivery Points</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-disabled="vm.isDisable" ng-click="vm.closeWindow()" >
+                <md-button class="md-icon-button" ng-disabled="vm.isDisable" ng-click="vm.closeWindow()">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </md-button>
             </div>
@@ -43,10 +43,10 @@
                             </ul>
                         </div>
                     </md-virtual-repeat-container>
-                </div>               
+                </div>
                 <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
-                
-                <md-input-container flex="30" ng-show="vm.display">
+
+                <md-input-container flex="30" ng-show="vm.display" ng-class="{'disabledText':vm.postalAddressData.nybAddressDetails.length==1}">
                     <label>Not yet Built</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
                         <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
@@ -84,7 +84,7 @@
 
                 <md-input-container flex="30">
                     <label>Route</label>
-                    <md-select name="route" ng-model="vm.postalAddressData.route" select-clear required> 
+                    <md-select name="route" ng-model="vm.postalAddressData.route" select-clear required>
                         <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
@@ -125,7 +125,7 @@
                         <div layout="row">
                             <md-input-container flex="45">
                                 <label>Building Number</label>
-                                <input name="buildingNumber" ng-model="vm.nybaddress.buildingNumber"  ng-blur="vm.setOrganisation()" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
+                                <input name="buildingNumber" ng-model="vm.nybaddress.buildingNumber" ng-blur="vm.setOrganisation()" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
                                        ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.buildingNumber.$error"
                                      ng-show="vm.deliveryPointForm.buildingNumber.$touched" role="alert">
@@ -171,7 +171,7 @@
                         <div layout="row">
                             <md-input-container flex="45">
                                 <label>Department Name</label>
-                                <input ng-model="vm.nybaddress.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
+                                <input ng-model="vm.nybaddress.departmentName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
@@ -242,7 +242,7 @@
                 Cancel
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40">
                 Save
             </md-button>
             <!--<div ng-if="vm.errorMessageDisplay">
