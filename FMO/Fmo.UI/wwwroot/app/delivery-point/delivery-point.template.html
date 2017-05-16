@@ -1,6 +1,6 @@
 <div ng-if="vm.isError" class="alertPopup" layout="column">
     <div>
-        <h1>{{vm.errorMessageTitle}}</h1> 
+        <h1>{{vm.errorMessageTitle}}</h1>
     </div>
     <md-divider></md-divider>
     <span flex></span>
@@ -21,7 +21,7 @@
             <div class="md-toolbar-tools">
                 <h2>{{ 'DELIVERY_POINTS.ADD_DELIVERY_POINTS' | translate }}</h2>
                 <span flex></span>
-                <md-button class="md-icon-button" ng-disabled="vm.isDisable" ng-click="vm.closeWindow()" >
+                <md-button class="md-icon-button" ng-disabled="vm.isDisable" ng-click="vm.closeWindow()">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </md-button>
             </div>
@@ -43,10 +43,10 @@
                             </ul>
                         </div>
                     </md-virtual-repeat-container>
-                </div>               
+                </div>
                 <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
                 
-                <md-input-container flex="30" ng-show="vm.display">
+                <md-input-container flex="30" ng-show="vm.display" ng-class="{'disabledText':vm.postalAddressData.nybAddressDetails.length==1}">
                     <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
                         <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
