@@ -97,13 +97,26 @@
 
                 <span flex="5"></span>
 
-                <div layout="column" flex="30">
+                <!--<div layout="column" flex="30">
                     <md-input-container>
                         <label>{{ 'DELIVERY_POINTS.DP_USE' | translate }}<sub>*</sub></label>
                         <input type="text" disabled ng-model="vm.dpUse[0].displayText">
 
                     </md-input-container>
-                </div>
+                </div>-->
+
+
+                <md-input-container flex="30">
+                    <label>DP Use</label>
+                    <md-select ng-model="vm.selectedDPUse" ng-disabled="true">
+                        <md-option ng-repeat="type in vm.dpUse" ng-value="type">
+                            {{type.displayText}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+
+
             </div>
             <div layout="row" ng-show="vm.display">
                 <md-input-container flex="30">
@@ -222,6 +235,9 @@
                 <!--
                         <label>DP Use<sub>*</sub></label>
                         <input type="text" ng-model="vm.dpUse[0].displayText">-->
+
+             
+
 
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MAIL_VOL' | translate }} </label>
