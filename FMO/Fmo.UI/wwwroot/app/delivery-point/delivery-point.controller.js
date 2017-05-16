@@ -374,12 +374,12 @@ function DeliveryPointController(
                    if (vm.notyetBuilt !== vm.defaultNYBValue) {
                        if (!(vm.nybaddress.organisationName)) {
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                               displayText: "Residential"
+                               referenceDataValue: "Residential"
                            });
                        }
                        else {
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                               displayText: "Commercial"
+                               referenceDataValue: "Organisation"
                            });
                        }
                    }
@@ -389,12 +389,12 @@ function DeliveryPointController(
     function setOrganisation() {
         if (vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !="") {
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                displayText: "Commercial"
+                referenceDataValue: "Organisation"
             });
         }
         else {
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                displayText: "Residential"
+                referenceDataValue: "Residential"
             });
         }
     }

@@ -49,7 +49,7 @@
                 <md-input-container flex="30" ng-show="vm.display">
                     <label>Not yet Built</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
-                        <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
+                        <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails"  ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
                             {{type.displayText}}
                         </md-option>
                     </md-select>
@@ -100,7 +100,7 @@
                 <div layout="column" flex="30">
                     <md-input-container>
                         <label>DP Use<sub>*</sub></label>
-                        <input type="text" disabled ng-model="vm.dpUse[0].displayText">
+                        <input type="text" disabled ng-model="vm.dpUse[0].referenceDataValue">
 
                     </md-input-container>
                 </div>
@@ -109,8 +109,8 @@
                 <md-input-container flex="30">
                     <label>Type</label>
                     <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != vm.defaultNYBValue">
-                        <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.displayText=='Single'?true:false}}">
-                            {{type.displayText}}
+                        <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.referenceDataValue=='Single'?true:false}}">
+                            {{type.referenceDataValue}}
                         </md-option>
                     </md-select>
                 </md-input-container>
