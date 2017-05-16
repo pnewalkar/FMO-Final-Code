@@ -133,7 +133,7 @@ namespace Fmo.BusinessServices.Services
                 NetworkLinkDTO networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple.Item1;
                 SqlGeometry networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple.Item2;
 
-                if (networkLink != null && networkIntersectionPoint != SqlGeometry.Null)
+                if (networkLink != null && !networkIntersectionPoint.IsNull)
                 {
                     actualLength =
                         (double)operationalObjectPoint.ToSqlGeometry()
@@ -163,7 +163,7 @@ namespace Fmo.BusinessServices.Services
 
                     networkLink = nearestStreetNetworkObjectWithIntersectionTuple.Item1;
                     networkIntersectionPoint = nearestStreetNetworkObjectWithIntersectionTuple.Item2;
-                    if (networkLink != null && networkIntersectionPoint != SqlGeometry.Null)
+                    if (networkLink != null && !networkIntersectionPoint.IsNull)
                     {
                         actualLength = (double)operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry()).STLength();
 
