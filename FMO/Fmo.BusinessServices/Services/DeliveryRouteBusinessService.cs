@@ -13,20 +13,18 @@ namespace Fmo.BusinessServices.Services
     public class DeliveryRouteBusinessService : IDeliveryRouteBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository;
-        private IReferenceDataCategoryRepository referenceDataCategoryRepository;
         private IScenarioRepository scenarioRepository;
         private IReferenceDataBusinessService referenceDataBusinessService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService"/> class and other classes.
+        /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
         /// </summary>
         /// <param name="deliveryRouteRepository">IDeliveryRouteRepository reference</param>
-        /// <param name="referenceDataCategoryRepository">IReferenceDataCategoryRepository reference</param>
         /// <param name="scenarioRepository">IScenarioRepository reference</param>
-        public DeliveryRouteBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IReferenceDataCategoryRepository referenceDataCategoryRepository, IScenarioRepository scenarioRepository, IReferenceDataBusinessService referenceDataBusinessService)
+        /// <param name="referenceDataBusinessService">The reference data business service.</param>
+        public DeliveryRouteBusinessService(IDeliveryRouteRepository deliveryRouteRepository, IScenarioRepository scenarioRepository, IReferenceDataBusinessService referenceDataBusinessService)
         {
             this.deliveryRouteRepository = deliveryRouteRepository;
-            this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.scenarioRepository = scenarioRepository;
             this.referenceDataBusinessService = referenceDataBusinessService;
         }
@@ -117,39 +115,27 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="deliveryRouteId">The delivery route identifier.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
-        /// <returns>
-        /// DeliveryRouteDTO
-        /// </returns>
+        /// <returns>DeliveryRouteDTO</returns>
         public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid)
         {
-            try
-            {
-                // TODO: Move this to resource file
-                List<string> categoryNames = new List<string>
+            List<string> categoryNames = new List<string>
             {
                 ReferenceDataCategoryNames.DeliveryPointUseIndicator,
                 ReferenceDataCategoryNames.OperationalObjectType,
                 ReferenceDataCategoryNames.DeliveryRouteMethodType
             };
 
-                var referenceDataCategoryList = referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+            var referenceDataCategoryList =
+                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
-                var referenceDataDeliveryMethodTypes =
-                    referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryRouteMethodType)
-                        .SelectMany(x => x.ReferenceDatas).ToList();
-
-                var deliveryRouteDto = await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
-                return deliveryRouteDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var deliveryRouteDto =
+                await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
+            return deliveryRouteDto;
         }
 
         public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit)
         {
-            //Todo: Add pdf genetation logic
+            //Todo: Add pdf genetation logic .RFMO-87
             await deliveryRouteRepository.GenerateRouteLog(deliveryRouteDto, userUnit);
             throw new NotImplementedException();
         }

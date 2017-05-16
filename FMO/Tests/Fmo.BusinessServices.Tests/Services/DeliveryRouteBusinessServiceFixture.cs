@@ -12,10 +12,10 @@
     using Moq;
     using NUnit.Framework;
 
+    [TestFixture]
     public class DeliveryRouteBusinessServiceFixture : TestFixtureBase
     {
         private Mock<IDeliveryRouteRepository> mockDeliveryRouteRepository;
-        private Mock<IReferenceDataCategoryRepository> mockReferenceDataCategoryRepository;
         private Mock<IScenarioRepository> mockScenarioRepository;
         private Mock<IReferenceDataBusinessService> mockReferenceDataBusinessService;
         private Mock<FMODBContext> mockFmoDbContext;
@@ -74,8 +74,8 @@
             mockDeliveryRouteRepository.Setup(n => n.FetchDeliveryRoute(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(actualDeliveryRouteResult);
 
             actualReferenceDataCategoryResult = new List<ReferenceDataDTO>() { new ReferenceDataDTO() { DataDescription = "Live", DisplayText = "Live", ReferenceDataName = "Live" } };
-            mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
-            mockReferenceDataCategoryRepository.Setup(n => n.RouteLogStatus()).Returns(actualReferenceDataCategoryResult);
+            mockReferenceDataBusinessService = CreateMock<IReferenceDataBusinessService>();
+            mockReferenceDataBusinessService.Setup(n => n.FetchRouteLogStatus()).Returns(actualReferenceDataCategoryResult);
 
             actualScenarioResult = new List<ScenarioDTO>() { new ScenarioDTO() { ScenarioName = "ScenarioOne", DeliveryScenario_Id = 1, DeliveryUnit_Id = 1, OperationalState_Id = 1 } };
             mockScenarioRepository = CreateMock<IScenarioRepository>();
@@ -86,7 +86,7 @@
             mockFmoDbContext = CreateMock<FMODBContext>();
             mockDeliveryRouteRepository.Setup(n => n.GetDeliveryRouteDetailsforPdfGeneration(It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>(), It.IsAny<Guid>())).Returns(Task.FromResult(new DeliveryRouteDTO() { }));
 
-            testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteRepository.Object, mockReferenceDataCategoryRepository.Object, mockScenarioRepository.Object, mockReferenceDataBusinessService.Object);
+            testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteRepository.Object, mockScenarioRepository.Object, mockReferenceDataBusinessService.Object);
         }
     }
 }

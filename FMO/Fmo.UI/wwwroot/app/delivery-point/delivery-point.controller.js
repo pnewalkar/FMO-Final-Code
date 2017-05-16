@@ -121,7 +121,7 @@ function DeliveryPointController(
                 $scope.$emit('mapToolChange', {
                     "name": 'select', "shape": shape, "enabled": true
                 });
-               // accessLink();
+                // accessLink();
             }
         }, function () {
         });
@@ -370,6 +370,12 @@ function DeliveryPointController(
         deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
                    vm.nybaddress = response;
+                   if (response) {
+                       vm.postalAddressData.dependentLocality = response.dependentLocality;
+                       vm.postalAddressData.doubleDependentLocality = response.doubleDependentLocality;
+                       vm.postalAddressData.thoroughfare = response.thoroughfare;
+                       vm.postalAddressData.dependentThoroughfare = response.dependentThoroughfare;
+                   }
                    vm.dpUse = null;
                    if (vm.notyetBuilt !== vm.defaultNYBValue) {
                        if (!(vm.nybaddress.organisationName)) {
@@ -387,7 +393,7 @@ function DeliveryPointController(
     }
 
     function setOrganisation() {
-        if (vm.nybaddress.organisationName != null && vm.nybaddress.organisationName !="") {
+        if (vm.nybaddress.organisationName != null && vm.nybaddress.organisationName != "") {
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                 displayText: "Commercial"
             });
@@ -435,7 +441,7 @@ function DeliveryPointController(
     }
 
     function manualDeliveryPointPosition(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
-       
+
         var deliveryPointListObj = {
             udprn: udprn, locality: locality, addressGuid: addressGuid, deliveryPointGuid: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
         };
@@ -446,7 +452,7 @@ function DeliveryPointController(
         $state.go("deliveryPoint", {
             deliveryPointList: vm.deliveryPointList
         })
-        
+
     }
 
     function onCloseDeliveryPoint() {
@@ -491,14 +497,14 @@ function DeliveryPointController(
         });
     };
 
-      function opendeliveryPoint(selectedDeliveryUnit) {
-          debugger;
-          //vm.contextTitle = "Delivery Point";
-          $state.go("deliveryPoint");
-      }
+    function opendeliveryPoint(selectedDeliveryUnit) {
+        debugger;
+        //vm.contextTitle = "Delivery Point";
+        $state.go("deliveryPoint");
+    }
 
-      function Ok() {
-          vm.isError = false;
-          vm.isDisable = false;
-      }
+    function Ok() {
+        vm.isError = false;
+        vm.isDisable = false;
+    }
 };
