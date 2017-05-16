@@ -128,11 +128,6 @@ namespace Fmo.BusinessServices.Services
             var referenceDataCategoryList =
                 referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
-            var referenceDataDeliveryMethodTypes =
-                referenceDataCategoryList
-                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryRouteMethodType)
-                    .SelectMany(x => x.ReferenceDatas).ToList();
-
             var deliveryRouteDto =
                 await deliveryRouteRepository.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
             return deliveryRouteDto;
