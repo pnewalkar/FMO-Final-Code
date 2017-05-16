@@ -618,12 +618,12 @@
                 addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
                 if (objPostalAddress != null)
                 {
-                    objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
-                    objPostalAddress.PostTown = addDeliveryPointDTO.PostalAddressDTO.PostTown;
-                    objPostalAddress.DependentLocality = addDeliveryPointDTO.PostalAddressDTO.DependentLocality;
-                    objPostalAddress.DoubleDependentLocality = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
-                    objPostalAddress.Thoroughfare = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
-                    objPostalAddress.DependentThoroughfare = addDeliveryPointDTO.PostalAddressDTO.DependentThoroughfare;
+                    //objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
+                    //objPostalAddress.PostTown = addDeliveryPointDTO.PostalAddressDTO.PostTown;
+                    //objPostalAddress.DependentLocality = addDeliveryPointDTO.PostalAddressDTO.DependentLocality;
+                    //objPostalAddress.DoubleDependentLocality = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
+                    //objPostalAddress.Thoroughfare = addDeliveryPointDTO.PostalAddressDTO.Thoroughfare;
+                    //objPostalAddress.DependentThoroughfare = addDeliveryPointDTO.PostalAddressDTO.DependentThoroughfare;
                     objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
                     objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
                     objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;

@@ -374,7 +374,7 @@ function DeliveryPointController(
                        vm.postalAddressData.dependentLocality = response.dependentLocality;
                        vm.postalAddressData.doubleDependentLocality = response.doubleDependentLocality;
                        vm.postalAddressData.thoroughfare = response.thoroughfare;
-                       vm.postalAddressData.dependentThoroughfare == response.dependentThoroughfare;
+                       vm.postalAddressData.dependentThoroughfare = response.dependentThoroughfare;
                    }
                    vm.dpUse = null;
                    if (vm.notyetBuilt !== vm.defaultNYBValue) {
