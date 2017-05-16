@@ -1,5 +1,5 @@
 <div class="searchBox">
-    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" placeholder="Search"
+    <input type="text" ng-model="vm.searchText" ng-change="vm.resultSet(vm.searchText)" class="searchInput" placeholder="{{ 'GENERAL.SEARCH' | translate}}"
            ng-enter="vm.onEnterKeypress(vm.searchText)" ng-blur="vm.onBlur()" no-special-char/>
     <div class="numberCircle" ng-show="vm.resultscount[0].count > 0 && vm.isResultDisplay"><span>{{vm.resultscount[0].count}}</span></div> 
     <i class="fa fa-search searchIccon" aria-hidden="true" ng-click="vm.onEnterKeypress(vm.searchText)"></i>
@@ -25,7 +25,7 @@
         </ul>
         <ul>
             <li ng-show="vm.results.length == 0">
-                <button class="noResult">No Results Found</button>
+                <button class="noResult">{{ 'VALIDATION.NO_RESULT_FOUND' | translate }}</button>
             </li>
         </ul>
     </div>
