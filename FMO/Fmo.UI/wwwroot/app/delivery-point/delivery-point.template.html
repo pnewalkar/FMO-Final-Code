@@ -10,7 +10,7 @@
     <span flex></span>
     <div layout="row">
         <md-button class="md-raised md-primary" ng-click="vm.Ok()" flex aria-label="Delivery Point">
-            Ok
+            {{ 'GENERAL.BUTTONS.OK' | translate }}
         </md-button>
     </div>
 </div>
@@ -19,7 +19,7 @@
     <form name="vm.deliveryPointForm">
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Add Delivery Points</h2>
+                <h2>{{ 'DELIVERY_POINTS.ADD_DELIVERY_POINTS' | translate }}</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-disabled="vm.isDisable" ng-click="vm.closeWindow()" >
                     <i class="fa fa-times" aria-hidden="true"></i>
@@ -31,7 +31,7 @@
             <div layout="row">
                 <div layout="column" flex="65">
                     <md-input-container>
-                        <label>Search</label>
+                        <label>{{ 'GENERAL.SEARCH' | translate }}</label>
                         <input ng-model="vm.searchText" type="text" ng-change="vm.resultSet(vm.searchText)">
                     </md-input-container>
                     <md-virtual-repeat-container class="resultPanel" ng-show="vm.results.length>0">
@@ -47,7 +47,7 @@
                 <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
                 
                 <md-input-container flex="30" ng-show="vm.display">
-                    <label>Not yet Built</label>
+                    <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
                         <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
                             {{type.displayText}}
@@ -58,14 +58,14 @@
 
             <div layout="column" ng-show="vm.display">
                 <md-input-container>
-                    <label>Locality<sub>*</sub></label>
+                    <label>{{ 'DELIVERY_POINTS.LOCALITY' | translate}}<sub>*</sub></label>
                     <input value="{{vm.getCommaSeparatedVale(vm.postalAddressData.dependentLocality,vm.postalAddressData.doubleDependentLocality)}}" type="text" disabled>
                 </md-input-container>
             </div>
 
             <div layout="column" ng-show="vm.display">
                 <md-input-container>
-                    <label>Street<sub>*</sub></label>
+                    <label>{{ 'DELIVERY_POINTS.STREET' | translate }}<sub>*</sub></label>
                     <input type="text" value="{{vm.getCommaSeparatedVale(vm.postalAddressData.thoroughfare,vm.postalAddressData.dependentThoroughfare)}}" disabled>
                 </md-input-container>
             </div>
@@ -74,7 +74,7 @@
             <div layout="row" ng-show="vm.display">
                 <div layout="column" flex="30">
                     <md-input-container>
-                        <label>Postcode<sub>*</sub></label>
+                        <label>{{ 'DELIVERY_POINTS.POST_CODE'| translate }}<sub>*</sub></label>
                         <input ng-model="vm.postalAddressData.postcode" type="text" disabled>
                     </md-input-container>
                 </div>
@@ -83,7 +83,7 @@
                 <span flex="5"></span>
 
                 <md-input-container flex="30">
-                    <label>Route</label>
+                    <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
                     <md-select name="route" ng-model="vm.postalAddressData.route" select-clear required> 
                         <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
                             {{route.displayText}}
@@ -99,7 +99,7 @@
 
                 <div layout="column" flex="30">
                     <md-input-container>
-                        <label>DP Use<sub>*</sub></label>
+                        <label>{{ 'DELIVERY_POINTS.DP_USE' | translate }}<sub>*</sub></label>
                         <input type="text" disabled ng-model="vm.dpUse[0].displayText">
 
                     </md-input-container>
@@ -107,7 +107,7 @@
             </div>
             <div layout="row" ng-show="vm.display">
                 <md-input-container flex="30">
-                    <label>Type</label>
+                    <label>{{ 'DELIVERY_POINTS.TYPE'| translate }}</label>
                     <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != vm.defaultNYBValue">
                         <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.displayText=='Single'?true:false}}">
                             {{type.displayText}}
@@ -120,11 +120,11 @@
                 <div layout="column" flex="60" ng-show="vm.display">
                     <fieldset>
 
-                        <legend>Address<sub>*</sub></legend>
+                        <legend>{{ 'DELIVERY_POINTS.ADDRESS' | translate }}<sub>*</sub></legend>
 
                         <div layout="row">
                             <md-input-container flex="45">
-                                <label>Building Number</label>
+                                <label> {{ 'DELIVERY_POINTS.BUILDING_NUMBER' | translate }} </label>
                                 <input name="buildingNumber" ng-model="vm.nybaddress.buildingNumber"  ng-blur="vm.setOrganisation()" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
                                        ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.buildingNumber.$error"
@@ -137,7 +137,7 @@
                             <span flex="5"></span>
 
                             <md-input-container flex="50">
-                                <label>Building Name</label>
+                                <label> {{'DELIVERY_POINTS.BUILDING_NAME' | translate }}</label>
                                 <input name="buildingName" ng-model="vm.nybaddress.buildingName" type="text" ng-maxlength="50" ng-blur="vm.setOrganisation()"
                                        ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.buildingName.$error"
@@ -149,7 +149,7 @@
 
                         <div layout="row">
                             <md-input-container flex="45">
-                                <label>Sub-Building Name</label>
+                                <label> {{ 'DELIVERY_POINTS.SUB_BUILDING_NAME' | translate }}</label>
                                 <input ng-model="vm.nybaddress.subBuildingName" type="text" ng-maxlength="50">
                                 <div ng-messages="vm.deliveryPointForm.subBuildingName.$error"
                                      ng-show="vm.deliveryPointForm.subBuildingName.$touched" role="alert">
@@ -160,7 +160,7 @@
                             <span flex="5"></span>
 
                             <md-input-container flex="50">
-                                <label>Organisation</label>
+                                <label>{{ 'DELIVERY_POINTS.ORGANISATION' |  translate }}</label>
                                 <input ng-model="vm.nybaddress.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
@@ -170,7 +170,7 @@
                         </div>
                         <div layout="row">
                             <md-input-container flex="45">
-                                <label>Department Name</label>
+                                <label> {{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate }}</label>
                                 <input ng-model="vm.nybaddress.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
@@ -185,13 +185,13 @@
                 <div layout="column" flex="40" ng-show="vm.display">
                     <div layout="row" class="addressRow">
                         <md-input-container flex="90">
-                            <label>Add DP Alias</label>
+                            <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIASE' | translate }}</label>
                             <input ng-model="vm.alias" type="text" flex="90">
                         </md-input-container>
                         <i class="fa fa-plus-circle pathLengthUnit" ng-click="vm.addAlias()" aria-hidden="true" flex></i>
                     </div>
                     <div layout="column">
-                        <label>Alias</label>
+                        <label>{{ 'DELIVERY_POINTS.ALIAS' | translate }}</label>
                         <div class="aliasBox" flex="90">
                             <div ng-repeat="item in vm.items">
                                 <md-input-container class="aliasInputContainer">
@@ -209,7 +209,7 @@
 
             <div layout="row" ng-show="vm.display" class="occRow">
                 <md-input-container>
-                    <label>Multi Occ</label>
+                    <label> {{ 'DELIVERY_POINTS.MULTI_OCC' | translate }}</label>
                     <input name="multiocc" ng-model="vm.multiocc" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.multiocc.$error"
                          ng-show="vm.deliveryPointForm.multiocc.$touched" role="alert">
@@ -224,7 +224,7 @@
                         <input type="text" ng-model="vm.dpUse[0].displayText">-->
 
                 <md-input-container>
-                    <label>Mail Vol</label>
+                    <label> {{ 'DELIVERY_POINTS.MAIL_VOL' | translate }} </label>
                     <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
                     <div ng-messages="vm.deliveryPointForm.mailvol.$error"
                          ng-show="vm.deliveryPointForm.mailvol.$touched" role="alert">
@@ -239,11 +239,11 @@
 
         <md-dialog-actions layout="row">
             <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" ng-disabled="vm.isDisable">
-                Cancel
+                {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
             <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
-                Save
+                {{ 'GENERAL.BUTTONS.SAVE' | translate }}
             </md-button>
             <!--<div ng-if="vm.errorMessageDisplay">
                 <span>{{vm.errorMessage}}</span>
