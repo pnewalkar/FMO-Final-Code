@@ -7,7 +7,7 @@
         <i class="fa fa-question-circle " aria-hidden="true"></i>
     </div>
 
-    <div layout="column" ng-show="vm.deliveryPointList != null">
+    <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Points not positioned by 3rd party</h1>
         <ul>
             <li ng-show="vm.deliveryPointList == null || vm.deliveryPointList == undefined || vm.deliveryPointList == [] || vm.deliveryPointList.length == 0">
@@ -22,7 +22,7 @@
 
         </ul>
     </div>
-    <div layout="column" ng-show="vm.positionedDeliveryPointList != null">
+    <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Positioned points</h1>
         <ul>
             <li ng-show="vm.positionedDeliveryPointList == null || vm.positionedDeliveryPointList == undefined || vm.positionedDeliveryPointList ==  [] || vm.positionedDeliveryPointList.length ==  0">
@@ -33,7 +33,7 @@
             </li>
         </ul>
     </div>
-    <div layout="column" ng-show="vm.positionedThirdPartyDeliveryPointList != null">
+    <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">
         <h1>Already positioned by 3rd Party</h1>
         <ul>
             <li ng-show="vm.positionedThirdPartyDeliveryPointList == null || vm.positionedThirdPartyDeliveryPointList == undefined || vm.positionedThirdPartyDeliveryPointList ==  [] || vm.positionedThirdPartyDeliveryPointList.length ==  0">
