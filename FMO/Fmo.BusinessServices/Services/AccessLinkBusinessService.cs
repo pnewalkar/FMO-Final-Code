@@ -122,6 +122,7 @@ namespace Fmo.BusinessServices.Services
                 double actualLength = 0;
                 bool matchFound = false;
                 string accessLinkStatus = string.Empty;
+                string accessLinkDirection = string.Empty;
                 string accessLinkType = string.Empty;
                 bool accessLinkApproved = false;
 
@@ -150,7 +151,8 @@ namespace Fmo.BusinessServices.Services
                     matchFound = actualLength <= accessLinkSameRoadMaxDistance;
 
                     accessLinkStatus = ReferenceDataValues.AccessLinkStatusLive;
-                    accessLinkType = ReferenceDataValues.AccessLinkDirectionBoth;
+                    accessLinkDirection = ReferenceDataValues.AccessLinkDirectionBoth;
+                    accessLinkType = ReferenceDataValues.AccessLinkTypeDefault;
                     accessLinkApproved = true;
                 }
                 else
@@ -175,8 +177,9 @@ namespace Fmo.BusinessServices.Services
                         // check if the matched segment is within the threshold defined.
                         matchFound = actualLength <= accessLinkDiffRoadMaxDistance;
 
-                        accessLinkStatus = ReferenceDataValues.AccessLinkStatusDraftPendingApproval;
-                        accessLinkType = ReferenceDataValues.AccessLinkDirectionBoth;
+                        accessLinkStatus = ReferenceDataValues.AccessLinkStatusDraftPendingReview;
+                        accessLinkDirection = ReferenceDataValues.AccessLinkDirectionBoth;
+                        accessLinkType = ReferenceDataValues.AccessLinkTypeDefault;
                     }
                 }
 
@@ -205,11 +208,11 @@ namespace Fmo.BusinessServices.Services
 
                     accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkTypeDefault).ID;
+                        .Single(x => x.ReferenceDataValue == accessLinkType).ID;
 
                     accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == accessLinkType).ID;
+                        .Single(x => x.ReferenceDataValue == accessLinkDirection).ID;
 
                     accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
