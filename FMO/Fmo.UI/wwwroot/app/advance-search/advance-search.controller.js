@@ -1,59 +1,55 @@
 'use strict';
-angular.module('advanceSearch')
-    .controller('advanceSearchController', ['searchApiService',
-                                            'mapFactory',
-                                             '$state',
-                                             '$mdDialog',
-                                         'advanceSearchService',
-                                         '$stateParams',
-                                 AdvanceSearchController]);
+angular
+    .module('advanceSearch')
+    .controller('AdvanceSearchController', [
+        'searchApiService',
+        'mapFactory',
+        '$state',
+        '$mdDialog',
+        '$stateParams',
+        AdvanceSearchController]);
 
-function AdvanceSearchController(searchApiService,
-                                  mapFactory,
-                                  $state,
-                                  $mdDialog,
-                                  advanceSearchService,
-                                  $stateParams)
-{
-  
+function AdvanceSearchController(
+    searchApiService,
+    mapFactory,
+    $state,
+    $mdDialog,
+    $stateParams) {
+
     var vm = this;
-    vm.toggle = vm.toggle;
-    vm.toggleList = vm.toggleList;
-    vm.chkRoute = true;
-    vm.chkPostCode = true;
-    vm.chkDeliveryPoint = true;
-    vm.chkStreetNetwork = true;
+    vm.initialize = initialize;
+    vm.OnChangeItem = OnChangeItem;
+    vm.toggleList = toggleList;
+    vm.toggleSelection = toggleSelection;
     vm.queryAdvanceSearch = queryAdvanceSearch;
-    vm.selectAll = selectAll;
-    vm.deSelectAll = deSelectAll;
+
     vm.results = [];
     vm.searchText = $stateParams.data;
-    vm.query;
-    vm.route;
-    vm.routeval = [];
-    vm.searchCount = vm.searchCount;
-    vm.OnChangeItem = OnChangeItem;
-    vm.advanceSearch = advanceSearch;
-    vm.openAdvanceSearchPopup = openAdvanceSearchPopup;
     vm.arrDeliverypoints = [];
     vm.arrPostCodes = [];
     vm.arrStreetNames = [];
     vm.arrDeliveryRoutes = [];
-    vm.obj;
-    vm.queryAdvanceSearch(vm.searchText);
     vm.closeWindow = closeWindow;
     vm.closeAlert = closeAlert;
     vm.close = "close";
 
+    vm.initialize()
+
+    function initialize() {
+        vm.queryAdvanceSearch(vm.searchText);
+        vm.chkRoute = true;
+        vm.chkPostCode = true;
+        vm.chkDeliveryPoint = true;
+        vm.chkStreetNetwork = true;
+
+    }
 
     function closeWindow() {
         $mdDialog.hide(vm.close);
     }
 
-
-
     function queryAdvanceSearch(query) {
-       
+
         searchApiService.advanceSearch(query).then(function (response) {
 
             vm.results = response.data;
@@ -61,15 +57,15 @@ function AdvanceSearchController(searchApiService,
             vm.searchItem = vm.results.searchResultItems;
             vm.arrRoutes = [];
 
-          
+
 
 
             for (var i = 0; i < vm.results.searchResultItems.length; i++) {
                 vm.route = vm.results.searchResultItems[i];
-               vm.obj;
+                vm.obj;
                 if (vm.route.type == 'DeliveryPoint') {
                     vm.obj = { 'displayText': vm.route.displayText, 'UDPRN': vm.route.udprn, 'type': "DeliveryPoint" }
-                    vm.arrDeliverypoints.push( vm.obj);
+                    vm.arrDeliverypoints.push(vm.obj);
                 }
                 else if (vm.route.type == 'Postcode') {
                     vm.obj = { 'displayText': vm.route.displayText }
@@ -87,18 +83,16 @@ function AdvanceSearchController(searchApiService,
             if (vm.arrDeliverypoints.length == 1) {
                 vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': true };
             }
-            else
-            {
+            else {
                 vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': false };
             }
-           
+
             if (vm.arrPostCodes.length == 1) {
                 vm.postCodeObj = {
                     'type': 'PostCode', 'name': vm.arrPostCodes, 'open': true
                 };
             }
-            else
-            {
+            else {
                 vm.postCodeObj = {
                     'type': 'PostCode', 'name': vm.arrPostCodes, 'open': false
                 };
@@ -106,8 +100,7 @@ function AdvanceSearchController(searchApiService,
             if (vm.arrStreetNames.length == 1) {
                 vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': true };
             }
-            else
-            {
+            else {
                 vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': false };
             }
             if (vm.arrDeliveryRoutes.length == 1) {
@@ -133,31 +126,20 @@ function AdvanceSearchController(searchApiService,
         });
     }
 
-    function selectAll() {
-        vm.chkRoute = true;
-        vm.chkPostCode = true;
-        vm.chkDeliveryPoint = true;
-        vm.chkStreetNetwork = true;
+    function toggleSelection(selectedFlag) {
+        vm.chkRoute = selectedFlag;
+        vm.chkPostCode = selectedFlag;
+        vm.chkDeliveryPoint = selectedFlag;
+        vm.chkStreetNetwork = selectedFlag;
     }
 
-    function deSelectAll() {
-        vm.chkRoute = false;
-        vm.chkPostCode = false;
-        vm.chkDeliveryPoint = false;
-        vm.chkStreetNetwork = false;
-    }
-
-    vm.toggleList = function (state) {
-            vm.arrRoutes.forEach(function (e) {
-                e.open = state;
-            });
-           
-       
-       
+    function toggleList(state) {
+        vm.arrRoutes.forEach(function (e) {
+            e.open = state;
+        });
     }
 
     function OnChangeItem(selectedItem) {
-
         if (selectedItem.type === "DeliveryPoint") {
             searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
@@ -170,16 +152,6 @@ function AdvanceSearchController(searchApiService,
         }
         vm.closeAlert(selectedItem.type);
     }
-
-    function advanceSearch() {
-        var advaceSearchTemplate = advanceSearchService.advanceSearch();
-        vm.openAdvanceSearchPopup(advaceSearchTemplate);
-    }
-
-    function openAdvanceSearchPopup(modalSetting) {
-        var popupSetting = modalSetting;
-        $mdDialog.show(popupSetting);
-    };
 
     function closeAlert(selectedItem) {
         if (selectedItem === "DeliveryPoint") {
