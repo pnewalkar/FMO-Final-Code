@@ -95,7 +95,7 @@
                         objAddress.PostTown = objPostalAddress.PostTown;
                         objAddress.DependentLocality = objPostalAddress.DependentLocality;
                         objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
-                        objAddress.Thoroughfare = objPostalAddress.DoubleDependentLocality;
+                        objAddress.Thoroughfare = objPostalAddress.Thoroughfare;
                         objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
                         objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
                         objAddress.BuildingName = objPostalAddress.BuildingName;
