@@ -1,18 +1,29 @@
 ﻿
 angular.module('layers')
     .factory('layersApiService', layersApiService);
-layersApiService.$inject = ['$http', 'GlobalSettings'];
+layersApiService.$inject = ['$http', 'GlobalSettings', '$q'];
 
-function layersApiService($http, GlobalSettings) {
+function layersApiService($http, GlobalSettings, $q) {
     var layersApiService = {};
 
     layersApiService.fetchDeliveryPoints = function () {
-        return $http.get(GlobalSettings.apiUrl + '/deliveryPoints/fetchDeliveryPoint');
+        var deferred = $q.defer();
+        $http.get(GlobalSettings.apiUrl + '/deliveryPoints/fetchDeliveryPoint').success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
     };
 
     layersApiService.fetchAccessLinks = function () {
-        return $http.get(GlobalSettings.apiUrl + '/accessLinks/fetchAccessLink');
+        var deferred = $q.defer();
+        $http.get(GlobalSettings.apiUrl + '/accessLinks/fetchAccessLink').success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
     };
     return layersApiService;
-
 }
