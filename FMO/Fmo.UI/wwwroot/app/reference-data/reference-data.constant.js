@@ -12,8 +12,7 @@ var referenceDataConstants = {
     
     DeliveryRouteOperationalStatus: "Delivery Route Operational Status",
     DeliveryRouteMethodType: "Delivery Route Method Type",
-    //---changes in val--//
-    DeliveryRouteTransportType: "Delivery Route Transport Type",
+    DeliveryRouteTransportType: "Transport Type",
     UnitLocationType: "Unit Location Type",
     NetworkLinkType: "Network Link Type",
     DataProvider: "Data Provider",
