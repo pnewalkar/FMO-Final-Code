@@ -5,7 +5,7 @@ angular
         'mapToolbarService',
         '$scope',
         '$mdDialog',
-        'deliveryPointService',
+        'popUpSettingService',
         'deliveryPointApiService',
         'referencedataApiService',
         '$filter',
@@ -20,7 +20,7 @@ function DeliveryPointController(
     mapToolbarService,
     $scope,
     $mdDialog,
-    deliveryPointService,
+    popUpSettingService,
     deliveryPointApiService,
     referencedataApiService,
     $filter,
@@ -266,10 +266,8 @@ function DeliveryPointController(
 
     }
 
-
-
     function deliveryPoint() {
-        var deliveryPointTemplate = deliveryPointService.deliveryPoint();
+        var deliveryPointTemplate = popUpSettingService.deliveryPoint();
         vm.openModalPopup(deliveryPointTemplate);
 
     }

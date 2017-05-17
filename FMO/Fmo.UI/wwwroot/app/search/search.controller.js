@@ -1,8 +1,8 @@
 'use strict';
 angular.module('search')
-.controller('SearchController', SearchController);
+.controller('SearchController',['searchApiService', '$scope', '$state', 'mapFactory', 'mapStylesFactory', 'popUpSettingService', '$mdDialog', '$stateParams', '$timeout', SearchController]);
 
-function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, advanceSearchService, $mdDialog, $stateParams, $timeout) {
+function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, popUpSettingService, $mdDialog, $stateParams, $timeout) {
     var vm = this;
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
@@ -77,8 +77,7 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
 
     function advanceSearch(query) {
         $stateParams.data = query;
-      //  var state = $stateParams;
-        var advaceSearchTemplate = advanceSearchService.advanceSearch(query);
+        var advaceSearchTemplate = popUpSettingService.advanceSearch(query);
         vm.openModalPopup(advaceSearchTemplate);
     }
 
