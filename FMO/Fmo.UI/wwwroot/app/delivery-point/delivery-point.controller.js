@@ -382,11 +382,13 @@ function DeliveryPointController(
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                                referenceDataValue: "Residential"
                            });
+                           vm.selectedDPUse = vm.dpUse[0];
                        }
                        else {
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                                referenceDataValue: "Organisation"
                            });
+                           vm.selectedDPUse = vm.dpUse[0];
                        }
                    }
                });
@@ -397,11 +399,13 @@ function DeliveryPointController(
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                 referenceDataValue: "Organisation"
             });
+            vm.selectedDPUse = vm.dpUse[0];
         }
         else {
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
                 referenceDataValue: "Residential"
             });
+            vm.selectedDPUse = vm.dpUse[0];
         }
     }
 
