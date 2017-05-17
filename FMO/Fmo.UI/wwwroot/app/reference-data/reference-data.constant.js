@@ -9,8 +9,10 @@ var referenceDataConstants = {
     NetworkNodeType: "Network Node Type",
     NotificationType: "Notification Type",
     NotificationPriority: "Notification Priority",
+    
     DeliveryRouteOperationalStatus: "Delivery Route Operational Status",
     DeliveryRouteMethodType: "Delivery Route Method Type",
+    //---changes in val--//
     DeliveryRouteTransportType: "Delivery Route Transport Type",
     UnitLocationType: "Unit Location Type",
     NetworkLinkType: "Network Link Type",
@@ -22,7 +24,10 @@ var referenceDataConstants = {
     AccessLinkDirection: "Access Link Direction",
     OperationalObjectType: "Operational Object Type",
     DeliveryPointType: "UI_DeliveryPoint_Type",
-    DeliveryPointUseIndicator: "DeliveryPoint Use Indicator"
+    DeliveryPointUseIndicator: "DeliveryPoint Use Indicator",
+    UIRouteLogSearchSelectionType: "UI_RouteLogSearch_SelectionType",
+    AccessLinkParameters: "Access Link Parameters",
+    UISearchRules: "UI_SearchRules"
 };
 
 angular.module('FMOApp')
