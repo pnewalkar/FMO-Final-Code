@@ -19,7 +19,7 @@ namespace Fmo.DataServices.Repositories
 
         public ReferenceDataDTO GetReferenceDataId(string strDataDesc, string strDisplayText)
         {
-            ReferenceData referenceData = DataContext.ReferenceDatas.Where(refData => refData.DataDescription.Equals(strDataDesc) && refData.DisplayText.Equals(strDisplayText)).FirstOrDefault();
+            ReferenceData referenceData = DataContext.ReferenceDatas.Where(refData => refData.DataDescription.Equals(strDataDesc) && refData.ReferenceDataValue.Equals(strDisplayText)).FirstOrDefault();
             return GenericMapper.Map<ReferenceData, ReferenceDataDTO>(referenceData);
         }
 
