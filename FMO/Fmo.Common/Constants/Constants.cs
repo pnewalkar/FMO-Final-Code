@@ -120,7 +120,7 @@
         public const string PAFUPDATEFORUSR = "USR";
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
-        public const string DeliveryPointUseIndicatorPAF = "Commercial";
+        public const string DeliveryPointUseIndicatorPAF = "Organisation";
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
         public const string PAFErrorMessageForUDPRNNotUpdated = "Postal Address for Selected UDPRN not updated";
