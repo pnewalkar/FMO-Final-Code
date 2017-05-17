@@ -149,6 +149,7 @@ function DeliveryPointController(
         }
         deliveryPointApiService.UpdateDeliverypoint(deliveryPointModelDTO).then(function (result) {
             vm.positionedDeliveryPointList = null;
+            mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
 
         });
@@ -178,6 +179,7 @@ function DeliveryPointController(
 
             if (response.message && response.message == "Delivery Point created successfully") {
                 setDeliveryPoint(response.id, response.rowVersion, postalAddress, true);
+                mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
                 vm.onCloseDeliveryPoint();
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {

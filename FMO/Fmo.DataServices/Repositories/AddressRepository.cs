@@ -17,6 +17,8 @@
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
     using DTO.Model;
+    using Microsoft.SqlServer.Types;
+    using System.Data.SqlTypes;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -591,6 +593,8 @@
         {
             bool isAddressLocationAvailable = false;
             Guid returnGuid = new Guid(Constants.DEFAULTGUID);
+            double? addLocationXCoOrdinate = 0;
+            double? addLocationYCoOrdinate = 0;
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID);
@@ -607,11 +611,14 @@
 
                 if (objAddressLocation != null)
                 {
+                    SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
                     objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
                     objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
                     objDeliveryPoint.Longitude = objAddressLocation.Longitude;
                     objDeliveryPoint.Positioned = true;
                     isAddressLocationAvailable = true;
+                    addLocationXCoOrdinate = deliveryPointSqlGeometry.STX.Value;
+                    addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
                 }
 
                 addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
@@ -650,7 +657,7 @@
                 returnGuid = objDeliveryPoint.ID;
             }
 
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable };
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
         }
 
         /// <summary>

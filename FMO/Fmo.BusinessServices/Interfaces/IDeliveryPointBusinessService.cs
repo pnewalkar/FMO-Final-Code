@@ -71,8 +71,8 @@ namespace Fmo.BusinessServices.Interfaces
         /// <summary>
         /// This Method is used to Update Delivery Points Co-ordinates.
         /// </summary>
-        /// <param name="deliveryPointDTO">DeliveryPointDTO</param>
+        /// <param name="deliveryPointModelDTO">DeliveryPointDTO</param>
         /// <returns>message</returns>
-        Task UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO);
+        Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO);
     }
 }
