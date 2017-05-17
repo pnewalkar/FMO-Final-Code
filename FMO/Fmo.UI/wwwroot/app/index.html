@@ -41,6 +41,11 @@
     <script src="../bower_components/angular-material/angular-material.min.js"></script>
     <script src="../bower_components/angular-route/angular-route.min.js"></script>
     <script src="../bower_components/svg-assets-cache.js/svg-assets-cache.js"></script>
+   
+   <!-- Angular translate-->
+    <script src="../bower_components/angular-translate/angular-translate.js"></script>
+    <script src="./common/UI-string.js"></script>
+
     <!--angular material data-table script-->
     <script src="../bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
     <!--Open Layer-->
@@ -51,10 +56,12 @@
     <script src="./app.config.js"></script>
     <script src="./app.constant.js"></script>
     <script src="./security/auth.Interceptor.service.js"></script>
+    <script src="./common/popup-setting.service.js"></script>
+
     <!--Manage Access-->
     <script src="./manage-access/manage-access.module.js"></script>
     <script src="./manage-access/manage-access.service.js"></script>
-    <script src="./manage-access/manage-access.businessService.js"></script>
+    <script src="./manage-access/manage-access.factory.js"></script>
     <script src="./manage-access/manage-access.controller.js"></script>
     <script src="./manage-access/manage-access.component.js"></script>
     <!--home-->
@@ -63,18 +70,18 @@
     <script src="./home/home.component.js"></script>
     <!--route log-->
     <script src="./route-log/route-log.module.js"></script>
-    <script src="./route-log/route-logApi.service.js"></script>
-     <script src="./route-log/route-log.businessService.js"></script>
+    <script src="./route-log/route-log.service.js"></script>
+     <script src="./route-log/route-log.factory.js"></script>
     <script src="./route-log/route-log.controller.js"></script>
     <script src="./route-log/route-log.component.js"></script>
     <!--side nav-->
     <script src="./side-nav/side-nav.module.js"></script>
-    <script src="side-nav/side-nav.filter.js"></script>
-    <script src="side-nav/side-nav.constant.js"></script>
-    <script src="side-nav/side-nav.service.js"></script>
+    <script src="./side-nav/side-nav.filter.js"></script>
+    <script src="./side-nav/side-nav.constant.js"></script>
+    <script src="./side-nav/side-nav.service.js"></script>
     <script src="./side-nav/side-nav.controller.js"></script>
     <script src="./side-nav/side-nav.component.js"></script>
-    <script src="side-nav/side-nav.routes.js"></script>
+    <script src="./side-nav/side-nav.route.js"></script>
     <!--unit selector-->
     <script src="./unit-selector/unit-selector.module.js"></script>
     <script src="./unit-selector/unit-selector.service.js"></script>
@@ -100,7 +107,7 @@
     <script src="./map-view/map-styles.factory.js"></script>
     <!--map toolbar-->
     <script src="./map-toolbar/map-toolbar.module.js"></script>
-    <script src="map-toolbar/map-toolbar.service.js"></script>
+    <script src="./map-toolbar/map-toolbar.service.js"></script>
     <script src="./map-toolbar/map-toolbar.controller.js"></script>
     <script src="./map-toolbar/map-toolbar.service.js"></script>
     <script src="./map-toolbar/map-toolbar.component.js"></script>
@@ -118,24 +125,20 @@
     <script src="./layers/layers.service.js"></script>
     <script src="./layers/layers.controller.js"></script>
     <script src="./layers/layers.component.js"></script>
-    <script src="./layers/layersApiService.js"></script>
-    <!--mini-map-->
-    <script src="./mini-map/mini-map.module.js"></script>
-    <script src="./mini-map/mini-map.controller.js"></script>
-    <script src="./mini-map/mini-map.component.js"></script>
+    <script src="./layers/layers.factory.js"></script>
     <!--route simulation-->
     <script src="./simulation/simulation.module.js"></script>
-    <script src="./simulation/simulationApi.service.js"></script>
-    <script src="./simulation/simulation.businessService.js"></script>
+    <script src="./simulation/simulation.factory.js"></script>
+    <script src="./simulation/simulation.service.js"></script>
     <script src="./simulation/simulation.controller.js"></script>
     <script src="./simulation/simulation.component.js"></script>
 
-    <script src="search/context.controller.js"></script>
+    <script src="./search/context.controller.js"></script>
 
     <!--advance-search-->
     <script src="./advance-search/advance-search.module.js"></script>
     <script src="./advance-search/advance-search.service.js"></script>
-    <script src="advance-search/advance-search.controller.js"></script>
+    <script src="./advance-search/advance-search.controller.js"></script>
     <script src="./advance-search/advance-search.component.js"></script>
     <!--delivery-point-->
     <script src="./delivery-point/delivery-point.module.js"></script>
@@ -147,7 +150,7 @@
     <!--reference Data-->
     <script src="./reference-data/reference-data.module.js"></script>
     <script src="./reference-data/reference-data.constant.js"></script>
-    <script src="./reference-data/reference-data.api.service.js"></script>
+    <script src="./reference-data/reference-data.factory.js"></script>
     <script src="./reference-data/reference-data.controller.js"></script>
     <script src="./reference-data/reference-data.component.js"></script>
 
