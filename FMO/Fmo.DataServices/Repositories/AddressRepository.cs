@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using DTO.Model;
     using Fmo.Common.Constants;
     using Fmo.Common.Enums;
     using Fmo.Common.Interface;
@@ -16,7 +16,8 @@
     using Fmo.DTO.UIDropdowns;
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
-    using DTO.Model;
+    using Microsoft.SqlServer.Types;
+    using System.Data.SqlTypes;
 
     /// <summary>
     /// Repository to interact with postal address entity
@@ -472,7 +473,7 @@
         }
 
         /// <summary>
-        /// Filter PostalAddress based on post code. Also, it fetches the route information based on the postcode and if there are no matching routes then the routes for 
+        /// Filter PostalAddress based on post code. Also, it fetches the route information based on the postcode and if there are no matching routes then the routes for
         /// the unit is fetched.
         /// </summary>
         /// <param name="selectedItem">selectedItem</param>
@@ -591,6 +592,8 @@
         {
             bool isAddressLocationAvailable = false;
             Guid returnGuid = new Guid(Constants.DEFAULTGUID);
+            double? addLocationXCoOrdinate = 0;
+            double? addLocationYCoOrdinate = 0;
             if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
             {
                 var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.ID == addDeliveryPointDTO.PostalAddressDTO.ID);
@@ -607,23 +610,20 @@
 
                 if (objAddressLocation != null)
                 {
+                    SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
                     objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
                     objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
                     objDeliveryPoint.Longitude = objAddressLocation.Longitude;
                     objDeliveryPoint.Positioned = true;
                     isAddressLocationAvailable = true;
+                    addLocationXCoOrdinate = deliveryPointSqlGeometry.STX.Value;
+                    addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
                 }
 
                 addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
                 addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
                 if (objPostalAddress != null)
                 {
-                    //objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
-                    //objPostalAddress.PostTown = addDeliveryPointDTO.PostalAddressDTO.PostTown;
-                    //objPostalAddress.DependentLocality = addDeliveryPointDTO.PostalAddressDTO.DependentLocality;
-                    //objPostalAddress.DoubleDependentLocality = addDeliveryPointDTO.PostalAddressDTO.DoubleDependentLocality;
-                    //objPostalAddress.Thoroughfare = addDeliveryPointDTO.PostalAddressDTO.Thoroughfare;
-                    //objPostalAddress.DependentThoroughfare = addDeliveryPointDTO.PostalAddressDTO.DependentThoroughfare;
                     objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
                     objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
                     objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;
@@ -650,7 +650,7 @@
                 returnGuid = objDeliveryPoint.ID;
             }
 
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable };
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
         }
 
         /// <summary>

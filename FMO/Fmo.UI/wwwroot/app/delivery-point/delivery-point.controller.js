@@ -5,7 +5,7 @@ angular
         'mapToolbarService',
         '$scope',
         '$mdDialog',
-        'deliveryPointService',
+        'popUpSettingService',
         'deliveryPointApiService',
         'referencedataApiService',
         '$filter',
@@ -20,7 +20,7 @@ function DeliveryPointController(
     mapToolbarService,
     $scope,
     $mdDialog,
-    deliveryPointService,
+    popUpSettingService,
     deliveryPointApiService,
     referencedataApiService,
     $filter,
@@ -149,6 +149,7 @@ function DeliveryPointController(
         }
         deliveryPointApiService.UpdateDeliverypoint(deliveryPointModelDTO).then(function (result) {
             vm.positionedDeliveryPointList = null;
+            mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
 
         });
@@ -178,6 +179,7 @@ function DeliveryPointController(
 
             if (response.message && response.message == "Delivery Point created successfully") {
                 setDeliveryPoint(response.id, response.rowVersion, postalAddress, true);
+                mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
                 vm.onCloseDeliveryPoint();
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
@@ -266,10 +268,8 @@ function DeliveryPointController(
 
     }
 
-
-
     function deliveryPoint() {
-        var deliveryPointTemplate = deliveryPointService.deliveryPoint();
+        var deliveryPointTemplate = popUpSettingService.deliveryPoint();
         vm.openModalPopup(deliveryPointTemplate);
 
     }
@@ -380,13 +380,13 @@ function DeliveryPointController(
                    if (vm.notyetBuilt !== vm.defaultNYBValue) {
                        if (!(vm.nybaddress.organisationName)) {
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                               displayText: "Residential"
+                               referenceDataValue: "Residential"
                            });
                            vm.selectedDPUse = vm.dpUse[0];
                        }
                        else {
                            vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                               displayText: "Commercial"
+                               referenceDataValue: "Organisation"
                            });
                            vm.selectedDPUse = vm.dpUse[0];
                        }
@@ -397,13 +397,13 @@ function DeliveryPointController(
     function setOrganisation() {
         if (vm.nybaddress.organisationName != null && vm.nybaddress.organisationName != "") {
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                displayText: "Commercial"
+                referenceDataValue: "Organisation"
             });
             vm.selectedDPUse = vm.dpUse[0];
         }
         else {
             vm.dpUse = $filter('filter')(vm.dpUseType.referenceDatas, {
-                displayText: "Residential"
+                referenceDataValue: "Residential"
             });
             vm.selectedDPUse = vm.dpUse[0];
         }
