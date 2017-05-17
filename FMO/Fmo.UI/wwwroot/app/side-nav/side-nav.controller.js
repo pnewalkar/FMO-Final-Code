@@ -4,7 +4,7 @@ angular
                ['$scope',
                 '$state',
                 '$stateParams',
-                'routeLogService',
+                'popUpSettingService',
                 '$mdSidenav',
                 '$mdDialog',
                 'sideNavApiService', 'SideNavConstant',
@@ -13,7 +13,7 @@ angular
 function sideNavController($scope,
                            $state,
                            $stateParams,
-                           routeLogService,
+                           popUpSettingService,
                            $mdSidenav,
                            $mdDialog,
                            sideNavApiService,
@@ -43,7 +43,7 @@ function sideNavController($scope,
                                
     function routeLog(selectedUnit) {
         var state = $stateParams;
-        var setting = routeLogService.routeLog(selectedUnit);
+        var setting = popUpSettingService.routeLog(selectedUnit);
         vm.openModalPopup(setting);
     }
 

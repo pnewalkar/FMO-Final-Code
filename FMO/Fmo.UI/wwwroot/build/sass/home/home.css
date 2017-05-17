@@ -19,6 +19,13 @@
 .fa-bars {
   color: #ffffff; }
 
+.version {
+  position: absolute;
+  color: #ffffff;
+  left: 2%;
+  font-size: 10px;
+  bottom: 0px; }
+
 /*commom sass*/
 h1 {
   color: #2a2a2d; }
