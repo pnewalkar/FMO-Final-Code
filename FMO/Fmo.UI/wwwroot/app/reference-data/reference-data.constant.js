@@ -21,7 +21,6 @@ var referenceDataConstants = {
     PostalAddressType: "Postal Address Type",
     AccessLinkDirection: "Access Link Direction",
     OperationalObjectType: "Operational Object Type",
-    //  DeliveryPointType: "Delivery Point Type",
     DeliveryPointType: "UI_DeliveryPoint_Type",
     DeliveryPointUseIndicator: "DeliveryPoint Use Indicator"
 };
