@@ -71,6 +71,7 @@
     <Compile Include="Model\CreateDeliveryPointModelDTO.cs" />
     <Compile Include="Model\DeliveryPointModelDTO.cs" />
     <Compile Include="Model\RouteLogSummaryModelDTO.cs" />
+    <Compile Include="Model\UpdateDeliveryPointModelDTO.cs" />
     <Compile Include="NotificationDTO.cs" />
     <Compile Include="OsRoadLinkDTO.cs" />
     <Compile Include="PostCodeSectorDTO.cs" />

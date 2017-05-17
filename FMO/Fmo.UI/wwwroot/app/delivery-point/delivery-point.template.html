@@ -49,7 +49,7 @@
                 <md-input-container flex="30" ng-show="vm.display" ng-class="{'disabledText':vm.postalAddressData.nybAddressDetails.length==1}">
                     <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
-                        <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails" ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
+                        <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails"  ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
                             {{type.displayText}}
                         </md-option>
                     </md-select>
@@ -99,7 +99,7 @@
 
                 <!--<div layout="column" flex="30">
                     <md-input-container>
-                        <label>{{ 'DELIVERY_POINTS.DP_USE' | translate }}<sub>*</sub></label>
+                        <label>DP Use<sub>*</sub></label>
                         <input type="text" disabled ng-model="vm.dpUse[0].displayText">
 
                     </md-input-container>
@@ -110,7 +110,7 @@
                     <label>DP Use</label>
                     <md-select ng-model="vm.selectedDPUse" ng-disabled="true">
                         <md-option ng-repeat="type in vm.dpUse" ng-value="type">
-                            {{type.displayText}}
+                            {{type.referenceDataValue}}
                         </md-option>
                     </md-select>
                 </md-input-container>
@@ -122,8 +122,8 @@
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.TYPE'| translate }}</label>
                     <md-select ng-model="deliveryPointTypes" ng-disabled="vm.notyetBuilt != vm.defaultNYBValue">
-                        <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.displayText=='Single'?true:false}}">
-                            {{type.displayText}}
+                        <md-option ng-repeat="type in vm.deliveryPointTypes[0].referenceDatas" ng-value="type.id" ng-selected="{{type.referenceDataValue=='Single'?true:false}}">
+                            {{type.referenceDataValue}}
                         </md-option>
                     </md-select>
                 </md-input-container>

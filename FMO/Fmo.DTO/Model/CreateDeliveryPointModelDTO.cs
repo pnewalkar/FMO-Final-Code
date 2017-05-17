@@ -11,5 +11,9 @@ namespace Fmo.DTO.Model
         public byte[] RowVersion { get; set; }
 
         public bool IsAddressLocationAvailable { get; set; }
+
+        public double? XCoordinate { get; set; }
+
+        public double? YCoordinate { get; set; }
     }
 }
