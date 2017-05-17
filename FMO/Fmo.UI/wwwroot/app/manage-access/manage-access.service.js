@@ -1,11 +1,18 @@
 ﻿
 angular.module('manageAccess')
     .factory('manageAccessBusinessService', manageAccessBusinessService);
-manageAccessBusinessService.$inject = ['$stateParams', '$state', 'manageAccessService', '$location', 'GlobalSettings', '$window'];
 
-function manageAccessBusinessService($stateParams, $state, manageAccessService, $location, GlobalSettings,$window) {
+manageAccessBusinessService.$inject = [
+    'manageAccessService',
+    'GlobalSettings',
+    '$window'];
+
+function manageAccessBusinessService(
+    manageAccessService,
+    GlobalSettings,
+    $window) {
+
     var vm = this;
-
     return {
         activate: activate,
         getParameterValues: getParameterValues

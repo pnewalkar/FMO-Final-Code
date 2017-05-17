@@ -1,18 +1,18 @@
 ﻿'use strict';
-
 angular
     .module('manageAccess')
-    .controller('manageAccessController', manageAccessController);
+    .controller('ManageAccessController', ManageAccessController);
 
-manageAccessController.$inject = ['$stateParams', 'manageAccessBusinessService'];
+ManageAccessController.$inject = [
+    'manageAccessBusinessService'
+];
 
-function manageAccessController($stateParams,manageAccessBusinessService) {
-    /* jshint validthis:true */
+function ManageAccessController(manageAccessBusinessService) {
     var vm = this;
     vm.activate = activate;
-    activate();
-    function activate()
-    {
+    vm.activate();
+
+    function activate(){
         manageAccessBusinessService.activate(null);
     }
 }
