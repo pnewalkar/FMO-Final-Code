@@ -7,7 +7,9 @@ ManageAccessController.$inject = [
     'manageAccessBusinessService'
 ];
 
-function ManageAccessController(manageAccessBusinessService) {
+function ManageAccessController(
+    manageAccessBusinessService) {
+
     var vm = this;
     vm.activate = activate;
     vm.activate();
