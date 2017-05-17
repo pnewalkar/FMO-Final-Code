@@ -28,16 +28,16 @@ function sideNavController($scope,
     vm.routeSimulation = routeSimulation;
     vm.deliveryPoint = deliveryPoint;
     vm.selectedUnit = $stateParams;
-    vm.contextTitle = "Context Panel";
+    vm.contextTitle = CommonConstants.TitleContextPanel;
     vm.fetchActionItems();
 
     function routeSimulation(selectedDeliveryUnit) {
-        vm.contextTitle = "Simulation";
+        vm.contextTitle = CommonConstants.TitleSimulation;
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
     }
 
     function deliveryPoint(selectedDeliveryUnit) {
-        vm.contextTitle = "Delivery Point";
+        vm.contextTitle = CommonConstants.DeliveryPointActionName;
         $state.go("deliveryPoint", { selectedUnit: selectedDeliveryUnit });
     }
                                
