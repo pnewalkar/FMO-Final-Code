@@ -370,25 +370,25 @@ namespace Fmo.DataServices.Repositories
         {
             string pairedRoute = string.Empty;
 
-            var postCodeIds = (from dr in DataContext.DeliveryRoutes
-                               join drb in DataContext.DeliveryRouteBlocks on dr.ID equals drb.DeliveryRoute_GUID
-                               join b in DataContext.Blocks on drb.Block_GUID equals b.ID
-                               join bs in DataContext.BlockSequences on b.ID equals bs.Block_GUID
-                               join dp in DataContext.DeliveryPoints on bs.OperationalObject_GUID equals dp.ID
-                               join pa in DataContext.PostalAddresses on dp.Address_GUID equals pa.ID
-                               join sc in DataContext.Scenarios on dr.DeliveryScenario_GUID equals sc.ID
-                               join pc in DataContext.Postcodes on pa.PostCodeGUID equals pc.ID
+            var postCodeIds = (from dr in DataContext.DeliveryRoutes.AsNoTracking()
+                               join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
+                               join b in DataContext.Blocks.AsNoTracking() on drb.Block_GUID equals b.ID
+                               join bs in DataContext.BlockSequences.AsNoTracking() on b.ID equals bs.Block_GUID
+                               join dp in DataContext.DeliveryPoints.AsNoTracking() on bs.OperationalObject_GUID equals dp.ID
+                               join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                               join sc in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sc.ID
+                               join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
                                where bs.OperationalObjectType_GUID == operationalObjectId &&
                                      dr.RouteMethodType_GUID == sharedVanId && sc.Unit_GUID == userUnitId && dr.ID == deliveryRouteId
                                select pc.ID).ToList();
 
-            var routeResults = await (from dr in DataContext.DeliveryRoutes
-                                      join drb in DataContext.DeliveryRouteBlocks on dr.ID equals drb.DeliveryRoute_GUID
-                                      join b in DataContext.Blocks on drb.Block_GUID equals b.ID
-                                      join bs in DataContext.BlockSequences on b.ID equals bs.Block_GUID
-                                      join dp in DataContext.DeliveryPoints on bs.OperationalObject_GUID equals dp.ID
-                                      join pa in DataContext.PostalAddresses on dp.Address_GUID equals pa.ID
-                                      join sc in DataContext.Scenarios on dr.DeliveryScenario_GUID equals sc.ID
+            var routeResults = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
+                                      join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
+                                      join b in DataContext.Blocks.AsNoTracking() on drb.Block_GUID equals b.ID
+                                      join bs in DataContext.BlockSequences.AsNoTracking() on b.ID equals bs.Block_GUID
+                                      join dp in DataContext.DeliveryPoints.AsNoTracking() on bs.OperationalObject_GUID equals dp.ID
+                                      join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                                      join sc in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sc.ID
                                       where bs.OperationalObjectType_GUID == operationalObjectId &&
                                             dr.RouteMethodType_GUID == sharedVanId && sc.Unit_GUID == userUnitId &&
                                             dr.ID != deliveryRouteId && postCodeIds.Contains(pa.PostCodeGUID)
