@@ -36,6 +36,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         vm.isRouteScenarioDisabled = true;
         vm.isDeliveryRouteDisabled = true;
         vm.isShowMultiSelectionRoute = false;
+        clearvDeliveryRoute();
     }
     function loadSelectionType() {
         routeLogAPIService.getSelectionType().then(function (response) {
@@ -49,6 +50,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
     function selectedRouteStatus() {
         loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.id);
         vm.isRouteScenarioDisabled = false;
+        clearvDeliveryRoute();
     }
     function loadRouteLogStatus() {
         routeLogAPIService.getStatus().then(function (response) {
@@ -68,6 +70,7 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
             vm.isDeliveryRouteDisabled = false;
             vm.isShowMultiSelectionRoute = false;
         }
+        clearvDeliveryRoute();
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
         routeLogAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
@@ -109,5 +112,10 @@ function RouteLogController($scope, $state, $stateParams, routeLogAPIService, ro
         routeLogAPIService.getRouteDetailsByGUID(vm.selectedRoute.id).then(function (response) {
             vm.routeDetails = response;
         });
+    }
+
+    function clearvDeliveryRoute() {
+        vm.deliveryRoute = {};
+        vm.routeDetails = false;
     }
 }
