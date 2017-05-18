@@ -15,7 +15,7 @@ angular
         'coordinatesService',
         '$state',
         '$stateParams',
-        'layersService'
+        'layersBusinessService'
 , DeliveryPointController])
 function DeliveryPointController(
     mapToolbarService,
@@ -31,7 +31,7 @@ function DeliveryPointController(
     coordinatesService,
     $state,
     $stateParams,
-    layersService
+    layersBusinessService
 ) {
     var vm = this;
     vm.resultSet = resultSet;

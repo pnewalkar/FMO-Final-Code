@@ -1,14 +1,21 @@
 ﻿
 angular.module('layers')
-    .factory('layersApiService', layersApiService);
-layersApiService.$inject = ['$http', 'GlobalSettings', '$q'];
+    .factory('layersService', layersService);
+layersService.$inject = ['$http', 'GlobalSettings', '$q'];
 
-function layersApiService($http, GlobalSettings, $q) {
-    var layersApiService = {};
+function layersService($http, GlobalSettings, $q) {
+    var layersService = {};
 
-    layersApiService.fetchDeliveryPoints = function () {
+    layersService.fetchDeliveryPoints = function (extent, authData) {
         var deferred = $q.defer();
-        $http.get(GlobalSettings.apiUrl + '/deliveryPoints/fetchDeliveryPoint').success(function (response) {
+        $http({
+            method: 'GET',
+            url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + authData.token
+            }
+        }).success(function (response) {
             deferred.resolve(response);
         }).error(function (err, status) {
             deferred.reject(err);
@@ -16,14 +23,38 @@ function layersApiService($http, GlobalSettings, $q) {
         return deferred.promise;
     };
 
-    layersApiService.fetchAccessLinks = function () {
+    layersService.fetchAccessLinks = function (extent, authData) {
         var deferred = $q.defer();
-        $http.get(GlobalSettings.apiUrl + '/accessLinks/fetchAccessLink').success(function (response) {
+        $http({
+            method: 'GET',
+            url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + authData.token
+            }
+        }).success(function (response) {
             deferred.resolve(response);
         }).error(function (err, status) {
             deferred.reject(err);
         });
         return deferred.promise;
     };
-    return layersApiService;
+
+    layersService.fetchRouteLinks = function (extent, authData) {
+        var deferred = $q.defer();
+        $http({
+            method: 'GET',
+            url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + authData.token
+            }
+        }).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    return layersService;
 }

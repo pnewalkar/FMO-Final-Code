@@ -1,12 +1,12 @@
 ﻿angular.module('layers')
-        .factory('layersService', layersService);
-layersService.$inject = ['mapService',
+        .factory('layersBusinessService', layersBusinessService);
+layersBusinessService.$inject = ['mapService',
                          'mapStylesFactory',
-                         'layersApiService'];
+                         'layersService'];
 
-function layersService(mapService,
+function layersBusinessService(mapService,
                        mapStylesFactory,
-                       layersApiService) {
+                       layersService) {
     var vm = this;
 
     return {
@@ -51,9 +51,6 @@ function layersService(mapService,
     }
 
     function onChange(changedLayer) {
-
-        // fetchDeliveryPoints();
-        //  fetchAccessLinks();
         if (changedLayer.group) {
             var group = vm.groups[vm.groupNames[changedLayer.group]];
             var otherEnabled = false;
@@ -79,13 +76,13 @@ function layersService(mapService,
     }
     function fetchDeliveryPoints() {
         var data;
-        var data = layersApiService.fetchDeliveryPoints();
+        var data = layersService.fetchDeliveryPoints();
         return showGrouped;
     }
 
     function fetchAccessLinks() {
         var data;
-        var data = layersApiService.fetchAccessLinks();
+        var data = layersService.fetchAccessLinks();
         return showGrouped;
     }
 
