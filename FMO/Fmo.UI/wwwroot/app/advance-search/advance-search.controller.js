@@ -5,6 +5,7 @@ angular
         '$state',
         '$mdDialog',
         '$stateParams',
+        'data',
         'advanceSearchBusinessService',
         
         AdvanceSearchController]);
@@ -13,6 +14,8 @@ function AdvanceSearchController(
     $state,
     $mdDialog,
     $stateParams,
+    data,
+    
     advanceSearchBusinessService
    ) {
 
@@ -22,7 +25,7 @@ function AdvanceSearchController(
     vm.toggleList = toggleList;
     vm.toggleSelection = toggleSelection;
     vm.queryAdvanceSearch = queryAdvanceSearch;
-    vm.searchText = $stateParams.data;
+    vm.searchText = data;
     vm.closeWindow = closeWindow;
     vm.initialize()
 

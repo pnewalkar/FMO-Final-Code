@@ -1,8 +1,24 @@
 'use strict';
 angular.module('search')
-.controller('SearchController',['searchApiService', '$scope', '$state', 'mapFactory', 'mapStylesFactory', 'popUpSettingService', '$mdDialog', '$stateParams', '$timeout', SearchController]);
+.controller('SearchController', SearchController);
 
-function SearchController(searchApiService, $scope, $state, mapFactory, mapStylesFactory, popUpSettingService, $mdDialog, $stateParams, $timeout) {
+SearchController.$inject = [
+   'searchApiService',
+    '$state',
+    'mapFactory',
+    'popUpSettingService',
+    '$mdDialog',
+    '$timeout'
+];
+
+function SearchController(
+    searchApiService,
+    $state,
+    mapFactory,
+    popUpSettingService,
+    $mdDialog,
+    $timeout) {
+
     var vm = this;
     vm.resultSet = resultSet;
     vm.onEnterKeypress = onEnterKeypress;
@@ -76,7 +92,6 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
     }
 
     function advanceSearch(query) {
-        $stateParams.data = query;
         var advaceSearchTemplate = popUpSettingService.advanceSearch(query);
         vm.openModalPopup(advaceSearchTemplate);
     }
@@ -90,7 +105,5 @@ function SearchController(searchApiService, $scope, $state, mapFactory, mapStyle
             vm.resultscount[0].count = 0;
             vm.searchText = "";
         });
-      
-     
     };   
 }

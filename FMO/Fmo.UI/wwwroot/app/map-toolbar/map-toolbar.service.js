@@ -66,6 +66,8 @@ function mapToolbarService(mapService) {
                 return 'Point';
             case 'line':
                 return 'LineString';
+            case 'accesslink':
+                return 'LineString';
             default:
                 return undefined;
 

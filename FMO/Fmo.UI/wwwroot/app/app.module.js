@@ -21,7 +21,6 @@ angular.module('FMOApp', ['ngMaterial', 'ui.router', 'pascalprecht.translate',
     }
 })
     .config(['localizationProvider', '$translateProvider', function (localizationProvider, $translateProvider) {
-        debugger;
         localizationProvider.updateLocale = function (lang) {
             console.log('changing lang' + lang);
             LangResourcesLoader($translateProvider, lang);
