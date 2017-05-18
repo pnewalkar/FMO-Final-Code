@@ -7,6 +7,8 @@ angular
         '$state',
         '$mdDialog',
         '$stateParams',
+        ,'advanceSearchBusinessService',
+        
         AdvanceSearchController]);
 
 function AdvanceSearchController(
@@ -14,7 +16,9 @@ function AdvanceSearchController(
     mapFactory,
     $state,
     $mdDialog,
-    $stateParams) {
+    $stateParams,
+    advanceSearchBusinessService
+   ) {
 
     var vm = this;
     vm.initialize = initialize;
@@ -25,14 +29,13 @@ function AdvanceSearchController(
 
     vm.results = [];
     vm.searchText = $stateParams.data;
-    vm.arrDeliverypoints = [];
-    vm.arrPostCodes = [];
-    vm.arrStreetNames = [];
-    vm.arrDeliveryRoutes = [];
+    //vm.arrDeliverypoints = [];
+    //vm.arrPostCodes = [];
+    //vm.arrStreetNames = [];
+    //vm.arrDeliveryRoutes = [];
     vm.closeWindow = closeWindow;
     vm.closeAlert = closeAlert;
     vm.close = "close";
-
     vm.initialize()
 
     function initialize() {
@@ -49,81 +52,81 @@ function AdvanceSearchController(
     }
 
     function queryAdvanceSearch(query) {
+        debugger;
+        vm.arrRoutes = advanceSearchBusinessService.queryAdvanceSearch(query);
 
-        searchApiService.advanceSearch(query).then(function (response) {
-
-            vm.results = response.data;
-            vm.searchCount = vm.results.searchCounts;
-            vm.searchItem = vm.results.searchResultItems;
-            vm.arrRoutes = [];
-
-
+           
+            //vm.searchCount = vm.results.searchCounts;
+          //  vm.searchItem = vm.results.searchResultItems;
+           
 
 
-            for (var i = 0; i < vm.results.searchResultItems.length; i++) {
-                vm.route = vm.results.searchResultItems[i];
-                vm.obj;
-                if (vm.route.type == 'DeliveryPoint') {
-                    vm.obj = { 'displayText': vm.route.displayText, 'UDPRN': vm.route.udprn, 'type': "DeliveryPoint" }
-                    vm.arrDeliverypoints.push(vm.obj);
-                }
-                else if (vm.route.type == 'Postcode') {
-                    vm.obj = { 'displayText': vm.route.displayText }
-                    vm.arrPostCodes.push(vm.obj);
-                }
-                else if (vm.route.type == 'StreetNetwork') {
-                    vm.obj = { 'displayText': vm.route.displayText }
-                    vm.arrStreetNames.push(vm.obj);
-                }
-                else if (vm.route.type == 'Route') {
-                    vm.obj = { 'displayText': vm.route.displayText }
-                    vm.arrDeliveryRoutes.push(vm.obj);
-                }
-            }
-            if (vm.arrDeliverypoints.length == 1) {
-                vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': true };
-            }
-            else {
-                vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': false };
-            }
 
-            if (vm.arrPostCodes.length == 1) {
-                vm.postCodeObj = {
-                    'type': 'PostCode', 'name': vm.arrPostCodes, 'open': true
-                };
-            }
-            else {
-                vm.postCodeObj = {
-                    'type': 'PostCode', 'name': vm.arrPostCodes, 'open': false
-                };
-            }
-            if (vm.arrStreetNames.length == 1) {
-                vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': true };
-            }
-            else {
-                vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': false };
-            }
-            if (vm.arrDeliveryRoutes.length == 1) {
-                vm.deliveryRouteobj = { 'type': 'Route', 'name': vm.arrDeliveryRoutes, 'open': true };
-            }
-            else {
-                vm.deliveryRouteobj = { 'type': 'Route', 'name': vm.arrDeliveryRoutes, 'open': false };
-            }
 
-            if (vm.arrDeliverypoints.length > 0) {
-                vm.arrRoutes.push(vm.deliveryPointObj);
-            }
-            if (vm.arrPostCodes.length > 0) {
-                vm.arrRoutes.push(vm.postCodeObj);
-            }
-            if (vm.arrStreetNames.length > 0) {
-                vm.arrRoutes.push(vm.streetnameObj);
-            }
-            if (vm.arrDeliveryRoutes.length > 0) {
-                vm.arrRoutes.push(vm.deliveryRouteobj);
-            }
+            //for (var i = 0; i < vm.results.searchResultItems.length; i++) {
+            //    vm.route = vm.results.searchResultItems[i];
+            //    vm.obj;
+            //    if (vm.route.type == 'DeliveryPoint') {
+            //        vm.obj = { 'displayText': vm.route.displayText, 'UDPRN': vm.route.udprn, 'type': "DeliveryPoint" }
+            //        vm.arrDeliverypoints.push(vm.obj);
+            //    }
+            //    else if (vm.route.type == 'Postcode') {
+            //        vm.obj = { 'displayText': vm.route.displayText }
+            //        vm.arrPostCodes.push(vm.obj);
+            //    }
+            //    else if (vm.route.type == 'StreetNetwork') {
+            //        vm.obj = { 'displayText': vm.route.displayText }
+            //        vm.arrStreetNames.push(vm.obj);
+            //    }
+            //    else if (vm.route.type == 'Route') {
+            //        vm.obj = { 'displayText': vm.route.displayText }
+            //        vm.arrDeliveryRoutes.push(vm.obj);
+            //    }
+            //}
+            //if (vm.arrDeliverypoints.length == 1) {
+            //    vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': true };
+            //}
+            //else {
+            //    vm.deliveryPointObj = { 'type': 'DeliveryPoint', 'name': vm.arrDeliverypoints, 'open': false };
+            //}
 
-        });
+            //if (vm.arrPostCodes.length == 1) {
+            //    vm.postCodeObj = {
+            //        'type': 'PostCode', 'name': vm.arrPostCodes, 'open': true
+            //    };
+            //}
+            //else {
+            //    vm.postCodeObj = {
+            //        'type': 'PostCode', 'name': vm.arrPostCodes, 'open': false
+            //    };
+            //}
+            //if (vm.arrStreetNames.length == 1) {
+            //    vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': true };
+            //}
+            //else {
+            //    vm.streetnameObj = { 'type': 'StreetNetwork', 'name': vm.arrStreetNames, 'open': false };
+            //}
+            //if (vm.arrDeliveryRoutes.length == 1) {
+            //    vm.deliveryRouteobj = { 'type': 'Route', 'name': vm.arrDeliveryRoutes, 'open': true };
+            //}
+            //else {
+            //    vm.deliveryRouteobj = { 'type': 'Route', 'name': vm.arrDeliveryRoutes, 'open': false };
+            //}
+
+            //if (vm.arrDeliverypoints.length > 0) {
+            //    vm.arrRoutes.push(vm.deliveryPointObj);
+            //}
+            //if (vm.arrPostCodes.length > 0) {
+            //    vm.arrRoutes.push(vm.postCodeObj);
+            //}
+            //if (vm.arrStreetNames.length > 0) {
+            //    vm.arrRoutes.push(vm.streetnameObj);
+            //}
+            //if (vm.arrDeliveryRoutes.length > 0) {
+            //    vm.arrRoutes.push(vm.deliveryRouteobj);
+            //}
+
+   
     }
 
     function toggleSelection(selectedFlag) {

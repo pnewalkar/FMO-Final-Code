@@ -1,8 +1,8 @@
-﻿angular.module('advanceSearch')
-    .factory('advanceSearchService', advanceSearchService);
+﻿//angular.module('advanceSearch')
+//    .factory('advanceSearchService', advanceSearchService);
 
-function advanceSearchService()
-{
+//function advanceSearchService()
+//{
   
-};
+//};
 
