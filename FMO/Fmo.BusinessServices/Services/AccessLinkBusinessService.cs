@@ -11,6 +11,7 @@ using Fmo.Common.Interface;
 using Fmo.Common.SqlGeometryExtension;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 using Fmo.Helpers;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
@@ -245,17 +246,33 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Create manual access link creation after delivery point creation.
         /// </summary>
-        /// <param name="accessLinkDto">access link object to be stored</param>
+        /// <param name="accessLinkManualDto">create modal for manual access link object to be stored</param>
         /// <returns>bool</returns>
-        public bool CreateAccessLink(AccessLinkDTO accessLinkDto)
+        public bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
             bool isAccessLinkCreated = false;
-            try
-            {
-                // TODO: Move all the reference data service calls to respective service.
-                object operationalObject = new object();
 
-                List<string> categoryNames = new List<string>
+            AccessLinkDTO accessLinkDto = new AccessLinkDTO
+            {
+                ID = Guid.Empty,
+                AccessLinkLine = DbGeometry.LineFromText(accessLinkManualDto.AccessLinkLine, 27700),
+                ActualLengthMeter = Convert.ToDecimal(1.00), // need to write logic
+                NetworkIntersectionPoint = DbGeometry.PointFromText(accessLinkManualDto.NetworkIntersectionPoint, 27700),
+                NetworkLink_GUID = Guid.Empty, // need to write logic
+                OperationalObjectPoint = DbGeometry.PointFromText(accessLinkManualDto.OperationalObjectPoint, 27700), // need to write logic
+                OperationalObject_GUID = accessLinkManualDto.OperationalObject_GUID,
+                OperationalObjectType_GUID = Guid.Empty,
+                Approved = true,
+                WorkloadLengthMeter = default(decimal), // need to create
+                AccessLinkType_GUID = Guid.Empty,
+                LinkDirection_GUID = Guid.Empty,
+                LinkStatus_GUID = Guid.Empty,
+            };
+
+            // TODO: Move all the reference data service calls to respective service.
+            object operationalObject = new object();
+
+            List<string> categoryNames = new List<string>
                 {
                    ReferenceDataCategoryNames.OperationalObjectType,
                    ReferenceDataCategoryNames.AccessLinkDirection,
@@ -267,57 +284,58 @@ namespace Fmo.BusinessServices.Services
                    ReferenceDataCategoryNames.DeliveryPointUseIndicator
                 };
 
-                DbGeometry operationalObjectPoint = default(DbGeometry);
-                string roadName = string.Empty;
-                var referenceDataCategoryList =
-                    referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
-                Guid operationObjectTypeId = Guid.Empty; // Guid of DP from referenceData table
+            DbGeometry operationalObjectPoint = default(DbGeometry);
+            string roadName = string.Empty;
 
-                NetworkLinkDTO networkObject = streetNetworkBusinessService.GetNetworkLink(accessLinkDto.NetworkLink_GUID);
+            var referenceDataCategoryList =
+                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
-                accessLinkDto.ID = Guid.Empty;
-                accessLinkDto.ActualLengthMeter = Convert.ToDecimal((double)accessLinkDto.AccessLinkLine.ToSqlGeometry().STLength());
+            accessLinkDto.OperationalObjectType_GUID = referenceDataCategoryList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
+            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(accessLinkManualDto.OperationalObject_GUID);
+            accessLinkDto.OperationalObjectPoint = deliveryPointOperationalObject.LocationXY;
+
+            accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
+                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
+                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkTypeDefault).ID;
+
+            accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
+                .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
+                .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkDirectionBoth).ID;
+
+            accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
+                .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
+                .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkStatusDraftPendingReview).ID; // TO DO live or draft
+
+            NetworkLinkDTO networkObject = streetNetworkBusinessService.GetNetworkLink(accessLinkDto.NetworkLink_GUID);
+
+            accessLinkDto.ActualLengthMeter = Convert.ToDecimal((double)accessLinkDto.AccessLinkLine.ToSqlGeometry().STLength());
+
+            if (referenceDataCategoryList
+              .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+              .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == accessLinkDto.OperationalObjectType_GUID)
+            {
+                DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
+
+                // TODO: calculate access link work length here
+                accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, (double)accessLinkDto.ActualLengthMeter, networkObject, referenceDataCategoryList));
+            }
+
+            // create access link
+            isAccessLinkCreated = accessLinkRepository.CreateAccessLink(accessLinkDto);
+
+            if (isAccessLinkCreated)
+            {
                 if (referenceDataCategoryList
-                  .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                  .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
+               .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+               .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == accessLinkDto.OperationalObjectType_GUID)
                 {
                     DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
-
-                    // TODO: calculate access link work length here
-                    accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, (double)accessLinkDto.ActualLengthMeter, networkObject, referenceDataCategoryList));
+                    deliveryPointDto.AccessLinkPresent = true;
+                    deliveryPointsRepository.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDto);
                 }
-
-                accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
-                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
-                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkTypeDefault).ID;
-
-                accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
-                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
-                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkDirectionBoth).ID;
-
-                accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
-                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
-                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkStatusDraftPendingApproval).ID;
-
-                // create access link
-                isAccessLinkCreated = accessLinkRepository.CreateAccessLink(accessLinkDto);
-
-                if (isAccessLinkCreated)
-                {
-                    if (referenceDataCategoryList
-                   .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                   .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
-                    {
-                        DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
-                        deliveryPointDto.AccessLinkPresent = true;
-                        deliveryPointsRepository.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDto);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                loggingHelper.LogError(ex);
             }
 
             return isAccessLinkCreated;
