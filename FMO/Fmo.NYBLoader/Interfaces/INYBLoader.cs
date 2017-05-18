@@ -25,5 +25,11 @@ namespace Fmo.NYBLoader.Interfaces
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
         /// <returns>If success returns true else returns false</returns>
         Task<bool> SaveNybDetails(List<PostalAddressDTO> postalAddresses, string fileName);
+
+        /// <summary>
+        /// Read files from zip file and call NYBLoader Assembly to validate and save records
+        /// </summary>
+        /// <param name="fileName">Input file name as a param</param>
+        void LoadNYBDetails(string fileName);
     }
 }
