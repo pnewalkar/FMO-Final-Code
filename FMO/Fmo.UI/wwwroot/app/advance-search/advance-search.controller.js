@@ -2,7 +2,7 @@
 angular
     .module('advanceSearch')
     .controller('AdvanceSearchController', [
-        'searchApiService',
+        'searchService',
         'mapFactory',
         '$state',
         '$mdDialog',
@@ -11,7 +11,7 @@ angular
         AdvanceSearchController]);
 
 function AdvanceSearchController(
-    searchApiService,
+    searchService,
     mapFactory,
     $state,
     $mdDialog,
@@ -52,7 +52,7 @@ function AdvanceSearchController(
 
     function queryAdvanceSearch(query) {
 
-        searchApiService.advanceSearch(query).then(function (response) {
+        searchService.advanceSearch(query).then(function (response) {
 
             vm.results = response.data;
             vm.searchCount = vm.results.searchCounts;
@@ -143,7 +143,7 @@ function AdvanceSearchController(
 
     function OnChangeItem(selectedItem) {
         if (selectedItem.type === "DeliveryPoint") {
-            searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
+            searchService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
                     vm.data = response.data;
                     vm.lat = vm.data.features[0].geometry.coordinates[1];
