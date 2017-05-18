@@ -6,19 +6,41 @@ function searchService(
     $http,
     GlobalSettings,
     $q) {
-    var searchService = {};
 
+    return {
+     basicSearch: basicSearch,
+     advanceSearch: advanceSearch,
+     GetDeliveryPointByUDPRN:GetDeliveryPointByUDPRN
+   }
 
-    searchService.basicSearch = function (searchText) {
-        return $http.get(GlobalSettings.apiUrl + '/Search/BasicSearch?searchText=' + searchText);
-    };
+    function basicSearch(searchText) {
+        var deferred = $q.defer();
+        $http.get(GlobalSettings.apiUrl + '/Search/BasicSearch?searchText=' + searchText).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
 
-    searchService.advanceSearch = function (searchText) {
-        return $http.get(GlobalSettings.apiUrl + '/Search/AdvanceSearch?searchText=' + searchText);
-    };
+    function advanceSearch(searchText) {
+        var deferred = $q.defer();
+        $http.get(GlobalSettings.apiUrl + '/Search/AdvanceSearch?searchText=' + searchText).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
 
-    searchService.GetDeliveryPointByUDPRN = function (udprn) {
-        return $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPointByUDPRN?udprn=' + udprn);
-    };
-    return searchService;
+    function GetDeliveryPointByUDPRN(udprn) {
+        var deferred = $q.defer();
+        $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPointByUDPRN?udprn=' + udprn).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+
 }
