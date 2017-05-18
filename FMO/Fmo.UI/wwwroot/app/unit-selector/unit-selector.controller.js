@@ -1,6 +1,6 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController', ['$filter', 'unitSelectorService', 'unitSelectorAPIService', 'mapFactory', 'manageAccessBusinessService', UnitSelectorController]);
-function UnitSelectorController($filter, unitSelectorService, unitSelectorAPIService, mapFactory, manageAccessBusinessService) {
+.controller('UnitSelectorController', ['unitSelectorService', UnitSelectorController]);
+function UnitSelectorController(unitSelectorService) {
     var vm = this;
     vm.BindData = BindData;
     vm.DeliveryUnit = DeliveryUnit;
@@ -8,23 +8,17 @@ function UnitSelectorController($filter, unitSelectorService, unitSelectorAPISer
     vm.deliveryRouteUnit = [];
     vm.isDeliveryUnitDisabled = false;
     BindData();
-
     function DeliveryUnit() {
         vm.selectedDeliveryUnit = vm.selectedUser;
         unitSelectorService.DeliveryUnit(vm.selectedDeliveryUnit);
     }
-
     function BindData() {
-        debugger;
-
-        var response = unitSelectorService.BindData(vm.deliveryRouteUnit).then(function (response) {
-            debugger;
-            vm.deliveryRouteUnit = response;
-            vm.selectedUser = vm.deliveryRouteUnit[0];
+          unitSelectorService.BindData(vm.deliveryRouteUnit).then(function (response) {
+            vm.deliveryRouteUnit = response[0].deliveryRouteUnit;
+            vm.selectedUser = response[0].selectedUser;
             vm.selectedDeliveryUnit = vm.selectedUser;
-           // vm.isDeliveryUnitDisabled = response.isDeliveryUnitDisabled;
+            vm.isDeliveryUnitDisabled = response[0].isDeliveryUnitDisabled;
         });
-
     }
 }
 
