@@ -39,7 +39,7 @@ map-panel {
     pointer-events: auto;
 }
 
-.map-panel .map-panel-content {
+.map-panel .map-panel-content{
     height: calc(100% - 50px);
     overflow: auto;
     pointer-events: auto;
@@ -58,11 +58,13 @@ map-panel {
     @include float(right);
 }
 
-.md-whiteframe-3dp.map-panel.hide-panel {
-    @include width(250px);
+.hide-panel{
+    @include width(350px);
 }
 
-
-.full-height{
-    height:100%;
+.full-height{  
+    height: 100%;
+}
+.panel-header >.fa-minus-circle, .fa-plus-circle{
+    @include font-color($dark-grey);
 }

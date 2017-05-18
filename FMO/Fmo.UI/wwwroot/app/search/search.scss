@@ -13,30 +13,44 @@ i.fa.fa-map-marker.route{
     @include font-color($clear-blue);
 }
 
-.searchBox{
-    @include position(absolute);
-    @include margin(-18px 0px 0px 0px);
+.searchText input[type="text"]{
+    @include font-color($white);
+    border-bottom-color: white;
+}
+
+.searchText label{
+    @include font-color($white);
+}
+
+.searchText md-input-container.md-input-focused label{
+    @include font-color($white);
+}
+
+.searchText md-input-container.md-input-has-value label{
+    @include font-color($white);
+}
+
+.searchText md-input-container.md-input-focused input[type="text"]{
+    border-bottom-color: white;
 }
 
 .searchInput{
     @extend %body-content;
     @include background($white,none);
-    @include width(235px);
     @include padding(5px 5px 5px 5px);
 }
 
 .searchContent{
-    @include background($white,none);
-    @include margin(16px 0px 0px 0px);
+    @include margin(-31px 0px 0px 0px);
 }
 
 .searchData{
     @include background($white,none);
     @include font-color($strong-grey);
+    @include width(265px);
     @include padding(5px 5px 5px 5px);
     @include border-bottom(1px solid $grey);
     @include cursor(pointer);
-    width:280px;
 
     & span{
         @extend %body-content;
@@ -55,7 +69,7 @@ i.fa.fa-map-marker.route{
     width: width-percent(1);
     @include background($white,none);
     @include border(1px solid $recess-grey);
-    @include margin(-5px 0px 0px 0px);
+    @include margin(-5px 0px -3px 0px);
    }
 .noResult {
     @extend %body-content;
@@ -96,14 +110,14 @@ i.fa.fa-angle-right.searchRight {
     @include background($positive-blue,none);
     @include position(absolute);
     @include border-radius(50%);
-    width: width-percent(4.55);
+    width: width-percent(20);
     @include border(1px solid $black);
-    @include top(0px);
-    right: 33px;
+    @include margin(0px 0px 0px -65px);
+    bottom: 16px;
 }
 
 .numberCircle span {
-    @include font-color($black);
+    @include font-color($white);
     text-align: center;
     line-height: 32px;
     display: block;

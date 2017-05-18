@@ -155,7 +155,7 @@
         </md-list>
         <md-list ng-hide="!vm.routeDetails">
             <md-subheader>Generate</md-subheader>
-            <md-list-item>
+            <md-list-item ng-click="$event.stopPropagation();">
                 <md-checkbox></md-checkbox>
                 <p>Route Log Summary</p>
             </md-list-item>
