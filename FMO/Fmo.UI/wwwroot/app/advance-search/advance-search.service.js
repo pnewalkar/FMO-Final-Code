@@ -108,7 +108,7 @@ function advanceSearchService(advanceSearchApiService,
         if (selectedItem.type === "DeliveryPoint") {
             searchService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
-                    coordinatesData = response.data;
+                    coordinatesData = response;
                     lat = coordinatesData.features[0].geometry.coordinates[1];
                     long = coordinatesData.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(long, lat);
