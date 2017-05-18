@@ -4,19 +4,16 @@ angular
     .controller('AdvanceSearchController', [
         '$state',
         '$mdDialog',
-        '$stateParams',
-        'data',
-        'advanceSearchBusinessService',
+        'searchText',
+        'advanceSearchService',
         
         AdvanceSearchController]);
 
 function AdvanceSearchController(
     $state,
     $mdDialog,
-    $stateParams,
-    data,
-    
-    advanceSearchBusinessService
+    searchText,
+    advanceSearchService
    ) {
 
     var vm = this;
@@ -25,7 +22,7 @@ function AdvanceSearchController(
     vm.toggleList = toggleList;
     vm.toggleSelection = toggleSelection;
     vm.queryAdvanceSearch = queryAdvanceSearch;
-    vm.searchText = data;
+    vm.searchText = searchText;
     vm.closeWindow = closeWindow;
     vm.initialize()
 
@@ -42,7 +39,7 @@ function AdvanceSearchController(
     }
 
     function queryAdvanceSearch(query) {
-        advanceSearchBusinessService.queryAdvanceSearch(query).then(function (response) {
+        advanceSearchService.queryAdvanceSearch(query).then(function (response) {
             vm.arrRoutes = response;
         });
     }
@@ -62,7 +59,7 @@ function AdvanceSearchController(
 
     function OnChangeItem(selectedItem) {
         if (selectedItem.type === "DeliveryPoint") {
-            advanceSearchBusinessService.onChangeItem(selectedItem).then(function (response) {
+            advanceSearchService.onChangeItem(selectedItem).then(function (response) {
                 $state.go('searchDetails', { selectedItem: selectedItem });
                 $mdDialog.hide();
             });

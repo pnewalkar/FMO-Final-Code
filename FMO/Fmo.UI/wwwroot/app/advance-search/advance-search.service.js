@@ -1,16 +1,17 @@
 ﻿
 angular.module('advanceSearch')
-        .service('advanceSearchBusinessService', advanceSearchBusinessService);
-advanceSearchBusinessService.$inject = [
- 'advanceSearchApiService', 'popUpSettingService', '$q', 'searchApiService', 'mapFactory'
-];
+        .service('advanceSearchService', advanceSearchService);
+advanceSearchService.$inject = ['advanceSearchApiService',
+                                '$q',                               
+                                'searchApiService',
+                                'mapFactory'];
 
-function advanceSearchBusinessService(advanceSearchApiService, popUpSettingService, $q, searchApiService, mapFactory) {
-    return {
-        queryAdvanceSearch: queryAdvanceSearch,
-        onChangeItem: onChangeItem
-    };
-    var results = null;
+function advanceSearchService(advanceSearchApiService,
+                              $q,
+                              searchApiService,
+                              mapFactory) {
+    
+    
     var deliveryPointObj = null;
     var postCodeObj = null;
     var streetnameObj = null;
@@ -18,8 +19,14 @@ function advanceSearchBusinessService(advanceSearchApiService, popUpSettingServi
     var route = [];
     var obj = null;
 
+    return {
+        queryAdvanceSearch: queryAdvanceSearch,
+        onChangeItem: onChangeItem
+    };
+
     function queryAdvanceSearch(query) {
         var deferred = $q.defer();
+        var advanceSearchResults = null;
         var arrDeliverypoints = [];
         var arrPostCodes = [];
         var arrStreetNames = [];
@@ -27,27 +34,26 @@ function advanceSearchBusinessService(advanceSearchApiService, popUpSettingServi
         var arrRoutes = [];
 
         advanceSearchApiService.advanceSearch(query).then(function (response) {
-            results = response.data;
-            for (var i = 0; i < results.searchResultItems.length; i++) {
-                route = results.searchResultItems[i];
-                obj;
-                if (route.type == 'DeliveryPoint') {
-                    obj = { 'displayText': route.displayText, 'UDPRN': route.udprn, 'type': "DeliveryPoint" }
+            advanceSearchResults = response;
+            angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
+                if (value.type == "DeliveryPoint")
+                {
+                    obj = { 'displayText': value.displayText, 'UDPRN': value.udprn, 'type': "DeliveryPoint" }
                     arrDeliverypoints.push(obj);
                 }
-                else if (route.type == 'Postcode') {
-                    obj = { 'displayText': route.displayText }
+               else if (value.type == "Postcode") {
+                   obj = { 'displayText': value.displayText }
                     arrPostCodes.push(obj);
                 }
-                else if (route.type == 'StreetNetwork') {
-                    obj = { 'displayText': route.displayText }
-                    arrStreetNames.push(obj);
+               else if (value.type == "StreetNetwork") {
+                   obj = { 'displayText': value.displayText }
+                   arrStreetNames.push(obj);
                 }
-                else if (route.type == 'Route') {
-                    obj = { 'displayText': route.displayText }
+                if (value.type == "Route") {
+                    obj = { 'displayText': value.displayText }
                     arrDeliveryRoutes.push(obj);
                 }
-            }
+            });
 
             if (arrDeliverypoints.length == 1) {
                 deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': true };
@@ -98,15 +104,15 @@ function advanceSearchBusinessService(advanceSearchApiService, popUpSettingServi
 
     function onChangeItem(selectedItem) {
         var deferred = $q.defer();
-        var data = null;
+        var coordinatesData = null;
         if (selectedItem.type === "DeliveryPoint") {
             searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
-                    data = response.data;
-                    lat = data.features[0].geometry.coordinates[1];
-                    long = data.features[0].geometry.coordinates[0];
+                    coordinatesData = response.data;
+                    lat = coordinatesData.features[0].geometry.coordinates[1];
+                    long = coordinatesData.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(long, lat);
-                    deferred.resolve(data);
+                    deferred.resolve(coordinatesData);
                 });
             return deferred.promise;
         }
