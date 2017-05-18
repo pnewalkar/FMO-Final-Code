@@ -7,7 +7,7 @@ angular
                 'popUpSettingService',
                 '$mdSidenav',
                 '$mdDialog',
-                'sideNavApiService', 'SideNavConstant',
+                'sideNavApiService', 'CommonConstants',
                  sideNavController]);
 
 function sideNavController($scope,
@@ -17,7 +17,7 @@ function sideNavController($scope,
                            $mdSidenav,
                            $mdDialog,
                            sideNavApiService,
-                           SideNavConstant)
+                           CommonConstants)
                            {
    var vm = this;
     vm.routeLog = routeLog;
@@ -28,16 +28,16 @@ function sideNavController($scope,
     vm.routeSimulation = routeSimulation;
     vm.deliveryPoint = deliveryPoint;
     vm.selectedUnit = $stateParams;
-    vm.contextTitle = "Context Panel";
+    vm.contextTitle = CommonConstants.TitleContextPanel;
     vm.fetchActionItems();
 
     function routeSimulation(selectedDeliveryUnit) {
-        vm.contextTitle = "Simulation";
+        vm.contextTitle = CommonConstants.TitleSimulation;
         $state.go("routeSimulation", { selectedUnit: selectedDeliveryUnit });
     }
 
     function deliveryPoint(selectedDeliveryUnit) {
-        vm.contextTitle = "Delivery Point";
+        vm.contextTitle = CommonConstants.DeliveryPointActionName;
         $state.go("deliveryPoint", { selectedUnit: selectedDeliveryUnit });
     }
                                
@@ -63,17 +63,17 @@ function sideNavController($scope,
 
     function fetchActions(query, selectedUnit) {
         vm.closeSideNav();
-        if (query === SideNavConstant.routeLogActionName) {
+        if (query === CommonConstants.RouteLogActionName) {
             vm.routeLog(selectedUnit);
         }
-        if (query === SideNavConstant.routeSimulationActionName) {
+        if (query === CommonConstants.RouteSimulationActionName) {
             vm.routeSimulation(selectedUnit);
         }
-        if (query === SideNavConstant.deliveryPointActionName) {
+        if (query === CommonConstants.DeliveryPointActionName) {
             vm.deliveryPoint(selectedUnit);
         }
-        if (query === "Access Link") {
-            vm.contextTitle = "Access Link";
+        if (query === CommonConstants.AccessLinkActionName) {
+            vm.contextTitle = CommonConstants.AccessLinkActionName;
             $state.go("referenceData");
         }
     }
