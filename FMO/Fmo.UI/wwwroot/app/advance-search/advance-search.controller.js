@@ -7,6 +7,7 @@ angular
         '$state',
         '$mdDialog',
         '$stateParams',
+        'data',
         AdvanceSearchController]);
 
 function AdvanceSearchController(
@@ -14,7 +15,8 @@ function AdvanceSearchController(
     mapFactory,
     $state,
     $mdDialog,
-    $stateParams) {
+    $stateParams,
+    data) {
 
     var vm = this;
     vm.initialize = initialize;
@@ -24,7 +26,7 @@ function AdvanceSearchController(
     vm.queryAdvanceSearch = queryAdvanceSearch;
 
     vm.results = [];
-    vm.searchText = $stateParams.data;
+    vm.searchText = data;
     vm.arrDeliverypoints = [];
     vm.arrPostCodes = [];
     vm.arrStreetNames = [];
