@@ -1,22 +1,28 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using Fmo.Common.Constants;
+using Fmo.Common.Enums;
+using Fmo.Common.Interface;
 using Fmo.DTO;
 using Fmo.NYBLoader.Interfaces;
-using Fmo.Common.Enums;
-using Fmo.Common.Constants;
-using Fmo.Common.Interface;
-using System.Reflection;
 
 namespace Fmo.NYBLoader
 {
     /// <summary>
-    /// Load and process NYb files 
+    /// Load and process NYb files
     /// </summary>
     public class NYBLoader : INYBLoader
     {
         #region private member declaration
+
+        private static string dateTimeFormat = Constants.DATETIMEFORMAT;
         private static int noOfCharacters = 15;
         private static int maxCharacters = 507;
         private static int csvValues = 16;
@@ -24,21 +30,96 @@ namespace Fmo.NYBLoader
         private IHttpHandler httpHandler;
         private ILoggingHelper loggingHelper;
         private IExceptionHelper exceptionHelper;
+        private string strProcessedFilePath = string.Empty;
+        private string strErrorFilePath = string.Empty;
         private bool enableLogging = false;
-        #endregion
+        private string nybMessage = Constants.LOADNYBDETAILSLOGMESSAGE;
+        private string nybInvalidDetailMessage = Constants.LOADNYBINVALIDDETAILS;
+
+        #endregion private member declaration
 
         #region constructor
+
         public NYBLoader(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
             this.httpHandler = httpHandler;
             this.strFMOWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
             this.exceptionHelper = exceptionHelper;
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
+            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
-        #endregion
+
+        #endregion constructor
 
         #region public methods
+
+        /// <summary>
+        /// Read files from zip file and call NYBLoader Assembly to validate and save records
+        /// </summary>
+        /// <param name="fileName">Input file name as a param</param>
+        public void LoadNYBDetails(string fileName)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            try
+            {
+                if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME))
+                {
+                    using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                    {
+                        foreach (ZipArchiveEntry entry in zip.Entries)
+                        {
+                            using (Stream stream = entry.Open())
+                            {
+                                var reader = new StreamReader(stream);
+                                string strLine = reader.ReadToEnd();
+                                string strfileName = entry.Name;
+                                if (CheckFileName(new FileInfo(strfileName).Name, Constants.NYBFLATFILENAME))
+                                {
+                                    List<PostalAddressDTO> lstNYBDetails = LoadNybDetailsFromCsv(strLine.Trim());
+                                    string postaLAddress = serializer.Serialize(lstNYBDetails);
+                                    LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
+
+                                    if (lstNYBDetails != null && lstNYBDetails.Count > 0)
+                                    {
+                                        var invalidRecordsCount = lstNYBDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                                        if (invalidRecordsCount > 0)
+                                        {
+                                            File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            this.loggingHelper.LogInfo(string.Format(nybInvalidDetailMessage, strfileName, DateTime.Now.ToString()));
+                                        }
+                                        else
+                                        {
+                                            File.WriteAllText(Path.Combine(strProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            SaveNybDetails(lstNYBDetails, strfileName);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(Path.Combine(strErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                        this.loggingHelper.LogInfo(string.Format(nybMessage, strfileName, DateTime.Now.ToString()));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+        }
+
         /// <summary>
         /// Reads data from CSV file and maps to postalAddressDTO object
         /// </summary>
@@ -59,7 +140,7 @@ namespace Fmo.NYBLoader
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
-                        //Validate NYB Details ,validates each property of PostalAddressDTO as per the business rule and set the Value of IsValid property to either true 
+                        //Validate NYB Details ,validates each property of PostalAddressDTO as per the business rule and set the Value of IsValid property to either true
                         //or false.Depending on the count of IsValid property data wil either will be saved in DB or file will be moved to error folder.
                         ValidateNybDetails(lstAddressDetails);
 
@@ -106,9 +187,21 @@ namespace Fmo.NYBLoader
             }
             return isNybDetailsInserted;
         }
-        #endregion
+
+        #endregion public methods
 
         #region private methods
+
+        /// <summary>
+        /// Append timestamp to filename before writing the file to specified folder
+        /// </summary>
+        /// <param name="strfileName">path</param>
+        /// <returns>Filename with timestamp appended</returns>
+        private static string AppendTimeStamp(string strfileName)
+        {
+            return string.Concat(Path.GetFileNameWithoutExtension(strfileName), string.Format(dateTimeFormat, DateTime.Now), Path.GetExtension(strfileName));
+        }
+
         /// <summary>
         /// Validates string i.e. no of comma's should be 15 and max characters per line should be 507
         /// </summary>
@@ -251,7 +344,6 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
-
                 throw;
             }
             finally
@@ -296,7 +388,6 @@ namespace Fmo.NYBLoader
             }
             catch (Exception)
             {
-
                 throw;
             }
             finally
@@ -315,7 +406,27 @@ namespace Fmo.NYBLoader
         {
             this.loggingHelper.LogInfo(methodName + seperator + logMessage, this.enableLogging);
         }
-        #endregion
 
+        /// <summary>
+        /// Check file name is valid
+        /// </summary>
+        /// <param name="fileName">File Name</param>
+        /// <param name="regex">regular expression to pass</param>
+        /// <returns>bool</returns>
+        private bool CheckFileName(string fileName, string regex)
+        {
+            try
+            {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
+                Regex reg = new Regex(regex);
+                return reg.IsMatch(fileName);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        #endregion private methods
     }
 }

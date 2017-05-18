@@ -13,7 +13,9 @@ function PopUpSettingService() {
             templateUrl: './advance-search/advance-search.template.html',
             clickOutsideToClose: false,
             controller: 'AdvanceSearchController as vm',
-            params: { searchText: query }
+            locals : {
+                searchText : query
+            }
         };
     }
 

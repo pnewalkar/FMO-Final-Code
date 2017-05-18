@@ -15,5 +15,7 @@ namespace Fmo.DTO.Model
         public string AccessLinkLine { get; set; }
 
         public Guid NetworkLink_GUID { get; set; }
+
+        public Guid OperationalObject_GUID { get; set; }
     }
 }

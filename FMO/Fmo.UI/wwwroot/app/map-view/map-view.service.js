@@ -7,7 +7,8 @@ mapService.$inject = ['$http',
                      '$timeout',
                      'GlobalSettings',
                      'coordinatesService',
-                     '$document'];
+                     '$document',
+                     'layersService'];
 
 function mapService($http,
                     mapFactory,
@@ -15,7 +16,8 @@ function mapService($http,
                     $timeout,
                     GlobalSettings,
                     coordinatesService,
-                    $document) {
+                    $document,
+                    layersService) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
@@ -130,14 +132,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                $http({
-                    method: 'GET',
-                    url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + authData.token
-                    }
-                }).success(function (response) {
+                layersService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     loadFeatures(deliveryPointsVector, response);
                 });
             }
@@ -160,14 +155,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                $http({
-                    method: 'GET',
-                    url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + authData.token
-                    }
-                }).success(function (response) {
+                layersService.fetchAccessLinks(extent, authData).then(function (response) {
                     loadFeatures(accessLinkVector, response);
                 });
             }
@@ -178,14 +166,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                $http({
-                    method: 'GET',
-                    url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + authData.token
-                    }
-                }).success(function (response) {
+                layersService.fetchRouteLinks(extent, authData).then(function (response) {
                     loadFeatures(roadLinkVector, response);
                 });
             }
@@ -214,7 +195,6 @@ function mapService($http,
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
-        //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -356,11 +336,7 @@ function mapService($http,
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
             layer.layer.changed();
-            //debugger;
-            //if (layer.layerName != "Unit Boundary") {
-            //    setSelections(null, []);
-            //}
-
+          
         });
         vm.layerSummary = getLayerSummary();
     }
