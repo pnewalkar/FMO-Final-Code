@@ -21,7 +21,7 @@ function mapService($http,
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line"];
+    vm.mapButtons = ["select", "point", "line", "accesslink"];
     vm.interactions = {};
     vm.layersForContext = [];
     vm.activeSelection = null;
@@ -425,6 +425,10 @@ function mapService($http,
             case "deliverypoint":
                 setupDP();
                 break;
+            case "accesslink":
+                var roadLinklayer = mapFactory.getLayer('Roads');
+                snapOnFeature(roadLinklayer);
+                setupAccessLink();
             default:
                 break;
         }
@@ -434,10 +438,86 @@ function mapService($http,
                 evt.feature.set("type", "deliverypoint");
             })
         }
+
+        else if (name == "accesslink") {
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.set("type", "accesslink");
+            })
+        }
         else {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
 
+    }
+    function setAccessLinkCoordinates(coordinates, geometry) {
+        if (!geometry) {
+            geometry = new ol.geom.LineString(null);
+        }
+
+        var accessLinkEndCoordinate = coordinates[1];
+        var dpCoordinates = coordinatesService.getCordinates();
+        var accessLinkCoordinates = [accessLinkEndCoordinate[0], accessLinkEndCoordinate[1]];
+        var setAccessLinkCoordinate = [dpCoordinates, accessLinkCoordinates];
+
+        geometry.setCoordinates(setAccessLinkCoordinate);
+
+        return geometry;
+
+    }
+    function setupAccessLink() {
+        var startLineCoordinate = [];
+        var endLineCoordinate = [];
+
+        vm.interactions.draw.geometryFunction_ = setAccessLinkCoordinates;
+        vm.interactions.draw.finishCondition_ = finishCondition;
+        vm.interactions.draw.on('drawstart',
+			function (evt) {
+			    removeInteraction("select");
+			    clearDrawingLayer(true);
+			    setSelections(null, []);
+			    });
+        vm.interactions.draw.on('drawend',
+			function (evt) {
+			    evt.feature.set("type", "accesslink");
+			    var coordinates = evt.feature.getGeometry().getCoordinates();
+			    coordinatesServiceForAccessLink.setCordinates(coordinates);
+
+			    });
+        }
+    function finishCondition(e) {
+        var intersectionfeatures = []
+        var hasFeatureAtPixel = vm.map.hasFeatureAtPixel(e.pixel);
+        if (hasFeatureAtPixel) {
+            vm.map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+                if (layer) {
+                    if (layer.get('name') === "Roads") {
+                        return true;
+                    }
+                    else {
+                        removeInteraction("draw");
+                        removeInteraction("select");
+                        return false;
+                    }
+                }
+                else {
+                    removeInteraction("draw");
+                    removeInteraction("select");
+                    return false;
+                }
+            });
+        }
+        else {
+            removeInteraction("draw");
+            removeInteraction("select");
+            return false;
+        }
+    }
+    function snapOnFeature(vector) {
+        vm.interactions.snap = new ol.interaction.Snap({
+            source: vector.layer.getSource()
+        });
+
+        addInteractions();
     }
     function setSelectButton() {
         var lastLayer;
