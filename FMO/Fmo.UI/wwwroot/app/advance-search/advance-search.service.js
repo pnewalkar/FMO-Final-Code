@@ -2,13 +2,13 @@
 angular.module('advanceSearch')
         .service('advanceSearchService', advanceSearchService);
 advanceSearchService.$inject = ['advanceSearchApiService',
-                                '$q',                               
-                                'searchApiService',
+                                '$q',                              
+                                'searchService',
                                 'mapFactory'];
 
 function advanceSearchService(advanceSearchApiService,
-                              $q,
-                              searchApiService,
+                              $q,                            
+                              searchService,
                               mapFactory) {
     
     
@@ -106,7 +106,7 @@ function advanceSearchService(advanceSearchApiService,
         var deferred = $q.defer();
         var coordinatesData = null;
         if (selectedItem.type === "DeliveryPoint") {
-            searchApiService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
+            searchService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
                     coordinatesData = response.data;
                     lat = coordinatesData.features[0].geometry.coordinates[1];

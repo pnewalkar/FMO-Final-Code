@@ -39,6 +39,7 @@ function AdvanceSearchController(
     }
 
     function queryAdvanceSearch(query) {
+
         advanceSearchService.queryAdvanceSearch(query).then(function (response) {
             vm.arrRoutes = response;
         });
@@ -63,6 +64,12 @@ function AdvanceSearchController(
                 $state.go('searchDetails', { selectedItem: selectedItem });
                 $mdDialog.hide();
             });
+        }
+
+        function closeAlert(selectedItem) {
+            if (selectedItem === "DeliveryPoint") {
+                $mdDialog.hide(vm.close);
+            }
         }
     }
 }
