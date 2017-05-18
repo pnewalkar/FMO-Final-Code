@@ -16,6 +16,7 @@ function RouteLogController(
     items) {
 
     var vm = this;
+    vm.initialize = initialize;
     vm.loadSelectionType = loadSelectionType;
     vm.loadRouteLogStatus = loadRouteLogStatus;
     vm.loadScenario = loadScenario;
@@ -36,6 +37,12 @@ function RouteLogController(
     vm.selectedRoute = null;
     vm.searchTerm = null;
     vm.isShowMultiSelectionRoute = false;
+    vm.initialize();
+
+    function initialize() {
+        vm.loadSelectionType();
+        vm.loadRouteLogStatus();
+    }
 
     function closeWindow() {
         $mdDialog.cancel();
