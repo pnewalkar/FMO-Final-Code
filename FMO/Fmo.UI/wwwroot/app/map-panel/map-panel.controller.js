@@ -1,16 +1,26 @@
 'use strict';
-angular.module('mapPanel')
-    .controller('MapPanelController', ['$scope', '$timeout', MapPanelController]);
+angular
+    .module('mapPanel')
+    .controller('MapPanelController', MapPanelController);
 
-function MapPanelController($scope, $timeout) {
+MapPanelController.$inject = [
+        '$timeout',
+];
+
+function MapPanelController(
+    $timeout) {
 
     var vm = this;
+    vm.initialize = initialize;
     vm.togglePanel = togglePanel;
 
+    vm.initialize();
     function togglePanel() {
         vm.collapsed = !vm.collapsed;
     }
     
-    if (vm.oncreate)
-        $timeout(vm.oncreate);
+    function initialize() {
+        if (vm.oncreate)
+            $timeout(vm.oncreate);
+    }
 };

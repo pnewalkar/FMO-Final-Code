@@ -30,7 +30,7 @@ angular.module('FMOApp')
          .state('manageaccess', {
              url: '/',
              templateUrl: '/app/manage-access/manage-access.html',
-             controller: 'manageAccessController as vm',
+             controller: 'ManageAccessController as vm',
              params: { username: null }
          })
         .state("searchDetails", {

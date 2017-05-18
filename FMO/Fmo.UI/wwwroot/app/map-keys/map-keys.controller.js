@@ -1,8 +1,14 @@
 'use strict';
-angular.module('mapKey')
-    .controller('MapKeyController', ['mapKeyService', MapKeyController]);
+angular
+    .module('mapKey')
+    .controller('MapKeyController', MapKeyController);
 
-function MapKeyController(mapKeyService) {
+MapKeyController.$inject = [
+    'mapKeyService'
+];
+
+function MapKeyController(
+    mapKeyService) {
 
     var vm = this;
     vm.showKey = showKey;
