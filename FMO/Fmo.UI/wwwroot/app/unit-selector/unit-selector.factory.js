@@ -1,8 +1,12 @@
 angular.module('unitSelector')
     .factory('unitSelectorAPIService', unitSelectorAPIService);
 
-unitSelectorAPIService.$inject = ['$http', '$q', 'GlobalSettings'];
-function unitSelectorAPIService($http, $q, GlobalSettings) {
+unitSelectorAPIService.$inject = ['$http',
+                                  '$q',
+                                  'GlobalSettings'];
+function unitSelectorAPIService($http,
+                                $q,
+                                GlobalSettings) {
     return {
         getDeliveryUnit: getDeliveryUnit
     };

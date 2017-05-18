@@ -1,15 +1,22 @@
 angular.module('unitSelector')
     .service('unitSelectorService', unitSelectorService);
 
-unitSelectorService.$inject = ['$http', '$q', 'GlobalSettings', '$filter', 'manageAccessBusinessService', 'mapFactory', 'unitSelectorAPIService'];
-function unitSelectorService($http, $q, GlobalSettings, $filter, manageAccessBusinessService, mapFactory, unitSelectorAPIService) {
-
-
-    var selectedDeliveryUnit = null;
+unitSelectorService.$inject = ['$q',
+                               'GlobalSettings',
+                               '$filter',
+                               'manageAccessBusinessService',
+                               'mapFactory',
+                               'unitSelectorAPIService'];
+function unitSelectorService($q,
+                             GlobalSettings,
+                             $filter,
+                             manageAccessBusinessService,
+                             mapFactory,
+                             unitSelectorAPIService) {
     var deliveryRouteUnit = [];
     var isDeliveryUnitDisabled = false;
-
-
+    var result = [];
+    var selectedDeliveryUnit = null;
     return {
         DeliveryUnit: DeliveryUnit,
         BindData: BindData
@@ -19,28 +26,24 @@ function unitSelectorService($http, $q, GlobalSettings, $filter, manageAccessBus
         manageAccessBusinessService.activate(selectedDeliveryUnit.id);
         updateMapAfterUnitChange(selectedDeliveryUnit);
     }
-
     function BindData(deliveryRouteUnit) {
         if (deliveryRouteUnit.length === 0) {
             var authData = sessionStorage.getItem('authorizationData');
             authData = angular.fromJson(authData);
             if (authData.unitGuid) {
+                var deferred = $q.defer();
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                     if (response) {
                         deliveryRouteUnit = response;
                         var newTemp = $filter("filter")(deliveryRouteUnit, { id: authData.unitGuid });
                         selectedUser = newTemp[0];
                         selectedDeliveryUnit = selectedUser;
+                        result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled });
                         updateMapAfterUnitChange(selectedDeliveryUnit);
-
-                        return {
-                            deliveryRouteUnit: deliveryRouteUnit,
-                            selectedUser: selectedUser,
-                            selectedDeliveryUnit: selectedDeliveryUnit
-
-                        };
+                        deferred.resolve(result);
                     }
                 });
+                return deferred.promise;
 
             } else {
                 var deferred = $q.defer();
@@ -52,8 +55,9 @@ function unitSelectorService($http, $q, GlobalSettings, $filter, manageAccessBus
                         deliveryRouteUnit = response;
                         selectedUser = deliveryRouteUnit[0];
                         selectedDeliveryUnit = selectedUser;
+                        result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled });
                         updateMapAfterUnitChange(selectedDeliveryUnit);
-                        deferred.resolve(response);
+                        deferred.resolve(result);
                     }
                 });
 
@@ -61,9 +65,7 @@ function unitSelectorService($http, $q, GlobalSettings, $filter, manageAccessBus
             }
         }
     }
-
     function updateMapAfterUnitChange(selectedUnit) {
         mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter, selectedUnit.unitBoundaryGeoJSONData);
     }
-
 }
