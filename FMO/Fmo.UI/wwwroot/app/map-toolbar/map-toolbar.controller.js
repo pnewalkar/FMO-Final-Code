@@ -1,8 +1,16 @@
 'use strict';
-angular.module('mapToolbar')
-    .controller('MapToolbarController', ['mapToolbarService', '$scope', MapToolbarController])
+angular
+    .module('mapToolbar')
+    .controller('MapToolbarController', MapToolbarController)
 
-function MapToolbarController(mapToolbarService, $scope) {
+MapToolbarController.$inject = [
+       'mapToolbarService',
+       '$scope'
+];
+
+function MapToolbarController(
+    mapToolbarService,
+    $scope) {
 
     var vm = this;
     vm.setSelectedButton = setSelectedButton;
