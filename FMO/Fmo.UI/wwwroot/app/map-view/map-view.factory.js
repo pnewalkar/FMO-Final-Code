@@ -50,6 +50,7 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
         getScaleFromResolution: getScaleFromResolution,
         setUnitBoundaries: setUnitBoundaries,
         setDeliveryPoint: setDeliveryPoint,
+        setAccessLink : setAccessLink,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint
     };
@@ -488,6 +489,34 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
         });
         vector_layer.setStyle(mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)("deliverypoint"));
         map.addLayer(vector_layer);
+    }
+
+    function setAccessLink() {
+        var accessLinkLayer = getLayer(GlobalSettings.accessLinkLayerName);
+        accessLinkLayer.layer.getSource().clear();
+        accessLinkLayer.selected = true;
+        accessLinkLayer.layer.setVisible(true)
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+        $http({
+            method: 'GET',
+            url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + map.getView().calculateExtent(map.getSize()).join(','),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + authData.token
+            }
+        }).success(function (response) {
+            var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
+            accessLinkLayer.layer.getSource().addFeatures(features);
+
+            var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+
+            var select = new ol.interaction.Select({ style: style });
+
+            map.addInteraction(select);
+
+            var selectedFeatures = select.getFeatures();
+        });
+
     }
 }
 

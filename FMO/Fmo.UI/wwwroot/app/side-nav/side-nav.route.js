@@ -30,7 +30,7 @@ angular.module('FMOApp')
          .state('manageaccess', {
              url: '/',
              templateUrl: '/app/manage-access/manage-access.html',
-             controller: 'manageAccessController as vm',
+             controller: 'ManageAccessController as vm',
              params: { username: null }
          })
         .state("searchDetails", {
@@ -39,14 +39,13 @@ angular.module('FMOApp')
             params: { selectedItem: null }
         })
         .state("referenceData", {
-            templateUrl: "./reference-data/reference-data.templete.html",
+            templateUrl: "./reference-data/reference-data.template.html",
             controller: "ReferenceDataController as vm"
         })
       .state("accessLink", {
           url: "/accessLink",
           templateUrl: "./access-link/acccess-link.template.html",
           controller: 'AccessLinkController as vm'
-        
       });
    
 })

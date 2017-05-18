@@ -48,7 +48,7 @@
 
             <md-input-container flex="40">
                 <label>{{ 'ROUTE_LOG.ROUTE' | translate }}</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-close="vm.clearSearchTerm()" ng-change="vm.deliveryRouteChange()">
+                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-open="vm.clearSearchTerm()"  md-on-close="vm.clearSearchTerm()" ng-change="vm.deliveryRouteChange()">
                     <md-select-header>
                         <input type="text" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
                     </md-select-header>
@@ -158,6 +158,14 @@
             <md-list-item ng-click="$event.stopPropagation();">
                 <md-checkbox></md-checkbox>
                 <p>Route Log Summary</p>
+            </md-list-item>
+            <md-list-item>
+                <md-checkbox></md-checkbox>
+                <p>Detailed Route Log</p>
+            </md-list-item>
+            <md-list-item>
+                <md-checkbox></md-checkbox>
+                <p>Hazard Card</p>
             </md-list-item>
             <md-button class="md-raised routeGenerate" md-whiteframe="3dp" ng-disabled="true">Generate</md-button>
         </md-list>

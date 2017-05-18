@@ -14,7 +14,8 @@ angular
         'mapFactory',
         'coordinatesService',
         '$state',
-        '$stateParams'
+        '$stateParams',
+        'layersBusinessService'
 , DeliveryPointController])
 function DeliveryPointController(
     mapToolbarService,
@@ -29,7 +30,8 @@ function DeliveryPointController(
     mapFactory,
     coordinatesService,
     $state,
-    $stateParams
+    $stateParams,
+    layersBusinessService
 ) {
     var vm = this;
     vm.resultSet = resultSet;
@@ -148,7 +150,9 @@ function DeliveryPointController(
             "RowVersion": vm.positionedDeliveryPointList[0].rowversion
         }
         deliveryPointApiService.UpdateDeliverypoint(deliveryPointModelDTO).then(function (result) {
+            debugger;
             vm.positionedDeliveryPointList = null;
+            mapFactory.setAccessLink();
             mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
 
@@ -178,8 +182,10 @@ function DeliveryPointController(
         deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
 
             if (response.message && response.message == "Delivery Point created successfully") {
+                debugger;
                 setDeliveryPoint(response.id, response.rowVersion, postalAddress, true);
                 mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
+                mapFactory.setAccessLink();
                 vm.onCloseDeliveryPoint();
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {

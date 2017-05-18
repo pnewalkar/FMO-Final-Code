@@ -6,7 +6,7 @@
             <span class="closeWindow" ><i class="fa fa-times" aria-hidden="true" ng-click="vm.closeWindow()"></i></span>
         </section>
         <section class="advSection">
-            <md-checkbox ng-model="vm.chkRoute"  aria-label="Checkbox 1">
+            <md-checkbox ng-model="vm.chkRoute"    aria-label="Checkbox 1">
                 Route
             </md-checkbox>
             <md-checkbox ng-model="vm.chkPostCode"  aria-label="Checkbox 1">
@@ -35,8 +35,8 @@
             </div>
             <span flex></span>
             <div layout-align="end start">
-                <md-button class="md-raised md-primary" ng-click="vm.selectAll()" >Select All</md-button>
-                <md-button class="md-raised md-primary" ng-click="vm.deSelectAll()" >Deselect All</md-button>
+                <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(true)" >Select All</md-button>
+                <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(false)" >Deselect All</md-button>
             </div>
         </section>
 

@@ -68,6 +68,7 @@
     <Compile Include="DeliveryPointAliasDTO.cs" />
     <Compile Include="FileProcessingLogDTO.cs" />
     <Compile Include="FileProcessing\AddressLocationUSRPOSTDTO.cs" />
+    <Compile Include="Model\AccessLinkManualAddModelDTO.cs" />
     <Compile Include="Model\CreateDeliveryPointModelDTO.cs" />
     <Compile Include="Model\DeliveryPointModelDTO.cs" />
     <Compile Include="Model\RouteLogSummaryModelDTO.cs" />
