@@ -54,7 +54,7 @@ function AdvanceSearchController(
 
         searchService.advanceSearch(query).then(function (response) {
 
-            vm.results = response.data;
+            vm.results = response;
             vm.searchCount = vm.results.searchCounts;
             vm.searchItem = vm.results.searchResultItems;
             vm.arrRoutes = [];
@@ -145,7 +145,7 @@ function AdvanceSearchController(
         if (selectedItem.type === "DeliveryPoint") {
             searchService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
-                    vm.data = response.data;
+                    vm.data = response;
                     vm.lat = vm.data.features[0].geometry.coordinates[1];
                     vm.long = vm.data.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(vm.long, vm.lat);
