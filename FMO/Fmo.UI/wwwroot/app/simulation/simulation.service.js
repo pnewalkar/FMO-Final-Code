@@ -1,46 +1,41 @@
-﻿
-angular.module('simulation')
-        .factory('simulationBusinessService', simulationBusinessService);
-simulationBusinessService.$inject = ['simulationAPIService'];
+﻿angular.module('simulation')
+        .factory('simulationService', simulationService);
 
-function simulationBusinessService(simulationAPIService) {
-    var vm = this;
-    vm.Test = "ABC";
-    vm.RouteStatusObj = null;
-    vm.selectedRouteStatusObj = null;
-    vm.RouteScenario = null;
-    vm.deliveryRoute = null;
+simulationService.$inject = [
+    'simulationAPIService',
+    '$q'];
+
+function simulationService(simulationAPIService,
+                           $q) {
     return {
         loadRouteLogStatus: loadRouteLogStatus,
         loadScenario: loadScenario,
         loadDeliveryRoute: loadDeliveryRoute
     };
 
-    function loadRouteLogStatus() {
-
+    function loadRouteLogStatus(RouteStatusObj, selectedRouteStatusObj, selectedRouteStatusObj, selectedDeliveryUnitObj) {
+        var deferred = $q.defer();
         simulationAPIService.getStatus().then(function (response) {
-            vm.RouteStatusObj = response;
-            vm.selectedRouteStatusObj = {
-                group1: vm.RouteStatusObj[0].id,
-                group2: vm.RouteStatusObj[1].id
-            };
-            return vm.RouteStatusObj;
-            // loadScenario(vm.selectedRouteStatusObj.group1, vm.selectedDeliveryUnitObj.selectedUnit.id);
+            deferred.resolve(response);
         });
-
+        return deferred.promise;
     }
 
-    function loadScenario(operationStateID, deliveryUnitID) {
-        simulationAPIService.getScenario(operationStateID, deliveryUnitID).then(function (response) {
-            vm.RouteScenario = response;
+    function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
+        var deferred = $q.defer();
+        simulationAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
+            deferred.resolve(response);
         });
+        return deferred.promise;
     }
 
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
+        var deferred = $q.defer();
         simulationAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            vm.deliveryRoute = response;
+            if (response.length > 0) {
+                deferred.resolve(response);
+            }
         });
+        return deferred.promise;
     }
-
-
-}
+};
