@@ -430,7 +430,6 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
     }
 
     function setDeliveryPoint(long, lat) {
-        debugger;
         map.getView().setCenter([long, lat]);
         map.getView().setResolution(0.5600011200022402);
         var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
@@ -493,8 +492,6 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
     }
 
     function setAccessLink() {
-        debugger;
-        
         var accessLinkLayer = getLayer(GlobalSettings.accessLinkLayerName);
         accessLinkLayer.layer.getSource().clear();
         accessLinkLayer.selected = true;
@@ -508,7 +505,6 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
                 'Authorization': 'Bearer ' + authData.token
             }
         }).success(function (response) {
-            debugger;
             var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
             accessLinkLayer.layer.getSource().addFeatures(features);
 
