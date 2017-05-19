@@ -1,16 +1,18 @@
+<div class="panel-body">
 <div layout="row"
-     layout-align="center start" ng-show="vm.showKey(pointType.id)"
+     ng-show="vm.showKey(pointType.id)"
      ng-repeat="pointType in vm.pointTypes" class="mapKeys">
      <i class="fa fa-map-marker selcetedKey" aria-hidden="true" ng-show="pointType.text=='Selected'"></i>
     <i class="fa fa-map-marker deliveryKey" aria-hidden="true" ng-show="pointType.text=='Delivery Point'"></i>
     <i class="fa fa-minus accessKey" aria-hidden="true" ng-show="pointType.text=='Access Link'"></i>
     <i class="fa fa-minus roadKey" aria-hidden="true" ng-show="pointType.text=='Road'"></i>
     
-    <span flex></span>
+    <span flex="5"></span>
     
-    <span class="mapKeys">{{pointType.text}}</span>
+    <div class="mapKeys">{{pointType.text}}</div>
 </div>
-<div layout="row"
+</div>
+<!--<div layout="row"
      layout-align="center start" ng-show="vm.showKey(lineType.id)"
      ng-repeat="lineType in vm.lineTypes">
      
@@ -24,4 +26,4 @@
     </md-icon>
     <span flex></span>
     {{lineType.text}}
-</div>
+</div>-->
