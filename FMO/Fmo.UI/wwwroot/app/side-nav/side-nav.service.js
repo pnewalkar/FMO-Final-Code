@@ -1,17 +1,9 @@
-angular
-    .module('sideNav')
-    .service('sideNavService', sideNavService);
+angular.module('sideNav')
+    .factory('sideNavApiService', sideNavApiService);
+sideNavApiService.$inject = ['$http', 'GlobalSettings'];
+function sideNavApiService($http, GlobalSettings) {
+    var sideNavApiService = {};
 
-function sideNavService() {
-    return {
-        fetchActionItems: fetchActionItems
-    };
+    return sideNavApiService;
 
-    function fetchActionItems() {
-        getItem = sessionStorage.getItem('roleAccessData');
-
-        return {
-            RolesActionResult: angular.fromJson(getItem)
-        }
-    }
 }

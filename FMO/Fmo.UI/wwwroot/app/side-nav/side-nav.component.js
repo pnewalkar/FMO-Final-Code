@@ -5,7 +5,7 @@ angular.module('sideNav')
           contextTitle: "="
       },
       templateUrl: './side-nav/side-nav.template.html',
-      controller: 'SideNavController as vm'
+      controller: 'sideNavController as vm'
   });
 
 

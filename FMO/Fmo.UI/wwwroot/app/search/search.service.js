@@ -50,25 +50,25 @@ function searchBusinessService(
         return deferred.promise;
     }
 
-    function onEnterKeypress(searchText, results) {
+    function onEnterKeypress(searchText) {
         if (angular.isUndefined(searchText)) {
-            results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+            vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
         }
         else {
             if (searchText.length >= 3) {
-                if (results.length === 1) {
-                    vm.contextTitle = OnChangeItem(results[0]);
+                if (vm.results.length === 1) {
+                    vm.contextTitle = OnChangeItem(vm.results[0]);
                 }
-                if (results.length > 1) {
-                    advanceSearch(searchText);
+                if (vm.results.length > 1) {
+                    advanceSearch(vm.searchText);
                 }
             }
             else {
-                results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+                vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
             }
         }
         return {
-            results: results,
+            results: vm.results,
             contextTitle: vm.contextTitle
         };
     }
