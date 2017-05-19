@@ -100,23 +100,10 @@ function mapService($http,
             })
         });
 
-        var bingMapsSatelliteTiles = new ol.layer.Tile({
-            title: 'Bing maps API',
-            source: new ol.source.BingMaps({
-                key: 'Arja12vfzFSIIbJWozrlmn3bVgk-G-mKz1pHNcYUtJ1_sJV3mpZIna-ExcYUxA2F',
-                imagerySet: 'AerialWithLabels',
-                maxZoom: 19
-            })
-        });
-
-        var osmRoadMapTiles = new ol.layer.Tile({
-            source: new ol.source.OSM()
-        });
-
         var bingMapsRoadTiles = new ol.layer.Tile({
             title: 'Bing maps API',
             source: new ol.source.BingMaps({
-                key: 'Arja12vfzFSIIbJWozrlmn3bVgk-G-mKz1pHNcYUtJ1_sJV3mpZIna-ExcYUxA2F',
+                key: GlobalSettings.bingMapKey,
                 imagerySet: 'Road',
                 maxZoom: 19
             })
@@ -336,7 +323,7 @@ function mapService($http,
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
             layer.layer.changed();
-          
+
         });
         vm.layerSummary = getLayerSummary();
     }
@@ -392,12 +379,6 @@ function mapService($http,
             condition: ol.events.condition.primaryAction
         });
         switch (button.name) {
-            case "measure":
-                setupMeasure();
-                break;
-            case "group":
-                setupGroup();
-                break;
             case "deliverypoint":
                 setupDP();
                 break;
@@ -451,15 +432,15 @@ function mapService($http,
 			    removeInteraction("select");
 			    clearDrawingLayer(true);
 			    setSelections(null, []);
-			    });
+			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
 			    evt.feature.set("type", "accesslink");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    coordinatesServiceForAccessLink.setCordinates(coordinates);
 
-			    });
-        }
+			});
+    }
     function finishCondition(e) {
         var intersectionfeatures = []
         var hasFeatureAtPixel = vm.map.hasFeatureAtPixel(e.pixel);
@@ -520,18 +501,6 @@ function mapService($http,
         });
         persistSelection();
     }
-    function setModifyButton() {
-        vm.interactions.select = new ol.interaction.Select({
-            condition: ol.events.condition.never
-        });
-        var collection = new ol.Collection();
-        collection.push(getActiveFeature());
-        vm.interactions.modify = new ol.interaction.Modify({
-            features: collection
-        });
-        vm.interactions.modify.on('modifyend', onModify());
-        persistSelection();
-    }
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
             var features = vm.interactions.select.getFeatures();
@@ -548,43 +517,6 @@ function mapService($http,
                 refreshLayers();
             });
         }
-    }
-    function setupMeasure() {
-        vm.interactions.draw.on('drawstart',
-            function (evt) {
-                createMeasureTooltip();
-                if (vm.lastMeasureFeature) {
-                    mapFactory.getVectorSource().removeFeature(vm.lastMeasureFeature);
-                }
-                vm.sketch = evt.feature;
-            }, this);
-        vm.interactions.draw.on('drawend',
-            function (evt) {
-                vm.measureTooltipElement.className = 'tooltip';
-                vm.measureTooltip.setOffset([0, -7]);
-                vm.lastMeasureFeature = evt.feature;
-
-                vm.map.addOverlay(vm.measureTooltip);
-
-                vm.sketch = null;
-
-            }, this);
-    }
-    function setupGroup() {
-        vm.interactions.draw.on('drawstart',
-			function (evt) {
-			    removeInteraction("select");
-			    clearDrawingLayer(true);
-			    vm.setSelections(null, []);
-			});
-        vm.interactions.draw.on('drawend',
-			function (evt) {
-			    evt.feature.setId(0);
-			    $timeout(function () {
-			        setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
-			        onDrawEnd("group", evt.feature)
-			    });
-			});
     }
     function setupDP() {
         vm.interactions.draw.on('drawstart',
@@ -611,19 +543,6 @@ function mapService($http,
         if (keepCurrentInteraction != true) {
             mapFactory.removeCurrentInteractions();
         }
-    }
-    function createMeasureTooltip() {
-        if (vm.measureTooltipElement) {
-            vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
-        }
-        vm.measureTooltipElement = $document[0].createElement('div');
-        vm.measureTooltipElement.className = 'tooltip tooltip-measure';
-        vm.measureTooltip = new ol.Overlay({
-            element: vm.measureTooltipElement,
-            offset: [0, -15],
-            positioning: 'bottom-center'
-        });
-        vm.map.addOverlay(vm.measureTooltip);
     }
     function removeInteraction(key) {
         vm.map.removeInteraction(vm.interactions[key]);
@@ -671,9 +590,6 @@ function mapService($http,
             switch (button.name) {
                 case "select":
                     setSelectButton();
-                    break;
-                case "modify":
-                    setModifyButton();
                     break;
                 default:
                     setDrawButton(button);
