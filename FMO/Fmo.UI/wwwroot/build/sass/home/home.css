@@ -36,11 +36,17 @@ h1 {
 .fa {
   cursor: pointer; }
 
-i.fa.fa-times {
+.md-toolbar-tools .fa {
   color: white; }
 
+/*i.fa.fa-times {
+    color: white;
+}*/
 .deliveryDialog {
   margin: 0px 10px 0px 0px; }
+
+.panel-body {
+  margin: 0px 0px 0px 10px; }
 
 /*fonts*/
 /*Chevin Light Font*/

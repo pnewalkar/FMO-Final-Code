@@ -109,7 +109,6 @@ function advanceSearchService(advanceSearchApiService,
         var coordinatesData = null;  
             searchService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
-                    debugger;
                     coordinatesData = response;
                     lat = coordinatesData.features[0].geometry.coordinates[1];
                     long = coordinatesData.features[0].geometry.coordinates[0];
