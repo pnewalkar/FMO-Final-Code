@@ -1,8 +1,16 @@
 'use strict';
 angular.module('layers')
-    .controller('LayerSelectorController', ['$scope', 'layersBusinessService', LayerSelectorController]);
+    .controller('LayerSelectorController', [
+          '$scope',
+          'layersBusinessService',
 
-function LayerSelectorController($scope, layersBusinessService) {
+          LayerSelectorController]);
+
+function LayerSelectorController(
+    $scope,
+    layersBusinessService
+    )
+{
     var vm = this;
     vm.showUngrouped = showUngrouped;
     vm.getLayerData = getLayerData;
@@ -26,14 +34,6 @@ function LayerSelectorController($scope, layersBusinessService) {
 
     function showUngrouped() {
         return layersBusinessService.showUngrouped();
-    }
-
-    function fetchDeliveryPoints() {
-        return layersBusinessService.fetchDeliveryPoints();
-    }
-
-    function fetchAccessLinks() {
-        return layersBusinessService.fetchAccessLinks();
     }
 
     vm.getLayerData();
