@@ -26,7 +26,7 @@ function SearchController(
 
     function onEnterKeypress(searchText) {
         vm.isResultDisplay = true;
-        var result = searchBusinessService.onEnterKeypress(searchText);
+        var result = searchBusinessService.onEnterKeypress(searchText, vm.results);
         vm.results = result.results;
         vm.contextTitle = result.contextTitle;
     }

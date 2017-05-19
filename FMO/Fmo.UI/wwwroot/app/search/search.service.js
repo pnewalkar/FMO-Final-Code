@@ -22,7 +22,6 @@ function searchBusinessService(
     $stateParams,
     $timeout,
     $q) {
-    var vm = this;
     var result = [];
     return {
         resultSet: resultSet,
@@ -33,6 +32,9 @@ function searchBusinessService(
 
     function resultSet(query) {
         var deferred = $q.defer();
+        var results;
+        var resultscount;
+        var isResultDisplay;
         result = [];
         if (query.length >= 3) {
             searchService.basicSearch(query).then(function (response) {
@@ -41,39 +43,41 @@ function searchBusinessService(
             });
         }
         else {
-            vm.results = {};
-            vm.resultscount = { 0: { count: 0 } };
-            vm.isResultDisplay = false;
-            result.push({ "resultscount": vm.resultscount, "results": vm.results, "isResultDisplay": false })
+            results = {};
+            resultscount = { 0: { count: 0 } };
+            isResultDisplay = false;
+            result.push({ "resultscount": resultscount, "results": results, "isResultDisplay": false })
             deferred.resolve(result);
         }
         return deferred.promise;
     }
 
-    function onEnterKeypress(searchText) {
+    function onEnterKeypress(searchText,results) {
+        var contextTitle;
         if (angular.isUndefined(searchText)) {
-            vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+            results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
         }
         else {
             if (searchText.length >= 3) {
-                if (vm.results.length === 1) {
-                    vm.contextTitle = OnChangeItem(vm.results[0]);
+                if (results.length === 1) {
+                    contextTitle = OnChangeItem(results[0]);
                 }
-                if (vm.results.length > 1) {
-                    advanceSearch(vm.searchText);
+                if (results.length > 1) {
+                    advanceSearch(searchText);
                 }
             }
             else {
-                vm.results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+                results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
             }
         }
         return {
-            results: vm.results,
-            contextTitle: vm.contextTitle
+            results: results,
+            contextTitle: contextTitle
         };
     }
 
     function OnChangeItem(selectedItem) {
+        var contextTitle;
         if (selectedItem.type === "DeliveryPoint") {
             searchService.GetDeliveryPointByUDPRN(selectedItem.udprn)
                 .then(function (response) {
@@ -82,12 +86,12 @@ function searchBusinessService(
                     var long = data.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(long, lat);
                 });
-            vm.contextTitle = "Context Panel";
+            contextTitle = "Context Panel";
             $state.go('searchDetails', {
                 selectedItem: selectedItem
             });
         }
-        return vm.contextTitle;
+        return contextTitle;
 
     }
 
@@ -99,12 +103,7 @@ function searchBusinessService(
 
     function openModalPopup(modalSetting) {
         var popupSetting = modalSetting;
-        $mdDialog.show(popupSetting).then(function (returnedData) {
-            vm.data = returnedData;
-            vm.contextTitle = "Context Panel";
-            vm.isResultDisplay = false;
-            vm.resultscount[0].count = 0;
-            vm.searchText = "";
+        $mdDialog.show(popupSetting).then(function (returnedData) {           
         });
 
 
