@@ -6,6 +6,7 @@ angular
         '$mdDialog',
         'searchText',
         'advanceSearchService',
+        'CommonConstants',
         
         AdvanceSearchController]);
 
@@ -13,7 +14,8 @@ function AdvanceSearchController(
     $state,
     $mdDialog,
     searchText,
-    advanceSearchService
+    advanceSearchService,
+    CommonConstants
    ) {
 
     var vm = this;
@@ -59,17 +61,12 @@ function AdvanceSearchController(
     }
 
     function OnChangeItem(selectedItem) {
-        if (selectedItem.type === "DeliveryPoint") {
+        if (selectedItem.type === CommonConstants.EntityType.DeliveryPoint) {
             advanceSearchService.onChangeItem(selectedItem).then(function (response) {
                 $state.go('searchDetails', { selectedItem: selectedItem });
                 $mdDialog.hide();
             });
         }
 
-        function closeAlert(selectedItem) {
-            if (selectedItem === "DeliveryPoint") {
-                $mdDialog.hide(vm.close);
-            }
-        }
     }
 }
