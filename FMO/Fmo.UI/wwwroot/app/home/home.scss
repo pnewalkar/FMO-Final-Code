@@ -2,7 +2,8 @@
 
 .brandName{
  @extend %header-content;
-font-size: 24px;
+font-size: 30px !important;
+  font-weight: bold !important;
 }
 
 .fa-inbox{

@@ -1,6 +1,6 @@
 .brandName, h1 {
   color: #ffffff;
-  font-family: PF_DIN;
+  font-family: Chevin;
   font-size: 18px; }
 
 .mdDialog input {
@@ -9,7 +9,8 @@
   font-size: 16px; }
 
 .brandName {
-  font-size: 24px; }
+  font-size: 30px !important;
+  font-weight: bold !important; }
 
 .fa-inbox {
   color: #ffffff;
