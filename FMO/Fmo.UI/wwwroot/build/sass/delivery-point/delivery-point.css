@@ -46,5 +46,6 @@ fieldset {
 .overlay {
   background-color: #bdbdbd; }
 
-.disabledText {
-  color: darkgray; }
+.disabledText .md-select-value>span:not(.md-select-icon) .md-text{
+    color:rgb(169, 169, 169);
+}

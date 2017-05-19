@@ -52,11 +52,8 @@ map-panel {
 .right-panel {
   float: right; }
 
-.hide-panel {
-  width: 350px; }
+.md-whiteframe-3dp.map-panel.hide-panel {
+  width: 250px; }
 
 .full-height {
   height: 100%; }
-
-.panel-header > .fa-minus-circle, .fa-plus-circle {
-  color: #404044; }
