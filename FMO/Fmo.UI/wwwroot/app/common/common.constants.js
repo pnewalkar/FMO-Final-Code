@@ -1,5 +1,6 @@
 ﻿
 var CommonConstants = {
+
 RouteLogActionName:"Route Log",
 RouteSimulationActionName:"Route Simulation",
 DeliveryPointActionName: "Delivery Point",
@@ -11,7 +12,9 @@ EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Ro
 ButtonShapeType: { point: "point", line: "line", accesslink: "accesslink", select: "select" },
 GeometryType: { Point: "Point", LineString: "LineString" } ,
 pointTypes: { DeliveryPoint: { text: "Delivery Point", value: 'deliverypoint', style: "deliverypoint" }, AcessLink: { text: "Access Link", value: 'accesslink', style: "accesslink" }, Road: { text: "Road", value: 'roadlink', style: "roadlink" }, Selected: { text: "Selected", value: '', style: "deliverypoint" } },
-RouteLogSelectionType: { Single: "Single", Multiple: "Multiple" }
+RouteLogSelectionType: { Single: "Single", Multiple: "Multiple" },
+SearchLessThanThreeCharactersErrorMessage: "At least three characters must be input for a Search",
+SearchErrorType: "Warning"
 };
 
 angular.module('FMOApp')

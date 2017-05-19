@@ -10,7 +10,8 @@ searchBusinessService.$inject = ['searchService',
                                   '$mdDialog',
                                   '$stateParams',
                                   '$timeout',
-                                  '$q'];
+                                  '$q',
+                                  'CommonConstants'];
 
 function searchBusinessService(
     searchService,
@@ -21,7 +22,8 @@ function searchBusinessService(
     $mdDialog,
     $stateParams,
     $timeout,
-    $q) {
+    $q,
+    CommonConstants) {
     var result = [];
     return {
         resultSet: resultSet,
@@ -55,7 +57,7 @@ function searchBusinessService(
     function onEnterKeypress(searchText, results) {
         var contextTitle;
         if (angular.isUndefined(searchText)) {
-            results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+            results = [{ displayText: CommonConstants.SearchLessThanThreeCharactersErrorMessage, type: CommonConstants.SearchErrorType }];
         }
         else {
             if (searchText.length >= 3) {
@@ -67,7 +69,7 @@ function searchBusinessService(
                 }
             }
             else {
-                results = [{ displayText: "At least three characters must be input for a Search", type: "Warning" }];
+                results = [{ displayText: CommonConstants.SearchLessThanThreeCharactersErrorMessage, type: CommonConstants.SearchErrorType }];
             }
         }
         return {
@@ -78,7 +80,7 @@ function searchBusinessService(
 
     function OnChangeItem(selectedItem) {
         var contextTitle;
-        if (selectedItem.type === "DeliveryPoint") {
+        if (selectedItem.type === CommonConstants.EntityType.DeliveryPoint) {
             searchService.GetDeliveryPointByUDPRN(selectedItem.udprn)
                 .then(function (response) {
                     var data = response;
@@ -86,7 +88,7 @@ function searchBusinessService(
                     var long = data.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(long, lat);
                 });
-            contextTitle = "Context Panel";
+            contextTitle = CommonConstants.TitleContextPanel;
             $state.go('searchDetails', {
                 selectedItem: selectedItem
             });
