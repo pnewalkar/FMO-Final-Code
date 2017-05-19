@@ -2,9 +2,9 @@ angular.module('FMOApp', ['ngMaterial', 'ui.router', 'pascalprecht.translate',
                           'ngMessages', 'manageAccess',
                           'home', 'referencedata'
 ])
-.run(['localization', '$translate', function (localization, $translate) {
+.run(['localization', '$translate', '$window', function (localization, $translate, $window) {
    
-    var language = window.navigator.language;
+    var language = $window.navigator.language;
     localization.setLocale(language);
     $translate.use(language);
    
@@ -22,7 +22,6 @@ angular.module('FMOApp', ['ngMaterial', 'ui.router', 'pascalprecht.translate',
 })
     .config(['localizationProvider', '$translateProvider', function (localizationProvider, $translateProvider) {
         localizationProvider.updateLocale = function (lang) {
-            console.log('changing lang' + lang);
             LangResourcesLoader($translateProvider, lang);
             $translateProvider.preferredLanguage(lang);
             $translateProvider.useSanitizeValueStrategy('escape');
