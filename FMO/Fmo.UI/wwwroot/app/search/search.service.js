@@ -36,7 +36,7 @@ function searchBusinessService(
         result = [];
         if (query.length >= 3) {
             searchService.basicSearch(query).then(function (response) {
-                result.push({ "resultscount": response.data.searchCounts, "results": response.data.searchResultItems, "isResultDisplay": true })
+                result.push({ "resultscount": response.searchCounts, "results": response.searchResultItems, "isResultDisplay": true })
                 deferred.resolve(result);
             });
         }
@@ -77,7 +77,7 @@ function searchBusinessService(
         if (selectedItem.type === "DeliveryPoint") {
             searchService.GetDeliveryPointByUDPRN(selectedItem.udprn)
                 .then(function (response) {
-                    var data = response.data;
+                    var data = response;
                     var lat = data.features[0].geometry.coordinates[1];
                     var long = data.features[0].geometry.coordinates[0];
                     mapFactory.setDeliveryPoint(long, lat);

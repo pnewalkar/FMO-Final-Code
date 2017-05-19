@@ -15,30 +15,38 @@ i.fa.fa-map-marker.street {
 i.fa.fa-map-marker.route {
   color: #aadaea; }
 
-.searchBox {
-  position: absolute;
-  margin: -18px 0px 0px 0px; }
+.searchText input[type="text"] {
+  color: #ffffff;
+  border-bottom-color: white; }
+
+.searchText label {
+  color: #ffffff; }
+
+.searchText md-input-container.md-input-focused label {
+  color: #ffffff; }
+
+.searchText md-input-container.md-input-has-value label {
+  color: #ffffff; }
+
+.searchText md-input-container.md-input-focused input[type="text"] {
+  border-bottom-color: white; }
 
 .searchInput {
   background-color: #ffffff;
-  width: 235px;
   padding: 5px 5px 5px 5px; }
   .searchInput:hover {
     background-color: none; }
 
 .searchContent {
-  background-color: #ffffff;
-  margin: 16px 0px 0px 0px; }
-  .searchContent:hover {
-    background-color: none; }
+  margin: -31px 0px 0px 0px; }
 
 .searchData {
   background-color: #ffffff;
   color: #53535a;
+  width: 265px;
   padding: 5px 5px 5px 5px;
   border-bottom: 1px solid #808080;
-  cursor: pointer;
-  width: 280px; }
+  cursor: pointer; }
   .searchData:hover {
     background-color: none; }
 
@@ -52,7 +60,7 @@ i.fa.fa-map-marker.route {
   width: 100%;
   background-color: #ffffff;
   border: 1px solid #c1c6c8;
-  margin: -5px 0px 0px 0px; }
+  margin: -5px 0px -3px 0px; }
   .viewResult:hover {
     background-color: none; }
 
@@ -84,15 +92,15 @@ i.fa.fa-angle-right.searchRight {
   background-color: #0892cb;
   position: absolute;
   border-radius: 50%;
-  width: 21.97802%;
+  width: 5%;
   border: 1px solid #2a2a2d;
-  top: 0px;
-  right: 33px; }
+  margin: 0px 0px 0px -65px;
+  bottom: 16px; }
   .numberCircle:hover {
     background-color: none; }
 
 .numberCircle span {
-  color: #2a2a2d;
+  color: #ffffff;
   text-align: center;
   line-height: 32px;
   display: block;
