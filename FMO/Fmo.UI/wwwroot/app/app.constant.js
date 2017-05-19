@@ -35,6 +35,7 @@ else if (GlobalSettings.env === "prod") {
 }
 
 GlobalSettings.vectorMapUrl = "http://api.tiles.mapbox.com/v4/digitalglobe.nal0g75k/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZGlnaXRhbGdsb2JlIiwiYSI6ImNpcGg5dHkzYTAxM290bG1kemJraHU5bmoifQ.CHhq1DFgZPSQQC-DYWpzaQ";
+GlobalSettings.bingMapKey = "Arja12vfzFSIIbJWozrlmn3bVgk-G-mKz1pHNcYUtJ1_sJV3mpZIna-ExcYUxA2F";
 GlobalSettings.unitBoundaryLayerName = "Unit Boundary";
 GlobalSettings.deliveryPointLayerName = "Delivery Points";
 GlobalSettings.accessLinkLayerName = "Access Links";
