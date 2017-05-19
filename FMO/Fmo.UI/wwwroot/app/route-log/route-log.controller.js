@@ -1,20 +1,14 @@
 angular
     .module('routeLog')
-    .controller('RouteLogController', RouteLogController);
+    .controller('RouteLogController',
+                 RouteLogController);
+RouteLogController.$inject=['routeLogAPIService',
+                            'routeLogService',
+                            'items'];
 
-RouteLogController.$inject =[
-        'routeLogAPIService',
-        'routeLogService',
-        '$mdDialog',
-        'items'
-];
-
-function RouteLogController(
-    routeLogAPIService,
-    routeLogService,
-    $mdDialog,
-    items) {
-
+function RouteLogController(routeLogAPIService,
+                            routeLogService,                           
+                            items) {
     var vm = this;
     vm.initialize = initialize;
     vm.loadSelectionType = loadSelectionType;
@@ -25,31 +19,17 @@ function RouteLogController(
     vm.selectionTypeChange = selectionTypeChange;
     vm.deliveryRouteChange = deliveryRouteChange;
     vm.clearSearchTerm = clearSearchTerm;
-    vm.routeChange = routeChange;
     vm.selectedDeliveryUnitObj = items;
     vm.closeWindow = closeWindow;
-
-    vm.selectedRouteStatusObj = null;
-    vm.selectedRouteScenario = null;
-    vm.isDeliveryRouteDisabled = true;
-    vm.selectedDeliveryRoute;
-    vm.deliveryRoute = null;
-    vm.selectedRoute = null;
-    vm.searchTerm = null;
-    vm.isShowMultiSelectionRoute = false;
     vm.initialize();
-
     function initialize() {
         vm.loadSelectionType();
         vm.loadRouteLogStatus();
     }
-
     function closeWindow() {
-        $mdDialog.cancel();
+        routeLogService.closeWindow();
     }
-
     function selectionTypeChange() {
-        var type = vm.selectedRouteSelectionObj;
         vm.selectedRouteStatusObj = null;
         vm.selectedRouteScenario = null;
         vm.selectedRoute = null;
@@ -59,51 +39,37 @@ function RouteLogController(
         vm.isShowMultiSelectionRoute = false;
         clearDeliveryRoute();
     }
-
     function loadSelectionType() {
-        routeLogAPIService.getSelectionType().then(function (response) {
-            vm.RouteselectionTypeObj = response;
-            angular.forEach(vm.RouteselectionTypeObj, function (value, key) {
-                if (value.referenceDataValue === "Single")
-                    vm.selectedRouteSelectionObj = value;
-            });
-        });
+        routeLogService.loadSelectionType().then(function (response) {
+            vm.RouteselectionTypeObj = response[0].RouteselectionTypeObj;
+            vm.selectedRouteSelectionObj = response[0].selectedRouteSelectionObj;
+        })
     }
-
     function selectedRouteStatus() {
         loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.id);
         vm.isRouteScenarioDisabled = false;
         clearDeliveryRoute();
     }
-
     function loadRouteLogStatus() {
-        routeLogAPIService.getStatus().then(function (response) {
+        routeLogService.loadRouteLogStatus().then(function (response) {
             vm.RouteStatusObj = response;
             vm.selectedRouteStatusObj = vm.RouteStatusObj[0];
             loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.id);
         });
     }
-
-    function scenarioChange() {
-        var type = vm.selectedRouteSelectionObj;
-        if (type.referenceDataValue === "Multiple") {
-            loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
-            vm.isDeliveryRouteDisabled = true;
-            vm.isShowMultiSelectionRoute = true;
-        } else {
-            loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
-            vm.isDeliveryRouteDisabled = false;
-            vm.isShowMultiSelectionRoute = false;
-        }
+    function scenarioChange() {       
+        var result = routeLogService.scenarioChange(vm.selectedRouteSelectionObj.referenceDataValue);
+        vm.isDeliveryRouteDisabled= result.isDeliveryRouteDisabled;
+        vm.isShowMultiSelectionRoute=result.isShowMultiSelectionRoute;
+        loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
         clearDeliveryRoute();
     }
-
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
-        routeLogAPIService.getScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
+        routeLogService.loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
             if (response.length > 0) {
                 vm.RouteScenario = response;
             } else {
-                vm.RouteScenario = response;
+                vm.RouteScenario = undefined;
                 vm.selectedRouteScenario = null;
                 vm.isSelectionType = true;
                 vm.selectedRoute = null;
@@ -112,35 +78,20 @@ function RouteLogController(
             }
         });
     }
-
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
-        routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            if (vm.selectedRouteSelectionObj.referenceDataValue === "Single") {
-                vm.multiSelectiondeliveryRoute = null;
-                vm.deliveryRoute = response;
-            } else {
-                vm.deliveryRoute = null;
-                vm.multiSelectiondeliveryRoute = response;
-            }
+        routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, vm.selectedRouteSelectionObj.referenceDataValue).then(function (response) {
+            vm.multiSelectiondeliveryRoute = response[0].multiSelectiondeliveryRoute;
+            vm.deliveryRoute = response[0].deliveryRoute; 
         });
     }
-
-    function routeChange() {
-        vm.selectedDeliveryRoute;
-        vm.searchTerm = '';
-
-    }
-
     function clearSearchTerm() {
         vm.searchTerm = '';
     }
-
     function deliveryRouteChange() {
-        routeLogAPIService.getRouteDetailsByGUID(vm.selectedRoute.id).then(function (response) {
+        routeLogService.deliveryRouteChange(vm.selectedRoute.id).then(function (response) {
             vm.routeDetails = response;
         });
     }
-
     function clearDeliveryRoute() {
         vm.deliveryRoute = null;
         vm.routeDetails = false;
