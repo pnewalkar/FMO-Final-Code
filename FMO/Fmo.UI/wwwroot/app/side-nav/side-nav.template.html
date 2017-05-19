@@ -8,7 +8,7 @@
         </div>
     </md-toolbar> 
     
-    <md-content>
+    <md-content layout-padding="">
         <md-list>
           <md-list-item  ng-repeat="Item in vm.RolesActionResult| unique: 'ActionName'" ng-click="vm.fetchActions(Item.ActionName)">
             {{Item.ActionName}}

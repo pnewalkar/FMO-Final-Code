@@ -18,7 +18,6 @@
     @include position(absolute);
     @include top(75px);
     left: 15px;
-    height: calc(100% - 85px);
 }
 
 #rightPanel {
@@ -59,4 +58,6 @@ input[name="zoom-scale"] {
     height:calc(100% - 30px);
 }
 
-
+.context-view{
+    height:400px;
+}

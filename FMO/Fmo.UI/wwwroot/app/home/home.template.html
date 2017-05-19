@@ -1,14 +1,17 @@
-<div layout="column" layout-wrap>
-	<div flex="100">
+<span layout="row" layout-wrap>
+	<span flex="100">
         
         <side-nav context-title="vm.contextTitle" selected-delivery-unit="vm.selectedDeliveryUnit"></side-nav>
         
 		<md-toolbar>
-   			<div class="md-toolbar-tools">
-                <md-button class="md-icon-button"ng-click="vm.toggleSideNav()" aria-label="Side Nav" flex="5">
-                    <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
-                </md-button>
-                <span class="version">V 1.2.9</span>
+   			<span class="md-toolbar-tools">
+                
+   				<span flex="5" aria-label="Side Panel" ng-click="vm.toggleSideNav()">
+                    <md-button class="md-icon-button" aria-label="Side Nav">
+                        <i class="fa fa-bars fa-2x" aria-hidden="true"></i>
+                    </md-button>
+                    <span class="version">V 1.2.9</span>
+                </span>
 
      			<h1 flex="55" flex="auto" class="brandName">
                     Royal Mail Group
@@ -16,16 +19,22 @@
 
       			<span flex></span>
       			 
-                <search context-title="vm.contextTitle" flex="25"></search>
-                
-          		<unit-selector selected-delivery-unit="vm.selectedDeliveryUnit" flex="15"></unit-selector>
-                
-          		<task flex="5"></task>
-    		</div>
-		</md-toolbar>
-	</div>
+      			<span flex="25">
+                    <search context-title="vm.contextTitle"></search>
+                </span>
 
-	<div flex="100">
+      			<span flex="15">
+          			<unit-selector selected-delivery-unit="vm.selectedDeliveryUnit"></unit-selector>
+        		</span>
+
+        		<span flex="5">
+          			<task></task>
+        		</span>
+    		</span>
+		</md-toolbar>
+	</span>
+
+	<span flex="100">
 		<map-view context-title="vm.contextTitle" selected-delivery-unit="vm.selectedDeliveryUnit"></map-view>
-	</div>
-</div>
+	</span>
+</span>

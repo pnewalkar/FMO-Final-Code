@@ -1,4 +1,9 @@
 <md-input-container class="md-block unitText">
+    <!--<md-select ng-model="vm.selectedUser" ng-change="vm.DeliveryUnit()" aria-label="Unit Selector" class="customSelector">
+        <md-option ng-value="unit" ng-repeat="unit in vm.deliveryRouteUnit" class="unitSelector"><i class="fa fa-map-marker delivery" aria-hidden="true"></i> {{unit.area+"    "+ unit.unitName}} </md-option>
+    </md-select>-->
+
+
     <md-select ng-disabled="vm.isDeliveryUnitDisabled" ng-model="vm.selectedUser"  ng-change="vm.DeliveryUnit()" aria-label="Unit Selector" class="customSelector">
         <md-select-header>
             <input type="search" ng-model="vm.searchTerm" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">

@@ -23,9 +23,6 @@
     bottom: 0px;
 }
 
-.map-box {
-    height: calc(100% - 64px);
-}
 
 /*commom sass*/
 h1{
@@ -41,13 +38,9 @@ h1{
     @include cursor(pointer);
 }
 
-.md-toolbar-tools .fa{
+i.fa.fa-times {
     color: white;
 }
-
-/*i.fa.fa-times {
-    color: white;
-}*/
 
 .deliveryDialog{
     @include margin(0px 10px 0px 0px);
@@ -55,10 +48,6 @@ h1{
 
 .mdDialog input{
     @extend %body-content;
-}
-
-.panel-body{
-    @include margin(0px 0px 0px 10px);
 }
 
 /*fonts*/

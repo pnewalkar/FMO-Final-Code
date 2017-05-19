@@ -26,9 +26,6 @@
   font-size: 10px;
   bottom: 0px; }
 
-.map-box {
-  height: calc(100% - 64px); }
-
 /*commom sass*/
 h1 {
   color: #2a2a2d; }
@@ -39,17 +36,11 @@ h1 {
 .fa {
   cursor: pointer; }
 
-.md-toolbar-tools .fa {
+i.fa.fa-times {
   color: white; }
 
-/*i.fa.fa-times {
-    color: white;
-}*/
 .deliveryDialog {
   margin: 0px 10px 0px 0px; }
-
-.panel-body {
-  margin: 0px 0px 0px 10px; }
 
 /*fonts*/
 /*Chevin Light Font*/
