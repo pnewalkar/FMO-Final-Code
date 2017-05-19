@@ -25,6 +25,7 @@ angular.module('FMOApp', ['ngMaterial', 'ui.router', 'pascalprecht.translate',
             console.log('changing lang' + lang);
             LangResourcesLoader($translateProvider, lang);
             $translateProvider.preferredLanguage(lang);
+            $translateProvider.useSanitizeValueStrategy('escape');
         };
     }]);
 
