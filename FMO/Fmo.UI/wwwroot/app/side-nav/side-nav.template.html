@@ -10,7 +10,7 @@
     
     <md-content>
         <md-list>
-          <md-list-item  ng-repeat="Item in vm.RolesActionResult| unique: 'ActionName'" ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)">
+          <md-list-item  ng-repeat="Item in vm.RolesActionResult| unique: 'ActionName'" ng-click="vm.fetchActions(Item.ActionName)">
             {{Item.ActionName}}
           </md-list-item>
       </md-list>
