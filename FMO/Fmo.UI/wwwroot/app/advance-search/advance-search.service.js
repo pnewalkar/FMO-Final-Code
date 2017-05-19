@@ -4,12 +4,14 @@ angular.module('advanceSearch')
 advanceSearchService.$inject = ['advanceSearchApiService',
                                 '$q',                              
                                 'searchService',
-                                'mapFactory'];
+                                'mapFactory',
+                                'CommonConstants'];
 
 function advanceSearchService(advanceSearchApiService,
                               $q,                            
                               searchService,
-                              mapFactory) {
+                              mapFactory,
+                              CommonConstants) {
     
     
     var deliveryPointObj = null;
@@ -36,53 +38,53 @@ function advanceSearchService(advanceSearchApiService,
         advanceSearchApiService.advanceSearch(query).then(function (response) {
             advanceSearchResults = response;
             angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
-                if (value.type == "DeliveryPoint")
+                if (value.type === CommonConstants.EntityType.DeliveryPoint)
                 {
-                    obj = { 'displayText': value.displayText, 'UDPRN': value.udprn, 'type': "DeliveryPoint" }
+                    obj = { 'displayText': value.displayText, 'UDPRN': value.udprn, 'type': CommonConstants.EntityType.DeliveryPoint }
                     arrDeliverypoints.push(obj);
                 }
-               else if (value.type == "Postcode") {
+                else if (value.type === CommonConstants.EntityType.Postcode) {
                    obj = { 'displayText': value.displayText }
                     arrPostCodes.push(obj);
                 }
-               else if (value.type == "StreetNetwork") {
+                else if (value.type === CommonConstants.EntityType.StreetNetwork) {
                    obj = { 'displayText': value.displayText }
                    arrStreetNames.push(obj);
                 }
-                if (value.type == "Route") {
+                if (value.type === CommonConstants.EntityType.Route) {
                     obj = { 'displayText': value.displayText }
                     arrDeliveryRoutes.push(obj);
                 }
             });
 
-            if (arrDeliverypoints.length == 1) {
-                deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': true };
+            if (arrDeliverypoints.length === 1) {
+                deliveryPointObj = { 'type': CommonConstants.EntityType.DeliveryPoint, 'name': arrDeliverypoints, 'open': true };
             }
             else {
-                deliveryPointObj = { 'type': 'DeliveryPoint', 'name': arrDeliverypoints, 'open': false };
+                deliveryPointObj = { 'type': CommonConstants.EntityType.DeliveryPoint, 'name': arrDeliverypoints, 'open': false };
             }
 
-            if (arrPostCodes.length == 1) {
+            if (arrPostCodes.length === 1) {
                 postCodeObj = {
-                    'type': 'PostCode', 'name': arrPostCodes, 'open': true
+                    'type': CommonConstants.EntityType.Postcode, 'name': arrPostCodes, 'open': true
                 };
             }
             else {
                 postCodeObj = {
-                    'type': 'PostCode', 'name': arrPostCodes, 'open': false
+                    'type': CommonConstants.EntityType.Postcode, 'name': arrPostCodes, 'open': false
                 };
             }
-            if (arrStreetNames.length == 1) {
-                streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open': true };
+            if (arrStreetNames.length === 1) {
+                streetnameObj = { 'type': CommonConstants.EntityType.StreetNetwork, 'name': arrStreetNames, 'open': true };
             }
             else {
-                streetnameObj = { 'type': 'StreetNetwork', 'name': arrStreetNames, 'open': false };
+                streetnameObj = { 'type': CommonConstants.EntityType.StreetNetwork, 'name': arrStreetNames, 'open': false };
             }
-            if (arrDeliveryRoutes.length == 1) {
-                deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': true };
+            if (arrDeliveryRoutes.length === 1) {
+                deliveryRouteobj = { 'type': CommonConstants.EntityType.Route, 'name': arrDeliveryRoutes, 'open': true };
             }
             else {
-                deliveryRouteobj = { 'type': 'Route', 'name': arrDeliveryRoutes, 'open': false };
+                deliveryRouteobj = { 'type': CommonConstants.EntityType.Route, 'name': arrDeliveryRoutes, 'open': false };
             }
 
             if (arrDeliverypoints.length > 0) {
@@ -104,8 +106,7 @@ function advanceSearchService(advanceSearchApiService,
 
     function onChangeItem(selectedItem) {
         var deferred = $q.defer();
-        var coordinatesData = null;
-        if (selectedItem.type === "DeliveryPoint") {
+        var coordinatesData = null;  
             searchService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
                 .then(function (response) {
                     coordinatesData = response;
@@ -116,5 +117,5 @@ function advanceSearchService(advanceSearchApiService,
                 });
             return deferred.promise;
         }
-    }
+   
 }
