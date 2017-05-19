@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
-    using System.Net.Mail;
     using System.Reflection;
     using System.Threading.Tasks;
     using Fmo.BusinessServices.Interfaces;
@@ -26,7 +25,6 @@
         private INotificationRepository notificationRepository = default(INotificationRepository);
         private IPostCodeSectorRepository postcodeSectorRepository = default(IPostCodeSectorRepository);
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
-        private IEmailHelper emailHelper = default(IEmailHelper);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private bool enableLogging = false;
@@ -42,7 +40,6 @@
            INotificationRepository notificationRepository,
            IPostCodeSectorRepository postcodeSectorRepository,
            IReferenceDataCategoryRepository referenceDataCategoryRepository,
-           IEmailHelper emailHelper,
            IConfigurationHelper configurationHelper,
            ILoggingHelper loggingHelper)
         {
@@ -52,7 +49,6 @@
             this.notificationRepository = notificationRepository;
             this.postcodeSectorRepository = postcodeSectorRepository;
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
-            this.emailHelper = emailHelper;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
@@ -81,11 +77,7 @@
                     // Get the udprn id for each USR record.
                     fileUdprn = (int)addressLocationUSRPOSTDTO.UDPRN;
 
-                    if (addressLocationRepository.AddressLocationExists(fileUdprn))
-                    {
-                        SendEmail(fileUdprn);
-                    }
-                    else
+                    if (!addressLocationRepository.AddressLocationExists(fileUdprn))
                     {
                         DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
 
@@ -232,35 +224,6 @@
         }
 
         #endregion Calculate Spatial Location
-
-        #region Send Email
-
-        /// <summary>
-        /// Send error e-mail to third party in case the UDPRN address location already exists
-        /// </summary>
-        /// <param name="fileUdprn">UDPRN id from file</param>
-        private void SendEmail(int fileUdprn)
-        {
-            try
-            {
-                using (MailMessage message = new MailMessage())
-                {
-                    message.From = new MailAddress(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILFROMEMAIL));
-                    message.Subject = configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILSUBJECT);
-                    message.Body = string.Format(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILBODY), fileUdprn.ToString());
-                    message.To.Add(configurationHelper.ReadAppSettingsConfigurationValues(Constants.USREMAILTOEMAIL));
-
-                    // Send email if the address location udprn already exists in the database
-                    emailHelper.SendMessage(message);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        #endregion Send Email
 
         /// <summary>
         /// Concatenating address fileds require for notification

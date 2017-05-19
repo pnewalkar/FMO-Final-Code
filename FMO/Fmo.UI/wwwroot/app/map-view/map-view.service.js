@@ -7,7 +7,8 @@ mapService.$inject = ['$http',
                      '$timeout',
                      'GlobalSettings',
                      'coordinatesService',
-                     '$document'];
+                     '$document',
+                     'layersService'];
 
 function mapService($http,
                     mapFactory,
@@ -15,13 +16,14 @@ function mapService($http,
                     $timeout,
                     GlobalSettings,
                     coordinatesService,
-                    $document) {
+                    $document,
+                    layersService) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line"];
+    vm.mapButtons = ["select", "point", "line", "accesslink"];
     vm.interactions = {};
     vm.layersForContext = [];
     vm.activeSelection = null;
@@ -98,23 +100,10 @@ function mapService($http,
             })
         });
 
-        var bingMapsSatelliteTiles = new ol.layer.Tile({
-            title: 'Bing maps API',
-            source: new ol.source.BingMaps({
-                key: 'Arja12vfzFSIIbJWozrlmn3bVgk-G-mKz1pHNcYUtJ1_sJV3mpZIna-ExcYUxA2F',
-                imagerySet: 'AerialWithLabels',
-                maxZoom: 19
-            })
-        });
-
-        var osmRoadMapTiles = new ol.layer.Tile({
-            source: new ol.source.OSM()
-        });
-
         var bingMapsRoadTiles = new ol.layer.Tile({
             title: 'Bing maps API',
             source: new ol.source.BingMaps({
-                key: 'Arja12vfzFSIIbJWozrlmn3bVgk-G-mKz1pHNcYUtJ1_sJV3mpZIna-ExcYUxA2F',
+                key: GlobalSettings.bingMapKey,
                 imagerySet: 'Road',
                 maxZoom: 19
             })
@@ -130,14 +119,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                $http({
-                    method: 'GET',
-                    url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + authData.token
-                    }
-                }).success(function (response) {
+                layersService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     loadFeatures(deliveryPointsVector, response);
                 });
             }
@@ -160,14 +142,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                $http({
-                    method: 'GET',
-                    url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + authData.token
-                    }
-                }).success(function (response) {
+                layersService.fetchAccessLinks(extent, authData).then(function (response) {
                     loadFeatures(accessLinkVector, response);
                 });
             }
@@ -178,14 +153,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                $http({
-                    method: 'GET',
-                    url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Bearer ' + authData.token
-                    }
-                }).success(function (response) {
+                layersService.fetchRouteLinks(extent, authData).then(function (response) {
                     loadFeatures(roadLinkVector, response);
                 });
             }
@@ -214,7 +182,6 @@ function mapService($http,
 
         var roadsSelector = new MapFactory.LayerSelector();
         roadsSelector.layerName = "Base Layer";
-        //roadsSelector.layer = osmRoadMapTiles;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -356,10 +323,6 @@ function mapService($http,
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
             layer.layer.changed();
-            //debugger;
-            //if (layer.layerName != "Unit Boundary") {
-            //    setSelections(null, []);
-            //}
 
         });
         vm.layerSummary = getLayerSummary();
@@ -416,15 +379,13 @@ function mapService($http,
             condition: ol.events.condition.primaryAction
         });
         switch (button.name) {
-            case "measure":
-                setupMeasure();
-                break;
-            case "group":
-                setupGroup();
-                break;
             case "deliverypoint":
                 setupDP();
                 break;
+            case "accesslink":
+                var roadLinklayer = mapFactory.getLayer('Roads');
+                snapOnFeature(roadLinklayer);
+                setupAccessLink();
             default:
                 break;
         }
@@ -434,10 +395,86 @@ function mapService($http,
                 evt.feature.set("type", "deliverypoint");
             })
         }
+
+        else if (name == "accesslink") {
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.set("type", "accesslink");
+            })
+        }
         else {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
 
+    }
+    function setAccessLinkCoordinates(coordinates, geometry) {
+        if (!geometry) {
+            geometry = new ol.geom.LineString(null);
+        }
+
+        var accessLinkEndCoordinate = coordinates[1];
+        var dpCoordinates = coordinatesService.getCordinates();
+        var accessLinkCoordinates = [accessLinkEndCoordinate[0], accessLinkEndCoordinate[1]];
+        var setAccessLinkCoordinate = [dpCoordinates, accessLinkCoordinates];
+
+        geometry.setCoordinates(setAccessLinkCoordinate);
+
+        return geometry;
+
+    }
+    function setupAccessLink() {
+        var startLineCoordinate = [];
+        var endLineCoordinate = [];
+
+        vm.interactions.draw.geometryFunction_ = setAccessLinkCoordinates;
+        vm.interactions.draw.finishCondition_ = finishCondition;
+        vm.interactions.draw.on('drawstart',
+			function (evt) {
+			    removeInteraction("select");
+			    clearDrawingLayer(true);
+			    setSelections(null, []);
+			});
+        vm.interactions.draw.on('drawend',
+			function (evt) {
+			    evt.feature.set("type", "accesslink");
+			    var coordinates = evt.feature.getGeometry().getCoordinates();
+			    coordinatesServiceForAccessLink.setCordinates(coordinates);
+
+			});
+    }
+    function finishCondition(e) {
+        var intersectionfeatures = []
+        var hasFeatureAtPixel = vm.map.hasFeatureAtPixel(e.pixel);
+        if (hasFeatureAtPixel) {
+            vm.map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+                if (layer) {
+                    if (layer.get('name') === "Roads") {
+                        return true;
+                    }
+                    else {
+                        removeInteraction("draw");
+                        removeInteraction("select");
+                        return false;
+                    }
+                }
+                else {
+                    removeInteraction("draw");
+                    removeInteraction("select");
+                    return false;
+                }
+            });
+        }
+        else {
+            removeInteraction("draw");
+            removeInteraction("select");
+            return false;
+        }
+    }
+    function snapOnFeature(vector) {
+        vm.interactions.snap = new ol.interaction.Snap({
+            source: vector.layer.getSource()
+        });
+
+        addInteractions();
     }
     function setSelectButton() {
         var lastLayer;
@@ -464,18 +501,6 @@ function mapService($http,
         });
         persistSelection();
     }
-    function setModifyButton() {
-        vm.interactions.select = new ol.interaction.Select({
-            condition: ol.events.condition.never
-        });
-        var collection = new ol.Collection();
-        collection.push(getActiveFeature());
-        vm.interactions.modify = new ol.interaction.Modify({
-            features: collection
-        });
-        vm.interactions.modify.on('modifyend', onModify());
-        persistSelection();
-    }
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
             var features = vm.interactions.select.getFeatures();
@@ -492,43 +517,6 @@ function mapService($http,
                 refreshLayers();
             });
         }
-    }
-    function setupMeasure() {
-        vm.interactions.draw.on('drawstart',
-            function (evt) {
-                createMeasureTooltip();
-                if (vm.lastMeasureFeature) {
-                    mapFactory.getVectorSource().removeFeature(vm.lastMeasureFeature);
-                }
-                vm.sketch = evt.feature;
-            }, this);
-        vm.interactions.draw.on('drawend',
-            function (evt) {
-                vm.measureTooltipElement.className = 'tooltip';
-                vm.measureTooltip.setOffset([0, -7]);
-                vm.lastMeasureFeature = evt.feature;
-
-                vm.map.addOverlay(vm.measureTooltip);
-
-                vm.sketch = null;
-
-            }, this);
-    }
-    function setupGroup() {
-        vm.interactions.draw.on('drawstart',
-			function (evt) {
-			    removeInteraction("select");
-			    clearDrawingLayer(true);
-			    vm.setSelections(null, []);
-			});
-        vm.interactions.draw.on('drawend',
-			function (evt) {
-			    evt.feature.setId(0);
-			    $timeout(function () {
-			        setSelections({ featureID: evt.feature.getId(), layer: vm.drawingLayer.layer }, [])
-			        onDrawEnd("group", evt.feature)
-			    });
-			});
     }
     function setupDP() {
         vm.interactions.draw.on('drawstart',
@@ -555,19 +543,6 @@ function mapService($http,
         if (keepCurrentInteraction != true) {
             mapFactory.removeCurrentInteractions();
         }
-    }
-    function createMeasureTooltip() {
-        if (vm.measureTooltipElement) {
-            vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
-        }
-        vm.measureTooltipElement = $document[0].createElement('div');
-        vm.measureTooltipElement.className = 'tooltip tooltip-measure';
-        vm.measureTooltip = new ol.Overlay({
-            element: vm.measureTooltipElement,
-            offset: [0, -15],
-            positioning: 'bottom-center'
-        });
-        vm.map.addOverlay(vm.measureTooltip);
     }
     function removeInteraction(key) {
         vm.map.removeInteraction(vm.interactions[key]);
@@ -615,9 +590,6 @@ function mapService($http,
             switch (button.name) {
                 case "select":
                     setSelectButton();
-                    break;
-                case "modify":
-                    setModifyButton();
                     break;
                 default:
                     setDrawButton(button);

@@ -1,9 +1,4 @@
-h1 {
-  color: #ffffff;
-  font-family: Chevin;
-  font-size: 18px; }
-
-.resultPanel, .deliveryPointDialog input {
+.resultPanel {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
@@ -35,3 +30,21 @@ fieldset {
 
 .aliasInputContainer {
   width: 82.98755%; }
+
+.alertPopup {
+  height: 165px;
+  padding: 5px 5px 5px 5px;
+  border-radius: 15px;
+  position: absolute;
+  background-color: #ffffff;
+  margin: -50PX 0PX 0PX 400PX;
+  z-index: 1;
+  text-align: center; }
+  .alertPopup:hover {
+    background-color: none; }
+
+.overlay {
+  background-color: #bdbdbd; }
+
+.disabledText {
+  color: darkgray; }

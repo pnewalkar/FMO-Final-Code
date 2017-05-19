@@ -1,11 +1,13 @@
-﻿
-// Just for reference
-angular.module('routeLog')
+﻿angular.module('routeLog')
     .factory('routeLogAPIService', routeLogAPIService);
 
-routeLogAPIService.$inject = ['$http', '$q', 'GlobalSettings'];
+routeLogAPIService.$inject = ['$http',
+                              '$q',
+                              'GlobalSettings'];
 
-function routeLogAPIService($http, $q, GlobalSettings) {
+function routeLogAPIService($http,
+                            $q,
+                            GlobalSettings) {
 
     return {
         getSelectionType: getSelectionType,

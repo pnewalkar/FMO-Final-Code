@@ -1,9 +1,8 @@
 @import './app/variables';
 
 .brandName{
-  @extend %header-content;
-  font-size: 30px !important;
-  font-weight: bold !important;
+ @extend %header-content;
+font-size: 24px;
 }
 
 .fa-inbox{
@@ -14,6 +13,14 @@
 
 .fa-bars{
     @include font-color($white);   
+}
+
+.version{
+    @include position(absolute);
+    @include font-color($white);
+    left: 2%;
+    font-size: 10px;
+    bottom: 0px;
 }
 
 

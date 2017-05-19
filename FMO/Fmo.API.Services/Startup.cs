@@ -2,7 +2,6 @@
 using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
 using Fmo.Common.ConfigurationManagement;
-using Fmo.Common.EmailManagement;
 using Fmo.Common.ExceptionManagement;
 using Fmo.Common.Interface;
 using Fmo.Common.LoggingManagement;
@@ -70,7 +69,6 @@ namespace Fmo.API.Services
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
             services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddSingleton<IEmailHelper, EmailHelper>();
 
             //Infrastructure
             services.AddTransient<IUnitOfWork<FMODBContext>, UnitOfWork<FMODBContext>>();

@@ -8,65 +8,65 @@
             </md-button>
         </div>
     </md-toolbar>
-    
+
     <md-dialog-content layout-padding>
         <md-subheader>Search</md-subheader>
         <div layout="row">
             <md-input-container flex="15">
-       			<label>Selection Type</label>
-	          	<md-select name="type" ng-model="vm.selectedRouteSelectionObj" ng-change="vm.selectionTypeChange()">   
+                <label>{{  'ROUTE_LOG.SELECTION_TYPE' | translate  }}</label>
+                <md-select name="type" ng-model="vm.selectedRouteSelectionObj" ng-change="vm.selectionTypeChange()">
                     <md-select-label>
                         {{ vm.RouteselectionTypeObj.referenceDataValue }}
-                    </md-select-label>                
+                    </md-select-label>
                     <md-option ng-repeat="type in vm.RouteselectionTypeObj" ng-value="type" selected="{{ type.referenceDataValue === vm.RouteselectionTypeObj.referenceDataValue ? 'selected' : '' }}">
-                      {{type.referenceDataValue}}
+                        {{type.referenceDataValue}}
                     </md-option>
-	          	</md-select>
-        	</md-input-container>
-            
+                </md-select>
+            </md-input-container>
+
             <span flex="5"></span>
-            
+
             <md-input-container flex="15">
-	        	<label>Status</label>
-		        <md-select name="type" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()">
-                    <md-select-label>{{ vm.RouteStatusObj.referenceDataValue }}</md-select-label>      
+                <label >{{ 'ROUTE_LOG.STATUS' | translate }}</label>
+                <md-select name="type" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()">
+                    <md-select-label>{{ vm.RouteStatusObj.referenceDataValue }}</md-select-label>
                     <md-option ng-repeat="status in vm.RouteStatusObj" ng-value="status" selected="{{ status.referenceDataValue === vm.RouteStatusObj.referenceDataValue ? 'selected' : '' }}">{{status.referenceDataValue}}</md-option>
-		        </md-select>
-	        </md-input-container>
-            
+                </md-select>
+            </md-input-container>
+
             <span flex="5"></span>
-            
+
             <md-input-container flex="15">
-	        	<label>Scenario</label>
+                <label>{{ 'ROUTE_LOG.SCENARIO' | translate }}</label>
                 <md-select ng-model="vm.selectedRouteScenario" ng-disabled="vm.isRouteScenarioDisabled || (!filterScenario.length && vm.isSelectionType)" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
                     <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
-                </md-select>  
-                <div ng-show="!filterScenario.length && vm.isSelectionType" class="noResult">No Result Found</div>         
-	        </md-input-container>
-            
+                </md-select>
+                <div ng-show="!filterScenario.length && vm.isSelectionType" class="noResult">No Result Found</div>
+            </md-input-container>
+
             <span flex="5"></span>
-            
+
             <md-input-container flex="40">
-                <label>Route</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-close="vm.clearSearchTerm()" ng-change="vm.deliveryRouteChange()">
+                <label>{{ 'ROUTE_LOG.ROUTE' | translate }}</label>
+                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-open="vm.clearSearchTerm()"  md-on-close="vm.clearSearchTerm()" ng-change="vm.deliveryRouteChange()">
                     <md-select-header>
-                        <input type="text" ng-model="vm.searchTerm" placeholder="No Route Selected"  ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
+                        <input type="text" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
                     </md-select-header>
                     <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute = ( vm.deliveryRoute | filter:{routeNameNumber:vm.searchTerm } | orderBy : 'routeName') ">
                         {{route.routeNameNumber}}
-                    </md-option>         
-                    <div ng-show="!filterDeliveryRoute.length" class="noResult">No Result Found</div>
+                    </md-option>
+                    <div ng-show="!filterDeliveryRoute.length" class="noResult">{{ 'ROUTE_LOG.NO_RESULT_FOUND'| translate }}</div>
                 </md-select>
             </md-input-container>
         </div>
-        
-        <div ng-show="vm.isShowMultiSelectionRoute" flex >
+
+        <div ng-show="vm.isShowMultiSelectionRoute" flex>
             <h2>Selected Routes</h2>
             <div layout="row" flex="100">
                 <div id="table_wrapper">
                     <div id="header">
                         <div id="head1">Route Name</div>
-                        <div id="head2">Route Number</div>  
+                        <div id="head2">Route Number</div>
                         <div id="head3">Select</div>
                     </div>
                     <div id="tbody">
@@ -80,86 +80,94 @@
                     </div>
                 </div>
             </div>
-	   </div>
-        
-            <md-list ng-hide="!vm.routeDetails">
-                <md-subheader>Route Details</md-subheader>
-                <div layout="row">
-                    <div flex="35" class="routeDetailstable">
-                        <table>
-                            <tr>
-                                <td>Name</td>
-                                <td>{{::vm.routeDetails.routeName}}</td>
-                            </tr>
-                            <tr>
-                                <td>Route Number</td>
-                                <td>{{::vm.routeDetails.routeNumber}}</td>
-                            </tr>
-                            <tr>
-                                <td>Delivery Method</td>
-                                <td>{{::vm.routeDetails.method}}</td>
-                            </tr>
-                            <tr>
-                                <td>Total Time</td>
-                                <td>{{::vm.routeDetails.totaltime}}</td>
-                            </tr>
-                            <tr>
-                                <td>Hazards</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Special Instructions</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Aliases<sub>*</sub></td>
-                                <td>{{::vm.routeDetails.aliases}}</td>
-                            </tr>
-                            <tr>
-                                <td>Blocks</td>
-                                <td>{{::vm.routeDetails.blocks}}</td>
-                            </tr>
-                            <tr>
-                                <td>Paired Route</td>
-                                <td>{{::vm.routeDetails.pairedRoute}}</td>
-                            </tr>
-                        </table>
-                    </div>
+        </div>
 
-                    <span flex="5"></span>
-
-                    <div flex="35" class="routeDetailstable">
-                        <table>
-                            <tr>
-                                <td>CPs</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>DPs</td>
-                                <td>{{::vm.routeDetails.dPs}}</td>
-                            </tr>
-                            <tr>
-                                <td>Business DPs</td>
-                                <td>{{::vm.routeDetails.businessDPs}}</td>
-                            </tr>
-                            <tr>
-                                <td>Residential DPs</td>
-                                <td>{{::vm.routeDetails.residentialDPs}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <span flex="5"></span>
-
-                    <div flex="20" class="md-text"><sub>*</sub>All Alias information is shown on detailed route log </div>
+        <md-list ng-hide="!vm.routeDetails">
+            <md-subheader>Route Details</md-subheader>
+            <div layout="row">
+                <div flex="35" class="routeDetailstable">
+                    <table>
+                        <tr>
+                            <td>Name</td>
+                            <td>{{vm.routeDetails.routeName}}</td>
+                        </tr>
+                        <tr>
+                            <td>Route Number</td>
+                            <td>{{vm.routeDetails.routeNumber}}</td>
+                        </tr>
+                        <tr>
+                            <td>Delivery Method</td>
+                            <td>{{vm.routeDetails.method}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Time</td>
+                            <td>{{vm.routeDetails.totaltime}}</td>
+                        </tr>
+                        <tr>
+                            <td>Hazards</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Special Instructions</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Aliases<sub>*</sub></td>
+                            <td>{{vm.routeDetails.aliases}}</td>
+                        </tr>
+                        <tr>
+                            <td>Blocks</td>
+                            <td>{{vm.routeDetails.blocks}}</td>
+                        </tr>
+                        <tr>
+                            <td>Paired Route</td>
+                            <td>{{vm.routeDetails.pairedRoute}}</td>
+                        </tr>
+                    </table>
                 </div>
-            </md-list>
-        <md-list  ng-hide="!vm.routeDetails">
+
+                <span flex="5"></span>
+
+                <div flex="35" class="routeDetailstable">
+                    <table>
+                        <tr>
+                            <td>CPs</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>DPs</td>
+                            <td>{{vm.routeDetails.dPs}}</td>
+                        </tr>
+                        <tr>
+                            <td>Business DPs</td>
+                            <td>{{vm.routeDetails.businessDPs}}</td>
+                        </tr>
+                        <tr>
+                            <td>Residential DPs</td>
+                            <td>{{vm.routeDetails.residentialDPs}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <span flex="5"></span>
+
+                <div flex="20" class="md-text"><sub>*</sub>All Alias information is shown on detailed route log </div>
+            </div>
+        </md-list>
+        <md-list ng-hide="!vm.routeDetails">
             <md-subheader>Generate</md-subheader>
             <md-list-item>
                 <md-checkbox></md-checkbox>
                 <p>Route Log Summary</p>
             </md-list-item>
-            <md-button class="md-raised routeGenerate" md-whiteframe="3dp">Generate</md-button>
-      </md-list>
+            <md-list-item>
+                <md-checkbox></md-checkbox>
+                <p>Detailed Route Log</p>
+            </md-list-item>
+            <md-list-item>
+                <md-checkbox></md-checkbox>
+                <p>Hazard Card</p>
+            </md-list-item>
+            <md-button class="md-raised routeGenerate" md-whiteframe="3dp" ng-disabled="true">Generate</md-button>
+        </md-list>
     </md-dialog-content>
 </md-dialog>    

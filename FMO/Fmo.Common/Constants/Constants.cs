@@ -49,6 +49,7 @@
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
         public const string NotShown = "Not Shown";
         public const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
+
         #endregion Common
 
         #region NYB
@@ -80,10 +81,6 @@
         public const string USRGEOMETRYPOINT = "POINT({0} {1})";
         public const string USRCATEGORY = "Notification Type";
         public const string USRREFERENCEDATANAME = "Action required";
-        public const string USREMAILFROMEMAIL = "USRFromEmail";
-        public const string USREMAILSUBJECT = "USRSubject";
-        public const string USREMAILBODY = "USRBody";
-        public const string USREMAILTOEMAIL = "USRFromEmail";
         public const string USRWEBAPIURL = "USRWebApiurl";
         public const string USRWEBAPINAME = "USRWebApiName";
         public const string XSDLOCATIONCONFIG = "XSDLocation";
@@ -120,7 +117,7 @@
         public const string PAFUPDATEFORUSR = "USR";
         public const int CsvPAFValues = 20;
         public const string QUEUEPAF = "QUEUE_PAF";
-        public const string DeliveryPointUseIndicatorPAF = "Commercial";
+        public const string DeliveryPointUseIndicatorPAF = "Organisation";
         public const string PAFProcessedFilePath = "PAFProcessedFilePath";
         public const string PAFErrorFilePath = "PAFErrorFilePath";
         public const string PAFErrorMessageForUDPRNNotUpdated = "Postal Address for Selected UDPRN not updated";
@@ -154,17 +151,22 @@
         #endregion OtherLayers
 
         #region DeliveryPoints
+
         public const string DUPLICATEDELIVERYPOINT = "There is a duplicate of this Delivery Point in the system";
 
         public const string DUPLICATENYBRECORDS = "This address is in the NYB file under the postcode ";
         public const string DELIVERYPOINTCREATED = "Delivery Point created successfully";
+        public const string DELIVERYPOINTCREATEDWITHOUTACCESSLINK = "Delivery Point created successfully without access link";
         public const string DELIVERYPOINTCREATEDWITHOUTLOCATION = "Delivery Point created successfully without location";
         public const string INTERNAL = "Internal";
         public const string ROWVERSION = "RowVersion";
+
         #endregion DeliveryPoints
 
         #region MyRegion
+
         public const string ConcurrencyMessage = "Data has been already updated by another user";
-        #endregion
+
+        #endregion MyRegion
     }
 }

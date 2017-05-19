@@ -1,6 +1,6 @@
 .brandName, h1 {
   color: #ffffff;
-  font-family: Chevin;
+  font-family: PF_DIN;
   font-size: 18px; }
 
 .mdDialog input {
@@ -18,6 +18,13 @@
 
 .fa-bars {
   color: #ffffff; }
+
+.version {
+  position: absolute;
+  color: #ffffff;
+  left: 2%;
+  font-size: 10px;
+  bottom: 0px; }
 
 /*commom sass*/
 h1 {
@@ -40,21 +47,21 @@ i.fa.fa-times {
 @font-face {
   font-family: 'Chevin';
   src: url("../fonts/Chevin/Chevin_Light.eot");
-  src: url("../fonts/Chevin/Chevin_Light.eot?#iefix") format("embedded-opentype"), url("../fonts/Chevin/Chevin_Light.svg") format("svg"), url("../fonts/Chevin/Chevin_Light.ttf") format("truetype"), url("../fonts/Chevin/Chevin_Light.woff") format("woff"), url("../fonts/Chevin/Chevin_Light.woff2") format("woff2");
+  src: url("../fonts/Chevin/Chevin_Light.eot?#iefix") format("embedded-opentype"), url("../fonts/Chevin/Chevin_Light.ttf") format("truetype"), url("../fonts/Chevin/Chevin_Light.woff") format("woff");
   font-weight: 300; }
 
 /*Chevin Medium Font*/
 @font-face {
   font-family: 'Chevin';
   src: url("../fonts/Chevin/Chevin_Medium.eot");
-  src: url("../fonts/Chevin/Chevin_Medium.eot?#iefix") format("embedded_opentype"), url("../fonts/Chevin/Chevin_Medium.svg") format("svg"), url("../fonts/Chevin/Chevin_Medium.ttf") format("truetype"), url("../fonts/Chevin/Chevin_Medium.woff") format("woff"), url("../fonts/Chevin/Chevin_Medium.woff2") format("woff2");
+  src: url("../fonts/Chevin/Chevin_Medium.eot?#iefix") format("embedded-opentype"), url("../fonts/Chevin/Chevin_Medium.ttf") format("truetype"), url("../fonts/Chevin/Chevin_Medium.woff") format("woff");
   font-weight: normal; }
 
 /*Chevin Bold TTF Font*/
 @font-face {
   font-family: 'Chevin';
   src: url("../fonts/Chevin/Chevin_Bold.eot");
-  src: url("../fonts/Chevin/Chevin_Bold.eot?#iefix") format("embedded_opentype"), url("../fonts/Chevin/Chevin_Bold.svg") format("svg"), url("../fonts/Chevin/Chevin_Bold.ttf") format("truetype"), url("../fonts/Chevin/Chevin_Bold.woff") format("woff"), url("../fonts/Chevin/Chevin_Bold.woff2") format("woff2");
+  src: url("../fonts/Chevin/Chevin_Bold.eot?#iefix") format("embedded-opentype"), url("../fonts/Chevin/Chevin_Bold.ttf") format("truetype"), url("../fonts/Chevin/Chevin_Bold.woff") format("woff");
   font-weight: bold; }
 
 /*PF DIN Font*/

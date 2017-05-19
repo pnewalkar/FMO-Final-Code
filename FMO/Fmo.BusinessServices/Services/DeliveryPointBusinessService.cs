@@ -19,6 +19,7 @@ using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
 using Fmo.DTO.Model;
 using System.Data.Entity.Spatial;
+using System.Linq;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -32,6 +33,7 @@ namespace Fmo.BusinessServices.Services
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
+        private IAccessLinkBusinessService accessLinkBusinessService = default(IAccessLinkBusinessService);
         private bool enableLogging = false;
 
         public DeliveryPointBusinessService(
@@ -39,13 +41,15 @@ namespace Fmo.BusinessServices.Services
             IPostalAddressBusinessService postalAddressBusinessService,
             ILoggingHelper loggingHelper,
             IConfigurationHelper configurationHelper,
-            IReferenceDataBusinessService referenceDataBusinessService)
+            IReferenceDataBusinessService referenceDataBusinessService,
+            IAccessLinkBusinessService accessLinkBusinessService)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
             this.postalAddressBusinessService = postalAddressBusinessService;
             this.referenceDataBusinessService = referenceDataBusinessService;
+            this.accessLinkBusinessService = accessLinkBusinessService;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
@@ -157,6 +161,8 @@ namespace Fmo.BusinessServices.Services
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             string addDeliveryDtoLogDetails = new JavaScriptSerializer().Serialize(addDeliveryPointDTO);
             string message = string.Empty;
+            double? returnXCoordinate = 0;
+            double? returnYCoordinate = 0;
             Guid returnGuid = new Guid(Constants.DEFAULTGUID);
             byte[] rowVersion = null;
             try
@@ -174,20 +180,28 @@ namespace Fmo.BusinessServices.Services
                     }
                     else
                     {
-                        using (TransactionScope scope = new TransactionScope())
+                        CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                        rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
+                        returnGuid = createDeliveryPointModelDTO.ID;
+                        returnXCoordinate = createDeliveryPointModelDTO.XCoordinate;
+                        returnYCoordinate = createDeliveryPointModelDTO.YCoordinate;
+
+                        if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
                         {
-                            CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                            rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
-                            returnGuid = createDeliveryPointModelDTO.ID;
-                            scope.Complete();
-                            if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
-                            {
-                                message = Constants.DELIVERYPOINTCREATED;
-                            }
-                            else
-                            {
-                                message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
-                            }
+                            var referenceDataCategoryList = referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string> { ReferenceDataCategoryNames.OperationalObjectType });
+
+                            var deliveryOperationObjectTypeId = referenceDataCategoryList
+                                .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                                .SelectMany(x => x.ReferenceDatas)
+                                .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
+
+                            var isAccessLinkCreated = accessLinkBusinessService.CreateAccessLink(createDeliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+
+                            message = isAccessLinkCreated ? Constants.DELIVERYPOINTCREATED : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
+                        }
+                        else
+                        {
+                            message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
                         }
                     }
                 }
@@ -195,7 +209,7 @@ namespace Fmo.BusinessServices.Services
             catch (Exception ex)
             {
                 this.loggingHelper.LogInfo(ex.ToString());
-                throw ex;
+                throw;
             }
             finally
             {
@@ -203,7 +217,7 @@ namespace Fmo.BusinessServices.Services
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message,  RowVersion = rowVersion };
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate , YCoordinate = returnYCoordinate };
         }
 
         /// <summary>
@@ -211,7 +225,7 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="deliveryPointModelDTO">DeliveryPointModelDTO</param>
         /// <returns>message</returns>
-        public async Task UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO)
+        public async Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO)
         {
             string sbLocationXY = string.Format(
                                                 Constants.USRGEOMETRYPOINT,
@@ -230,10 +244,30 @@ namespace Fmo.BusinessServices.Services
                 Longitude = deliveryPointModelDTO.Longitude,
                 LocationXY = spatialLocationXY,
                 LocationProvider_GUID = locationProviderId,
-                RowVersion = deliveryPointModelDTO.RowVersion
+                RowVersion = deliveryPointModelDTO.RowVersion,
+                Positioned = true
             };
 
-            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+            await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO).ContinueWith(t =>
+             {
+                 if (t.Result > 0)
+                 {
+                     var referenceDataCategoryList =
+                         referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
+                         {
+                             ReferenceDataCategoryNames.OperationalObjectType
+                         });
+
+                     var deliveryOperationObjectTypeId = referenceDataCategoryList
+                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                         .SelectMany(x => x.ReferenceDatas)
+                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
+
+                     accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                 }
+             });
+
+            return new UpdateDeliveryPointModelDTO { XCoordinate = deliveryPointModelDTO.XCoordinate, YCoordinate = deliveryPointModelDTO.YCoordinate };
         }
 
         /// <summary>

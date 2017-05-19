@@ -34,7 +34,7 @@ namespace Fmo.DataServices.Repositories
             var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
             {
-                var referenceData = result.ReferenceDatas.Where(n => n.DataDescription.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataValue.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
                 if (referenceData != null)
                 {
                     statusId = referenceData.ID;

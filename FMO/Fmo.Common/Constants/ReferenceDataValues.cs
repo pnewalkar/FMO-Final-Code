@@ -20,10 +20,12 @@
 
         public const string AccessLinkStatusLive = "Live";
         public const string AccessLinkStatusDraftPendingApproval = "Draft Pending Approval";
+        public const string AccessLinkStatusDraftPendingReview = "Draft Pending Review";
 
         public const string AccessLinkDiffRoadMaxDistance = "Access Link Diff Road Max Distance";
         public const string AccessLinkSameRoadMaxDistance = "Access Link Same Road Max Distance";
 
         public const string OperationalObjectTypeDP = "DP";
+        public const string DeliveryRouteMethodTypeRmVanShared = "RM Van (Shared)";
     }
 }

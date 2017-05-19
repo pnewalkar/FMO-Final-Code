@@ -1,4 +1,6 @@
 ﻿using System;
+using Fmo.DTO;
+using Fmo.DTO.Model;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -22,5 +24,12 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="operationObjectTypeId">Operational Object type unique identifier.</param>
         /// <returns>bool</returns>
         bool CreateAccessLink(Guid operationalObjectId, Guid operationObjectTypeId);
+
+        /// <summary>
+        /// This method is used to create manual Access Link .
+        /// </summary>
+        /// <param name="accessLinkDto">access link object to be stored</param>
+        /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
+        bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkDto);
     }
 }
