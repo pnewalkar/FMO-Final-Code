@@ -1,8 +1,9 @@
 ﻿angular.module('layers')
         .factory('layersBusinessService', layersBusinessService);
-layersBusinessService.$inject = ['mapService',
-                         'mapStylesFactory',
-                         'layersService'];
+layersBusinessService.$inject = [
+ 'mapService',
+ 'mapStylesFactory',
+'layersService'];
 
 function layersBusinessService(mapService,
                        mapStylesFactory,
@@ -13,9 +14,7 @@ function layersBusinessService(mapService,
         getLayerData: getLayerData,
         refreshLayer: refreshLayer,
         onChange: onChange,
-        showUngrouped: showUngrouped,
-        fetchDeliveryPoints: fetchDeliveryPoints,
-        fetchAccessLinks: fetchAccessLinks,
+        showUngrouped: showUngrouped   
     };
 
     function getLayerData() {
@@ -74,18 +73,7 @@ function layersBusinessService(mapService,
         })
         return showGrouped;
     }
-    function fetchDeliveryPoints() {
-        var data;
-        var data = layersService.fetchDeliveryPoints();
-        return showGrouped;
-    }
-
-    function fetchAccessLinks() {
-        var data;
-        var data = layersService.fetchAccessLinks();
-        return showGrouped;
-    }
-
+  
     function setSelectedObjectsVisibility(selectedLayer) {
         mapService.setSelectedObjectsVisibility(selectedLayer);
     }

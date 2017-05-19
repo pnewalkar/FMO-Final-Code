@@ -1,7 +1,10 @@
 ﻿
 angular.module('layers')
     .factory('layersService', layersService);
-layersService.$inject = ['$http', 'GlobalSettings', '$q'];
+layersService.$inject = [
+'$http',
+'GlobalSettings',
+'$q'];
 
 function layersService($http, GlobalSettings, $q) {
     var layersService = {};

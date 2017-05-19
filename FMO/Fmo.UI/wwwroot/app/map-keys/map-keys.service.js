@@ -1,10 +1,12 @@
 ﻿angular.module('mapKey')
         .factory('mapKeyService', mapToolbarService);
 mapToolbarService.$inject = ['mapStylesFactory',
-                             'mapService'];
+                             'mapService',
+                              'CommonConstants'];
 
 function mapToolbarService(mapStylesFactory,
-                           mapService) {
+                           mapService,
+                           CommonConstants) {
    
     return {
         showKey: showKey,
@@ -33,26 +35,27 @@ function mapToolbarService(mapStylesFactory,
 
     function initialize() {
         var activeStyle = mapStylesFactory.getStyle();
-
-         var pointTypes = [
+        var pointTypes = [
+             
             {
-                "text": "Selected",
+               
+                "text": CommonConstants.pointTypes.Selected.text,
                 "id": "",
-                "style": mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)("deliverypoint")
+                "style": mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)(CommonConstants.pointTypes.Selected.style)
             }, {
-                "text": "Delivery Point",
-                "id": "deliverypoint",
-                "style": activeStyle("deliverypoint")
+                "text": CommonConstants.pointTypes.DeliveryPoint.text,
+                "id": CommonConstants.pointTypes.DeliveryPoint.value,
+                "style": activeStyle(CommonConstants.pointTypes.DeliveryPoint.style)
             },
              {
-                 "text": "Access Link",
-                 "id": "accesslink",
-                 "style": activeStyle("accesslink")
+                 "text": CommonConstants.pointTypes.AcessLink.text,
+                 "id": CommonConstants.pointTypes.AcessLink.value,
+                 "style": activeStyle(CommonConstants.pointTypes.AcessLink.style)
              },
             {
-                "text": "Road",
-                "id": "roadlink",
-                "style": activeStyle("roadlink")
+                "text": CommonConstants.pointTypes.Road.text,
+                "id": CommonConstants.pointTypes.Road.value,
+                "style": activeStyle(CommonConstants.pointTypes.Road.style)
             }
         ];
         return pointTypes;

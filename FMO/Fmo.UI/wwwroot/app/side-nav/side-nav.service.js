@@ -1,9 +1,20 @@
-angular.module('sideNav')
-    .factory('sideNavApiService', sideNavApiService);
-sideNavApiService.$inject = ['$http', 'GlobalSettings'];
-function sideNavApiService($http, GlobalSettings) {
-    var sideNavApiService = {};
+angular
+    .module('sideNav')
+    .service('sideNavService', sideNavService);
 
-    return sideNavApiService;
+sideNavService.$inject = [
+'CommonConstants'
+                           ];
+function sideNavService(CommonConstants) {
+    return {
+        fetchActionItems: fetchActionItems
+    };
 
+    function fetchActionItems() {
+        getItem = sessionStorage.getItem(CommonConstants.GetSessionStorageItemType);
+
+        return {
+            RolesActionResult: angular.fromJson(getItem)
+        }
+    }
 }

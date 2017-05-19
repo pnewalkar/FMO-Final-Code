@@ -14,7 +14,7 @@ function PopUpSettingService() {
             clickOutsideToClose: false,
             controller: 'AdvanceSearchController as vm',
             locals : {
-                data : query
+                searchText : query
             }
         };
     }
