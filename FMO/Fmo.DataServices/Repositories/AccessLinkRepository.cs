@@ -1,4 +1,6 @@
-﻿namespace Fmo.DataServices.Repositories
+﻿using System.Data;
+
+namespace Fmo.DataServices.Repositories
 {
     using System;
     using System.Collections.Generic;
@@ -83,10 +85,8 @@
                 DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
                 return DataContext.AccessLinks.AsNoTracking().Where(x => x.AccessLinkLine.Intersects(extent) && x.AccessLinkLine.Intersects(polygon)).ToList();
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }

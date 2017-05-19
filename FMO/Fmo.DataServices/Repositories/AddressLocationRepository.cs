@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
+using Fmo.Common.Interface;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -15,9 +19,12 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository
     {
-        public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        private IExceptionHelper exceptionHelper = default(IExceptionHelper);
+
+        public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory, IExceptionHelper exceptionHelper)
             : base(databaseFactory)
         {
+            this.exceptionHelper = exceptionHelper;
         }
 
         /// <summary>
@@ -68,14 +75,21 @@ namespace Fmo.DataServices.Repositories
                 var addressLocationEntity = new AddressLocation();
 
                 GenericMapper.Map(addressLocationDTO, addressLocationEntity);
-
                 DataContext.AddressLocations.Add(addressLocationEntity);
 
                 return await DataContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DbUpdateException dbUpdateException)
             {
-                throw;
+                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+            }
+            catch (ObjectDisposedException disposedException)
+            {
+                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
             }
         }
     }

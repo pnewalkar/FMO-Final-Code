@@ -26,6 +26,11 @@ namespace Fmo.Common.ExceptionManagement
             EntityType = entityType;
         }
 
+        public EntityNotFoundException(Exception innerException, string message, params object[] args)
+            : base(string.Format(message, args), innerException)
+        {
+        }
+
         protected EntityNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
