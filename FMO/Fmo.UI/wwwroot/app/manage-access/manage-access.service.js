@@ -1,14 +1,14 @@
 ﻿
 angular.module('manageAccess')
-    .factory('manageAccessBusinessService', manageAccessBusinessService);
+    .factory('manageAccessService', manageAccessService);
 
-manageAccessBusinessService.$inject = [
-    'manageAccessService',
+manageAccessService.$inject = [
+    'manageAccessAPIService',
     'GlobalSettings',
     '$window'];
 
-function manageAccessBusinessService(
-    manageAccessService,
+function manageAccessService(
+    manageAccessAPIService,
     GlobalSettings,
     $window) {
 
@@ -47,7 +47,7 @@ function manageAccessBusinessService(
             }
         }
 
-        manageAccessService.getToken(vm.userdata).then(function (response) {
+        manageAccessAPIService.getToken(vm.userdata).then(function (response) {
             var accessData = response.data;
             if (response.access_token) {
                 sessionStorage.clear();

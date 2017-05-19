@@ -1,13 +1,13 @@
 ﻿
 angular.module('advanceSearch')
         .service('advanceSearchService', advanceSearchService);
-advanceSearchService.$inject = ['advanceSearchApiService',
+advanceSearchService.$inject = ['advanceSearchAPIService',
                                 '$q',                              
                                 'searchService',
                                 'mapFactory',
                                 'CommonConstants'];
 
-function advanceSearchService(advanceSearchApiService,
+function advanceSearchService(advanceSearchAPIService,
                               $q,                            
                               searchService,
                               mapFactory,
@@ -35,7 +35,7 @@ function advanceSearchService(advanceSearchApiService,
         var arrDeliveryRoutes = [];
         var arrRoutes = [];
 
-        advanceSearchApiService.advanceSearch(query).then(function (response) {
+        advanceSearchAPIService.advanceSearch(query).then(function (response) {
             advanceSearchResults = response;
             angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
                 if (value.type === CommonConstants.EntityType.DeliveryPoint)

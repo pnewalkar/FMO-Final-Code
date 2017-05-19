@@ -2,11 +2,11 @@
 
 angular
     .module('manageAccess')
-    .factory('manageAccessService', manageAccessService);
+    .factory('manageAccessAPIService', manageAccessAPIService);
 
-manageAccessService.$inject = ['$http', '$q', 'GlobalSettings'];
+manageAccessAPIService.$inject = ['$http', '$q', 'GlobalSettings'];
 
-function manageAccessService($http, $q, GlobalSettings) {
+function manageAccessAPIService($http, $q, GlobalSettings) {
     var service = {
         getToken: getToken
     };
