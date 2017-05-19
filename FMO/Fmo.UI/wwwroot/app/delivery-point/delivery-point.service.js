@@ -1,5 +1,5 @@
 angular.module('deliveryPoint')
-    .factory('coordinatesService', function () {
+    .service('deliveryPointService', function () {
 
         var coordinates = '';
         return {

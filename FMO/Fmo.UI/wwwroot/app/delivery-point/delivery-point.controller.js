@@ -6,32 +6,32 @@ angular
         '$scope',
         '$mdDialog',
         'popUpSettingService',
-        'deliveryPointApiService',
+        'deliveryPointAPIService',
         'referencedataApiService',
         '$filter',
         'referenceDataConstants',
         '$timeout',
         'mapFactory',
-        'coordinatesService',
+        'deliveryPointService',
         '$state',
         '$stateParams',
-        'layersBusinessService'
+        'layersService'
 , DeliveryPointController])
 function DeliveryPointController(
     mapToolbarService,
     $scope,
     $mdDialog,
     popUpSettingService,
-    deliveryPointApiService,
+    deliveryPointAPIService,
     referencedataApiService,
     $filter,
     referenceDataConstants,
     $timeout,
     mapFactory,
-    coordinatesService,
+    deliveryPointService,
     $state,
     $stateParams,
-    layersBusinessService
+    layersService
 ) {
     var vm = this;
     vm.resultSet = resultSet;
@@ -76,7 +76,8 @@ function DeliveryPointController(
     vm.Ok = Ok;
     vm.isDisable = false;
 
-    $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
+    $scope.$watch(function () { return deliveryPointService.getCordinates()
+    }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
             openAlert();
     }, true);
@@ -106,7 +107,7 @@ function DeliveryPointController(
                 vm.deliveryPointList.splice(idx, 1);
 
                 vm.positionedDeliveryPointList = [];
-                vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
+                vm.positionedCoOrdinates.push(deliveryPointService.getCordinates());
                 var latlong = ol.proj.transform(vm.positionedCoOrdinates[0], 'EPSG:27700', 'EPSG:4326');
                 var positionedDeliveryPointListObj = {
                     udprn: vm.selectedItem.udprn, locality: vm.selectedItem.locality, addressGuid: vm.selectedItem.addressGuid, deliveryPointGuid: vm.selectedItem.deliveryPointGuid, xCoordinate: vm.positionedCoOrdinates[0][0], yCoordinate: vm.positionedCoOrdinates[0][1], latitude: latlong[1], longitude: latlong[0], rowversion: vm.selectedItem.rowversion
@@ -149,7 +150,7 @@ function DeliveryPointController(
             "YCoordinate": vm.positionedDeliveryPointList[0].yCoordinate,
             "RowVersion": vm.positionedDeliveryPointList[0].rowversion
         }
-        deliveryPointApiService.UpdateDeliverypoint(deliveryPointModelDTO).then(function (result) {
+        deliveryPointAPIService.UpdateDeliverypoint(deliveryPointModelDTO).then(function (result) {
             debugger;
             vm.positionedDeliveryPointList = null;
             mapFactory.setAccessLink();
@@ -160,7 +161,7 @@ function DeliveryPointController(
     }
 
     function querySearch(query) {
-        deliveryPointApiService.GetDeliveryPointsResultSet(query).then(function (response) {
+        deliveryPointAPIService.GetDeliveryPointsResultSet(query).then(function (response) {
             vm.results = response;
         });
     }
@@ -179,7 +180,7 @@ function DeliveryPointController(
                 },
                 "AddressLocationDTO": null
             };
-        deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
+        deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
 
             if (response.message && response.message == "Delivery Point created successfully") {
                 debugger;
@@ -299,7 +300,7 @@ function DeliveryPointController(
 
     function getPostalAddress(selectedItem) {
 
-        deliveryPointApiService.GetAddressByPostCode(selectedItem).then(function (response) {
+        deliveryPointAPIService.GetAddressByPostCode(selectedItem).then(function (response) {
             vm.nybaddress = "";
             vm.postalAddressData = response;
             if (vm.postalAddressData && vm.postalAddressData.nybAddressDetails) {
@@ -318,7 +319,7 @@ function DeliveryPointController(
     }
 
     function getAddressLocation(udprn) {
-        deliveryPointApiService.GetAddressLocation(udprn)
+        deliveryPointAPIService.GetAddressLocation(udprn)
                 .then(function (response) {
                     vm.addressLocationData = response.data;
                 });
@@ -373,7 +374,7 @@ function DeliveryPointController(
 
     function bindAddressDetails() {
 
-        deliveryPointApiService.GetPostalAddressByGuid(vm.notyetBuilt)
+        deliveryPointAPIService.GetPostalAddressByGuid(vm.notyetBuilt)
                .then(function (response) {
                    vm.nybaddress = response;
                    if (response) {
@@ -417,7 +418,7 @@ function DeliveryPointController(
 
 
     function locateDeliveryPoint(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
-        deliveryPointApiService.GetAddressLocation(udprn)
+        deliveryPointAPIService.GetAddressLocation(udprn)
             .then(function (response) {
                 if (response.features.length > 0) {
 

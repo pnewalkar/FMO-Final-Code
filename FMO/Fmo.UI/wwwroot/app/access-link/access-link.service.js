@@ -1,5 +1,5 @@
 ﻿angular.module('accessLink')
-    .factory('accessLinkService', function () {
+    .service('accessLinkService', function () {
 
         this.accessLink = function () {
             return {

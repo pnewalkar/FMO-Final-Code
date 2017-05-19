@@ -2,13 +2,12 @@
 angular.module('layers')
     .controller('LayerSelectorController', [
           '$scope',
-          'layersBusinessService',
-
+          'layersService',
           LayerSelectorController]);
 
 function LayerSelectorController(
     $scope,
-    layersBusinessService
+    layersService
     )
 {
     var vm = this;
@@ -20,20 +19,20 @@ function LayerSelectorController(
     vm.groupData;
 
     function getLayerData() {
-        vm.groupData = layersBusinessService.getLayerData();
+        vm.groupData = layersService.getLayerData();
         vm.groups = vm.groupData.groups;
         vm.ungrouped = vm.groupData.ungroup;
     }
 
     function refreshLayer() {
-        layersBusinessService.refreshLayer();
+        layersService.refreshLayer();
     }
     function onChange(changedLayer) {
-        layersBusinessService.onChange(changedLayer);
+        layersService.onChange(changedLayer);
     }
 
     function showUngrouped() {
-        return layersBusinessService.showUngrouped();
+        return layersService.showUngrouped();
     }
 
     vm.getLayerData();

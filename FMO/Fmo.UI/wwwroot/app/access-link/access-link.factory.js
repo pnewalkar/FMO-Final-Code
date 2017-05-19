@@ -1,10 +1,10 @@
 ﻿angular.module('accessLink')
-    .factory('accessLinkApiService', accessLinkApiService)
-accessLinkApiService.$inject = ['$http', 'GlobalSettings', '$q'];
-function accessLinkApiService($http, GlobalSettings, $q) {
-    var accessLinkApiService = {};
+    .factory('accessLinkAPIService', accessLinkAPIService)
+accessLinkAPIService.$inject = ['$http', 'GlobalSettings', '$q'];
+function accessLinkAPIService($http, GlobalSettings, $q) {
+    var accessLinkAPIService = {};
 
-    accessLinkApiService.CreateAccessLink = function (accessLinkDTO) {
+    accessLinkAPIService.CreateAccessLink = function (accessLinkDTO) {
         var deferred = $q.defer();
 
         $http.post(GlobalSettings.apiUrl + '/accessLink/Create/', accessLinkDTO).success(function (response) {

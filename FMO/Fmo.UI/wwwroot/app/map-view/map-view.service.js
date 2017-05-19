@@ -6,18 +6,18 @@ mapService.$inject = ['$http',
                      'mapStylesFactory',
                      '$timeout',
                      'GlobalSettings',
-                     'coordinatesService',
+                     'deliveryPointService',
                      '$document',
-                     'layersService'];
+                     'layersAPIService'];
 
 function mapService($http,
                     mapFactory,
                     mapStylesFactory,
                     $timeout,
                     GlobalSettings,
-                    coordinatesService,
+                    deliveryPointService,
                     $document,
-                    layersService) {
+                    layersAPIService) {
     var vm = this;
     vm.map = null;
     vm.miniMap = null;
@@ -119,7 +119,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                layersService.fetchDeliveryPoints(extent, authData).then(function (response) {
+                layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     loadFeatures(deliveryPointsVector, response);
                 });
             }
@@ -142,7 +142,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                layersService.fetchAccessLinks(extent, authData).then(function (response) {
+                layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
                     loadFeatures(accessLinkVector, response);
                 });
             }
@@ -153,7 +153,7 @@ function mapService($http,
             strategy: ol.loadingstrategy.bbox,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-                layersService.fetchRouteLinks(extent, authData).then(function (response) {
+                layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
                     loadFeatures(roadLinkVector, response);
                 });
             }
@@ -412,7 +412,7 @@ function mapService($http,
         }
 
         var accessLinkEndCoordinate = coordinates[1];
-        var dpCoordinates = coordinatesService.getCordinates();
+        var dpCoordinates = deliveryPointService.getCordinates();
         var accessLinkCoordinates = [accessLinkEndCoordinate[0], accessLinkEndCoordinate[1]];
         var setAccessLinkCoordinate = [dpCoordinates, accessLinkCoordinates];
 
@@ -529,7 +529,7 @@ function mapService($http,
 			function (evt) {
 			    evt.feature.set("type", "deliverypoint");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
-			    coordinatesService.setCordinates(coordinates);
+			    deliveryPointService.setCordinates(coordinates);
 
 			});
     }

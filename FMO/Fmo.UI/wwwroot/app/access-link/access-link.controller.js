@@ -2,12 +2,12 @@
     .module('accessLink')
     .controller("AccessLinkController",
     [
-        'accessLinkApiService',
+        'accessLinkAPIService',
         '$scope',
         '$mdDialog'
         , AccessLinkController])
 function AccessLinkController(
-    accessLinkApiService,
+    accessLinkAPIService,
     $scope,
     $mdDialog 
 ) {
@@ -17,7 +17,7 @@ function AccessLinkController(
         debugger;
         var accessLink = null;
 
-        accessLinkApiService.createAccessLink(accessLink).then(function (response) {
+        accessLinkAPIService.createAccessLink(accessLink).then(function (response) {
             debugger;
             alert.message(response);            
         });

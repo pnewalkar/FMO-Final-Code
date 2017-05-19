@@ -1,6 +1,6 @@
 ﻿
 angular.module('manageAccess')
-    .factory('manageAccessService', manageAccessService);
+    .service('manageAccessService', manageAccessService);
 
 manageAccessService.$inject = [
     'manageAccessAPIService',
