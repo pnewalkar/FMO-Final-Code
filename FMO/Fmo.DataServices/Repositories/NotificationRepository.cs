@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -28,10 +30,25 @@ namespace Fmo.DataServices.Repositories
         /// <returns>Task<int></returns>
         public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
         {
-            Notification newNotification = new Notification();
-            GenericMapper.Map(notificationDTO, newNotification);
-            DataContext.Notifications.Add(newNotification);
-            return await DataContext.SaveChangesAsync();
+            try
+            {
+                Notification newNotification = new Notification();
+                GenericMapper.Map(notificationDTO, newNotification);
+                DataContext.Notifications.Add(newNotification);
+                return await DataContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+            }
+            catch (ObjectDisposedException disposedException)
+            {
+                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
+            }
         }
 
         /// <summary>
@@ -42,16 +59,24 @@ namespace Fmo.DataServices.Repositories
         /// <returns>Task<int></returns>
         public async Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action)
         {
+            string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
             try
             {
-                string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
                 Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
                 DataContext.Notifications.Remove(notification);
                 return await DataContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DbUpdateException dbUpdateException)
             {
-                throw;
+                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlDeleteExceptionMessage, string.Concat("notification for:", actionLink)));
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+            }
+            catch (ObjectDisposedException disposedException)
+            {
+                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
             }
         }
 
@@ -62,18 +87,12 @@ namespace Fmo.DataServices.Repositories
         /// <returns>NotificationDTO object</returns>
         public NotificationDTO GetNotificationByUDPRN(int uDPRN)
         {
-            try
-            {
-                string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
-                Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefault();
-                NotificationDTO notificationDTO = new NotificationDTO();
-                GenericMapper.Map(notification, notificationDTO);
-                return notificationDTO;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+            Notification notification = DataContext.Notifications
+                .Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefault();
+            NotificationDTO notificationDTO = new NotificationDTO();
+            GenericMapper.Map(notification, notificationDTO);
+            return notificationDTO;
         }
 
         /// <summary>
@@ -84,22 +103,15 @@ namespace Fmo.DataServices.Repositories
         /// <returns>boolean value</returns>
         public bool CheckIfNotificationExists(int uDPRN, string action)
         {
-            try
+            string notificationActionlink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN.ToString());
+            if (DataContext.Notifications.AsNoTracking()
+                .Any(notific => notific.NotificationActionLink.Equals(notificationActionlink) &&
+                                  notific.Notification_Heading.Trim().Equals(action)))
             {
-                string notificationActionlink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN.ToString());
-                if (DataContext.Notifications.AsNoTracking().Where(notific => notific.NotificationActionLink.Equals(notificationActionlink) && notific.Notification_Heading.Trim().Equals(action)).Any())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return false;
         }
     }
 }

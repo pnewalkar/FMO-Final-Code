@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
 using Fmo.Common.SqlGeometryExtension;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
@@ -35,31 +36,24 @@ namespace Fmo.DataServices.Repositories
         /// <returns>StreetNames</returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
         {
-            try
-            {
-                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid)
-                    .Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+            DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid)
+                .Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
-                var streetNames = await DataContext.StreetNames.AsNoTracking()
-                    .Where(
-                        l =>
-                            l.Geometry.Intersects(polygon) &&
-                            (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
-                    .Select(l => new StreetNameDTO
-                    {
-                        ID = l.ID,
-                        StreetType = l.StreetType,
-                        NationalRoadCode = l.NationalRoadCode,
-                        DesignatedName = l.DesignatedName,
-                        Descriptor = l.Descriptor
-                    }).ToListAsync();
+            var streetNames = await DataContext.StreetNames.AsNoTracking()
+                .Where(
+                    l =>
+                        l.Geometry.Intersects(polygon) &&
+                        (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
+                .Select(l => new StreetNameDTO
+                {
+                    ID = l.ID,
+                    StreetType = l.StreetType,
+                    NationalRoadCode = l.NationalRoadCode,
+                    DesignatedName = l.DesignatedName,
+                    Descriptor = l.Descriptor
+                }).ToListAsync();
 
-                return streetNames;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return streetNames;
         }
 
         /// <summary>
@@ -72,38 +66,31 @@ namespace Fmo.DataServices.Repositories
         /// </returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid unitGuid)
         {
-            try
-            {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
-                searchText = searchText ?? string.Empty;
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
+            searchText = searchText ?? string.Empty;
 
-                DbGeometry polygon =
-                    DataContext.UnitLocations.Where(x => x.ID == unitGuid)
-                        .Select(x => x.UnitBoundryPolygon)
-                        .SingleOrDefault();
+            DbGeometry polygon =
+                DataContext.UnitLocations.Where(x => x.ID == unitGuid)
+                    .Select(x => x.UnitBoundryPolygon)
+                    .SingleOrDefault();
 
-                var streetNamesDto =
-                    await DataContext.StreetNames.Where(
-                            l =>
-                                l.Geometry.Intersects(polygon) &&
-                                (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
-                        .Take(takeCount)
-                        .Select(l => new StreetNameDTO
-                        {
-                            ID = l.ID,
-                            StreetType = l.StreetType,
-                            NationalRoadCode = l.NationalRoadCode,
-                            DesignatedName = l.DesignatedName,
-                            Descriptor = l.Descriptor
-                        })
-                        .ToListAsync();
+            var streetNamesDto =
+                await DataContext.StreetNames.Where(
+                        l =>
+                            l.Geometry.Intersects(polygon) &&
+                            (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
+                    .Take(takeCount)
+                    .Select(l => new StreetNameDTO
+                    {
+                        ID = l.ID,
+                        StreetType = l.StreetType,
+                        NationalRoadCode = l.NationalRoadCode,
+                        DesignatedName = l.DesignatedName,
+                        Descriptor = l.Descriptor
+                    })
+                    .ToListAsync();
 
-                return streetNamesDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return streetNamesDto;
         }
 
         /// <summary>
@@ -130,9 +117,13 @@ namespace Fmo.DataServices.Repositories
                                 (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                         .CountAsync();
             }
-            catch (Exception)
+            catch (InvalidOperationException ex)
             {
-                throw;
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
             }
         }
 

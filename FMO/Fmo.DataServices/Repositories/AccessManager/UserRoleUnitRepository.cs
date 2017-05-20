@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fmo.Common.Constants;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -31,12 +32,18 @@ namespace Fmo.DataServices.Repositories
         /// <returns>Guid</returns>
         public async Task<Guid> GetUserUnitInfo(string userName)
         {
-            var userUnit = await (from r in DataContext.UserRoleUnits.AsNoTracking()
-                        join u in DataContext.Users on r.User_GUID equals u.ID
-                        where u.UserName == userName
-                        select r.Unit_GUID).FirstOrDefaultAsync();
-
-            return userUnit;
+            try
+            {
+                var userUnit = await (from r in DataContext.UserRoleUnits.AsNoTracking()
+                                      join u in DataContext.Users on r.User_GUID equals u.ID
+                                      where u.UserName == userName
+                                      select r.Unit_GUID).FirstOrDefaultAsync();
+                return userUnit;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForFirstorDefault, ex);
+            }
         }
     }
 }

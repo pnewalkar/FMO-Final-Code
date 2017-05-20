@@ -189,44 +189,44 @@ namespace Fmo.DataServices.Repositories
         /// </returns>
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid)
         {
-            try
+            if (string.IsNullOrWhiteSpace(searchText) || Guid.Empty.Equals(unitGuid))
             {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
-                searchText = searchText ?? string.Empty;
+                throw new ArgumentNullException(searchText, string.Format(ErrorMessageConstants.ArgumentmentNullExceptionMessage, string.Concat(searchText, unitGuid)));
+            }
 
-                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
+            searchText = searchText ?? string.Empty;
 
-                var result = await DataContext.DeliveryPoints.AsNoTracking()
-                    .Include(l => l.PostalAddress)
-                    .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
-                                    || x.PostalAddress.BuildingName.Contains(searchText)
-                                    || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                    || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
-                                    || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                    || x.PostalAddress.DependentLocality.Contains(searchText)))
-                    .Select(l => new DeliveryPointDTO
+            DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid)
+                .Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
+            var result = await DataContext.DeliveryPoints.AsNoTracking()
+                .Include(l => l.PostalAddress)
+                .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
+                                                                 || x.PostalAddress.BuildingName.Contains(searchText)
+                                                                 || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                                                 || SqlFunctions.StringConvert((double) x.PostalAddress
+                                                                     .BuildingNumber).StartsWith(searchText)
+                                                                 || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                                                 || x.PostalAddress.DependentLocality.Contains(
+                                                                     searchText)))
+                .Select(l => new DeliveryPointDTO
+                {
+                    PostalAddress = new PostalAddressDTO
                     {
-                        PostalAddress = new PostalAddressDTO
-                        {
-                            OrganisationName = l.PostalAddress.OrganisationName,
-                            BuildingName = l.PostalAddress.BuildingName,
-                            SubBuildingName = l.PostalAddress.SubBuildingName,
-                            BuildingNumber = l.PostalAddress.BuildingNumber,
-                            Thoroughfare = l.PostalAddress.Thoroughfare,
-                            DependentLocality = l.PostalAddress.DependentLocality,
-                            UDPRN = l.UDPRN
-                        }
-                    })
-                    .Take(takeCount)
-                    .ToListAsync();
+                        OrganisationName = l.PostalAddress.OrganisationName,
+                        BuildingName = l.PostalAddress.BuildingName,
+                        SubBuildingName = l.PostalAddress.SubBuildingName,
+                        BuildingNumber = l.PostalAddress.BuildingNumber,
+                        Thoroughfare = l.PostalAddress.Thoroughfare,
+                        DependentLocality = l.PostalAddress.DependentLocality,
+                        UDPRN = l.UDPRN
+                    }
+                })
+                .Take(takeCount)
+                .ToListAsync();
 
-                return result;
-            }
-            catch (ArgumentNullException ex)
-            {
-
-                throw new EntityNotFoundException(ex,"") ;
-            }
+            return result;
         }
 
         /// <summary>
@@ -239,19 +239,30 @@ namespace Fmo.DataServices.Repositories
         /// </returns>
         public async Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid)
         {
-            searchText = searchText ?? string.Empty;
-            DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+            try
+            {
+                searchText = searchText ?? string.Empty;
+                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
-            var result = await DataContext.DeliveryPoints.AsNoTracking()
-              .Include(l => l.PostalAddress)
-              .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
-                              || x.PostalAddress.BuildingName.Contains(searchText)
-                              || x.PostalAddress.SubBuildingName.Contains(searchText)
-                              || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
-                              || x.PostalAddress.Thoroughfare.Contains(searchText)
-                              || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
+                var result = await DataContext.DeliveryPoints.AsNoTracking()
+                  .Include(l => l.PostalAddress)
+                  .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
+                                  || x.PostalAddress.BuildingName.Contains(searchText)
+                                  || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                  || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
+                                  || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                  || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
 
-            return result;
+                return result;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+            }
         }
 
         /// <summary>
@@ -313,7 +324,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new SqlException(dbUpdateException, ErrorMessageConstants.SqlAddExceptionMessage);
+                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlUpdateExceptionMessage, string.Concat("delivery point location for:", deliveryPointDto.ID)));
             }
             catch (NotSupportedException notSupportedException)
             {
@@ -431,20 +442,13 @@ namespace Fmo.DataServices.Repositories
         /// <returns>distance as double</returns>
         public double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint)
         {
-            try
+            double? distance = 0;
+            if (deliveryPointDTO != null)
             {
-                double? distance = 0;
-                if (deliveryPointDTO != null)
-                {
-                    distance = deliveryPointDTO.LocationXY.Distance(newPoint);
-                }
+                distance = deliveryPointDTO.LocationXY.Distance(newPoint);
+            }
 
-                return distance;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return distance;
         }
 
         /// <summary>
