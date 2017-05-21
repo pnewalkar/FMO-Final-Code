@@ -11,5 +11,6 @@ namespace Fmo.DTO.Model
         public decimal? XCoordinate { get; set; }
 
         public decimal? YCoordinate { get; set; }
+        public Guid ID { get; set; }
     }
 }

@@ -217,7 +217,7 @@ namespace Fmo.BusinessServices.Services
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
             }
 
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate , YCoordinate = returnYCoordinate };
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate, YCoordinate = returnYCoordinate };
         }
 
         /// <summary>
@@ -227,6 +227,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>message</returns>
         public async Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO)
         {
+            Guid returnGuid = Guid.Empty;
             string sbLocationXY = string.Format(
                                                 Constants.USRGEOMETRYPOINT,
                                                 Convert.ToString(deliveryPointModelDTO.XCoordinate),
@@ -250,13 +251,14 @@ namespace Fmo.BusinessServices.Services
 
             await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO).ContinueWith(t =>
              {
-                 if (t.Result > 0)
+                 if (t.Result != Guid.Empty)
                  {
+                     returnGuid = t.Result;
                      var referenceDataCategoryList =
-                         referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
-                         {
+                              referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
+                              {
                              ReferenceDataCategoryNames.OperationalObjectType
-                         });
+                              });
 
                      var deliveryOperationObjectTypeId = referenceDataCategoryList
                          .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
@@ -267,7 +269,7 @@ namespace Fmo.BusinessServices.Services
                  }
              });
 
-            return new UpdateDeliveryPointModelDTO { XCoordinate = deliveryPointModelDTO.XCoordinate, YCoordinate = deliveryPointModelDTO.YCoordinate };
+            return new UpdateDeliveryPointModelDTO { XCoordinate = deliveryPointModelDTO.XCoordinate, YCoordinate = deliveryPointModelDTO.YCoordinate, ID = returnGuid };
         }
 
         /// <summary>

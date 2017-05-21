@@ -12,3 +12,18 @@ angular.module('deliveryPoint')
         }
 
     });
+
+angular.module('deliveryPoint')
+    .factory('guidService', function () {
+
+        var guid = '';
+        return {
+            getGuid: function () {
+                return guid;
+            },
+            setGuid: function (value) {
+                guid = value;
+            }
+        }
+
+    });

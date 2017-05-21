@@ -13,6 +13,7 @@ angular
         '$timeout',
         'mapFactory',
         'deliveryPointService',
+        'guidService',
         '$state',
         '$stateParams',
         'layersService'
@@ -29,6 +30,7 @@ function DeliveryPointController(
     $timeout,
     mapFactory,
     deliveryPointService,
+    guidService,
     $state,
     $stateParams,
     layersService
@@ -154,6 +156,7 @@ function DeliveryPointController(
             debugger;
             vm.positionedDeliveryPointList = null;
             mapFactory.setAccessLink();
+            guidService.setGuid(result.id);
             mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
 
@@ -185,6 +188,7 @@ function DeliveryPointController(
             if (response.message && response.message == "Delivery Point created successfully") {
                 debugger;
                 setDeliveryPoint(response.id, response.rowVersion, postalAddress, true);
+                guidService.setGuid(result.id);
                 mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
                 mapFactory.setAccessLink();
                 vm.onCloseDeliveryPoint();

@@ -15,6 +15,7 @@ using Fmo.DTO.Model;
 using Fmo.Helpers;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
+using Fmo.Common.ObjectParser;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -250,15 +251,21 @@ namespace Fmo.BusinessServices.Services
         /// <returns>returns calculated path length as <double>.</true></returns>
         public decimal GetAdjPathLength(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
+            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, "LINESTRING");
+            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, "POINT");
+            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, "POINT");
+            Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
+            Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
+
             AccessLinkDTO accessLinkDto = new AccessLinkDTO
             {
                 ID = Guid.Empty,
-                AccessLinkLine = DbGeometry.LineFromText(accessLinkManualDto.AccessLinkLine, 27700),
+                AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, Constants.BNGCOORDINATESYSTEM),
                 ActualLengthMeter = Convert.ToDecimal(1.00), // need to write logic
-                NetworkIntersectionPoint = DbGeometry.PointFromText(accessLinkManualDto.NetworkIntersectionPoint, 27700),
-                NetworkLink_GUID = Guid.Empty, // need to write logic
-                OperationalObjectPoint = DbGeometry.PointFromText(accessLinkManualDto.OperationalObjectPoint, 27700), // need to write logic
-                OperationalObject_GUID = accessLinkManualDto.OperationalObject_GUID,
+                NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, Constants.BNGCOORDINATESYSTEM),
+                NetworkLink_GUID = networkLinkGuidManual, // need to write logic
+                OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, Constants.BNGCOORDINATESYSTEM), // need to write logic
+                OperationalObject_GUID = operationalObjectGuidManual,
                 OperationalObjectType_GUID = Guid.Empty,
                 Approved = true,
                 WorkloadLengthMeter = default(decimal), // need to create
@@ -292,7 +299,7 @@ namespace Fmo.BusinessServices.Services
                     .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(accessLinkManualDto.OperationalObject_GUID);
+            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectGuidManual);
             accessLinkDto.OperationalObjectPoint = deliveryPointOperationalObject.LocationXY;
 
             operationalObject = deliveryPointOperationalObject;
@@ -321,15 +328,21 @@ namespace Fmo.BusinessServices.Services
         {
             bool isAccessLinkCreated = false;
 
+            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, "LINESTRING");
+            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, "POINT");
+            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, "POINT");
+            Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
+            Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
+
             AccessLinkDTO accessLinkDto = new AccessLinkDTO
             {
                 ID = Guid.Empty,
-                AccessLinkLine = DbGeometry.LineFromText(accessLinkManualDto.AccessLinkLine, 27700),
+                AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, Constants.BNGCOORDINATESYSTEM),
                 ActualLengthMeter = Convert.ToDecimal(1.00), // need to write logic
-                NetworkIntersectionPoint = DbGeometry.PointFromText(accessLinkManualDto.NetworkIntersectionPoint, 27700),
+                NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, Constants.BNGCOORDINATESYSTEM),
                 NetworkLink_GUID = Guid.Empty, // need to write logic
-                OperationalObjectPoint = DbGeometry.PointFromText(accessLinkManualDto.OperationalObjectPoint, 27700), // need to write logic
-                OperationalObject_GUID = accessLinkManualDto.OperationalObject_GUID,
+                OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, Constants.BNGCOORDINATESYSTEM), // need to write logic
+                OperationalObject_GUID = operationalObjectGuidManual,
                 OperationalObjectType_GUID = Guid.Empty,
                 Approved = true,
                 WorkloadLengthMeter = default(decimal), // need to create
@@ -363,7 +376,7 @@ namespace Fmo.BusinessServices.Services
                     .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(accessLinkManualDto.OperationalObject_GUID);
+            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectGuidManual);
             accessLinkDto.OperationalObjectPoint = deliveryPointOperationalObject.LocationXY;
             operationalObject = deliveryPointOperationalObject;
 

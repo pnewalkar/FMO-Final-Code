@@ -51,17 +51,17 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         ///<param name="accessLinkDto">access link object to be stored</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
-        [HttpPost("Create")]
+        [HttpPost("CreateManual")]
         public bool CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
         {
-            accessLinkDto = new AccessLinkManualCreateModelDTO
-            {
-                AccessLinkLine = "LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)",
-                NetworkIntersectionPoint = "POINT (512722.70000000019 104738)",
-                NetworkLink_GUID = Guid.Parse("BC3E8414-DA95-4924-9C0D-B8D343C97E0A"),
-                OperationalObjectPoint = "POINT (512722.70000000019 104752.6799999997)",
-                OperationalObject_GUID = Guid.NewGuid(),
-            };
+            //accessLinkDto = new AccessLinkManualCreateModelDTO
+            //{
+            //    AccessLinkLine = "LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)",
+            //    NetworkIntersectionPoint = "POINT (512722.70000000019 104738)",
+            //    NetworkLink_GUID = Guid.Parse("BC3E8414-DA95-4924-9C0D-B8D343C97E0A"),
+            //    OperationalObjectPoint = "POINT (512722.70000000019 104752.6799999997)",
+            //    OperationalObject_GUID = Guid.NewGuid(),
+            //};
 
             return accessLinkBussinessService.CreateAccessLink(accessLinkDto);
         }
@@ -71,19 +71,21 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         ///<param name="accessLinkDto">access link object to be stored</param>
         /// <returns>returns calculated path length</true></returns>
-        [HttpPost("Create")]
-        public decimal GetAdjPathLength([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
+        //[Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
+        //[Route("GetWorkloadLength")]
+        [HttpPost("GetWorkloadLength")]
+        public decimal GetAdjPathLength([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
-            accessLinkDto = new AccessLinkManualCreateModelDTO
-            {
-                AccessLinkLine = "LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)",
-                NetworkIntersectionPoint = "POINT (512722.70000000019 104738)",
-                NetworkLink_GUID = Guid.Parse("BC3E8414-DA95-4924-9C0D-B8D343C97E0A"),
-                OperationalObjectPoint = "POINT (512722.70000000019 104752.6799999997)",
-                OperationalObject_GUID = Guid.NewGuid(),
-            };
+            //AccessLinkManualCreateModelDTO accessLinkDto = new AccessLinkManualCreateModelDTO
+            //{
+            //    //AccessLinkLine = "LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)",
+            //    //NetworkIntersectionPoint = "POINT (512722.70000000019 104738)",
+            //    ////NetworkLink_GUID = Guid.Parse("BC3E8414-DA95-4924-9C0D-B8D343C97E0A"),
+            //    //OperationalObjectPoint = "POINT (512722.70000000019 104752.6799999997)",
+            //    ////OperationalObject_GUID = Guid.NewGuid(),
+            //};
 
-            return accessLinkBussinessService.GetAdjPathLength(accessLinkDto);
+            return accessLinkBussinessService.GetAdjPathLength(accessLinkManualCreateModelDTO);
         }
     }
 }
