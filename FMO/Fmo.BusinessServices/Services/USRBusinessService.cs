@@ -27,7 +27,6 @@
         private IReferenceDataCategoryRepository referenceDataCategoryRepository = default(IReferenceDataCategoryRepository);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private bool enableLogging = false;
 
         #endregion Property Declarations
 
@@ -51,7 +50,6 @@
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
-            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         #endregion Constructor
@@ -254,7 +252,7 @@
         /// <param name="separator">separator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + separator + logMessage);
         }
     }
 }

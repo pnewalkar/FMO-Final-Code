@@ -32,7 +32,6 @@ namespace Fmo.NYBLoader
         private IExceptionHelper exceptionHelper;
         private string strProcessedFilePath = string.Empty;
         private string strErrorFilePath = string.Empty;
-        private bool enableLogging = false;
         private string nybMessage = Constants.LOADNYBDETAILSLOGMESSAGE;
         private string nybInvalidDetailMessage = Constants.LOADNYBINVALIDDETAILS;
 
@@ -48,8 +47,6 @@ namespace Fmo.NYBLoader
             this.exceptionHelper = exceptionHelper;
             this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
             this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
-            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
-            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         #endregion constructor
@@ -404,7 +401,7 @@ namespace Fmo.NYBLoader
         /// <param name="seperator">seperator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            this.loggingHelper.LogInfo(methodName + seperator + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + seperator + logMessage);
         }
 
         /// <summary>

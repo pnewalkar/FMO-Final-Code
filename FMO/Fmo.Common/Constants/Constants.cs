@@ -28,7 +28,6 @@
         public const string XMLFileFolderSettings = "XMLFileFolderSettings";
         public const string MethodExecutionStarted = " Method exceution started";
         public const string MethodExecutionCompleted = " Method exceution completed";
-        public const string EnableLogging = "EnableLogging";
         public const string CRLF = "\r\n";
         public const string NEWLINE = "\n";
         public const string COLON = " : ";
@@ -49,6 +48,9 @@
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
         public const string NotShown = "Not Shown";
         public const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
+        public const string DefaultLoggingCategory = "General";
+        public const int DefaultLoggingPriority = 0;
+        public const int DefaultLoggingEventId = 0;
         #endregion Common
 
         #region NYB

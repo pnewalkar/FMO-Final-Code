@@ -28,7 +28,7 @@ namespace Fmo.NYBLoader.Tests
             configurationHelperMock = CreateMock<IConfigurationHelper>();
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockExceptioHelper = CreateMock<IExceptionHelper>();
-            mockLoggingHelper.Setup(n => n.LogError(It.IsAny<Exception>()));
+            mockLoggingHelper.Setup(n => n.LogError(It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()));
             mockExceptioHelper.Setup(n => n.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>())).Returns(true);
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ProcessedFilePath")).Returns("d:/processedfile/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ErrorFilePath")).Returns("d:/errorfile/");

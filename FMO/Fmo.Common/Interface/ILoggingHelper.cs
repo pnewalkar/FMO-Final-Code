@@ -1,21 +1,72 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fmo.Common.Interface
 {
     public interface ILoggingHelper
     {
-        void LogError(Exception exception);
+        /// <summary>
+        /// Logs Exception.
+        /// </summary>
+        /// <param name="exception">Exception</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        void LogError(Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
 
-        void LogError(string message, Exception exception);
+        /// <summary>
+        /// Logs Exception
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="exception">Exception</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        void LogError(string message, Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
 
-        void LogInfo(string message);
+        /// <summary>
+        /// Logs Information
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        void LogInfo(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
 
-        void LogInfo(string message, bool enableLogging);
+        /// <summary>
+        /// Logs Warning
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        void LogWarn(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
 
-        void LogWarn(string message);
+        /// <summary>
+        /// Logs Verbose.
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        void LogDebug(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+
+        /// <summary>
+        /// Logs fatal Error
+        /// </summary>
+        /// <param name="exception">exception</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        void LogFatalError(Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+
+        /// <summary>
+        /// Logs fatal Error
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="exception">exception</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        void LogFatalError(string message, Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
     }
 }

@@ -32,7 +32,6 @@ namespace Fmo.BusinessServices.Services
         private IFileProcessingLogRepository fileProcessingLogRepository = default(IFileProcessingLogRepository);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private bool enableLogging = false;
 
         #endregion Property Declarations
 
@@ -56,7 +55,6 @@ namespace Fmo.BusinessServices.Services
             this.fileProcessingLogRepository = fileProcessingLogRepository;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
-            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         #endregion Constructor
@@ -264,6 +262,7 @@ namespace Fmo.BusinessServices.Services
             }
             catch (Exception ex)
             {
+                this.loggingHelper.LogError(ex);
                 throw;
             }
             finally
@@ -312,7 +311,7 @@ namespace Fmo.BusinessServices.Services
             }
             catch (Exception ex)
             {
-                this.loggingHelper.LogInfo(ex.ToString());
+                this.loggingHelper.LogError(ex);
                 throw ex;
             }
         }
@@ -340,7 +339,7 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-       public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             try
             {
@@ -479,7 +478,7 @@ namespace Fmo.BusinessServices.Services
         /// <param name="separator">separator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + separator + logMessage);
         }
     }
 }

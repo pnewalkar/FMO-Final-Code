@@ -34,8 +34,7 @@ namespace Fmo.BusinessServices.Services
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
         private IAccessLinkBusinessService accessLinkBusinessService = default(IAccessLinkBusinessService);
-        private bool enableLogging = false;
-
+     
         public DeliveryPointBusinessService(
             IDeliveryPointsRepository deliveryPointsRepository,
             IPostalAddressBusinessService postalAddressBusinessService,
@@ -49,8 +48,7 @@ namespace Fmo.BusinessServices.Services
             this.configurationHelper = configurationHelper;
             this.postalAddressBusinessService = postalAddressBusinessService;
             this.referenceDataBusinessService = referenceDataBusinessService;
-            this.accessLinkBusinessService = accessLinkBusinessService;
-            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
+            this.accessLinkBusinessService = accessLinkBusinessService;          
         }
 
         /// <summary>
@@ -347,7 +345,7 @@ namespace Fmo.BusinessServices.Services
         /// <param name="separator">separator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + separator + logMessage);
         }
     }
 }

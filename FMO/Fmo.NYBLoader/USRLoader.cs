@@ -27,9 +27,7 @@ namespace Fmo.NYBLoader
         private readonly IConfigurationHelper configHelper;
         private string XSD_LOCATION;
         private string PROCESSED;
-        private string ERROR;
-        private bool enableLogging = false;
-
+        private string ERROR;   
 
         public USRLoader(IMessageBroker<AddressLocationUSRDTO> messageBroker,
                          IFileMover fileMover, IExceptionHelper exceptionHelper,
@@ -42,8 +40,7 @@ namespace Fmo.NYBLoader
             this.configHelper = configHelper;
             this.XSD_LOCATION = configHelper.ReadAppSettingsConfigurationValues(Constants.XSDLOCATIONCONFIG);
             this.PROCESSED = configHelper.ReadAppSettingsConfigurationValues(Constants.USRPROCESSEDFILEPATHCONFIG);
-            this.ERROR = configHelper.ReadAppSettingsConfigurationValues(Constants.USRERRORFILEPATHCONFIG);
-            this.enableLogging = Convert.ToBoolean(configHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
+            this.ERROR = configHelper.ReadAppSettingsConfigurationValues(Constants.USRERRORFILEPATHCONFIG);          
         }
 
         /// <summary>
@@ -278,7 +275,7 @@ namespace Fmo.NYBLoader
         /// <param name="seperator">Seperator used</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            this.loggingHelper.LogInfo(methodName + seperator + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + seperator + logMessage);
         }
     }
 }

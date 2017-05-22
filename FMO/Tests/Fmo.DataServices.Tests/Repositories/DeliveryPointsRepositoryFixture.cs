@@ -140,7 +140,7 @@
                }
             };
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()));
 
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
             var mockDeliveryPointRepository = MockDbSet(deliveryPoint);
