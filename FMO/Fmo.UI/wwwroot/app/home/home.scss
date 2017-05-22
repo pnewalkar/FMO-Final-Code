@@ -15,14 +15,6 @@
     @include font-color($white);   
 }
 
-.version{
-    @include position(absolute);
-    @include font-color($white);
-    left: 2%;
-    font-size: 10px;
-    bottom: 0px;
-}
-
 
 /*commom sass*/
 h1{
