@@ -58,6 +58,15 @@ h1{
     @include margin(0px 0px 0px 10px);
 }
 
+.context-button{
+    padding:0;
+    margin:0;
+    border-radius: 0;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+}
+
 /*fonts*/
 
 /*Chevin Light Font*/
