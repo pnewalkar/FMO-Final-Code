@@ -4,17 +4,17 @@ angular
     .controller('ManageAccessController', ManageAccessController);
 
 ManageAccessController.$inject = [
-    'manageAccessBusinessService'
+    'manageAccessService'
 ];
 
 function ManageAccessController(
-    manageAccessBusinessService) {
+    manageAccessService) {
 
     var vm = this;
     vm.activate = activate;
     vm.activate();
 
     function activate(){
-        manageAccessBusinessService.activate(null);
+        manageAccessService.activate(null);
     }
 }

@@ -31,5 +31,12 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="accessLinkDto">access link object to be stored</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
         bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkDto);
+
+        /// <summary>
+        /// This method is used to calculate path length.
+        /// </summary>
+        /// <param name="accessLinkDto">access link object to be stored</param>
+        /// <returns>returns calculated path length as <double>.</true></returns>
+        decimal GetAdjPathLength(AccessLinkManualCreateModelDTO accessLinkDto);
     }
 }

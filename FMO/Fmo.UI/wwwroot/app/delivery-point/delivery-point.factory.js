@@ -1,10 +1,10 @@
 angular.module('deliveryPoint')
-    .factory('deliveryPointApiService', deliveryPointApiService)
-deliveryPointApiService.$inject = ['$http', 'GlobalSettings', '$q'];
-function deliveryPointApiService($http, GlobalSettings, $q) {
-    var deliveryPointApiService = {};
+    .factory('deliveryPointAPIService', deliveryPointAPIService)
+deliveryPointAPIService.$inject = ['$http', 'GlobalSettings', '$q'];
+function deliveryPointAPIService($http, GlobalSettings, $q) {
+    var deliveryPointAPIService = {};
 
-    deliveryPointApiService.GetDeliveryPointsResultSet = function (searchText) {
+    deliveryPointAPIService.GetDeliveryPointsResultSet = function (searchText) {
         var deferred = $q.defer();
 
         $http.get(GlobalSettings.apiUrl + '/address/SearchAddressdetails?searchText=' + searchText).success(function (response) {
@@ -18,7 +18,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
         return deferred.promise;
     };
 
-    deliveryPointApiService.GetAddressByPostCode = function (selectedItem) {
+    deliveryPointAPIService.GetAddressByPostCode = function (selectedItem) {
         var deferred = $q.defer();
 
         $http.get(GlobalSettings.apiUrl + '/address/GetAddressByPostCode?selectedItem=' + selectedItem).success(function (response) {
@@ -32,7 +32,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
         return deferred.promise;
     };
 
-    deliveryPointApiService.GetAddressLocation = function (udprn) {
+    deliveryPointAPIService.GetAddressLocation = function (udprn) {
 
         var deferred = $q.defer();
 
@@ -49,7 +49,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
 
     };
 
-    deliveryPointApiService.GetPostalAddressByGuid = function (addressGuid) {
+    deliveryPointAPIService.GetPostalAddressByGuid = function (addressGuid) {
         var deferred = $q.defer();
 
         $http.get(GlobalSettings.apiUrl + '/address/GetPostalAddressByGuid?addressGuid=' + addressGuid).success(function (response) {
@@ -63,7 +63,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
         return deferred.promise;
     };
 
-    deliveryPointApiService.CreateDeliveryPoint = function (addDeliveryPointDTO) {
+    deliveryPointAPIService.CreateDeliveryPoint = function (addDeliveryPointDTO) {
         var deferred = $q.defer();
 
         $http.post(GlobalSettings.apiUrl + '/deliveryPoints/CreateDeliveryPoint/', addDeliveryPointDTO).success(function (response) {
@@ -77,7 +77,7 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
         return deferred.promise;
     };
 
-    deliveryPointApiService.UpdateDeliverypoint = function (deliveryPointModelDTO) {
+    deliveryPointAPIService.UpdateDeliverypoint = function (deliveryPointModelDTO) {
         var deferred = $q.defer();
 
         $http.put(GlobalSettings.apiUrl + '/deliveryPoints/UpdateDeliveryPoint/', deliveryPointModelDTO).success(function (response) {
@@ -91,6 +91,6 @@ function deliveryPointApiService($http, GlobalSettings, $q) {
     };
     
 
-    return deliveryPointApiService;
+    return deliveryPointAPIService;
 
 }

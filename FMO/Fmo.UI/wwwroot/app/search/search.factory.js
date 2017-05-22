@@ -1,6 +1,9 @@
 angular.module('search')
     .factory('searchService', searchService);
-searchService.$inject = ['$http', 'GlobalSettings', '$q'];
+searchService.$inject = [
+'$http',
+'GlobalSettings',
+'$q'];
 
 function searchService(
     $http,

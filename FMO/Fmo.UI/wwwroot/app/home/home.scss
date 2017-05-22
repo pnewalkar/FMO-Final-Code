@@ -38,9 +38,13 @@ h1{
     @include cursor(pointer);
 }
 
-i.fa.fa-times {
+.md-toolbar-tools .fa{
     color: white;
 }
+
+/*i.fa.fa-times {
+    color: white;
+}*/
 
 .deliveryDialog{
     @include margin(0px 10px 0px 0px);
@@ -48,6 +52,10 @@ i.fa.fa-times {
 
 .mdDialog input{
     @extend %body-content;
+}
+
+.panel-body{
+    @include margin(0px 0px 0px 10px);
 }
 
 /*fonts*/

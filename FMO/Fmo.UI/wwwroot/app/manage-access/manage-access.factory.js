@@ -2,29 +2,34 @@
 
 angular
     .module('manageAccess')
-    .factory('manageAccessService', manageAccessService);
+    .factory('manageAccessAPIService', manageAccessAPIService);
 
-manageAccessService.$inject = ['$http', '$q', 'GlobalSettings'];
+manageAccessAPIService.$inject = ['$http',
+    '$q',
+    'GlobalSettings'];
 
-function manageAccessService($http, $q, GlobalSettings) {
-    var service = {
-        getToken: getToken
-    };
+function manageAccessAPIService(
+    $http,
+    $q,
+    GlobalSettings)
+    {
+        var service = {
+            getToken: getToken
+        };
 
-    return service;
+        return service;
 
-    function getToken(userdata) {
-        var deferred = $q.defer();
+        function getToken(userdata) {
+            var deferred = $q.defer();
 
-        $http.post(GlobalSettings.apiUrl + '/token', userdata, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
-            deferred.resolve(response);
+            $http.post(GlobalSettings.apiUrl + '/token', userdata, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
+                deferred.resolve(response);
 
-        }).error(function (err, status) {
-            alert(err);
-            deferred.reject(err);
-        });
+            }).error(function (err, status) {
+                alert(err);
+                deferred.reject(err);
+            });
 
-        return deferred.promise;
-
+            return deferred.promise;
+        }
     }
-}
