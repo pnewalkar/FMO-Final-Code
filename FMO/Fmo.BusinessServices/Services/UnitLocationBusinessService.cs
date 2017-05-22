@@ -11,10 +11,18 @@ using Newtonsoft.Json;
 
 namespace Fmo.BusinessServices.Services
 {
+    /// <summary>
+    /// This class contains methods for fetching Delivery unit data.
+    /// </summary>
+    /// <seealso cref="Fmo.BusinessServices.Interfaces.IUnitLocationBusinessService" />
     public class UnitLocationBusinessService : IUnitLocationBusinessService
     {
         private IUnitLocationRepository unitLocationRespository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnitLocationBusinessService"/> class.
+        /// </summary>
+        /// <param name="unitLocationRespository">The unit location respository.</param>
         public UnitLocationBusinessService(IUnitLocationRepository unitLocationRespository)
         {
             this.unitLocationRespository = unitLocationRespository;

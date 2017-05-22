@@ -31,6 +31,15 @@ namespace Fmo.BusinessServices.Services
         private IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessLinkBusinessService"/> class.
+        /// </summary>
+        /// <param name="accessLinkRepository">The access link repository.</param>
+        /// <param name="referenceDataBusinessService">The reference data business service.</param>
+        /// <param name="deliveryPointsRepository">The delivery points repository.</param>
+        /// <param name="streetNetworkBusinessService">The street network business service.</param>
+        /// <param name="loggingHelper">The logging helper.</param>
+        /// <param name="osroadLinkRepository">The osroad link repository.</param>
         public AccessLinkBusinessService(IAccessLinkRepository accessLinkRepository,
             IReferenceDataBusinessService referenceDataBusinessService,
             IDeliveryPointsRepository deliveryPointsRepository,

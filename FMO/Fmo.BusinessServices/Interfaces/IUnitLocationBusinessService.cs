@@ -4,6 +4,9 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
+    /// <summary>
+    /// This interface contains declaration of methods for fetching Delivery Unit data.
+    /// </summary>
     public interface IUnitLocationBusinessService
     {
         /// <summary>
