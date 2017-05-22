@@ -1,4 +1,4 @@
-﻿var Translation_Route_log_EN = {
+var Translation_Route_log_EN = {
     'GENERAL': {
         'BUTTONS': {
             'OK': 'OK',
@@ -14,7 +14,17 @@
         'NO_RESULT_FOUND':'No Results Found'
 
     },
+    'ACCESS_LINK': {
+        'TITTLE': 'Access Link',
+        'PATH_LENGTH': 'Path Length',
+        'METERS': 'Meters'
+    },
+    'ADVANCE_SEARCH': {
+        'TITTLE': 'Advance Search',
+        'METERS': 'Meters'
+    },
     'DELIVERY_POINTS': {
+        'TITTLE': 'Delivery Point',
         'ADD_DELIVERY_POINTS': 'Add Delivery Points',
         'NOT_YET_BUILT': 'Not yet Built',
         'STREET': 'Street',
@@ -36,6 +46,7 @@
     
     },
     'ROUTE_LOG': {
+        'TITTLE': 'Route Log',
         'SELECTION_TYPE': 'Selection Type',
         'STATUS': 'Status',
         'SCENARIO': 'Scenario',
@@ -43,6 +54,7 @@
         'NO_RESULT_FOUND': 'No Result Found'
     },
     'ROUTE_SIMULATION': {
+        'TITTLE': 'Route Simulation',
         'SCENARIO': 'Scenario',
         'ROUTE': 'Route',
         'NO_RESULT_FOUND': 'No Result Found'

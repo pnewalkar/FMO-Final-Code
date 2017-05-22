@@ -1,9 +1,9 @@
 <div layout="column">
 
-    <div layout="row" class="md-padding" layout-align="end start">
-        <i class="fa fa-plus deliveryDialog" aria-hidden="true" ng-click="vm.deliveryPoint()"></i>
-        <i class="fa fa-arrow-left deliveryDialog" aria-hidden="true" ng-show="vm.deliveryPointList != null || vm.positionedDeliveryPointList != null || vm.positionedThirdPartyDeliveryPointList != null"></i>
-        <i class="fa fa-floppy-o deliveryDialog" aria-hidden="true" ng-show="vm.positionedDeliveryPointList" ng-click="vm.savePositionedDeliveryPoint()"></i>
+    <div layout="row" layout-align="end start">
+        <i class="fa fa-plus context-button" aria-hidden="true" ng-click="vm.deliveryPoint()"></i>
+        <i class="fa fa-arrow-left context-button" aria-hidden="true" ng-show="vm.deliveryPointList != null || vm.positionedDeliveryPointList != null || vm.positionedThirdPartyDeliveryPointList != null"></i>
+        <i class="fa fa-floppy-o context-button" aria-hidden="true" ng-show="vm.positionedDeliveryPointList" ng-click="vm.savePositionedDeliveryPoint()"></i>
         <i class="fa fa-question-circle " aria-hidden="true"></i>
     </div>
 
