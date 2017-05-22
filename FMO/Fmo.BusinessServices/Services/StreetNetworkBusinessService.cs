@@ -84,7 +84,8 @@ namespace Fmo.BusinessServices.Services
         {
             List<string> categoryNames = new List<string>
             {
-               ReferenceDataCategoryNames.NetworkLinkType
+               ReferenceDataCategoryNames.NetworkLinkType,
+               ReferenceDataCategoryNames.AccessLinkParameters
             };
             var referenceDataCategoryList = referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 
