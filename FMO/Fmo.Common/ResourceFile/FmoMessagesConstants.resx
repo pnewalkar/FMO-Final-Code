@@ -124,7 +124,7 @@
     <value>FMO Exception</value>
   </data>
   <data name="GenralErrorMessage" xml:space="preserve">
-    <value>Application Error. Please contact your administrator.</value>
+    <value>Application Error Occured. Please contact your administrator.</value>
   </data>
   <data name="LogAndThrowErrorMessage" xml:space="preserve">
     <value>An application error occurred and has been logged. Please contact your administrator.</value>

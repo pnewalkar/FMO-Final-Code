@@ -79,7 +79,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application Error. Please contact your administrator..
+        ///   Looks up a localized string similar to Application Error Occured. Please contact your administrator..
         /// </summary>
         internal static string GenralErrorMessage {
             get {

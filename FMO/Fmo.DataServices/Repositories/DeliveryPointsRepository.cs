@@ -324,7 +324,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlUpdateExceptionMessage, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlUpdateExceptionMessage, string.Concat("delivery point location for:", deliveryPointDto.ID)));
             }
             catch (NotSupportedException notSupportedException)
             {

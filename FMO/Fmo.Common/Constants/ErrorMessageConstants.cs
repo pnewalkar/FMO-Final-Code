@@ -8,6 +8,10 @@ namespace Fmo.Common.Constants
 {
     public class ErrorMessageConstants
     {
+        public const string DefaultErrorMessage = "Application Error Occured. Please contact your administrator.";
+        public const string UnHandledErrorMessage = "An unhandled application error occurred and has been logged. Please contact your administrator.";
+        public const string TokenErrorMessage = "Error occured while generating token";
+        public const string ErrorExecutingErrorHandlerMessage = "An exception was thrown attempting to execute the error handler.";
         public const string SqlAddExceptionMessage = "Error occured on adding new {0}.";
         public const string SqlUpdateExceptionMessage = "Error occured on modifying {0}.";
         public const string SqlDeleteExceptionMessage = "Error occured while deleting {0}.";
@@ -18,7 +22,7 @@ namespace Fmo.Common.Constants
         public const string ArgumentmentNullExceptionMessage = "Following arguments for the method are null {0}";
         public const string InvalidOperationExceptionMessageForSingleorDefault = "There are more than one element in sequence for SingleOrDefault() extention";
         public const string InvalidOperationExceptionMessageForFirstorDefault = "source does not implement IDbAsyncQueryProvider";
-        public const string InvalidOperationExceptionMessageForCountAsync = "The underlying provider does not support this operation."
+        public const string InvalidOperationExceptionMessageForCountAsync = "The underlying provider does not support this operation.";
         public const string OverflowExceptionMessage = "The number of elements in source is larger than MaxValue.";
 
     }

@@ -39,7 +39,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
             }
             catch (NotSupportedException notSupportedException)
             {
@@ -59,16 +59,22 @@ namespace Fmo.DataServices.Repositories
         /// <returns>Task<int></returns>
         public async Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action)
         {
+            int deleteCount = default(int);
             string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
             try
             {
                 Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
-                DataContext.Notifications.Remove(notification);
-                return await DataContext.SaveChangesAsync();
+                if (notification != null)
+                {
+                    DataContext.Notifications.Remove(notification);
+                    deleteCount = await DataContext.SaveChangesAsync();
+                }
+
+                return deleteCount;
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlDeleteExceptionMessage, string.Concat("notification for:", actionLink)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlDeleteExceptionMessage, string.Concat("notification for:", actionLink)));
             }
             catch (NotSupportedException notSupportedException)
             {

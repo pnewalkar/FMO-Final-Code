@@ -34,6 +34,8 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
+                throw new InvalidOperationException("Invalid operation");
+
                 var userUnit = await (from r in DataContext.UserRoleUnits.AsNoTracking()
                                       join u in DataContext.Users on r.User_GUID equals u.ID
                                       where u.UserName == userName

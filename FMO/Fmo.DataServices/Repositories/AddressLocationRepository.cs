@@ -34,21 +34,13 @@ namespace Fmo.DataServices.Repositories
         /// <returns>boolean value</returns>
         public bool AddressLocationExists(int udprn)
         {
-            try
+
+            if (DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).Any())
             {
-                if (DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).Any())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -81,7 +73,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new SqlException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
