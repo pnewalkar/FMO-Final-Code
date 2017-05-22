@@ -8,14 +8,14 @@ MapFactory.$inject = ['$http',
     '$rootScope',
     'GlobalSettings',
     '$document',
-    'layersService'];
+    'layersAPIService'];
 
 function MapFactory($http,
     mapStylesFactory,
     $rootScope,
     GlobalSettings,
     $document,
-    layersService)
+    layersAPIService)
     {
     var map = null;
     var miniMap = null;
@@ -436,7 +436,7 @@ function MapFactory($http,
         deliveryPointsLayer.layer.setVisible(true)
         var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
         var extent = map.getView().calculateExtent(map.getSize());
-        layersService.fetchDeliveryPoints(extent, authData).then(function (response) {
+        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
             var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
             deliveryPointsLayer.layer.getSource().addFeatures(features);
 

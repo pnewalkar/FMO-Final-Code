@@ -271,8 +271,8 @@ namespace Fmo.DataServices.Repositories
         /// This method updates delivery point location using UDPRN
         /// </summary>
         /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
-        /// <returns>updated delivery point</returns>
-        public async Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO)
+        /// <returns>updated delivery point guid</returns>
+        public async Task<Guid> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO)
         {
             try
             {
@@ -289,7 +289,8 @@ namespace Fmo.DataServices.Repositories
 
                     fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
                     fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
-                    return await fmoDBContext.SaveChangesAsync();
+                    await fmoDBContext.SaveChangesAsync();
+                    return deliveryPoint.ID;
                 }
             }
             catch (DbUpdateConcurrencyException)

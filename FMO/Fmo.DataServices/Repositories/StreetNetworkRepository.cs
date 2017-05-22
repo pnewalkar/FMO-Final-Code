@@ -174,7 +174,7 @@ namespace Fmo.DataServices.Repositories
                                                                     .SelectMany(x => x.ReferenceDatas)
                                                                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).ID;
 
-                networkLink = DataContext.NetworkLinks.Where(m => m.StreetName_GUID == nearestNamedRoad.ID)
+                networkLink = DataContext.NetworkLinks.AsNoTracking().Where(m => m.StreetName_GUID == nearestNamedRoad.ID)
                    .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
                    .Select(l => new NetworkLinkDTO
                    {
@@ -189,23 +189,24 @@ namespace Fmo.DataServices.Repositories
                     SqlGeometry accessLinkLine =
                         operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry());
 
-                    if (accessLinkLine != SqlGeometry.Null)
+                    if (!accessLinkLine.IsNull)
                     {
                         DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
 
-                        // find any road segment intersects with the planned access link.
-                        var roadIntersectionCount = DataContext.NetworkLinks
+                        // find any road or path segment intersects with the planned access link.
+                        var intersectionCountForRoadOrPath = DataContext.NetworkLinks.AsNoTracking()
                             .Count(m => m.LinkGeometry.Intersects(accessLinkDbGeometry)
-                                        && m.NetworkLinkType_GUID == networkRoadLinkType);
+                                        && (m.NetworkLinkType_GUID == networkRoadLinkType || m.NetworkLinkType_GUID == networkPathLinkType));
 
-                        // find any path segment intersects with the planned access link.
-                        var pathIntersectionCount = DataContext.NetworkLinks
-                            .Count(m => m.LinkGeometry.Intersects(accessLinkDbGeometry)
-                                        && m.NetworkLinkType_GUID == networkPathLinkType);
-
-                        if (pathIntersectionCount == 0 && roadIntersectionCount == 0)
+                        if (intersectionCountForRoadOrPath == 0)
                         {
-                            networkIntersectionPoint = accessLinkLine.STEndPoint();
+                            var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
+                           .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
+
+                            if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.AsNoTracking().Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
+                            {
+                                networkIntersectionPoint = accessLinkLine.STEndPoint();
+                            }
                         }
                     }
                 }
@@ -231,25 +232,47 @@ namespace Fmo.DataServices.Repositories
             Guid networkRoadLinkType = referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.NetworkLinkType)
                                                                 .SelectMany(x => x.ReferenceDatas)
                                                                 .Single(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).ID;
-            var networkLinkRoad = DataContext.NetworkLinks
-                .Where(m => m.NetworkLinkType_GUID == networkRoadLinkType || m.NetworkLinkType_GUID == networkPathLinkType)
+
+            var accessLinkDiffRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters)
+                                                                                         .SelectMany(x => x.ReferenceDatas)
+                                                                                         .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkDiffRoadMaxDistance)
+                                                                                         .ReferenceDataValue);
+
+            var networkLinkRoads = DataContext.NetworkLinks.AsNoTracking()
+                .Where(m => (m.NetworkLinkType_GUID == networkRoadLinkType || m.NetworkLinkType_GUID == networkPathLinkType)
+                            && m.LinkGeometry.Distance(operationalObjectPoint) <= accessLinkDiffRoadMaxDistance)
                 .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
+                .AsEnumerable()
                 .Select(l => new NetworkLinkDTO
                 {
                     Id = l.Id,
                     LinkGeometry = l.LinkGeometry,
                     NetworkLinkType_GUID = l.NetworkLinkType_GUID,
                     TOID = l.TOID
-                }).FirstOrDefault();
+                });
 
-            if (networkLinkRoad != null)
+            NetworkLinkDTO networkLinkRoad = null;
+
+            // check for nearest segment which does not cross any existing access link
+            foreach (var item in networkLinkRoads)
             {
                 var accessLinkLine =
-                    operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLinkRoad.LinkGeometry.ToSqlGeometry());
+               operationalObjectPoint.ToSqlGeometry().ShortestLineTo(item.LinkGeometry.ToSqlGeometry());
 
-                if (accessLinkLine != SqlGeometry.Null)
+                if (!accessLinkLine.IsNull)
                 {
-                    networkIntersectionPoint = accessLinkLine.STEndPoint();
+                    DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
+
+                    var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
+                            .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
+
+                    if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
+                    {
+                        networkLinkRoad = item;
+                        networkIntersectionPoint = accessLinkLine.STEndPoint();
+
+                        break;
+                    }
                 }
             }
 

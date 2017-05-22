@@ -1,13 +1,13 @@
 ﻿angular.module('layers')
-        .factory('layersBusinessService', layersBusinessService);
-layersBusinessService.$inject = [
+        .service('layersService', layersService);
+layersService.$inject = [
  'mapService',
  'mapStylesFactory',
-'layersService'];
+'layersAPIService'];
 
-function layersBusinessService(mapService,
+function layersService(mapService,
                        mapStylesFactory,
-                       layersService) {
+                       layersAPIService) {
     var vm = this;
 
     return {

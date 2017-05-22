@@ -12,11 +12,20 @@ using Microsoft.SqlServer.Types;
 
 namespace Fmo.BusinessServices.Services
 {
+    /// <summary>
+    /// This class contains methods for fetching street data.
+    /// </summary>
+    /// <seealso cref="Fmo.BusinessServices.Interfaces.IStreetNetworkBusinessService" />
     public class StreetNetworkBusinessService : IStreetNetworkBusinessService
     {
         private IStreetNetworkRepository streetNetworkRepository = default(IStreetNetworkRepository);
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StreetNetworkBusinessService"/> class.
+        /// </summary>
+        /// <param name="streetNetworkRepository">The street network repository.</param>
+        /// <param name="referenceDataBusinessService">The reference data business service.</param>
         public StreetNetworkBusinessService(IStreetNetworkRepository streetNetworkRepository, IReferenceDataBusinessService referenceDataBusinessService)
         {
             this.streetNetworkRepository = streetNetworkRepository;
@@ -84,7 +93,8 @@ namespace Fmo.BusinessServices.Services
         {
             List<string> categoryNames = new List<string>
             {
-               ReferenceDataCategoryNames.NetworkLinkType
+               ReferenceDataCategoryNames.NetworkLinkType,
+               ReferenceDataCategoryNames.AccessLinkParameters
             };
             var referenceDataCategoryList = referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
 

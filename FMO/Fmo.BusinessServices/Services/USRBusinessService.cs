@@ -33,6 +33,17 @@
 
         #region Constructor
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="USRBusinessService"/> class.
+        /// </summary>
+        /// <param name="addressLocationRepository">The address location repository.</param>
+        /// <param name="addressRepository">The address repository.</param>
+        /// <param name="deliveryPointsRepository">The delivery points repository.</param>
+        /// <param name="notificationRepository">The notification repository.</param>
+        /// <param name="postcodeSectorRepository">The postcode sector repository.</param>
+        /// <param name="referenceDataCategoryRepository">The reference data category repository.</param>
+        /// <param name="configurationHelper">The configuration helper.</param>
+        /// <param name="loggingHelper">The logging helper.</param>
         public USRBusinessService(
            IAddressLocationRepository addressLocationRepository,
            IAddressRepository addressRepository,

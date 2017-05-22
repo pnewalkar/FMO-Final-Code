@@ -7,6 +7,10 @@ using Fmo.Common.Constants;
 
 namespace Fmo.BusinessServices.Services
 {
+    /// <summary>
+    /// This class contains methods for fetching reference data.
+    /// </summary>
+    /// <seealso cref="Fmo.BusinessServices.Interfaces.IReferenceDataBusinessService" />
     public class ReferenceDataBusinessService : IReferenceDataBusinessService
     {
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;

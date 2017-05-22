@@ -4,13 +4,13 @@ angular.module('unitSelector')
 unitSelectorService.$inject = ['$q',
                                'GlobalSettings',
                                '$filter',
-                               'manageAccessBusinessService',
+                               'manageAccessService',
                                'mapFactory',
                                'unitSelectorAPIService'];
 function unitSelectorService($q,
                              GlobalSettings,
                              $filter,
-                             manageAccessBusinessService,
+                             manageAccessService,
                              mapFactory,
                              unitSelectorAPIService) {
     var deliveryRouteUnit = [];
@@ -23,7 +23,7 @@ function unitSelectorService($q,
     };
 
     function DeliveryUnit(selectedDeliveryUnit) {
-        manageAccessBusinessService.activate(selectedDeliveryUnit.id);
+        manageAccessService.activate(selectedDeliveryUnit.id);
         updateMapAfterUnitChange(selectedDeliveryUnit);
     }
     function BindData(deliveryRouteUnit) {

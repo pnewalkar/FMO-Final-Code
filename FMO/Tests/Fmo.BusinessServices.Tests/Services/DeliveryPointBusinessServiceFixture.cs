@@ -186,7 +186,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockPostalAddressBusinessService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns("123");
             mockPostalAddressBusinessService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
             referenceDataBusinessService.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
-            mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
+            mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(deliveryPointModelDTO.ID));
             accessLinkBusinessServiceMock = CreateMock<IAccessLinkBusinessService>();
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object, accessLinkBusinessServiceMock.Object);
         }

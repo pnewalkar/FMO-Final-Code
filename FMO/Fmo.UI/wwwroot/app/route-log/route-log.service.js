@@ -2,9 +2,14 @@ angular.module('routeLog')
     .factory('routeLogService', routeLogService);
 routeLogService.$inject = ['$q',
                            '$mdDialog',
-                           'routeLogAPIService'];
+                           'routeLogAPIService',
+                           'CommonConstants'];
 
-function routeLogService($q,$mdDialog, routeLogAPIService) { 
+function routeLogService(
+$q,
+$mdDialog,
+routeLogAPIService,
+CommonConstants) {
     return {
         closeWindow: closeWindow,
         loadSelectionType: loadSelectionType,
@@ -22,7 +27,7 @@ function routeLogService($q,$mdDialog, routeLogAPIService) {
         routeLogAPIService.getSelectionType().then(function (response) {
             var selectionTypeResult = [];
             angular.forEach(response, function (value, key) {
-                if (value.referenceDataValue === "Single")
+                if (value.referenceDataValue === CommonConstants.RouteLogSelectionType.Single)
                     selectionTypeResult.push({ "RouteselectionTypeObj": response, "selectedRouteSelectionObj": value });
                 deferred.resolve(selectionTypeResult);
             });
@@ -44,7 +49,7 @@ function routeLogService($q,$mdDialog, routeLogAPIService) {
     function scenarioChange(selectionType) {
         var isDeliveryRouteDisabled = false;
         var isShowMultiSelectionRoute = false;
-        if (selectionType === "Multiple") {
+        if (selectionType === CommonConstants.RouteLogSelectionType.Multiple) {
             return {
                 isDeliveryRouteDisabled: true,
                 isShowMultiSelectionRoute: true
@@ -67,7 +72,7 @@ function routeLogService($q,$mdDialog, routeLogAPIService) {
         var deferred = $q.defer();
         routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID, selectionType).then(function (response) {
             var deliveryRouteResult = [];
-            if (selectionType === "Single") {
+            if (selectionType === CommonConstants.RouteLogSelectionType.Single) {
                 deliveryRoute = response;
                 multiSelectiondeliveryRoute = null;               
                 deliveryRouteResult.push({ "deliveryRoute": response, "multiSelectiondeliveryRoute": null });

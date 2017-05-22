@@ -15,6 +15,7 @@ using Fmo.DTO.Model;
 using Fmo.Helpers;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
+using Fmo.Common.ObjectParser;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -30,6 +31,15 @@ namespace Fmo.BusinessServices.Services
         private IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessLinkBusinessService"/> class.
+        /// </summary>
+        /// <param name="accessLinkRepository">The access link repository.</param>
+        /// <param name="referenceDataBusinessService">The reference data business service.</param>
+        /// <param name="deliveryPointsRepository">The delivery points repository.</param>
+        /// <param name="streetNetworkBusinessService">The street network business service.</param>
+        /// <param name="loggingHelper">The logging helper.</param>
+        /// <param name="osroadLinkRepository">The osroad link repository.</param>
         public AccessLinkBusinessService(IAccessLinkRepository accessLinkRepository,
             IReferenceDataBusinessService referenceDataBusinessService,
             IDeliveryPointsRepository deliveryPointsRepository,
@@ -244,23 +254,27 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
-        /// Create manual access link creation after delivery point creation.
+        /// This method is used to calculate path length.
         /// </summary>
-        /// <param name="accessLinkManualDto">create modal for manual access link object to be stored</param>
-        /// <returns>bool</returns>
-        public bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkManualDto)
+        /// <param name="accessLinkManualDto">access link input required to calculate path length</param>
+        /// <returns>returns calculated path length as <double>.</true></returns>
+        public decimal GetAdjPathLength(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
-            bool isAccessLinkCreated = false;
+            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, "LINESTRING");
+            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, "POINT");
+            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, "POINT");
+            Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
+            Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
 
             AccessLinkDTO accessLinkDto = new AccessLinkDTO
             {
                 ID = Guid.Empty,
-                AccessLinkLine = DbGeometry.LineFromText(accessLinkManualDto.AccessLinkLine, 27700),
+                AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, Constants.BNGCOORDINATESYSTEM),
                 ActualLengthMeter = Convert.ToDecimal(1.00), // need to write logic
-                NetworkIntersectionPoint = DbGeometry.PointFromText(accessLinkManualDto.NetworkIntersectionPoint, 27700),
-                NetworkLink_GUID = Guid.Empty, // need to write logic
-                OperationalObjectPoint = DbGeometry.PointFromText(accessLinkManualDto.OperationalObjectPoint, 27700), // need to write logic
-                OperationalObject_GUID = accessLinkManualDto.OperationalObject_GUID,
+                NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, Constants.BNGCOORDINATESYSTEM),
+                NetworkLink_GUID = networkLinkGuidManual, // need to write logic
+                OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, Constants.BNGCOORDINATESYSTEM), // need to write logic
+                OperationalObject_GUID = operationalObjectGuidManual,
                 OperationalObjectType_GUID = Guid.Empty,
                 Approved = true,
                 WorkloadLengthMeter = default(decimal), // need to create
@@ -294,8 +308,86 @@ namespace Fmo.BusinessServices.Services
                     .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(accessLinkManualDto.OperationalObject_GUID);
+            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectGuidManual);
             accessLinkDto.OperationalObjectPoint = deliveryPointOperationalObject.LocationXY;
+
+            operationalObject = deliveryPointOperationalObject;
+
+            NetworkLinkDTO networkObject = streetNetworkBusinessService.GetNetworkLink(accessLinkDto.NetworkLink_GUID);
+
+            accessLinkDto.ActualLengthMeter = Convert.ToDecimal((double)accessLinkDto.AccessLinkLine.ToSqlGeometry().STLength());
+
+            if (referenceDataCategoryList
+              .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+              .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == accessLinkDto.OperationalObjectType_GUID)
+            {
+                DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
+                accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, (double)accessLinkDto.ActualLengthMeter, networkObject, referenceDataCategoryList));
+            }
+
+            return accessLinkDto.WorkloadLengthMeter;
+        }
+
+        /// <summary>
+        /// Create manual access link creation after delivery point creation.
+        /// </summary>
+        /// <param name="accessLinkManualDto">create modal for manual access link object to be stored</param>
+        /// <returns>bool</returns>
+        public bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkManualDto)
+        {
+            bool isAccessLinkCreated = false;
+
+            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, "LINESTRING");
+            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, "POINT");
+            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, "POINT");
+            Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
+            Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
+
+            AccessLinkDTO accessLinkDto = new AccessLinkDTO
+            {
+                ID = Guid.Empty,
+                AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, Constants.BNGCOORDINATESYSTEM),
+                ActualLengthMeter = Convert.ToDecimal(1.00), // need to write logic
+                NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, Constants.BNGCOORDINATESYSTEM),
+                NetworkLink_GUID = Guid.Empty, // need to write logic
+                OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, Constants.BNGCOORDINATESYSTEM), // need to write logic
+                OperationalObject_GUID = operationalObjectGuidManual,
+                OperationalObjectType_GUID = Guid.Empty,
+                Approved = true,
+                WorkloadLengthMeter = default(decimal), // need to create
+                AccessLinkType_GUID = Guid.Empty,
+                LinkDirection_GUID = Guid.Empty,
+                LinkStatus_GUID = Guid.Empty,
+            };
+
+            // TODO: Move all the reference data service calls to respective service.
+            object operationalObject = new object();
+
+            List<string> categoryNames = new List<string>
+                {
+                   ReferenceDataCategoryNames.OperationalObjectType,
+                   ReferenceDataCategoryNames.AccessLinkDirection,
+                   ReferenceDataCategoryNames.AccessLinkStatus,
+                   ReferenceDataCategoryNames.AccessLinkType,
+                   ReferenceDataCategoryNames.AccessLinkParameters,
+                   ReferenceDataCategoryNames.AccessLinkRules,
+                   ReferenceDataCategoryNames.NetworkLinkType,
+                   ReferenceDataCategoryNames.DeliveryPointUseIndicator
+                };
+
+            DbGeometry operationalObjectPoint = default(DbGeometry);
+            string roadName = string.Empty;
+
+            var referenceDataCategoryList =
+                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+
+            accessLinkDto.OperationalObjectType_GUID = referenceDataCategoryList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
+
+            var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectGuidManual);
+            accessLinkDto.OperationalObjectPoint = deliveryPointOperationalObject.LocationXY;
+            operationalObject = deliveryPointOperationalObject;
 
             accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
@@ -318,8 +410,6 @@ namespace Fmo.BusinessServices.Services
               .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == accessLinkDto.OperationalObjectType_GUID)
             {
                 DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
-
-                // TODO: calculate access link work length here
                 accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, (double)accessLinkDto.ActualLengthMeter, networkObject, referenceDataCategoryList));
             }
 

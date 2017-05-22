@@ -20,6 +20,10 @@ namespace Fmo.BusinessServices.Services
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoadNameBusinessService"/> class.
+        /// </summary>
+        /// <param name="roadNameRepository">The road name repository.</param>
         public RoadNameBusinessService(IRoadNameRepository roadNameRepository)
         {
             this.roadNameRepository = roadNameRepository;

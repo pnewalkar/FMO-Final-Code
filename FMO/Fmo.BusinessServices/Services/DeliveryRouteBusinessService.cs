@@ -10,6 +10,10 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
+    /// <summary>
+    /// This class contains methods for fetching Delivery Route data.
+    /// </summary>
+    /// <seealso cref="Fmo.BusinessServices.Interfaces.IDeliveryRouteBusinessService" />
     public class DeliveryRouteBusinessService : IDeliveryRouteBusinessService
     {
         private IDeliveryRouteRepository deliveryRouteRepository;
@@ -133,6 +137,12 @@ namespace Fmo.BusinessServices.Services
             return deliveryRouteDto;
         }
 
+        /// <summary>
+        /// Generates the route log.
+        /// </summary>
+        /// <param name="deliveryRouteDto">The delivery route dto.</param>
+        /// <param name="userUnit">The user unit.</param>
+        /// <returns>byte[]</returns>
         public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit)
         {
             //Todo: Add pdf genetation logic .RFMO-87

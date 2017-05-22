@@ -5,6 +5,9 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Interfaces
 {
+    /// <summary>
+    /// This interface contains declaration of methods for fetching post code data.
+    /// </summary>
     public interface IPostCodeBusinessService
     {
         /// <summary>

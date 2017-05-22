@@ -1,10 +1,24 @@
 ﻿angular.module('accessLink')
-    .factory('accessLinkApiService', accessLinkApiService)
-accessLinkApiService.$inject = ['$http', 'GlobalSettings', '$q'];
-function accessLinkApiService($http, GlobalSettings, $q) {
-    var accessLinkApiService = {};
+    .factory('accessLinkAPIService', accessLinkAPIService)
+accessLinkAPIService.$inject = ['$http', 'GlobalSettings', '$q'];
+function accessLinkAPIService($http, GlobalSettings, $q) {
+    var accessLinkAPIService = {};
 
-    accessLinkApiService.CreateAccessLink = function (accessLinkDTO) {
+    accessLinkAPIService.GetAdjPathLength = function (accessLinkManualCreateModelDTO) {
+        var deferred = $q.defer();
+
+        $http.post(GlobalSettings.apiUrl + '/accessLink/GetWorkloadLength/', accessLinkManualCreateModelDTO).success(function (response) {
+            deferred.resolve(response);
+
+            }).error(function (err, status) {
+              
+                deferred.reject(err);
+            });
+
+        return deferred.promise;
+    };
+
+    accessLinkAPIService.CreateAccessLink = function (accessLinkDTO) {
         var deferred = $q.defer();
 
         $http.post(GlobalSettings.apiUrl + '/accessLink/Create/', accessLinkDTO).success(function (response) {
@@ -17,4 +31,6 @@ function accessLinkApiService($http, GlobalSettings, $q) {
 
         return deferred.promise;
     };
+
+    return accessLinkAPIService;
 }
