@@ -7,7 +7,7 @@ DeliveryPointController.$inject = [
         '$scope',
         '$mdDialog',
         'popUpSettingService',
-        'deliveryPointApiService',
+        'deliveryPointAPIService',
         '$filter',
         'mapFactory',
         'coordinatesService',
@@ -20,7 +20,7 @@ function DeliveryPointController(
     $scope,
     $mdDialog,
     popUpSettingService,
-    deliveryPointApiService,
+    deliveryPointAPIService,
     $filter,
     mapFactory,
     coordinatesService,
@@ -201,7 +201,7 @@ function DeliveryPointController(
                 },
                 "AddressLocationDTO": null
             };
-        deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
+        deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
 
             if (response.message && response.message == "Delivery Point created successfully") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
@@ -243,7 +243,7 @@ function DeliveryPointController(
     }
 
     function getAddressLocation(udprn) {
-        deliveryPointApiService.GetAddressLocation(udprn)
+        deliveryPointAPIService.GetAddressLocation(udprn)
                 .then(function (response) {
                     vm.addressLocationData = response.data;
                 });
@@ -264,7 +264,7 @@ function DeliveryPointController(
     }
 
     function locateDeliveryPoint(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
-        deliveryPointApiService.GetAddressLocation(udprn)
+        deliveryPointAPIService.GetAddressLocation(udprn)
             .then(function (response) {
                 if (response.features.length > 0) {
 
