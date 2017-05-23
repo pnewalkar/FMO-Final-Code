@@ -1,8 +1,12 @@
 @import './app/variables';
 
-.advanceSearchDialog{
-    width: width-percent(1.7);
-    height: height-percent(1);
+.layout-row{
+    padding: 0px;
+}
+
+.columnButton{
+    height: 100%;
+    margin-top: 15px;
 }
 
 .searchbox{
@@ -25,6 +29,7 @@
     @extend %body-content;
     width: width-percent(1);
     border-collapse: collapse;
+    cursor: pointer;
 }
 
 .searchTh, .searchTd{

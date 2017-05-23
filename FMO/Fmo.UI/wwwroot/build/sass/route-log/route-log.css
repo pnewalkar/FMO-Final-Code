@@ -24,7 +24,7 @@
   #tbody:hover {
     background-color: none; }
 
-table {
+#tbody table {
   width: 100%;
   border-collapse: collapse; }
 
