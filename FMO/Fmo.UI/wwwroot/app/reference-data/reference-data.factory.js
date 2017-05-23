@@ -16,7 +16,7 @@ function referencedataApiService($http, $q, GlobalSettings) {
     function readJson() {
         var deferred = $q.defer();
 
-        $http.get('./UI-String.json').success(function (response) {
+        $http.get('./UI-string.json').success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
