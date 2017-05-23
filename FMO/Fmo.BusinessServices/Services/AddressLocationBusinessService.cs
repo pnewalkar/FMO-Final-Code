@@ -11,10 +11,18 @@
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
 
+    /// <summary>
+    /// This class contains methods for fetching the Address Location data.
+    /// </summary>
+    /// <seealso cref="Fmo.BusinessServices.Interfaces.IAddressLocationBusinessService" />
     public class AddressLocationBusinessService : IAddressLocationBusinessService
     {
         private IAddressLocationRepository addressLocationRepository = default(IAddressLocationRepository);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddressLocationBusinessService"/> class.
+        /// </summary>
+        /// <param name="addressLocationRepository">The address location repository.</param>
         public AddressLocationBusinessService(IAddressLocationRepository addressLocationRepository)
         {
             this.addressLocationRepository = addressLocationRepository;

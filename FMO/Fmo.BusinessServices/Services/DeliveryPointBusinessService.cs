@@ -36,6 +36,15 @@ namespace Fmo.BusinessServices.Services
         private IAccessLinkBusinessService accessLinkBusinessService = default(IAccessLinkBusinessService);
         private bool enableLogging = false;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeliveryPointBusinessService"/> class.
+        /// </summary>
+        /// <param name="deliveryPointsRepository">The delivery points repository.</param>
+        /// <param name="postalAddressBusinessService">The postal address business service.</param>
+        /// <param name="loggingHelper">The logging helper.</param>
+        /// <param name="configurationHelper">The configuration helper.</param>
+        /// <param name="referenceDataBusinessService">The reference data business service.</param>
+        /// <param name="accessLinkBusinessService">The access link business service.</param>
         public DeliveryPointBusinessService(
             IDeliveryPointsRepository deliveryPointsRepository,
             IPostalAddressBusinessService postalAddressBusinessService,

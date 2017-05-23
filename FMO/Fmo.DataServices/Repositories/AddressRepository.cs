@@ -622,6 +622,7 @@
 
                 addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID = this.postcodeRepository.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode);
                 addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Usr.ToString());
+                addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressStatus, Constants.LiveAddressStatus);
                 if (objPostalAddress != null)
                 {
                     objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
@@ -636,6 +637,7 @@
                     objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
                     objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
                     objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
+                    objPostalAddress.AddressStatus_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID;
                     objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
                 }
                 else

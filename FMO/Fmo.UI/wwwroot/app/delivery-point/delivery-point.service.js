@@ -1,29 +1,134 @@
-angular.module('deliveryPoint')
-    .service('deliveryPointService', function () {
+﻿angular.module('deliveryPoint')
+        .factory('deliveryPointService', deliveryPointService);
 
-        var coordinates = '';
-        return {
-            getCordinates: function () {
-                return coordinates;
-            },
-            setCordinates: function (value) {
-                coordinates = value;
-            }
+deliveryPointService.$inject = [
+    'referencedataApiService',
+    '$filter',
+    '$q',
+    'deliveryPointAPIService',
+    '$mdDialog',
+    'mapFactory'
+];
+
+function deliveryPointService(
+    referencedataApiService,
+    $filter,
+    $q,
+    deliveryPointAPIService,
+    $mdDialog,
+    mapFactory) {
+
+    return {
+        initialize: initialize,
+        resultSet: resultSet,
+        openModalPopup: openModalPopup,
+        closeModalPopup: closeModalPopup,
+        getPostalAddress: getPostalAddress,
+        bindAddressDetails: bindAddressDetails,
+        setOrganisation: setOrganisation,
+        isUndefinedOrNull: isUndefinedOrNull,
+        UpdateDeliverypoint: UpdateDeliverypoint
+    };
+
+    function initialize() {
+        var deferred = $q.defer();
+        var referenceData = {};
+        referencedataApiService.getReferenceData().success(function (response) {
+            referenceData.deliveryPointTypes = $filter('filter')(response, {
+                categoryName: referenceDataConstants.DeliveryPointType
+            });
+            referenceData.dpUseType = $filter('filter')(response, { categoryName: referenceDataConstants.DeliveryPointUseIndicator })[0];
+            deferred.resolve(referenceData);
+        });
+        return deferred.promise;
+    }
+
+    function resultSet(query) {
+        var deferred = $q.defer();
+        result = [];
+        if (query.length >= 3) {
+            deliveryPointAPIService.GetDeliveryPointsResultSet(query).then(function (response) {
+                deferred.resolve(response);
+            });
         }
-
-    });
-
-angular.module('deliveryPoint')
-    .factory('guidService', function () {
-
-        var guid = '';
-        return {
-            getGuid: function () {
-                return guid;
-            },
-            setGuid: function (value) {
-                guid = value;
-            }
+        else {
+            deferred.resolve(result);
         }
+        return deferred.promise;
+    }
 
-    });
+    function openModalPopup(popupSetting) {
+        $mdDialog.show(popupSetting)
+    }
+
+    function closeModalPopup() {
+        $mdDialog.hide();
+    }
+
+    function getPostalAddress(postcode) {
+        var deferred = $q.defer();
+        var result = {"postalAddressData": null, "selectedValue": null, "display": null };
+        deliveryPointAPIService.GetAddressByPostCode(postcode).then(function (response) {
+            result.postalAddressData = response;
+            if (response && response.nybAddressDetails) {
+                result.selectedValue = response.nybAddressDetails[0].value;
+            }
+
+            if (response) {
+                result.display = true;
+            }
+            else {
+                result.display = false;
+            }
+
+            deferred.resolve(result);
+        });
+        return deferred.promise;
+    }
+
+    function bindAddressDetails(notyetBuilt) {
+        var deferred = $q.defer();
+        deliveryPointAPIService.GetPostalAddressByGuid(notyetBuilt)
+            .then(function (response) {
+                deferred.resolve(response);
+            });
+        return deferred.promise;
+    }
+
+    function setOrganisation(addressDetails, dpUseType) {
+        var deferred = $q.defer();
+        var result = { "dpUse": null, "selectedDPUse": null };
+
+        if ((addressDetails.organisationName)) {
+            result.dpUse = $filter('filter')(dpUseType.referenceDatas, {
+                referenceDataValue: "Organisation"
+            });
+            result.selectedDPUse = result.dpUse[0];
+        }
+        else {
+            result.dpUse = $filter('filter')(dpUseType.referenceDatas, {
+                referenceDataValue: "Residential"
+            });
+            result.selectedDPUse = result.dpUse[0];
+        }
+        deferred.resolve(result);
+        return deferred.promise;
+    }
+
+    function isUndefinedOrNull(obj) {
+        if (obj !== null && angular.isDefined(obj)) {
+            return obj;
+        }
+        else {
+            return "";
+        }
+    }
+
+    function UpdateDeliverypoint(positionedDeliveryPointList) {
+        deliveryPointAPIService.UpdateDeliverypoint(positionedDeliveryPointList[0]).then(function (result) {
+            mapFactory.setAccessLink();
+            mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
+            $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+        });
+    }
+}

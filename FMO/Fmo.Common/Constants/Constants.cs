@@ -53,6 +53,7 @@
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
         public const string NotShown = "Not Shown";
         public const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
+        public const string LiveAddressStatus = "Live";
 
         #endregion Common
 
