@@ -11,3 +11,10 @@ md-list-item{
 .md-toolbar-tools > h2 {
     @extend %header-content;
 }
+
+.version{
+    @extend %body-content;
+    @include font-color($black);
+    text-align: center;
+    font-size: 14px;
+}

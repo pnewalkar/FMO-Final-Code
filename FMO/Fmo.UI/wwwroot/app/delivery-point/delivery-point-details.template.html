@@ -1,0 +1,62 @@
+<div layout="column">
+    <div layout="row" layout-align="end start">
+        <i class="fa fa-arrow-left context-button" aria-hidden="true"></i>
+        <i class="fa fa-link context-button" aria-hidden="true"></i>
+        <i class="fa fa-pencil context-button" aria-hidden="true"></i>
+        <i class="fa fa-trash context-button" aria-hidden="true"></i>
+        <i class="fa fa-question-circle" aria-hidden="true"></i>
+    </div>
+    <div layout="column">
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.LOCALITY' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+                
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.STREET' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+                
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.BUILDING_NUMBER' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+                
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.BUILDING_NAME' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.POST_CODE' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+                    
+        <!--<md-input-container>
+            <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
+            <md-select name="route"> 
+                <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
+                    Route
+                </md-option>
+            </md-select>    
+        </md-input-container>-->
+    </div>            
+    <div layout="row">
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.MULTI_OCC' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+                    
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.MAIL_VOL' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container>
+            <label>{{ 'DELIVERY_POINTS.DP_USE' | translate}}</label>
+            <input type="text" >
+        </md-input-container>
+    </div>
+</div>

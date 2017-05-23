@@ -11,7 +11,8 @@
 #leftPanel {
   position: absolute;
   top: 75px;
-  left: 15px; }
+  left: 15px;
+  height: calc(100% - 85px); }
 
 #rightPanel {
   position: absolute;
@@ -43,6 +44,3 @@ input[name="zoom-scale"] {
 
 .context-panel {
   height: calc(100% - 30px); }
-
-.context-view {
-  height: 400px; }

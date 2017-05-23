@@ -20,9 +20,26 @@
 
 .pad-icon {
     @include margin(0px 5px 0px 10px);
-    font-size: $secondary-font-size;
 }
 
 .map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button:hover {
     background-color: $clear-blue;
 }   
+
+.map-toolbar .material-icons{
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.map-toolbar .md-button.md-raised:not([disabled]) {
+    box-shadow: 0 1px 1px 0 $box-shadow;
+}
+
+
+/*.button-small{
+    padding:0;
+    margin:0;
+    border-radius: 0;
+    width: 40px;
+    min-width: 40px;
+}*/

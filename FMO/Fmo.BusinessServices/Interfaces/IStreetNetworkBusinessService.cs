@@ -9,6 +9,9 @@ using Microsoft.SqlServer.Types;
 
 namespace Fmo.BusinessServices.Interfaces
 {
+    /// <summary>
+    /// This interface contains declaration of methods for fetching street data.
+    /// </summary>
     public interface IStreetNetworkBusinessService
     {
         /// <summary>

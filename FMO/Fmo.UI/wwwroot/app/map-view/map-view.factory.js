@@ -3,8 +3,20 @@
 angular.module('mapView')
 .factory('mapFactory',MapFactory);
 
-MapFactory.$inject = ['$http', 'mapStylesFactory', '$rootScope', 'GlobalSettings','$document'];
-function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $document) {
+MapFactory.$inject = ['$http',
+    'mapStylesFactory',
+    '$rootScope',
+    'GlobalSettings',
+    '$document',
+    'layersAPIService'];
+
+function MapFactory($http,
+    mapStylesFactory,
+    $rootScope,
+    GlobalSettings,
+    $document,
+    layersAPIService)
+    {
     var map = null;
     var miniMap = null;
     var view = null;
@@ -182,13 +194,6 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
 
     function convertGeoJsonToOl(featureData, formatOptions) {
         var format = new ol.format.GeoJSON();
-
-        //if (!formatOptions) {
-        //    formatOptions = {
-        //        featureProjection: map.getView().getProjection()
-        //    };
-        //}
-
         return format.readFeatures(featureData, formatOptions);
     }
 
@@ -230,13 +235,6 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
 
     function convertGeoJsonToOl(featureData, formatOptions) {
         var format = new ol.format.GeoJSON();
-
-        //if (!formatOptions) {
-        //    formatOptions = {
-        //        featureProjection: map.getView().getProjection()
-        //    };
-        //}
-
         return format.readFeatures(featureData, formatOptions);
     }
 
@@ -437,40 +435,32 @@ function MapFactory($http, mapStylesFactory, $rootScope, GlobalSettings, $docume
         deliveryPointsLayer.selected = true;
         deliveryPointsLayer.layer.setVisible(true)
         var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
-        $http({
-            method: 'GET',
-            url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + map.getView().calculateExtent(map.getSize()).join(','),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Bearer ' + authData.token
-            }
-        }).success(function (response) {          
-        
+        var extent = map.getView().calculateExtent(map.getSize());
+        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
             var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
             deliveryPointsLayer.layer.getSource().addFeatures(features);
-           
+
             var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
 
             var select = new ol.interaction.Select({ style: style });
-            
+
             map.addInteraction(select);
 
             var selectedFeatures = select.getFeatures();
 
             var featureToSelect;
-            angular.forEach(features, function (feature, index) {              
+            angular.forEach(features, function (feature, index) {
                 var featureLatitude = feature.values_.geometry.getCoordinates()[1];
                 var featureLongitude = feature.values_.geometry.getCoordinates()[0];
 
-                if (featureLatitude ===lat && featureLongitude===long) {
+                if (featureLatitude === lat && featureLongitude === long) {
                     featureToSelect = feature;
                 }
-            });      
+            });
 
             if (featureToSelect)
                 selectedFeatures.push(featureToSelect);
-        });
-      
+        });      
     }
 
     function locateDeliveryPoint(long, lat) {

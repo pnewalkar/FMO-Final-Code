@@ -3,7 +3,12 @@ h2, .md-toolbar-tools > h2 {
   font-family: PF_DIN;
   font-size: 18px; }
 
-md-list-item {
+md-list-item, .version {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
+
+.version {
+  color: #2a2a2d;
+  text-align: center;
+  font-size: 14px; }

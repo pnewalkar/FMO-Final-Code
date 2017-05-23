@@ -1,19 +1,19 @@
 ﻿angular.module('advanceSearch')
-    .factory('advanceSearchApiService', advanceSearchApiService);
-advanceSearchApiService.$inject = [
+    .factory('advanceSearchAPIService', advanceSearchAPIService);
+advanceSearchAPIService.$inject = [
     '$http',
     'GlobalSettings',
     '$q'];
 
-function advanceSearchApiService(
+function advanceSearchAPIService(
     $http,
     GlobalSettings,
     $q)
     {
-    var advanceSearchApiService = {};
+    var advanceSearchAPIService = {};
  
 
-    advanceSearchApiService.advanceSearch = function (searchText) {
+    advanceSearchAPIService.advanceSearch = function (searchText) {
         var deferred = $q.defer();
         $http.get(GlobalSettings.apiUrl + '/Search/AdvanceSearch?searchText=' + searchText).success(function (response) {
             deferred.resolve(response);
@@ -26,6 +26,6 @@ function advanceSearchApiService(
 
     };
 
-    return advanceSearchApiService;
+    return advanceSearchAPIService;
 
 }

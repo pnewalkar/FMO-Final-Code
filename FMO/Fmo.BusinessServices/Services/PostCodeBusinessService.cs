@@ -7,6 +7,10 @@ using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
 {
+    /// <summary>
+    /// This class contains methods for fetching post code data.
+    /// </summary>
+    /// <seealso cref="Fmo.BusinessServices.Interfaces.IPostCodeBusinessService" />
     public class PostCodeBusinessService : IPostCodeBusinessService
     {
         private IPostCodeRepository postCodeRepository = default(IPostCodeRepository);

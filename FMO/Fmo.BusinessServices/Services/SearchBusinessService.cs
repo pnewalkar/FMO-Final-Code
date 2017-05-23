@@ -19,6 +19,13 @@ namespace Fmo.BusinessServices.Services
         private readonly IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
         private readonly IDeliveryPointBusinessService deliveryPointBusinessService = default(IDeliveryPointBusinessService);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SearchBusinessService"/> class.
+        /// </summary>
+        /// <param name="deliveryRouteBusinessService">The delivery route business service.</param>
+        /// <param name="postcodeBusinessService">The postcode business service.</param>
+        /// <param name="streetNetworkBusinessService">The street network business service.</param>
+        /// <param name="deliveryPointBusinessService">The delivery point business service.</param>
         public SearchBusinessService(IDeliveryRouteBusinessService deliveryRouteBusinessService, IPostCodeBusinessService postcodeBusinessService, IStreetNetworkBusinessService streetNetworkBusinessService, IDeliveryPointBusinessService deliveryPointBusinessService)
         {
             this.deliveryRouteBusinessService = deliveryRouteBusinessService;

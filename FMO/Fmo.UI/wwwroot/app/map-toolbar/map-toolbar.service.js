@@ -1,9 +1,15 @@
-﻿angular.module('mapToolbar')
-        .factory('mapToolbarService', mapToolbarService);
+﻿angular
+    .module('mapToolbar')
+    .factory('mapToolbarService', mapToolbarService);
 
-mapToolbarService.$inject=['mapService'];
+mapToolbarService.$inject = [
+    'mapService',
+    'CommonConstants'];
 
-function mapToolbarService(mapService) {
+function mapToolbarService(
+    mapService,
+    CommonConstants) {
+
     var vm = this;
        vm.selectedButton = null;
    
@@ -44,9 +50,9 @@ function mapToolbarService(mapService) {
         var emitSelect = false;
         if (button == vm.selectedButton)
         {
-            if (mapService.getMapButtons().indexOf('select') >= 0)
+            if (mapService.getMapButtons().indexOf(CommonConstants.ButtonShapeType.select) >= 0)
             {
-                vm.selectedButton = 'select';
+                vm.selectedButton = CommonConstants.ButtonShapeType.select;
                 emitSelect = true;
                 return emitSelect;
             }
@@ -62,12 +68,12 @@ function mapToolbarService(mapService) {
     function getShapeForButton(button)
     {
         switch (button) {
-            case 'point':
-                return 'Point';
-            case 'line':
-                return 'LineString';
-            case 'accesslink':
-                return 'LineString';
+            case CommonConstants.ButtonShapeType.point:
+                return CommonConstants.GeometryType.Point;
+            case CommonConstants.ButtonShapeType.line:
+                return CommonConstants.GeometryType.LineString;
+            case CommonConstants.ButtonShapeType.accesslink:
+                return CommonConstants.GeometryType.LineString;
             default:
                 return undefined;
 
@@ -81,6 +87,6 @@ function mapToolbarService(mapService) {
 
     function autoSelect()
     {      
-        setSelectedButton(mapService.getMapButtons()[0], 'select');     
+        setSelectedButton(mapService.getMapButtons()[0], CommonConstants.ButtonShapeType.select);
     }
 }
