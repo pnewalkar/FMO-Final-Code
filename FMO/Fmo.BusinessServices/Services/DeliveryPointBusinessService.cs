@@ -249,8 +249,13 @@ namespace Fmo.BusinessServices.Services
             };
 
             await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO).ContinueWith(t =>
-             {
-                 if (t.Result > 0)
+            {
+                if (t.IsFaulted && t.Exception != null)
+                {
+                    throw t.Exception;
+                }
+
+                if (t.Result > 0)
                  {
                      var referenceDataCategoryList =
                          referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>

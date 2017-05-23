@@ -52,6 +52,30 @@ namespace Fmo.API.Services.ExceptionHandling
             }
             catch (Exception ex)
             {
+                Exception newException;
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                if (rethrow)
+                {
+                    if (newException == null)
+                    {
+                        //throw;
+                        await HandleExceptionAsync(context, ex);
+                    }
+                    else
+                    {
+                        //throw newException;
+                        await HandleExceptionAsync(context, newException);
+                    }
+                }
+                else
+                {
+                    //throw;
+                    await HandleExceptionAsync(context, ex);
+                }
+
+                await HandleExceptionAsync(context, ex);
+
+                /*
                 Exception publishedException;
                 // HandleException will log the exception as per the exception handling policy. 
                 bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out publishedException);
@@ -65,6 +89,7 @@ namespace Fmo.API.Services.ExceptionHandling
 
                 try
                 {
+                    
                     Exception manageException = rethrow ? publishedException : ex;
                     context.Response.Clear();
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; // set default status code.
@@ -85,9 +110,8 @@ namespace Fmo.API.Services.ExceptionHandling
 
                         await HandleExceptionAsync(context, CreateErrorResponse(errorCode, _options.DefaultErrorMessage));
                     }
-
-                    return;
-                }
+                   
+            }
                 catch (Exception ex2)
                 {
                     loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, ex2);
@@ -96,7 +120,38 @@ namespace Fmo.API.Services.ExceptionHandling
                 {
                     context.Request.Path = originalPath;
                 }
+                 */
             }
+        }
+
+        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            //HttpStatusCode code = default(HttpStatusCode);
+
+            //if (exception is EntityNotFoundException) code = HttpStatusCode.NotFound;
+            //else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
+            //else if (exception is NotImplementedException) code = HttpStatusCode.NotImplemented;
+            //else code = HttpStatusCode.InternalServerError;
+
+            ExceptionResponse exceptionResponse;
+            object response;
+            if (_options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
+            {
+                context.Response.StatusCode = exceptionResponse.StatusCode; // Replace default status code with actual.
+                //context.Response.WriteAsync(JsonConvert.SerializeObject(response, _options.SerializerSettings), Encoding.UTF8);
+                 response = GetExceptionResponse(exception, exceptionResponse);
+                //loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, ex);
+            }
+            else
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                var errorCode = GenerateErrorCode(_options.ErrorCodePrefix);
+                response = CreateErrorResponse(errorCode, _options.DefaultErrorMessage);
+            }
+
+            var result = JsonConvert.SerializeObject(response);
+            context.Response.ContentType = "application/json";
+            return context.Response.WriteAsync(result);
         }
 
         /// <summary>
@@ -105,10 +160,10 @@ namespace Fmo.API.Services.ExceptionHandling
         /// <param name="context">The context.</param>
         /// <param name="response">The response.</param>
         /// <returns></returns>
-        private async Task HandleExceptionAsync(HttpContext context, object response)
-        {
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(response, _options.SerializerSettings), Encoding.UTF8);
-        }
+        //private async Task HandleExceptionAsync(HttpContext context, object response)
+        //{
+        //    await context.Response.WriteAsync(JsonConvert.SerializeObject(response, _options.SerializerSettings), Encoding.UTF8);
+        //}
 
         /// <summary>
         /// Gets the exception response.

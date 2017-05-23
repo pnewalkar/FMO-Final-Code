@@ -122,6 +122,11 @@
     <Compile Include="Enums\FileType.cs" />
     <Compile Include="Enums\DeliveryPointSuffix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceFile\ErrorMessageIds.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ErrorMessageIds.resx</DependentUpon>
+    </Compile>
     <Compile Include="ResourceFile\FmoMessagesConstants.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -174,8 +179,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ResourceFile\ErrorMessageIds.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessageIds.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResourceFile\FmoMessagesConstants.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FmoMessagesConstants.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

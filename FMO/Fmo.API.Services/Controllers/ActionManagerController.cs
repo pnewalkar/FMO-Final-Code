@@ -1,8 +1,12 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Fmo.Common.Interface;
+using Fmo.Common.ResourceFile;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -13,6 +17,7 @@ namespace Fmo.API.Services.Controllers
     public class ActionManagerController : FmoBaseController
     {
         private IActionManagerBussinessService actionManagerBussinessService = default(IActionManagerBussinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public ActionManagerController(IActionManagerBussinessService actionManagerBussinessService)
         {
@@ -28,8 +33,16 @@ namespace Fmo.API.Services.Controllers
         [HttpPost("RoleActions")]
         public async Task<List<RoleAccessDTO>> RoleActions([FromBody]UserUnitInfoDTO userUnitInfoDto)
         {
-            var roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
-            return roleAccessDto;
+            try
+            {
+                var roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+                return roleAccessDto;
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
     }
 }

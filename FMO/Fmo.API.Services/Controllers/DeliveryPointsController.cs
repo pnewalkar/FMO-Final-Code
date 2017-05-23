@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
@@ -84,9 +85,18 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Route("UpdateDeliveryPoint")]
         [HttpPut]
-        public async Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDto)
+        public async Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPoint(
+            [FromBody] DeliveryPointModelDTO deliveryPointModelDto)
         {
-            return await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
+            try
+            {
+                return await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
     }
 }

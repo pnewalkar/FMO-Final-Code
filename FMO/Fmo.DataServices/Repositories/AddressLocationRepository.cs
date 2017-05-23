@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Fmo.Common.Constants;
 using Fmo.Common.ExceptionManagement;
 using Fmo.Common.Interface;
+using Fmo.Common.ResourceFile;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -20,11 +21,14 @@ namespace Fmo.DataServices.Repositories
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository
     {
         private IExceptionHelper exceptionHelper = default(IExceptionHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory, IExceptionHelper exceptionHelper)
+        public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
             this.exceptionHelper = exceptionHelper;
+            this.loggingHelper = loggingHelper;
+            ;
         }
 
         /// <summary>
@@ -81,7 +85,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (ObjectDisposedException disposedException)
             {
-                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
+                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage, ErrorMessageIds.Err_ObjectDisposedException);
             }
         }
     }
