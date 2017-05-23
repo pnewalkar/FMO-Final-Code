@@ -46,10 +46,10 @@
                 </div>
                 <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
                 
-                <md-input-container flex="30" ng-show="vm.display" ng-class="{'disabledText':vm.postalAddressData.nybAddressDetails.length==1}">
+                <md-input-container flex="30" ng-show="vm.display" ng-class="{'disabledText':vm.nybAddressDetails.length==1}">
                     <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
-                    <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.postalAddressData.nybAddressDetails.length==1">
-                        <md-option ng-repeat="type in vm.postalAddressData.nybAddressDetails"  ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
+                    <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.nybAddressDetails.length==1">
+                        <md-option ng-repeat="type in vm.nybAddressDetails"  ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
                             {{type.displayText}}
                         </md-option>
                     </md-select>
@@ -59,14 +59,14 @@
             <div layout="column" ng-show="vm.display">
                 <md-input-container>
                     <label>{{ 'DELIVERY_POINTS.LOCALITY' | translate}}<sub>*</sub></label>
-                    <input value="{{vm.getCommaSeparatedVale(vm.postalAddressData.dependentLocality,vm.postalAddressData.doubleDependentLocality)}}" type="text" disabled>
+                    <input value="{{vm.getCommaSeparatedVale(vm.addressDetails.dependentLocality,vm.addressDetails.doubleDependentLocality)}}" type="text" disabled>
                 </md-input-container>
             </div>
 
             <div layout="column" ng-show="vm.display">
                 <md-input-container>
                     <label>{{ 'DELIVERY_POINTS.STREET' | translate }}<sub>*</sub></label>
-                    <input type="text" value="{{vm.getCommaSeparatedVale(vm.postalAddressData.thoroughfare,vm.postalAddressData.dependentThoroughfare)}}" disabled>
+                    <input type="text" value="{{vm.getCommaSeparatedVale(vm.addressDetails.thoroughfare,vm.addressDetails.dependentThoroughfare)}}" disabled>
                 </md-input-container>
             </div>
 
@@ -75,7 +75,7 @@
                 <div layout="column" flex="30">
                     <md-input-container>
                         <label>{{ 'DELIVERY_POINTS.POST_CODE'| translate }}<sub>*</sub></label>
-                        <input ng-model="vm.postalAddressData.postcode" type="text" disabled>
+                        <input ng-model="vm.addressDetails.postcode" type="text" disabled>
                     </md-input-container>
                 </div>
 
@@ -84,8 +84,8 @@
 
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-                    <md-select name="route" ng-model="vm.postalAddressData.route" select-clear required> 
-                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
+                    <md-select name="route" ng-model="vm.addressDetails.route" select-clear required> 
+                        <md-option ng-repeat="route in vm.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
                     </md-select>
@@ -138,8 +138,8 @@
                         <div layout="row">
                             <md-input-container flex="45">
                                 <label> {{ 'DELIVERY_POINTS.BUILDING_NUMBER' | translate }} </label>
-                                <input name="buildingNumber" ng-model="vm.nybaddress.buildingNumber"  ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
-                                       ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
+                                <input name="buildingNumber" ng-model="vm.addressDetails.buildingNumber"  ng-blur="vm.setOrganisation()" ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4"
+                                       ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.buildingNumber.$error"
                                      ng-show="vm.deliveryPointForm.buildingNumber.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 4</div>
@@ -151,8 +151,8 @@
 
                             <md-input-container flex="50">
                                 <label> {{'DELIVERY_POINTS.BUILDING_NAME' | translate }}</label>
-                                <input name="buildingName" ng-model="vm.nybaddress.buildingName" type="text" ng-maxlength="50" ng-blur="vm.setOrganisation()"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false"
-                                       ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)">
+                                <input name="buildingName" ng-model="vm.addressDetails.buildingName" type="text" ng-maxlength="50" ng-blur="vm.setOrganisation()"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false"
+                                       ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)">
                                 <div ng-messages="vm.deliveryPointForm.buildingName.$error"
                                      ng-show="vm.deliveryPointForm.buildingName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
@@ -163,7 +163,7 @@
                         <div layout="row">
                             <md-input-container flex="45">
                                 <label> {{ 'DELIVERY_POINTS.SUB_BUILDING_NAME' | translate }}</label>
-                                <input ng-model="vm.nybaddress.subBuildingName" type="text" ng-maxlength="50"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input ng-model="vm.addressDetails.subBuildingName" type="text" ng-maxlength="50"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.subBuildingName.$error"
                                      ng-show="vm.deliveryPointForm.subBuildingName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
@@ -174,7 +174,7 @@
 
                             <md-input-container flex="50">
                                 <label>{{ 'DELIVERY_POINTS.ORGANISATION' |  translate }}</label>
-                                <input ng-model="vm.nybaddress.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
@@ -184,7 +184,7 @@
                         <div layout="row">
                             <md-input-container flex="45">
                                 <label> {{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate }}</label>
-                                <input ng-model="vm.nybaddress.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()" ng-required="!(vm.nybaddress.buildingNumber.length || vm.nybaddress.buildingName.length || vm.nybaddress.departmentName.length || vm.nybaddress.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
