@@ -91,6 +91,13 @@ namespace Fmo.BusinessServices.Tests.Services
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_GetRouteForDeliveryPoint()
+        {
+            var result = testCandidate.GetRouteForDeliveryPoint(Guid.NewGuid());
+            Assert.IsNotNull(result);
+        }
+
         protected override void OnSetup()
         {
             mockDeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
@@ -188,6 +195,7 @@ namespace Fmo.BusinessServices.Tests.Services
             referenceDataBusinessService.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
             mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(deliveryPointModelDTO.ID));
             accessLinkBusinessServiceMock = CreateMock<IAccessLinkBusinessService>();
+            mockDeliveryPointsRepository.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns(new List<string>() { "ABC" });
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object, accessLinkBusinessServiceMock.Object);
         }
     }

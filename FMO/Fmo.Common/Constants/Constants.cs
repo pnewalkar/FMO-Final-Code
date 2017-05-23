@@ -49,6 +49,24 @@
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
         public const string NotShown = "Not Shown";
         public const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
+        public const string DependentLocality = "dependentLocality";
+        public const string DoubleDependentLocality = "doubleDependentLocality";
+        public const string Thoroughfare = "thoroughfare";
+        public const string DependentThoroughfare = "dependentThoroughfare";
+        public const string SubBuildingName = "subBuildingName";
+        public const string OrganisationName = "organisationName";
+        public const string DepartmentName = "departmentName";
+        public const string MailVolume = "mailVolume";
+        public const string MultipleOccupancyCount = "multipleOccupancyCount";
+        public const string Locality = "locality";
+        public const string DeliveryPointId = "deliveryPointId";
+        public const string BuildingNameWithSubBuildingName = "BuildingNameWithSubBuildingName";
+        public const string Street = "street";
+        public const string DpUseResidential = "Residential";
+        public const string DpUseOrganisation = "Organisation";
+        public const string Space = " ";
+        public const string RouteName = "ROUTENAME";
+        public const string DpUse = "DPUSE";
 
         #endregion Common
 

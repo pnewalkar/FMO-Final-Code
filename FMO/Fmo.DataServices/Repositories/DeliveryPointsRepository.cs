@@ -19,6 +19,7 @@ namespace Fmo.DataServices.Repositories
     using Fmo.DataServices.Infrastructure;
     using Fmo.DataServices.Repositories.Interfaces;
     using Fmo.DTO;
+    using MappingConfiguration;
     using MappingExtensions;
     using Entity = Fmo.Entities;
 
@@ -264,7 +265,69 @@ namespace Fmo.DataServices.Repositories
             Mapper.Configuration.CreateMapper();
             var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
 
+            deliveryPointDto.ForEach(dpDTO =>
+            {
+                dpDTO.PostalAddress = GenericMapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.Where(dp => dp.ID == dpDTO.ID).SingleOrDefault().PostalAddress);
+            });
+
             return deliveryPointDto;
+        }
+
+        /// <summary>
+        /// This Method provides Route Name for a single DeliveryPoint
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
+        /// <returns>Route Name for a single DeliveryPoint</returns>
+        public List<string> GetRouteForDeliveryPoint(Guid deliveryPointId)
+        {
+            var result = from dp in DataContext.DeliveryPoints.AsNoTracking()
+                         join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                         join drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() on pa.PostCodeGUID equals drp.Postcode_GUID
+                         join dr in DataContext.DeliveryRoutes.AsNoTracking() on drp.DeliveryRoute_GUID equals dr.ID
+                         where dp.ID == deliveryPointId
+                         select new
+                         {
+                             RouteName = drp.IsPrimaryRoute == true ? Constants.PRIMARYROUTE + dr.RouteName : Constants.SECONDARYROUTE + dr.RouteName
+                         };
+            return result.Select(n => n.RouteName).ToList();
+        }
+
+        /// <summary>
+        /// This Method fetches DPUse value for the DeliveryPoint
+        /// </summary>
+        /// <param name="referenceDataCategoryDtoList"> referenceDataCategoryDtoList as List of ReferenceDataCategoryDTO </param>
+        /// <param name="deliveryPointId">deliveryPointId as GUID </param>
+        /// <returns>DPUse value as string</returns>
+        public string GetDPUse(List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid deliveryPointId)
+        {
+            string dpUsetype = string.Empty;
+            Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
+               .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+               .SelectMany(x => x.ReferenceDatas)
+               .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
+               .SingleOrDefault();
+
+            Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
+                .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                .SelectMany(x => x.ReferenceDatas)
+                .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
+                .SingleOrDefault();
+
+            var dpUse = from dp in DataContext.DeliveryPoints.AsNoTracking()
+                        where dp.ID == deliveryPointId
+                        select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
+
+            List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
+            if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+            {
+                dpUsetype = Constants.DpUseOrganisation;
+            }
+            else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
+            {
+                dpUsetype = Constants.DpUseResidential;
+            }
+
+            return dpUsetype;
         }
 
         /// <summary>

@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Transactions;
 using System.Web.Script.Serialization;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 using Fmo.Helpers;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
-using Fmo.DTO.Model;
-using System.Data.Entity.Spatial;
-using System.Linq;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -273,6 +270,43 @@ namespace Fmo.BusinessServices.Services
         }
 
         /// <summary>
+        /// This Method fetches Route and DPUse for a single DeliveryPoint
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
+        /// <returns>KeyValuePair for Route and DPUse </returns>
+        public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
+        {
+            List<KeyValuePair<string, string>> dpDetails = new List<KeyValuePair<string, string>>();
+            List<string> routeName = deliveryPointsRepository.GetRouteForDeliveryPoint(deliveryPointId);
+            string dpUse = GetDPUse(deliveryPointId);
+            if (routeName.Count > 0)
+            {
+                dpDetails.Add(new KeyValuePair<string, string>(Constants.RouteName, routeName[0]));
+            }
+
+            dpDetails.Add(new KeyValuePair<string, string>(Constants.DpUse, dpUse));
+            return dpDetails;
+        }
+
+        /// <summary>
+        /// This Method fetches DPUse value for the DeliveryPoint
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
+        /// <returns>DPUse value as string</returns>
+        private string GetDPUse(Guid deliveryPointId)
+        {
+            List<string> categoryNames = new List<string>
+            {
+                ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+            };
+
+            var referenceDataCategoryList =
+                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+            string dpUsetype = deliveryPointsRepository.GetDPUse(referenceDataCategoryList, deliveryPointId);
+            return dpUsetype;
+        }
+
+        /// <summary>
         /// This method is used to fetch GeoJson data for Delivery Point.
         /// </summary>
         /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
@@ -299,7 +333,15 @@ namespace Fmo.BusinessServices.Services
                         { Constants.BuildingNumber, point.PostalAddress.BuildingNumber },
                         { Constants.Postcode, point.PostalAddress.Postcode },
                         { Constants.StreetName, point.PostalAddress.BuildingName },
-                        { Constants.LayerType, Convert.ToString(OtherLayersType.DeliveryPoint.GetDescription()) }
+                        { Constants.LayerType, Convert.ToString(OtherLayersType.DeliveryPoint.GetDescription()) },
+                        { Constants.OrganisationName, point.PostalAddress.OrganisationName},
+                        { Constants.DepartmentName, point.PostalAddress.DepartmentName },
+                        { Constants.MailVolume, point.MailVolume},
+                        { Constants.MultipleOccupancyCount, point.MultipleOccupancyCount },
+                        { Constants.Locality, (point.PostalAddress.DependentLocality + Constants.Space + point.PostalAddress.DoubleDependentLocality).Trim() },
+                        { Constants.DeliveryPointId, point.ID},
+                        { Constants.Street, (point.PostalAddress.Thoroughfare + Constants.Space + point.PostalAddress.DependentThoroughfare).Trim()},
+                        { Constants.BuildingNameWithSubBuildingName, (point.PostalAddress.BuildingName + Constants.Space + point.PostalAddress.SubBuildingName).Trim() }
                     },
                         geometry = new Geometry
                         {

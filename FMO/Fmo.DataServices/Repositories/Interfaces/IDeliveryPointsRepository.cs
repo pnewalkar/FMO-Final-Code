@@ -132,5 +132,20 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
         /// <returns>updated delivery point</returns>
         void UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
+
+        /// <summary>
+        /// This Method provides Route Name for a single DeliveryPoint
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
+        /// <returns>Route Name for a single DeliveryPoint</returns>
+        List<string> GetRouteForDeliveryPoint(Guid deliveryPointId);
+
+        /// <summary>
+        /// This Method fetches DPUse value for the DeliveryPoint
+        /// </summary>
+        /// <param name="referenceDataCategoryDtoList"> referenceDataCategoryDtoList as List of ReferenceDataCategoryDTO </param>
+        /// <param name="deliveryPointId">deliveryPointId as GUID </param>
+        /// <returns>DPUse value as string</returns>
+        string GetDPUse(List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid deliveryPointId);
     }
 }

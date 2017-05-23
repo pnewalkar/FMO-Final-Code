@@ -39,7 +39,7 @@ function mapService($http,
     vm.layersForContext =[];
     vm.activeSelection = null;
     vm.secondarySelections =[];
-
+    vm.routeName = "";
     vm.selectionListeners =[];
     vm.features = null;
     vm.onDeleteButton = function (featureId, layer) { };
@@ -89,7 +89,8 @@ function mapService($http,
                             getfeature : getfeature,
                             selectFeatures: selectFeatures,
                             getSecondaryFeatures : getSecondaryFeatures,
-                        setSelectedObjectsVisibility: setSelectedObjectsVisibility,
+                            setSelectedObjectsVisibility: setSelectedObjectsVisibility,
+                            showDeliveryPointDetails: showDeliveryPointDetails
     }
     function initialise() {
                     proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -512,7 +513,10 @@ function mapService($http,
                 if (e.selected.length > 0) {
                 setSelections({
                                      featureID: e.selected[0].getId(), layer: lastLayer
-                             }, []);
+                }, []);
+                var deliveryPointDetails = e.selected[0].getProperties();
+                showDeliveryPointDetails(deliveryPointDetails, deliveryPointDetails.deliveryPointId);
+                
                              } else {
                              setSelections(null, []);
                              }
@@ -659,6 +663,36 @@ vm.miniMap.updateSize() }, 10);
             });
 
         }
-            }
+             }
+
+             function GetRouteForDeliveryPoint(deliveryPointId)
+             {
+                 mapFactory.GetRouteForDeliveryPoint(deliveryPointId)
+                       .then(function (response) {
+                           vm.routeName = response;
+                       });
+
+             }
+             function showDeliveryPointDetails(deliveryPointDetails, deliveryPointId)
+             {
+                 deliveryPointDetails.routeName = null;
+                 mapFactory.GetRouteForDeliveryPoint(deliveryPointId)
+                       .then(function (response) {
+                           for (i = 0; i < response.length; i++)
+                           {
+                               if (response[i].key == CommonConstants.RouteName)
+                               {
+                                   deliveryPointDetails.routeName = response[i].value;
+                               }                               
+                               if (response[i].key == CommonConstants.DpUse)
+                               {
+                                   deliveryPointDetails.dpUse = response[i].value;
+                               }
+                           }
+                           $state.go('DeliveryPointDetails', {
+                               selectedDeliveryPoint: deliveryPointDetails
+                           }, { reload: true });
+                       });                 
+             }
 
             }

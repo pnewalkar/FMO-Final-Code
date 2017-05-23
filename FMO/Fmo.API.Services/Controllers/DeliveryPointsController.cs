@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
@@ -88,5 +90,12 @@ namespace Fmo.API.Services.Controllers
         {
             return await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
         }
+        [Route("GetRouteForDeliveryPoint")]
+        [HttpGet]
+        public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
+        {
+            return businessService.GetRouteForDeliveryPoint(deliveryPointId);
+        }
+
     }
 }

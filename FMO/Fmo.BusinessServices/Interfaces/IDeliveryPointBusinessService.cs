@@ -74,5 +74,13 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="deliveryPointModelDTO">DeliveryPointDTO</param>
         /// <returns>message</returns>
         Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPointLocation(DeliveryPointModelDTO deliveryPointModelDTO);
+
+        /// <summary>
+        /// This Method fetches Route and DPUse for a single DeliveryPoint
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
+        /// <returns>KeyValuePair for Route and DPUse </returns>
+        List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId);
+
     }
 }
