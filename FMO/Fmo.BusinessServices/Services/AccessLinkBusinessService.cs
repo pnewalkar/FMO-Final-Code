@@ -260,9 +260,9 @@ namespace Fmo.BusinessServices.Services
         /// <returns>returns calculated path length as <double>.</true></returns>
         public decimal GetAdjPathLength(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
-            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, "LINESTRING");
-            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, "POINT");
-            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, "POINT");
+            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, Constants.LinestringObject);
+            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, Constants.PointObject);
+            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, Constants.PointObject);
             Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
             Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
 
@@ -337,9 +337,9 @@ namespace Fmo.BusinessServices.Services
         {
             bool isAccessLinkCreated = false;
 
-            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, "LINESTRING");
-            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, "POINT");
-            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, "POINT");
+            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, Constants.LinestringObject);
+            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, Constants.PointObject);
+            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, Constants.PointObject);
             Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
             Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
 
@@ -347,14 +347,13 @@ namespace Fmo.BusinessServices.Services
             {
                 ID = Guid.Empty,
                 AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, Constants.BNGCOORDINATESYSTEM),
-                ActualLengthMeter = Convert.ToDecimal(1.00), // need to write logic
                 NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, Constants.BNGCOORDINATESYSTEM),
-                NetworkLink_GUID = Guid.Empty, // need to write logic
+                NetworkLink_GUID = networkLinkGuidManual,
                 OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, Constants.BNGCOORDINATESYSTEM), // need to write logic
                 OperationalObject_GUID = operationalObjectGuidManual,
                 OperationalObjectType_GUID = Guid.Empty,
                 Approved = true,
-                WorkloadLengthMeter = default(decimal), // need to create
+                WorkloadLengthMeter = accessLinkManualDto.Workloadlength,
                 AccessLinkType_GUID = Guid.Empty,
                 LinkDirection_GUID = Guid.Empty,
                 LinkStatus_GUID = Guid.Empty,
@@ -398,20 +397,12 @@ namespace Fmo.BusinessServices.Services
                 .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkDirectionBoth).ID;
 
             accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
-                .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
+                .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
                 .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkStatusDraftPendingReview).ID; // TO DO live or draft
 
             NetworkLinkDTO networkObject = streetNetworkBusinessService.GetNetworkLink(accessLinkDto.NetworkLink_GUID);
 
             accessLinkDto.ActualLengthMeter = Convert.ToDecimal((double)accessLinkDto.AccessLinkLine.ToSqlGeometry().STLength());
-
-            if (referenceDataCategoryList
-              .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-              .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == accessLinkDto.OperationalObjectType_GUID)
-            {
-                DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
-                accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, (double)accessLinkDto.ActualLengthMeter, networkObject, referenceDataCategoryList));
-            }
 
             // create access link
             isAccessLinkCreated = accessLinkRepository.CreateAccessLink(accessLinkDto);

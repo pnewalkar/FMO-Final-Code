@@ -87,24 +87,24 @@ namespace Fmo.BusinessServices.Services
         /// This method fetches geojson data for roadlink
         /// </summary>
         /// <returns> roadlink object</returns>
-        /// <param name="osRoadLinkDTO"> osRoadLinkDTO as list of RoadLinkDTO </param>
-        private static string GetRoadLinkJsonData(List<OsRoadLinkDTO> osRoadLinkDTO)
+        /// <param name="networkLinkDTO"> networkLinkDTO as list of NetworkLinkDTO </param>
+        private static string GetRoadLinkJsonData(List<NetworkLinkDTO> networkLinkDTO)
         {
             var geoJson = new GeoJson
             {
                 features = new List<Feature>()
             };
 
-            if (osRoadLinkDTO != null && osRoadLinkDTO.Count > 0)
+            if (networkLinkDTO != null && networkLinkDTO.Count > 0)
             {
                 int i = 1;
-                foreach (var res in osRoadLinkDTO)
+                foreach (var res in networkLinkDTO)
                 {
                     Geometry geometry = new Geometry();
 
-                    geometry.type = res.CentreLineGeometry.SpatialTypeName;
+                    geometry.type = res.LinkGeometry.SpatialTypeName;
 
-                    var resultCoordinates = res.CentreLineGeometry;
+                    var resultCoordinates = res.LinkGeometry;
 
                     SqlGeometry roadLinkSqlGeometry = null;
                     if (geometry.type == Convert.ToString(GeometryType.LineString))
@@ -129,7 +129,7 @@ namespace Fmo.BusinessServices.Services
 
                     Feature feature = new Feature();
                     feature.geometry = geometry;
-                    feature.id = res.ID.ToString();
+                    feature.id = res.Id.ToString();
                     feature.type = Constants.FeatureType;
                     feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.RoadLink.GetDescription()) } };
                     geoJson.features.Add(feature);

@@ -27,12 +27,12 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
-        /// <returns>List of OsRoadLinkDTO</returns>
-        public List<OsRoadLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid unitGuid)
+        /// <returns>List of NetworkLinkDTO</returns>
+        public List<NetworkLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<OSRoadLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, unitGuid).ToList();
-            var oSRoadLink = GenericMapper.MapList<OSRoadLink, OsRoadLinkDTO>(result);
-            return oSRoadLink;
+            List<NetworkLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, unitGuid).ToList();
+            var networkLink = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(result);
+            return networkLink;
         }
 
         /// <summary>
@@ -41,21 +41,24 @@ namespace Fmo.DataServices.Repositories
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Road Link entity</returns>
-        private IEnumerable<OSRoadLink> GetRoadNameCoordinatesDatabyBoundingbox(string boundingBoxCoordinates, Guid unitGuid)
+        private IEnumerable<NetworkLink> GetRoadNameCoordinatesDatabyBoundingbox(string boundingBoxCoordinates, Guid unitGuid)
         {
             try
             {
-                IEnumerable<OSRoadLink> oSRoadLink = null;
+                IEnumerable<NetworkLink> networkLink = null;
+
                 if (!string.IsNullOrEmpty(boundingBoxCoordinates))
                 {
                     DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
+                    var roadLinkTypeId = DataContext.ReferenceDatas.AsNoTracking().Where(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).Select(x => x.ID).SingleOrDefault();
+
                     DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates, Constants.BNGCOORDINATESYSTEM);
 
-                    oSRoadLink = DataContext.OSRoadLinks.AsNoTracking().Where(x => x.CentreLineGeometry != null && x.CentreLineGeometry.Intersects(extent) && x.CentreLineGeometry.Intersects(polygon)).ToList();
+                    networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => (x.LinkGeometry != null && x.LinkGeometry.Intersects(extent) && x.LinkGeometry.Intersects(polygon)) && x.NetworkLinkType_GUID == roadLinkTypeId).ToList();
                 }
 
-                return oSRoadLink;
+                return networkLink;
             }
             catch (Exception ex)
             {

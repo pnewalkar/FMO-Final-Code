@@ -7,10 +7,11 @@ DeliveryPointController.$inject = [
         '$scope',
         '$mdDialog',
         'popUpSettingService',
-        'deliveryPointApiService',
+        'deliveryPointAPIService',
         '$filter',
         'mapFactory',
         'coordinatesService',
+        'guidService',
         '$state',
         '$stateParams',
         'deliveryPointService'];
@@ -20,10 +21,11 @@ function DeliveryPointController(
     $scope,
     $mdDialog,
     popUpSettingService,
-    deliveryPointApiService,
+    deliveryPointAPIService,
     $filter,
     mapFactory,
     coordinatesService,
+    guidService,
     $state,
     $stateParams,
     deliveryPointService
@@ -158,7 +160,7 @@ function DeliveryPointController(
                 vm.positionedCoOrdinates.push(coordinatesService.getCordinates());
                 var latlong = ol.proj.transform(vm.positionedCoOrdinates[0], 'EPSG:27700', 'EPSG:4326');
                 var positionedDeliveryPointListObj = {
-                    udprn: vm.selectedItem.udprn, locality: vm.selectedItem.locality, addressGuid: vm.selectedItem.addressGuid, deliveryPointGuid: vm.selectedItem.deliveryPointGuid, xCoordinate: vm.positionedCoOrdinates[0][0], yCoordinate: vm.positionedCoOrdinates[0][1], latitude: latlong[1], longitude: latlong[0], rowversion: vm.selectedItem.rowversion
+                    udprn: vm.selectedItem.udprn, locality: vm.selectedItem.locality, addressGuid: vm.selectedItem.addressGuid, id: vm.selectedItem.id, xCoordinate: vm.positionedCoOrdinates[0][0], yCoordinate: vm.positionedCoOrdinates[0][1], latitude: latlong[1], longitude: latlong[0], rowversion: vm.selectedItem.rowversion
                 };
 
                 vm.positionedDeliveryPointList.push(positionedDeliveryPointListObj);
@@ -201,11 +203,12 @@ function DeliveryPointController(
                 },
                 "AddressLocationDTO": null
             };
-        deliveryPointApiService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
+        deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
 
             if (response.message && response.message == "Delivery Point created successfully") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
                 mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
+                guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
                 vm.closeWindow();
             }
@@ -243,7 +246,7 @@ function DeliveryPointController(
     }
 
     function getAddressLocation(udprn) {
-        deliveryPointApiService.GetAddressLocation(udprn)
+        deliveryPointAPIService.GetAddressLocation(udprn)
                 .then(function (response) {
                     vm.addressLocationData = response.data;
                 });
@@ -264,7 +267,7 @@ function DeliveryPointController(
     }
 
     function locateDeliveryPoint(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
-        deliveryPointApiService.GetAddressLocation(udprn)
+        deliveryPointAPIService.GetAddressLocation(udprn)
             .then(function (response) {
                 if (response.features.length > 0) {
 
@@ -273,7 +276,7 @@ function DeliveryPointController(
 
 
                     var positionedThirdPartyDeliverypointObj = {
-                        udprn: udprn, locality: locality, addressGuid: addressGuid, deliveryPointGuid: deliveryPointGuid, xCoordinate: long, yCoordinate: lat, latitude: response.features[0].properties.latitude, longitude: response.features[0].properties.longitude, rowversion: rowversion
+                        udprn: udprn, locality: locality, addressGuid: addressGuid, id: deliveryPointGuid, xCoordinate: long, yCoordinate: lat, latitude: response.features[0].properties.latitude, longitude: response.features[0].properties.longitude, rowversion: rowversion
                     };
 
                     vm.positionedThirdPartyDeliveryPoint.push(positionedThirdPartyDeliverypointObj);
@@ -300,7 +303,7 @@ function DeliveryPointController(
     function manualDeliveryPointPosition(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
 
         var deliveryPointListObj = {
-            udprn: udprn, locality: locality, addressGuid: addressGuid, deliveryPointGuid: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
+            udprn: udprn, locality: locality, addressGuid: addressGuid, id: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
         };
         if (vm.deliveryPointList == null) {
             vm.deliveryPointList = [];
