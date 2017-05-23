@@ -45,7 +45,8 @@ angular.module('FMOApp')
       .state("accessLink", {
           url: "/accessLink",
           templateUrl: "./access-link/acccess-link.template.html",
-          controller: 'AccessLinkController as vm'
+          controller: 'AccessLinkController as vm',
+          params: {accessLinkFeature : null}
       });
    
 })

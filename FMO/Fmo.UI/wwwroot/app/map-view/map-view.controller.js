@@ -22,6 +22,9 @@ function MapController($scope,
     $scope.$on('refreshLayers', mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
         mapService.mapToolChange(button);
+        if (button.name == 'accesslink') {
+            vm.contextTitle = "Access Link";
+        }
     });
     $scope.$on("deleteSelectedFeature", function (event) {
         mapService.deleteSelectedFeature();
