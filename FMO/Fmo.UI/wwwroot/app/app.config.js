@@ -80,5 +80,32 @@ angular.module('FMOApp')
     $mdThemingProvider.theme('default')
             .primaryPalette('royalMailPrimary')
             .accentPalette('royalMailAccent');
-});
+})
+
+.run(['localization', '$translate', '$window', 'referencedataApiService', function (localization, $translate, $window, referencedataApiService) {
+    var language = $window.navigator.language;
+    referencedataApiService.readJson().then(function (response) {
+        localization.setJson(response);
+        $translate.use(language);
+    }) 
+}])
+.provider('localization', function LocalizationProvider() {
+    return {
+        updateLangJson:function(){},
+        $get: function () {        
+            var updateLangJson = this.updateLangJson;
+            return {
+                setJson:updateLangJson
+            };
+        }
+    }
+})
+    .config(['localizationProvider', '$translateProvider', function (localizationProvider, $translateProvider) {
+        localizationProvider.updateLangJson = function (Json) {
+            var language = window.navigator.language;
+            $translateProvider.translations(language, Json);
+            $translateProvider.preferredLanguage(language);
+            $translateProvider.useSanitizeValueStrategy('escape');
+        }
+    }]);
 
