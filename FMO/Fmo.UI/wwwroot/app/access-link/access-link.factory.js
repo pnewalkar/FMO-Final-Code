@@ -21,7 +21,7 @@ function accessLinkAPIService($http, GlobalSettings, $q) {
     accessLinkAPIService.CreateAccessLink = function (accessLinkDTO) {
         var deferred = $q.defer();
 
-        $http.post(GlobalSettings.apiUrl + '/accessLink/Create/', accessLinkDTO).success(function (response) {
+        $http.post(GlobalSettings.apiUrl + '/accessLink/CreateManual/', accessLinkDTO).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

@@ -14,7 +14,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
-        /// <returns>OsRoad Link Dto</returns>
-        List<OsRoadLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid unitGuid);
+        /// <returns>Network Link Dto</returns>
+        List<NetworkLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid unitGuid);
     }
 }

@@ -17,5 +17,7 @@ namespace Fmo.DTO.Model
         public string NetworkLinkGUID { get; set; }
 
         public string OperationalObjectGUID { get; set; }
+
+        public decimal Workloadlength { get; set; }
     }
 }

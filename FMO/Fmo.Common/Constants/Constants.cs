@@ -34,6 +34,10 @@
         public const string COLON = " : ";
         public const string POSTALADDRESSDETAILS = "Postal Address Details : ";
         public const string Comma = ", ";
+        public const string CommaWithoutSpace = ",";
+        public const string SingleSpace = " ";
+        public const string OpenSquareBracket = "[";
+        public const string CloseSquareBracket = "]";
         public const string BuildingName = "name";
         public const string BuildingNumber = "number";
         public const string Postcode = "postcode";
@@ -149,7 +153,8 @@
         public const string UDPRN = "udprn";
         public const string Latitude = "latitude";
         public const string Longitude = "longitude";
-
+        public const string LinestringObject = "LINESTRING";
+        public const string PointObject = "POINT";
         #endregion OtherLayers
 
         #region DeliveryPoints
