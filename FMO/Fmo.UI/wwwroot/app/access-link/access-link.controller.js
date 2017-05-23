@@ -8,7 +8,7 @@
         '$state',
         'mapService',
         'mapFactory',
-        'deliveryPointService',
+        'coordinatesService',
         'roadLinkGuidService',
         'accessLinkCoordinatesService',
         'intersectionPointService',
@@ -22,7 +22,7 @@ function AccessLinkController(
     $state,
     mapService,
     mapFactory,
-    deliveryPointService,
+    coordinatesService,
     roadLinkGuidService,
     accessLinkCoordinatesService,
     intersectionPointService,
@@ -49,7 +49,7 @@ function AccessLinkController(
         var accessLink = null;
 
         var accessLinkDTO = {
-            "OperationalObjectPoint": JSON.stringify(deliveryPointService.getCordinates()),
+            "OperationalObjectPoint": JSON.stringify(coordinatesService.getCordinates()),
             "AccessLinkLine": JSON.stringify(accessLinkCoordinatesService.getCordinates()),
             "NetworkLinkGUID": roadLinkGuidService.getRoadLinkGuid(),
             "OperationalObjectGUID": guidService.getGuid(),
@@ -67,7 +67,7 @@ function AccessLinkController(
 
     function accessLink() {
         var accessLinkManualCreateModelDTO = {
-            "OperationalObjectPoint": JSON.stringify(deliveryPointService.getCordinates()),
+            "OperationalObjectPoint": JSON.stringify(coordinatesService.getCordinates()),
             "AccessLinkLine": JSON.stringify(accessLinkCoordinatesService.getCordinates()),
             "NetworkLinkGUID": roadLinkGuidService.getRoadLinkGuid(),
             "OperationalObjectGUID": guidService.getGuid(),

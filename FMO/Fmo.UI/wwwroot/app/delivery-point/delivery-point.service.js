@@ -6,7 +6,9 @@ deliveryPointService.$inject = [
     '$filter',
     '$q',
     'deliveryPointAPIService',
+    'guidService',
     '$mdDialog',
+    '$state',
     'mapFactory'
 ];
 
@@ -15,8 +17,12 @@ function deliveryPointService(
     $filter,
     $q,
     deliveryPointAPIService,
+    guidService,
     $mdDialog,
+    $state,
     mapFactory) {
+    vm = this;
+    vm.positionedDeliveryPointList = [];
 
     return {
         initialize: initialize,
@@ -125,9 +131,11 @@ function deliveryPointService(
     }
 
     function UpdateDeliverypoint(positionedDeliveryPointList) {
+        vm.positionedDeliveryPointList = positionedDeliveryPointList;
         deliveryPointAPIService.UpdateDeliverypoint(positionedDeliveryPointList[0]).then(function (result) {
             mapFactory.setAccessLink();
             mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
+            guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
         });
     }

@@ -11,6 +11,7 @@ DeliveryPointController.$inject = [
         '$filter',
         'mapFactory',
         'coordinatesService',
+        'guidService',
         '$state',
         '$stateParams',
         'deliveryPointService'];
@@ -24,6 +25,7 @@ function DeliveryPointController(
     $filter,
     mapFactory,
     coordinatesService,
+    guidService,
     $state,
     $stateParams,
     deliveryPointService
@@ -206,6 +208,7 @@ function DeliveryPointController(
             if (response.message && response.message == "Delivery Point created successfully") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
                 mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
+                guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
                 vm.closeWindow();
             }
