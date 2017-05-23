@@ -250,20 +250,27 @@ namespace Fmo.BusinessServices.Services
 
             await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO).ContinueWith(t =>
              {
-                 if (t.Result > 0)
+                 if (!t.IsFaulted)
                  {
-                     var referenceDataCategoryList =
-                         referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
-                         {
+                     if (t.Result > 0)
+                     {
+                         var referenceDataCategoryList =
+                             referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
+                             {
                              ReferenceDataCategoryNames.OperationalObjectType
-                         });
+                             });
 
-                     var deliveryOperationObjectTypeId = referenceDataCategoryList
-                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
-                         .SelectMany(x => x.ReferenceDatas)
-                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
+                         var deliveryOperationObjectTypeId = referenceDataCategoryList
+                             .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                             .SelectMany(x => x.ReferenceDatas)
+                             .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-                     accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                         accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                     }
+                 }
+                 else
+                 {
+                     t.Exception.Flatten().fo
                  }
              });
 

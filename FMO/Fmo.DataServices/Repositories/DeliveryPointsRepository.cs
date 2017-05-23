@@ -296,6 +296,7 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
+                throw new NotSupportedException("mY eRROR");
                 int updateCount = default(int);
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
