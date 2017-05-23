@@ -1,5 +1,5 @@
 angular.module('deliveryPoint')
-    .service('deliveryPointService', function () {
+    .service('coordinatesService', function () {
 
         var coordinates = '';
         return {

@@ -6,7 +6,7 @@ mapService.$inject = ['$http',
                      'mapStylesFactory',
                      '$timeout',
                      'GlobalSettings',
-                     'deliveryPointService',
+                     'coordinatesService',
                      'roadLinkGuidService',
                      'accessLinkCoordinatesService',
                      'intersectionPointService',
@@ -20,7 +20,7 @@ function mapService($http,
                     mapStylesFactory,
                     $timeout,
                     GlobalSettings,
-                    deliveryPointService,
+                    coordinatesService,
                     roadLinkGuidService,
                     accessLinkCoordinatesService,
                     intersectionPointService,
@@ -448,7 +448,7 @@ function mapService($http,
                                  geometry = new ol.geom.LineString(null);
         }
 
-       var dpCoordinates = deliveryPointService.getCordinates();
+       var dpCoordinates = coordinatesService.getCordinates();
         coordinates[0] = dpCoordinates;
         geometry.setCoordinates(coordinates);
         return geometry;
@@ -548,7 +548,7 @@ function mapService($http,
 			function (evt) {
 			    evt.feature.set("type", "deliverypoint");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
-			    deliveryPointService.setCordinates(coordinates);
+			    coordinatesService.setCordinates(coordinates);
 
 			    });
                          }
