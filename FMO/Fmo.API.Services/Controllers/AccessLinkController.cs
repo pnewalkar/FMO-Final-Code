@@ -29,9 +29,10 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [Route("GetAccessLinks")]
         [HttpGet]
-        public string GetAccessLinks(string boundaryBox)
+        public IActionResult GetAccessLinks(string boundaryBox)
         {
-            return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+            string accessLink = accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+            return Ok(accessLink);
         }
 
         /// <summary>
@@ -41,9 +42,10 @@ namespace Fmo.API.Services.Controllers
         /// <param name="operationalObjectTypeId">Operational Object type unique identifier.</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
         [HttpPost("Create")]
-        public bool CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
+        public IActionResult CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
-            return accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
+            bool isSaved = accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
+            return Ok(isSaved);
         }
 
         /// <summary>
@@ -52,8 +54,13 @@ namespace Fmo.API.Services.Controllers
         ///<param name="accessLinkDto">access link object to be stored</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
         [HttpPost("Create")]
-        public bool CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
+        public IActionResult CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             accessLinkDto = new AccessLinkManualCreateModelDTO
             {
                 AccessLinkLine = "LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)",
@@ -63,7 +70,8 @@ namespace Fmo.API.Services.Controllers
                 OperationalObject_GUID = Guid.NewGuid(),
             };
 
-            return accessLinkBussinessService.CreateAccessLink(accessLinkDto);
+            bool isSaved = accessLinkBussinessService.CreateAccessLink(accessLinkDto);
+            return Ok(isSaved);
         }
     }
 }

@@ -31,12 +31,17 @@ namespace Fmo.API.Services.Controllers
         /// <returns>List of Role Access Dto</returns>
         // POST api/values
         [HttpPost("RoleActions")]
-        public async Task<List<RoleAccessDTO>> RoleActions([FromBody]UserUnitInfoDTO userUnitInfoDto)
+        public async Task<IActionResult> RoleActions([FromBody]UserUnitInfoDTO userUnitInfoDto)
         {
             try
             {
-                var roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
-                return roleAccessDto;
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                List<RoleAccessDTO> roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+                return Ok(roleAccessDto);
             }
             catch (AggregateException ae)
             {

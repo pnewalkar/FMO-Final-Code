@@ -22,9 +22,12 @@ namespace Fmo.API.Services
                 options.Map<ArgumentNullException>(HttpStatusCode.BadRequest);
                 options.Map<KeyNotFoundException>(HttpStatusCode.NotFound);
                 options.Map<NotSupportedException>(HttpStatusCode.InternalServerError);
+                options.Map<SystemException>(HttpStatusCode.InternalServerError);
+                options.Map<ApplicationException>(HttpStatusCode.InternalServerError);
                 options.Map<ObjectDisposedException>(HttpStatusCode.RequestedRangeNotSatisfiable);
                 options.Map<InvalidOperationException>(HttpStatusCode.BadRequest);
-                options.Map<SystemException>(HttpStatusCode.InternalServerError);
+                options.Map<UnauthorizedAccessException>(HttpStatusCode.Unauthorized);
+
                 options.Map<ServiceException>(HttpStatusCode.BadRequest);
                 options.Map<DataAccessException>(HttpStatusCode.NotAcceptable);
                 options.Map<DbConcurrencyException>(HttpStatusCode.Conflict);

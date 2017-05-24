@@ -29,10 +29,11 @@ namespace Fmo.API.Services.Controllers
         /// <returns>List</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("FetchDeliveryRoute")]
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
+        public IActionResult FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             var unitGuid = this.CurrentUserUnit;
-            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, unitGuid);
+            List<DeliveryRouteDTO> deliveryRoutes =  deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, unitGuid);
+            return Ok(deliveryRoutes);
         }
 
         /// <summary>
@@ -40,9 +41,10 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <returns>List</returns>
         [HttpGet("RouteLogsStatus")]
-        public List<ReferenceDataDTO> RouteLogsStatus()
+        public IActionResult RouteLogsStatus()
         {
-            return deliveryRouteBusinessService.FetchRouteLogStatus();
+            List<ReferenceDataDTO> referenceDatas = deliveryRouteBusinessService.FetchRouteLogStatus();
+            return Ok(referenceDatas);
         }
 
         /// <summary>
@@ -50,9 +52,10 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <returns>List</returns>
         [HttpGet("RouteLogsSelectionType")]
-        public List<ReferenceDataDTO> RouteLogsSelectionType()
+        public IActionResult RouteLogsSelectionType()
         {
-            return deliveryRouteBusinessService.FetchRouteLogSelectionType();
+            List<ReferenceDataDTO> referenceDatas = deliveryRouteBusinessService.FetchRouteLogSelectionType();
+            return Ok(referenceDatas);
         }
 
         /// <summary>
@@ -63,9 +66,10 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("FetchDeliveryScenario")]
-        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
+        public IActionResult FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {
-            return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
+            List<ScenarioDTO> deliveryScenarios = deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
+            return Ok(deliveryScenarios);
         }
 
         /// <summary>
@@ -75,9 +79,18 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryRoute/{deliveryRouteId}")]
-        public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsForPdf(Guid deliveryRouteId)
+        public async Task<IActionResult> GetDeliveryRouteDetailsForPdf(Guid deliveryRouteId)
         {
-            return await deliveryRouteBusinessService.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, CurrentUserUnit);
+            try
+            {
+                DeliveryRouteDTO deliveryRoute = await deliveryRouteBusinessService.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, CurrentUserUnit);
+                return Ok(deliveryRoute);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
 
         /// <summary>
@@ -87,9 +100,18 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("routelog/summary")]
-        public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        public async Task<IActionResult> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
         {
-            return await deliveryRouteBusinessService.GenerateRouteLog(deliveryRouteDto, CurrentUserUnit);
+            try
+            {
+                byte[] bytes = await deliveryRouteBusinessService.GenerateRouteLog(deliveryRouteDto, CurrentUserUnit);
+                return Ok(bytes);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
     }
 }

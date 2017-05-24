@@ -32,12 +32,21 @@ namespace Fmo.API.Services.Controllers
         /// <param name="lstAddressDetails">List of posatl address DTO</param>
         /// <returns></returns>
         [HttpPost("SaveAddressdetails/{strFileName}")]
-        public bool SaveAddressdetails(string strFileName, [FromBody]List<PostalAddressDTO> lstAddressDetails)
+        public IActionResult SaveAddressdetails(string strFileName, [FromBody] List<PostalAddressDTO> lstAddressDetails)
         {
+            bool isSaved = false;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (lstAddressDetails != null && lstAddressDetails.Count > 0)
-                return businessService.SavePostalAddress(lstAddressDetails, strFileName);
-            else
-                return false;
+            {
+                isSaved = businessService.SavePostalAddress(lstAddressDetails, strFileName);
+                return Ok(isSaved);
+            }
+
+            return Ok(isSaved);
         }
 
         /// <summary>
@@ -48,9 +57,18 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("SearchAddressdetails")]
        // [HttpGet("postaladdress/search/{searchText}")]
-        public async Task<List<string>> SearchAddressdetails(string searchText)
+        public async Task<IActionResult> SearchAddressdetails(string searchText)
         {
-            return await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
+            try
+            {
+                List<string> postalAddressList = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
+                return Ok(postalAddressList);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
 
         /// <summary>
@@ -61,9 +79,18 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("GetAddressByPostCode")]
        // [HttpGet("postaladdress/filter/{postcode: string}")]
-        public async Task<PostalAddressDTO> GetAddressByPostCode(string selectedItem)
+        public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
         {
-            return await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+            try
+            {
+                PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+                return Ok(postalAddressDto);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
 
         /// <summary>
@@ -74,9 +101,10 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("GetPostalAddressByGuid")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         //[HttpGet("postaladdress/filter/{addressGuid: guid}")]
-        public PostalAddressDTO GetPostalAddressByGuid(Guid addressGuid)
+        public IActionResult GetPostalAddressByGuid(Guid addressGuid)
         {
-            return businessService.GetPostalAddressDetails(addressGuid);
+            PostalAddressDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
+            return Ok(postalAddressDto);
         }
     }
 }

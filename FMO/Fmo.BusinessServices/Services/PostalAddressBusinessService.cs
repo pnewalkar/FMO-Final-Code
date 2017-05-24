@@ -209,21 +209,8 @@ namespace Fmo.BusinessServices.Services
         public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
-            try
-            {
-                return await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
-                throw;
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            }
+            return await addressRepository.GetPostalAddressSearchDetails(searchText, unitGuid);
         }
 
         /// <summary>
@@ -237,39 +224,33 @@ namespace Fmo.BusinessServices.Services
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
-            try
+            List<BindingEntity> nybDetails = new List<BindingEntity>();
+            PostalAddressDTO postalAddressDto = null;
+            var postalAddressDetails = await addressRepository.GetPostalAddressDetails(selectedItem, unitGuid);
+            Guid nybAddressTypeId =
+                refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
+            if (postalAddressDetails != null && postalAddressDetails.Count > 0)
             {
-                List<BindingEntity> nybDetails = new List<BindingEntity>();
-                PostalAddressDTO postalAddressDto = null;
-                var postalAddressDetails = await addressRepository.GetPostalAddressDetails(selectedItem, unitGuid);
-                Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
-                if (postalAddressDetails != null && postalAddressDetails.Count > 0)
+                postalAddressDto = postalAddressDetails[0];
+                foreach (var postalAddress in postalAddressDetails)
                 {
-                    postalAddressDto = postalAddressDetails[0];
-                    foreach (var postalAddress in postalAddressDetails)
+                    if (postalAddress.AddressType_GUID == nybAddressTypeId)
                     {
-                        if (postalAddress.AddressType_GUID == nybAddressTypeId)
-                        {
-                            string address = string.Join(",", Convert.ToString(postalAddress.BuildingNumber) ?? string.Empty, postalAddress.BuildingName, postalAddress.SubBuildingName);
-                            string formattedAddress = Regex.Replace(address, ",+", ",").Trim(',');
-                            nybDetails.Add(new BindingEntity { Value = postalAddress.ID, DisplayText = formattedAddress });
-                        }
+                        string address = string.Join(",",
+                            Convert.ToString(postalAddress.BuildingNumber) ?? string.Empty, postalAddress.BuildingName,
+                            postalAddress.SubBuildingName);
+                        string formattedAddress = Regex.Replace(address, ",+", ",").Trim(',');
+                        nybDetails.Add(new BindingEntity {Value = postalAddress.ID, DisplayText = formattedAddress});
                     }
-                    nybDetails.OrderBy(n => n.DisplayText);
-                    nybDetails.Add(new BindingEntity { Value = Guid.Empty, DisplayText = "Not Shown" });
-                    postalAddressDto.NybAddressDetails = nybDetails;
                 }
+                nybDetails.OrderBy(n => n.DisplayText);
+                nybDetails.Add(new BindingEntity {Value = Guid.Empty, DisplayText = "Not Shown"});
+                postalAddressDto.NybAddressDetails = nybDetails;
+            }
 
-                return postalAddressDto;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            }
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+
+            return postalAddressDto;
         }
 
         /// <summary>
@@ -279,22 +260,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>Postal Address DTO</returns>
         public PostalAddressDTO GetPostalAddressDetails(Guid id)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-
-            try
-            {
-                return addressRepository.GetPostalAddressDetails(id);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
-                throw;
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            }
+            return addressRepository.GetPostalAddressDetails(id);
         }
 
         /// <summary>
@@ -304,17 +270,9 @@ namespace Fmo.BusinessServices.Services
         /// <returns>string</returns>
         public string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
         {
-            try
-            {
                 string postCode = string.Empty;
                 postCode = addressRepository.CheckForDuplicateNybRecords(objPostalAddress);
                 return postCode;
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogInfo(ex.ToString());
-                throw ex;
-            }
         }
 
         /// <summary>
@@ -324,15 +282,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>bool</returns>
         public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
         {
-            try
-            {
-                return addressRepository.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogInfo(ex.ToString());
-                throw ex;
-            }
+            return addressRepository.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
         }
 
         /// <summary>
@@ -340,17 +290,9 @@ namespace Fmo.BusinessServices.Services
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-       public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            try
-            {
-                return addressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogInfo(ex.ToString());
-                throw ex;
-            }
+            return addressRepository.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
         }
 
         #endregion public methods
