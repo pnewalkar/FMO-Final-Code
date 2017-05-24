@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using Fmo.Common.Interface;
+using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace Fmo.Common.LoggingManagement
@@ -15,14 +16,11 @@ namespace Fmo.Common.LoggingManagement
         private static LogWriter logWriter = null;
 
         public LoggingHelper()
-        {
-            if (!Directory.Exists(ConfigurationManager.AppSettings["LogFilePath"]))
-            {
-                Directory.CreateDirectory(ConfigurationManager.AppSettings["LogFilePath"]);
-            }
+        {          
 
-            LoggingConfiguration loggingConfiguration = LoggingConfig.BuildProgrammaticConfig();
-            logWriter = new LogWriter(loggingConfiguration);
+            IConfigurationSource source = ConfigurationSourceFactory.Create();
+            LogWriterFactory log = new LogWriterFactory(source);
+            logWriter = log.Create();
             Logger.SetLogWriter(logWriter, false);
         }
 

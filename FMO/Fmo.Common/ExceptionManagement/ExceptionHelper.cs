@@ -4,6 +4,7 @@ using System.IO;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
 using Fmo.Common.LoggingManagement;
+using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 
@@ -19,14 +20,12 @@ namespace Fmo.Common.ExceptionManagement
         public ExceptionHelper()
         {
             if (!isInitialized)
-            {
-                if (!Directory.Exists(ConfigurationManager.AppSettings["LogFilePath"]))
-                {
-                    Directory.CreateDirectory(ConfigurationManager.AppSettings["LogFilePath"]);
-                }
+            {               
 
-                LoggingConfiguration loggingConfiguration = LoggingConfig.BuildProgrammaticConfig();
-                LogWriter logWriter = new LogWriter(loggingConfiguration);
+                IConfigurationSource source = ConfigurationSourceFactory.Create();
+                LogWriterFactory log = new LogWriterFactory(source);
+                LogWriter logWriter = log.Create();
+                Logger.SetLogWriter(logWriter, false);
                 ExceptionManager exceptionManager = ExceptionHandlingConfiguration.BuildExceptionHandlingConfiguration(logWriter);
                 ExceptionPolicy.SetExceptionManager(exceptionManager);
                 isInitialized = true;

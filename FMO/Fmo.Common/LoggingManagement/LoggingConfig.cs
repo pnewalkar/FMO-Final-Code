@@ -12,37 +12,37 @@ namespace Fmo.Common.LoggingManagement
     /// <summary>
     /// Logging configuration
     /// </summary>
-    public static class LoggingConfig
-    {
-        /// <summary>
-        /// Builds Programmatic Configuration for Logging
-        /// </summary>
-        /// <returns>LoggingConfiguration</returns>
-        public static LoggingConfiguration BuildProgrammaticConfig()
-        {
-            ResourceManager resxManager = new ResourceManager(ConfigurationManager.AppSettings["FmoMessages_ResourceFileName"], Assembly.GetExecutingAssembly());
+    //public static class LoggingConfig
+    //{
+    //    /// <summary>
+    //    /// Builds Programmatic Configuration for Logging
+    //    /// </summary>
+    //    /// <returns>LoggingConfiguration</returns>
+    //    public static LoggingConfiguration BuildProgrammaticConfig()
+    //    {
+    //        ResourceManager resxManager = new ResourceManager(ConfigurationManager.AppSettings["FmoMessages_ResourceFileName"], Assembly.GetExecutingAssembly());
 
-            // Formatters
-            TextFormatter formatter = new TextFormatter(resxManager.GetString("Logging_TextFormat", CultureInfo.CurrentCulture));
+    //        // Formatters
+    //        TextFormatter formatter = new TextFormatter(resxManager.GetString("Logging_TextFormat", CultureInfo.CurrentCulture));
 
-            // Listeners
-            // var flatFileTraceListener = new FlatFileTraceListener(string.Concat(ConfigurationManager.AppSettings["LogFilePath"], ConfigurationManager.AppSettings["ErrorLogFileName"]), "----------------------------------------", "----------------------------------------", formatter);
-            var rollingFlatFileTraceListener = new RollingFlatFileTraceListener(string.Concat(ConfigurationManager.AppSettings["LogFilePath"], ConfigurationManager.AppSettings["ErrorLogFileName"]), "----------------------------------------", "----------------------------------------", formatter, 20, "yyyy-MM-dd", RollFileExistsBehavior.Increment, RollInterval.None, 3);
+    //        // Listeners
+    //        // var flatFileTraceListener = new FlatFileTraceListener(string.Concat(ConfigurationManager.AppSettings["LogFilePath"], ConfigurationManager.AppSettings["ErrorLogFileName"]), "----------------------------------------", "----------------------------------------", formatter);
+    //        var rollingFlatFileTraceListener = new RollingFlatFileTraceListener(string.Concat(ConfigurationManager.AppSettings["LogFilePath"], ConfigurationManager.AppSettings["ErrorLogFileName"]), "----------------------------------------", "----------------------------------------", formatter, 20, "yyyy-MM-dd", RollFileExistsBehavior.Increment, RollInterval.None, 3);
 
-            var eventLog = new EventLog(resxManager.GetString("Logging_LogName"), ".", resxManager.GetString("Logging_LogSource"));
-            var eventLogTraceListener = new FormattedEventLogTraceListener(eventLog);
+    //        var eventLog = new EventLog(resxManager.GetString("Logging_LogName"), ".", resxManager.GetString("Logging_LogSource"));
+    //        var eventLogTraceListener = new FormattedEventLogTraceListener(eventLog);
 
-            // Build Configuration
-            var config = new LoggingConfiguration();
-            config.AddLogSource(resxManager.GetString("LogSource_LogSourceName"), SourceLevels.All, true).AddTraceListener(eventLogTraceListener);
+    //        // Build Configuration
+    //        var config = new LoggingConfiguration();
+    //        config.AddLogSource(resxManager.GetString("LogSource_LogSourceName"), SourceLevels.All, true).AddTraceListener(eventLogTraceListener);
 
-            // config.LogSources["General"].AddTraceListener(flatFileTraceListener);
-            config.LogSources[resxManager.GetString("LogSource_LogSourceName")].AddTraceListener(rollingFlatFileTraceListener);
+    //        // config.LogSources["General"].AddTraceListener(flatFileTraceListener);
+    //        config.LogSources[resxManager.GetString("LogSource_LogSourceName")].AddTraceListener(rollingFlatFileTraceListener);
 
-            // Special Sources Configuration
-            config.SpecialSources.LoggingErrorsAndWarnings.AddTraceListener(eventLogTraceListener);
+    //        // Special Sources Configuration
+    //        config.SpecialSources.LoggingErrorsAndWarnings.AddTraceListener(eventLogTraceListener);
 
-            return config;
-        }
-    }
+    //        return config;
+    //    }
+    //}
 }
