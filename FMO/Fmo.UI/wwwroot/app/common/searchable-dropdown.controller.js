@@ -1,22 +1,20 @@
 ﻿angular
      .module('reusableComponent')
      .controller("CustomSearchableDropdownController", CustomSearchableDropdownController);
-function CustomSearchableDropdownController() {
+
+CustomSearchableDropdownController.$inject = [
+    '$state'
+];
+
+function CustomSearchableDropdownController($state) {
     var vm = this;
     vm.clearSearchTerm = clearSearchTerm;
-    vm.selectionChange = selectionChange;
+    vm.onChange = onChange;
     function clearSearchTerm() {
-        debugger;
         vm.searchTerm = "";
     }
 
-    function selectionChange() {
-        debugger;
-        var item = vm.selectedRoute;
-        vm.selectedRoute = item;
-       
-      //  vm.selectionChanged();
-        vm.selectionChanged({ selectedRoute: vm.selectedRoute });
+    function onChange() {
+        vm.selectionChanged();
     }
- 
 }
