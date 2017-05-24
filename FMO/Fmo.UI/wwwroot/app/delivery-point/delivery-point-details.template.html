@@ -27,21 +27,36 @@
             <input type="text" value="{{vm.selectedDeliveryPoint.BuildingNameWithSubBuildingName}}">
         </md-input-container>
     </div>
+
     <div layout="row">
         <md-input-container ng-show="vm.selectedDeliveryPoint.postcode != null && vm.selectedDeliveryPoint.postcode != undefined && vm.selectedDeliveryPoint.postcode.length != 0">
             <label>{{ 'DELIVERY_POINTS.POST_CODE' | translate}}</label>
             <input type="text" value="{{vm.selectedDeliveryPoint.postcode}}">
         </md-input-container>
-                    
-        <!--<md-input-container>
+
+        <md-input-container flex="50" ng-show="vm.selectedDeliveryPoint.routeName != null && vm.selectedDeliveryPoint.routeName != undefined && vm.selectedDeliveryPoint.routeName.length != 0">
             <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-            <md-select name="route"> 
-                <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
-                    Route
-                </md-option>
-            </md-select>    
-        </md-input-container>-->
-    </div>            
+            <md-select name="routeName" ng-model="vm.selectedDeliveryPoint.routeName" ng-disabled="true">
+                <md-option ng-repeat="route in vm.selectedDeliveryPoint.routeName" ng-value="route" 
+                           ng-selected="{{vm.selectedDeliveryPoint.routeName[0] === route}}">
+                    {{route}}
+                </md-option>               
+            </md-select>           
+        </md-input-container>
+    </div>
+
+    <div layout="row">
+        <md-input-container ng-show="vm.selectedDeliveryPoint.organisationName != null && vm.selectedDeliveryPoint.organisationName != undefined && vm.selectedDeliveryPoint.organisationName.length != 0">
+            <label>Organisation Name</label>
+            <input type="text" value="{{vm.selectedDeliveryPoint.organisationName}}">
+        </md-input-container>
+
+        <md-input-container ng-show="vm.selectedDeliveryPoint.departmentName != null && vm.selectedDeliveryPoint.departmentName != undefined && vm.selectedDeliveryPoint.departmentName.length != 0">
+            <label>Department Name</label>
+            <input type="text" value="{{vm.selectedDeliveryPoint.departmentName}}">
+        </md-input-container>
+    </div>
+   
     <div layout="row">
         <md-input-container ng-show="vm.selectedDeliveryPoint.multipleOccupancyCount != null && vm.selectedDeliveryPoint.multipleOccupancyCount != undefined && vm.selectedDeliveryPoint.multipleOccupancyCount.length != 0">
             <label>{{ 'DELIVERY_POINTS.MULTI_OCC' | translate}}</label>

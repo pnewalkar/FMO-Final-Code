@@ -682,7 +682,7 @@ vm.miniMap.updateSize() }, 10);
                            {
                                if (response[i].key == CommonConstants.RouteName)
                                {
-                                   deliveryPointDetails.routeName = response[i].value;
+                                   deliveryPointDetails.routeName = [response[i].value];
                                }                               
                                if (response[i].key == CommonConstants.DpUse)
                                {

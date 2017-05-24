@@ -6,6 +6,7 @@ namespace Fmo.DataServices.Tests.Repositories
     using System.Data.Entity.Spatial;
     using Common.AsyncEnumerator;
     using Common.Interface;
+    using DTO;
     using Fmo.Common.TestSupport;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -29,6 +30,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private Guid user1Id;
         private Guid user2Id;
         private Mock<ILoggingHelper> mockLoggingHelper;
+        private List<ReferenceDataCategoryDTO> referenceDataCategoryDTO;
 
         [Test]
         public void Test_GetDeliveryPoints()
@@ -55,6 +57,15 @@ namespace Fmo.DataServices.Tests.Repositories
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 1);
             Assert.IsTrue(actualResult[0] == "Primary - test_route");
+        }
+
+        [Test]
+        public void Test_GetDPUse()
+        {
+            GetRouteForDeliveryPointSetup();
+            var actualResult = testCandidate.GetDPUse(referenceDataCategoryDTO, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult == "Organisation");
         }
 
         protected override void OnSetup()
@@ -155,6 +166,15 @@ namespace Fmo.DataServices.Tests.Repositories
             var deliveryRoutes = new List<DeliveryRoute>()
             {
                 new DeliveryRoute() { ID = new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13"), RouteName = "test_route" }
+            };
+
+            referenceDataCategoryDTO = new List<ReferenceDataCategoryDTO>()
+            {
+                new ReferenceDataCategoryDTO()
+                {
+                    CategoryName = "DeliveryPoint Use Indicator",
+                    ReferenceDatas = new List<ReferenceDataDTO>() { new ReferenceDataDTO() { ReferenceDataValue = "Residential" }, new ReferenceDataDTO() { ReferenceDataValue = "Organisation" } }
+                }
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
