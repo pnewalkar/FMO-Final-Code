@@ -25,7 +25,8 @@
     "Newtonsoft.Json": "10.0.2",
     "System.IdentityModel.Tokens.Jwt": "5.1.3",
     "System.Net.Http": "4.3.0",
-    "Microsoft.SqlServer.Types": "14.0.314.76"
+    "Microsoft.SqlServer.Types": "14.0.314.76",
+    "EnterpriseLibrary.Logging": "6.0.1304"
   },
 
   "tools": {

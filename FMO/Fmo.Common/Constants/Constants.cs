@@ -51,6 +51,7 @@
         public const string DefaultLoggingCategory = "General";
         public const int DefaultLoggingPriority = 0;
         public const int DefaultLoggingEventId = 0;
+        public const string DefaultLoggingTitle = "";
         #endregion Common
 
         #region NYB

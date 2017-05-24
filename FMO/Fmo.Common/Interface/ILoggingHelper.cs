@@ -1,9 +1,15 @@
 ﻿using System;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace Fmo.Common.Interface
 {
     public interface ILoggingHelper
     {
+        /// <summary>
+        /// Gets trace manager.
+        /// </summary>
+        TraceManager FmoTraceManager { get; }
+
         /// <summary>
         /// Logs Exception.
         /// </summary>
@@ -11,7 +17,8 @@ namespace Fmo.Common.Interface
         /// <param name="category">Category</param>
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
-        void LogError(Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+        /// <param name="title">Title</param>
+        void LogError(Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId, string title = Constants.Constants.DefaultLoggingTitle);
 
         /// <summary>
         /// Logs Exception
@@ -21,7 +28,8 @@ namespace Fmo.Common.Interface
         /// <param name="category">Category</param>
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
-        void LogError(string message, Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+        /// <param name="title">Title</param>
+        void LogError(string message, Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId, string title = Constants.Constants.DefaultLoggingTitle);
 
         /// <summary>
         /// Logs Information
@@ -30,7 +38,8 @@ namespace Fmo.Common.Interface
         /// <param name="category">Category</param>
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
-        void LogInfo(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+        /// <param name="title">Title</param>
+        void LogInfo(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId, string title = Constants.Constants.DefaultLoggingTitle);
 
         /// <summary>
         /// Logs Warning
@@ -39,7 +48,8 @@ namespace Fmo.Common.Interface
         /// <param name="category">Category</param>
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
-        void LogWarn(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+        /// <param name="title">Title</param>
+        void LogWarn(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId, string title = Constants.Constants.DefaultLoggingTitle);
 
         /// <summary>
         /// Logs Verbose.
@@ -48,7 +58,8 @@ namespace Fmo.Common.Interface
         /// <param name="category">Category</param>
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
-        void LogDebug(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+        /// <param name="title">Title</param>
+        void LogDebug(string message, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId, string title = Constants.Constants.DefaultLoggingTitle);
 
         /// <summary>
         /// Logs fatal Error
@@ -57,7 +68,8 @@ namespace Fmo.Common.Interface
         /// <param name="category">Category</param>
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
-        void LogFatalError(Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+        /// <param name="title">Title</param>
+        void LogFatalError(Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId, string title = Constants.Constants.DefaultLoggingTitle);
 
         /// <summary>
         /// Logs fatal Error
@@ -67,6 +79,7 @@ namespace Fmo.Common.Interface
         /// <param name="category">Category</param>
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
-        void LogFatalError(string message, Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId);
+        /// <param name="title">Title</param>
+        void LogFatalError(string message, Exception exception, string category = Constants.Constants.DefaultLoggingCategory, int priority = Constants.Constants.DefaultLoggingPriority, int eventId = Constants.Constants.DefaultLoggingEventId, string title = Constants.Constants.DefaultLoggingTitle);
     }
 }

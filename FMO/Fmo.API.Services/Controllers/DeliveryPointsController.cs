@@ -74,7 +74,17 @@ namespace Fmo.API.Services.Controllers
         [HttpPost]
         public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
         {
-            return businessService.CreateDeliveryPoint(deliveryPointDto);
+            using (loggingHelper.FmoTraceManager.StartTrace("Controller.AddDeliveryPoint"))
+            {
+                CreateDeliveryPointModelDTO createDeliveryPointModelDTO = null;
+                loggingHelper.LogInfo("Method AddDeliveryPoint entered", "General", 8, 9013, "Trace Log");
+
+                createDeliveryPointModelDTO = businessService.CreateDeliveryPoint(deliveryPointDto);
+
+                loggingHelper.LogInfo("Method AddDeliveryPoint exited", "General", 8, 9014, "Trace Log");
+
+                return createDeliveryPointModelDTO;
+            }
         }
 
         /// <summary>
