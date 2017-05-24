@@ -1,8 +1,9 @@
 @import './app/variables';
 
 .brandName{
-    @extend %header-content;
-    font-size: 24px !important;
+ @extend %header-content;
+font-size: 30px !important;
+  font-weight: bold !important;
 }
 
 .fa-inbox{
@@ -57,10 +58,8 @@ h1{
     font-family: 'Chevin';
     src:  url('../fonts/Chevin/Chevin_Light.eot');
     src:  url('../fonts/Chevin/Chevin_Light.eot?#iefix') format('embedded-opentype'),
-          url('../fonts/Chevin/Chevin_Light.svg') format('svg'),
           url('../fonts/Chevin/Chevin_Light.ttf') format('truetype'),
-          url('../fonts/Chevin/Chevin_Light.woff') format('woff'),
-          url('../fonts/Chevin/Chevin_Light.woff2') format('woff2');
+          url('../fonts/Chevin/Chevin_Light.woff') format('woff');
     font-weight: 300;
 }
 
@@ -69,10 +68,8 @@ h1{
     font-family: 'Chevin';
     src:  url('../fonts/Chevin/Chevin_Medium.eot');
     src:  url('../fonts/Chevin/Chevin_Medium.eot?#iefix') format('embedded-opentype'),
-          url('../fonts/Chevin/Chevin_Medium.svg') format('svg'),
           url('../fonts/Chevin/Chevin_Medium.ttf') format('truetype'),
-          url('../fonts/Chevin/Chevin_Medium.woff') format('woff'),
-          url('../fonts/Chevin/Chevin_Medium.woff2') format('woff2');
+          url('../fonts/Chevin/Chevin_Medium.woff') format('woff');
     font-weight:normal;
 }
 
@@ -81,10 +78,8 @@ h1{
     font-family: 'Chevin';
     src:  url('../fonts/Chevin/Chevin_Bold.eot');
     src:  url('../fonts/Chevin/Chevin_Bold.eot?#iefix') format('embedded-opentype'),
-          url('../fonts/Chevin/Chevin_Bold.svg') format('svg'),
           url('../fonts/Chevin/Chevin_Bold.ttf') format('truetype'),
-          url('../fonts/Chevin/Chevin_Bold.woff') format('woff'),
-          url('../fonts/Chevin/Chevin_Bold.woff2') format('woff2');
+          url('../fonts/Chevin/Chevin_Bold.woff') format('woff');
     font-weight: bold;
 }
 
