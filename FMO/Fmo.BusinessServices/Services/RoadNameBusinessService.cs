@@ -33,22 +33,17 @@ namespace Fmo.BusinessServices.Services
         /// <returns>RoadLink object</returns>
         public string GetRoadRoutes(string boundarybox, Guid uniGuid)
         {
-            try
-            {
-                string roadLinkJsonData = null;
+            string roadLinkJsonData = null;
 
-                if (!string.IsNullOrEmpty(boundarybox))
-                {
-                    var boundingBoxCoordinates = GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]));
-                    roadLinkJsonData = GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
-                }
-
-                return roadLinkJsonData;
-            }
-            catch (Exception)
+            if (!string.IsNullOrEmpty(boundarybox))
             {
-                throw;
+                var boundingBoxCoordinates =
+                    GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]));
+                roadLinkJsonData =
+                    GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
             }
+
+            return roadLinkJsonData;
         }
 
         /// <summary>

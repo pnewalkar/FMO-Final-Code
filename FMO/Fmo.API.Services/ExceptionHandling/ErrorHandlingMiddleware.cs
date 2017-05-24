@@ -52,118 +52,62 @@ namespace Fmo.API.Services.ExceptionHandling
             }
             catch (Exception ex)
             {
-                Exception newException;
-                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                Exception wrappedException;
+                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out wrappedException);
                 if (rethrow)
                 {
-                    if (newException == null)
+                    if (wrappedException == null)
                     {
-                        //throw;
                         await HandleExceptionAsync(context, ex);
                     }
                     else
                     {
-                        //throw newException;
-                        await HandleExceptionAsync(context, newException);
+                        await HandleExceptionAsync(context, wrappedException);
                     }
                 }
                 else
                 {
-                    //throw;
                     await HandleExceptionAsync(context, ex);
                 }
-
-                await HandleExceptionAsync(context, ex);
-
-                /*
-                Exception publishedException;
-                // HandleException will log the exception as per the exception handling policy. 
-                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out publishedException);
-
-                if (context.Response.HasStarted)
-                {
-                    loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, ex);
-                }
-
-                var originalPath = context.Request.Path;
-
-                try
-                {
-                    
-                    Exception manageException = rethrow ? publishedException : ex;
-                    context.Response.Clear();
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError; // set default status code.
-                    context.Response.OnStarting(_clearCacheHeadersDelegate, context.Response);
-                    context.Response.ContentType = new MediaTypeHeaderValue("application/json").ToString();
-
-                    ExceptionResponse exceptionResponse;
-                    if (_options.Responses.TryGetValue(manageException.GetType(), out exceptionResponse))
-                    {
-                        context.Response.StatusCode = exceptionResponse.StatusCode; // Replace default status code with actual.
-
-                        await HandleExceptionAsync(context, GetExceptionResponse(manageException, exceptionResponse));
-                        loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, ex);
-                    }
-                    else
-                    {
-                        var errorCode = GenerateErrorCode(_options.ErrorCodePrefix);
-
-                        await HandleExceptionAsync(context, CreateErrorResponse(errorCode, _options.DefaultErrorMessage));
-                    }
-                   
-            }
-                catch (Exception ex2)
-                {
-                    loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, ex2);
-                }
-                finally
-                {
-                    context.Request.Path = originalPath;
-                }
-                 */
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            //HttpStatusCode code = default(HttpStatusCode);
-
-            //if (exception is EntityNotFoundException) code = HttpStatusCode.NotFound;
-            //else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
-            //else if (exception is NotImplementedException) code = HttpStatusCode.NotImplemented;
-            //else code = HttpStatusCode.InternalServerError;
-
-            ExceptionResponse exceptionResponse;
-            object response;
-            if (_options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
-            {
-                context.Response.StatusCode = exceptionResponse.StatusCode; // Replace default status code with actual.
-                //context.Response.WriteAsync(JsonConvert.SerializeObject(response, _options.SerializerSettings), Encoding.UTF8);
-                 response = GetExceptionResponse(exception, exceptionResponse);
-                //loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, ex);
-            }
-            else
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                var errorCode = GenerateErrorCode(_options.ErrorCodePrefix);
-                response = CreateErrorResponse(errorCode, _options.DefaultErrorMessage);
-            }
-
-            var result = JsonConvert.SerializeObject(response);
-            context.Response.ContentType = "application/json";
-            return context.Response.WriteAsync(result);
-        }
 
         /// <summary>
-        /// Handles the exception.  Writes exception details to response object.
+        /// Handles the exception. Writes exception details to response object.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="response">The response.</param>
+        /// <param name="exception">The exception.</param>
         /// <returns></returns>
-        //private async Task HandleExceptionAsync(HttpContext context, object response)
-        //{
-        //    await context.Response.WriteAsync(JsonConvert.SerializeObject(response, _options.SerializerSettings), Encoding.UTF8);
-        //}
+        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            try
+            {
+                ExceptionResponse exceptionResponse;
+                object response;
+                if (_options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
+                {
+                    context.Response.StatusCode = exceptionResponse.StatusCode; // Replace default status code with actual.
+                    response = GetExceptionResponse(exception, exceptionResponse);
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    var errorCode = GenerateErrorCode(_options.ErrorCodePrefix);
+                    response = CreateErrorResponse(errorCode, _options.DefaultErrorMessage);
+                }
+
+                var result = JsonConvert.SerializeObject(response, _options.SerializerSettings);
+                context.Response.ContentType = "application/json";
+                return context.Response.WriteAsync(result);
+            }
+            catch (Exception)
+            {
+                loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, exception);
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = exception.Message }));
+            }
+        }
 
         /// <summary>
         /// Gets the exception response.
@@ -188,7 +132,7 @@ namespace Fmo.API.Services.ExceptionHandling
         /// <returns></returns>
         private Error CreateErrorResponse(string message)
         {
-            return CreateErrorResponse(null, message);
+            return CreateErrorResponse(GenerateErrorCode(_options.ErrorCodePrefix), message);
         }
 
         /// <summary>
