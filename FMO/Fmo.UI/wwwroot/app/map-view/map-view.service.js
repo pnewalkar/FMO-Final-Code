@@ -515,7 +515,7 @@ function mapService($http,
                                      featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
                 var deliveryPointDetails = e.selected[0].getProperties();
-                showDeliveryPointDetails(deliveryPointDetails, deliveryPointDetails.deliveryPointId);
+                showDeliveryPointDetails(deliveryPointDetails);
                 
                              } else {
                              setSelections(null, []);
@@ -665,18 +665,10 @@ vm.miniMap.updateSize() }, 10);
         }
              }
 
-             function GetRouteForDeliveryPoint(deliveryPointId)
-             {
-                 mapFactory.GetRouteForDeliveryPoint(deliveryPointId)
-                       .then(function (response) {
-                           vm.routeName = response;
-                       });
-
-             }
-             function showDeliveryPointDetails(deliveryPointDetails, deliveryPointId)
+             function showDeliveryPointDetails(deliveryPointDetails)
              {
                  deliveryPointDetails.routeName = null;
-                 mapFactory.GetRouteForDeliveryPoint(deliveryPointId)
+                 mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
                        .then(function (response) {
                            for (i = 0; i < response.length; i++)
                            {
