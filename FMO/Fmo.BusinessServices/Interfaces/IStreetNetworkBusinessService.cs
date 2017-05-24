@@ -61,5 +61,13 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="networkLinkID">networkLink unique identifier Guid.</param>
         /// <returns>Nearest street and the intersection point.</returns>
         NetworkLinkDTO GetNetworkLink(Guid networkLinkID);
+
+        /// <summary>
+        /// This method is used to get the road links crossing the access link
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLinkCoordinates">access link coordinate array</param>
+        /// <returns>List<NetworkLinkDTO></returns>
+        List<NetworkLinkDTO> GetCrossingNetworkLinks(string boundingBoxCoordinates, DbGeometry accessLinkCoordinates);
     }
 }

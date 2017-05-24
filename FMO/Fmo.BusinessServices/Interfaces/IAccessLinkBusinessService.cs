@@ -1,6 +1,7 @@
 ﻿using System;
 using Fmo.DTO;
 using Fmo.DTO.Model;
+using System.Data.Entity.Spatial;
 
 namespace Fmo.BusinessServices.Interfaces
 {
@@ -38,5 +39,13 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="accessLinkDto">access link object to be stored</param>
         /// <returns>returns calculated path length as <double>.</true></returns>
         decimal GetAdjPathLength(AccessLinkManualCreateModelDTO accessLinkDto);
+
+        /// <summary>
+        /// This method is used to check whether an access link is valid
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLinkCoordinates">access link coordinate array</param>
+        /// <returns>bool</returns>
+        bool CheckManualAccessLinkIsValid(string boundingBoxCoordinates, string accessLinkCoordinates);
     }
 }

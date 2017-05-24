@@ -69,6 +69,33 @@
         }
 
         /// <summary>
+        /// this method is used to get the access links crossing the created access link
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLink">access link coordinate array</param>
+        /// <returns>List<AccessLinkDTO> </returns>
+        public List<AccessLinkDTO> GetAccessLinksCrossingManualAccessLink(string boundingBoxCoordinates, DbGeometry accessLink)
+        {
+            List<AccessLinkDTO> accessLinkDTOs = new List<AccessLinkDTO>();
+
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+
+            List<AccessLink> crossingAccessLinks = DataContext.AccessLinks.Where(al => al.AccessLinkLine != null && al.AccessLinkLine.Intersects(extent) && al.AccessLinkLine.Crosses(accessLink)).ToList();
+
+            List<AccessLinkDTO> crossingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDTO>(crossingAccessLinks);
+
+            accessLinkDTOs.AddRange(crossingAccessLinkDTOs);
+
+            List<AccessLink> overLappingAccessLinks = DataContext.AccessLinks.Where(al => al.AccessLinkLine != null && al.AccessLinkLine.Intersects(extent) && al.AccessLinkLine.Overlaps(accessLink)).ToList();
+
+            List<AccessLinkDTO> overLappingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDTO>(overLappingAccessLinks);
+
+            accessLinkDTOs.AddRange(overLappingAccessLinkDTOs);
+
+            return accessLinkDTOs;
+        }
+
+        /// <summary>
         /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
