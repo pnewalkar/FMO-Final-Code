@@ -14,7 +14,5 @@ md-list-item{
 
 .version{
     @extend %body-content;
-    @include font-color($black);
-    text-align: center;
-    font-size: 14px;
+    @include font-color($white);
 }

@@ -64,6 +64,7 @@ function DeliveryPointController(
     vm.display = false;
     vm.disable = true;
     vm.items = [];
+    vm.hide= $stateParams.hide;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
@@ -78,11 +79,12 @@ function DeliveryPointController(
         });
     }
 
-    function deliveryPoint() {
+    function deliveryPoint() {  
         deliveryPointService.openModalPopup(popUpSettingService.deliveryPoint());
     }
 
     function closeWindow() {
+        vm.hide = true;
         deliveryPointService.closeModalPopup();
     }
 
@@ -191,6 +193,7 @@ function DeliveryPointController(
     }
 
     function createDeliveryPoint() {
+    
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
@@ -211,11 +214,13 @@ function DeliveryPointController(
                 guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
                 vm.closeWindow();
+               
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
                 setDP();
                 vm.closeWindow();
+               
             }
             else {
                 vm.isError = true;
@@ -292,7 +297,8 @@ function DeliveryPointController(
                     vm.positionedThirdPartyDeliveryPointList = positionedThirdPartyDeliveryPointListTemp;
 
                     $state.go("deliveryPoint", {
-                        positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList
+                        positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList,
+                        hide: true
                     })
 
                     mapFactory.locateDeliveryPoint(long, lat);
@@ -310,7 +316,8 @@ function DeliveryPointController(
         }
         vm.deliveryPointList.push(deliveryPointListObj);
         $state.go("deliveryPoint", {
-            deliveryPointList: vm.deliveryPointList
+            deliveryPointList: vm.deliveryPointList,
+            hide: true
         })
 
     }

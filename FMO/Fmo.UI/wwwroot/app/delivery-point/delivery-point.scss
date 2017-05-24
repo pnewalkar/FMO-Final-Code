@@ -1,6 +1,7 @@
 @import './app/variables';
 
 .searchInputIcon {
+    height: height-percent(1);
     @include margin(20px 0px 0px 5px);
 }
 

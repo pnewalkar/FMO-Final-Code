@@ -4,78 +4,68 @@
         <h2>Advance Search</h2>
         <span flex></span>
         <md-button class="md-icon-button" ng-click="vm.closeWindow()">
-            <i class="fa fa-times" aria-hidden="true"></i>
+            <i class="fa fa-times" aria-hidden="true" title="Close Window" ></i>
         </md-button>
       </div>
     </md-toolbar>
+    <md-dialog-content layout-padding>
+            <div layout="row">
+                <div layout="column" flex="80">
+                    <md-input-container>
+                        <label>{{ 'GENERAL.SEARCH' | translate }}</label>
+                        <input type="text" ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text" />
+                    </md-input-container>
+                </div>
+                <md-button class="md-raised md-primary columnButton" flex>search</md-button>
+            </div>
+            <div class="row">
+                <md-checkbox ng-model="vm.chkRoute"    aria-label="Checkbox 1">
+                    Route
+                </md-checkbox>
+                <md-checkbox ng-model="vm.chkPostCode"  aria-label="Checkbox 1">
+                    Postcode
+                </md-checkbox>
+                <md-checkbox ng-model="vm.chkDeliveryPoint"  aria-label="Checkbox 1">
+                    Delivery Point
+                </md-checkbox>
+                <md-checkbox ng-model="ck4" ng-disabled="true" aria-label="Checkbox 1">
+                    Collection Point
+                </md-checkbox>
+                <md-checkbox ng-model="vm.chkStreetNetwork"  aria-label="Checkbox 1">
+                    Street Network
+                </md-checkbox>
+                <md-checkbox ng-model="ck6" ng-disabled="true" aria-label="Checkbox 1">
+                    Group
+                </md-checkbox>
+                <md-checkbox ng-model="ck7" ng-disabled="true" aria-label="Checkbox 1">
+                    Hazard
+                </md-checkbox>
+            </div>
+            <div layout="row">
+                <div layout-align="start start">
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleList(false)">Collapse All</md-button>
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleList(true)">Expand All</md-button>
+                </div>
+                <span flex></span>
+                <div layout-align="end start">
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(true)" >Select All</md-button>
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(false)" >Deselect All</md-button>
+                </div>
+            </div>
 
-    <md-dialog-content>
-        <div layout="row">
-            <md-input-container>
-                <input type="text" placeholder="vm.searchText" ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text" />
-            </md-input-container>
-            <md-button class="md-raised md-primary" flex="10" ng-click="">search</md-button>
-        </div>
+            <div layout="column"> 
+                 <table ng-repeat="route in vm.arrRoutes" ng-click="route.open = !route.open" class="advSecList searchTable">
+                    <tr is-open ="route.open" class="advSecItem">
+                        <th class="searchTh">
+                            <i class="fa fa-angle-right" ng-show="route.open = !route.open" aria-hidden="true"></i>
+                            <i class="fa fa-angle-down" aria-hidden="true" ng-show="route.open = !route.open"></i>
+                            {{route.type}} ({{route.name.length}})
+                        </th>
+                    </tr>
+                    <tr ng-repeat="subitem in route.name" ng-show="route.open">
+                        <td class="searchTd"><a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></td>
+                    </tr>
+                </table>
+              </div>
     </md-dialog-content>
 </md-dialog>
-
-
-<!--<md-dialog aria-label="Advance Search" class="advanceSearchDialog">
-    <div layout="column" class="md-padding">
-        <section layout="row" class="advSection">
-            <input type="text" placeholder="vm.searchText" ng-model="vm.searchText" ng-disabled="true" class="searchbox md-text">
-            <md-button class="md-raised md-primary" flex="10" ng-click="">search</md-button>
-            <span class="closeWindow" ><i class="fa fa-times" aria-hidden="true" ng-click="vm.closeWindow()"></i></span>
-        </section>
-        <section class="advSection">
-            <md-checkbox ng-model="vm.chkRoute"    aria-label="Checkbox 1">
-                Route
-            </md-checkbox>
-            <md-checkbox ng-model="vm.chkPostCode"  aria-label="Checkbox 1">
-                Postcode
-            </md-checkbox>
-            <md-checkbox ng-model="vm.chkDeliveryPoint"  aria-label="Checkbox 1">
-                Delivery Point
-            </md-checkbox>
-            <md-checkbox ng-model="ck4" ng-disabled="true" aria-label="Checkbox 1">
-                Collection Point
-            </md-checkbox>
-            <md-checkbox ng-model="vm.chkStreetNetwork"  aria-label="Checkbox 1">
-                Street Network
-            </md-checkbox>
-            <md-checkbox ng-model="ck6" ng-disabled="true" aria-label="Checkbox 1">
-                Group
-            </md-checkbox>
-            <md-checkbox ng-model="ck7" ng-disabled="true" aria-label="Checkbox 1">
-                Hazard
-            </md-checkbox>
-        </section>
-        <section layout="row" class="advSection">
-            <div layout-align="start start">
-                <md-button class="md-raised md-primary" ng-click="vm.toggleList(false)">Collapse All</md-button>
-                <md-button class="md-raised md-primary" ng-click="vm.toggleList(true)">Expand All</md-button>
-            </div>
-            <span flex></span>
-            <div layout-align="end start">
-                <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(true)" >Select All</md-button>
-                <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(false)" >Deselect All</md-button>
-            </div>
-        </section>
-
-
-        <section > 
-             <table ng-repeat="route in vm.arrRoutes" ng-click="route.open = !route.open" class="advSecList searchTable">
-  				<tr is-open ="route.open" class="advSecItem">
-    				<th class="searchTh">
-                        <i class="fa fa-angle-right" ng-show="route.open = !route.open" aria-hidden="true"></i>
-                        <i class="fa fa-angle-down" aria-hidden="true" ng-show="route.open = !route.open"></i>
-                        {{route.type}} ({{route.name.length}})
-                    </th>
-  				</tr>
-  				<tr ng-repeat="subitem in route.name" ng-show="route.open">
-    				<td class="searchTd"><a ng-click="vm.OnChangeItem(subitem)"> {{subitem.displayText}}</a></td>
-  				</tr>
-  			</table>
-        </section> 
-    </div>
-</md-dialog>-->

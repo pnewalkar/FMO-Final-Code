@@ -3,9 +3,12 @@
   font-family: PF_DIN;
   font-size: 16px; }
 
-.advanceSearchDialog {
-  width: 58.82353%;
-  height: 100%; }
+.layout-row {
+  padding: 0px; }
+
+.columnButton {
+  height: 100%;
+  margin-top: 15px; }
 
 .searchbox {
   width: 100%;
@@ -20,7 +23,8 @@
 
 .searchTable {
   width: 100%;
-  border-collapse: collapse; }
+  border-collapse: collapse;
+  cursor: pointer; }
 
 .searchTh, .searchTd {
   padding: 8px 8px 8px 8px;

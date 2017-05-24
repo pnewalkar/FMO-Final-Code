@@ -2,10 +2,11 @@
 <div layout="row"
      ng-show="vm.showKey(pointType.id)"
      ng-repeat="pointType in vm.pointTypes" class="mapKeys">
-     <i class="fa fa-map-marker selcetedKey" aria-hidden="true" ng-show="pointType.text=='Selected'"></i>
-    <i class="fa fa-map-marker deliveryKey" aria-hidden="true" ng-show="pointType.text=='Delivery Point'"></i>
-    <i class="fa fa-minus accessKey" aria-hidden="true" ng-show="pointType.text=='Access Link'"></i>
-    <i class="fa fa-minus roadKey" aria-hidden="true" ng-show="pointType.text=='Road'"></i>
+     <i class="fa fa-map-marker selcetedKey" aria-hidden="true" ng-show="pointType.text=='Selected'" title="Selected"></i>
+    <i class="fa fa-map-marker deliveryKey" aria-hidden="true" ng-show="pointType.text=='Delivery Point'" title="Delivery Point"></i>
+    <i class="fa fa-minus accessKey" aria-hidden="true" ng-show="pointType.text=='Access Link'" title="Access Link"></i>
+    <i class="fa fa-minus roadKey" aria-hidden="true" ng-show="pointType.text=='Road'"
+       title="Road"></i>
     
     <span flex="5"></span>
     
