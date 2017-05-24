@@ -11,11 +11,13 @@ SimulationController.$inject = [
 function SimulationController($stateParams,
                              simulationService) {
     var vm = this;
+     vm.selectClass = "routeSearch md-text";
     vm.loadRouteLogStatus = loadRouteLogStatus();
     vm.loadScenario = loadScenario;
     vm.scenarioChange = scenarioChange;
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.clearSearchTerm = clearSearchTerm;
+    vm.selectionChanged = selectionChanged;
 
     vm.selectedDeliveryUnitObj = $stateParams;
     vm.isDeliveryRouteDisabled = true;
@@ -55,5 +57,14 @@ function SimulationController($stateParams,
         simulationService.loadDeliveryRoute(operationStateID, deliveryScenarioID).then(function (response) {
             vm.deliveryRoute = response;
         });
+    }
+
+    function selectionChanged(selectedRoute)
+    {
+        debugger;
+        var item = vm.selectedRoute;
+        if (item)
+            alert(item.routeNameNumber);
+
     }
 }
