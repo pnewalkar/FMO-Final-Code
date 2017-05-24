@@ -1,6 +1,6 @@
 #header #head1, #header #head2, #header #head3, md-dialog h2 {
   color: #ffffff;
-  font-family: PF_DIN;
+  font-family: Chevin;
   font-size: 18px; }
 
 .td1, .td2, label, .md-text, .routeDetailstable table {
@@ -24,7 +24,7 @@
   #tbody:hover {
     background-color: none; }
 
-#tbody table {
+table {
   width: 100%;
   border-collapse: collapse; }
 

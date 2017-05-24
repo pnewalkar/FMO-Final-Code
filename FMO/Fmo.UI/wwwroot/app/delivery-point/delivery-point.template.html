@@ -22,7 +22,7 @@
                 <h2>{{ 'DELIVERY_POINTS.ADD_DELIVERY_POINTS' | translate }}</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-disabled="vm.isDisable" ng-click="vm.closeWindow()">
-                    <i class="fa fa-times" aria-hidden="true"></i>
+                    <i class="fa fa-times" aria-hidden="true" title="Close Window"></i>
                 </md-button>
             </div>
         </md-toolbar>
@@ -44,7 +44,7 @@
                         </div>
                     </md-virtual-repeat-container>
                 </div>
-                <i class="fa fa-search searchInputIcon" aria-hidden="true" flex></i>
+                <i class="fa fa-search searchInputIcon" aria-hidden="true" flex title="Search"></i>
                 
                 <md-input-container flex="30" ng-show="vm.display" ng-class="{'disabledText':vm.nybAddressDetails.length==1}">
                     <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
@@ -190,7 +190,7 @@
                             <label>{{ 'DELIVERY_POINTS.ADD_DP_ALIASE' | translate }}</label>
                             <input ng-model="vm.alias" type="text" flex="90">
                         </md-input-container>
-                        <i class="fa fa-plus-circle pathLengthUnit" ng-click="vm.addAlias()" aria-hidden="true" flex></i>
+                        <i class="fa fa-plus-circle pathLengthUnit" ng-click="vm.addAlias()" aria-hidden="true" flex title="Add DP Alias"></i>
                     </div>
                     <div layout="column">
                         <label>{{ 'DELIVERY_POINTS.ALIAS' | translate }}</label>
@@ -200,7 +200,7 @@
                                     <input type="text" readonly placeholder="{{item.questionPlaceholder}}" ng-model="item.DPAlias" class="aliasinput">
                                 </md-input-container>
                                 <input type="radio" name="check" value="inline" ng-model="item.Preferred">
-                                <i class="fa fa-minus-circle" aria-hidden="true" ng-click="vm.removeAlias()"></i>
+                                <i class="fa fa-minus-circle" aria-hidden="true" ng-click="vm.removeAlias()" title="Remove DP Alias"></i>
                             </div>
                         </div>
                     </div>
@@ -243,16 +243,13 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
-            <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" ng-disabled="vm.isDisable">
+            <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" ng-disabled="vm.isDisable" title="Cancel">
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40" title="Save">
                 {{ 'GENERAL.BUTTONS.SAVE' | translate }}
             </md-button>
-            <!--<div ng-if="vm.errorMessageDisplay">
-                <span>{{vm.errorMessage}}</span>
-            </div>-->
         </md-dialog-actions>
     </form>
 </md-dialog>

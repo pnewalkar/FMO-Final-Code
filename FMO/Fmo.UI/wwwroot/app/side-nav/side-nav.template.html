@@ -1,8 +1,8 @@
-<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" layout="column">
     <md-toolbar layout="row">
         <div class="md-toolbar-tools">
             <md-button class="md-icon-button" aria-label="Back" ng-click="vm.closeSideNav()">
-                <i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true"></i>
+                <i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true" title="Back"></i>
             </md-button>
             <h2>
                 Available Actions
@@ -15,7 +15,12 @@
           <md-list-item  ng-repeat="Item in vm.RolesActionResult| unique: 'ActionName'" ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)">
             {{Item.ActionName}}
           </md-list-item>
-      </md-list>
-    </md-content>
-    <div class="version">V 1.2.9</div>  
+        </md-list>
+        
+        <md-toolbar>
+            <div class="md-toolbar-tools version"  layout-align="center center">
+                V 1.2.9
+            </div>
+        </md-toolbar>
+    </md-content> 
 </md-sidenav>
