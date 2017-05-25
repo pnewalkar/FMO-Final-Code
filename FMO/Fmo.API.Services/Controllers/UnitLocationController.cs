@@ -25,9 +25,10 @@ namespace Fmo.API.Services.Controllers
         /// <returns>List</returns>
         [Authorize]
         [HttpGet("DeliveryUnit")]
-        public UnitLocationDTO DeliveryUnit()
+        public IActionResult DeliveryUnit()
         {
-            return unitLocationBusinessService.FetchDeliveryUnit(CurrentUserUnit);
+            var unit = unitLocationBusinessService.FetchDeliveryUnit(CurrentUserUnit);
+            return Ok(unit);
         }
 
         /// <summary>
@@ -36,9 +37,10 @@ namespace Fmo.API.Services.Controllers
         /// <returns>List</returns>
         [Authorize]
         [HttpGet("DeliveryUnitsForUser")]
-        public List<UnitLocationDTO> DeliveryUnitsForUser()
+        public IActionResult DeliveryUnitsForUser()
         {
-            return unitLocationBusinessService.FetchDeliveryUnitsForUser(UserId);
+            List<UnitLocationDTO> units =  unitLocationBusinessService.FetchDeliveryUnitsForUser(UserId);
+            return Ok(units);
         }
     }
 }

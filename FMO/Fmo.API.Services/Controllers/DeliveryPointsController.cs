@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
@@ -45,9 +46,10 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
         [Route("GetDeliveryPointByUDPRN")]
         [HttpGet]
-        public object GetDeliveryPointByUDPRN(int udprn)
+        public IActionResult GetDeliveryPointByUDPRN(int udprn)
         {
-            return businessService.GetDeliveryPointByUDPRN(udprn);
+            var geoJsonfeature = businessService.GetDeliveryPointByUDPRN(udprn);
+            return Ok(geoJsonfeature);
         }
 
         /// <summary>
@@ -72,9 +74,15 @@ namespace Fmo.API.Services.Controllers
         [Route("CreateDeliveryPoint")]
         //[Route("CreateDeliveryPoint")]
         [HttpPost]
-        public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
+        public IActionResult CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
         {
-            return businessService.CreateDeliveryPoint(deliveryPointDto);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            CreateDeliveryPointModelDTO createDeliveryPointModelDto = businessService.CreateDeliveryPoint(deliveryPointDto);
+            return Ok(createDeliveryPointModelDto);
         }
 
         /// <summary>
@@ -84,9 +92,23 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Route("UpdateDeliveryPoint")]
         [HttpPut]
-        public async Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDto)
+        public async Task<IActionResult> UpdateDeliveryPoint([FromBody] DeliveryPointModelDTO deliveryPointModelDto)
         {
-            return await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                UpdateDeliveryPointModelDTO updateDeliveryPoint = await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
+                return Ok(updateDeliveryPoint);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
     }
 }

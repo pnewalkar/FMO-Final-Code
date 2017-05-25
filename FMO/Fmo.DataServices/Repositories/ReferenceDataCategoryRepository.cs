@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using AutoMapper;
+using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -30,18 +32,25 @@ namespace Fmo.DataServices.Repositories
         /// <returns>GUID</returns>
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
-            Guid statusId = Guid.Empty;
-            var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-            if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+            try
             {
-                var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataValue.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                if (referenceData != null)
+                Guid statusId = Guid.Empty;
+                var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
                 {
-                    statusId = referenceData.ID;
+                    var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataValue.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    if (referenceData != null)
+                    {
+                        statusId = referenceData.ID;
+                    }
                 }
-            }
 
-            return statusId;
+                return statusId;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            }
         }
 
         /// <summary>
@@ -52,15 +61,22 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List<Guid></returns>
         public List<Guid> GetReferenceDataIds(string strCategoryname, List<string> lstRefDataName)
         {
-            List<Guid> statusIds = new List<Guid>();
-            var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-            if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+            try
             {
-                var referenceData = result.ReferenceDatas.Where(n => lstRefDataName.Contains(n.DataDescription.Trim().ToUpper())).ToList();
-                referenceData.ForEach(r => statusIds.Add(r.ID));
-            }
+                List<Guid> statusIds = new List<Guid>();
+                var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+                {
+                    var referenceData = result.ReferenceDatas.Where(n => lstRefDataName.Contains(n.DataDescription.Trim().ToUpper())).ToList();
+                    referenceData.ForEach(r => statusIds.Add(r.ID));
+                }
 
-            return statusIds;
+                return statusIds;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            }
         }
 
         /// <summary>
@@ -74,17 +90,17 @@ namespace Fmo.DataServices.Repositories
                 List<ReferenceDataDTO> lstReferenceDt = new List<ReferenceDataDTO>();
                 string categoryname = "Delivery Point Operational Status";
                 var query = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(categoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+                if (query?.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
                 {
                     lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
                 }
 
                 return lstReferenceDt;
             }
-            catch (Exception)
+            catch (InvalidOperationException ex)
             {
-                throw;
-            };
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            }
         }
 
         /// <summary>
@@ -94,8 +110,11 @@ namespace Fmo.DataServices.Repositories
         public List<ReferenceDataDTO> RouteLogSelectionType()
         {
             List<ReferenceDataDTO> lstReferenceDt = null;
-            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas).AsNoTracking().Where(n => n.CategoryName.Equals("UI_RouteLogSearch_SelectionType", StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-            if (query != null && query.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas)
+                .AsNoTracking().SingleOrDefault(n => n.CategoryName.Equals(
+                    "UI_RouteLogSearch_SelectionType",
+                    StringComparison.OrdinalIgnoreCase));
+            if (query?.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
             {
                 lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
             }

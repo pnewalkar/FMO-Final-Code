@@ -1,4 +1,4 @@
-﻿using Fmo.API.Services.MiddlerWare;
+﻿using Fmo.API.Services.ExceptionHandling;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.BusinessServices.Services;
 using Fmo.Common.ConfigurationManagement;
@@ -133,7 +133,8 @@ namespace Fmo.API.Services
 
             app.UseApplicationInsightsExceptionTelemetry();
 
-            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+            //app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+            MapExceptionTypes(app);
 
             app.UseMvc(routes =>
             {

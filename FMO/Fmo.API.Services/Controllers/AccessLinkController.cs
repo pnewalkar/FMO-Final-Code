@@ -29,9 +29,10 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [Route("GetAccessLinks")]
         [HttpGet]
-        public string GetAccessLinks(string boundaryBox)
+        public IActionResult GetAccessLinks(string boundaryBox)
         {
-            return accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+            string accessLink = accessLinkBussinessService.GetAccessLinks(boundaryBox, CurrentUserUnit);
+            return Ok(accessLink);
         }
 
         /// <summary>
@@ -41,9 +42,10 @@ namespace Fmo.API.Services.Controllers
         /// <param name="operationalObjectTypeId">Operational Object type unique identifier.</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
         [HttpPost("Create")]
-        public bool CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
+        public IActionResult CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
-            return accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
+            bool isSaved = accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
+            return Ok(isSaved);
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace Fmo.API.Services.Controllers
         ///<param name="accessLinkDto">access link object to be stored</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
         [HttpPost("CreateManual")]
-        public bool CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
+        public IActionResult CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
         {
             //accessLinkDto = new AccessLinkManualCreateModelDTO
             //{
@@ -62,8 +64,13 @@ namespace Fmo.API.Services.Controllers
             //    OperationalObjectPoint = "POINT (512722.70000000019 104752.6799999997)",
             //    OperationalObject_GUID = Guid.NewGuid(),
             //};
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return accessLinkBussinessService.CreateAccessLink(accessLinkDto);
+            bool isSaved = accessLinkBussinessService.CreateAccessLink(accessLinkDto);
+            return Ok(isSaved);
         }
 
         /// <summary>
@@ -74,7 +81,7 @@ namespace Fmo.API.Services.Controllers
         //[Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         //[Route("GetWorkloadLength")]
         [HttpPost("GetWorkloadLength")]
-        public decimal GetAdjPathLength([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
+        public IActionResult GetAdjPathLength([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
             //AccessLinkManualCreateModelDTO accessLinkDto = new AccessLinkManualCreateModelDTO
             //{
@@ -85,7 +92,8 @@ namespace Fmo.API.Services.Controllers
             //    ////OperationalObject_GUID = Guid.NewGuid(),
             //};
 
-            return accessLinkBussinessService.GetAdjPathLength(accessLinkManualCreateModelDTO);
+            decimal pathlength = accessLinkBussinessService.GetAdjPathLength(accessLinkManualCreateModelDTO);
+            return Ok(pathlength);
         }
 
         /// <summary>
@@ -96,11 +104,10 @@ namespace Fmo.API.Services.Controllers
         //[Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         //[Route("GetWorkloadLength")]
         [HttpPost("CheckAccessLinkIsValid")]
-        public bool CheckAccessLinkIsValid([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
+        public IActionResult CheckAccessLinkIsValid([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
-            return accessLinkBussinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
+            bool isValid = accessLinkBussinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
+            return Ok(isValid);
         }
-
-
     }
 }

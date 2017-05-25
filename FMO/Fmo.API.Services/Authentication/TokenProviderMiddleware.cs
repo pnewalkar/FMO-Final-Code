@@ -5,9 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
+using Fmo.Common.Interface;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -26,7 +29,7 @@ namespace Fmo.API.Services.Authentication
     {
         private readonly RequestDelegate _next;
         private readonly TokenProviderOptions _options;
-        private readonly ILogger _logger;
+        private ILoggingHelper loggingHelper;
         private readonly JsonSerializerSettings _serializerSettings;
         private IActionManagerBussinessService actionManagerBussinessService = default(IActionManagerBussinessService);
         private IUserRoleUnitBussinessService userRoleUnitBussinessService = default(IUserRoleUnitBussinessService);
@@ -34,12 +37,12 @@ namespace Fmo.API.Services.Authentication
         public TokenProviderMiddleware(
             RequestDelegate next,
             IOptions<TokenProviderOptions> options,
-            ILoggerFactory loggerFactory,
+            ILoggingHelper loggingHelper,
             IActionManagerBussinessService actionManagerBussinessService,
             IUserRoleUnitBussinessService userRoleUnitBussinessService)
         {
             _next = next;
-            _logger = loggerFactory.CreateLogger<TokenProviderMiddleware>();
+            this.loggingHelper = loggingHelper;
 
             _options = options.Value;
             ThrowIfInvalidOptions(_options);
@@ -69,43 +72,43 @@ namespace Fmo.API.Services.Authentication
                 return context.Response.WriteAsync("Bad request.");
             }
 
-            _logger.LogInformation("Handling request: " + context.Request.Path);
-
             return GenerateToken(context);
         }
 
         private async Task GenerateToken(HttpContext context)
         {
-            var username = context.Request.Form["username"];
-            Guid unitGuid;
-            bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
-
-            var identity = await _options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
-            if (identity == null)
+            try
             {
-                context.Response.StatusCode = 400;
-                await context.Response.WriteAsync("Invalid username or password.");
-                return;
-            }
+                var username = context.Request.Form["username"];
+                Guid unitGuid;
+                bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
 
-            if (unitGuid == Guid.Empty)
-            {
-                unitGuid = await userRoleUnitBussinessService.GetUserUnitInfo(username);
-            }
+                var identity = await _options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
+                if (identity == null)
+                {
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsync("Invalid username or password.");
+                    return;
+                }
 
-            UserUnitInfoDTO userUnitInfoDto = new UserUnitInfoDTO
-            {
-                UserName = username,
-                UnitGuid = unitGuid
-            };
+                if (unitGuid == Guid.Empty)
+                {
+                    unitGuid = await userRoleUnitBussinessService.GetUserUnitInfo(username);
+                }
 
-            var roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+                UserUnitInfoDTO userUnitInfoDto = new UserUnitInfoDTO
+                {
+                    UserName = username,
+                    UnitGuid = unitGuid
+                };
 
-            var now = DateTime.UtcNow;
+                var roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
 
-            // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user) claims.
-            // You can add other claims here, if you want:
-            var claims = new List<Claim>()
+                var now = DateTime.UtcNow;
+
+                // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user) claims.
+                // You can add other claims here, if you want:
+                var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
@@ -117,29 +120,38 @@ namespace Fmo.API.Services.Authentication
                  new Claim(ClaimTypes.Name, username),
                   new Claim(ClaimTypes.PrimarySid, roleAccessDto.FirstOrDefault().UserId.ToString())
             };
-            roleAccessDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
+                roleAccessDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
 
-            // Create the JWT and write it to a string
-            var jwt = new JwtSecurityToken(
-                issuer: _options.Issuer,
-                audience: _options.Audience,
-                claims: claims,
-                notBefore: now,
-                expires: now.Add(_options.Expiration),
-                signingCredentials: _options.SigningCredentials);
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+                // Create the JWT and write it to a string
+                var jwt = new JwtSecurityToken(
+                    issuer: _options.Issuer,
+                    audience: _options.Audience,
+                    claims: claims,
+                    notBefore: now,
+                    expires: now.Add(_options.Expiration),
+                    signingCredentials: _options.SigningCredentials);
+                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            var response = new
+                var response = new
+                {
+                    access_token = encodedJwt,
+                    expires_in = (int)_options.Expiration.TotalSeconds,
+                    roleActions = roleAccessDto,
+                    username = username
+                };
+
+                // Serialize and return the response
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(response, _serializerSettings));
+            }
+            catch (Exception ex)
             {
-                access_token = encodedJwt,
-                expires_in = (int)_options.Expiration.TotalSeconds,
-                roleActions = roleAccessDto,
-                username = username
-            };
-
-            // Serialize and return the response
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(response, _serializerSettings));
+                loggingHelper.LogError(ErrorMessageConstants.TokenErrorMessage, ex);
+                var result = JsonConvert.SerializeObject(new { error = ErrorMessageConstants.DefaultErrorMessage });
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsync(result);
+            }
         }
 
         private static void ThrowIfInvalidOptions(TokenProviderOptions options)

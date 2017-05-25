@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Linq;
 using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -60,9 +61,9 @@ namespace Fmo.DataServices.Repositories
 
                 return networkLink;
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                throw ex;
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
             }
         }
     }

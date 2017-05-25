@@ -44,24 +44,20 @@ namespace Fmo.BusinessServices.Services
         /// </returns>
         public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText, Guid userUnit)
         {
-            try
-            {
-                var deliveryRoutes = await deliveryRouteBusinessService.FetchDeliveryRouteForBasicSearch(searchText, userUnit);
-                var deliveryRouteCount = await deliveryRouteBusinessService.GetDeliveryRouteCount(searchText, userUnit);
-                var postcodes = await postcodeBusinessService.FetchPostCodeUnitForBasicSearch(searchText, userUnit);
-                var postCodeCount = await postcodeBusinessService.GetPostCodeUnitCount(searchText, userUnit);
-                var deliveryPoints = await deliveryPointBusinessService.FetchDeliveryPointsForBasicSearch(searchText, userUnit);
-                var deliveryPointsCount = await deliveryPointBusinessService.GetDeliveryPointsCount(searchText, userUnit);
-                var streetNames = await streetNetworkBusinessService.FetchStreetNamesForBasicSearch(searchText, userUnit);
-                var streetNetworkCount = await streetNetworkBusinessService.GetStreetNameCount(searchText, userUnit);
+            var deliveryRoutes =
+                await deliveryRouteBusinessService.FetchDeliveryRouteForBasicSearch(searchText, userUnit);
+            var deliveryRouteCount = await deliveryRouteBusinessService.GetDeliveryRouteCount(searchText, userUnit);
+            var postcodes = await postcodeBusinessService.FetchPostCodeUnitForBasicSearch(searchText, userUnit);
+            var postCodeCount = await postcodeBusinessService.GetPostCodeUnitCount(searchText, userUnit);
+            var deliveryPoints =
+                await deliveryPointBusinessService.FetchDeliveryPointsForBasicSearch(searchText, userUnit);
+            var deliveryPointsCount = await deliveryPointBusinessService.GetDeliveryPointsCount(searchText, userUnit);
+            var streetNames = await streetNetworkBusinessService.FetchStreetNamesForBasicSearch(searchText, userUnit);
+            var streetNetworkCount = await streetNetworkBusinessService.GetStreetNameCount(searchText, userUnit);
 
-                var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
-                return searchResultDTO;
-            }
-            catch
-            {
-                throw;
-            }
+            var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount,
+                deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
+            return searchResultDTO;
         }
 
         /// <summary>

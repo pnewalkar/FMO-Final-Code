@@ -70,21 +70,14 @@ namespace Fmo.BusinessServices.Services
         /// <returns>Object</returns>
         public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
-            try
+            if (!string.IsNullOrEmpty(boundaryBox))
             {
-                if (!string.IsNullOrEmpty(boundaryBox))
-                {
-                    var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                    return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
-                }
-                else
-                {
-                    return null;
-                }
+                var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
+                return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPoints(coordinates, unitGuid));
             }
-            catch (Exception)
+            else
             {
-                throw;
+                return null;
             }
         }
 
@@ -95,14 +88,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>The coordinates of the delivery point</returns>
         public object GetDeliveryPointByUDPRN(int udprn)
         {
-            try
-            {
-                return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPointListByUDPRN(udprn));
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return GetDeliveryPointsJsonData(deliveryPointsRepository.GetDeliveryPointListByUDPRN(udprn));
         }
 
         /// <summary>
@@ -112,14 +98,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>The coordinates of the delivery point</returns>
         public AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
         {
-            try
-            {
-                return deliveryPointsRepository.GetDetailDeliveryPointByUDPRN(udprn);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return deliveryPointsRepository.GetDetailDeliveryPointByUDPRN(udprn);
         }
 
         /// <summary>
@@ -174,59 +153,62 @@ namespace Fmo.BusinessServices.Services
             double? returnYCoordinate = 0;
             Guid returnGuid = new Guid(Constants.DEFAULTGUID);
             byte[] rowVersion = null;
-            try
+
+            if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null &&
+                addDeliveryPointDTO.DeliveryPointDTO != null)
             {
-                if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
+                string postCode =
+                    postalAddressBusinessService.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
+                if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty &&
+                    postalAddressBusinessService.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO
+                        .PostalAddressDTO))
                 {
-                    string postCode = postalAddressBusinessService.CheckForDuplicateNybRecords(addDeliveryPointDTO.PostalAddressDTO);
-                    if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && postalAddressBusinessService.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO.PostalAddressDTO))
+                    message = Constants.DUPLICATEDELIVERYPOINT;
+                }
+                else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
+                {
+                    message = Constants.DUPLICATENYBRECORDS + postCode;
+                }
+                else
+                {
+                    CreateDeliveryPointModelDTO createDeliveryPointModelDTO =
+                        postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                    rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
+                    returnGuid = createDeliveryPointModelDTO.ID;
+                    returnXCoordinate = createDeliveryPointModelDTO.XCoordinate;
+                    returnYCoordinate = createDeliveryPointModelDTO.YCoordinate;
+
+                    if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
                     {
-                        message = Constants.DUPLICATEDELIVERYPOINT;
-                    }
-                    else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
-                    {
-                        message = Constants.DUPLICATENYBRECORDS + postCode;
+                        var referenceDataCategoryList =
+                            referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
+                            {
+                                ReferenceDataCategoryNames.OperationalObjectType
+                            });
+
+                        var deliveryOperationObjectTypeId = referenceDataCategoryList
+                            .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                            .SelectMany(x => x.ReferenceDatas)
+                            .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
+
+                        var isAccessLinkCreated =
+                            accessLinkBusinessService.CreateAccessLink(createDeliveryPointModelDTO.ID,
+                                deliveryOperationObjectTypeId);
+
+                        message = isAccessLinkCreated
+                            ? Constants.DELIVERYPOINTCREATED
+                            : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
                     }
                     else
                     {
-                        CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                        rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
-                        returnGuid = createDeliveryPointModelDTO.ID;
-                        returnXCoordinate = createDeliveryPointModelDTO.XCoordinate;
-                        returnYCoordinate = createDeliveryPointModelDTO.YCoordinate;
-
-                        if (createDeliveryPointModelDTO.IsAddressLocationAvailable)
-                        {
-                            var referenceDataCategoryList = referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string> { ReferenceDataCategoryNames.OperationalObjectType });
-
-                            var deliveryOperationObjectTypeId = referenceDataCategoryList
-                                .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
-                                .SelectMany(x => x.ReferenceDatas)
-                                .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
-
-                            var isAccessLinkCreated = accessLinkBusinessService.CreateAccessLink(createDeliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
-
-                            message = isAccessLinkCreated ? Constants.DELIVERYPOINTCREATED : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
-                        }
-                        else
-                        {
-                            message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
-                        }
+                        message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogInfo(ex.ToString());
-                throw;
-            }
-            finally
-            {
-                this.loggingHelper.LogInfo(addDeliveryDtoLogDetails);
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            }
 
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate, YCoordinate = returnYCoordinate };
+            this.loggingHelper.LogInfo(addDeliveryDtoLogDetails);
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate , YCoordinate = returnYCoordinate };
         }
 
         /// <summary>
@@ -259,8 +241,13 @@ namespace Fmo.BusinessServices.Services
             };
 
             await deliveryPointsRepository.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO).ContinueWith(t =>
-             {
-                 if (t.Result != Guid.Empty)
+            {
+                if (t.IsFaulted && t.Exception != null)
+                {
+                    throw t.Exception;
+                }
+
+                if (t.Result != Guid.Empty)
                  {
                      returnGuid = t.Result;
                      var referenceDataCategoryList =
