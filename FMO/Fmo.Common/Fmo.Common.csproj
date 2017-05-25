@@ -145,7 +145,6 @@
     <Compile Include="Interface\IExceptionHelper.cs" />
     <Compile Include="Interface\ILoggingHelper.cs" />
     <Compile Include="LoggingManagement\LoggingHelper.cs" />
-    <Compile Include="LoggingManagement\LoggingConfig.cs" />
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Enums\PostcodeType.cs" />
     <Compile Include="Enums\FileType.cs" />
