@@ -10,6 +10,7 @@ mapService.$inject = ['$http',
                      'roadLinkGuidService',
                      'accessLinkCoordinatesService',
                      'intersectionPointService',
+                     'accessLinkAPIService',
                      'guidService',
                      '$document',
                      '$state',
@@ -25,6 +26,7 @@ function mapService($http,
                     roadLinkGuidService,
                     accessLinkCoordinatesService,
                     intersectionPointService,
+                    accessLinkAPIService,
                     guidService,
                     $document,
                     $state,
@@ -472,7 +474,9 @@ function mapService($http,
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    removeInteraction("select");
+			    while (vm.interactions['select']) {
+			        removeInteraction('select');
+			    }
 			    clearDrawingLayer(true);
 			    setSelections(null, []);
 			});
@@ -483,13 +487,14 @@ function mapService($http,
 			    accessLinkCoordinatesService.setCordinates(coordinates);
 			    $stateParams.accessLinkFeature = evt.feature;
 
-			    $state.go("accessLink", {accessLinkFeature : evt.feature }, {
+			    $state.go("accessLink", { accessLinkFeature: evt.feature }, {
 			        reload: 'accessLink'
 			    });
 			});
     }
     function finishCondition(e) {
         var intersectionPoint = e.coordinate;
+
         var featurePresent = vm.map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
             if (layer && layer.get("name") === GlobalSettings.roadLinkLayerName) {
                 roadLinkGuidService.setRoadLinkGuid(feature.getId());
@@ -504,7 +509,8 @@ function mapService($http,
     }
     function snapOnFeature(vector) {
         vm.interactions.snap = new ol.interaction.Snap({
-            source: vector.layer.getSource()
+            source: vector.layer.getSource(),
+            pixelTolerance: 20
         });
 
 

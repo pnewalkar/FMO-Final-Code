@@ -9,6 +9,7 @@ using Fmo.Common.Constants;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Microsoft.SqlServer.Types;
+using Fmo.Common.ObjectParser;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -109,6 +110,17 @@ namespace Fmo.BusinessServices.Services
         public NetworkLinkDTO GetNetworkLink(Guid networkLinkID)
         {
             return streetNetworkRepository.GetNetworkLink(networkLinkID);
+        }
+
+        /// <summary>
+        /// This method is used to get the road links crossing the access link
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLinkCoordinates">access link coordinate array</param>
+        /// <returns>List<NetworkLinkDTO></returns>
+        public List<NetworkLinkDTO> GetCrossingNetworkLinks(string boundingBoxCoordinates, DbGeometry accessLinkCoordinates)
+        {
+            return streetNetworkRepository.GetCrossingNetworkLink(boundingBoxCoordinates, accessLinkCoordinates);
         }
     }
 }

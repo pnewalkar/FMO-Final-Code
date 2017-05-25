@@ -132,5 +132,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
         /// <returns>updated delivery point</returns>
         void UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
+
+        /// <summary>
+        /// This method is used to get the delivery points crossing the created access link
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLink">access link coordinate array</param>
+        /// <returns>List<DeliveryPointDTO></returns>
+        List<DeliveryPointDTO> GetDeliveryPointsCrossingManualAccessLink(string boundingBoxCoordinates, DbGeometry accessLink);
     }
 }

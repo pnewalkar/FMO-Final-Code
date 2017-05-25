@@ -32,5 +32,19 @@ function accessLinkAPIService($http, GlobalSettings, $q) {
         return deferred.promise;
     };
 
+    accessLinkAPIService.CheckAccessLinkIsValid = function (accessLinkManualCreateModelDTO) {
+        var deferred = $q.defer();
+
+        $http.post(GlobalSettings.apiUrl + '/accessLink/CheckAccessLinkIsValid/', accessLinkManualCreateModelDTO).success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+
     return accessLinkAPIService;
 }

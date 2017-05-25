@@ -14,6 +14,7 @@ using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Entities;
 using Microsoft.SqlServer.Types;
+using Fmo.MappingConfiguration;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -296,6 +297,25 @@ namespace Fmo.DataServices.Repositories
             var networkLinkDTO = Mapper.Map<NetworkLink, NetworkLinkDTO>(networkLink);
 
             return networkLinkDTO;
+        }
+
+        /// <summary>
+        /// Get the Network Links crossing access link
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLink">access link coordinate array</param>
+        /// <returns>List<NetworkLinkDTO></returns>
+        public List<NetworkLinkDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
+        {
+            List<NetworkLinkDTO> networkLinkDTOs = new List<NetworkLinkDTO>();
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+            List<NetworkLink> crossingNetworkLinks = DataContext.NetworkLinks.Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Crosses(accessLink)).ToList();
+            List<NetworkLinkDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(crossingNetworkLinks);
+            networkLinkDTOs.AddRange(crossingNetworkLinkDTOs);
+            List<NetworkLink> overLappingNetworkLinks = DataContext.NetworkLinks.Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Overlaps(accessLink)).ToList();
+            List<NetworkLinkDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(overLappingNetworkLinks);
+            networkLinkDTOs.AddRange(overLappingNetworkLinkDTOs);
+            return networkLinkDTOs;
         }
     }
 }

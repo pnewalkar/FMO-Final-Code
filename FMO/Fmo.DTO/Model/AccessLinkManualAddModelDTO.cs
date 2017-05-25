@@ -8,6 +8,8 @@ namespace Fmo.DTO.Model
 {
     public class AccessLinkManualCreateModelDTO
     {
+        public string BoundingBoxCoordinates { get; set; }
+
         public string OperationalObjectPoint { get; set; }
 
         public string NetworkIntersectionPoint { get; set; }

@@ -67,9 +67,9 @@ namespace Fmo.API.Services.Controllers
         }
 
         /// <summary>
-        /// This method is used to create manual Access Link .
+        /// This method is used to check the manual access link adj length
         /// </summary>
-        ///<param name="accessLinkDto">access link object to be stored</param>
+        ///<param name="accessLinkManualCreateModelDTO">access link object of which adj length needs to be calculated</param>
         /// <returns>returns calculated path length</true></returns>
         //[Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         //[Route("GetWorkloadLength")]
@@ -87,5 +87,20 @@ namespace Fmo.API.Services.Controllers
 
             return accessLinkBussinessService.GetAdjPathLength(accessLinkManualCreateModelDTO);
         }
+
+        /// <summary>
+        /// This method is used to check whether the access link is valid or not.
+        /// </summary>
+        ///<param name="accessLinkManualCreateModelDTO">access link object to be checked for valid access link</param>
+        /// <returns>returns whether an access link is valid</true></returns>
+        //[Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
+        //[Route("GetWorkloadLength")]
+        [HttpPost("CheckAccessLinkIsValid")]
+        public bool CheckAccessLinkIsValid([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
+        {
+            return accessLinkBussinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
+        }
+
+
     }
 }

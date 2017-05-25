@@ -600,5 +600,31 @@ namespace Fmo.BusinessServices.Services
 
             return workloadLengthMeter;
         }
+
+        /// <summary>
+        /// This method is used to check whether an access link is valid
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLinkCoordinates">access link coordinate array</param>
+        /// <returns>bool</returns>
+        public bool CheckManualAccessLinkIsValid(string boundingBoxCoordinates, string accessLinkCoordinates)
+        {
+            string parsedAccessLink = ObjectParser.GetGeometry(accessLinkCoordinates, Constants.LinestringObject);
+
+            DbGeometry accessLink = DbGeometry.LineFromText(parsedAccessLink, Constants.BNGCOORDINATESYSTEM);
+            string formattedBoundaryCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates.Replace(Constants.OpenSquareBracket, string.Empty).Replace(Constants.CloseSquareBracket, string.Empty).Split(Constants.Comma[0]));
+            List<AccessLinkDTO> accessLinkDTOs = accessLinkRepository.GetAccessLinksCrossingManualAccessLink(formattedBoundaryCoordinates, accessLink);
+            List<NetworkLinkDTO> networkLinkDTOs = streetNetworkBusinessService.GetCrossingNetworkLinks(formattedBoundaryCoordinates, accessLink);
+            List<DeliveryPointDTO> deliveryPointDTOs = deliveryPointsRepository.GetDeliveryPointsCrossingManualAccessLink(formattedBoundaryCoordinates, accessLink);
+
+            if (accessLinkDTOs.Count > 0 || networkLinkDTOs.Count > 0 || deliveryPointDTOs.Count > 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

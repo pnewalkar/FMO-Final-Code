@@ -59,5 +59,13 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <param name="networkLinkID">networkLink unique identifier Guid.</param>
         /// <returns>Nearest street and the intersection point.</returns>
         NetworkLinkDTO GetNetworkLink(Guid networkLinkID);
+
+        /// <summary>
+        /// Get the Network Links crossing access link
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLink">access link coordinate array</param>
+        /// <returns>List<NetworkLinkDTO></returns>
+        List<NetworkLinkDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink);
     }
 }
