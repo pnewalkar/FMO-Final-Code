@@ -29,7 +29,7 @@ namespace Fmo.DataServices.Tests.Repositories
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()));
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             var mockDeliveryPointDBSet = MockDbSet(deliveryPoint);
 

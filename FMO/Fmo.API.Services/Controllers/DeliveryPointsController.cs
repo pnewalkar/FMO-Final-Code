@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Interface;
@@ -70,18 +71,20 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("CreateDeliveryPoint")]
+
         //[Route("CreateDeliveryPoint")]
         [HttpPost]
         public CreateDeliveryPointModelDTO CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
         {
-            using (loggingHelper.FmoTraceManager.StartTrace("Controller.AddDeliveryPoint"))
+            using (loggingHelper.FmoTraceManager.StartTrace("WebService.AddDeliveryPoint"))
             {
                 CreateDeliveryPointModelDTO createDeliveryPointModelDTO = null;
-                loggingHelper.LogInfo("Method AddDeliveryPoint entered", "General", 8, 9013, "Trace Log");
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.CreateDeliveryPointPriority, LoggerTraceConstants.CreateDeliveryPointAPIMethodEntryEventId, LoggerTraceConstants.Title);
 
                 createDeliveryPointModelDTO = businessService.CreateDeliveryPoint(deliveryPointDto);
 
-                loggingHelper.LogInfo("Method AddDeliveryPoint exited", "General", 8, 9014, "Trace Log");
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.CreateDeliveryPointPriority, LoggerTraceConstants.CreateDeliveryPointAPIMethodExitEventId, LoggerTraceConstants.Title);
 
                 return createDeliveryPointModelDTO;
             }
@@ -96,7 +99,17 @@ namespace Fmo.API.Services.Controllers
         [HttpPut]
         public async Task<UpdateDeliveryPointModelDTO> UpdateDeliveryPoint([FromBody]DeliveryPointModelDTO deliveryPointModelDto)
         {
-            return await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
+            using (loggingHelper.FmoTraceManager.StartTrace("WebService.UpdateDeliveryPoint"))
+            {
+                UpdateDeliveryPointModelDTO updateDeliveryPointModelDTO = null;
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.UpdateDeliveryPointPriority, LoggerTraceConstants.UpdateDeliveryPointAPIMethodEntryEventId, LoggerTraceConstants.Title);
+
+                updateDeliveryPointModelDTO = await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.UpdateDeliveryPointPriority, LoggerTraceConstants.UpdateDeliveryPointAPIMethodExitEventId, LoggerTraceConstants.Title);
+
+                return updateDeliveryPointModelDTO;
+            }
         }
     }
 }

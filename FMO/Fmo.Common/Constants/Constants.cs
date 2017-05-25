@@ -52,6 +52,7 @@
         public const int DefaultLoggingPriority = 0;
         public const int DefaultLoggingEventId = 0;
         public const string DefaultLoggingTitle = "";
+
         #endregion Common
 
         #region NYB
@@ -157,6 +158,7 @@
         #endregion OtherLayers
 
         #region DeliveryPoints
+
         public const string DUPLICATEDELIVERYPOINT = "There is a duplicate of this Delivery Point in the system";
 
         public const string DUPLICATENYBRECORDS = "This address is in the NYB file under the postcode ";
@@ -165,10 +167,13 @@
         public const string DELIVERYPOINTCREATEDWITHOUTLOCATION = "Delivery Point created successfully without location";
         public const string INTERNAL = "Internal";
         public const string ROWVERSION = "RowVersion";
+
         #endregion DeliveryPoints
 
         #region MyRegion
+
         public const string ConcurrencyMessage = "Data has been already updated by another user";
-        #endregion
+
+        #endregion MyRegion
     }
 }
