@@ -8,6 +8,8 @@
 
         public const int CreateDeliveryPointPriority = 8;
         public const int UpdateDeliveryPointPriority = 8;
+        public const int CreateAutomaticAccessLinkPriority = 8;
+        public const int CreateManualAccessLinkPriority = 8;
 
         #endregion Priority
 
@@ -22,6 +24,11 @@
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;
         public const int UpdateDeliveryPoinBusinessMethodEntryEventId = 9113;
         public const int UpdateDeliveryPoinBusinessMethodExitEventId = 9114;
+
+        public const int CreateAutomaticAccessLinkBusinessMethodEntryEventId = 9313;
+        public const int CreateAutomaticAccessLinkBusinessMethodExitEventId = 9314;
+        public const int CreateManualAccessLinkBusinessMethodEntryEventId = 9315;
+        public const int CreateManualAccessLinkBusinessMethodExitEventId = 9316;
 
         #endregion EventId
 
