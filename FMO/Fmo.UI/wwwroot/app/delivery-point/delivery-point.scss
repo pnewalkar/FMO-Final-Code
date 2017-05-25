@@ -11,7 +11,7 @@
     @include cursor(pointer);
 } 
 
-.resultPanel {
+.resultPanel, legend{
     @extend %body-content;
 }
 
@@ -25,10 +25,12 @@
 
 fieldset{
     @include padding(5px 5px 5px 5px);
-    @include border(2px solid $black);
+    @include border(1px solid $fieldsetColor);
 }
 
-
+.contentHeight{
+    @include height(500px);
+}
 .aliasinput{
     @include margin(0px 0px 5px 0px);
 }
