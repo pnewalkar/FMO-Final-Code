@@ -31,6 +31,7 @@ namespace Fmo.BusinessServices.Services
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
         private IAccessLinkBusinessService accessLinkBusinessService = default(IAccessLinkBusinessService);
+        private IBlockSequenceBusinessService blockSequenceBusinessService = default(IBlockSequenceBusinessService);
         private bool enableLogging = false;
 
         public DeliveryPointBusinessService(
@@ -39,7 +40,8 @@ namespace Fmo.BusinessServices.Services
             ILoggingHelper loggingHelper,
             IConfigurationHelper configurationHelper,
             IReferenceDataBusinessService referenceDataBusinessService,
-            IAccessLinkBusinessService accessLinkBusinessService)
+            IAccessLinkBusinessService accessLinkBusinessService,
+            IBlockSequenceBusinessService blockSequenceBusinessService)
         {
             this.deliveryPointsRepository = deliveryPointsRepository;
             this.loggingHelper = loggingHelper;
@@ -48,6 +50,7 @@ namespace Fmo.BusinessServices.Services
             this.referenceDataBusinessService = referenceDataBusinessService;
             this.accessLinkBusinessService = accessLinkBusinessService;
             this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
+            this.blockSequenceBusinessService = blockSequenceBusinessService;
         }
 
         /// <summary>
@@ -180,6 +183,7 @@ namespace Fmo.BusinessServices.Services
                         CreateDeliveryPointModelDTO createDeliveryPointModelDTO = postalAddressBusinessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
                         rowVersion = deliveryPointsRepository.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
                         returnGuid = createDeliveryPointModelDTO.ID;
+                        blockSequenceBusinessService.CreateBlockSequenceForDeliveryPoint(addDeliveryPointDTO.DeliveryPointDTO.DeliveryRoute_Guid, returnGuid);
                         returnXCoordinate = createDeliveryPointModelDTO.XCoordinate;
                         returnYCoordinate = createDeliveryPointModelDTO.YCoordinate;
 

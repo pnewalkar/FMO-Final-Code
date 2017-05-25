@@ -25,6 +25,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IPostalAddressBusinessService> mockPostalAddressBusinessService;
         private Mock<IReferenceDataBusinessService> referenceDataBusinessService;
         private Mock<IAccessLinkBusinessService> accessLinkBusinessServiceMock;
+        private Mock<IBlockSequenceBusinessService> mockBlockSequenceBusinessService;
         private Guid unitGuid = Guid.NewGuid();
         private AddDeliveryPointDTO addDeliveryPointDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
@@ -106,6 +107,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockLoggingRepository = CreateMock<ILoggingHelper>();
             mockPostalAddressBusinessService = CreateMock<IPostalAddressBusinessService>();
             referenceDataBusinessService = CreateMock<IReferenceDataBusinessService>();
+            mockBlockSequenceBusinessService = CreateMock<IBlockSequenceBusinessService>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
@@ -196,7 +198,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(deliveryPointModelDTO.ID));
             accessLinkBusinessServiceMock = CreateMock<IAccessLinkBusinessService>();
             mockDeliveryPointsRepository.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns(new List<string>() { "ABC" });
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object, accessLinkBusinessServiceMock.Object);
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object, accessLinkBusinessServiceMock.Object, mockBlockSequenceBusinessService.Object);
         }
     }
 }

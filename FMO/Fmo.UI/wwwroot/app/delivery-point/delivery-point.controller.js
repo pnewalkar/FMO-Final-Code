@@ -78,7 +78,8 @@ function DeliveryPointController(
     vm.Ok = Ok;
     vm.isDisable = false;
 
-    $scope.$watch(function () { return deliveryPointService.getCordinates()
+    $scope.$watch(function () {
+        return deliveryPointService.getCordinates()
     }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
             openAlert();
@@ -179,7 +180,8 @@ function DeliveryPointController(
                     "MultipleOccupancyCount": vm.mailvol,
                     "MailVolume": vm.multiocc,
                     "DeliveryPointAliasDTO": vm.items,
-                    "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id
+                    "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
+                    "DeliveryRoute_Guid": vm.routeId
                 },
                 "AddressLocationDTO": null
             };
