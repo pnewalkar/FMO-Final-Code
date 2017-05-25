@@ -24,9 +24,10 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Route("GetRouteLinks")]
         [HttpGet]
-        public string GetRoouteData(string boundaryBox)
+        public IActionResult GetRoouteData(string boundaryBox)
         {
-            return roadNameBussinessService.GetRoadRoutes(boundaryBox, CurrentUserUnit);
+            string route = roadNameBussinessService.GetRoadRoutes(boundaryBox, CurrentUserUnit);
+            return Ok(route);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using Fmo.Common.ExceptionManagement;
 
 namespace Fmo.DataServices.Repositories
@@ -188,19 +189,27 @@ namespace Fmo.DataServices.Repositories
         /// </returns>
         public async Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid)
         {
+            if (string.IsNullOrWhiteSpace(searchText) || Guid.Empty.Equals(unitGuid))
+            {
+                throw new ArgumentNullException(searchText, string.Format(ErrorMessageConstants.ArgumentmentNullExceptionMessage, string.Concat(searchText, unitGuid)));
+            }
+
             int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
             searchText = searchText ?? string.Empty;
 
-            DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+            DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid)
+                .Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
             var result = await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
                 .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
-                                || x.PostalAddress.BuildingName.Contains(searchText)
-                                || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
-                                || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                || x.PostalAddress.DependentLocality.Contains(searchText)))
+                                                                 || x.PostalAddress.BuildingName.Contains(searchText)
+                                                                 || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                                                 || SqlFunctions.StringConvert((double) x.PostalAddress
+                                                                     .BuildingNumber).StartsWith(searchText)
+                                                                 || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                                                 || x.PostalAddress.DependentLocality.Contains(
+                                                                     searchText)))
                 .Select(l => new DeliveryPointDTO
                 {
                     PostalAddress = new PostalAddressDTO
@@ -230,19 +239,30 @@ namespace Fmo.DataServices.Repositories
         /// </returns>
         public async Task<int> GetDeliveryPointsCount(string searchText, Guid unitGuid)
         {
-            searchText = searchText ?? string.Empty;
-            DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+            try
+            {
+                searchText = searchText ?? string.Empty;
+                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
-            var result = await DataContext.DeliveryPoints.AsNoTracking()
-              .Include(l => l.PostalAddress)
-              .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
-                              || x.PostalAddress.BuildingName.Contains(searchText)
-                              || x.PostalAddress.SubBuildingName.Contains(searchText)
-                              || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
-                              || x.PostalAddress.Thoroughfare.Contains(searchText)
-                              || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
+                var result = await DataContext.DeliveryPoints.AsNoTracking()
+                  .Include(l => l.PostalAddress)
+                  .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
+                                  || x.PostalAddress.BuildingName.Contains(searchText)
+                                  || x.PostalAddress.SubBuildingName.Contains(searchText)
+                                  || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
+                                  || x.PostalAddress.Thoroughfare.Contains(searchText)
+                                  || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
 
-            return result;
+                return result;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+            }
         }
 
         /// <summary>
@@ -270,36 +290,48 @@ namespace Fmo.DataServices.Repositories
         /// <summary>
         /// This method updates delivery point location using UDPRN
         /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
-        /// <returns>updated delivery point guid</returns>
-        public async Task<Guid> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO)
+        /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
+        /// <returns>updated delivery point</returns>
+        public async Task<Guid> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDto)
         {
             try
             {
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
                     DeliveryPoint deliveryPoint =
-                        fmoDBContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
+                        fmoDBContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
 
-                    deliveryPoint.Longitude = deliveryPointDTO.Longitude;
-                    deliveryPoint.Latitude = deliveryPointDTO.Latitude;
-                    deliveryPoint.LocationXY = deliveryPointDTO.LocationXY;
-                    deliveryPoint.LocationProvider_GUID = deliveryPointDTO.LocationProvider_GUID;
-                    deliveryPoint.Positioned = deliveryPointDTO.Positioned;
+                    if (deliveryPoint != null)
+                    {
+                        deliveryPoint.Longitude = deliveryPointDto.Longitude;
+                        deliveryPoint.Latitude = deliveryPointDto.Latitude;
+                        deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
+                        deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
+                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
 
-                    fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
-                    fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
-                    await fmoDBContext.SaveChangesAsync();
+                        fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
+                        fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
+                        await fmoDBContext.SaveChangesAsync();
+                    }
+
                     return deliveryPoint.ID;
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(Constants.ConcurrencyMessage);
+                throw new DbConcurrencyException(ErrorMessageConstants.ConcurrencyMessage);
             }
-            catch (Exception)
+            catch (DbUpdateException dbUpdateException)
             {
-                throw;
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlUpdateExceptionMessage, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+            }
+            catch (ObjectDisposedException disposedException)
+            {
+                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
             }
         }
 
@@ -328,9 +360,10 @@ namespace Fmo.DataServices.Repositories
         /// This method fetches delivery point data for given UDPRN
         /// </summary>
         /// <param name="udprn">udprn as int</param>
-        /// <returns>deliveryPoint DTO</returns>
+        /// <returns>addDeliveryPointDto</returns>
         public AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
         {
+            AddDeliveryPointDTO addDeliveryPointDto = default(AddDeliveryPointDTO);
             var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
                                   join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
                                   join al in DataContext.AddressLocations.AsNoTracking() on pa.UDPRN equals al.UDPRN
@@ -351,12 +384,17 @@ namespace Fmo.DataServices.Repositories
 
             Mapper.Configuration.CreateMapper();
 
-            return new AddDeliveryPointDTO()
+            if (deliveryPoints != null)
             {
-                DeliveryPointDTO = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoints.DeliveryPoint),
-                AddressLocationDTO = Mapper.Map<AddressLocation, AddressLocationDTO>(deliveryPoints.AddressLocation),
-                PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
-            };
+                addDeliveryPointDto = new AddDeliveryPointDTO()
+                {
+                    DeliveryPointDTO = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoints.DeliveryPoint),
+                    AddressLocationDTO = Mapper.Map<AddressLocation, AddressLocationDTO>(deliveryPoints.AddressLocation),
+                    PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
+                };
+            }
+
+            return addDeliveryPointDto;
         }
 
         /// <summary>
@@ -366,25 +404,18 @@ namespace Fmo.DataServices.Repositories
         /// <returns>DeliveryPointDTO object</returns>
         public DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId)
         {
-            try
-            {
-                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId).SingleOrDefault();
+            DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId)
+                .SingleOrDefault();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-                });
-
-                Mapper.Configuration.CreateMapper();
-                var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
-                return deliveryPointDto;
-            }
-            catch (Exception ex)
+            Mapper.Initialize(cfg =>
             {
-                this.loggingHelper.LogError(ex);
-                throw;
-            }
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+            });
+
+            Mapper.Configuration.CreateMapper();
+            var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+            return deliveryPointDto;
         }
 
         /// <summary>
@@ -394,21 +425,12 @@ namespace Fmo.DataServices.Repositories
         /// <returns>boolean value true or false</returns>
         public bool DeliveryPointExists(int udprn)
         {
-            try
+            if (DataContext.DeliveryPoints.AsNoTracking().Where(dp => ((int) dp.UDPRN).Equals(udprn)).Any())
             {
-                if (DataContext.DeliveryPoints.AsNoTracking().Where(dp => ((int)dp.UDPRN).Equals(udprn)).Any())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -419,20 +441,13 @@ namespace Fmo.DataServices.Repositories
         /// <returns>distance as double</returns>
         public double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint)
         {
-            try
+            double? distance = 0;
+            if (deliveryPointDTO != null)
             {
-                double? distance = 0;
-                if (deliveryPointDTO != null)
-                {
-                    distance = deliveryPointDTO.LocationXY.Distance(newPoint);
-                }
+                distance = deliveryPointDTO.LocationXY.Distance(newPoint);
+            }
 
-                return distance;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return distance;
         }
 
         /// <summary>
@@ -442,15 +457,14 @@ namespace Fmo.DataServices.Repositories
         /// <returns>byte[]</returns>
         public byte[] GetDeliveryPointRowVersion(Guid id)
         {
-            try
+            byte[] rowVersion = default(byte[]);
+            DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.ID == id).SingleOrDefault();
+            if (deliveryPoint != null)
             {
-                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.ID == id).SingleOrDefault();
-                return deliveryPoint.RowVersion;
+                rowVersion = deliveryPoint.RowVersion;
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return rowVersion;
         }
 
         /// <summary>
@@ -461,18 +475,17 @@ namespace Fmo.DataServices.Repositories
         /// <returns>List of Delivery Point Entity</returns>
         private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
         {
+            IEnumerable<DeliveryPoint> deliveryPoints = default(IEnumerable<DeliveryPoint>);
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
                 DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
                 DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
-                return DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
+                deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
             }
-            else
-            {
-                return null;
-            }
+
+            return deliveryPoints;
         }
 
         /// <summary>
@@ -482,43 +495,37 @@ namespace Fmo.DataServices.Repositories
         /// <returns>DeliveryPointDTO</returns>
         public DeliveryPointDTO GetDeliveryPoint(Guid deliveryPointGuid)
         {
-            try
+            var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.PostalAddress).AsNoTracking().Single(n => n.ID == deliveryPointGuid);
+
+            Mapper.Initialize(cfg =>
             {
-                var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.PostalAddress).AsNoTracking().Single(n => n.ID == deliveryPointGuid);
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>();
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+            });
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                });
+            Mapper.Configuration.CreateMapper();
 
-                Mapper.Configuration.CreateMapper();
-
-                return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.LogError(ex);
-                return null;
-            }
+            return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
         }
 
         /// <summary>
         /// This method updates delivery point access link status
         /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
+        /// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
         public void UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO)
         {
             using (FMODBContext fmoDbContext = new FMODBContext())
             {
                 DeliveryPoint deliveryPoint = fmoDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
 
-                deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
+                if (deliveryPoint != null)
+                {
+                    deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
 
-                fmoDbContext.Entry(deliveryPoint).State = EntityState.Modified;
-                fmoDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
-
-                fmoDbContext.SaveChanges();
+                    fmoDbContext.Entry(deliveryPoint).State = EntityState.Modified;
+                    fmoDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
+                    fmoDbContext.SaveChanges();
+                }
             }
         }
 

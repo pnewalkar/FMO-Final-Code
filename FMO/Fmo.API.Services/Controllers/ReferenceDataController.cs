@@ -26,9 +26,10 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllReferenceData")]
-        public List<ReferenceDataCategoryDTO> GetAllReferenceData()
+        public IActionResult GetAllReferenceData()
         {
-            return referenceDataBusinessService.GetAllReferenceCategoryList();
+            List<ReferenceDataCategoryDTO> referenceDataCategorys = referenceDataBusinessService.GetAllReferenceCategoryList();
+            return Ok(referenceDataCategorys);
         }
     }
 }

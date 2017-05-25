@@ -35,9 +35,10 @@ namespace Fmo.API.Services.Controllers
             {
                 await usrBusinessService.SaveUSRDetails(lstAddressLocationUSRPOSTDTO);
             }
-            catch (Exception ex)
+            catch (AggregateException ae)
             {
-                loggingHelper.LogError(ex);
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
 

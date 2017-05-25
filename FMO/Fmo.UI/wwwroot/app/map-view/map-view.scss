@@ -19,6 +19,7 @@
     @include top(75px);
     left: 15px;
     height: calc(100% - 85px);
+    pointer-events: none;
 }
 
 #rightPanel {

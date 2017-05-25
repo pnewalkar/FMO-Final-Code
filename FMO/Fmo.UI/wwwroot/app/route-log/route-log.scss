@@ -68,10 +68,6 @@ md-dialog h2{
     height: height-percent(1);
 }
 
-/*.routeSelect {
-    @include width(280px);
-  }*/
-
 .routeSelectSearch {
     width: width-percent(1.03);
     @include background(none,none);

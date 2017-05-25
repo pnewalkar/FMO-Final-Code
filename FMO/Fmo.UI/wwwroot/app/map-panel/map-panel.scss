@@ -24,6 +24,10 @@ map-panel {
     list-style: none;
 }
 
+.hide-right-panel{
+    @include width(250px);
+}
+
 .map-panel li {
     @extend %body-content;
     @include padding(10px 10px 10px 10px);

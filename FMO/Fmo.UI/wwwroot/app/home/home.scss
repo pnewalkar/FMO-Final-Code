@@ -1,9 +1,9 @@
 @import './app/variables';
 
 .brandName{
- @extend %header-content;
-font-size: 30px !important;
-  font-weight: bold !important;
+    @extend %header-content;
+    font-size: 24px !important;
+    font-weight: bold !important;
 }
 
 .fa-inbox{
@@ -25,6 +25,7 @@ h1{
 
 .mdDialog {
     width: width-percent(1);
+    height: height-percent(1);
 }
 
 .fa {

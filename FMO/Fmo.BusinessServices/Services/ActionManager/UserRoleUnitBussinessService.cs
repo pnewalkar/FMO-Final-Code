@@ -33,14 +33,7 @@ namespace Fmo.BusinessServices.Services
         /// <returns>Guid</returns>
         public Task<Guid> GetUserUnitInfo(string userName)
         {
-            try
-            {
-                return userRoleUnitRepository.GetUserUnitInfo(userName);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return userRoleUnitRepository.GetUserUnitInfo(userName);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -20,14 +22,20 @@ namespace Fmo.DataServices.Repositories
         {
             try
             {
-                PostcodeSector postCodeSector = DataContext.PostalAddresses.AsNoTracking().Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault().Postcode1.PostcodeSector;
-                PostCodeSectorDTO postCodeSectorDTO = new PostCodeSectorDTO();
-                GenericMapper.Map(postCodeSector, postCodeSectorDTO);
-                return postCodeSectorDTO;
+                PostCodeSectorDTO postCodeSectorDto = default(PostCodeSectorDTO);
+                var singleOrDefault = DataContext.PostalAddresses.AsNoTracking().Where(postalAddress => postalAddress.UDPRN == uDPRN).SingleOrDefault();
+                if (singleOrDefault != null)
+                {
+                    PostcodeSector postCodeSector = singleOrDefault.Postcode1.PostcodeSector;
+                    postCodeSectorDto = new PostCodeSectorDTO();
+                    GenericMapper.Map(postCodeSector, postCodeSectorDto);
+                }
+
+                return postCodeSectorDto;
             }
-            catch (Exception)
+            catch (InvalidOperationException ex)
             {
-                throw;
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
             }
         }
     }

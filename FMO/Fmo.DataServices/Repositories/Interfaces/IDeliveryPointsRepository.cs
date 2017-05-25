@@ -36,9 +36,9 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <summary>
         /// Update the delivery point based on the UDPRN id
         /// </summary>
-        /// <param name="deliveryPointDTO">DeliveryPointDTO object</param>
+        /// <param name="deliveryPointDto">DeliveryPointDTO object</param>
         /// <returns>Task<Guid></returns>
-        Task<Guid> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO);
+        Task<Guid> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDto);
 
         /// <summary>
         /// This method is used to fetch Delivery Points as per advance search.
@@ -129,7 +129,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// <summary>
         /// This method updates delivery point access link status
         /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDTO as DTO</param>
+        /// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
         void UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
 

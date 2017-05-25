@@ -71,9 +71,6 @@ md-dialog h2 {
   width: 58.82353%;
   height: 100%; }
 
-/*.routeSelect {
-    @include width(280px);
-  }*/
 .routeSelectSearch {
   width: 97.08738%;
   background-color: none;
