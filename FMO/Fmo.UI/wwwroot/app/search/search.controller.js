@@ -8,7 +8,9 @@ SearchController.$inject = [
     'mapFactory',
     'popUpSettingService',
     '$mdDialog',
-    '$timeout'
+    '$timeout',
+    'errorService'
+  
 ];
 
 function SearchController(
@@ -17,7 +19,9 @@ function SearchController(
     mapFactory,
     popUpSettingService,
     $mdDialog,
-    $timeout) {
+    $timeout,
+    errorService
+    ) {
 
     var vm = this;
     vm.resultSet = resultSet;
@@ -26,13 +30,19 @@ function SearchController(
     vm.advanceSearch = advanceSearch;
     vm.openModalPopup = openModalPopup;
     vm.onBlur = onBlur;
+    vm.openAlert = openAlert;
 
     function querySearch(query) {
         searchApiService.basicSearch(query).then(function (response) {
             vm.resultscount = response.data.searchCounts;
             vm.results = response.data.searchResultItems;
             vm.isResultDisplay = true;
-        });
+        }).catch(function (e) {
+            errorService.openAlert(e.error);
+            //openAlert(e.error);
+            throw e;
+        })
+       
     }
 
     function resultSet(query) {
@@ -105,5 +115,23 @@ function SearchController(
             vm.resultscount[0].count = 0;
             vm.searchText = "";
         });
-    };   
+    };
+
+    function openAlert(text) {
+        debugger;
+        var confirm =
+          $mdDialog.confirm()
+            .clickOutsideToClose(true)
+            .title('Error')
+            .textContent(text)
+            .ariaLabel('Left to right demo')
+            .ok('Ok')
+            
+
+        $mdDialog.show(confirm).then(function () {
+          
+         
+        }, function () {
+        });
+    };
 }
