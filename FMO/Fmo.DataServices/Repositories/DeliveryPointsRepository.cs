@@ -292,11 +292,10 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
-        public async Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDto)
+        public async Task<Guid> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDto)
         {
             try
             {
-                int updateCount = default(int);
                 using (FMODBContext fmoDBContext = new FMODBContext())
                 {
                     DeliveryPoint deliveryPoint =
@@ -312,7 +311,7 @@ namespace Fmo.DataServices.Repositories
 
                         fmoDBContext.Entry(deliveryPoint).State = EntityState.Modified;
                         fmoDBContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
-                        updateCount = await fmoDBContext.SaveChangesAsync();
+                        await fmoDBContext.SaveChangesAsync();
                     }
 
                     return deliveryPoint.ID;
@@ -527,14 +526,6 @@ namespace Fmo.DataServices.Repositories
                     fmoDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
                     fmoDbContext.SaveChanges();
                 }
-            }
-        }
-    }
-}
-                fmoDbContext.Entry(deliveryPoint).State = EntityState.Modified;
-                fmoDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
-
-                fmoDbContext.SaveChanges();
             }
         }
 
