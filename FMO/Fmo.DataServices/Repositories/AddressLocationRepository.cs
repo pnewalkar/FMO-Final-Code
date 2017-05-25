@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
+using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
+using Fmo.Common.Interface;
+using Fmo.Common.ResourceFile;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -15,9 +20,15 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository
     {
-        public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory)
+        private IExceptionHelper exceptionHelper = default(IExceptionHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.exceptionHelper = exceptionHelper;
+            this.loggingHelper = loggingHelper;
+            ;
         }
 
         /// <summary>
@@ -27,21 +38,13 @@ namespace Fmo.DataServices.Repositories
         /// <returns>boolean value</returns>
         public bool AddressLocationExists(int udprn)
         {
-            try
+
+            if (DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).Any())
             {
-                if (DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).Any())
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -68,14 +71,21 @@ namespace Fmo.DataServices.Repositories
                 var addressLocationEntity = new AddressLocation();
 
                 GenericMapper.Map(addressLocationDTO, addressLocationEntity);
-
                 DataContext.AddressLocations.Add(addressLocationEntity);
 
                 return await DataContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DbUpdateException dbUpdateException)
             {
-                throw;
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
+            }
+            catch (NotSupportedException notSupportedException)
+            {
+                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+            }
+            catch (ObjectDisposedException disposedException)
+            {
+                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage, ErrorMessageIds.Err_ObjectDisposedException);
             }
         }
     }

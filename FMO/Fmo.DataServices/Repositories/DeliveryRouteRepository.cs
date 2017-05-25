@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -33,17 +34,15 @@ namespace Fmo.DataServices.Repositories
         /// <summary>
         /// Fetch the Delivery Route.
         /// </summary>
-        /// <param name="operationStateID">Guid operationStateID</param>
-        /// <param name="deliveryScenarioID">Guid deliveryScenarioID</param>
+        /// <param name="operationStateId">Guid operationStateID</param>
+        /// <param name="deliveryScenarioId">Guid deliveryScenarioID</param>
         /// <param name="userUnit">The user unit.</param>
-        /// <returns>
-        /// List
-        /// </returns>
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit)
+        /// <returns>List</returns>
+        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateId, Guid deliveryScenarioId, Guid userUnit)
         {
             IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking()
-                .Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioID &&
-                            x.Scenario.OperationalState_GUID == operationStateID).ToList();
+                .Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioId &&
+                            x.Scenario.OperationalState_GUID == operationStateId).ToList();
             return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
         }
 
@@ -101,16 +100,25 @@ namespace Fmo.DataServices.Repositories
         /// <returns>The total count of delivery route</returns>
         public async Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit)
         {
-            searchText = searchText ?? string.Empty;
-            return await DataContext.DeliveryRoutes.AsNoTracking()
-                .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
-                            (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
-                .CountAsync();
+            try
+            {
+                searchText = searchText ?? string.Empty;
+                return await DataContext.DeliveryRoutes.AsNoTracking()
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
+                                (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                    .CountAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+            }
         }
 
         #region GeneratePDF
-
-        #region Public Methods
 
         /// <summary>
         /// Gets the delivery route detailsfor PDF generation.
@@ -211,8 +219,6 @@ namespace Fmo.DataServices.Repositories
             throw new NotImplementedException();
         }
 
-        #endregion Public Methods
-
         #region Private Methods
 
         /// <summary>
@@ -223,12 +229,23 @@ namespace Fmo.DataServices.Repositories
         /// <returns>int</returns>
         private async Task<int> GetNumberOfBlocks(Guid deliveryRouteId, Guid userUnit)
         {
-            int numberOfBlocks = await (from drb in DataContext.DeliveryRouteBlocks.AsNoTracking()
-                                        join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                                        join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                        where drb.DeliveryRoute_GUID == deliveryRouteId && sr.Unit_GUID == userUnit
-                                        select drb.Block_GUID).CountAsync();
-            return numberOfBlocks;
+            try
+            {
+                int numberOfBlocks = await (from drb in DataContext.DeliveryRouteBlocks.AsNoTracking()
+                                            join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
+                                            join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                            where drb.DeliveryRoute_GUID == deliveryRouteId && sr.Unit_GUID == userUnit
+                                            select drb.Block_GUID).CountAsync();
+                return numberOfBlocks;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+            }
         }
 
         /// <summary>
@@ -240,14 +257,25 @@ namespace Fmo.DataServices.Repositories
         /// <returns>int</returns>
         private async Task<int> GetNumberOfDPs(Guid deliveryRouteId, Guid operationalObjectTypeForDp, Guid userUnit)
         {
-            int numberOfDPs = await (from blkseq in DataContext.BlockSequences.AsNoTracking()
-                                     join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on blkseq.Block_GUID equals drb.Block_GUID
-                                     join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                                     join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                     where blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId &&
-                                           sr.Unit_GUID == userUnit
-                                     select blkseq.OperationalObject_GUID).CountAsync();
-            return numberOfDPs;
+            try
+            {
+                int numberOfDPs = await (from blkseq in DataContext.BlockSequences.AsNoTracking()
+                                         join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on blkseq.Block_GUID equals drb.Block_GUID
+                                         join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
+                                         join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                         where blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId &&
+                                               sr.Unit_GUID == userUnit
+                                         select blkseq.OperationalObject_GUID).CountAsync();
+                return numberOfDPs;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+            }
         }
 
         /// <summary>
@@ -259,16 +287,27 @@ namespace Fmo.DataServices.Repositories
         /// <returns>int</returns>
         private async Task<int> GetNumberOfCommercialResidentialDPs(Guid deliveryRouteId, Guid operationalObjectTypeForDp, Guid userUnit)
         {
-            int numberOfCommercialResidentialDPs = await (from del in DataContext.DeliveryPoints.AsNoTracking()
-                                                          join blkseq in DataContext.BlockSequences.AsNoTracking() on del.ID equals blkseq.OperationalObject_GUID
-                                                          join dr in DataContext.DeliveryRoutes.AsNoTracking() on deliveryRouteId equals dr.ID
-                                                          join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                                          join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
-                                                          where del.DeliveryPointUseIndicator_GUID == operationalObjectTypeForDp &&
-                                                                drb.DeliveryRoute_GUID == deliveryRouteId
-                                                                && blkseq.Block_GUID == drb.Block_GUID && sr.Unit_GUID == userUnit
-                                                          select del.DeliveryPointUseIndicator_GUID).CountAsync();
-            return numberOfCommercialResidentialDPs;
+            try
+            {
+                int numberOfCommercialResidentialDPs = await (from del in DataContext.DeliveryPoints.AsNoTracking()
+                                                              join blkseq in DataContext.BlockSequences.AsNoTracking() on del.ID equals blkseq.OperationalObject_GUID
+                                                              join dr in DataContext.DeliveryRoutes.AsNoTracking() on deliveryRouteId equals dr.ID
+                                                              join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                                              join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
+                                                              where del.DeliveryPointUseIndicator_GUID == operationalObjectTypeForDp &&
+                                                                    drb.DeliveryRoute_GUID == deliveryRouteId
+                                                                    && blkseq.Block_GUID == drb.Block_GUID && sr.Unit_GUID == userUnit
+                                                              select del.DeliveryPointUseIndicator_GUID).CountAsync();
+                return numberOfCommercialResidentialDPs;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+            }
         }
 
         /// <summary>
@@ -280,17 +319,28 @@ namespace Fmo.DataServices.Repositories
         /// <returns>int</returns>
         private async Task<int> GetAliases(Guid deliveryRouteId, Guid operationalObjectTypeForDp, Guid userUnit)
         {
-            int noOfDpAliases = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
-                                       join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                       join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
-                                       join b in DataContext.Blocks.AsNoTracking() on drb.Block_GUID equals b.ID
-                                       join blkseq in DataContext.BlockSequences.AsNoTracking() on b.ID equals blkseq.Block_GUID
-                                       join dp in DataContext.DeliveryPoints.AsNoTracking() on blkseq.OperationalObject_GUID equals dp.ID
-                                       join dpa in DataContext.DeliveryPointAlias.AsNoTracking() on dp.ID equals dpa.DeliveryPoint_GUID
-                                       where sr.Unit_GUID == userUnit && blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId
-                                       select dpa.ID).CountAsync();
+            try
+            {
+                int noOfDpAliases = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
+                                           join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                           join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on dr.ID equals drb.DeliveryRoute_GUID
+                                           join b in DataContext.Blocks.AsNoTracking() on drb.Block_GUID equals b.ID
+                                           join blkseq in DataContext.BlockSequences.AsNoTracking() on b.ID equals blkseq.Block_GUID
+                                           join dp in DataContext.DeliveryPoints.AsNoTracking() on blkseq.OperationalObject_GUID equals dp.ID
+                                           join dpa in DataContext.DeliveryPointAlias.AsNoTracking() on dp.ID equals dpa.DeliveryPoint_GUID
+                                           where sr.Unit_GUID == userUnit && blkseq.OperationalObjectType_GUID == operationalObjectTypeForDp && dr.ID == deliveryRouteId
+                                           select dpa.ID).CountAsync();
 
-            return noOfDpAliases;
+                return noOfDpAliases;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+            }
         }
 
         /// <summary>

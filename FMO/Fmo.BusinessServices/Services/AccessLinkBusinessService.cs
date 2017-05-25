@@ -63,22 +63,17 @@ namespace Fmo.BusinessServices.Services
         /// <returns> AccsessLink object</returns>
         public string GetAccessLinks(string boundaryBox, Guid unitGuid)
         {
-            try
-            {
-                string accessLinkJsonData = null;
+            string accessLinkJsonData = null;
 
-                if (!string.IsNullOrEmpty(boundaryBox))
-                {
-                    var accessLinkCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                    accessLinkJsonData = GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates, unitGuid));
-                }
-
-                return accessLinkJsonData;
-            }
-            catch (Exception)
+            if (!string.IsNullOrEmpty(boundaryBox))
             {
-                throw;
+                var accessLinkCoordinates =
+                    GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(Constants.Comma[0]));
+                accessLinkJsonData =
+                    GetAccessLinkJsonData(accessLinkRepository.GetAccessLinks(accessLinkCoordinates, unitGuid));
             }
+
+            return accessLinkJsonData;
         }
 
         /// <summary>
@@ -90,164 +85,170 @@ namespace Fmo.BusinessServices.Services
         public bool CreateAccessLink(Guid operationalObjectId, Guid operationObjectTypeId)
         {
             bool isAccessLinkCreated = false;
-            try
+            object operationalObject = new object();
+
+            List<string> categoryNames = new List<string>
             {
-                object operationalObject = new object();
+                ReferenceDataCategoryNames.OperationalObjectType,
+                ReferenceDataCategoryNames.AccessLinkDirection,
+                ReferenceDataCategoryNames.AccessLinkStatus,
+                ReferenceDataCategoryNames.AccessLinkType,
+                ReferenceDataCategoryNames.AccessLinkParameters,
+                ReferenceDataCategoryNames.AccessLinkRules,
+                ReferenceDataCategoryNames.NetworkLinkType,
+                ReferenceDataCategoryNames.DeliveryPointUseIndicator
+            };
 
-                List<string> categoryNames = new List<string>
+            DbGeometry operationalObjectPoint = default(DbGeometry);
+            string roadName = string.Empty;
+            var referenceDataCategoryList =
+                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+
+            // Get details for the OO
+            if (referenceDataCategoryList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID ==
+                operationObjectTypeId)
+            {
+                var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectId);
+
+                // if the delivery point is not positioned then return failure
+                if (!deliveryPointOperationalObject.Positioned)
                 {
-                   ReferenceDataCategoryNames.OperationalObjectType,
-                   ReferenceDataCategoryNames.AccessLinkDirection,
-                   ReferenceDataCategoryNames.AccessLinkStatus,
-                   ReferenceDataCategoryNames.AccessLinkType,
-                   ReferenceDataCategoryNames.AccessLinkParameters,
-                   ReferenceDataCategoryNames.AccessLinkRules,
-                   ReferenceDataCategoryNames.NetworkLinkType,
-                   ReferenceDataCategoryNames.DeliveryPointUseIndicator
-                };
-
-                DbGeometry operationalObjectPoint = default(DbGeometry);
-                string roadName = string.Empty;
-                var referenceDataCategoryList =
-                    referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
-
-                // Get details for the OO
-                if (referenceDataCategoryList
-                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
-                {
-                    var deliveryPointOperationalObject = deliveryPointsRepository.GetDeliveryPoint(operationalObjectId);
-
-                    // if the delivery point is not positioned then return failure
-                    if (!deliveryPointOperationalObject.Positioned)
-                    {
-                        return false;
-                    }
-
-                    operationalObjectPoint = deliveryPointOperationalObject.LocationXY;
-                    roadName = deliveryPointOperationalObject.PostalAddress.Thoroughfare;
-
-                    operationalObject = deliveryPointOperationalObject;
+                    return false;
                 }
 
-                double actualLength = 0;
-                bool matchFound = false;
-                string accessLinkStatus = string.Empty;
-                string accessLinkDirection = string.Empty;
-                string accessLinkType = string.Empty;
-                bool accessLinkApproved = false;
+                operationalObjectPoint = deliveryPointOperationalObject.LocationXY;
+                roadName = deliveryPointOperationalObject.PostalAddress.Thoroughfare;
 
-                // get actual length threshold.
+                operationalObject = deliveryPointOperationalObject;
+            }
 
-                // Rule 1. Named road is within threshold limit and there are no intersections with any other roads
-                Tuple<NetworkLinkDTO, SqlGeometry> nearestNamedStreetNetworkObjectWithIntersectionTuple =
-                    streetNetworkBusinessService.GetNearestNamedRoad(operationalObjectPoint, roadName);
-                NetworkLinkDTO networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple.Item1;
-                SqlGeometry networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple.Item2;
+            double actualLength = 0;
+            bool matchFound = false;
+            string accessLinkStatus = string.Empty;
+            string accessLinkDirection = string.Empty;
+            string accessLinkType = string.Empty;
+            bool accessLinkApproved = false;
 
+            // get actual length threshold.
+
+            // Rule 1. Named road is within threshold limit and there are no intersections with any other roads
+            Tuple<NetworkLinkDTO, SqlGeometry> nearestNamedStreetNetworkObjectWithIntersectionTuple =
+                streetNetworkBusinessService.GetNearestNamedRoad(operationalObjectPoint, roadName);
+            NetworkLinkDTO networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple.Item1;
+            SqlGeometry networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple.Item2;
+
+            if (networkLink != null && !networkIntersectionPoint.IsNull)
+            {
+                actualLength =
+                    (double) operationalObjectPoint.ToSqlGeometry()
+                        .ShortestLineTo(
+                            nearestNamedStreetNetworkObjectWithIntersectionTuple.Item1.LinkGeometry.ToSqlGeometry())
+                        .STLength();
+
+                var accessLinkSameRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkSameRoadMaxDistance)
+                    .ReferenceDataValue);
+
+                // check if the matched named road is withing the threshold defined.
+                matchFound = actualLength <= accessLinkSameRoadMaxDistance;
+
+                accessLinkStatus = ReferenceDataValues.AccessLinkStatusLive;
+                accessLinkDirection = ReferenceDataValues.AccessLinkDirectionBoth;
+                accessLinkType = ReferenceDataValues.AccessLinkTypeDefault;
+                accessLinkApproved = true;
+            }
+            else
+            {
+                // Rule 2. - look for any path or road
+                // if there is any other road other than the
+                // return the road segment object and the access link intersection point
+                Tuple<NetworkLinkDTO, SqlGeometry> nearestStreetNetworkObjectWithIntersectionTuple =
+                    streetNetworkBusinessService.GetNearestSegment(operationalObjectPoint);
+
+                networkLink = nearestStreetNetworkObjectWithIntersectionTuple.Item1;
+                networkIntersectionPoint = nearestStreetNetworkObjectWithIntersectionTuple.Item2;
                 if (networkLink != null && !networkIntersectionPoint.IsNull)
                 {
-                    actualLength =
-                        (double)operationalObjectPoint.ToSqlGeometry()
-                            .ShortestLineTo(
-                                nearestNamedStreetNetworkObjectWithIntersectionTuple.Item1.LinkGeometry.ToSqlGeometry())
-                            .STLength();
+                    actualLength = (double) operationalObjectPoint.ToSqlGeometry()
+                        .ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry()).STLength();
 
-                    var accessLinkSameRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters)
-                                                                                                 .SelectMany(x => x.ReferenceDatas)
-                                                                                                 .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkSameRoadMaxDistance)
-                                                                                                 .ReferenceDataValue);
+                    var accessLinkDiffRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList
+                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters)
+                        .SelectMany(x => x.ReferenceDatas)
+                        .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkDiffRoadMaxDistance)
+                        .ReferenceDataValue);
 
-                    // check if the matched named road is withing the threshold defined.
-                    matchFound = actualLength <= accessLinkSameRoadMaxDistance;
+                    // check if the matched segment is within the threshold defined.
+                    matchFound = actualLength <= accessLinkDiffRoadMaxDistance;
 
-                    accessLinkStatus = ReferenceDataValues.AccessLinkStatusLive;
+                    accessLinkStatus = ReferenceDataValues.AccessLinkStatusDraftPendingReview;
                     accessLinkDirection = ReferenceDataValues.AccessLinkDirectionBoth;
                     accessLinkType = ReferenceDataValues.AccessLinkTypeDefault;
-                    accessLinkApproved = true;
-                }
-                else
-                {
-                    // Rule 2. - look for any path or road
-                    // if there is any other road other than the
-                    // return the road segment object and the access link intersection point
-                    Tuple<NetworkLinkDTO, SqlGeometry> nearestStreetNetworkObjectWithIntersectionTuple =
-                        streetNetworkBusinessService.GetNearestSegment(operationalObjectPoint);
-
-                    networkLink = nearestStreetNetworkObjectWithIntersectionTuple.Item1;
-                    networkIntersectionPoint = nearestStreetNetworkObjectWithIntersectionTuple.Item2;
-                    if (networkLink != null && !networkIntersectionPoint.IsNull)
-                    {
-                        actualLength = (double)operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry()).STLength();
-
-                        var accessLinkDiffRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList.Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkParameters)
-                                                                                                     .SelectMany(x => x.ReferenceDatas)
-                                                                                                     .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkDiffRoadMaxDistance)
-                                                                                                     .ReferenceDataValue);
-
-                        // check if the matched segment is within the threshold defined.
-                        matchFound = actualLength <= accessLinkDiffRoadMaxDistance;
-
-                        accessLinkStatus = ReferenceDataValues.AccessLinkStatusDraftPendingReview;
-                        accessLinkDirection = ReferenceDataValues.AccessLinkDirectionBoth;
-                        accessLinkType = ReferenceDataValues.AccessLinkTypeDefault;
-                    }
-                }
-
-                if (matchFound)
-                {
-                    AccessLinkDTO accessLinkDto = new AccessLinkDTO();
-                    accessLinkDto.ID = Guid.Empty;
-                    accessLinkDto.AccessLinkLine =
-                        operationalObjectPoint.ToSqlGeometry()
-                            .ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry())
-                            .ToDbGeometry();
-                    accessLinkDto.ActualLengthMeter = Convert.ToDecimal(actualLength);
-                    accessLinkDto.NetworkIntersectionPoint = networkIntersectionPoint.ToDbGeometry();
-                    accessLinkDto.NetworkLink_GUID = networkLink.Id;
-                    accessLinkDto.OperationalObjectPoint = operationalObjectPoint;
-                    accessLinkDto.OperationalObject_GUID = operationalObjectId;
-                    accessLinkDto.OperationalObjectType_GUID = operationObjectTypeId;
-                    accessLinkDto.Approved = accessLinkApproved;
-                    if (referenceDataCategoryList
-                      .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                      .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
-                    {
-                        DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
-                        accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, actualLength, networkLink, referenceDataCategoryList));
-                    }
-
-                    accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
-                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == accessLinkType).ID;
-
-                    accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
-                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == accessLinkDirection).ID;
-
-                    accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
-                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == accessLinkStatus).ID;
-
-                    // create access link
-                    isAccessLinkCreated = accessLinkRepository.CreateAccessLink(accessLinkDto);
-
-                    if (isAccessLinkCreated)
-                    {
-                        if (referenceDataCategoryList
-                       .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
-                       .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
-                        {
-                            DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
-                            deliveryPointDto.AccessLinkPresent = true;
-                            deliveryPointsRepository.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDto);
-                        }
-                    }
                 }
             }
-            catch (Exception ex)
+
+            if (matchFound)
             {
-                loggingHelper.LogError(ex);
+                AccessLinkDTO accessLinkDto = new AccessLinkDTO();
+                accessLinkDto.ID = Guid.Empty;
+                accessLinkDto.AccessLinkLine =
+                    operationalObjectPoint.ToSqlGeometry()
+                        .ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry())
+                        .ToDbGeometry();
+                accessLinkDto.ActualLengthMeter = Convert.ToDecimal(actualLength);
+                accessLinkDto.NetworkIntersectionPoint = networkIntersectionPoint.ToDbGeometry();
+                accessLinkDto.NetworkLink_GUID = networkLink.Id;
+                accessLinkDto.OperationalObjectPoint = operationalObjectPoint;
+                accessLinkDto.OperationalObject_GUID = operationalObjectId;
+                accessLinkDto.OperationalObjectType_GUID = operationObjectTypeId;
+                accessLinkDto.Approved = accessLinkApproved;
+                if (referenceDataCategoryList
+                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                        .SelectMany(x => x.ReferenceDatas)
+                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID ==
+                    operationObjectTypeId)
+                {
+                    DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO) operationalObject;
+                    accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto,
+                        actualLength, networkLink, referenceDataCategoryList));
+                }
+
+                accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Single(x => x.ReferenceDataValue == accessLinkType).ID;
+
+                accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkDirection)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Single(x => x.ReferenceDataValue == accessLinkDirection).ID;
+
+                accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkStatus)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Single(x => x.ReferenceDataValue == accessLinkStatus).ID;
+
+                // create access link
+                isAccessLinkCreated = accessLinkRepository.CreateAccessLink(accessLinkDto);
+
+                if (isAccessLinkCreated)
+                {
+                    if (referenceDataCategoryList
+                            .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                            .SelectMany(x => x.ReferenceDatas)
+                            .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID ==
+                        operationObjectTypeId)
+                    {
+                        DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO) operationalObject;
+                        deliveryPointDto.AccessLinkPresent = true;
+                        deliveryPointsRepository.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDto);
+                    }
+                }
             }
 
             return isAccessLinkCreated;

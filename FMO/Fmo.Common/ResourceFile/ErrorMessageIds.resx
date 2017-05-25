@@ -117,40 +117,68 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EventID" xml:space="preserve">
-    <value>9002</value>
+  <data name="Err_ArgumentmentNullException" xml:space="preserve">
+    <value>ArgumentmentNull</value>
+    <comment>Following arguments for the method are null {0}</comment>
   </data>
-  <data name="EventLogTitle" xml:space="preserve">
-    <value>FMO Exception</value>
+  <data name="Err_Concurrency" xml:space="preserve">
+    <value>Concurrency</value>
+    <comment>Data you are trying to modify has been already modified by another user.</comment>
   </data>
-  <data name="GenralErrorMessage" xml:space="preserve">
-    <value>Application Error Occured. Please contact your administrator.</value>
+  <data name="Err_Default" xml:space="preserve">
+    <value>Default</value>
+    <comment>Application Error Occured. Please contact your administrator.</comment>
   </data>
-  <data name="LogAndThrowErrorMessage" xml:space="preserve">
-    <value>An application error occurred and has been logged. Please contact your administrator.</value>
+  <data name="Err_EntityNotFoundException" xml:space="preserve">
+    <value>EntityNotFound</value>
+    <comment>The entity trying to search cannot be found.</comment>
   </data>
-  <data name="LogCategory" xml:space="preserve">
-    <value>General</value>
+  <data name="Err_ExecutingErrorHandler" xml:space="preserve">
+    <value>ExecutingErrorHandler</value>
+    <comment>An exception was thrown attempting to execute the error handler.</comment>
   </data>
-  <data name="Logging_LogName" xml:space="preserve">
-    <value>Application</value>
+  <data name="Err_InvalidOperationExceptionForCountAsync" xml:space="preserve">
+    <value>InvalidOperationForCountAsync</value>
+    <comment>The underlying provider does not support this operation.</comment>
   </data>
-  <data name="Logging_LogSource" xml:space="preserve">
-    <value>FMO Logging</value>
+  <data name="Err_InvalidOperationExceptionForFirstorDefault" xml:space="preserve">
+    <value>InvalidOperationForFirstorDefault</value>
+    <comment>Source does not implement IDbAsyncQueryProvider</comment>
   </data>
-  <data name="Logging_TextFormat" xml:space="preserve">
-    <value>Timestamp: {timestamp(local)}{newline}Message: {message}{newline}Category: {category}{newline}Priority: {priority}{newline}EventId: {eventid}{newline}Severity: {severity}{newline}Title:{title}{newline}Machine: {localMachine}{newline}App Domain: {localAppDomain}{newline}ProcessId: {localProcessId}{newline}Process Name: {localProcessName}{newline}Thread Name: {threadName}{newline}Win32 ThreadId:{win32ThreadId}{newline}Extended Properties: {dictionary({key} - {value}{newline})}</value>
+  <data name="Err_InvalidOperationExceptionForSingleorDefault" xml:space="preserve">
+    <value>InvalidOperationForSingleorDefault</value>
+    <comment>There are more than one element in sequence for SingleOrDefault() extention</comment>
   </data>
-  <data name="LogSource_LogSourceName" xml:space="preserve">
-    <value>General</value>
+  <data name="Err_NotSupportedException" xml:space="preserve">
+    <value>NotSupported</value>
+    <comment>An attempt was made to use unsupported behavior.</comment>
   </data>
-  <data name="Policy_ExceptionShielding" xml:space="preserve">
-    <value>ExceptionShielding</value>
+  <data name="Err_ObjectDisposedException" xml:space="preserve">
+    <value>ObjectDisposed</value>
+    <comment>The context or connection have been disposed.</comment>
   </data>
-  <data name="Policy_LogAndWrap" xml:space="preserve">
-    <value>LogAndWrap</value>
+  <data name="Err_OverflowException" xml:space="preserve">
+    <value>Overflow</value>
+    <comment>The number of elements in source is larger than MaxValue.</comment>
   </data>
-  <data name="Policy_LoggingAndReplacingException" xml:space="preserve">
-    <value>LoggingAndReplacingException</value>
+  <data name="Err_SqlAddException" xml:space="preserve">
+    <value>SqlAdd</value>
+    <comment>Error occured on adding new {0}.</comment>
+  </data>
+  <data name="Err_SqlDeleteException" xml:space="preserve">
+    <value>SqlDelete</value>
+    <comment>Error occured while deleting {0}.</comment>
+  </data>
+  <data name="Err_SqlUpdateException" xml:space="preserve">
+    <value>SqlUpdate</value>
+    <comment>Error occured on modifying {0}.</comment>
+  </data>
+  <data name="Err_Token" xml:space="preserve">
+    <value>Token</value>
+    <comment>Error occured while generating token</comment>
+  </data>
+  <data name="Err_UnHandled" xml:space="preserve">
+    <value>UnHandled</value>
+    <comment>An unhandled application error occurred and has been logged. Please contact your administrator.</comment>
   </data>
 </root>

@@ -33,15 +33,8 @@ namespace Fmo.BusinessServices.Services
         /// <returns>RoleAccessDTO</returns>
         public async Task<List<RoleAccessDTO>> GetRoleBasedAccessFunctions(UserUnitInfoDTO userUnitInfo)
         {
-            try
-            {
-                var roleAccessDto = await actionManagerRepository.GetRoleBasedAccessFunctions(userUnitInfo);
-                return roleAccessDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            var roleAccessDto = await actionManagerRepository.GetRoleBasedAccessFunctions(userUnitInfo);
+            return roleAccessDto;
         }
     }
 }

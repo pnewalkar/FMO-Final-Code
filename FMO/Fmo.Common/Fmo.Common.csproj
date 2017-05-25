@@ -90,6 +90,7 @@
     <Compile Include="AsyncEnumerator\DbAsyncEnumerator.cs" />
     <Compile Include="AsyncEnumerator\DbAsyncQueryProvider.cs" />
     <Compile Include="ConfigurationManagement\ConfigurationHelper.cs" />
+    <Compile Include="Constants\ErrorMessageConstants.cs" />
     <Compile Include="Constants\ReferenceDataCategoryNames.cs" />
     <Compile Include="Constants\ReferenceDataValues.cs" />
     <Compile Include="Constants\UserAccessFunctionsConstants.cs" />
@@ -107,10 +108,8 @@
     <Compile Include="ExceptionManagement\Exceptions\BusinessLogicException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\DataAccessException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\DbConcurrencyException.cs" />
-    <Compile Include="ExceptionManagement\Exceptions\EntityAlreadyExistsException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\EntityNotFoundException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\InfrastructureException.cs" />
-    <Compile Include="ExceptionManagement\Exceptions\MailSendException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\ServiceException.cs" />
     <Compile Include="ExceptionManagement\Exceptions\WebServiceException.cs" />
     <Compile Include="Interface\IConfigurationHelper.cs" />
@@ -124,6 +123,11 @@
     <Compile Include="Enums\DeliveryPointSuffix.cs" />
     <Compile Include="ObjectParser\ObjectParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceFile\ErrorMessageIds.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ErrorMessageIds.resx</DependentUpon>
+    </Compile>
     <Compile Include="ResourceFile\FmoMessagesConstants.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -176,8 +180,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ResourceFile\ErrorMessageIds.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessageIds.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResourceFile\FmoMessagesConstants.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FmoMessagesConstants.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

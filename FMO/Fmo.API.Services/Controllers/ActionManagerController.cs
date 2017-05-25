@@ -1,8 +1,12 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Fmo.Common.Interface;
+using Fmo.Common.ResourceFile;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -13,6 +17,7 @@ namespace Fmo.API.Services.Controllers
     public class ActionManagerController : FmoBaseController
     {
         private IActionManagerBussinessService actionManagerBussinessService = default(IActionManagerBussinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public ActionManagerController(IActionManagerBussinessService actionManagerBussinessService)
         {
@@ -26,10 +31,23 @@ namespace Fmo.API.Services.Controllers
         /// <returns>List of Role Access Dto</returns>
         // POST api/values
         [HttpPost("RoleActions")]
-        public async Task<List<RoleAccessDTO>> RoleActions([FromBody]UserUnitInfoDTO userUnitInfoDto)
+        public async Task<IActionResult> RoleActions([FromBody]UserUnitInfoDTO userUnitInfoDto)
         {
-            var roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
-            return roleAccessDto;
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                List<RoleAccessDTO> roleAccessDto = await actionManagerBussinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+                return Ok(roleAccessDto);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
     }
 }

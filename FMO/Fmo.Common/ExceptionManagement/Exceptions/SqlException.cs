@@ -6,33 +6,33 @@ namespace Fmo.Common.ExceptionManagement
 {
     [Serializable]
     [ExcludeFromCodeCoverage]
-    public class MailSendException : Exception
+    public class SqlException : Exception
     {
-        public MailSendException(string message)
+        public SqlException(string message)
             : base(message)
         {
         }
 
-        public MailSendException(string message, params object[] args)
+        public SqlException(string message, params object[] args)
             : base(string.Format(message, args))
         {
         }
 
-        public MailSendException(string message, Exception innerException)
+        public SqlException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        public MailSendException(Exception innerException, string message, params object[] args)
+        public SqlException(Exception innerException, string message, params object[] args)
             : base(string.Format(message, args), innerException)
         {
         }
 
-        protected MailSendException()
+        protected SqlException()
         {
         }
 
-        protected MailSendException(SerializationInfo info, StreamingContext context)
+        protected SqlException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

@@ -22,7 +22,7 @@ namespace Fmo.Common.ResourceFile {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class FmoMessagesConstants {
+    public class FmoMessagesConstants {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Fmo.Common.ResourceFile {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Fmo.Common.ResourceFile.FmoMessagesConstants", typeof(FmoMessagesConstants).Assembly);
@@ -51,7 +51,7 @@ namespace Fmo.Common.ResourceFile {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to 9002.
         /// </summary>
-        internal static string EventID {
+        public static string EventID {
             get {
                 return ResourceManager.GetString("EventID", resourceCulture);
             }
@@ -72,16 +72,16 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to FMO Exception.
         /// </summary>
-        internal static string EventLogTitle {
+        public static string EventLogTitle {
             get {
                 return ResourceManager.GetString("EventLogTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application Error. Please contact your administrator..
+        ///   Looks up a localized string similar to Application Error Occured. Please contact your administrator..
         /// </summary>
-        internal static string GenralErrorMessage {
+        public static string GenralErrorMessage {
             get {
                 return ResourceManager.GetString("GenralErrorMessage", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to An application error occurred and has been logged. Please contact your administrator..
         /// </summary>
-        internal static string LogAndThrowErrorMessage {
+        public static string LogAndThrowErrorMessage {
             get {
                 return ResourceManager.GetString("LogAndThrowErrorMessage", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
-        internal static string LogCategory {
+        public static string LogCategory {
             get {
                 return ResourceManager.GetString("LogCategory", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to Application.
         /// </summary>
-        internal static string Logging_LogName {
+        public static string Logging_LogName {
             get {
                 return ResourceManager.GetString("Logging_LogName", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to FMO Logging.
         /// </summary>
-        internal static string Logging_LogSource {
+        public static string Logging_LogSource {
             get {
                 return ResourceManager.GetString("Logging_LogSource", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to Timestamp: {timestamp(local)}{newline}Message: {message}{newline}Category: {category}{newline}Priority: {priority}{newline}EventId: {eventid}{newline}Severity: {severity}{newline}Title:{title}{newline}Machine: {localMachine}{newline}App Domain: {localAppDomain}{newline}ProcessId: {localProcessId}{newline}Process Name: {localProcessName}{newline}Thread Name: {threadName}{newline}Win32 ThreadId:{win32ThreadId}{newline}Extended Properties: {dictionary({key} - {value}{newline})}.
         /// </summary>
-        internal static string Logging_TextFormat {
+        public static string Logging_TextFormat {
             get {
                 return ResourceManager.GetString("Logging_TextFormat", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
-        internal static string LogSource_LogSourceName {
+        public static string LogSource_LogSourceName {
             get {
                 return ResourceManager.GetString("LogSource_LogSourceName", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to ExceptionShielding.
         /// </summary>
-        internal static string Policy_ExceptionShielding {
+        public static string Policy_ExceptionShielding {
             get {
                 return ResourceManager.GetString("Policy_ExceptionShielding", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to LogAndWrap.
         /// </summary>
-        internal static string Policy_LogAndWrap {
+        public static string Policy_LogAndWrap {
             get {
                 return ResourceManager.GetString("Policy_LogAndWrap", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Fmo.Common.ResourceFile {
         /// <summary>
         ///   Looks up a localized string similar to LoggingAndReplacingException.
         /// </summary>
-        internal static string Policy_LoggingAndReplacingException {
+        public static string Policy_LoggingAndReplacingException {
             get {
                 return ResourceManager.GetString("Policy_LoggingAndReplacingException", resourceCulture);
             }

@@ -1,4 +1,5 @@
-﻿using Fmo.BusinessServices.Interfaces;
+﻿using System;
+using Fmo.BusinessServices.Interfaces;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +28,19 @@ namespace Fmo.API.Services.Controllers
         /// <returns>The result set after filtering the values.</returns>
         [Authorize]
         [HttpGet("BasicSearch")]
-        public async Task<SearchResultDTO> BasicSearch(string searchText)
+        public async Task<IActionResult> BasicSearch(string searchText)
         {
-            var unitGuid = this.CurrentUserUnit;
-            return await searchBussinessService.FetchBasicSearchDetails(searchText, unitGuid);
+            try
+            {
+                var unitGuid = this.CurrentUserUnit;
+                SearchResultDTO result = await searchBussinessService.FetchBasicSearchDetails(searchText, unitGuid);
+                return Ok(result);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
 
         /// <summary>
@@ -40,10 +50,19 @@ namespace Fmo.API.Services.Controllers
         /// <returns> Search Result Dto</returns>
         [Authorize]
         [HttpGet("AdvanceSearch")]
-        public async Task<SearchResultDTO> AdvanceSearch(string searchText)
+        public async Task<IActionResult> AdvanceSearch(string searchText)
         {
-            var unitGuid = this.CurrentUserUnit;
-            return await searchBussinessService.FetchAdvanceSearchDetails(searchText, unitGuid);
+            try
+            {
+                var unitGuid = this.CurrentUserUnit;
+                SearchResultDTO result = await searchBussinessService.FetchAdvanceSearchDetails(searchText, unitGuid);
+                return Ok(result);
+            }
+            catch (AggregateException ae)
+            {
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
     }
 }
