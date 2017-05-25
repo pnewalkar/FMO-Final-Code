@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
+using Fmo.Common.Interface;
 using Fmo.DTO;
 
 namespace Fmo.BusinessServices.Services
@@ -14,17 +16,19 @@ namespace Fmo.BusinessServices.Services
     /// </summary>
     public class SearchBusinessService : ISearchBusinessService
     {
-         private readonly IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
-         private readonly IPostCodeBusinessService postcodeBusinessService = default(IPostCodeBusinessService);
+        private readonly IDeliveryRouteBusinessService deliveryRouteBusinessService = default(IDeliveryRouteBusinessService);
+        private readonly IPostCodeBusinessService postcodeBusinessService = default(IPostCodeBusinessService);
         private readonly IStreetNetworkBusinessService streetNetworkBusinessService = default(IStreetNetworkBusinessService);
         private readonly IDeliveryPointBusinessService deliveryPointBusinessService = default(IDeliveryPointBusinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public SearchBusinessService(IDeliveryRouteBusinessService deliveryRouteBusinessService, IPostCodeBusinessService postcodeBusinessService, IStreetNetworkBusinessService streetNetworkBusinessService, IDeliveryPointBusinessService deliveryPointBusinessService)
+        public SearchBusinessService(IDeliveryRouteBusinessService deliveryRouteBusinessService, IPostCodeBusinessService postcodeBusinessService, IStreetNetworkBusinessService streetNetworkBusinessService, IDeliveryPointBusinessService deliveryPointBusinessService, ILoggingHelper loggingHelper)
         {
             this.deliveryRouteBusinessService = deliveryRouteBusinessService;
             this.postcodeBusinessService = postcodeBusinessService;
             this.streetNetworkBusinessService = streetNetworkBusinessService;
             this.deliveryPointBusinessService = deliveryPointBusinessService;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -37,23 +41,29 @@ namespace Fmo.BusinessServices.Services
         /// </returns>
         public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText, Guid userUnit)
         {
-            try
+            using (loggingHelper.FmoTraceManager.StartTrace("Business.GetRoadRoutes"))
             {
-                var deliveryRoutes = await deliveryRouteBusinessService.FetchDeliveryRouteForBasicSearch(searchText, userUnit);
-                var deliveryRouteCount = await deliveryRouteBusinessService.GetDeliveryRouteCount(searchText, userUnit);
-                var postcodes = await postcodeBusinessService.FetchPostCodeUnitForBasicSearch(searchText, userUnit);
-                var postCodeCount = await postcodeBusinessService.GetPostCodeUnitCount(searchText, userUnit);
-                var deliveryPoints = await deliveryPointBusinessService.FetchDeliveryPointsForBasicSearch(searchText, userUnit);
-                var deliveryPointsCount = await deliveryPointBusinessService.GetDeliveryPointsCount(searchText, userUnit);
-                var streetNames = await streetNetworkBusinessService.FetchStreetNamesForBasicSearch(searchText, userUnit);
-                var streetNetworkCount = await streetNetworkBusinessService.GetStreetNameCount(searchText, userUnit);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.FetchBasicSearchDetailsPriority, LoggerTraceConstants.FetchBasicSearchDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                try
+                {
+                    var deliveryRoutes = await deliveryRouteBusinessService.FetchDeliveryRouteForBasicSearch(searchText, userUnit);
+                    var deliveryRouteCount = await deliveryRouteBusinessService.GetDeliveryRouteCount(searchText, userUnit);
+                    var postcodes = await postcodeBusinessService.FetchPostCodeUnitForBasicSearch(searchText, userUnit);
+                    var postCodeCount = await postcodeBusinessService.GetPostCodeUnitCount(searchText, userUnit);
+                    var deliveryPoints = await deliveryPointBusinessService.FetchDeliveryPointsForBasicSearch(searchText, userUnit);
+                    var deliveryPointsCount = await deliveryPointBusinessService.GetDeliveryPointsCount(searchText, userUnit);
+                    var streetNames = await streetNetworkBusinessService.FetchStreetNamesForBasicSearch(searchText, userUnit);
+                    var streetNetworkCount = await streetNetworkBusinessService.GetStreetNameCount(searchText, userUnit);
 
-                var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
-                return searchResultDTO;
-            }
-            catch
-            {
-                throw;
+                    var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
+                    loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.FetchBasicSearchDetailsPriority, LoggerTraceConstants.FetchBasicSearchDetailsBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                    return searchResultDTO;
+                }
+                catch
+                {
+                    throw;
+                }
             }
         }
 
@@ -67,21 +77,29 @@ namespace Fmo.BusinessServices.Services
         /// </returns>
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText, Guid userUnit)
         {
-            var postcodesTask = postcodeBusinessService.FetchPostCodeUnitForAdvanceSearch(searchText, userUnit);
-            var deliveryRoutesTask = deliveryRouteBusinessService.FetchDeliveryRouteForAdvanceSearch(searchText, userUnit);
-            var streetNamesTask = streetNetworkBusinessService.FetchStreetNamesForAdvanceSearch(searchText, userUnit);
-            var deliveryPointsTask = deliveryPointBusinessService.FetchDeliveryPointsForAdvanceSearch(searchText, userUnit);
+            using (loggingHelper.FmoTraceManager.StartTrace("Business.FetchAdvanceSearchDetails"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.FetchAdvanceSearchDetailsPriority, LoggerTraceConstants.FetchAdvanceSearchDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
-            Task.WaitAll(deliveryRoutesTask, postcodesTask, streetNamesTask, deliveryPointsTask);
+                var postcodesTask = postcodeBusinessService.FetchPostCodeUnitForAdvanceSearch(searchText, userUnit);
+                var deliveryRoutesTask = deliveryRouteBusinessService.FetchDeliveryRouteForAdvanceSearch(searchText, userUnit);
+                var streetNamesTask = streetNetworkBusinessService.FetchStreetNamesForAdvanceSearch(searchText, userUnit);
+                var deliveryPointsTask = deliveryPointBusinessService.FetchDeliveryPointsForAdvanceSearch(searchText, userUnit);
 
-            var postcodes = await postcodesTask ?? new List<PostCodeDTO>();
-            var deliveryRoutes = await deliveryRoutesTask ?? new List<DeliveryRouteDTO>();
-            var streetNames = await streetNamesTask ?? new List<StreetNameDTO>();
-            var deliveryPoints = await deliveryPointsTask ?? new List<DeliveryPointDTO>();
+                Task.WaitAll(deliveryRoutesTask, postcodesTask, streetNamesTask, deliveryPointsTask);
 
-            var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
+                var postcodes = await postcodesTask ?? new List<PostCodeDTO>();
+                var deliveryRoutes = await deliveryRoutesTask ?? new List<DeliveryRouteDTO>();
+                var streetNames = await streetNamesTask ?? new List<StreetNameDTO>();
+                var deliveryPoints = await deliveryPointsTask ?? new List<DeliveryPointDTO>();
 
-            return searchResultDTO;
+                var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
+
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.FetchAdvanceSearchDetailsPriority, LoggerTraceConstants.FetchAdvanceSearchDetailsBusinessMethodExitEventId, LoggerTraceConstants.Title);
+
+                return searchResultDTO;
+            }
         }
 
         /// <summary>

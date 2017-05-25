@@ -3,6 +3,7 @@
 namespace Fmo.BusinessServices.Tests.Services
 {
     using System.Collections.Generic;
+    using Common.Interface;
     using DataServices.Repositories.Interfaces;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.BusinessServices.Services;
@@ -16,6 +17,7 @@ namespace Fmo.BusinessServices.Tests.Services
     {
         private IRoadNameBusinessService testCandidate;
         private Mock<IRoadNameRepository> mockRoadNameRepository;
+        private Mock<ILoggingHelper> mockLoggingRepository;
         private Guid userGuid = Guid.NewGuid();
 
         [Test]
@@ -30,10 +32,11 @@ namespace Fmo.BusinessServices.Tests.Services
         protected override void OnSetup()
         {
             mockRoadNameRepository = new Mock<IRoadNameRepository>();
+            mockLoggingRepository = CreateMock<ILoggingHelper>();
 
             mockRoadNameRepository.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<OsRoadLinkDTO>>);
 
-            testCandidate = new RoadNameBusinessService(mockRoadNameRepository.Object);
+            testCandidate = new RoadNameBusinessService(mockRoadNameRepository.Object, mockLoggingRepository.Object);
         }
     }
 }

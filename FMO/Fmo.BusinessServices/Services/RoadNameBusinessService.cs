@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Reflection;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
+using Fmo.Common.Interface;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
 using Fmo.Helpers;
@@ -19,10 +21,12 @@ namespace Fmo.BusinessServices.Services
     public class RoadNameBusinessService : IRoadNameBusinessService
     {
         private IRoadNameRepository roadNameRepository = default(IRoadNameRepository);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public RoadNameBusinessService(IRoadNameRepository roadNameRepository)
+        public RoadNameBusinessService(IRoadNameRepository roadNameRepository, ILoggingHelper loggingHelper)
         {
             this.roadNameRepository = roadNameRepository;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -33,21 +37,27 @@ namespace Fmo.BusinessServices.Services
         /// <returns>RoadLink object</returns>
         public string GetRoadRoutes(string boundarybox, Guid uniGuid)
         {
-            try
+            using (loggingHelper.FmoTraceManager.StartTrace("Business.GetRoadRoutes"))
             {
-                string roadLinkJsonData = null;
-
-                if (!string.IsNullOrEmpty(boundarybox))
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.GetRoadRoutesPriority, LoggerTraceConstants.GetRoadRoutesBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                try
                 {
-                    var boundingBoxCoordinates = GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]));
-                    roadLinkJsonData = GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
-                }
+                    string roadLinkJsonData = null;
 
-                return roadLinkJsonData;
-            }
-            catch (Exception)
-            {
-                throw;
+                    if (!string.IsNullOrEmpty(boundarybox))
+                    {
+                        var boundingBoxCoordinates = GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]));
+                        roadLinkJsonData = GetRoadLinkJsonData(roadNameRepository.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
+                    }
+
+                    loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.GetRoadRoutesPriority, LoggerTraceConstants.GetRoadRoutesBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                    return roadLinkJsonData;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
         }
 
