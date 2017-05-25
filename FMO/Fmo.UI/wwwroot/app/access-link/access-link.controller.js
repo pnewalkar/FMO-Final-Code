@@ -61,6 +61,9 @@ function AccessLinkController(
             if (response === true) {
                 mapFactory.setAccessLink();
                 vm.enableBack = false;
+                vm.enableSave = false;
+                vm.pathLength = '';
+                mapService.refreshLayers();
             }
         });
     }
@@ -70,7 +73,7 @@ function AccessLinkController(
         var map = mapFactory.getMap();
         var boundingBoxCoordinates = map.getView().calculateExtent(map.getSize());
         var accessLinkCoordinates = JSON.stringify(accessLinkCoordinatesService.getCordinates());
-
+        var isAccessLinkValid = false;
         var accessLinkManualCreateModelDTO = {
             "BoundingBoxCoordinates" : JSON.stringify(boundingBoxCoordinates),
             "OperationalObjectPoint": JSON.stringify(coordinatesService.getCordinates()),
