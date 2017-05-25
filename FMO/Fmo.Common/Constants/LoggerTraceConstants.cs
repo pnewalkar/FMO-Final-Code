@@ -17,6 +17,8 @@
         public const int GetRoadRoutesPriority = 8;
         public const int FetchBasicSearchDetailsPriority = 8;
         public const int FetchAdvanceSearchDetailsPriority = 8;
+        public const int CreateAutomaticAccessLinkPriority = 8;
+        public const int CreateManualAccessLinkPriority = 8;
 
         #endregion Priority
 
@@ -53,7 +55,12 @@
 
         public const int FetchAdvanceSearchDetailsBusinessMethodEntryEventId = 9137;
         public const int FetchAdvanceSearchDetailsBusinessMethodExitEventId = 9138;
-        
+
+        public const int CreateAutomaticAccessLinkBusinessMethodEntryEventId = 9313;
+        public const int CreateAutomaticAccessLinkBusinessMethodExitEventId = 9314;
+        public const int CreateManualAccessLinkBusinessMethodEntryEventId = 9315;
+        public const int CreateManualAccessLinkBusinessMethodExitEventId = 9316;
+
 
         #endregion EventId
 
