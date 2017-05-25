@@ -28,19 +28,19 @@ namespace Fmo.API.Services.Controllers
         /// <param name="postalAddress">List of posatl address DTO</param>
         /// <returns></returns>
         [HttpPost("SavePAFDetails")]
-        public bool SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
+        public IActionResult SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
         {
             bool IsPAFSaved = false;
-            try
+
+            if (!ModelState.IsValid)
             {
-                if (postalAddress != null && postalAddress.Count > 0)
-                    IsPAFSaved = postalAddressBusinessService.SavePAFDetails(postalAddress);
+                return BadRequest(ModelState);
             }
-            catch (Exception ex)
-            {
-                loggingHelper.LogError(ex);
-            }
-            return IsPAFSaved;
+
+            if (postalAddress != null && postalAddress.Count > 0)
+                IsPAFSaved = postalAddressBusinessService.SavePAFDetails(postalAddress);
+
+            return Ok(IsPAFSaved);
         }
     }
 }

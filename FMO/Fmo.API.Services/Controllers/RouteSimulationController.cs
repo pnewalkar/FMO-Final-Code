@@ -29,10 +29,11 @@ namespace Fmo.API.Services.Controllers
         /// <param name="deliveryScenarioID">delivery Scenario ID</param>
         /// <returns>List</returns>
         [HttpGet("FetchDeliveryRoute")]
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
+        public IActionResult FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID)
         {
             var unitGuid = this.CurrentUserUnit;
-            return deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, unitGuid);
+            List<DeliveryRouteDTO> deliveryRoutes = deliveryRouteBusinessService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, unitGuid);
+            return Ok(deliveryRoutes);
         }
 
         /// <summary>
@@ -40,9 +41,10 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <returns>List</returns>
         [HttpGet("RouteLogsStatus")]
-        public List<ReferenceDataDTO> RouteLogsStatus()
+        public IActionResult RouteLogsStatus()
         {
-            return deliveryRouteBusinessService.FetchRouteLogStatus();
+            List<ReferenceDataDTO> referenceDatas = deliveryRouteBusinessService.FetchRouteLogStatus();
+            return Ok(referenceDatas);
         }
 
         /// <summary>
@@ -52,9 +54,10 @@ namespace Fmo.API.Services.Controllers
         /// <param name="deliveryUnitID">delivery Unit ID</param>
         /// <returns></returns>
         [HttpGet("FetchDeliveryScenario")]
-        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
+        public IActionResult FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID)
         {
-            return deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
+            List<ScenarioDTO> scenarios = deliveryRouteBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
+            return Ok(scenarios);
         }
     }
 }
