@@ -16,7 +16,8 @@ function searchApiService($http, GlobalSettings, $q) {
         $http.get(GlobalSettings.apiUrl + '/Search/BasicSearch?searchText=' + searchText).success(function (response) {
             deferred.resolve(response);
         }).error(function (err, status) {
-            deferred.reject(err);
+           //deferred.reject(err);
+           return $q.reject(err);
         });
         return deferred.promise;
     }

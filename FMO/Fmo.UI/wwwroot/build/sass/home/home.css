@@ -42,6 +42,10 @@ i.fa.fa-times {
 .deliveryDialog {
   margin: 0px 10px 0px 0px; }
 
+.errorDialog {
+  width: 425px;
+  height: 216px; }
+
 /*fonts*/
 /*Chevin Light Font*/
 @font-face {

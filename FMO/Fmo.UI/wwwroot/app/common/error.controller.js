@@ -23,7 +23,6 @@ function ErrorController(
     }
 
     function openAlert() {
-        debugger;
         var confirm = $mdDialog.confirm({
             controller: 'ErrorController as vm',
             templateUrl: './common/error-popup.html'

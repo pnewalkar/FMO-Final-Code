@@ -1,25 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Transactions;
 using System.Web.Script.Serialization;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common;
 using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.Interface;
-using Fmo.DataServices.DBContext;
-using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
+using Fmo.DTO.Model;
 using Fmo.Helpers;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
-using Fmo.DTO.Model;
-using System.Data.Entity.Spatial;
-using System.Linq;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -199,7 +196,7 @@ namespace Fmo.BusinessServices.Services
 
             this.loggingHelper.LogInfo(addDeliveryDtoLogDetails);
             LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate , YCoordinate = returnYCoordinate };
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate, YCoordinate = returnYCoordinate };
         }
 
         /// <summary>
@@ -238,26 +235,21 @@ namespace Fmo.BusinessServices.Services
                 }
 
                 if (t.Result > 0)
-                 {
-                     var referenceDataCategoryList =
-                         referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
-                         {
+                {
+                    var referenceDataCategoryList =
+                        referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
+                        {
                              ReferenceDataCategoryNames.OperationalObjectType
-                             });
+                            });
 
-                         var deliveryOperationObjectTypeId = referenceDataCategoryList
-                             .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
-                             .SelectMany(x => x.ReferenceDatas)
-                             .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
+                    var deliveryOperationObjectTypeId = referenceDataCategoryList
+                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                        .SelectMany(x => x.ReferenceDatas)
+                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-                         accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
-                     }
-                 }
-                 else
-                 {
-                     t.Exception.Flatten().fo
-                 }
-             });
+                    accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                }
+            });
 
             return new UpdateDeliveryPointModelDTO { XCoordinate = deliveryPointModelDTO.XCoordinate, YCoordinate = deliveryPointModelDTO.YCoordinate };
         }
