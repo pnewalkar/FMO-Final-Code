@@ -5,7 +5,8 @@ function PopUpSettingService() {
     return {
         advanceSearch: advanceSearch,
         routeLog: routeLog,
-        deliveryPoint: deliveryPoint
+        deliveryPoint: deliveryPoint,
+        openAlert: openAlert
     };
 
     function advanceSearch(query) {
@@ -38,5 +39,15 @@ function PopUpSettingService() {
         };
     }
 
+    function openAlert(text) {
+        return {
+            templateUrl: './common/error-popup.html',
+            clickOutsideToClose: false,
+            controller: 'ErrorController as vm',
+            locals: {
+                message: text
+            }
+        };
+    }
 };
 
