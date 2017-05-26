@@ -5,36 +5,68 @@ using System.Dynamic;
 
 namespace Fmo.Helpers
 {
-    public class CreateSummaryObject
+    public class CreateSummaryObject<T> where T : class
     {
         dynamic expando = new ExpandoObject();
 
-        public object SummariseProperties(Object o,string fields)
+        /// <summary>
+        /// To summarize the properties of Single object
+        /// </summary>
+        /// <param name="source">The object to be summarized</param>
+        /// <param name="fields">The fields of the source object</param>
+        /// <returns>The summarized Expando Object</returns>
+        public object SummariseProperties(T source, string fields)
         {
             char[] delimiterChars = { ',' };
-
-            //add the ID of the object to the summary (We always want the ID in the summary)
-            fields = "Id," + fields;
-
-            //parse the fields string
             string[] parsedFields = fields.Split(delimiterChars);
 
             foreach (string fieldName in parsedFields)
-            {             
-                //use reflection to access the properties
-                Type t = o.GetType();
-                PropertyInfo prop = t.GetProperty(fieldName);
-                object value = prop.GetValue(o, null);
+            {
+                Type type = source.GetType();
+                PropertyInfo prop = type.GetProperty(fieldName);
+                object value = prop.GetValue(source, null);
 
-                //create a summary object
                 AddProperty(expando, fieldName, value);
             }
             return expando;
         }
 
+        /// <summary>
+        /// To summarize the properties of list of objects
+        /// </summary>
+        /// <param name="source">The list to be summarized</param>
+        /// <param name="fields">The fields of the source list of objects</param>
+        /// <returns>The summarized list of Expando Object</returns>
+        public List<object> SummarisePropertiesForList(List<T> source, string fields)
+        {
+            List<object> summerizedList = new List<object>();
+            char[] delimiterChars = { ',' };
+            string[] parsedFields = fields.Split(delimiterChars);
+
+            foreach (object objSource in source)
+            {
+                expando = new ExpandoObject();
+                foreach (string fieldName in parsedFields)
+                {
+                    Type type = objSource.GetType();
+                    PropertyInfo prop = type.GetProperty(fieldName);
+                    object value = prop.GetValue(objSource, null);
+
+                    AddProperty(expando, fieldName, value);
+                }
+                summerizedList.Add(expando);
+            }
+            return summerizedList;
+        }
+
+        /// <summary>
+        /// Add a property to the expando object
+        /// </summary>
+        /// <param name="expando">The expando object</param>
+        /// <param name="propertyName">The property name</param>
+        /// <param name="propertyValue">The property value</param>
         private void AddProperty(ExpandoObject expando, string propertyName, object propertyValue)
         {
-            // ExpandoObject supports IDictionary so we can extend it like this
             var expandoDict = expando as IDictionary<string, object>;
             if (expandoDict.ContainsKey(propertyName))
                 expandoDict[propertyName] = propertyValue;
