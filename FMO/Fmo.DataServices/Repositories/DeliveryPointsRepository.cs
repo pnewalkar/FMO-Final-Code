@@ -297,13 +297,13 @@ namespace Fmo.DataServices.Repositories
             if (result != null)
             {
                 var isPrimaryRoute = (from drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() where drp.Postcode_GUID == result.PostcodeId && drp.DeliveryRoute_GUID == result.RouteId select drp.IsPrimaryRoute).ToList();
-                if (isPrimaryRoute.Count == 0)
+                if (isPrimaryRoute != null && isPrimaryRoute.Count > 0)
                 {
-                    routeName = result.RouteName.Trim();
+                    routeName = isPrimaryRoute[0] == true ? Constants.PRIMARYROUTE + result.RouteName.Trim() : Constants.SECONDARYROUTE + result.RouteName.Trim();
                 }
                 else
                 {
-                    routeName = isPrimaryRoute[0] == true ? Constants.PRIMARYROUTE + result.RouteName.Trim() : Constants.SECONDARYROUTE + result.RouteName.Trim();
+                    routeName = result.RouteName.Trim();
                 }
             }
 
