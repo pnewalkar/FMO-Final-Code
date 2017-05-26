@@ -134,6 +134,21 @@ namespace Fmo.DataServices.Repositories.Interfaces
         void UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
 
         /// <summary>
+        /// This Method provides Route Name for a single DeliveryPoint
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
+        /// <returns>Route Name for a single DeliveryPoint</returns>
+        string GetRouteForDeliveryPoint(Guid deliveryPointId);
+
+        /// <summary>
+        /// This Method fetches DPUse value for the DeliveryPoint
+        /// </summary>
+        /// <param name="referenceDataCategoryDtoList"> referenceDataCategoryDtoList as List of ReferenceDataCategoryDTO </param>
+        /// <param name="deliveryPointId">deliveryPointId as GUID </param>
+        /// <returns>DPUse value as string</returns>
+        string GetDPUse(List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid deliveryPointId);
+
+        /// <summary>
         /// This method is used to get the delivery points crossing the created access link
         /// </summary>
         /// <param name="boundingBoxCoordinates">bbox coordinates</param>

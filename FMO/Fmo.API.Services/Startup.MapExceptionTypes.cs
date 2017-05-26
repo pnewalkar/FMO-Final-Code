@@ -20,7 +20,6 @@ namespace Fmo.API.Services
             app.UseResponseExceptionHandler(options =>
             {
                 options.Map<ArgumentNullException>(HttpStatusCode.BadRequest);
-                options.Map<KeyNotFoundException>(HttpStatusCode.NotFound);
                 options.Map<NotSupportedException>(HttpStatusCode.InternalServerError);
                 options.Map<SystemException>(HttpStatusCode.InternalServerError);
                 options.Map<ApplicationException>(HttpStatusCode.InternalServerError);

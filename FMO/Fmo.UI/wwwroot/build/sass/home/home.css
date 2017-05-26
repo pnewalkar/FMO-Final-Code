@@ -12,11 +12,6 @@
   font-size: 24px !important;
   font-weight: bold !important; }
 
-.fa-inbox {
-  color: #ffffff;
-  margin: 0px 0px 0px 25px;
-  cursor: pointer; }
-
 .fa-bars {
   color: #ffffff; }
 
@@ -38,11 +33,24 @@ h1 {
   margin: 0px 0px 0px 10px; }
 
 .context-button {
-  padding: 0;
-  margin: 0;
-  border-radius: 0;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
   width: 40px;
+  border-radius: 0;
   min-width: 40px; }
+
+/*material classes*/
+.layout-row {
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px; }
+
+.layout-column {
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px; }
+
+md-input-container {
+  margin: 10px 0px 0px 0px;
+  padding: 0px 0px 0px 0px; }
 
 /*fonts*/
 /*Chevin Light Font*/

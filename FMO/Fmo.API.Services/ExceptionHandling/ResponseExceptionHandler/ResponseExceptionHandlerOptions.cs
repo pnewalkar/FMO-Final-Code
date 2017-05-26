@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Net;
-using Fmo.Common.Constants;
+using Fmo.Common.ResourceFile;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -10,14 +10,17 @@ namespace Fmo.API.Services.ExceptionHandling.ResponseExceptionHandler
     public class ResponseExceptionHandlerOptions
     {
         public string ErrorCodePrefix { get; set; }
+
         public string DefaultErrorMessage { get; set; }
+
         public JsonSerializerSettings SerializerSettings { get; set; }
+
         public ConcurrentDictionary<Type, ExceptionResponse> Responses { get; }
 
         public ResponseExceptionHandlerOptions()
         {
             ErrorCodePrefix = "ERR_";
-            DefaultErrorMessage = ErrorMessageConstants.UnHandledErrorMessage;
+            DefaultErrorMessage = ErrorMessageIds.Err_UnHandled;
 
             SerializerSettings = new JsonSerializerSettings
             {

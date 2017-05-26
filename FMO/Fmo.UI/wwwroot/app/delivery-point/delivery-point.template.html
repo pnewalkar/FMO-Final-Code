@@ -44,9 +44,9 @@
                         </div>
                     </md-virtual-repeat-container>
                 </div>
-                <i class="fa fa-search searchInputIcon" aria-hidden="true" flex title="Search"></i>
+                <i class="fa fa-search searchInputIcon" aria-hidden="true" title="Search"></i>
                 
-                <md-input-container flex="30" ng-show="vm.display" ng-class="{'disabledText':vm.nybAddressDetails.length==1}">
+                <md-input-container flex="35" ng-show="vm.display" ng-class="{'disabledText':vm.nybAddressDetails.length==1}">
                     <label>{{ 'DELIVERY_POINTS.NOT_YET_BUILT'| translate }}</label>
                     <md-select ng-model="vm.notyetBuilt" ng-change="vm.bindAddressDetails()" ng-disabled="vm.nybAddressDetails.length==1">
                         <md-option ng-repeat="type in vm.nybAddressDetails"  ng-value="type.value" ng-selected="{{ vm.selectedValue===type.value?true:false}}">
@@ -84,7 +84,7 @@
 
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-                    <md-select name="route" ng-model="vm.addressDetails.route" select-clear required> 
+                    <md-select name="route" ng-model="vm.routeId" select-clear required> 
                         <md-option ng-repeat="route in vm.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
@@ -121,7 +121,6 @@
             <div layout="row">
                 <div layout="column" flex="60" ng-show="vm.display">
                     <fieldset>
-
                         <legend>{{ 'DELIVERY_POINTS.ADDRESS' | translate }}<sub>*</sub></legend>
 
                         <div layout="row">

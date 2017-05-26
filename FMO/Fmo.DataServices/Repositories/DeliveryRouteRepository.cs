@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Fmo.Common.Constants;
 using Fmo.Common.ExceptionManagement;
+using Fmo.Common.ResourceFile;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -110,11 +111,11 @@ namespace Fmo.DataServices.Repositories
             }
             catch (InvalidOperationException ex)
             {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
 
@@ -240,11 +241,11 @@ namespace Fmo.DataServices.Repositories
             }
             catch (InvalidOperationException ex)
             {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
 
@@ -270,11 +271,11 @@ namespace Fmo.DataServices.Repositories
             }
             catch (InvalidOperationException ex)
             {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
 
@@ -302,11 +303,11 @@ namespace Fmo.DataServices.Repositories
             }
             catch (InvalidOperationException ex)
             {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
 
@@ -335,11 +336,11 @@ namespace Fmo.DataServices.Repositories
             }
             catch (InvalidOperationException ex)
             {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForCountAsync, ex);
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
 

@@ -5,6 +5,9 @@
 .miniMap {
   margin: 0px 0px 20px 0px; }
 
+#mini-map {
+  height: 150px; }
+
 .layers {
   margin: 0px 0px 20px 0px; }
 

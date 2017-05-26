@@ -14,8 +14,10 @@ i.fa.fa-map-marker.route{
 }
 
 .searchText input[type="text"]{
+    @extend %body-content;
     @include font-color($white);
-    border-bottom-color: white;
+    border-bottom-color: $white;
+    @include margin(10px 0px 0px 0px);
 }
 
 .searchText label{

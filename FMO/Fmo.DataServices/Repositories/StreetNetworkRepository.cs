@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Fmo.Common.Constants;
 using Fmo.Common.ExceptionManagement;
+using Fmo.Common.ResourceFile;
 using Fmo.Common.SqlGeometryExtension;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
@@ -120,11 +121,11 @@ namespace Fmo.DataServices.Repositories
             }
             catch (InvalidOperationException ex)
             {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
 

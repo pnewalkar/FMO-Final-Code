@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fmo.Common.Constants;
+using Fmo.Common.ResourceFile;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -43,7 +44,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (InvalidOperationException ex)
             {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForFirstorDefault, ex);
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForFirstorDefault, ex);
             }
         }
     }

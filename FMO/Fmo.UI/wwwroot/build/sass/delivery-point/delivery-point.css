@@ -8,7 +8,7 @@
   margin: 20px 0px 0px 5px; }
 
 .resultPanel {
-  margin: -44px 0px 0px 0px;
+  margin: -23px 0px 0px 0px;
   height: 100px;
   cursor: pointer; }
 
@@ -19,11 +19,12 @@
   float: right; }
 
 fieldset {
+  margin-top: 15px;
   padding: 5px 5px 5px 5px;
   border: 1px solid threedface; }
 
 .contentHeight {
-  height: 500px; }
+  height: 2000px; }
 
 .aliasinput {
   margin: 0px 0px 5px 0px; }

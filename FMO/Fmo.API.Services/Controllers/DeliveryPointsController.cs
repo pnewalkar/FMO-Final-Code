@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
@@ -110,5 +111,12 @@ namespace Fmo.API.Services.Controllers
                 throw realExceptions;
             }
         }
+        [Route("GetRouteForDeliveryPoint")]
+        [HttpGet]
+        public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
+        {
+            return businessService.GetRouteForDeliveryPoint(deliveryPointId);
+        }
+
     }
 }

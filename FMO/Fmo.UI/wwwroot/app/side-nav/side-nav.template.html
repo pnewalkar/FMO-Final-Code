@@ -9,18 +9,16 @@
             </h2>
         </div>
     </md-toolbar> 
-    
     <md-content>
         <md-list>
           <md-list-item  ng-repeat="Item in vm.RolesActionResult| unique: 'ActionName'" ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)">
             {{Item.ActionName}}
           </md-list-item>
         </md-list>
-        
-        <md-toolbar>
-            <div class="md-toolbar-tools version"  layout-align="center center">
-                V 1.2.9
-            </div>
-        </md-toolbar>
-    </md-content> 
+    </md-content>
+    <md-toolbar>
+        <div class="md-toolbar-tools version"  layout-align="center center">
+            V 1.2.9
+        </div>
+    </md-toolbar>
 </md-sidenav>

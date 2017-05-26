@@ -77,15 +77,17 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
             }
         }
     }

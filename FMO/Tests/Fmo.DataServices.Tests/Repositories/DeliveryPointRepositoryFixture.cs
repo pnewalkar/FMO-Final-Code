@@ -6,6 +6,7 @@ namespace Fmo.DataServices.Tests.Repositories
     using System.Data.Entity.Spatial;
     using Common.AsyncEnumerator;
     using Common.Interface;
+    using DTO;
     using Fmo.Common.TestSupport;
     using Fmo.DataServices.DBContext;
     using Fmo.DataServices.Infrastructure;
@@ -29,6 +30,7 @@ namespace Fmo.DataServices.Tests.Repositories
         private Guid user1Id;
         private Guid user2Id;
         private Mock<ILoggingHelper> mockLoggingHelper;
+        private List<ReferenceDataCategoryDTO> referenceDataCategoryDTO;
 
         [Test]
         public void Test_GetDeliveryPoints()
@@ -45,6 +47,24 @@ namespace Fmo.DataServices.Tests.Repositories
             DeliveryPointRowVersionSetup();
             var actualResult = testCandidate.GetDeliveryPointRowVersion(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
             Assert.IsNotNull(actualResult);
+        }
+
+        [Test]
+        public void Test_GetRouteForDeliveryPoint()
+        {
+            GetRouteForDeliveryPointSetup();
+            var actualResult = testCandidate.GetRouteForDeliveryPoint(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult == "Primary - test_route");
+        }
+
+        [Test]
+        public void Test_GetDPUse()
+        {
+            GetRouteForDeliveryPointSetup();
+            var actualResult = testCandidate.GetDPUse(referenceDataCategoryDTO, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult == "Organisation");
         }
 
         protected override void OnSetup()
@@ -115,6 +135,107 @@ namespace Fmo.DataServices.Tests.Repositories
             mockFmoDbContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointRepository.Object);
             mockFmoDbContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointRepository.Object);
             mockDeliveryPointRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointRepository.Object);
+
+            mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
+            mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
+            testCandidate = new DeliveryPointsRepository(mockDatabaseFactory.Object, mockLoggingHelper.Object);
+        }
+
+        protected void GetRouteForDeliveryPointSetup()
+        {
+            var deliveryPoint = new List<DeliveryPoint>()
+            {
+               new DeliveryPoint()
+               {
+                   ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                   Address_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
+               }
+            };
+
+            var blockSequences = new List<BlockSequence>()
+            {
+                new BlockSequence() { Block_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A16"), OperationalObject_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11") }
+            };
+
+            var blocks = new List<Block>()
+            {
+                new Block() { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A16"), BlockType = "U" }
+            };
+
+            var deliveryRouteBlocks = new List<DeliveryRouteBlock>()
+            {
+                new DeliveryRouteBlock() { Block_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A16"), DeliveryRoute_GUID = new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13")}
+            };
+
+            var deliveryRoutes = new List<DeliveryRoute>()
+            {
+                new DeliveryRoute() { ID = new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13"), RouteName = "test_route" }
+            };
+
+            var postalAddress = new List<PostalAddress>()
+            {
+                new PostalAddress() { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12"), PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13") }
+            };
+
+            var deliveryRoutePostcodes = new List<DeliveryRoutePostcode>()
+            {
+                new DeliveryRoutePostcode() { Postcode_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"), DeliveryRoute_GUID = new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13"), IsPrimaryRoute = true }
+            };
+
+            referenceDataCategoryDTO = new List<ReferenceDataCategoryDTO>()
+            {
+                new ReferenceDataCategoryDTO()
+                {
+                    CategoryName = "DeliveryPoint Use Indicator",
+                    ReferenceDatas = new List<ReferenceDataDTO>() { new ReferenceDataDTO() { ReferenceDataValue = "Residential" }, new ReferenceDataDTO() { ReferenceDataValue = "Organisation" } }
+                }
+            };
+
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
+
+            var mockDeliveryPointRepository = MockDbSet(deliveryPoint);
+            mockFmoDbContext = CreateMock<FMODBContext>();
+            mockFmoDbContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointRepository.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointRepository.Object);
+            mockDeliveryPointRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointRepository.Object);
+            mockFmoDbContext.Setup(c => c.DeliveryPoints.AsNoTracking()).Returns(mockDeliveryPointRepository.Object);
+
+            var mockPostalAddressRepository = MockDbSet(postalAddress);
+            mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressRepository.Object);
+            mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressRepository.Object);
+            mockPostalAddressRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressRepository.Object);
+            mockFmoDbContext.Setup(c => c.PostalAddresses.AsNoTracking()).Returns(mockPostalAddressRepository.Object);
+
+            var mockdeliveryRoutePostcodesRepository = MockDbSet(deliveryRoutePostcodes);
+            mockFmoDbContext.Setup(x => x.Set<DeliveryRoutePostcode>()).Returns(mockdeliveryRoutePostcodesRepository.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryRoutePostcodes).Returns(mockdeliveryRoutePostcodesRepository.Object);
+            mockdeliveryRoutePostcodesRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockdeliveryRoutePostcodesRepository.Object);
+            mockFmoDbContext.Setup(c => c.DeliveryRoutePostcodes.AsNoTracking()).Returns(mockdeliveryRoutePostcodesRepository.Object);
+
+            var mockDeliveryRouteRepository = MockDbSet(deliveryRoutes);
+            mockFmoDbContext.Setup(x => x.Set<DeliveryRoute>()).Returns(mockDeliveryRouteRepository.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryRoutes).Returns(mockDeliveryRouteRepository.Object);
+            mockDeliveryRouteRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryRouteRepository.Object);
+            mockFmoDbContext.Setup(c => c.DeliveryRoutes.AsNoTracking()).Returns(mockDeliveryRouteRepository.Object);
+
+            var mockBlockSequenceRepository = MockDbSet(blockSequences);
+            mockFmoDbContext.Setup(x => x.Set<BlockSequence>()).Returns(mockBlockSequenceRepository.Object);
+            mockFmoDbContext.Setup(x => x.BlockSequences).Returns(mockBlockSequenceRepository.Object);
+            mockBlockSequenceRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockBlockSequenceRepository.Object);
+            mockFmoDbContext.Setup(c => c.BlockSequences.AsNoTracking()).Returns(mockBlockSequenceRepository.Object);
+
+            var mockBlockRepository = MockDbSet(blocks);
+            mockFmoDbContext.Setup(x => x.Set<Block>()).Returns(mockBlockRepository.Object);
+            mockFmoDbContext.Setup(x => x.Blocks).Returns(mockBlockRepository.Object);
+            mockBlockRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockBlockRepository.Object);
+            mockFmoDbContext.Setup(c => c.Blocks.AsNoTracking()).Returns(mockBlockRepository.Object);
+
+            var mockDeliveryRouteBlockRepository = MockDbSet(deliveryRouteBlocks);
+            mockFmoDbContext.Setup(x => x.Set<DeliveryRouteBlock>()).Returns(mockDeliveryRouteBlockRepository.Object);
+            mockFmoDbContext.Setup(x => x.DeliveryRouteBlocks).Returns(mockDeliveryRouteBlockRepository.Object);
+            mockDeliveryRouteBlockRepository.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryRouteBlockRepository.Object);
+            mockFmoDbContext.Setup(c => c.DeliveryRouteBlocks.AsNoTracking()).Returns(mockDeliveryRouteBlockRepository.Object);
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<FMODBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
