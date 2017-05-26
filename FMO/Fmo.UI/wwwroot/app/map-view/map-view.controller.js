@@ -1,10 +1,12 @@
 'use strict';
 angular.module('mapView')
 	.controller('MapController', ['$scope',
+                                  '$state',
                                   'mapService',
                                   'mapFactory',
                                   MapController])
 function MapController($scope,
+                       $state,
                        mapService, mapFactory) {
     var vm = this;
     var contextTitle = vm.contextTitle;
@@ -17,13 +19,21 @@ function MapController($scope,
     vm.selectedDeliveryUnit = unit;
     vm.selectFeatures = selectFeatures
     vm.onEnterKeypress = onEnterKeypress;
-    
+
 
     $scope.$on('refreshLayers', mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
         mapService.mapToolChange(button);
-        if (button.name == 'accesslink') {
-            vm.contextTitle = "Access Link";
+    });
+    $scope.$on('redirectTo', function (event, data) {
+        vm.contextTitle = data.contextTitle;
+        if (data.feature) {
+            $state.go("accessLink", { accessLinkFeature: data.feature }, {
+                reload: 'accessLink'
+            });
+        }
+        else {
+            $state.go("deliveryPoint");
         }
     });
     $scope.$on("deleteSelectedFeature", function (event) {
@@ -54,10 +64,10 @@ function MapController($scope,
         mapService.selectFeatures();
     }
 
-    $scope.$on('zommLevelchanged', function (event, data) {      
-            vm.zoomLimitReached = data.zoomLimitReached;
-            vm.currentScale = data.currentScale
-            vm.maximumScale = data.maximumScale       
+    $scope.$on('zommLevelchanged', function (event, data) {
+        vm.zoomLimitReached = data.zoomLimitReached;
+        vm.currentScale = data.currentScale
+        vm.maximumScale = data.maximumScale
     });
 
     function onEnterKeypress(currentScale) {

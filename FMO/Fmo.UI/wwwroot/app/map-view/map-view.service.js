@@ -15,6 +15,7 @@ mapService.$inject = ['$http',
                      '$document',
                      '$state',
                      '$stateParams',
+                     '$rootScope',
                      'layersAPIService'];
 
 function mapService($http,
@@ -31,6 +32,7 @@ function mapService($http,
                     $document,
                     $state,
                     $stateParams,
+                    $rootScope,
                     layersAPIService) {
     var vm = this;
     vm.map = null;
@@ -474,9 +476,7 @@ function mapService($http,
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    while (vm.interactions['select']) {
-			        removeInteraction('select');
-			    }
+			    removeInteraction('select');
 			    clearDrawingLayer(true);
 			    setSelections(null, []);
 			});
@@ -486,10 +486,22 @@ function mapService($http,
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    accessLinkCoordinatesService.setCordinates(coordinates);
 			    $stateParams.accessLinkFeature = evt.feature;
-
-			    $state.go("accessLink", { accessLinkFeature: evt.feature }, {
-			        reload: 'accessLink'
+			    var layer = mapFactory.getLayer('Drawing');
+			    vm.map.getInteractions().forEach(function (interaction) {
+			        if (interaction instanceof ol.interaction.Select) {
+			            interaction.getFeatures().clear();
+			        }
 			    });
+
+			    $rootScope.$broadcast('redirectTo', {
+			        
+			            feature: evt.feature,
+			            contextTitle: GlobalSettings.accessLinkLayerName
+			        
+			    });
+			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
+			    //    reload: 'accessLink'
+			    //});
 			});
     }
     function finishCondition(e) {

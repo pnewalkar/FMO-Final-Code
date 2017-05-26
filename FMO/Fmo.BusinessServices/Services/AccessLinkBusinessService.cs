@@ -391,7 +391,7 @@ namespace Fmo.BusinessServices.Services
 
             accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
-                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkTypeDefault).ID;
+                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.UserDefined).ID;
 
             accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
                 .Where(x => x.CategoryName == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
