@@ -257,11 +257,13 @@ namespace Fmo.DataServices.Repositories
                 return result;
             }
             catch (InvalidOperationException ex)
-            { 
+            {
+                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
                 throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
+                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
                 throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
