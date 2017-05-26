@@ -14,7 +14,9 @@ GeometryType: { Point: "Point", LineString: "LineString" } ,
 pointTypes: { DeliveryPoint: { text: "Delivery Point", value: 'deliverypoint', style: "deliverypoint" }, AcessLink: { text: "Access Link", value: 'accesslink', style: "accesslink" }, Road: { text: "Road", value: 'roadlink', style: "roadlink" }, Selected: { text: "Selected", value: '', style: "deliverypoint" } },
 RouteLogSelectionType: { Single: "Single", Multiple: "Multiple" },
 SearchLessThanThreeCharactersErrorMessage: "At least three characters must be input for a Search",
-SearchErrorType: "Warning"
+SearchErrorType: "Warning",
+RouteName: "ROUTENAME",
+DpUse: "DPUSE"
 };
 
 angular.module('FMOApp')

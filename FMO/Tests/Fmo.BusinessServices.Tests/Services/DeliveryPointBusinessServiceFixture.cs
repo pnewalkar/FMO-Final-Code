@@ -25,6 +25,7 @@ namespace Fmo.BusinessServices.Tests.Services
         private Mock<IPostalAddressBusinessService> mockPostalAddressBusinessService;
         private Mock<IReferenceDataBusinessService> referenceDataBusinessService;
         private Mock<IAccessLinkBusinessService> accessLinkBusinessServiceMock;
+        private Mock<IBlockSequenceBusinessService> mockBlockSequenceBusinessService;
         private Guid unitGuid = Guid.NewGuid();
         private AddDeliveryPointDTO addDeliveryPointDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
@@ -91,6 +92,13 @@ namespace Fmo.BusinessServices.Tests.Services
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_GetRouteForDeliveryPoint()
+        {
+            var result = testCandidate.GetRouteForDeliveryPoint(Guid.NewGuid());
+            Assert.IsNotNull(result);
+        }
+
         protected override void OnSetup()
         {
             mockDeliveryPointsRepository = CreateMock<IDeliveryPointsRepository>();
@@ -99,6 +107,7 @@ namespace Fmo.BusinessServices.Tests.Services
             mockLoggingRepository = CreateMock<ILoggingHelper>();
             mockPostalAddressBusinessService = CreateMock<IPostalAddressBusinessService>();
             referenceDataBusinessService = CreateMock<IReferenceDataBusinessService>();
+            mockBlockSequenceBusinessService = CreateMock<IBlockSequenceBusinessService>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<DeliveryPoint> lstDeliveryPoint = new List<DeliveryPoint>();
@@ -188,7 +197,8 @@ namespace Fmo.BusinessServices.Tests.Services
             referenceDataBusinessService.Setup(x => x.GetReferenceDataId("1", "2")).Returns(Guid.NewGuid());
             mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(deliveryPointModelDTO.ID));
             accessLinkBusinessServiceMock = CreateMock<IAccessLinkBusinessService>();
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object, accessLinkBusinessServiceMock.Object);
+            mockDeliveryPointsRepository.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockPostalAddressBusinessService.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, referenceDataBusinessService.Object, accessLinkBusinessServiceMock.Object, mockBlockSequenceBusinessService.Object);
         }
     }
 }

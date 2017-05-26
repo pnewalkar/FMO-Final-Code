@@ -15,6 +15,7 @@ mapService.$inject = ['$http',
                      '$document',
                      '$state',
                      '$stateParams',
+                     '$rootScope',
                      'layersAPIService'];
 
 function mapService($http,
@@ -31,6 +32,7 @@ function mapService($http,
                     $document,
                     $state,
                     $stateParams,
+                    $rootScope,
                     layersAPIService) {
     var vm = this;
     vm.map = null;
@@ -42,9 +44,9 @@ function mapService($http,
     };
     vm.layersForContext = [];
     vm.activeSelection = null;
-    vm.secondarySelections = [];
-
-    vm.selectionListeners = [];
+    vm.secondarySelections =[];
+    vm.routeName = "";
+    vm.selectionListeners =[];
     vm.features = null;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
@@ -95,7 +97,8 @@ function mapService($http,
         getSecondaryFeatures: getSecondaryFeatures,
         setSelectedObjectsVisibility: setSelectedObjectsVisibility,
         removeInteraction: removeInteraction,
-        deleteAccessLinkFeature: deleteAccessLinkFeature
+        deleteAccessLinkFeature: deleteAccessLinkFeature,
+        showDeliveryPointDetails: showDeliveryPointDetails
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -474,9 +477,7 @@ function mapService($http,
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    while (vm.interactions['select']) {
-			        removeInteraction('select');
-			    }
+			    removeInteraction('select');
 			    clearDrawingLayer(true);
 			    setSelections(null, []);
 			});
@@ -486,10 +487,22 @@ function mapService($http,
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    accessLinkCoordinatesService.setCordinates(coordinates);
 			    $stateParams.accessLinkFeature = evt.feature;
-
-			    $state.go("accessLink", { accessLinkFeature: evt.feature }, {
-			        reload: 'accessLink'
+			    var layer = mapFactory.getLayer('Drawing');
+			    vm.map.getInteractions().forEach(function (interaction) {
+			        if (interaction instanceof ol.interaction.Select) {
+			            interaction.getFeatures().clear();
+			        }
 			    });
+
+			    $rootScope.$broadcast('redirectTo', {
+			        
+			            feature: evt.feature,
+			            contextTitle: GlobalSettings.accessLinkLayerName
+			        
+			    });
+			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
+			    //    reload: 'accessLink'
+			    //});
 			});
     }
     function finishCondition(e) {
@@ -533,11 +546,14 @@ function mapService($http,
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
                 setSelections({
-                    featureID: e.selected[0].getId(), layer: lastLayer
+                                     featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
-            } else {
-                setSelections(null, []);
-            }
+                var deliveryPointDetails = e.selected[0].getProperties();
+                showDeliveryPointDetails(deliveryPointDetails);
+                
+                             } else {
+                             setSelections(null, []);
+                             }
 
         });
         persistSelection();
@@ -682,6 +698,28 @@ function mapService($http,
             });
 
         }
-    }
+             }
+
+             function showDeliveryPointDetails(deliveryPointDetails)
+             {
+                 deliveryPointDetails.routeName = null;
+                 mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
+                       .then(function (response) {
+                           for (i = 0; i < response.length; i++)
+                           {
+                               if (response[i].key == CommonConstants.RouteName)
+                               {
+                                   deliveryPointDetails.routeName = [response[i].value];
+                               }                               
+                               if (response[i].key == CommonConstants.DpUse)
+                               {
+                                   deliveryPointDetails.dpUse = response[i].value;
+                               }
+                           }
+                           $state.go('DeliveryPointDetails', {
+                               selectedDeliveryPoint: deliveryPointDetails
+                           }, { reload: true });
+                       });                 
+             }
 
 }

@@ -38,6 +38,11 @@ angular.module('FMOApp')
             controller: "ContextController as vm",
             params: { selectedItem: null }
         })
+        .state("DeliveryPointDetails", {
+            templateUrl: "./delivery-point/delivery-point-details.template.html",
+            controller: "DeliveryPointContextController as vm",
+            params: { selectedDeliveryPoint: null }
+        })
         .state("referenceData", {
             templateUrl: "./reference-data/reference-data.template.html",
             controller: "ReferenceDataController as vm"

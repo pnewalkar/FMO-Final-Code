@@ -65,6 +65,7 @@
     <Compile Include="AddDeliveryPointDTO.cs" />
     <Compile Include="AddressLocationDTO.cs" />
     <Compile Include="AccessLinkDTO.cs" />
+    <Compile Include="BlockSequenceDTO.cs" />
     <Compile Include="DeliveryPointAliasDTO.cs" />
     <Compile Include="FileProcessingLogDTO.cs" />
     <Compile Include="FileProcessing\AddressLocationUSRPOSTDTO.cs" />
