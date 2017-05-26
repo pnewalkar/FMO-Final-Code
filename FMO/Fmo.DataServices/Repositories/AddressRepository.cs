@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity.Infrastructure;
 using Fmo.Common.ExceptionManagement;
+using Fmo.Common.ResourceFile;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -79,7 +80,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlDeleteExceptionMessage, string.Concat("PostalAdresses with UPPRN:", string.Join(",", lstUDPRN))));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlDeleteException, string.Concat("PostalAdresses with UPPRN:", string.Join(",", lstUDPRN))));
             }
         }
 
@@ -351,67 +352,67 @@ namespace Fmo.DataServices.Repositories
         /// <returns>bool</returns>
         public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
         {
-            try
+            bool isDuplicate = false;
+
+            var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                .Where(n => n.Postcode == objPostalAddress.Postcode);
+
+            if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
             {
-                bool isDuplicate = false;
+                postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
+                    StringComparison.OrdinalIgnoreCase));
+            }
 
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
-                                .Where(n => n.Postcode == objPostalAddress.Postcode);
+            if (objPostalAddress.BuildingNumber != null)
+            {
+                postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
+            }
 
-                if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
+            if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
+            {
+                postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
+                    StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
+            {
+                postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
+                    StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
+            {
+                postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
+                    StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
+            {
+                postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare,
+                    StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
+            {
+                postalAddress =
+                    postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
+                        StringComparison.OrdinalIgnoreCase));
+            }
+
+            var addressDetails = postalAddress.ToList();
+            if (addressDetails != null && addressDetails.Count > 0)
+            {
+                foreach (var address in addressDetails)
                 {
-                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (objPostalAddress.BuildingNumber != null)
-                {
-                    postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
-                {
-                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
-                {
-                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
-                {
-                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
-                {
-                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
-                {
-                    postalAddress = postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
-                }
-
-                var addressDetails = postalAddress.ToList();
-                if (addressDetails != null && addressDetails.Count > 0)
-                {
-                    foreach (var address in addressDetails)
+                    if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
                     {
-                        if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
-                        {
-                            isDuplicate = true;
-                            break;
-                        }
+                        isDuplicate = true;
+                        break;
                     }
                 }
+            }
 
-                return isDuplicate;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return isDuplicate;
         }
 
         /// <summary>
@@ -700,7 +701,7 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("Delivery Point for UDPRN:", addDeliveryPointDTO.PostalAddressDTO.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", addDeliveryPointDTO.PostalAddressDTO.UDPRN)));
             }
         }
 

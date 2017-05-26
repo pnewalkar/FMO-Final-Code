@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fmo.Common.Constants;
 using Fmo.Common.ExceptionManagement;
+using Fmo.Common.ResourceFile;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -39,15 +40,17 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlAddExceptionMessage, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
+                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
             }
         }
 
@@ -74,15 +77,17 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlDeleteExceptionMessage, string.Concat("notification for:", actionLink)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlDeleteException, string.Concat("notification for:", actionLink)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
+                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
             }
         }
 

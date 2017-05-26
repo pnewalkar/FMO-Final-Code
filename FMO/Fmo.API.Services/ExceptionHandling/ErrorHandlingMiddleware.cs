@@ -7,6 +7,7 @@ using Fmo.Common.Constants;
 using Fmo.Common.Enums;
 using Fmo.Common.ExceptionManagement;
 using Fmo.Common.Interface;
+using Fmo.Common.ResourceFile;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
@@ -52,23 +53,30 @@ namespace Fmo.API.Services.ExceptionHandling
             }
             catch (Exception ex)
             {
-                Exception wrappedException;
-                bool rethrow = exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out wrappedException);
-                if (rethrow)
+                exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap);
+                if (ex.InnerException == null)
                 {
-                    if (wrappedException == null)
-                    {
-                        await HandleExceptionAsync(context, ex);
-                    }
-                    else
-                    {
-                        await HandleExceptionAsync(context, wrappedException);
-                    }
+                    await WriteExceptionToContextAsync(context, ex);
                 }
                 else
                 {
-                    await HandleExceptionAsync(context, ex);
+                    await WriteExceptionToContextAsync(context, ex.InnerException);
                 }
+                //if (rethrow)
+                //{
+                //    if (wrappedException == null)
+                //    {
+                //        await HandleExceptionAsync(context, ex);
+                //    }
+                //    else
+                //    {
+                //        await HandleExceptionAsync(context, wrappedException);
+                //    }
+                //}
+                //else
+                //{
+                //    await HandleExceptionAsync(context, ex);
+                //}
             }
         }
 
@@ -79,7 +87,7 @@ namespace Fmo.API.Services.ExceptionHandling
         /// <param name="context">The context.</param>
         /// <param name="exception">The exception.</param>
         /// <returns></returns>
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private Task WriteExceptionToContextAsync(HttpContext context, Exception exception)
         {
             try
             {
@@ -103,7 +111,7 @@ namespace Fmo.API.Services.ExceptionHandling
             }
             catch (Exception)
             {
-                loggingHelper.LogError(ErrorMessageConstants.ErrorExecutingErrorHandlerMessage, exception);
+                loggingHelper.LogError(ErrorMessageIds.Err_ExecutingErrorHandler, exception);
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = exception.Message }));
             }
@@ -120,6 +128,12 @@ namespace Fmo.API.Services.ExceptionHandling
             if (!string.IsNullOrWhiteSpace(exceptionResponse.Message))
             {
                 return CreateErrorResponse(exceptionResponse.Message);
+            }
+
+            if (ex.Data.Count > 0)
+            {
+                string userFriendlyMessage = ex.Data["userFriendlyMessage"].ToString();
+                return exceptionResponse.Response ?? CreateErrorResponse(userFriendlyMessage.Replace(Environment.NewLine, " "));
             }
 
             return exceptionResponse.Response ?? CreateErrorResponse(ex.Message.Replace(Environment.NewLine, " "));

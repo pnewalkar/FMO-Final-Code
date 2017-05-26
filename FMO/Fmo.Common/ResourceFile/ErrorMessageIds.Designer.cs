@@ -61,7 +61,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ArgumentmentNull.
+        ///   Looks up a localized string similar to Following arguments for the method are null {0}.
         /// </summary>
         public static string Err_ArgumentmentNullException {
             get {
@@ -70,7 +70,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Concurrency.
+        ///   Looks up a localized string similar to Data you are trying to modify has been already modified by another user..
         /// </summary>
         public static string Err_Concurrency {
             get {
@@ -79,7 +79,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default.
+        ///   Looks up a localized string similar to Application error occured. Please contact your administrator..
         /// </summary>
         public static string Err_Default {
             get {
@@ -88,7 +88,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EntityNotFound.
+        ///   Looks up a localized string similar to The entity trying to search cannot be found..
         /// </summary>
         public static string Err_EntityNotFoundException {
             get {
@@ -97,7 +97,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ExecutingErrorHandler.
+        ///   Looks up a localized string similar to An exception was thrown attempting to execute the error handler..
         /// </summary>
         public static string Err_ExecutingErrorHandler {
             get {
@@ -106,7 +106,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InvalidOperationForCountAsync.
+        ///   Looks up a localized string similar to The underlying provider does not support this operation..
         /// </summary>
         public static string Err_InvalidOperationExceptionForCountAsync {
             get {
@@ -115,7 +115,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InvalidOperationForFirstorDefault.
+        ///   Looks up a localized string similar to Source does not implement IDbAsyncQueryProvider.
         /// </summary>
         public static string Err_InvalidOperationExceptionForFirstorDefault {
             get {
@@ -124,7 +124,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InvalidOperationForSingleorDefault.
+        ///   Looks up a localized string similar to There are more than one element in sequence for SingleOrDefault() extention.
         /// </summary>
         public static string Err_InvalidOperationExceptionForSingleorDefault {
             get {
@@ -133,7 +133,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NotSupported.
+        ///   Looks up a localized string similar to An attempt was made to use unsupported behavior..
         /// </summary>
         public static string Err_NotSupportedException {
             get {
@@ -142,7 +142,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ObjectDisposed.
+        ///   Looks up a localized string similar to The context or connection have been disposed..
         /// </summary>
         public static string Err_ObjectDisposedException {
             get {
@@ -151,7 +151,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Overflow.
+        ///   Looks up a localized string similar to The number of elements in source is larger than MaxValue..
         /// </summary>
         public static string Err_OverflowException {
             get {
@@ -160,7 +160,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SqlAdd.
+        ///   Looks up a localized string similar to Error occured on adding new {0}..
         /// </summary>
         public static string Err_SqlAddException {
             get {
@@ -169,7 +169,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SqlDelete.
+        ///   Looks up a localized string similar to Error occured while deleting {0}..
         /// </summary>
         public static string Err_SqlDeleteException {
             get {
@@ -178,7 +178,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SqlUpdate.
+        ///   Looks up a localized string similar to Error occured on modifying {0}..
         /// </summary>
         public static string Err_SqlUpdateException {
             get {
@@ -187,7 +187,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Token.
+        ///   Looks up a localized string similar to Error occured while generating token.
         /// </summary>
         public static string Err_Token {
             get {
@@ -196,7 +196,7 @@ namespace Fmo.Common.ResourceFile {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UnHandled.
+        ///   Looks up a localized string similar to An unhandled application error occurred and has been logged. Please contact your administrator..
         /// </summary>
         public static string Err_UnHandled {
             get {

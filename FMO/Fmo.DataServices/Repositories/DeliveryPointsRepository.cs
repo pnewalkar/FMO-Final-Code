@@ -1,5 +1,6 @@
 using System.Collections;
 using Fmo.Common.ExceptionManagement;
+using Fmo.Common.ResourceFile;
 
 namespace Fmo.DataServices.Repositories
 {
@@ -191,7 +192,7 @@ namespace Fmo.DataServices.Repositories
         {
             if (string.IsNullOrWhiteSpace(searchText) || Guid.Empty.Equals(unitGuid))
             {
-                throw new ArgumentNullException(searchText, string.Format(ErrorMessageConstants.ArgumentmentNullExceptionMessage, string.Concat(searchText, unitGuid)));
+                throw new ArgumentNullException(searchText, string.Format(ErrorMessageIds.Err_ArgumentmentNullException, string.Concat(searchText, unitGuid)));
             }
 
             int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
@@ -256,12 +257,12 @@ namespace Fmo.DataServices.Repositories
                 return result;
             }
             catch (InvalidOperationException ex)
-            {
-                throw new SystemException(ErrorMessageConstants.InvalidOperationExceptionMessageForSingleorDefault, ex);
+            { 
+                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                throw new SystemException(ErrorMessageConstants.OverflowExceptionMessage, overflow);
+                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
             }
         }
 
@@ -319,19 +320,21 @@ namespace Fmo.DataServices.Repositories
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(ErrorMessageConstants.ConcurrencyMessage);
+                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageConstants.SqlUpdateExceptionMessage, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                throw new InfrastructureException(notSupportedException, ErrorMessageConstants.NotSupportedExceptionMessage);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                throw new ServiceException(disposedException, ErrorMessageConstants.ObjectDisposedExceptionMessage);
+                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
+                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
             }
         }
 

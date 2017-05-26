@@ -9,11 +9,10 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
-using Fmo.Common.Constants;
 using Fmo.Common.Interface;
+using Fmo.Common.ResourceFile;
 using Fmo.DTO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
@@ -146,8 +145,8 @@ namespace Fmo.API.Services.Authentication
             }
             catch (Exception ex)
             {
-                loggingHelper.LogError(ErrorMessageConstants.TokenErrorMessage, ex);
-                var result = JsonConvert.SerializeObject(new { error = ErrorMessageConstants.DefaultErrorMessage });
+                loggingHelper.LogError(ErrorMessageIds.Err_Token, ex);
+                var result = JsonConvert.SerializeObject(new { error = ErrorMessageIds.Err_Default });
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 await context.Response.WriteAsync(result);

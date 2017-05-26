@@ -118,67 +118,67 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Err_ArgumentmentNullException" xml:space="preserve">
-    <value>ArgumentmentNull</value>
+    <value>Following arguments for the method are null {0}</value>
     <comment>Following arguments for the method are null {0}</comment>
   </data>
   <data name="Err_Concurrency" xml:space="preserve">
-    <value>Concurrency</value>
+    <value>Data you are trying to modify has been already modified by another user.</value>
     <comment>Data you are trying to modify has been already modified by another user.</comment>
   </data>
   <data name="Err_Default" xml:space="preserve">
-    <value>Default</value>
+    <value>Application error occured. Please contact your administrator.</value>
     <comment>Application Error Occured. Please contact your administrator.</comment>
   </data>
   <data name="Err_EntityNotFoundException" xml:space="preserve">
-    <value>EntityNotFound</value>
+    <value>The entity trying to search cannot be found.</value>
     <comment>The entity trying to search cannot be found.</comment>
   </data>
   <data name="Err_ExecutingErrorHandler" xml:space="preserve">
-    <value>ExecutingErrorHandler</value>
+    <value>An exception was thrown attempting to execute the error handler.</value>
     <comment>An exception was thrown attempting to execute the error handler.</comment>
   </data>
   <data name="Err_InvalidOperationExceptionForCountAsync" xml:space="preserve">
-    <value>InvalidOperationForCountAsync</value>
+    <value>The underlying provider does not support this operation.</value>
     <comment>The underlying provider does not support this operation.</comment>
   </data>
   <data name="Err_InvalidOperationExceptionForFirstorDefault" xml:space="preserve">
-    <value>InvalidOperationForFirstorDefault</value>
+    <value>Source does not implement IDbAsyncQueryProvider</value>
     <comment>Source does not implement IDbAsyncQueryProvider</comment>
   </data>
   <data name="Err_InvalidOperationExceptionForSingleorDefault" xml:space="preserve">
-    <value>InvalidOperationForSingleorDefault</value>
+    <value>There are more than one element in sequence for SingleOrDefault() extention</value>
     <comment>There are more than one element in sequence for SingleOrDefault() extention</comment>
   </data>
   <data name="Err_NotSupportedException" xml:space="preserve">
-    <value>NotSupported</value>
+    <value>An attempt was made to use unsupported behavior.</value>
     <comment>An attempt was made to use unsupported behavior.</comment>
   </data>
   <data name="Err_ObjectDisposedException" xml:space="preserve">
-    <value>ObjectDisposed</value>
+    <value>The context or connection have been disposed.</value>
     <comment>The context or connection have been disposed.</comment>
   </data>
   <data name="Err_OverflowException" xml:space="preserve">
-    <value>Overflow</value>
+    <value>The number of elements in source is larger than MaxValue.</value>
     <comment>The number of elements in source is larger than MaxValue.</comment>
   </data>
   <data name="Err_SqlAddException" xml:space="preserve">
-    <value>SqlAdd</value>
+    <value>Error occured on adding new {0}.</value>
     <comment>Error occured on adding new {0}.</comment>
   </data>
   <data name="Err_SqlDeleteException" xml:space="preserve">
-    <value>SqlDelete</value>
+    <value>Error occured while deleting {0}.</value>
     <comment>Error occured while deleting {0}.</comment>
   </data>
   <data name="Err_SqlUpdateException" xml:space="preserve">
-    <value>SqlUpdate</value>
+    <value>Error occured on modifying {0}.</value>
     <comment>Error occured on modifying {0}.</comment>
   </data>
   <data name="Err_Token" xml:space="preserve">
-    <value>Token</value>
+    <value>Error occured while generating token</value>
     <comment>Error occured while generating token</comment>
   </data>
   <data name="Err_UnHandled" xml:space="preserve">
-    <value>UnHandled</value>
+    <value>An unhandled application error occurred and has been logged. Please contact your administrator.</value>
     <comment>An unhandled application error occurred and has been logged. Please contact your administrator.</comment>
   </data>
 </root>
