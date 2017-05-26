@@ -6,7 +6,7 @@
 }
 
 .resultPanel{
-    @include margin(-44px 0px 0px 0px);
+    @include margin(-23px 0px 0px 0px);
     @include height(100px);
     @include cursor(pointer);
 } 
@@ -24,12 +24,13 @@
 }
 
 fieldset{
+    margin-top: 15px;
     @include padding(5px 5px 5px 5px);
     @include border(1px solid $fieldsetColor);
 }
 
 .contentHeight{
-    @include height(500px);
+    @include height(2000px);
 }
 .aliasinput{
     @include margin(0px 0px 5px 0px);

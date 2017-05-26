@@ -1,4 +1,4 @@
-.searchInput, .searchData span, .viewResult, .noResult, .viewResult a, .searchContext h1, .searchContext span {
+.searchText input[type="text"], .searchInput, .searchData span, .viewResult, .noResult, .viewResult a, .searchContext h1, .searchContext span {
   color: #2a2a2d;
   font-family: PF_DIN;
   font-size: 16px; }
@@ -17,7 +17,8 @@ i.fa.fa-map-marker.route {
 
 .searchText input[type="text"] {
   color: #ffffff;
-  border-bottom-color: white; }
+  border-bottom-color: #ffffff;
+  margin: 10px 0px 0px 0px; }
 
 .searchText label {
   color: #ffffff; }
