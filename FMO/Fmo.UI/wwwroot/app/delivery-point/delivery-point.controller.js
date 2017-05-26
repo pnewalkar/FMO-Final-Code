@@ -64,7 +64,7 @@ function DeliveryPointController(
     vm.display = false;
     vm.disable = true;
     vm.items = [];
-    vm.hide= $stateParams.hide;
+    vm.hide = $stateParams.hide;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
@@ -79,7 +79,7 @@ function DeliveryPointController(
         });
     }
 
-    function deliveryPoint() {  
+    function deliveryPoint() {
         deliveryPointService.openModalPopup(popUpSettingService.deliveryPoint());
     }
 
@@ -96,6 +96,7 @@ function DeliveryPointController(
 
     function OnChangeItem(selectedItem) {
         if (selectedItem) {
+            vm.routeId = "";
             vm.notyetBuilt = "";
             vm.searchText = selectedItem;
             vm.results = {};
@@ -127,7 +128,7 @@ function DeliveryPointController(
                 vm.addressDetails.subBuildingName = "";
                 vm.addressDetails.organisationName = "";
                 vm.addressDetails.departmentName = "";
-                });
+            });
         }
     }
 
@@ -193,7 +194,7 @@ function DeliveryPointController(
     }
 
     function createDeliveryPoint() {
-    
+
         var addDeliveryPointDTO =
             {
                 "PostalAddressDTO": vm.addressDetails,
@@ -215,13 +216,13 @@ function DeliveryPointController(
                 guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
                 vm.closeWindow();
-               
+
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
                 setDP();
                 vm.closeWindow();
-               
+
             }
             else {
                 vm.isError = true;
