@@ -278,18 +278,36 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="deliveryPointId">deliveryPointId as GUID</param>
         /// <returns>Route Name for a single DeliveryPoint</returns>
-        public List<string> GetRouteForDeliveryPoint(Guid deliveryPointId)
+        public string GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
-            var result = from dp in DataContext.DeliveryPoints.AsNoTracking()
-                         join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
-                         join drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() on pa.PostCodeGUID equals drp.Postcode_GUID
-                         join dr in DataContext.DeliveryRoutes.AsNoTracking() on drp.DeliveryRoute_GUID equals dr.ID
-                         where dp.ID == deliveryPointId
-                         select new
-                         {
-                             RouteName = drp.IsPrimaryRoute == true ? Constants.PRIMARYROUTE + dr.RouteName : Constants.SECONDARYROUTE + dr.RouteName
-                         };
-            return result.Select(n => n.RouteName).ToList();
+            string routeName = string.Empty;
+            var result = (from dp in DataContext.DeliveryPoints.AsNoTracking()
+                          join bs in DataContext.BlockSequences.AsNoTracking() on dp.ID equals bs.OperationalObject_GUID
+                          join b in DataContext.Blocks.AsNoTracking() on bs.Block_GUID equals b.ID
+                          join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on b.ID equals drb.Block_GUID
+                          join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
+                          join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                          where dp.ID == deliveryPointId && b.BlockType == Constants.UnSequenced
+                          select new
+                          {
+                              RouteName = dr.RouteName,
+                              RouteId = dr.ID,
+                              PostcodeId = pa.PostCodeGUID
+                          }).SingleOrDefault();
+            if (result != null)
+            {
+                var isPrimaryRoute = (from drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() where drp.Postcode_GUID == result.PostcodeId && drp.DeliveryRoute_GUID == result.RouteId select drp.IsPrimaryRoute).ToList();
+                if (isPrimaryRoute.Count == 0)
+                {
+                    routeName = result.RouteName.Trim();
+                }
+                else
+                {
+                    routeName = isPrimaryRoute[0] == true ? Constants.PRIMARYROUTE + result.RouteName.Trim() : Constants.SECONDARYROUTE + result.RouteName.Trim();
+                }
+            }
+
+            return routeName;
         }
 
         /// <summary>

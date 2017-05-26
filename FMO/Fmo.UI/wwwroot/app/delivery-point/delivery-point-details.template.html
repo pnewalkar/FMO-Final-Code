@@ -34,7 +34,7 @@
             <input type="text" ng-value="vm.selectedDeliveryPoint.postcode">
         </md-input-container>
 
-        <md-input-container flex="50" ng-show="vm.selectedDeliveryPoint.routeName != null && vm.selectedDeliveryPoint.routeName != undefined && vm.selectedDeliveryPoint.routeName.length != 0">
+        <md-input-container flex="50" ng-show="vm.selectedDeliveryPoint.routeName != null && vm.selectedDeliveryPoint.routeName != undefined && vm.selectedDeliveryPoint.routeName[0].length != 0">
             <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
             <md-select name="routeName" ng-model="vm.selectedDeliveryPoint.routeName" ng-disabled="true">
                 <md-option ng-repeat="route in vm.selectedDeliveryPoint.routeName" ng-value="route" 

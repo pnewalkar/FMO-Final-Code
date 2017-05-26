@@ -281,11 +281,11 @@ namespace Fmo.BusinessServices.Services
         public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
             List<KeyValuePair<string, string>> dpDetails = new List<KeyValuePair<string, string>>();
-            List<string> routeName = deliveryPointsRepository.GetRouteForDeliveryPoint(deliveryPointId);
+            string routeName = deliveryPointsRepository.GetRouteForDeliveryPoint(deliveryPointId);
             string dpUse = GetDPUse(deliveryPointId);
-            if (routeName.Count > 0)
+            if (routeName != null)
             {
-                dpDetails.Add(new KeyValuePair<string, string>(Constants.RouteName, routeName[0]));
+                dpDetails.Add(new KeyValuePair<string, string>(Constants.RouteName, routeName));
             }
 
             dpDetails.Add(new KeyValuePair<string, string>(Constants.DpUse, dpUse));

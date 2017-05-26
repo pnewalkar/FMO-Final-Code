@@ -138,7 +138,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// </summary>
         /// <param name="deliveryPointId">deliveryPointId as GUID</param>
         /// <returns>Route Name for a single DeliveryPoint</returns>
-        List<string> GetRouteForDeliveryPoint(Guid deliveryPointId);
+        string GetRouteForDeliveryPoint(Guid deliveryPointId);
 
         /// <summary>
         /// This Method fetches DPUse value for the DeliveryPoint

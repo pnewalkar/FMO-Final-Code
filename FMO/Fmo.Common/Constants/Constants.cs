@@ -180,6 +180,7 @@
         public const string DELIVERYPOINTCREATEDWITHOUTLOCATION = "Delivery Point created successfully without location";
         public const string INTERNAL = "Internal";
         public const string ROWVERSION = "RowVersion";
+        public const string UnSequenced = "U";
 
         #endregion DeliveryPoints
 
