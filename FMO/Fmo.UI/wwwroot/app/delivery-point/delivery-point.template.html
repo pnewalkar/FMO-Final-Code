@@ -84,8 +84,8 @@
 
                 <md-input-container flex="30">
                     <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-                    <md-select name="route" ng-model="vm.addressDetails.route" select-clear required> 
-                        <md-option ng-repeat="route in vm.routeDetails" ng-value="route.value">
+                    <md-select name="route" ng-model="vm.routeId" select-clear required> 
+                        <md-option ng-repeat="route in vm.postalAddressData.routeDetails" ng-value="route.value">
                             {{route.displayText}}
                         </md-option>
                     </md-select>

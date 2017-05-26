@@ -8,14 +8,16 @@ MapFactory.$inject = ['$http',
     '$rootScope',
     'GlobalSettings',
     '$document',
-    'layersAPIService'];
+    'layersAPIService',
+    '$q'];
 
 function MapFactory($http,
     mapStylesFactory,
     $rootScope,
     GlobalSettings,
     $document,
-    layersAPIService)
+    layersAPIService,
+    $q)
     {
     var map = null;
     var miniMap = null;
@@ -64,7 +66,8 @@ function MapFactory($http,
         setDeliveryPoint: setDeliveryPoint,
         setAccessLink : setAccessLink,
         setMapScale: setMapScale,
-        locateDeliveryPoint: locateDeliveryPoint
+        locateDeliveryPoint: locateDeliveryPoint,
+        GetRouteForDeliveryPoint: GetRouteForDeliveryPoint
     };
 
     function initialiseMap() {
@@ -507,6 +510,19 @@ function MapFactory($http,
             var selectedFeatures = select.getFeatures();
         });
 
+    }
+
+    function GetRouteForDeliveryPoint(deliveryPointId) {
+        var deferred = $q.defer();
+
+        $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetRouteForDeliveryPoint?deliveryPointId=' + deliveryPointId).success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
     }
 }
 

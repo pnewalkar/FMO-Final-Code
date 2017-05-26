@@ -202,7 +202,8 @@ function DeliveryPointController(
                     "MultipleOccupancyCount": vm.mailvol,
                     "MailVolume": vm.multiocc,
                     "DeliveryPointAliasDTO": vm.items,
-                    "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id
+                    "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
+                    "DeliveryRoute_Guid": vm.routeId
                 },
                 "AddressLocationDTO": null
             };

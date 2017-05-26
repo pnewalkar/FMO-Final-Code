@@ -12,8 +12,6 @@ namespace Fmo.Entities
         [Column(TypeName = "numeric")]
         public decimal? OrderIndex { get; set; }
 
-        public int? OperationalObject_Id { get; set; }
-
         public Guid ID { get; set; }
 
         public Guid Block_GUID { get; set; }

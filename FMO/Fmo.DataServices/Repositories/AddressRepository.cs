@@ -568,7 +568,7 @@ namespace Fmo.DataServices.Repositories
 
                         if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()))
                         {
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.ID });
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
                         }
                     });
                 }
@@ -583,7 +583,7 @@ namespace Fmo.DataServices.Repositories
 
                         if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()))
                         {
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.ID });
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
                         }
                     });
                 }
