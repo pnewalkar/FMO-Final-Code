@@ -609,10 +609,10 @@ namespace Fmo.DataServices.Repositories
 
             Mapper.Configuration.CreateMapper();
             DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-            List<DeliveryPoint> crossingDeliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Crosses(accessLink)).ToList();
+            List<DeliveryPoint> crossingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Crosses(accessLink)).ToList();
             List<DeliveryPointDTO> crossingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(crossingDeliveryPoints);
             deliveryPointDTOs.AddRange(crossingAccessLinkDTOs);
-            List<DeliveryPoint> overLappingDeliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Overlaps(accessLink)).ToList();
+            List<DeliveryPoint> overLappingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Overlaps(accessLink)).ToList();
             List<DeliveryPointDTO> overLappingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(overLappingDeliveryPoints);
             deliveryPointDTOs.AddRange(overLappingAccessLinkDTOs);
             return deliveryPointDTOs;

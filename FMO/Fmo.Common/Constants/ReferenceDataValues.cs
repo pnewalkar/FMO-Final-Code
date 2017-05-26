@@ -27,5 +27,7 @@
 
         public const string OperationalObjectTypeDP = "DP";
         public const string DeliveryRouteMethodTypeRmVanShared = "RM Van (Shared)";
+
+        public const string UserDefined = "User Defined";
     }
 }

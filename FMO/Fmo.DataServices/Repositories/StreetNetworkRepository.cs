@@ -301,10 +301,10 @@ namespace Fmo.DataServices.Repositories
         {
             List<NetworkLinkDTO> networkLinkDTOs = new List<NetworkLinkDTO>();
             DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-            List<NetworkLink> crossingNetworkLinks = DataContext.NetworkLinks.Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Crosses(accessLink)).ToList();
+            List<NetworkLink> crossingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Crosses(accessLink)).ToList();
             List<NetworkLinkDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(crossingNetworkLinks);
             networkLinkDTOs.AddRange(crossingNetworkLinkDTOs);
-            List<NetworkLink> overLappingNetworkLinks = DataContext.NetworkLinks.Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Overlaps(accessLink)).ToList();
+            List<NetworkLink> overLappingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Overlaps(accessLink)).ToList();
             List<NetworkLinkDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(overLappingNetworkLinks);
             networkLinkDTOs.AddRange(overLappingNetworkLinkDTOs);
             return networkLinkDTOs;
