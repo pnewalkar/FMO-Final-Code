@@ -1,4 +1,3 @@
-using System.Collections;
 using Fmo.Common.ExceptionManagement;
 using Fmo.Common.ResourceFile;
 
@@ -207,7 +206,7 @@ namespace Fmo.DataServices.Repositories
                 .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
                                                                  || x.PostalAddress.BuildingName.Contains(searchText)
                                                                  || x.PostalAddress.SubBuildingName.Contains(searchText)
-                                                                 || SqlFunctions.StringConvert((double) x.PostalAddress
+                                                                 || SqlFunctions.StringConvert((double)x.PostalAddress
                                                                      .BuildingNumber).StartsWith(searchText)
                                                                  || x.PostalAddress.Thoroughfare.Contains(searchText)
                                                                  || x.PostalAddress.DependentLocality.Contains(
@@ -258,7 +257,7 @@ namespace Fmo.DataServices.Repositories
                 return result;
             }
             catch (InvalidOperationException ex)
-            { 
+            {
                 throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
@@ -509,7 +508,7 @@ namespace Fmo.DataServices.Repositories
         /// <returns>boolean value true or false</returns>
         public bool DeliveryPointExists(int udprn)
         {
-            if (DataContext.DeliveryPoints.AsNoTracking().Where(dp => ((int) dp.UDPRN).Equals(udprn)).Any())
+            if (DataContext.DeliveryPoints.AsNoTracking().Where(dp => ((int)dp.UDPRN).Equals(udprn)).Any())
             {
                 return true;
             }
@@ -549,27 +548,6 @@ namespace Fmo.DataServices.Repositories
             }
 
             return rowVersion;
-        }
-
-        /// <summary>
-        /// This method is used to Get delivery Point boundingBox data.
-        /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
-        /// <param name="unitGuid">unit unique identifier.</param>
-        /// <returns>List of Delivery Point Entity</returns>
-        private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
-        {
-            IEnumerable<DeliveryPoint> deliveryPoints = default(IEnumerable<DeliveryPoint>);
-            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
-            {
-                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
-
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-
-                deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
-            }
-
-            return deliveryPoints;
         }
 
         /// <summary>
@@ -638,6 +616,27 @@ namespace Fmo.DataServices.Repositories
             List<DeliveryPointDTO> overLappingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(overLappingDeliveryPoints);
             deliveryPointDTOs.AddRange(overLappingAccessLinkDTOs);
             return deliveryPointDTOs;
+        }
+
+        /// <summary>
+        /// This method is used to Get delivery Point boundingBox data.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
+        /// <returns>List of Delivery Point Entity</returns>
+        private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
+        {
+            IEnumerable<DeliveryPoint> deliveryPoints = default(IEnumerable<DeliveryPoint>);
+            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
+            {
+                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+
+                deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
+            }
+
+            return deliveryPoints;
         }
     }
 }

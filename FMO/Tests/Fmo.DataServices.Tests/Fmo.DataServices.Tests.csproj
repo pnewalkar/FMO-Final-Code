@@ -61,6 +61,7 @@
     <Compile Include="Repositories\AccessLinkRepositoryFixture.cs" />
     <Compile Include="Repositories\AddressRepositoryFixture.cs" />
     <Compile Include="Repositories\AddressRepositoryPAFFixture.cs" />
+    <Compile Include="Repositories\BlockSequenceRepositoryFixture.cs" />
     <Compile Include="Repositories\DeliveryPointRepositoryFixture.cs" />
     <Compile Include="Repositories\DeliveryPointsRepositoryFixture.cs" />
     <Compile Include="Repositories\DeliveryRouteRepositoryFixture.cs" />

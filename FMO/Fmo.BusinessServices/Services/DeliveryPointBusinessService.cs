@@ -193,7 +193,8 @@ namespace Fmo.BusinessServices.Services
                             .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
                         var isAccessLinkCreated =
-                            accessLinkBusinessService.CreateAccessLink(createDeliveryPointModelDTO.ID,
+                            accessLinkBusinessService.CreateAccessLink(
+                                createDeliveryPointModelDTO.ID,
                                 deliveryOperationObjectTypeId);
 
                         message = isAccessLinkCreated
@@ -209,7 +210,7 @@ namespace Fmo.BusinessServices.Services
 
             this.loggingHelper.LogInfo(addDeliveryDtoLogDetails);
             LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate , YCoordinate = returnYCoordinate };
+            return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate, YCoordinate = returnYCoordinate };
         }
 
         /// <summary>
@@ -249,22 +250,22 @@ namespace Fmo.BusinessServices.Services
                 }
 
                 if (t.Result != Guid.Empty)
-                 {
-                     returnGuid = t.Result;
-                     var referenceDataCategoryList =
-                              referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
-                              {
+                {
+                    returnGuid = t.Result;
+                    var referenceDataCategoryList =
+                             referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(new List<string>
+                             {
                              ReferenceDataCategoryNames.OperationalObjectType
-                              });
+                             });
 
-                     var deliveryOperationObjectTypeId = referenceDataCategoryList
-                         .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
-                         .SelectMany(x => x.ReferenceDatas)
-                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
+                    var deliveryOperationObjectTypeId = referenceDataCategoryList
+                        .Where(x => x.CategoryName == ReferenceDataCategoryNames.OperationalObjectType)
+                        .SelectMany(x => x.ReferenceDatas)
+                        .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
-                     accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
-                 }
-             });
+                    accessLinkBusinessService.CreateAccessLink(deliveryPointModelDTO.ID, deliveryOperationObjectTypeId);
+                }
+            });
 
             return new UpdateDeliveryPointModelDTO { XCoordinate = deliveryPointModelDTO.XCoordinate, YCoordinate = deliveryPointModelDTO.YCoordinate, ID = returnGuid };
         }
@@ -286,24 +287,6 @@ namespace Fmo.BusinessServices.Services
 
             dpDetails.Add(new KeyValuePair<string, string>(Constants.DpUse, dpUse));
             return dpDetails;
-        }
-
-        /// <summary>
-        /// This Method fetches DPUse value for the DeliveryPoint
-        /// </summary>
-        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
-        /// <returns>DPUse value as string</returns>
-        private string GetDPUse(Guid deliveryPointId)
-        {
-            List<string> categoryNames = new List<string>
-            {
-                ReferenceDataCategoryNames.DeliveryPointUseIndicator,
-            };
-
-            var referenceDataCategoryList =
-                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
-            string dpUsetype = deliveryPointsRepository.GetDPUse(referenceDataCategoryList, deliveryPointId);
-            return dpUsetype;
         }
 
         /// <summary>
@@ -334,13 +317,13 @@ namespace Fmo.BusinessServices.Services
                         { Constants.Postcode, point.PostalAddress.Postcode },
                         { Constants.StreetName, point.PostalAddress.BuildingName },
                         { Constants.LayerType, Convert.ToString(OtherLayersType.DeliveryPoint.GetDescription()) },
-                        { Constants.OrganisationName, point.PostalAddress.OrganisationName},
+                        { Constants.OrganisationName, point.PostalAddress.OrganisationName },
                         { Constants.DepartmentName, point.PostalAddress.DepartmentName },
-                        { Constants.MailVolume, point.MailVolume},
+                        { Constants.MailVolume, point.MailVolume },
                         { Constants.MultipleOccupancyCount, point.MultipleOccupancyCount },
                         { Constants.Locality, (point.PostalAddress.DependentLocality + Constants.Space + point.PostalAddress.DoubleDependentLocality).Trim() },
-                        { Constants.DeliveryPointId, point.ID},
-                        { Constants.Street, (point.PostalAddress.Thoroughfare + Constants.Space + point.PostalAddress.DependentThoroughfare).Trim()},
+                        { Constants.DeliveryPointId, point.ID },
+                        { Constants.Street, (point.PostalAddress.Thoroughfare + Constants.Space + point.PostalAddress.DependentThoroughfare).Trim() },
                         { Constants.BuildingNameWithSubBuildingName, (point.PostalAddress.BuildingName + Constants.Space + point.PostalAddress.SubBuildingName).Trim() }
                     },
                         geometry = new Geometry
@@ -381,6 +364,24 @@ namespace Fmo.BusinessServices.Services
             }
 
             return coordinates;
+        }
+
+        /// <summary>
+        /// This Method fetches DPUse value for the DeliveryPoint
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as GUID</param>
+        /// <returns>DPUse value as string</returns>
+        private string GetDPUse(Guid deliveryPointId)
+        {
+            List<string> categoryNames = new List<string>
+            {
+                ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+            };
+
+            var referenceDataCategoryList =
+                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+            string dpUsetype = deliveryPointsRepository.GetDPUse(referenceDataCategoryList, deliveryPointId);
+            return dpUsetype;
         }
 
         /// <summary>

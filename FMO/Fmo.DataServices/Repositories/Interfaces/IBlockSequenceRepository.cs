@@ -10,6 +10,7 @@ namespace Fmo.DataServices.Repositories.Interfaces
         /// </summary>
         /// <param name="blockSequenceDTO">blockSequenceDTO</param>
         /// <param name="deliveryRouteId">deliveryRouteId</param>
-        void AddBlockSequence(BlockSequenceDTO blockSequenceDTO, Guid deliveryRouteId);
+        /// <returns>bool</returns>
+        bool AddBlockSequence(BlockSequenceDTO blockSequenceDTO, Guid deliveryRouteId);
     }
 }

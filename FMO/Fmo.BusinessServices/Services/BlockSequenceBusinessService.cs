@@ -22,10 +22,12 @@ namespace Fmo.BusinessServices.Services
         /// <summary>
         /// Method to create block sequence for delivery point
         /// </summary>
-        /// <param name="deliveryRouteId">Route ID</param>
+        /// <param name="deliveryRouteId">deliveryRouteId</param>
         /// <param name="deliveryPointId">deliveryPointId</param>
-        public void CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
+        /// <returns>bool</returns>
+        public bool CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
         {
+            bool isBlockSequencInserted = false;
             List<string> categoryNames = new List<string> { ReferenceDataCategoryNames.OperationalObjectType };
             var referenceDataCategoryList = referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
             Guid operationalObjectTypeForDp = referenceDataCategoryList
@@ -34,7 +36,8 @@ namespace Fmo.BusinessServices.Services
               .Where(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).Select(x => x.ID)
               .SingleOrDefault();
             BlockSequenceDTO blockSequenceDTO = new BlockSequenceDTO { ID = Guid.NewGuid(), OperationalObjectType_GUID = operationalObjectTypeForDp, OperationalObject_GUID = deliveryPointId };
-            blockSequenceRepository.AddBlockSequence(blockSequenceDTO, deliveryRouteId);
+            isBlockSequencInserted = blockSequenceRepository.AddBlockSequence(blockSequenceDTO, deliveryRouteId);
+            return isBlockSequencInserted;
         }
     }
 }

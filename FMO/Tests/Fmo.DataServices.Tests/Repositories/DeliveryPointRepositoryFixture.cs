@@ -164,7 +164,7 @@ namespace Fmo.DataServices.Tests.Repositories
 
             var deliveryRouteBlocks = new List<DeliveryRouteBlock>()
             {
-                new DeliveryRouteBlock() { Block_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A16"), DeliveryRoute_GUID = new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13")}
+                new DeliveryRouteBlock() { Block_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A16"), DeliveryRoute_GUID = new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13") }
             };
 
             var deliveryRoutes = new List<DeliveryRoute>()
