@@ -27,8 +27,7 @@
         private readonly IMessageBroker<PostalAddressDTO> msgBroker;
         private IConfigurationHelper configurationHelper;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private bool enableLogging = false;
-
+     
         #endregion private member declaration
 
         #region constructor
@@ -462,7 +461,7 @@
         /// <param name="seperator">Seperator used</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            this.loggingHelper.LogInfo(methodName + seperator + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + seperator + logMessage);
         }
 
         #endregion private methods

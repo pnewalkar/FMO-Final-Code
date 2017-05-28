@@ -28,7 +28,6 @@
         public const string XMLFileFolderSettings = "XMLFileFolderSettings";
         public const string MethodExecutionStarted = " Method exceution started";
         public const string MethodExecutionCompleted = " Method exceution completed";
-        public const string EnableLogging = "EnableLogging";
         public const string CRLF = "\r\n";
         public const string NEWLINE = "\n";
         public const string COLON = " : ";
@@ -72,6 +71,11 @@
         public const string RouteName = "ROUTENAME";
         public const string DpUse = "DPUSE";
         public const string LiveAddressStatus = "Live";
+
+        public const string DefaultLoggingCategory = "General";
+        public const int DefaultLoggingPriority = 0;
+        public const int DefaultLoggingEventId = 0;
+        public const string DefaultLoggingTitle = "";
 
         #endregion Common
 
@@ -189,5 +193,11 @@
         public const string UnSequenced = "U";
 
         #endregion DeliveryPoints
+
+        #region MyRegion
+
+        public const string ConcurrencyMessage = "Data has been already updated by another user";
+
+        #endregion MyRegion
     }
 }

@@ -40,8 +40,7 @@ namespace Fmo.Batch.FileLoader
         private IPAFLoader pafLoader = default(IPAFLoader);
         private IUSRLoader usrLoader = default(IUSRLoader);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IConfigurationHelper configurationHelper;
-        private bool enableLogging = false;
+        private IConfigurationHelper configurationHelper;     
 
         #endregion Property Declarations
 
@@ -54,8 +53,7 @@ namespace Fmo.Batch.FileLoader
             this.ServiceName = "FileLoader";
             //InitializeComponent();
             this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
-            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
-            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);            
         }
 
         #endregion Constructor
@@ -301,7 +299,7 @@ namespace Fmo.Batch.FileLoader
         /// <param name="separator">separator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            this.loggingHelper.LogInfo(methodName + separator + logMessage, this.enableLogging);
+            this.loggingHelper.LogInfo(methodName + separator + logMessage);
         }
     }
 }

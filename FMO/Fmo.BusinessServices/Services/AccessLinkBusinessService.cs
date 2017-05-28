@@ -143,7 +143,7 @@ namespace Fmo.BusinessServices.Services
             if (networkLink != null && !networkIntersectionPoint.IsNull)
             {
                 actualLength =
-                    (double) operationalObjectPoint.ToSqlGeometry()
+                    (double)operationalObjectPoint.ToSqlGeometry()
                         .ShortestLineTo(
                             nearestNamedStreetNetworkObjectWithIntersectionTuple.Item1.LinkGeometry.ToSqlGeometry())
                         .STLength();
@@ -174,7 +174,7 @@ namespace Fmo.BusinessServices.Services
                 networkIntersectionPoint = nearestStreetNetworkObjectWithIntersectionTuple.Item2;
                 if (networkLink != null && !networkIntersectionPoint.IsNull)
                 {
-                    actualLength = (double) operationalObjectPoint.ToSqlGeometry()
+                    actualLength = (double)operationalObjectPoint.ToSqlGeometry()
                         .ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry()).STLength();
 
                     var accessLinkDiffRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList
@@ -213,7 +213,7 @@ namespace Fmo.BusinessServices.Services
                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID ==
                     operationObjectTypeId)
                 {
-                    DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO) operationalObject;
+                    DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
                     accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto,
                         actualLength, networkLink, referenceDataCategoryList));
                 }
@@ -244,7 +244,7 @@ namespace Fmo.BusinessServices.Services
                             .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID ==
                         operationObjectTypeId)
                     {
-                        DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO) operationalObject;
+                        DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
                         deliveryPointDto.AccessLinkPresent = true;
                         deliveryPointsRepository.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDto);
                     }
