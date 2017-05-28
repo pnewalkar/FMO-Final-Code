@@ -32,11 +32,10 @@ namespace Fmo.BusinessServices.Tests.Services
         protected override void OnSetup()
         {
             mockRoadNameRepository = new Mock<IRoadNameRepository>();
-            mockLoggingRepository = CreateMock<ILoggingHelper>();
 
             mockRoadNameRepository.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<NetworkLinkDTO>>);
 
-            testCandidate = new RoadNameBusinessService(mockRoadNameRepository.Object, mockLoggingRepository.Object);
+            testCandidate = new RoadNameBusinessService(mockRoadNameRepository.Object);
         }
     }
 }

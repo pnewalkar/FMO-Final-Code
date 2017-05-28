@@ -384,50 +384,28 @@ namespace Fmo.BusinessServices.Services
         /// <param name="strFileName">FileName on PAF events to track against DB</param>
         private void SavePAFRecords(PostalAddressDTO objPostalAddress, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            using (loggingHelper.FmoTraceManager.StartTrace("Business.SavePostalAddress"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
-            objPostalAddress.AddressType_GUID = addressTypePAF;
-            objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressStatus, PostCodeStatus.Live.GetDescription());
-            var objPostalAddressMatchedUDPRN = addressRepository.GetPostalAddress(objPostalAddress.UDPRN);
-            var objPostalAddressMatchedAddress = addressRepository.GetPostalAddress(objPostalAddress);
-            if (objPostalAddressMatchedUDPRN != null)
-            {
-                if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypeNYB)
+                objPostalAddress.AddressType_GUID = addressTypePAF;
+                objPostalAddress.AddressStatus_GUID = refDataRepository.GetReferenceDataId(Constants.PostalAddressStatus, PostCodeStatus.Live.GetDescription());
+                var objPostalAddressMatchedUDPRN = addressRepository.GetPostalAddress(objPostalAddress.UDPRN);
+                var objPostalAddressMatchedAddress = addressRepository.GetPostalAddress(objPostalAddress);
+                if (objPostalAddressMatchedUDPRN != null)
                 {
-                    objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
-                    if (addressRepository.UpdateAddress(objPostalAddress, strFileName, Constants.PAFUPDATEFORNYB))
+                    if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypeNYB)
                     {
-                        var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
-                        if (objDeliveryPoint == null)
+                        objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
+                        if (addressRepository.UpdateAddress(objPostalAddress, strFileName, Constants.PAFUPDATEFORNYB))
                         {
-                            SaveDeliveryPointProcess(objPostalAddress);
+                            var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? 0);
+                            if (objDeliveryPoint == null)
+                            {
+                                SaveDeliveryPointProcess(objPostalAddress);
+                            }
                         }
-                    }
-                }
-                else
-                {
-                    FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
-                    objFileProcessingLog.FileID = Guid.NewGuid();
-                    objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
-                    objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
-                    objFileProcessingLog.FileName = strFileName;
-                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
-                    objFileProcessingLog.FileType = FileType.Paf.ToString();
-                    objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeNYBNotFound;
-                    fileProcessingLogRepository.LogFileException(objFileProcessingLog);
-                }
-            }
-            else if (objPostalAddressMatchedAddress != null)
-            {
-                if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
-                {
-                    objPostalAddress.ID = objPostalAddressMatchedAddress.ID;
-                    var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
-                    if (objDeliveryPoint != null)
-                    {
-                        // Update address and delivery point
-                        addressRepository.UpdateAddress(objPostalAddress, strFileName, Constants.PAFUPDATEFORUSR);
                     }
                     else
                     {
@@ -438,31 +416,56 @@ namespace Fmo.BusinessServices.Services
                         objFileProcessingLog.FileName = strFileName;
                         objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
                         objFileProcessingLog.FileType = FileType.Paf.ToString();
-                        objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType;
+                        objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeNYBNotFound;
+                        fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                    }
+                }
+                else if (objPostalAddressMatchedAddress != null)
+                {
+                    if (objPostalAddressMatchedAddress.AddressType_GUID == addressTypeUSR)
+                    {
+                        objPostalAddress.ID = objPostalAddressMatchedAddress.ID;
+                        var objDeliveryPoint = deliveryPointsRepository.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
+                        if (objDeliveryPoint != null)
+                        {
+                            // Update address and delivery point
+                            addressRepository.UpdateAddress(objPostalAddress, strFileName, Constants.PAFUPDATEFORUSR);
+                        }
+                        else
+                        {
+                            FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+                            objFileProcessingLog.FileID = Guid.NewGuid();
+                            objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
+                            objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
+                            objFileProcessingLog.FileName = strFileName;
+                            objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
+                            objFileProcessingLog.FileType = FileType.Paf.ToString();
+                            objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType;
+                            fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                        }
+                    }
+                    else
+                    {
+                        FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
+                        objFileProcessingLog.FileID = Guid.NewGuid();
+                        objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
+                        objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
+                        objFileProcessingLog.FileName = strFileName;
+                        objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
+                        objFileProcessingLog.FileType = FileType.Paf.ToString();
+                        objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeUSRNotFound;
                         fileProcessingLogRepository.LogFileException(objFileProcessingLog);
                     }
                 }
                 else
                 {
-                    FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO();
-                    objFileProcessingLog.FileID = Guid.NewGuid();
-                    objFileProcessingLog.UDPRN = objPostalAddress.UDPRN ?? default(int);
-                    objFileProcessingLog.AmendmentType = objPostalAddress.AmendmentType;
-                    objFileProcessingLog.FileName = strFileName;
-                    objFileProcessingLog.FileProcessing_TimeStamp = DateTime.UtcNow;
-                    objFileProcessingLog.FileType = FileType.Paf.ToString();
-                    objFileProcessingLog.NatureOfError = Constants.PAFErrorMessageForAddressTypeUSRNotFound;
-                    fileProcessingLogRepository.LogFileException(objFileProcessingLog);
+                    objPostalAddress.ID = Guid.NewGuid();
+                    addressRepository.InsertAddress(objPostalAddress, strFileName);
+                    SaveDeliveryPointProcess(objPostalAddress);
                 }
-            }
-            else
-            {
-                objPostalAddress.ID = Guid.NewGuid();
-                addressRepository.InsertAddress(objPostalAddress, strFileName);
-                SaveDeliveryPointProcess(objPostalAddress);
-            }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodExitEventId, LoggerTraceConstants.Title);
+            }
         }
 
         /// <summary>
@@ -487,16 +490,5 @@ namespace Fmo.BusinessServices.Services
         }
 
         #endregion private methods
-
-        /// <summary>
-        /// Method level entry exit logging.
-        /// </summary>
-        /// <param name="methodName">Function Name</param>
-        /// <param name="logMessage">Message</param>
-        /// <param name="separator">separator</param>
-        private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
-        {
-            this.loggingHelper.LogInfo(methodName + separator + logMessage);
-        }
     }
 }

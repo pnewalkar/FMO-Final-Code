@@ -239,13 +239,12 @@
             postCodeRepositoryMock = CreateMock<IPostCodeBusinessService>();
             deliveryPointsRepositoryMock = CreateMock<IDeliveryPointBusinessService>();
             streetNetworkRepositoryMock = CreateMock<IStreetNetworkBusinessService>();
-            mockLoggingRepository = CreateMock<ILoggingHelper>();
+
             testCandidate = new SearchBusinessService(
                                          deliveryRouteRepositoryMock.Object,
                                          postCodeRepositoryMock.Object,
                                          streetNetworkRepositoryMock.Object,
-                                         deliveryPointsRepositoryMock.Object,
-                                         mockLoggingRepository.Object);
+                                         deliveryPointsRepositoryMock.Object);
         }
     }
 }
