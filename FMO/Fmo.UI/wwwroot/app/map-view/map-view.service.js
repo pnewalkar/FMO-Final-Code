@@ -715,7 +715,7 @@ function mapService($http,
                           deliveryPointDetails.dpUse = response[0].value;
                       }
                   }
-                  $state.go('DeliveryPointDetails', {
+                  $state.go('deliveryPointDetails', {
                       selectedDeliveryPoint: deliveryPointDetails
                   }, { reload: true });
               });
