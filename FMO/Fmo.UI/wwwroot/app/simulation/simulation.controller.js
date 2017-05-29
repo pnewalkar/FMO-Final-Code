@@ -5,11 +5,11 @@
 
 SimulationController.$inject = [
     '$stateParams',
-    'simulationService', '$timeout'
+    'simulationService'
 ]
 
 function SimulationController($stateParams,
-                             simulationService, $timeout) {
+                             simulationService) {
     var vm = this;
     vm.selectClass = "routeSearch md-text";
     vm.loadRouteLogStatus = loadRouteLogStatus();
@@ -50,7 +50,7 @@ function SimulationController($stateParams,
             else {
                 vm.RouteScenario = undefined;
                 vm.deliveryRoute = undefined;
-              //  vm.selectedRoute = null;
+                vm.selectedRoute = null;
                 vm.selectedRouteScenario = null;
             }
         });
