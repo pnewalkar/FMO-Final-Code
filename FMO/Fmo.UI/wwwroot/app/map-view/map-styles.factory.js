@@ -266,3 +266,8 @@ function MapStylesFactory() {
     }
 
 }
+/*function deliveryPointStyle(feature, resolution) {
+        var postcode = feature.properties.postcode;
+
+        return defaultStyle;
+    } */

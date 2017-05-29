@@ -10,7 +10,9 @@
     @include font-color($white);   
 }
 
-
+.map-box{
+    height: calc(100% - 70px) !important;
+}
 /*commom sass*/
 h1{
     @extend %header-content;

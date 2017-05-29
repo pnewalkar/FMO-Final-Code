@@ -15,6 +15,9 @@
 .fa-bars {
   color: #ffffff; }
 
+.map-box {
+  height: calc(100% - 70px) !important; }
+
 /*commom sass*/
 h1 {
   color: #2a2a2d; }

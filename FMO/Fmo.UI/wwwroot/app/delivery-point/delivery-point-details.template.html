@@ -47,12 +47,12 @@
 
     <div layout="row">
         <md-input-container ng-show="vm.selectedDeliveryPoint.organisationName != null && vm.selectedDeliveryPoint.organisationName != undefined && vm.selectedDeliveryPoint.organisationName.length != 0">
-            <label>Organisation Name</label>
+            <label>{{ 'DELIVERY_POINTS.ORGANISATION' | translate}}</label>
             <input type="text" ng-value="vm.selectedDeliveryPoint.organisationName">
         </md-input-container>
 
         <md-input-container ng-show="vm.selectedDeliveryPoint.departmentName != null && vm.selectedDeliveryPoint.departmentName != undefined && vm.selectedDeliveryPoint.departmentName.length != 0">
-            <label>Department Name</label>
+            <label>{{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate}}</label>
             <input type="text" ng-value="vm.selectedDeliveryPoint.departmentName">
         </md-input-container>
     </div>
