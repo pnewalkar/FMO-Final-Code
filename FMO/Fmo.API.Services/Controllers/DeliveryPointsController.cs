@@ -30,7 +30,7 @@ namespace Fmo.API.Services.Controllers
         /// <summary>
         ///This method is used to Get Delivery Point Object.
         /// </summary>
-        /// <param name="bbox">boundaryBox as string</param>
+        /// <param name="bbox">bbox as string</param>
         /// <returns>Json Result of Delivery Points</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
         [Route("GetDeliveryPoints")]

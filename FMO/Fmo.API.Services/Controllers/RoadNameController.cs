@@ -20,7 +20,7 @@ namespace Fmo.API.Services.Controllers
         /// <summary>
         /// This method is used to get Route Link data.
         /// </summary>
-        /// <param name="bbox">boundaryBox as strintg</param>
+        /// <param name="bbox">bbox as strintg</param>
         /// <returns></returns>
         [Route("GetRouteLinks")]
         [HttpGet]

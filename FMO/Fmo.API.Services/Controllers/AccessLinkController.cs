@@ -27,7 +27,7 @@ namespace Fmo.API.Services.Controllers
         /// <summary>
         /// This method is used to fetch Access Link.
         /// </summary>
-        /// <param name="bbox">boundaryBox as string</param>
+        /// <param name="bbox">bbox as string</param>
         /// <returns>string of Access link data</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [Route("GetAccessLinks")]
