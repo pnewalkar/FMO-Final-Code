@@ -492,7 +492,7 @@ function MapFactory($http,
         var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
         $http({
             method: 'GET',
-            url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + map.getView().calculateExtent(map.getSize()).join(','),
+            url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?bbox=' + map.getView().calculateExtent(map.getSize()).join(','),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Bearer ' + authData.token

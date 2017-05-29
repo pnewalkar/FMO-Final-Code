@@ -12,7 +12,7 @@ function layersAPIService($http, GlobalSettings, $q) {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?boundaryBox=' + extent.join(','),
+            url: GlobalSettings.apiUrl + '/deliveryPoints/GetDeliveryPoints?bbox=' + extent.join(','),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Bearer ' + authData.token
@@ -29,7 +29,7 @@ function layersAPIService($http, GlobalSettings, $q) {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + extent.join(','),
+            url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?bbox=' + extent.join(','),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Bearer ' + authData.token
@@ -46,7 +46,7 @@ function layersAPIService($http, GlobalSettings, $q) {
         var deferred = $q.defer();
         $http({
             method: 'GET',
-            url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?boundaryBox=' + extent.join(','),
+            url: GlobalSettings.apiUrl + '/roadName/GetRouteLinks?bbox=' + extent.join(','),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Bearer ' + authData.token

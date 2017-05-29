@@ -358,13 +358,16 @@ namespace Fmo.DataServices.Repositories
                         select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
 
             List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
-            if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+            if (deliveryPointUseIndicator.Count > 0)
             {
-                dpUsetype = Constants.DpUseOrganisation;
-            }
-            else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
-            {
-                dpUsetype = Constants.DpUseResidential;
+                if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+                {
+                    dpUsetype = Constants.DpUseOrganisation;
+                }
+                else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
+                {
+                    dpUsetype = Constants.DpUseResidential;
+                }
             }
 
             return dpUsetype;
