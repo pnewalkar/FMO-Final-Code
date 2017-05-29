@@ -22,9 +22,14 @@
             <input type="text" ng-value="vm.selectedDeliveryPoint.number" ng-disabled="true">
         </md-input-container>
                 
-        <md-input-container ng-show="vm.selectedDeliveryPoint.buildingNameWithSubBuildingName != null && vm.selectedDeliveryPoint.buildingNameWithSubBuildingName != undefined && vm.selectedDeliveryPoint.buildingNameWithSubBuildingName.length != 0">
+        <md-input-container ng-show="vm.selectedDeliveryPoint.name != null && vm.selectedDeliveryPoint.name != undefined && vm.selectedDeliveryPoint.name.length != 0">
             <label>{{ 'DELIVERY_POINTS.BUILDING_NAME' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.buildingNameWithSubBuildingName" ng-disabled="true">
+            <input type="text" ng-value="vm.selectedDeliveryPoint.name" ng-disabled="true">
+        </md-input-container>
+
+        <md-input-container ng-show="vm.selectedDeliveryPoint.subBuildingName != null && vm.selectedDeliveryPoint.subBuildingName != undefined && vm.selectedDeliveryPoint.subBuildingName.length != 0">
+            <label>{{ 'DELIVERY_POINTS.SUB_BUILDING_NAME' | translate}}</label>
+            <input type="text" ng-value="vm.selectedDeliveryPoint.subBuildingName" ng-disabled="true">
         </md-input-container>
     </div>
 
