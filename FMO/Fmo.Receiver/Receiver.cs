@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
-using Fmo.MessageBrokerCore.Messaging;
+using System.Timers;
+using Fmo.Common.ConfigurationManagement;
+using Fmo.Common.Constants;
+using Fmo.Common.Interface;
+using Fmo.Common.LoggingManagement;
 using Fmo.DTO;
 using Fmo.DTO.FileProcessing;
-using Ninject;
-using System.Threading;
-using Fmo.Common.Constants;
-using Fmo.NYBLoader.Interfaces;
-using Fmo.NYBLoader.Common;
-using Fmo.Common.Interface;
-using Fmo.Common.ConfigurationManagement;
 using Fmo.MappingConfiguration;
-using System.Timers;
-using Fmo.Common.LoggingManagement;
-using System.Reflection;
+using Fmo.MessageBrokerCore.Messaging;
+using Fmo.NYBLoader.Common;
+using Fmo.NYBLoader.Interfaces;
+using Ninject;
 
 namespace Fmo.Receiver
 {
@@ -36,8 +36,6 @@ namespace Fmo.Receiver
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        private bool enableLogging = false;
-
         /// <summary>
         /// Constructor for the receiver class.
         /// </summary>
@@ -54,12 +52,12 @@ namespace Fmo.Receiver
         /// </summary>
         /// <param name="kernel"></param>
         protected void Register(IKernel kernel)
-        {    
-            if(kernel != null)
-            { 
+        {
+            if (kernel != null)
+            {
                 kernel.Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>().InSingletonScope();
                 kernel.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>().InSingletonScope();
-                kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();                
+                kernal.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
                 kernal.Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
                 kernel.Bind<IHttpHandler>().To<HttpHandler>();
                 msgUSR = kernel.Get<IMessageBroker<AddressLocationUSRDTO>>();
@@ -71,7 +69,6 @@ namespace Fmo.Receiver
 
             this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
             this.USRWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString() : string.Empty;
-            this.enableLogging = Convert.ToBoolean(configurationHelper.ReadAppSettingsConfigurationValues(Constants.EnableLogging));
         }
 
         /// <summary>
@@ -87,6 +84,7 @@ namespace Fmo.Receiver
                 //instantiate timer
                 Thread t = new Thread(new ThreadStart(this.InitTimer));
                 t.Start();
+
                 // Start();
             }
             catch (Exception ex)
@@ -109,13 +107,16 @@ namespace Fmo.Receiver
             try
             {
                 m_mainTimer = new System.Timers.Timer();
-                //wire up the timer event 
+
+                //wire up the timer event
                 m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
-                //set timer interval   
-                //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]); 
+
+                //set timer interval
+                //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]);
                 double timeInSeconds = 3.0;
                 m_mainTimer.Interval = (timeInSeconds * 1000);
-                // timer.Interval is in milliseconds, so times above by 1000 
+
+                // timer.Interval is in milliseconds, so times above by 1000
                 m_mainTimer.Enabled = true;
             }
             catch (Exception)
@@ -166,7 +167,6 @@ namespace Fmo.Receiver
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
-
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Fmo.Receiver
                                         methodName,
                                         string.Format(
                                         Constants.REQUESTLOG,
-                                        addressLocation.UDPRN == null? string.Empty : addressLocation.UDPRN.ToString(),
+                                        addressLocation.UDPRN == null ? string.Empty : addressLocation.UDPRN.ToString(),
                                         addressLocation.XCoordinate == null ? string.Empty : addressLocation.XCoordinate.ToString(),
                                         addressLocation.YCoordinate == null ? string.Empty : addressLocation.YCoordinate.ToString(),
                                         addressLocation.Latitude == null ? string.Empty : addressLocation.Latitude.ToString(),
@@ -205,7 +205,6 @@ namespace Fmo.Receiver
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
-
         }
 
         /// <summary>
@@ -229,7 +228,6 @@ namespace Fmo.Receiver
                 }
                 if (lstPostalAddress != null && lstPostalAddress.Count > 0)
                     SavePAFDetails(lstPostalAddress).Wait();
-
             }
             catch (Exception)
             {
@@ -263,7 +261,6 @@ namespace Fmo.Receiver
 
                 if (lstAddressLocationUSR != null && lstAddressLocationUSR.Count > 0)
                     SaveUSRDetails(lstAddressLocationUSR).Wait();
-
             }
             catch (Exception)
             {
@@ -280,7 +277,7 @@ namespace Fmo.Receiver
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
@@ -297,7 +294,6 @@ namespace Fmo.Receiver
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
-
         }
 
         /// <summary>
@@ -324,8 +320,7 @@ namespace Fmo.Receiver
         /// <param name="logMessage">Message</param>
         private void LogMethodInfoBlock(string methodName, string logMessage)
         {
-            this.loggingHelper.LogInfo(string.Concat(methodName, Constants.COLON, logMessage), this.enableLogging);
+            this.loggingHelper.LogInfo(string.Concat(methodName, Constants.COLON, logMessage));
         }
     }
 }
-

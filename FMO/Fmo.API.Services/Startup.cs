@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 
 namespace Fmo.API.Services
 {
@@ -64,7 +65,11 @@ namespace Fmo.API.Services
                     })
             );
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ContractResolver =
+                          new CamelCasePropertyNamesContractResolver();
+            });
 
             //---Adding scope for all classes
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();

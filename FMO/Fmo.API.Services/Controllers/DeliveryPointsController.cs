@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.Common.Constants;
@@ -73,17 +74,27 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("CreateDeliveryPoint")]
+
         //[Route("CreateDeliveryPoint")]
         [HttpPost]
         public IActionResult CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
         {
-            if (!ModelState.IsValid)
+            using (loggingHelper.FmoTraceManager.StartTrace("WebService.AddDeliveryPoint"))
             {
-                return BadRequest(ModelState);
-            }
+                CreateDeliveryPointModelDTO createDeliveryPointModelDTO = null;
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.CreateDeliveryPointPriority, LoggerTraceConstants.CreateDeliveryPointAPIMethodEntryEventId, LoggerTraceConstants.Title);
 
-            CreateDeliveryPointModelDTO createDeliveryPointModelDto = businessService.CreateDeliveryPoint(deliveryPointDto);
-            return Ok(createDeliveryPointModelDto);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                createDeliveryPointModelDTO = businessService.CreateDeliveryPoint(deliveryPointDto);
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.CreateDeliveryPointPriority, LoggerTraceConstants.CreateDeliveryPointAPIMethodExitEventId, LoggerTraceConstants.Title);
+
+                return Ok(createDeliveryPointModelDTO);
+            }
         }
 
         /// <summary>
@@ -95,28 +106,37 @@ namespace Fmo.API.Services.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateDeliveryPoint([FromBody] DeliveryPointModelDTO deliveryPointModelDto)
         {
-            try
+            using (loggingHelper.FmoTraceManager.StartTrace("WebService.UpdateDeliveryPoint"))
             {
-                if (!ModelState.IsValid)
+                UpdateDeliveryPointModelDTO updateDeliveryPointModelDTO = null;
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.UpdateDeliveryPointPriority, LoggerTraceConstants.UpdateDeliveryPointAPIMethodEntryEventId, LoggerTraceConstants.Title);
+
+                try
                 {
-                    return BadRequest(ModelState);
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    updateDeliveryPointModelDTO = await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
+                    loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.UpdateDeliveryPointPriority, LoggerTraceConstants.UpdateDeliveryPointAPIMethodExitEventId, LoggerTraceConstants.Title);
+                }
+                catch (AggregateException ae)
+                {
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
                 }
 
-                UpdateDeliveryPointModelDTO updateDeliveryPoint = await businessService.UpdateDeliveryPointLocation(deliveryPointModelDto);
-                return Ok(updateDeliveryPoint);
-            }
-            catch (AggregateException ae)
-            {
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                return Ok(updateDeliveryPointModelDTO);
             }
         }
+
         [Route("GetRouteForDeliveryPoint")]
         [HttpGet]
         public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
             return businessService.GetRouteForDeliveryPoint(deliveryPointId);
         }
-
     }
 }

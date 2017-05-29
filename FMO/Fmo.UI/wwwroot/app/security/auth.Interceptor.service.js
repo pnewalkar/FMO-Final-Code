@@ -32,6 +32,11 @@ function authInterceptorService($q, $injector, $location) {
                 }
             }
         }
+        if (rejection.status === 500) {
+            var errorService = $injector.get("errorService");
+            errorService.openAlert(rejection.data.message);
+        
+        }
         return $q.reject(rejection);
     }
 

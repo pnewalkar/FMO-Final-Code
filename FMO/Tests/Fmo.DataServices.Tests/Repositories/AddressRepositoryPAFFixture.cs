@@ -76,7 +76,7 @@ namespace Fmo.DataServices.Tests.Repositories
             mockFMODBContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
             mockReferenceDataCategoryRepository = CreateMock<IReferenceDataCategoryRepository>();
             mockloggingHelper = CreateMock<ILoggingHelper>();
-            mockloggingHelper.Setup(n => n.LogInfo(It.IsAny<string>()));
+            mockloggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             mockfileProcessingLogRepository = CreateMock<IFileProcessingLogRepository>();
 

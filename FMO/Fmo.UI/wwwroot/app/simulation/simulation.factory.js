@@ -29,7 +29,7 @@ function simulationAPIService($http, $q, GlobalSettings) {
     function getScenario(operationStateID, deliveryUnitID) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID + '&fields=ScenarioName,ID').success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -42,7 +42,7 @@ function simulationAPIService($http, $q, GlobalSettings) {
     function getRoutes(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID + '&fields=RouteNameNumber,RouteName,ID').success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

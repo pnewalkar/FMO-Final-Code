@@ -31,6 +31,33 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\Fmo.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DEV|AnyCPU'">
+    <OutputPath>bin\DEV\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Fmo.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\QA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Fmo.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'PROD|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\PROD\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Fmo.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
@@ -91,6 +118,7 @@
     <Compile Include="AsyncEnumerator\DbAsyncQueryProvider.cs" />
     <Compile Include="ConfigurationManagement\ConfigurationHelper.cs" />
     <Compile Include="Constants\ErrorMessageConstants.cs" />
+    <Compile Include="Constants\LoggerTraceConstants.cs" />
     <Compile Include="Constants\ReferenceDataCategoryNames.cs" />
     <Compile Include="Constants\ReferenceDataValues.cs" />
     <Compile Include="Constants\UserAccessFunctionsConstants.cs" />
@@ -116,7 +144,6 @@
     <Compile Include="Interface\IExceptionHelper.cs" />
     <Compile Include="Interface\ILoggingHelper.cs" />
     <Compile Include="LoggingManagement\LoggingHelper.cs" />
-    <Compile Include="LoggingManagement\LoggingConfig.cs" />
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Enums\PostcodeType.cs" />
     <Compile Include="Enums\FileType.cs" />

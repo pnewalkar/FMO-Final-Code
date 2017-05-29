@@ -12,8 +12,10 @@
         'roadLinkGuidService',
         'accessLinkCoordinatesService',
         'intersectionPointService',
+        'GlobalSettings',
         'guidService',
         '$stateParams',
+        '$rootScope',
          AccessLinkController])
 function AccessLinkController(
     accessLinkAPIService,
@@ -26,10 +28,13 @@ function AccessLinkController(
     roadLinkGuidService,
     accessLinkCoordinatesService,
     intersectionPointService,
+    GlobalSettings,
     guidService,
-    $stateParams
+    $stateParams,
+    $rootScope
 ) {
     vm = this;
+    var contextTitle = vm.contextTitle;
     vm.createAccessLink = createAccessLink;
     vm.accessLink = accessLink;
     vm.initialize = initialize;
@@ -64,6 +69,9 @@ function AccessLinkController(
                 vm.enableSave = false;
                 vm.pathLength = '';
                 mapService.refreshLayers();
+                $rootScope.$broadcast('redirectTo', {
+                    contextTitle: GlobalSettings.deliveryPointLayerName
+                });
             }
         });
     }
@@ -110,11 +118,5 @@ function AccessLinkController(
         mapService.deleteAccessLinkFeature(vm.accessLinkFeature);
         vm.enableSave = false;
         vm.pathLength = '';
-    }
-
-    function calculatepathLength() {
-        //api call
-
-        //accessLink
     }
 };

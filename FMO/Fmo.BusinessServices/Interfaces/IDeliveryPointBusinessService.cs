@@ -81,6 +81,5 @@ namespace Fmo.BusinessServices.Interfaces
         /// <param name="deliveryPointId">deliveryPointId as GUID</param>
         /// <returns>KeyValuePair for Route and DPUse </returns>
         List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId);
-
     }
 }

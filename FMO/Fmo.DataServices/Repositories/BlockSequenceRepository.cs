@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
+using Fmo.Common.Constants;
+using Fmo.Common.ExceptionManagement;
+using Fmo.Common.ResourceFile;
 using Fmo.DataServices.DBContext;
 using Fmo.DataServices.Infrastructure;
 using Fmo.DataServices.Repositories.Interfaces;
@@ -25,17 +29,29 @@ namespace Fmo.DataServices.Repositories
         /// </summary>
         /// <param name="blockSequenceDTO">blockSequenceDTO</param>
         /// <param name="deliveryRouteId">deliveryRouteId</param>
-        public void AddBlockSequence(BlockSequenceDTO blockSequenceDTO, Guid deliveryRouteId)
+        /// <returns>bool</returns>
+        public bool AddBlockSequence(BlockSequenceDTO blockSequenceDTO, Guid deliveryRouteId)
         {
-            var block_Guid = (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
-                              join b in DataContext.Blocks.AsNoTracking() on dr.Block_GUID equals b.ID
-                              where b.BlockType == "U" && dr.DeliveryRoute_GUID == deliveryRouteId
-                              select b.ID).SingleOrDefault();
+            bool isBlockSequencInserted = false;
+            try
+            {
+                var block_Guid = (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
+                                  join b in DataContext.Blocks.AsNoTracking() on dr.Block_GUID equals b.ID
+                                  where b.BlockType == Constants.UnSequenced && dr.DeliveryRoute_GUID == deliveryRouteId
+                                  select b.ID).SingleOrDefault();
 
-            BlockSequence blockSequenceEntity = GenericMapper.Map<BlockSequenceDTO, BlockSequence>(blockSequenceDTO);
-            blockSequenceEntity.Block_GUID = block_Guid;
-            DataContext.BlockSequences.Add(blockSequenceEntity);
-            DataContext.SaveChanges();
+                BlockSequence blockSequenceEntity = GenericMapper.Map<BlockSequenceDTO, BlockSequence>(blockSequenceDTO);
+                blockSequenceEntity.Block_GUID = block_Guid;
+                DataContext.BlockSequences.Add(blockSequenceEntity);
+                DataContext.SaveChanges();
+                isBlockSequencInserted = true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+            }
+
+            return isBlockSequencInserted;
         }
     }
 }

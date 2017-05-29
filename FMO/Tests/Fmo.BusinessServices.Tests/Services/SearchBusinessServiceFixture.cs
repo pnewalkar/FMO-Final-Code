@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Common.Interface;
     using Fmo.BusinessServices.Interfaces;
     using Fmo.BusinessServices.Services;
     using Fmo.Common.Enums;
     using Fmo.Common.TestSupport;
-    using Fmo.DataServices.Repositories.Interfaces;
     using Moq;
     using NUnit.Framework;
 
@@ -20,6 +20,7 @@
         private Mock<IPostCodeBusinessService> postCodeRepositoryMock;
         private Mock<IDeliveryPointBusinessService> deliveryPointsRepositoryMock;
         private Mock<IStreetNetworkBusinessService> streetNetworkRepositoryMock;
+        private Mock<ILoggingHelper> mockLoggingRepository;
         private Guid unitGuid = System.Guid.NewGuid();
 
         [Test]
@@ -238,6 +239,7 @@
             postCodeRepositoryMock = CreateMock<IPostCodeBusinessService>();
             deliveryPointsRepositoryMock = CreateMock<IDeliveryPointBusinessService>();
             streetNetworkRepositoryMock = CreateMock<IStreetNetworkBusinessService>();
+
             testCandidate = new SearchBusinessService(
                                          deliveryRouteRepositoryMock.Object,
                                          postCodeRepositoryMock.Object,

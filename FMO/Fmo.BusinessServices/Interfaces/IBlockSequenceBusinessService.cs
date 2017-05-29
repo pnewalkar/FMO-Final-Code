@@ -7,8 +7,9 @@ namespace Fmo.BusinessServices.Interfaces
         /// <summary>
         /// Method to create block sequence for delivery point
         /// </summary>
-        /// <param name="deliveryRouteId">Route ID</param>
+        /// <param name="deliveryRouteId">deliveryRouteId</param>
         /// <param name="deliveryPointId">deliveryPointId</param>
-        void CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
+        /// <returns>bool</returns>
+        bool CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
     }
 }

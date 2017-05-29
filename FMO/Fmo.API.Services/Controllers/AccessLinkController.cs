@@ -5,6 +5,7 @@ using Fmo.DTO;
 using Fmo.DTO.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Fmo.Common.Interface;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -15,10 +16,12 @@ namespace Fmo.API.Services.Controllers
     public class AccessLinkController : FmoBaseController
     {
         private IAccessLinkBusinessService accessLinkBussinessService = default(IAccessLinkBusinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public AccessLinkController(IAccessLinkBusinessService businessService)
+        public AccessLinkController(IAccessLinkBusinessService businessService, ILoggingHelper loggingHelper)
         {
             this.accessLinkBussinessService = businessService;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -44,8 +47,17 @@ namespace Fmo.API.Services.Controllers
         [HttpPost("Create")]
         public IActionResult CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
-            bool isSaved = accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
-            return Ok(isSaved);
+            using (loggingHelper.FmoTraceManager.StartTrace("Controller.CreateAccessLink"))
+            {
+                bool success = false;
+
+                loggingHelper.LogInfo("Method CreateAccessLink entered", "General", 8, 8003, "Trace Log");
+                success = accessLinkBussinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
+
+                loggingHelper.LogInfo("Method CreateAccessLink exited", "General", 8, 8004, "Trace Log");
+
+                return Ok(success);
+            }
         }
 
         /// <summary>
@@ -56,21 +68,29 @@ namespace Fmo.API.Services.Controllers
         [HttpPost("CreateManual")]
         public IActionResult CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
         {
-            //accessLinkDto = new AccessLinkManualCreateModelDTO
-            //{
-            //    AccessLinkLine = "LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)",
-            //    NetworkIntersectionPoint = "POINT (512722.70000000019 104738)",
-            //    NetworkLink_GUID = Guid.Parse("BC3E8414-DA95-4924-9C0D-B8D343C97E0A"),
-            //    OperationalObjectPoint = "POINT (512722.70000000019 104752.6799999997)",
-            //    OperationalObject_GUID = Guid.NewGuid(),
-            //};
-            if (!ModelState.IsValid)
+            using (loggingHelper.FmoTraceManager.StartTrace("Controller.CreateManualAccessLink"))
             {
-                return BadRequest(ModelState);
-            }
+                loggingHelper.LogInfo("Method CreateManualAccessLink entered", "General", 8, 8103, "Trace Log");
 
-            bool isSaved = accessLinkBussinessService.CreateAccessLink(accessLinkDto);
-            return Ok(isSaved);
+                bool success = false;
+                //accessLinkDto = new AccessLinkManualCreateModelDTO
+                //{
+                //    AccessLinkLine = "LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)",
+                //    NetworkIntersectionPoint = "POINT (512722.70000000019 104738)",
+                //    NetworkLink_GUID = Guid.Parse("BC3E8414-DA95-4924-9C0D-B8D343C97E0A"),
+                //    OperationalObjectPoint = "POINT (512722.70000000019 104752.6799999997)",
+                //    OperationalObject_GUID = Guid.NewGuid(),
+                //};
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                bool isSaved = accessLinkBussinessService.CreateAccessLink(accessLinkDto);
+
+                loggingHelper.LogInfo("Method CreateManualAccessLink exited", "General", 8, 8104, "Trace Log");
+                return Ok(isSaved);
+            }
         }
 
         /// <summary>
