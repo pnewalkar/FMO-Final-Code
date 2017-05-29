@@ -3,12 +3,10 @@
     .controller('DeliveryPointContextController',
     DeliveryPointContextController);
 
-DeliveryPointContextController.$inject = ['$scope',
-    '$state',
+DeliveryPointContextController.$inject = [
     '$stateParams']
 
-function DeliveryPointContextController($scope,
-    $state,
+function DeliveryPointContextController(
     $stateParams)
     {
         var vm = this;
