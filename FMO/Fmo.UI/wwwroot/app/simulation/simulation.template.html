@@ -15,9 +15,10 @@
 
     <custom-searchable-dropdown label-text="'ROUTE_SIMULATION.ROUTE'" search-term="vm.searchTerm" is-delivery-route-disabled="vm.isDeliveryRouteDisabled"
                                 selected-route="vm.selectedRoute" select-class="'simulationSelect'" select-header-class="vm.selectClass" delivery-route="vm.deliveryRoute"
-                                no-result-found="'ROUTE_SIMULATION.NO_RESULT_FOUND'"  selection-changed="vm.selectionChanged()" >
+                                no-result-found="'ROUTE_SIMULATION.NO_RESULT_FOUND'" selection-changed="vm.selectionChanged(vm.selectedRoute)" >
     </custom-searchable-dropdown>
-        
-    <p ng-if="vm.selectedRoute.routeNameNumber"> SelectedValue:{{vm.selectedRoute.routeNameNumber}}</p>
 
+    <p id="selectedRouteId" hidden  > {{vm.selectedRoute}}   </p>
+
+   
 </div>

@@ -5,11 +5,11 @@
 
 SimulationController.$inject = [
     '$stateParams',
-    'simulationService'
+    'simulationService', '$timeout'
 ]
 
 function SimulationController($stateParams,
-                             simulationService) {
+                             simulationService, $timeout) {
     var vm = this;
     vm.selectClass = "routeSearch md-text";
     vm.loadRouteLogStatus = loadRouteLogStatus();
@@ -18,10 +18,11 @@ function SimulationController($stateParams,
     vm.selectedRouteStatus = selectedRouteStatus;
     vm.clearSearchTerm = clearSearchTerm;
     vm.selectionChanged = selectionChanged;
-
+   
     vm.selectedDeliveryUnitObj = $stateParams;
     vm.isDeliveryRouteDisabled = true;
-    vm.selectedRoute = null;
+    vm.selectedRoute;
+
 
     function clearSearchTerm() {
         vm.searchTerm = "";
@@ -49,7 +50,7 @@ function SimulationController($stateParams,
             else {
                 vm.RouteScenario = undefined;
                 vm.deliveryRoute = undefined;
-                vm.selectedRoute = null;
+              //  vm.selectedRoute = null;
                 vm.selectedRouteScenario = null;
             }
         });
@@ -60,10 +61,9 @@ function SimulationController($stateParams,
         });
     }
 
-    function selectionChanged() {
+    function selectionChanged(selectedRoute) {
         debugger;
-        var item = vm.selectedRoute;
-        if (item)
-            alert(item.routeNameNumber);
+        let valueSR = document.getElementById('selectedRouteId').innerHTML;
+       
     }
 }

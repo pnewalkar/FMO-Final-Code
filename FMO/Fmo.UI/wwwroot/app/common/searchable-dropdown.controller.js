@@ -9,12 +9,12 @@ CustomSearchableDropdownController.$inject = [
 function CustomSearchableDropdownController($state) {
     var vm = this;
     vm.clearSearchTerm = clearSearchTerm;
-    vm.onChange = onChange;
+    //vm.onChange = onChange;
     function clearSearchTerm() {
         vm.searchTerm = "";
     }
 
-    function onChange() {
-        vm.selectionChanged();
-    }
+    //function onChange(item) {
+    //    vm.selectionChanged(vm.selectedRoute);
+    //}
 }

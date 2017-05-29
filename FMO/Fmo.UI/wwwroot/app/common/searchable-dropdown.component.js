@@ -10,7 +10,7 @@
           searchTerm: "=",
           deliveryRoute: "<",
           noResultFound: "<",
-          selectionChanged: "&"
+          selectionChanged:"&"
       },
       templateUrl: './common/searchable-dropdown.template.html',
       controller: 'CustomSearchableDropdownController as vm'
