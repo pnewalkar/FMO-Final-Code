@@ -1,4 +1,4 @@
-﻿angular.module('referencedata')
+angular.module('referencedata')
     .factory('referencedataApiService', referencedataApiService);
 referencedataApiService.$inject = ['$http', '$q', 'GlobalSettings'];
 

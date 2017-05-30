@@ -9,6 +9,7 @@ function MapStylesFactory() {
     var SELECTEDSTYLE = 2;
     var blockStyles = {};
     var currentColor = 0;
+    var dpColor=['#ffff00', '#00ff00',  '#9999ff',  '#ffff99',  '#ff99cc',  '#ff8080',  '#00ccff',  '#008000',  '#ff6600',  '#c0c0c0',  '#808000',  '#ff9900',  '#ccffcc',  '#cc99ff',  '#0000ff',  '#008080',  '#993300',  '#ff0000'];
 
     var whiteFill = new ol.style.Fill({
         color: 'rgba(255,255,255,0.4)'
@@ -266,3 +267,23 @@ function MapStylesFactory() {
     }
 
 }
+
+function deliveryPointStyle(feature, resolution) {
+        var postcode = feature.properties.postcode;
+        var hash = new String(postcode.substr(postcode.length-3)).hashCode();
+        var hashMapping = hash%(dpColor.length);
+        deliveryPointStyle.stroke.color = dpColor[hashMapping];
+        return deliveryPointStyle;
+    } 
+
+    String.prototype.hashCode = function() {
+        var hash = 0, i, chr;
+        if (this.length === 0) return hash;
+        for (i = 0; i < this.length; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+            }
+        return hash;
+        };
+

@@ -1,5 +1,5 @@
 <div layout="column">
-    <div layout="row" layout-align="end start">
+    <div layout="row" layout-align="end start" ng-show="vm.selectedDeliveryPoint.type == 'deliverypoint'">
         <i class="fa fa-arrow-left context-button" aria-hidden="true"></i>
         <i class="fa fa-link context-button" aria-hidden="true"></i>
         <i class="fa fa-pencil context-button" aria-hidden="true"></i>
@@ -7,31 +7,36 @@
         <i class="fa fa-question-circle" aria-hidden="true"></i>
     </div>
     <div layout="column">
-        <md-input-container ng-show="vm.selectedDeliveryPoint.locality != null && vm.selectedDeliveryPoint.locality != undefined && vm.selectedDeliveryPoint.locality.length != 0">
+        <md-input-container ng-show="vm.selectedDeliveryPoint.locality != null && vm.selectedDeliveryPoint.locality != undefined && vm.selectedDeliveryPoint.locality.length != 0" >
             <label>{{ 'DELIVERY_POINTS.LOCALITY' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.locality">
+            <input type="text" ng-value="vm.selectedDeliveryPoint.locality" ng-disabled="true">
         </md-input-container>
                 
         <md-input-container ng-show="vm.selectedDeliveryPoint.street != null && vm.selectedDeliveryPoint.street != undefined && vm.selectedDeliveryPoint.street.length != 0">
             <label>{{ 'DELIVERY_POINTS.STREET' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.street">
+            <input type="text" ng-value="vm.selectedDeliveryPoint.street" ng-disabled="true">
         </md-input-container>
                 
         <md-input-container ng-show="vm.selectedDeliveryPoint.number != null && vm.selectedDeliveryPoint.number != undefined && vm.selectedDeliveryPoint.number.length != 0">
             <label>{{ 'DELIVERY_POINTS.BUILDING_NUMBER' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.number" >
+            <input type="text" ng-value="vm.selectedDeliveryPoint.number" ng-disabled="true">
         </md-input-container>
                 
-        <md-input-container ng-show="vm.selectedDeliveryPoint.BuildingNameWithSubBuildingName != null && vm.selectedDeliveryPoint.BuildingNameWithSubBuildingName != undefined && vm.selectedDeliveryPoint.BuildingNameWithSubBuildingName.length != 0">
+        <md-input-container ng-show="vm.selectedDeliveryPoint.name != null && vm.selectedDeliveryPoint.name != undefined && vm.selectedDeliveryPoint.name.length != 0">
             <label>{{ 'DELIVERY_POINTS.BUILDING_NAME' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.BuildingNameWithSubBuildingName">
+            <input type="text" ng-value="vm.selectedDeliveryPoint.name" ng-disabled="true">
+        </md-input-container>
+
+        <md-input-container ng-show="vm.selectedDeliveryPoint.subBuildingName != null && vm.selectedDeliveryPoint.subBuildingName != undefined && vm.selectedDeliveryPoint.subBuildingName.length != 0">
+            <label>{{ 'DELIVERY_POINTS.SUB_BUILDING_NAME' | translate}}</label>
+            <input type="text" ng-value="vm.selectedDeliveryPoint.subBuildingName" ng-disabled="true">
         </md-input-container>
     </div>
 
     <div layout="row">
         <md-input-container ng-show="vm.selectedDeliveryPoint.postcode != null && vm.selectedDeliveryPoint.postcode != undefined && vm.selectedDeliveryPoint.postcode.length != 0">
             <label>{{ 'DELIVERY_POINTS.POST_CODE' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.postcode">
+            <input type="text" ng-value="vm.selectedDeliveryPoint.postcode" ng-disabled="true">
         </md-input-container>
 
         <md-input-container flex="50" ng-show="vm.selectedDeliveryPoint.routeName != null && vm.selectedDeliveryPoint.routeName != undefined && vm.selectedDeliveryPoint.routeName[0].length != 0">
@@ -47,12 +52,12 @@
 
     <div layout="row">
         <md-input-container ng-show="vm.selectedDeliveryPoint.organisationName != null && vm.selectedDeliveryPoint.organisationName != undefined && vm.selectedDeliveryPoint.organisationName.length != 0">
-            <label>Organisation Name</label>
+            <label>{{ 'DELIVERY_POINTS.ORGANISATION' | translate}}</label>
             <input type="text" ng-value="vm.selectedDeliveryPoint.organisationName">
         </md-input-container>
 
         <md-input-container ng-show="vm.selectedDeliveryPoint.departmentName != null && vm.selectedDeliveryPoint.departmentName != undefined && vm.selectedDeliveryPoint.departmentName.length != 0">
-            <label>Department Name</label>
+            <label>{{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate}}</label>
             <input type="text" ng-value="vm.selectedDeliveryPoint.departmentName">
         </md-input-container>
     </div>
@@ -60,18 +65,18 @@
     <div layout="row">
         <md-input-container ng-show="vm.selectedDeliveryPoint.multipleOccupancyCount != null && vm.selectedDeliveryPoint.multipleOccupancyCount != undefined && vm.selectedDeliveryPoint.multipleOccupancyCount.length != 0">
             <label>{{ 'DELIVERY_POINTS.MULTI_OCC' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.multipleOccupancyCount" >
+            <input type="text" ng-value="vm.selectedDeliveryPoint.multipleOccupancyCount" ng-disabled="true">
         </md-input-container>
                     
         <md-input-container ng-show="vm.selectedDeliveryPoint.mailVolume != null && vm.selectedDeliveryPoint.mailVolume != undefined && vm.selectedDeliveryPoint.mailVolume.length != 0">
             <label>{{ 'DELIVERY_POINTS.MAIL_VOL' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.mailVolume">
+            <input type="text" ng-value="vm.selectedDeliveryPoint.mailVolume" ng-disabled="true">
         </md-input-container>
     </div>
     <div layout="row">
         <md-input-container ng-show="vm.selectedDeliveryPoint.dpUse != null && vm.selectedDeliveryPoint.dpUse != undefined && vm.selectedDeliveryPoint.dpUse.length != 0">
             <label>{{ 'DELIVERY_POINTS.DP_USE' | translate}}</label>
-            <input type="text" ng-value="vm.selectedDeliveryPoint.dpUse">
+            <input type="text" ng-value="vm.selectedDeliveryPoint.dpUse" ng-disabled="true">
         </md-input-container>
     </div>
 </div>

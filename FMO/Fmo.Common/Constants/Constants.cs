@@ -63,7 +63,6 @@
         public const string MultipleOccupancyCount = "multipleOccupancyCount";
         public const string Locality = "locality";
         public const string DeliveryPointId = "deliveryPointId";
-        public const string BuildingNameWithSubBuildingName = "BuildingNameWithSubBuildingName";
         public const string Street = "street";
         public const string DpUseResidential = "Residential";
         public const string DpUseOrganisation = "Organisation";
