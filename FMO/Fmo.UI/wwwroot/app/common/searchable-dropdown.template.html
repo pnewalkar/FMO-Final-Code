@@ -1,8 +1,8 @@
 ﻿<md-input-container class="md-block">
     <label>{{ vm.labelText | translate}}</label>
-    <md-select  ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-open="vm.clearSearchTerm()"   md-on-close="vm.clearSearchTerm()"  ng-class="vm.selectClass"  ng-change="vm.selectionChanged({ selectedRoute: vm.selectedRoute })">
+    <md-select  ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-open="vm.clearSearchTerm()"   md-on-close="vm.clearSearchTerm()"  ng-class="vm.selectClass"  ng-change="vm.onChange({ selectedRoute: vm.selectedRoute })">
         <md-select-header>
-            <input type="search" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" ng-class="vm.selectHeaderClass">
+            <input type="search" ng-model="vm.searchTerm" placeholder="{{vm.placeHolder | translate}}" ng-keydown="$event.stopPropagation()" ng-class="vm.selectHeaderClass">
         </md-select-header>
         <md-optgroup>
             <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute = ( vm.deliveryRoute  | filter:{routeNameNumber:vm.searchTerm } | orderBy : 'routeName') ">
@@ -10,5 +10,5 @@
             </md-option>
         </md-optgroup>
         <div ng-show="!filterDeliveryRoute.length" class="noResult">{{ vm.noResultFound | translate }}</div>
-    </md-select>
+    </md-select>   
 </md-input-container>

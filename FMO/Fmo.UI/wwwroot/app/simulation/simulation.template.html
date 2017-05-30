@@ -13,12 +13,9 @@
         <div ng-show="!filterScenario.length" class="noResult">No Result Found</div>
     </md-input-container>
 
-    <custom-searchable-dropdown label-text="'ROUTE_SIMULATION.ROUTE'" search-term="vm.searchTerm" is-delivery-route-disabled="vm.isDeliveryRouteDisabled"
+    <custom-searchable-dropdown label-text="'ROUTE_SIMULATION.ROUTE'" place-holder="'ROUTE_SIMULATION.NO_ROUTE_SELECTED'" search-term="vm.searchTerm" is-delivery-route-disabled="vm.isDeliveryRouteDisabled"
                                 selected-route="vm.selectedRoute" select-class="'simulationSelect'" select-header-class="vm.selectClass" delivery-route="vm.deliveryRoute"
-                                no-result-found="'ROUTE_SIMULATION.NO_RESULT_FOUND'" selection-changed="vm.selectionChanged(vm.selectedRoute)" >
+                                no-result-found="'ROUTE_SIMULATION.NO_RESULT_FOUND'" >
     </custom-searchable-dropdown>
-
-    <p id="selectedRouteId" hidden  > {{vm.selectedRoute}}   </p>
-
    
 </div>

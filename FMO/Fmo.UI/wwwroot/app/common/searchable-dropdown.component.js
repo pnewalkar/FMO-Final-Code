@@ -2,6 +2,7 @@
   .component('customSearchableDropdown', {
       bindings: {
           labelText: "<",
+          placeHolder:"<",
           searchTerm: "=",
           isDeliveryRouteDisabled: "<",
           selectedRoute: "=",
@@ -9,8 +10,7 @@
           selectHeaderClass: "<",
           searchTerm: "=",
           deliveryRoute: "<",
-          noResultFound: "<",
-          selectionChanged:"&"
+          noResultFound: "<"
       },
       templateUrl: './common/searchable-dropdown.template.html',
       controller: 'CustomSearchableDropdownController as vm'
