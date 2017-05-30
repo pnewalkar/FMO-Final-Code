@@ -3,6 +3,8 @@
     public static class LoggerTraceConstants
     {
         public const string Category = "General";
+        public const string BusinessLayer = "Business.";
+        public const string DataLayer = "Data.";
 
         #region Priority
 
@@ -19,6 +21,8 @@
         public const int FetchAdvanceSearchDetailsPriority = 8;
         public const int CreateAutomaticAccessLinkPriority = 8;
         public const int CreateManualAccessLinkPriority = 8;
+        public const int GetRouteForDeliveryPointPriority = 8;
+        public const int GetDPUsePriority = 8;
 
         #endregion Priority
 
@@ -61,6 +65,15 @@
         public const int CreateManualAccessLinkBusinessMethodEntryEventId = 9315;
         public const int CreateManualAccessLinkBusinessMethodExitEventId = 9316;
 
+        public const int GetRouteForDeliveryPointBusinessMethodEntryEventId = 9317;
+        public const int GetRouteForDeliveryPointBusinessMethodExitEventId = 9318;
+        public const int GetRouteForDeliveryPointDataMethodEntryEventId = 9319;
+        public const int GetRouteForDeliveryPointDataMethodExitEventId = 9320;
+
+        public const int GetDPUseBusinessMethodEntryEventId = 9321;
+        public const int GetDPUseBusinessMethodExitEventId = 9322;
+        public const int GetDPUseDataMethodEntryEventId = 9323;
+        public const int GetDPUseDataMethodExitEventId = 9324;
 
         #endregion EventId
 

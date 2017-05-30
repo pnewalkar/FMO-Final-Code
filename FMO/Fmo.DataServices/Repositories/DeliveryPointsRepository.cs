@@ -23,19 +23,30 @@ namespace Fmo.DataServices.Repositories
     using MappingConfiguration;
     using MappingExtensions;
     using Entity = Fmo.Entities;
+    using System.Reflection;
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
     /// </summary>
     public class DeliveryPointsRepository : RepositoryBase<Entity.DeliveryPoint, FMODBContext>, IDeliveryPointsRepository
     {
+        #region Member Variables
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        #endregion Member Variables
+
+        #region Constructors
 
         public DeliveryPointsRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
         }
+
+        #endregion Constructors
+
+        #region Public Methods
 
         /// <summary>
         /// This method is used to fetch Delivery Point by udprn.
@@ -302,34 +313,40 @@ namespace Fmo.DataServices.Repositories
         /// <returns>Route Name for a single DeliveryPoint</returns>
         public string GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
-            string routeName = string.Empty;
-            var result = (from dp in DataContext.DeliveryPoints.AsNoTracking()
-                          join bs in DataContext.BlockSequences.AsNoTracking() on dp.ID equals bs.OperationalObject_GUID
-                          join b in DataContext.Blocks.AsNoTracking() on bs.Block_GUID equals b.ID
-                          join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on b.ID equals drb.Block_GUID
-                          join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                          join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
-                          where dp.ID == deliveryPointId && b.BlockType == Constants.UnSequenced
-                          select new
-                          {
-                              RouteName = dr.RouteName,
-                              RouteId = dr.ID,
-                              PostcodeId = pa.PostCodeGUID
-                          }).SingleOrDefault();
-            if (result != null)
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            using (loggingHelper.FmoTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
             {
-                var isPrimaryRoute = (from drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() where drp.Postcode_GUID == result.PostcodeId && drp.DeliveryRoute_GUID == result.RouteId select drp.IsPrimaryRoute).ToList();
-                if (isPrimaryRoute != null && isPrimaryRoute.Count > 0)
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointDataMethodEntryEventId, LoggerTraceConstants.Title);
+                string routeName = string.Empty;
+                var result = (from dp in DataContext.DeliveryPoints.AsNoTracking()
+                              join bs in DataContext.BlockSequences.AsNoTracking() on dp.ID equals bs.OperationalObject_GUID
+                              join b in DataContext.Blocks.AsNoTracking() on bs.Block_GUID equals b.ID
+                              join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on b.ID equals drb.Block_GUID
+                              join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
+                              join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                              where dp.ID == deliveryPointId && b.BlockType == Constants.UnSequenced
+                              select new
+                              {
+                                  RouteName = dr.RouteName,
+                                  RouteId = dr.ID,
+                                  PostcodeId = pa.PostCodeGUID
+                              }).SingleOrDefault();
+                if (result != null)
                 {
-                    routeName = isPrimaryRoute[0] == true ? Constants.PRIMARYROUTE + result.RouteName.Trim() : Constants.SECONDARYROUTE + result.RouteName.Trim();
+                    var isPrimaryRoute = (from drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() where drp.Postcode_GUID == result.PostcodeId && drp.DeliveryRoute_GUID == result.RouteId select drp.IsPrimaryRoute).ToList();
+                    if (isPrimaryRoute != null && isPrimaryRoute.Count > 0)
+                    {
+                        routeName = isPrimaryRoute[0] == true ? Constants.PRIMARYROUTE + result.RouteName.Trim() : Constants.SECONDARYROUTE + result.RouteName.Trim();
+                    }
+                    else
+                    {
+                        routeName = result.RouteName.Trim();
+                    }
                 }
-                else
-                {
-                    routeName = result.RouteName.Trim();
-                }
-            }
 
-            return routeName;
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointDataMethodExitEventId, LoggerTraceConstants.Title);
+                return routeName;
+            }
         }
 
         /// <summary>
@@ -340,37 +357,43 @@ namespace Fmo.DataServices.Repositories
         /// <returns>DPUse value as string</returns>
         public string GetDPUse(List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid deliveryPointId)
         {
-            string dpUsetype = string.Empty;
-            Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
-               .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-               .SelectMany(x => x.ReferenceDatas)
-               .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
-               .SingleOrDefault();
-
-            Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
-                .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-                .SelectMany(x => x.ReferenceDatas)
-                .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
-                .SingleOrDefault();
-
-            var dpUse = from dp in DataContext.DeliveryPoints.AsNoTracking()
-                        where dp.ID == deliveryPointId
-                        select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
-
-            List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
-            if (deliveryPointUseIndicator.Count > 0)
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            using (loggingHelper.FmoTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
             {
-                if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
-                {
-                    dpUsetype = Constants.DpUseOrganisation;
-                }
-                else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
-                {
-                    dpUsetype = Constants.DpUseResidential;
-                }
-            }
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodEntryEventId, LoggerTraceConstants.Title);
+                string dpUsetype = string.Empty;
+                Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
+                   .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                   .SelectMany(x => x.ReferenceDatas)
+                   .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
+                   .SingleOrDefault();
 
-            return dpUsetype;
+                Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
+                    .SingleOrDefault();
+
+                var dpUse = from dp in DataContext.DeliveryPoints.AsNoTracking()
+                            where dp.ID == deliveryPointId
+                            select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
+
+                List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
+                if (deliveryPointUseIndicator.Count > 0)
+                {
+                    if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+                    {
+                        dpUsetype = Constants.DpUseOrganisation;
+                    }
+                    else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
+                    {
+                        dpUsetype = Constants.DpUseResidential;
+                    }
+                }
+
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodExitEventId, LoggerTraceConstants.Title);
+                return dpUsetype;
+            }
         }
 
         /// <summary>
@@ -623,6 +646,10 @@ namespace Fmo.DataServices.Repositories
             return deliveryPointDTOs;
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         /// <summary>
         /// This method is used to Get delivery Point boundingBox data.
         /// </summary>
@@ -643,5 +670,7 @@ namespace Fmo.DataServices.Repositories
 
             return deliveryPoints;
         }
+
+        #endregion Private Methods
     }
 }
