@@ -70,6 +70,7 @@ angular.module('mapView')
     });
 
 function deliveryPointStyle(feature){
+    if(typeof feature=='object'){
     var modValue = hashCode(feature.getProperties().postcode)%colors.length;
     var colour = colors[modValue];
 
@@ -94,11 +95,30 @@ function deliveryPointStyle(feature){
         pointStyles[modValue] = style;
         return style;
     }
+    }
+    else{
+        
+      return  new ol.style.Style({
+        text: new ol.style.Text({
+            text: '\uf041',
+            font: 'normal 16px FontAwesome',
+            textBaseline: 'Bottom',
+            fill: new ol.style.Fill({
+                color: '#da202a',
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#000',
+                width: 2
+            })
+        })
+    });
+    }
 
 }
 
     var hashCode = function(value) {
         var hash = 0, i, chr;
+        if(value){
         if (value.length === 0) return hash;
         for (i = 0; i < value.length; i++) {
         chr   = value.charCodeAt(i);
@@ -106,6 +126,10 @@ function deliveryPointStyle(feature){
         hash |= 0;
             }
         return hash;
+        }
+        else{
+            return colors.length - 1;
+        }
         };
 
 
