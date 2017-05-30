@@ -177,16 +177,16 @@
         public const string Longitude = "longitude";
         public const string LinestringObject = "LINESTRING";
         public const string PointObject = "POINT";
+
         #endregion OtherLayers
 
         #region DeliveryPoints
 
-        public const string DUPLICATEDELIVERYPOINT = "There is a duplicate of this Delivery Point in the system";
-
-        public const string DUPLICATENYBRECORDS = "This address is in the NYB file under the postcode ";
-        public const string DELIVERYPOINTCREATED = "Delivery Point created successfully";
-        public const string DELIVERYPOINTCREATEDWITHOUTACCESSLINK = "Delivery Point created successfully without access link";
-        public const string DELIVERYPOINTCREATEDWITHOUTLOCATION = "Delivery Point created successfully without location";
+        public const string DuplicateDeliveryPoint = "There is a duplicate of this Delivery Point in the system";
+        public const string DuplicateNybRecords = "This address is in the NYB file under the postcode ";
+        public const string DeliveryPointCreated = "Delivery Point created successfully";
+        public const string DeliveryPointCreatedWithoutAccessLink = "Delivery Point created successfully without access link";
+        public const string DeliveryPointCreatedWithoutLocation = "Delivery Point created successfully without location";
         public const string INTERNAL = "Internal";
         public const string ROWVERSION = "RowVersion";
         public const string UnSequenced = "U";

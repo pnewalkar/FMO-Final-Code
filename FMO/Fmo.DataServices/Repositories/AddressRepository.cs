@@ -7,6 +7,7 @@ namespace Fmo.DataServices.Repositories
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Data.SqlTypes;
     using System.Linq;
     using System.Threading.Tasks;
     using DTO.Model;
@@ -21,17 +22,22 @@ namespace Fmo.DataServices.Repositories
     using Fmo.Entities;
     using Fmo.MappingConfiguration;
     using Microsoft.SqlServer.Types;
-    using System.Data.SqlTypes;
 
     /// <summary>
     /// Repository to interact with postal address entity
     /// </summary>
     public class AddressRepository : RepositoryBase<PostalAddress, FMODBContext>, IAddressRepository
     {
+        #region Member Variables
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogRepository fileProcessingLog = default(IFileProcessingLogRepository);
         private IPostCodeRepository postcodeRepository = default(IPostCodeRepository);
         private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
+
+        #endregion Member Variables
+
+        #region Constructor
 
         public AddressRepository(IDatabaseFactory<FMODBContext> databaseFactory, ILoggingHelper loggingHelper, IFileProcessingLogRepository fileProcessingLog, IPostCodeRepository postCodeRepository, IReferenceDataCategoryRepository refDataRepository)
             : base(databaseFactory)
@@ -41,6 +47,10 @@ namespace Fmo.DataServices.Repositories
             this.postcodeRepository = postCodeRepository;
             this.refDataRepository = refDataRepository;
         }
+
+        #endregion Constructor
+
+        #region Public Methods
 
         /// <summary>
         /// Delete postal Address records do not have an associated Delivery Point
@@ -288,7 +298,8 @@ namespace Fmo.DataServices.Repositories
 
             if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
             {
-                postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
+                postalAddress = postalAddress.Where(n => n.BuildingName.Equals(
+                    objPostalAddress.BuildingName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
@@ -299,19 +310,22 @@ namespace Fmo.DataServices.Repositories
 
             if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
             {
-                postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
+                postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(
+                    objPostalAddress.SubBuildingName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
             {
-                postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
+                postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(
+                    objPostalAddress.OrganisationName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
             {
-                postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
+                postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(
+                    objPostalAddress.DepartmentName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
@@ -325,7 +339,8 @@ namespace Fmo.DataServices.Repositories
             if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
             {
                 postalAddress =
-                    postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
+                    postalAddress.Where(n => n.DependentThoroughfare.Equals(
+                        objPostalAddress.DependentThoroughfare,
                         StringComparison.OrdinalIgnoreCase));
             }
 
@@ -359,7 +374,8 @@ namespace Fmo.DataServices.Repositories
 
             if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
             {
-                postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
+                postalAddress = postalAddress.Where(n => n.BuildingName.Equals(
+                    objPostalAddress.BuildingName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
@@ -370,32 +386,37 @@ namespace Fmo.DataServices.Repositories
 
             if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
             {
-                postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
+                postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(
+                    objPostalAddress.SubBuildingName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
             {
-                postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
+                postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(
+                    objPostalAddress.OrganisationName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
             {
-                postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
+                postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(
+                    objPostalAddress.DepartmentName,
                     StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
             {
-                postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare,
+                postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(
+                    objPostalAddress.Thoroughfare,
                     StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
             {
                 postalAddress =
-                    postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
+                    postalAddress.Where(n => n.DependentThoroughfare.Equals(
+                        objPostalAddress.DependentThoroughfare,
                         StringComparison.OrdinalIgnoreCase));
             }
 
@@ -630,7 +651,7 @@ namespace Fmo.DataServices.Repositories
         /// Create delivery point for PAF and NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
-        /// <returns>bool</returns>
+        /// <returns>CreateDeliveryPointModelDTO</returns>
         public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             try
@@ -705,6 +726,10 @@ namespace Fmo.DataServices.Repositories
             }
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>
@@ -745,5 +770,7 @@ namespace Fmo.DataServices.Repositories
                 }).ToList()
             };
         }
+
+        #endregion Private Methods
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Fmo.BusinessServices.Interfaces;
 using Fmo.DataServices.Repositories.Interfaces;
 using Fmo.DTO;
-using Fmo.Common.Constants;
 
 namespace Fmo.BusinessServices.Services
 {
@@ -13,7 +12,13 @@ namespace Fmo.BusinessServices.Services
     /// <seealso cref="Fmo.BusinessServices.Interfaces.IReferenceDataBusinessService" />
     public class ReferenceDataBusinessService : IReferenceDataBusinessService
     {
+        #region Member Variables
+
         private IReferenceDataCategoryRepository referenceDataCategoryRepository;
+
+        #endregion Member Variables
+
+        #region Constructor
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReferenceDataBusinessService"/> class and other classes.
@@ -23,6 +28,10 @@ namespace Fmo.BusinessServices.Services
         {
             this.referenceDataCategoryRepository = referenceDataCategoryRepository;
         }
+
+        #endregion Constructor
+
+        #region Methods
 
         /// <summary>
         /// Fetch the Route Log Status.
@@ -71,5 +80,7 @@ namespace Fmo.BusinessServices.Services
         {
             return referenceDataCategoryRepository.GetReferenceDataCategoriesByCategoryNames(categoryNames);
         }
+
+        #endregion Methods
     }
 }
