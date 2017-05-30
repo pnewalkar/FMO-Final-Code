@@ -4,10 +4,13 @@ angular.module('mapView')
                                   '$state',
                                   'mapService',
                                   'mapFactory',
+                                  'CommonConstants',
                                   MapController])
 function MapController($scope,
                        $state,
-                       mapService, mapFactory) {
+                       mapService,
+                       mapFactory,
+                       CommonConstants) {
     var vm = this;
     var contextTitle = vm.contextTitle;
     vm.initialise = initialise();
@@ -34,6 +37,15 @@ function MapController($scope,
         }
         else {
             $state.go("deliveryPoint");
+        }
+    });
+    $scope.$on('showDeliveryPointDetails', function (event, data) {
+        if (data.featureType == 'deliverypoint') {
+            vm.contextTitle = data.contextTitle;
+        }
+        else
+        {
+            vm.contextTitle = CommonConstants.TitleContextPanel;
         }
     });
     $scope.$on("deleteSelectedFeature", function (event) {
