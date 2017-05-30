@@ -1,30 +1,32 @@
-﻿using Fmo.BusinessServices.Interfaces;
-using Fmo.Common;
-using Fmo.Common.Constants;
-using Fmo.Common.Enums;
-using Fmo.Common.Interface;
-using Fmo.DataServices.Repositories.Interfaces;
-using Fmo.DTO;
-using Fmo.DTO.Model;
-using Fmo.Helpers;
-using Microsoft.SqlServer.Types;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-
-namespace Fmo.BusinessServices.Services
+﻿namespace Fmo.BusinessServices.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Spatial;
+    using System.Data.SqlTypes;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using System.Web.Script.Serialization;
+    using Fmo.BusinessServices.Interfaces;
+    using Fmo.Common;
+    using Fmo.Common.Constants;
+    using Fmo.Common.Enums;
+    using Fmo.Common.Interface;
+    using Fmo.DataServices.Repositories.Interfaces;
+    using Fmo.DTO;
+    using Fmo.DTO.Model;
+    using Fmo.Helpers;
+    using Microsoft.SqlServer.Types;
+    using Newtonsoft.Json.Linq;
+
     /// <summary>
     /// This class contains methods for fetching Delivery Points data.
     /// </summary>
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
+        #region Member Variables
+
         private IDeliveryPointsRepository deliveryPointsRepository = default(IDeliveryPointsRepository);
         private IPostalAddressBusinessService postalAddressBusinessService = default(IPostalAddressBusinessService);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
@@ -32,6 +34,10 @@ namespace Fmo.BusinessServices.Services
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
         private IAccessLinkBusinessService accessLinkBusinessService = default(IAccessLinkBusinessService);
         private IBlockSequenceBusinessService blockSequenceBusinessService = default(IBlockSequenceBusinessService);
+
+        #endregion Member Variables
+
+        #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryPointBusinessService"/> class.
@@ -42,6 +48,7 @@ namespace Fmo.BusinessServices.Services
         /// <param name="configurationHelper">The configuration helper.</param>
         /// <param name="referenceDataBusinessService">The reference data business service.</param>
         /// <param name="accessLinkBusinessService">The access link business service.</param>
+        /// <param name="blockSequenceBusinessService">blockSequenceBusinessService business service</param>
         public DeliveryPointBusinessService(
             IDeliveryPointsRepository deliveryPointsRepository,
             IPostalAddressBusinessService postalAddressBusinessService,
@@ -59,6 +66,10 @@ namespace Fmo.BusinessServices.Services
             this.accessLinkBusinessService = accessLinkBusinessService;
             this.blockSequenceBusinessService = blockSequenceBusinessService;
         }
+
+        #endregion Constructors
+
+        #region Public Methods
 
         /// <summary>
         /// This Method is used to fetch Delivery Points Co-ordinates.
@@ -287,17 +298,28 @@ namespace Fmo.BusinessServices.Services
         /// <returns>KeyValuePair for Route and DPUse </returns>
         public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
-            List<KeyValuePair<string, string>> dpDetails = new List<KeyValuePair<string, string>>();
-            string routeName = deliveryPointsRepository.GetRouteForDeliveryPoint(deliveryPointId);
-            string dpUse = GetDPUse(deliveryPointId);
-            if (routeName != null)
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            using (loggingHelper.FmoTraceManager.StartTrace(LoggerTraceConstants.BusinessLayer + methodName))
             {
-                dpDetails.Add(new KeyValuePair<string, string>(Constants.RouteName, routeName));
-            }
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
-            dpDetails.Add(new KeyValuePair<string, string>(Constants.DpUse, dpUse));
-            return dpDetails;
+                List<KeyValuePair<string, string>> dpDetails = new List<KeyValuePair<string, string>>();
+                string routeName = deliveryPointsRepository.GetRouteForDeliveryPoint(deliveryPointId);
+                string dpUse = GetDPUse(deliveryPointId);
+                if (routeName != null)
+                {
+                    dpDetails.Add(new KeyValuePair<string, string>(Constants.RouteName, routeName));
+                }
+
+                dpDetails.Add(new KeyValuePair<string, string>(Constants.DpUse, dpUse));
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                return dpDetails;
+            }
         }
+
+        #endregion Public Methods
+
+        #region Private Methods
 
         /// <summary>
         /// This method is used to fetch GeoJson data for Delivery Point.
@@ -383,15 +405,23 @@ namespace Fmo.BusinessServices.Services
         /// <returns>DPUse value as string</returns>
         private string GetDPUse(Guid deliveryPointId)
         {
-            List<string> categoryNames = new List<string>
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            using (loggingHelper.FmoTraceManager.StartTrace(LoggerTraceConstants.BusinessLayer + methodName))
             {
-                ReferenceDataCategoryNames.DeliveryPointUseIndicator,
-            };
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                List<string> categoryNames = new List<string>
+                {
+                    ReferenceDataCategoryNames.DeliveryPointUseIndicator,
+                };
 
-            var referenceDataCategoryList =
-                referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
-            string dpUsetype = deliveryPointsRepository.GetDPUse(referenceDataCategoryList, deliveryPointId);
-            return dpUsetype;
+                var referenceDataCategoryList =
+                    referenceDataBusinessService.GetReferenceDataCategoriesByCategoryNames(categoryNames);
+                string dpUsetype = deliveryPointsRepository.GetDPUse(referenceDataCategoryList, deliveryPointId);
+                loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionCompleted, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                return dpUsetype;
+            }
         }
+
+        #endregion Private Methods
     }
 }
