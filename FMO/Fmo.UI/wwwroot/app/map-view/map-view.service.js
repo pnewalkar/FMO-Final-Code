@@ -146,8 +146,7 @@ function mapService($http,
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     loadFeatures(deliveryPointsVector, response);
                 });
-            },
-            style : mapStylesFactory.deliveryPointStyle
+            }
         });
 
         var deliveryPointsLayer = new ol.layer.Vector({
