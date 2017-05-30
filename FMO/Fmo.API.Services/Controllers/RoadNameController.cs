@@ -20,13 +20,13 @@ namespace Fmo.API.Services.Controllers
         /// <summary>
         /// This method is used to get Route Link data.
         /// </summary>
-        /// <param name="boundaryBox">boundaryBox as strintg</param>
+        /// <param name="bbox">bbox as strintg</param>
         /// <returns></returns>
         [Route("GetRouteLinks")]
         [HttpGet]
-        public IActionResult GetRoouteData(string boundaryBox)
+        public IActionResult GetRoouteData(string bbox)
         {
-            string route = roadNameBussinessService.GetRoadRoutes(boundaryBox, CurrentUserUnit);
+            string route = roadNameBussinessService.GetRoadRoutes(bbox, CurrentUserUnit);
             return Ok(route);
         }
     }

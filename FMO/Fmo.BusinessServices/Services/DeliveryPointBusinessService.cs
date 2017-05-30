@@ -334,7 +334,7 @@ namespace Fmo.BusinessServices.Services
                         { Constants.Locality, (point.PostalAddress.DependentLocality + Constants.Space + point.PostalAddress.DoubleDependentLocality).Trim() },
                         { Constants.DeliveryPointId, point.ID },
                         { Constants.Street, (point.PostalAddress.Thoroughfare + Constants.Space + point.PostalAddress.DependentThoroughfare).Trim() },
-                        { Constants.BuildingNameWithSubBuildingName, (point.PostalAddress.BuildingName + Constants.Space + point.PostalAddress.SubBuildingName).Trim() }
+                        { Constants.SubBuildingName, point.PostalAddress.SubBuildingName }
                     },
                         geometry = new Geometry
                         {

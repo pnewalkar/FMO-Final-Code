@@ -40,6 +40,7 @@ GlobalSettings.unitBoundaryLayerName = "Unit Boundary";
 GlobalSettings.deliveryPointLayerName = "Delivery Points";
 GlobalSettings.accessLinkLayerName = "Access Links";
 GlobalSettings.roadLinkLayerName = "Roads";
+GlobalSettings.deliveryPointDetails = "Details of Delivery Point";
 
 angular.module('FMOApp')
 .constant("GlobalSettings", GlobalSettings);

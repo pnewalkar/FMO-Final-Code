@@ -3,14 +3,19 @@
     .controller('DeliveryPointContextController',
     DeliveryPointContextController);
 
-DeliveryPointContextController.$inject = ['$scope',
-    '$state',
+DeliveryPointContextController.$inject = ['GlobalSettings',
+    '$rootScope',
     '$stateParams']
 
-function DeliveryPointContextController($scope,
-    $state,
+function DeliveryPointContextController(GlobalSettings,
+    $rootScope,
     $stateParams)
-    {
+{
         var vm = this;
         vm.selectedDeliveryPoint = $stateParams.selectedDeliveryPoint;
+       
+            $rootScope.$broadcast('showDeliveryPointDetails', {
+                contextTitle: GlobalSettings.deliveryPointDetails,
+                featureType: vm.selectedDeliveryPoint.type
+            });      
     }

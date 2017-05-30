@@ -119,16 +119,13 @@ function DeliveryPointController(
                    });
         }
         else {
-            deliveryPointService.getPostalAddress(vm.searchText).then(function (response) {
-                vm.addressDetails = response.postalAddressData;
-                vm.addressDetails.id = vm.defaultNYBValue;
-                vm.addressDetails.udprn = "";
-                vm.addressDetails.buildingNumber = "";
-                vm.addressDetails.buildingName = "";
-                vm.addressDetails.subBuildingName = "";
-                vm.addressDetails.organisationName = "";
-                vm.addressDetails.departmentName = "";
-            });
+            vm.addressDetails.id = vm.defaultNYBValue;
+            vm.addressDetails.udprn = "";
+            vm.addressDetails.buildingNumber = "";
+            vm.addressDetails.buildingName = "";
+            vm.addressDetails.subBuildingName = "";
+            vm.addressDetails.organisationName = "";
+            vm.addressDetails.departmentName = "";
         }
     }
 
