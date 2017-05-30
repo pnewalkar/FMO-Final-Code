@@ -28,7 +28,6 @@ namespace Fmo.DataServices.Repositories
         {
             this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
-            ;
         }
 
         /// <summary>

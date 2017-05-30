@@ -75,7 +75,7 @@ GlobalSettings.getToken = "/token";
 GlobalSettings.setAccessLinkByBoundingBox = "/accessLink/GetAccessLinks?bbox=";
 GlobalSettings.GetRouteForDeliveryPoint = "/deliveryPoints/GetRouteForDeliveryPoint?deliveryPointId=";
 //-----Reference Data Factory---------------//
-GlobalSettings.getReferenceData = "./reference-data/reference-data.mapping.json";
+GlobalSettings.getReferenceData = "./reference-data/ReferenceData.js";
 GlobalSettings.readJson = "./UI-string.json";
 //-----RouteLog Factory---------------//
 GlobalSettings.getRouteLogSelectionType = "/RouteLog/RouteLogsSelectionType";
