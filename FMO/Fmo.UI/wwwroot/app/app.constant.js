@@ -1,4 +1,4 @@
-﻿//(function (window) {
+//(function (window) {
 //    window.__env = window.__env || {};
 //    window.__env.apiUrl = 'http://localhost:34583/api';
 //}(this));
@@ -41,6 +41,10 @@ GlobalSettings.deliveryPointLayerName = "Delivery Points";
 GlobalSettings.accessLinkLayerName = "Access Links";
 GlobalSettings.roadLinkLayerName = "Roads";
 GlobalSettings.deliveryPointDetails = "Details of Delivery Point";
+
+
+/*delivery-point colors*/
+GlobalSettings.dpColor=['#ffff00', '#00ff00',  '#9999ff',  '#ffff99',  '#ff99cc',  '#ff8080',  '#00ccff',  '#008000',  '#ff6600',  '#c0c0c0',  '#808000',  '#ff9900',  '#ccffcc',  '#cc99ff',  '#0000ff',  '#008080',  '#993300',  '#ff0000'];
 
 angular.module('FMOApp')
 .constant("GlobalSettings", GlobalSettings);

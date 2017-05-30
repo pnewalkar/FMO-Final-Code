@@ -3,13 +3,16 @@
 angular.module('mapView')
     .factory('mapStylesFactory', MapStylesFactory)
 
-function MapStylesFactory() {
+    MapStylesFactory.$inject = ['GlobalSettings'];
+
+    function MapStylesFactory(GlobalSettings) {
     var ACTIVESTYLE = 0;
     var INACTIVESTYLE = 1;
     var SELECTEDSTYLE = 2;
     var blockStyles = {};
     var currentColor = 0;
-    var dpColor=['#ffff00', '#00ff00',  '#9999ff',  '#ffff99',  '#ff99cc',  '#ff8080',  '#00ccff',  '#008000',  '#ff6600',  '#c0c0c0',  '#808000',  '#ff9900',  '#ccffcc',  '#cc99ff',  '#0000ff',  '#008080',  '#993300',  '#ff0000'];
+    var pointStyles = [];
+    var colors = GlobalSettings.dpColor;
 
     var whiteFill = new ol.style.Fill({
         color: 'rgba(255,255,255,0.4)'
@@ -66,20 +69,45 @@ function MapStylesFactory() {
         })
     });
 
-    var deliveryPointStyle = new ol.style.Style({
-        text: new ol.style.Text({
+function deliveryPointStyle(feature){
+    var modValue = hashCode(feature.getProperties().postcode)%colors.length;
+    var colour = colors[modValue];
+
+    if(pointStyles[modValue]) {
+        return pointStyles[modValue];
+    } else {
+        var style = new ol.style.Style({
+            text: new ol.style.Text({
             text: '\uf041',
             font: 'normal 16px FontAwesome',
             textBaseline: 'Bottom',
             fill: new ol.style.Fill({
-                color: '#da202a',
+                color: colour,
             }),
-            stroke: new ol.style.Stroke({
-                color: '#000',
-                width: 2
+                stroke: new ol.style.Stroke({
+                    color: '#00000',
+                    width: 1
+                }),
+                radius: 5
             })
-        })
-    });
+        });
+        pointStyles[modValue] = style;
+        return style;
+    }
+
+}
+
+    var hashCode = function(value) {
+        var hash = 0, i, chr;
+        if (value.length === 0) return hash;
+        for (i = 0; i < value.length; i++) {
+        chr   = value.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0;
+            }
+        return hash;
+        };
+
 
     var inactivePointStyle = new ol.style.Style({
         text: new ol.style.Text({
@@ -236,7 +264,7 @@ function MapStylesFactory() {
             case "splitroute":
                 return splitRouteStyle;
             case "deliverypoint":
-                return deliveryPointStyle;
+                return deliveryPointStyle(feature);
             default:
                 return defaultStyle;
         }
@@ -267,23 +295,3 @@ function MapStylesFactory() {
     }
 
 }
-
-function deliveryPointStyle(feature, resolution) {
-        var postcode = feature.properties.postcode;
-        var hash = new String(postcode.substr(postcode.length-3)).hashCode();
-        var hashMapping = hash%(dpColor.length);
-        deliveryPointStyle.stroke.color = dpColor[hashMapping];
-        return deliveryPointStyle;
-    } 
-
-    String.prototype.hashCode = function() {
-        var hash = 0, i, chr;
-        if (this.length === 0) return hash;
-        for (i = 0; i < this.length; i++) {
-        chr   = this.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-            }
-        return hash;
-        };
-
