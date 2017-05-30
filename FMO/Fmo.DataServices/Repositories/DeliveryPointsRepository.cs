@@ -11,6 +11,7 @@ namespace Fmo.DataServices.Repositories
     using System.Data.Entity.Spatial;
     using System.Data.Entity.SqlServer;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using AutoMapper;
     using Common.Constants;
@@ -23,7 +24,6 @@ namespace Fmo.DataServices.Repositories
     using MappingConfiguration;
     using MappingExtensions;
     using Entity = Fmo.Entities;
-    using System.Reflection;
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
