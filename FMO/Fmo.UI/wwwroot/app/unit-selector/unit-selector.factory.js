@@ -16,7 +16,7 @@ function unitSelectorAPIService($http,
 
         $http({
             method: 'GET',
-            url: GlobalSettings.apiUrl + '/UnitLocation/DeliveryUnitsForUser'
+            url: GlobalSettings.apiUrl + GlobalSettings.getDeliveryUnit
         }).success(function (response) {
             deferred.resolve(response);
 

@@ -3,9 +3,9 @@
 angular.module('simulation')
     .factory('simulationAPIService', simulationAPIService);
 
-simulationAPIService.$inject = ['$http', '$q', 'GlobalSettings'];
+simulationAPIService.$inject = ['$http', '$q', 'GlobalSettings', 'stringFormatService'];
 
-function simulationAPIService($http, $q, GlobalSettings) {
+function simulationAPIService($http, $q, GlobalSettings, stringFormatService) {
 
     return {
         getStatus: getStatus,
@@ -16,7 +16,7 @@ function simulationAPIService($http, $q, GlobalSettings) {
     function getStatus() {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/RouteLogsStatus').success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getRouteLogSimulationStatus).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -29,7 +29,9 @@ function simulationAPIService($http, $q, GlobalSettings) {
     function getScenario(operationStateID, deliveryUnitID) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID + '&fields=ScenarioName,ID').success(function (response) {
+
+        var getRouteSimulationScenarioParams = stringFormatService.Stringformat(GlobalSettings.getRouteSimulationScenario, operationStateID, deliveryUnitID);
+        $http.get(GlobalSettings.apiUrl + getRouteSimulationScenarioParams).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -42,7 +44,8 @@ function simulationAPIService($http, $q, GlobalSettings) {
     function getRoutes(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteSimulation/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID + '&fields=RouteNameNumber,RouteName,ID').success(function (response) {
+        var getRouteSimulationScenarioParams = stringFormatService.Stringformat(GlobalSettings.getRouteSimulationRoutes, operationStateID, deliveryScenarioID);
+        $http.get(GlobalSettings.apiUrl + getRouteSimulationScenarioParams).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

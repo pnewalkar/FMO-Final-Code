@@ -7,7 +7,7 @@ function accessLinkAPIService($http, GlobalSettings, $q) {
     accessLinkAPIService.GetAdjPathLength = function (accessLinkManualCreateModelDTO) {
         var deferred = $q.defer();
 
-        $http.post(GlobalSettings.apiUrl + '/accessLink/GetWorkloadLength/', accessLinkManualCreateModelDTO).success(function (response) {
+        $http.post(GlobalSettings.apiUrl + GlobalSettings.getAdjustedPathLength, accessLinkManualCreateModelDTO).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -21,7 +21,7 @@ function accessLinkAPIService($http, GlobalSettings, $q) {
     accessLinkAPIService.CreateAccessLink = function (accessLinkDTO) {
         var deferred = $q.defer();
 
-        $http.post(GlobalSettings.apiUrl + '/accessLink/CreateManual/', accessLinkDTO).success(function (response) {
+        $http.post(GlobalSettings.apiUrl + GlobalSettings.createAccessLink, accessLinkDTO).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -35,7 +35,7 @@ function accessLinkAPIService($http, GlobalSettings, $q) {
     accessLinkAPIService.CheckAccessLinkIsValid = function (accessLinkManualCreateModelDTO) {
         var deferred = $q.defer();
 
-        $http.post(GlobalSettings.apiUrl + '/accessLink/CheckAccessLinkIsValid/', accessLinkManualCreateModelDTO).success(function (response) {
+        $http.post(GlobalSettings.apiUrl + GlobalSettings.checkAccessLinkIsValid, accessLinkManualCreateModelDTO).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

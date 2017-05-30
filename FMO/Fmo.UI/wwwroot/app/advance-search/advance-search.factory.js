@@ -15,7 +15,7 @@ function advanceSearchAPIService(
 
     advanceSearchAPIService.advanceSearch = function (searchText) {
         var deferred = $q.defer();
-        $http.get(GlobalSettings.apiUrl + '/Search/AdvanceSearch?searchText=' + searchText).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.fetchAdvanceSearchResults + searchText).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

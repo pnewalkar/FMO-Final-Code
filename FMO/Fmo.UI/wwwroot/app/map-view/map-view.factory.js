@@ -492,7 +492,7 @@ function MapFactory($http,
         var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
         $http({
             method: 'GET',
-            url: GlobalSettings.apiUrl + '/accessLink/GetAccessLinks?boundaryBox=' + map.getView().calculateExtent(map.getSize()).join(','),
+            url: GlobalSettings.apiUrl + GlobalSettings.setAccessLinkByBoundingBox + map.getView().calculateExtent(map.getSize()).join(','),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Bearer ' + authData.token
@@ -515,7 +515,7 @@ function MapFactory($http,
     function GetRouteForDeliveryPoint(deliveryPointId) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/deliveryPoints/GetRouteForDeliveryPoint?deliveryPointId=' + deliveryPointId).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.GetRouteForDeliveryPoint + deliveryPointId).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

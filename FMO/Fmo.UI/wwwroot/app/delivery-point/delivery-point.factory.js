@@ -7,7 +7,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q) {
     deliveryPointAPIService.GetDeliveryPointsResultSet = function (searchText) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/address/SearchAddressdetails?searchText=' + searchText).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getDeliveryPointsResultSet + searchText).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -21,7 +21,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q) {
     deliveryPointAPIService.GetAddressByPostCode = function (selectedItem) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/address/GetAddressByPostCode?selectedItem=' + selectedItem).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getAddressByPostCode + selectedItem).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -36,7 +36,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q) {
 
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/addresslocation/GetAddressLocationByUDPRN?udprn=' + udprn).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getAddressLocation + udprn).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -52,7 +52,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q) {
     deliveryPointAPIService.GetPostalAddressByGuid = function (addressGuid) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/address/GetPostalAddressByGuid?addressGuid=' + addressGuid).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getPostalAddressByGuid + addressGuid).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -66,7 +66,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q) {
     deliveryPointAPIService.CreateDeliveryPoint = function (addDeliveryPointDTO) {
         var deferred = $q.defer();
 
-        $http.post(GlobalSettings.apiUrl + '/deliveryPoints/CreateDeliveryPoint/', addDeliveryPointDTO).success(function (response) {
+        $http.post(GlobalSettings.apiUrl + GlobalSettings.createDeliveryPoint, addDeliveryPointDTO).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -80,7 +80,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q) {
     deliveryPointAPIService.UpdateDeliverypoint = function (deliveryPointModelDTO) {
         var deferred = $q.defer();
 
-        $http.put(GlobalSettings.apiUrl + '/deliveryPoints/UpdateDeliveryPoint/', deliveryPointModelDTO).success(function (response) {
+        $http.put(GlobalSettings.apiUrl + GlobalSettings.updateDeliverypoint, deliveryPointModelDTO).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

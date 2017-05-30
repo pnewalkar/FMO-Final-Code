@@ -3,11 +3,13 @@
 
 routeLogAPIService.$inject = ['$http',
                               '$q',
-                              'GlobalSettings'];
+                              'GlobalSettings',
+'stringFormatService'];
 
 function routeLogAPIService($http,
                             $q,
-                            GlobalSettings) {
+                            GlobalSettings,
+                            stringFormatService) {
 
     return {
         getSelectionType: getSelectionType,
@@ -20,7 +22,7 @@ function routeLogAPIService($http,
     function getSelectionType() {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsSelectionType').success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getRouteLogSelectionType).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -33,7 +35,7 @@ function routeLogAPIService($http,
     function getStatus() {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteLog/RouteLogsStatus').success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getRouteLogStatus).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -46,7 +48,8 @@ function routeLogAPIService($http,
     function getScenario(operationStateID, deliveryUnitID) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryScenario?operationStateID=' + operationStateID + '&deliveryUnitID=' + deliveryUnitID + '&fields=ScenarioName,ID').success(function (response) {
+        var getRouteLogScenarioParams = stringFormatService.Stringformat(GlobalSettings.getDeliveryRouteScenario, operationStateID, deliveryUnitID);
+        $http.get(GlobalSettings.apiUrl + getRouteLogScenarioParams).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -59,8 +62,9 @@ function routeLogAPIService($http,
     function getRoutes(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteLog/FetchDeliveryRoute?operationStateID=' + operationStateID + '&deliveryScenarioID=' + deliveryScenarioID + '&fields=RouteNameNumber,RouteName,ID').success(function (response) {
-            deferred.resolve(response);
+        var getDeliveryRoutesParams = stringFormatService.Stringformat(GlobalSettings.getDeliveryRoutes, operationStateID, deliveryScenarioID);
+        $http.get(GlobalSettings.apiUrl + getDeliveryRoutesParams).success(function (response) {
+        deferred.resolve(response);
 
         }).error(function (err, status) {
             deferred.reject(err);
@@ -72,7 +76,7 @@ function routeLogAPIService($http,
     function getRouteDetailsByGUID(routeId) {
         var deferred = $q.defer();
 
-        $http.get(GlobalSettings.apiUrl + '/RouteLog/deliveryRoute/'+ routeId).success(function (response) {
+        $http.get(GlobalSettings.apiUrl + GlobalSettings.getRouteDetailsByGUID + routeId).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {
@@ -81,4 +85,7 @@ function routeLogAPIService($http,
 
         return deferred.promise;
     };
+
+   
 }
+

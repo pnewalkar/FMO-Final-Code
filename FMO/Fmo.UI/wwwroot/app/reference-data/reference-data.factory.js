@@ -10,13 +10,13 @@ function referencedataApiService($http, $q, GlobalSettings) {
     };
 
     function getReferenceData() {
-        return $http.get('./reference-data/ReferenceData.js');
+        return $http.get(GlobalSettings.getReferenceData);
     }
 
     function readJson() {
         var deferred = $q.defer();
 
-        $http.get('./UI-string.json').success(function (response) {
+        $http.get(GlobalSettings.readJson).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

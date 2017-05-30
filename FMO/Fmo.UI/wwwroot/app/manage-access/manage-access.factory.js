@@ -22,7 +22,7 @@ function manageAccessAPIService(
         function getToken(userdata) {
             var deferred = $q.defer();
 
-            $http.post(GlobalSettings.apiUrl + '/token', userdata, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
+            $http.post(GlobalSettings.apiUrl + GlobalSettings.getToken, userdata, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
                 deferred.resolve(response);
 
             }).error(function (err, status) {

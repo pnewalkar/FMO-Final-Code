@@ -41,5 +41,51 @@ GlobalSettings.deliveryPointLayerName = "Delivery Points";
 GlobalSettings.accessLinkLayerName = "Access Links";
 GlobalSettings.roadLinkLayerName = "Roads";
 
+
+
 angular.module('FMOApp')
 .constant("GlobalSettings", GlobalSettings);
+
+//---URL Constants-------------------------------
+
+//----Search Factory-------------//
+GlobalSettings.fetchBasicSearchResults = "/Search/BasicSearch?searchText=";
+GlobalSettings.getDeliveryPointByUDPRN = "/deliveryPoints/GetDeliveryPointByUDPRN?udprn=";
+//----Advance Search Factory-------------//
+GlobalSettings.fetchAdvanceSearchResults = "/Search/AdvanceSearch?searchText=";
+//----Access Link Factory-------------//
+GlobalSettings.getAdjustedPathLength = "/accessLink/GetWorkloadLength/";
+GlobalSettings.createAccessLink = "/accessLink/CreateManual/";
+GlobalSettings.checkAccessLinkIsValid = "/accessLink/CheckAccessLinkIsValid/";
+//------Delivery Point Factory--------//
+GlobalSettings.getDeliveryPointsResultSet = "/address/SearchAddressdetails?searchText=";
+GlobalSettings.getAddressByPostCode = "/address/GetAddressByPostCode?selectedItem=";
+GlobalSettings.getAddressLocation = "/addresslocation/GetAddressLocationByUDPRN?udprn=";
+GlobalSettings.getPostalAddressByGuid = "/address/GetPostalAddressByGuid?addressGuid=";
+GlobalSettings.createDeliveryPoint = "/deliveryPoints/CreateDeliveryPoint/";
+GlobalSettings.updateDeliverypoint = "/deliveryPoints/UpdateDeliveryPoint/";
+//-----Layers Factory---------------//
+GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliveryPoints/GetDeliveryPoints?boundaryBox=";
+GlobalSettings.fetchAccessLinksByBoundingBox = "/accessLink/GetAccessLinks?boundaryBox=";
+GlobalSettings.fetchRouteLinksByBoundingBox = "/roadName/GetRouteLinks?boundaryBox=";
+//-----Manage Access Factory---------------//
+GlobalSettings.getToken = "/token";
+//-----Map view Factory---------------//
+GlobalSettings.setAccessLinkByBoundingBox = "/accessLink/GetAccessLinks?boundaryBox=";
+GlobalSettings.GetRouteForDeliveryPoint = "/deliveryPoints/GetRouteForDeliveryPoint?deliveryPointId=";
+//-----Reference Data Factory---------------//
+GlobalSettings.getReferenceData = "./reference-data/ReferenceData.js";
+GlobalSettings.readJson = "./UI-string.json";
+//-----RouteLog Factory---------------//
+GlobalSettings.getRouteLogSelectionType = "/RouteLog/RouteLogsSelectionType";
+GlobalSettings.getRouteLogStatus = "/RouteLog/RouteLogsStatus";
+GlobalSettings.getDeliveryRouteScenario = "/RouteLog/FetchDeliveryScenario?operationStateID={0}&deliveryUnitID={1}&fields=ScenarioName,ID";
+GlobalSettings.getDeliveryRoutes = "/RouteLog/FetchDeliveryRoute?operationStateID={0}&deliveryScenarioID={1}&fields=RouteNameNumber,RouteName,ID"
+GlobalSettings.getRouteDetailsByGUID = "/RouteLog/deliveryRoute/";
+//-----Simulation Factory---------------//
+GlobalSettings.getRouteLogSimulationStatus = "/RouteSimulation/RouteLogsStatus";
+GlobalSettings.getRouteSimulationScenario = "/RouteSimulation/FetchDeliveryScenario?operationStateID={0}&deliveryUnitID={1}&fields=ScenarioName,ID";
+GlobalSettings.getRouteSimulationRoutes = "/RouteSimulation/FetchDeliveryRoute?operationStateID={0}&deliveryScenarioID={1}&fields=RouteNameNumber,RouteName,ID"
+//-----Unit Selector Factory---------------//
+GlobalSettings.getDeliveryUnit = "/UnitLocation/DeliveryUnitsForUser";
+

@@ -17,6 +17,7 @@ SearchLessThanThreeCharactersErrorMessage: "At least three characters must be in
 SearchErrorType: "Warning",
 RouteName: "ROUTENAME",
 DpUse: "DPUSE"
+
 };
 
 angular.module('FMOApp')
