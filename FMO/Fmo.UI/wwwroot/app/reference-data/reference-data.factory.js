@@ -1,4 +1,4 @@
-﻿angular.module('referencedata')
+angular.module('referencedata')
     .factory('referencedataApiService', referencedataApiService);
 referencedataApiService.$inject = ['$http', '$q', 'GlobalSettings'];
 
@@ -10,7 +10,7 @@ function referencedataApiService($http, $q, GlobalSettings) {
     };
 
     function getReferenceData() {
-        return $http.get('./reference-data/ReferenceData.js');
+        return $http.get('./reference-data/reference-data.mapping.json');
     }
 
     function readJson() {
