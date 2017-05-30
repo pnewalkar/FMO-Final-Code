@@ -46,18 +46,11 @@
 
             <span flex="5"></span>
 
-            <md-input-container flex="40">
-                <label>{{ 'ROUTE_LOG.ROUTE' | translate }}</label>
-                <md-select ng-disabled="vm.isDeliveryRouteDisabled" ng-model="vm.selectedRoute" md-on-open="vm.clearSearchTerm()"  md-on-close="vm.clearSearchTerm()" ng-change="vm.deliveryRouteChange()">
-                    <md-select-header>
-                        <input type="text" ng-model="vm.searchTerm" placeholder="No Route Selected" ng-keydown="$event.stopPropagation()" class="routeSearch md-text">
-                    </md-select-header>
-                    <md-option ng-value="route" ng-repeat="route in filterDeliveryRoute = ( vm.deliveryRoute | filter:{routeNameNumber:vm.searchTerm } | orderBy : 'routeName') ">
-                        {{route.routeNameNumber}}
-                    </md-option>
-                    <div ng-show="!filterDeliveryRoute.length" class="noResult">{{ 'ROUTE_LOG.NO_RESULT_FOUND'| translate }}</div>
-                </md-select>
-            </md-input-container>
+            <custom-searchable-dropdown label-text="'ROUTE_SIMULATION.ROUTE'" place-holder="'ROUTE_SIMULATION.NO_ROUTE_SELECTED'" search-term="vm.searchTerm" is-delivery-route-disabled="vm.isDeliveryRouteDisabled"
+                                        selected-route="vm.selectedRoute"  select-header-class="vm.selectClass" delivery-route="vm.deliveryRoute"
+                                        no-result-found="'ROUTE_SIMULATION.NO_RESULT_FOUND'" is-route-log="true">
+            </custom-searchable-dropdown>
+
         </div>
 
         <div ng-show="vm.isShowMultiSelectionRoute" flex>

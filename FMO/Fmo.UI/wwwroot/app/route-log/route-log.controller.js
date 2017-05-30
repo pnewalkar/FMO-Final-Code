@@ -4,11 +4,11 @@ angular
                  RouteLogController);
 RouteLogController.$inject=['routeLogAPIService',
                             'routeLogService',
-                            'items'];
+                            'items','$scope'];
 
 function RouteLogController(routeLogAPIService,
                             routeLogService,                           
-                            items) {
+                            items, $scope) {
     var vm = this;
     vm.initialize = initialize;
     vm.loadSelectionType = loadSelectionType;
@@ -21,11 +21,19 @@ function RouteLogController(routeLogAPIService,
     vm.clearSearchTerm = clearSearchTerm;
     vm.selectedDeliveryUnitObj = items;
     vm.closeWindow = closeWindow;
+    vm.selectClass = "routeSearch md-text";
     vm.initialize();
     function initialize() {
         vm.loadSelectionType();
         vm.loadRouteLogStatus();
     }
+
+    $scope.$on('selectionChanged', function (event, args) {
+        debugger;
+        let selectedRoute = args.selectedRoute;
+        deliveryRouteChange(selectedRoute.id);
+    });
+
     function closeWindow() {
         routeLogService.closeWindow();
     }
@@ -87,8 +95,8 @@ function RouteLogController(routeLogAPIService,
     function clearSearchTerm() {
         vm.searchTerm = '';
     }
-    function deliveryRouteChange() {
-        routeLogService.deliveryRouteChange(vm.selectedRoute.id).then(function (response) {
+    function deliveryRouteChange(selectedRouteValue) {
+        routeLogService.deliveryRouteChange(selectedRouteValue).then(function (response) {
             vm.routeDetails = response;
         });
     }

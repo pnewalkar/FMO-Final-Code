@@ -10,7 +10,9 @@
           selectHeaderClass: "<",
           searchTerm: "=",
           deliveryRoute: "<",
-          noResultFound: "<"
+          noResultFound: "<",
+          isRouteLog: "<",
+          isUnitSelector:"<"
       },
       templateUrl: './common/searchable-dropdown.template.html',
       controller: 'CustomSearchableDropdownController as vm'
