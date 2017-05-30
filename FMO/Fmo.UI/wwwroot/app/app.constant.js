@@ -66,16 +66,16 @@ GlobalSettings.getPostalAddressByGuid = "/address/GetPostalAddressByGuid?address
 GlobalSettings.createDeliveryPoint = "/deliveryPoints/CreateDeliveryPoint/";
 GlobalSettings.updateDeliverypoint = "/deliveryPoints/UpdateDeliveryPoint/";
 //-----Layers Factory---------------//
-GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliveryPoints/GetDeliveryPoints?boundaryBox=";
-GlobalSettings.fetchAccessLinksByBoundingBox = "/accessLink/GetAccessLinks?boundaryBox=";
-GlobalSettings.fetchRouteLinksByBoundingBox = "/roadName/GetRouteLinks?boundaryBox=";
+GlobalSettings.fetchDeliveryPointsByBoundingBox = "/deliveryPoints/GetDeliveryPoints?bbox=";
+GlobalSettings.fetchAccessLinksByBoundingBox = "/accessLink/GetAccessLinks?bbox=";
+GlobalSettings.fetchRouteLinksByBoundingBox = "/roadName/GetRouteLinks?bbox=";
 //-----Manage Access Factory---------------//
 GlobalSettings.getToken = "/token";
 //-----Map view Factory---------------//
-GlobalSettings.setAccessLinkByBoundingBox = "/accessLink/GetAccessLinks?boundaryBox=";
+GlobalSettings.setAccessLinkByBoundingBox = "/accessLink/GetAccessLinks?bbox=";
 GlobalSettings.GetRouteForDeliveryPoint = "/deliveryPoints/GetRouteForDeliveryPoint?deliveryPointId=";
 //-----Reference Data Factory---------------//
-GlobalSettings.getReferenceData = "./reference-data/ReferenceData.js";
+GlobalSettings.getReferenceData = "./reference-data/reference-data.mapping.json";
 GlobalSettings.readJson = "./UI-string.json";
 //-----RouteLog Factory---------------//
 GlobalSettings.getRouteLogSelectionType = "/RouteLog/RouteLogsSelectionType";
