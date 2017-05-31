@@ -14,7 +14,7 @@
 <map-toolbar></map-toolbar>
 
 
-<div id="rightPanel">
+<div id="rightPanel" layout="column">
 
     <div id="zoom-scale" md-whiteframe="3dp" ng-class="{'zoom-scale levelDanger':vm.zoomLimitReached ,
           'zoom-scale':!vm.zoomLimitReached}">
@@ -26,7 +26,6 @@
     <div id="zoom-control" class="zoom-control">
     </div>
 
-    <div class="miniMap">
         <map-panel class="layer-panel show-panel"
                    paneltitle="MiniMap"
                    showheader="true"
@@ -36,9 +35,7 @@
                    oncollapse="vm.oncollapse">
             <div id="mini-map"></div>
         </map-panel>
-    </div>
 
-    <div class="layers">
         <map-panel class="layer-panel show-panel"
                    paneltitle="Layers"
                    showheader="true"
@@ -46,9 +43,7 @@
                    group="SelectorKeyGroup">
             <layers></layers>
         </map-panel>
-    </div>
 
-    <div>
         <map-panel class="key-panel show-panel"
                    paneltitle="Map Key"
                    showheader="true"
@@ -56,5 +51,4 @@
                    group="SelectorKeyGroup">
             <map-key></map-key>
         </map-panel>
-    </div>
 </div>

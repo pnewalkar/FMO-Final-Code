@@ -5,18 +5,9 @@
     height: height-percent(1);
 }
 
-.miniMap {
-    @include margin(0px 0px 20px 0px);
-}
-
 #mini-map{
     height: 150px;
 }
-
-.layers {
-    @include margin(0px 0px 20px 0px);
-}
-
 
 #leftPanel {
     @include position(absolute);
@@ -29,6 +20,7 @@
 #rightPanel {
     @include position(absolute);
     @include top(75px);
+    height: calc(100% - 85px);
     right: 15px;
 }
 
