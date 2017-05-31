@@ -175,11 +175,11 @@
                         postalAddressBusinessService.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO
                             .PostalAddressDTO))
                     {
-                        message = Constants.DUPLICATEDELIVERYPOINT;
+                        message = Constants.DuplicateDeliveryPoint;
                     }
                     else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
                     {
-                        message = Constants.DUPLICATENYBRECORDS + postCode;
+                        message = Constants.DuplicateNybRecords + postCode;
                     }
                     else
                     {
@@ -210,12 +210,12 @@
                                     deliveryOperationObjectTypeId);
 
                             message = isAccessLinkCreated
-                                ? Constants.DELIVERYPOINTCREATED
-                                : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
+                                ? Constants.DeliveryPointCreated
+                                : Constants.DeliveryPointCreatedWithoutAccessLink;
                         }
                         else
                         {
-                            message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
+                            message = Constants.DeliveryPointCreatedWithoutLocation;
                         }
                     }
                 }

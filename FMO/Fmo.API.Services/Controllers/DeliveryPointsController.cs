@@ -18,14 +18,24 @@ namespace Fmo.API.Services.Controllers
     [Route("api/deliveryPoints")]
     public class DeliveryPointsController : FmoBaseController
     {
+        #region Member Variables
+
         private IDeliveryPointBusinessService businessService = default(IDeliveryPointBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        #endregion Member Variables
+
+        #region Constructors
 
         public DeliveryPointsController(IDeliveryPointBusinessService businessService, ILoggingHelper loggingHelper)
         {
             this.businessService = businessService;
             this.loggingHelper = loggingHelper;
         }
+
+        #endregion Constructors
+
+        #region Methods
 
         /// <summary>
         ///This method is used to Get Delivery Point Object.
@@ -71,7 +81,7 @@ namespace Fmo.API.Services.Controllers
         /// Create delivery point for PAF and NYB records.
         /// </summary>
         /// <param name="deliveryPointDto">deliveryPointDto</param>
-        /// <returns></returns>
+        /// <returns>createDeliveryPointModelDTO</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("CreateDeliveryPoint")]
 
@@ -101,7 +111,7 @@ namespace Fmo.API.Services.Controllers
         /// Update delivery point
         /// </summary>
         /// <param name="deliveryPointModelDto">deliveryPointDTO</param>
-        /// <returns></returns>
+        /// <returns>updateDeliveryPointModelDTO</returns>
         [Route("UpdateDeliveryPoint")]
         [HttpPut]
         public async Task<IActionResult> UpdateDeliveryPoint([FromBody] DeliveryPointModelDTO deliveryPointModelDto)
@@ -132,11 +142,18 @@ namespace Fmo.API.Services.Controllers
             }
         }
 
+        /// <summary>
+        /// this method fetches route details for selected delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Guid</param>
+        /// <returns>List of Key Value Pair for route details</returns>
         [Route("GetRouteForDeliveryPoint")]
         [HttpGet]
         public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
             return businessService.GetRouteForDeliveryPoint(deliveryPointId);
         }
+
+        #endregion Methods
     }
 }

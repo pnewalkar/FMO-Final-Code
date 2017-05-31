@@ -3,6 +3,7 @@ angular.module('home', [      'sideNav',
                               'unitSelector',
                               'task',
                               'mapView',
+                              'reusableComponent',
                               'error'
                              
                              ]);

@@ -2,7 +2,6 @@
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
-using Fmo.Common.Constants;
 using Fmo.Common.ExceptionManagement;
 using Fmo.Common.Interface;
 using Fmo.Common.ResourceFile;
@@ -20,8 +19,14 @@ namespace Fmo.DataServices.Repositories
     /// </summary>
     public class AddressLocationRepository : RepositoryBase<AddressLocation, FMODBContext>, IAddressLocationRepository
     {
+        #region Member Variables
+
         private IExceptionHelper exceptionHelper = default(IExceptionHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        #endregion Member Variables
+
+        #region Constructor
 
         public AddressLocationRepository(IDatabaseFactory<FMODBContext> databaseFactory, IExceptionHelper exceptionHelper, ILoggingHelper loggingHelper)
             : base(databaseFactory)
@@ -30,6 +35,10 @@ namespace Fmo.DataServices.Repositories
             this.loggingHelper = loggingHelper;
         }
 
+        #endregion Constructor
+
+        #region Public Methods
+
         /// <summary>
         /// Find AddressLocation by UDPRN
         /// </summary>
@@ -37,7 +46,6 @@ namespace Fmo.DataServices.Repositories
         /// <returns>boolean value</returns>
         public bool AddressLocationExists(int udprn)
         {
-
             if (DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).Any())
             {
                 return true;
@@ -89,5 +97,7 @@ namespace Fmo.DataServices.Repositories
                 throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
             }
         }
+
+        #endregion Public Methods
     }
 }

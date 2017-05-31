@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fmo.BusinessServices.Interfaces;
+using Fmo.Common.Constants;
 using Fmo.Common.Interface;
 using Fmo.DTO;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Fmo.Common.Constants;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -16,14 +16,24 @@ namespace Fmo.API.Services.Controllers
     [Route("api/[controller]")]
     public class AddressController : FmoBaseController
     {
+        #region Member Variables
+
         private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        #endregion Member Variables
+
+        #region Constructors
 
         public AddressController(IPostalAddressBusinessService _businessService, ILoggingHelper _loggingHelper)
         {
             businessService = _businessService;
             loggingHelper = _loggingHelper;
         }
+
+        #endregion Constructors
+
+        #region Methods
 
         /// <summary>
         /// Api to save NYB details in DB.
@@ -53,10 +63,11 @@ namespace Fmo.API.Services.Controllers
         /// Api searches pstcode and thorough in postal address entity on basis of searhtext
         /// </summary>
         /// <param name="searchText">searchText</param>
-        /// <returns></returns>
+        /// <returns>postalAddressList</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("SearchAddressdetails")]
-       // [HttpGet("postaladdress/search/{searchText}")]
+
+        // [HttpGet("postaladdress/search/{searchText}")]
         public async Task<IActionResult> SearchAddressdetails(string searchText)
         {
             try
@@ -75,10 +86,11 @@ namespace Fmo.API.Services.Controllers
         /// Filters postal address on basis of postcode
         /// </summary>
         /// <param name="postCode">postcode</param>
-        /// <returns></returns>
+        /// <returns>postalAddressDto</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("GetAddressByPostCode")]
-       // [HttpGet("postaladdress/filter/{postcode: string}")]
+
+        // [HttpGet("postaladdress/filter/{postcode: string}")]
         public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
         {
             try
@@ -100,6 +112,7 @@ namespace Fmo.API.Services.Controllers
         /// <returns>PostalAddressDTO</returns>
         [HttpGet("GetPostalAddressByGuid")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+
         //[HttpGet("postaladdress/filter/{addressGuid: guid}")]
         public IActionResult GetPostalAddressByGuid(Guid addressGuid)
         {
@@ -107,4 +120,6 @@ namespace Fmo.API.Services.Controllers
             return Ok(postalAddressDto);
         }
     }
+
+    #endregion Methods
 }

@@ -81,10 +81,12 @@
         "ROUTE": "Route",
         "NO_RESULT_FOUND": "No Result Found"
     },
-    "ROUTE_SIMULATION": {
-        "TITTLE": "Route Simulation",
-        "SCENARIO": "Scenario",
-        "ROUTE": "Route",
-        "NO_RESULT_FOUND": "No Result Found"
-    }
+  "ROUTE_SIMULATION": {
+    "TITTLE": "Route Simulation",
+    "SCENARIO": "Scenario",
+    "ROUTE": "Route",
+    "NO_RESULT_FOUND": "No Result Found",
+    "NO_ROUTE_SELECTED": "No Route Selected"
+
+  }
 }

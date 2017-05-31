@@ -22,7 +22,7 @@ namespace Fmo.BusinessServices.Services
     /// </summary>
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
-        #region Property Declarations
+        #region Member Variables
 
         private IAddressRepository addressRepository = default(IAddressRepository);
         private IReferenceDataCategoryRepository refDataRepository = default(IReferenceDataCategoryRepository);
@@ -33,7 +33,7 @@ namespace Fmo.BusinessServices.Services
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        #endregion Property Declarations
+        #endregion Member Variables
 
         #region Constructor
 
@@ -248,11 +248,10 @@ namespace Fmo.BusinessServices.Services
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogInfo(methodName + Constants.COLON + Constants.MethodExecutionStarted, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
-
+                PostalAddressDTO postalAddressDto = null;
                 try
                 {
                     List<BindingEntity> nybDetails = new List<BindingEntity>();
-                    PostalAddressDTO postalAddressDto = null;
                     var postalAddressDetails = await addressRepository.GetPostalAddressDetails(selectedItem, unitGuid);
                     Guid nybAddressTypeId = refDataRepository.GetReferenceDataId(Constants.PostalAddressType, FileType.Nyb.ToString());
                     if (postalAddressDetails != null && postalAddressDetails.Count > 0)
@@ -357,7 +356,7 @@ namespace Fmo.BusinessServices.Services
         /// Create delivery point for PAF and NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
-        /// <returns>bool</returns>
+        /// <returns>CreateDeliveryPointModelDTO</returns>
         public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             try
