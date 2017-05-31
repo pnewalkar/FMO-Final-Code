@@ -3,8 +3,8 @@
       <div class="md-toolbar-tools">
         <h2>Advance Search</h2>
         <span flex></span>
-        <md-button class="md-icon-button" ng-click="vm.closeWindow()">
-            <i class="fa fa-times" aria-hidden="true" title="Close Window" ></i>
+        <md-button class="md-icon-button" ng-click="vm.closeWindow()" title="{{ 'GENERAL.BUTTONS.CLOSE_WINDOW' | translate }}">
+            <i class="fa fa-times" aria-hidden="true"></i>
         </md-button>
       </div>
     </md-toolbar>
@@ -19,37 +19,37 @@
                 <md-button class="md-raised md-primary columnButton" flex>search</md-button>
             </div>
             <div class="row">
-                <md-checkbox ng-model="vm.chkRoute"    aria-label="Checkbox 1">
+                <md-checkbox ng-model="vm.chkRoute" aria-label="Route" title="{{ 'ADVANCE_SEARCH.ROUTE' | translate }}">
                     Route
                 </md-checkbox>
-                <md-checkbox ng-model="vm.chkPostCode"  aria-label="Checkbox 1">
+                <md-checkbox ng-model="vm.chkPostCode" aria-label="Post Code" title="{{ 'ADVANCE_SEARCH.POST_CODE' | translate }}">
                     Postcode
                 </md-checkbox>
-                <md-checkbox ng-model="vm.chkDeliveryPoint"  aria-label="Checkbox 1">
+                <md-checkbox ng-model="vm.chkDeliveryPoint" aria-label="Delivery Point" title="{{ 'ADVANCE_SEARCH.DELIVERY_POINT' | translate }}">
                     Delivery Point
                 </md-checkbox>
-                <md-checkbox ng-model="ck4" ng-disabled="true" aria-label="Checkbox 1">
+                <md-checkbox ng-model="Collection_Point" ng-disabled="true" aria-label="Collection Point" title="{{ 'ADVANCE_SEARCH.COLLECTION_POINT' | translate }}">
                     Collection Point
                 </md-checkbox>
-                <md-checkbox ng-model="vm.chkStreetNetwork"  aria-label="Checkbox 1">
+                <md-checkbox ng-model="vm.chkStreetNetwork" aria-label="Street Network" title="{{ 'ADVANCE_SEARCH.STREET_NETWORK' | translate }}">
                     Street Network
                 </md-checkbox>
-                <md-checkbox ng-model="ck6" ng-disabled="true" aria-label="Checkbox 1">
+                <md-checkbox ng-model="Group" ng-disabled="true" aria-label="Group" title="{{ 'ADVANCE_SEARCH.GROUP' | translate }}">
                     Group
                 </md-checkbox>
-                <md-checkbox ng-model="ck7" ng-disabled="true" aria-label="Checkbox 1">
+                <md-checkbox ng-model="Hazard" ng-disabled="true" aria-label="Hazard" title="{{ 'ADVANCE_SEARCH.HAZARD' | translate }}">
                     Hazard
                 </md-checkbox>
             </div>
             <div layout="row">
                 <div layout-align="start start">
-                    <md-button class="md-raised md-primary" ng-click="vm.toggleList(false)">Collapse All</md-button>
-                    <md-button class="md-raised md-primary" ng-click="vm.toggleList(true)">Expand All</md-button>
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleList(false)" title="{{ 'GENERAL.COLLAPSE_ALL' | translate }}">Collapse All</md-button>
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleList(true)" title="{{ 'GENERAL.EXPAND_ALL' | translate }}">Expand All</md-button>
                 </div>
                 <span flex></span>
                 <div layout-align="end start">
-                    <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(true)" >Select All</md-button>
-                    <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(false)" >Deselect All</md-button>
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(true)" title="{{ 'GENERAL.SELECT_ALL' | translate }}">Select All</md-button>
+                    <md-button class="md-raised md-primary" ng-click="vm.toggleSelection(false)" title="{{ 'GENERAL.DESELECT_ALL' | translate }}">Deselect All</md-button>
                 </div>
             </div>
 

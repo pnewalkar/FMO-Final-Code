@@ -29,7 +29,7 @@ h1{
 }
 
 .md-toolbar-tools .fa{
-    color: white;
+    @include font-color($white);
 }
 
 .mdDialog input{
@@ -44,6 +44,7 @@ h1{
     @include margin(0px 0px 0px 0px);
     @include padding(0px 0px 0px 0px);
     @include width(40px);
+    @include height(40px);
     border-radius: 0;
     min-width: 40px;
 }
@@ -66,8 +67,8 @@ md-input-container{
 }
 
 .errorDialog{
-    width:425px;
-    height:216px;
+    @include width(425px);
+    @include height(216px);
 }
 /*fonts*/
 

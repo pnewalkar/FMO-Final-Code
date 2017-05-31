@@ -1,8 +1,14 @@
 <div layout="column">
      <div layout="row" class="md-padding" layout-align="end start">
-        <i class="fa fa-arrow-left context-button" aria-hidden="true" ng-show="vm.enableBack" ng-click="vm.clearAccessLink()" title="Back"></i>
-        <i class="fa fa-floppy-o context-button" aria-hidden="true" ng-show="vm.enableSave" ng-click="vm.createAccessLink()" title="Save"  ui-sref="deliveryPoint"></i>
-        <i class="fa fa-question-circle " aria-hidden="true" title="Help"></i>
+         <md-button class="context-button" aria-label="Back" ng-show="vm.enableBack" ng-click="vm.clearAccessLink()" title="{{ 'GENERAL.BUTTONS.BACK' | translate }}">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </md-button>
+         <md-button class="context-button" aria-label="Save" ng-show="vm.enableSave" ng-click="vm.createAccessLink()" ui-sref="deliveryPoint" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+        </md-button>
+         <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+            <i class="fa fa-question-circle" aria-hidden="true"></i>
+        </md-button>
     </div>
     
     <div layout="row">

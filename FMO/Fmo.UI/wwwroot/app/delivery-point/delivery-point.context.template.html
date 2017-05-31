@@ -1,11 +1,18 @@
 <div layout="column">
     <div layout="row" layout-align="end start">
-        <i class="fa fa-arrow-left context-button" aria-hidden="true" ng-show="vm.deliveryPointList != null || vm.positionedDeliveryPointList != null || vm.positionedThirdPartyDeliveryPointList != null" title="Back"></i>
-        <i class="fa fa-plus context-button" aria-hidden="true" ng-click="vm.deliveryPoint()" ng-show="vm.hide === null? true:false" title="Add Delivery Point">
+        <md-button class="context-button" aria-label="Back" ng-show="vm.deliveryPointList != null || vm.positionedDeliveryPointList != null || vm.positionedThirdPartyDeliveryPointList != null" title="{{ 'GENERAL.BUTTONS.BACK' | translate }}">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </md-button>
+        <md-button class="context-button" aria-label="Add Delivery Point" ng-click="vm.deliveryPoint()" ng-show="vm.hide === null? true:false" title="{{ 'GENERAL.ADD_DELIVERY_POINT' | translate }}">
+            <i class="fa fa-plus" aria-hidden="true">
         </i>
-        <i class="fa fa-floppy-o context-button" aria-hidden="true" ng-show="vm.positionedDeliveryPointList" ng-click="vm.savePositionedDeliveryPoint()" title="Save"></i>
-        <i class="fa fa-question-circle" aria-hidden="true" title="Help">
-        </i>
+        </md-button>
+        <md-button class="context-button" aria-label="Save" ng-show="vm.positionedDeliveryPointList" ng-click="vm.savePositionedDeliveryPoint()" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+        </md-button>
+        <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">
+            <i class="fa fa-question-circle" aria-hidden="true"></i>
+        </md-button>     
     </div>
 
     <div layout="column" ng-show="vm.deliveryPointList || vm.positionedDeliveryPointList || vm.positionedThirdPartyDeliveryPointList">

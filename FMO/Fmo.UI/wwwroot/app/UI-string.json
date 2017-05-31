@@ -3,10 +3,31 @@
         "BUTTONS": {
             "OK": "OK",
             "CANCEL": "Cancel",
-            "SAVE": "Save"
+            "SAVE": "Save",
+            "BACK": "Back",
+            "HELP": "Help",
+            "SELECT": "Select",
+            "CLOSE_WINDOW": "Close Window",
+            "LINKS": "Links",
+            "EDIT": "Edit",
+            "DELETE": "Delete",
+            "COLLAPSED": "Collapsed",
+            "EXPAND": "Expand"
         },
         "UNIT": "Unit",
-        "SEARCH": "Search"
+        "SEARCH": "Search",
+        "ADD_DELIVERY_POINT": "Add Delivery Point",
+        "SELECT_ALL": "Select All",
+        "DESELECT_ALL": "Deselect All",
+        "COLLAPSE_ALL": "Collapse All",
+        "EXPAND_ALL": "Expand All",
+        "OPEN_SIDE_NAV": "Open Side Nav",
+        "SELECTED": "Selected",
+        "DELIVERY_POINT": "Delivery Point",
+        "ACCESS_LINK": "Access Link",
+        "ROAD": "Road",
+        "POINT": "Point",
+        "LINE": "Line"
         
     },
     "VALIDATION": {
@@ -21,7 +42,13 @@
     },
     "ADVANCE_SEARCH": {
         "TITTLE": "Advance Search",
-        "METERS": "Meters"
+        "ROUTE": "Route",
+        "POST_CODE": "Postcode",
+        "DELIVERY_POINT": "Delivery Point",
+        "COLLECTION_POINT": "Collection Point",
+        "STREET_NETWORK": "Street Network",
+        "GROUP": "Group",
+        "HAZARD": "Hazard"
     },
     "DELIVERY_POINTS": {
         "TITTLE": "Delivery Point",
@@ -38,11 +65,12 @@
         "SUB_BUILDING_NAME": "Sub-Building Name",
         "ORGANISATION": "Organisation",
         "DEPARTMENT_NAME": "Department Name",
-        "ADD_DP_ALIASE": "Add DP Alias",
+        "ADD_DP_ALIAS": "Add DP Alias",
         "ALIAS":"Alias",
         "MULTI_OCC": "Multi Occ",
         "MAIL_VOL": "Mail Vol",       
-        "LOCALITY": "Locality"
+        "LOCALITY": "Locality",
+        "REMOVE_DP_ALIAS": "Remove DP Alias"
     
     },
     "ROUTE_LOG": {

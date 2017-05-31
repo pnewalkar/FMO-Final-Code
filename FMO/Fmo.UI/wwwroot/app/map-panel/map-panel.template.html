@@ -7,8 +7,8 @@
                 >
     <ul ng-show="vm.showheader">
         <li class="panel-header" ng-click="vm.togglePanel()">{{vm.paneltitle}}
-            <i ng-show="!vm.collapsed" class="fa pull-right fa-minus-circle" title="Collapsed"></i>
-            <i ng-show="vm.collapsed" class="fa pull-right fa-plus-circle" title="Expand"></i>
+            <i ng-show="!vm.collapsed" class="fa pull-right fa-minus-circle" title="{{ 'GENERAL.BUTTONS.COLLAPSED' | translate }}"></i>
+            <i ng-show="vm.collapsed" class="fa pull-right fa-plus-circle" title="{{ 'GENERAL.BUTTONS.EXPAND' | translate }}"></i>
         </li>
     </ul>
     
