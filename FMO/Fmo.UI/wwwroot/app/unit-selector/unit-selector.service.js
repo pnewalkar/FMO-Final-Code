@@ -23,7 +23,7 @@ function unitSelectorService($q,
     };
 
     function DeliveryUnit(selectedDeliveryUnit) {
-        manageAccessService.activate(selectedDeliveryUnit.id);
+        manageAccessService.activate(selectedDeliveryUnit.selectedRoute.id);
         updateMapAfterUnitChange(selectedDeliveryUnit);
     }
     function BindData(deliveryRouteUnit) {
