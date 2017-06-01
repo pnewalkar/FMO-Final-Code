@@ -242,7 +242,7 @@ function mapService($http,
         accessLinksLayerSelector.layerName = GlobalSettings.accessLinkLayerName,
                     accessLinksLayerSelector.layer = accessLinkLayer;
         accessLinksLayerSelector.group = "";
-        accessLinksLayerSelector.zIndex = 8;
+        accessLinksLayerSelector.zIndex = 7;
         accessLinksLayerSelector.selected = false;
         accessLinksLayerSelector.onMiniMap = false;
         accessLinksLayerSelector.selectorVisible = true;
