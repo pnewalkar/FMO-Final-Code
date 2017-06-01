@@ -116,7 +116,7 @@ function mapService($http,
             title: 'DigitalGlobe Maps API: Recent Imagery',
             source: new ol.source.XYZ({
                 url: GlobalSettings.vectorMapUrl,
-                attribution: "© DigitalGlobe, Inc"
+                attribution: "Â© DigitalGlobe, Inc"
             })
         });
 

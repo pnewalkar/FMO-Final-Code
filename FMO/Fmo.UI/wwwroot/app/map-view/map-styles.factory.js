@@ -9,8 +9,6 @@ angular.module('mapView')
     var ACTIVESTYLE = 0;
     var INACTIVESTYLE = 1;
     var SELECTEDSTYLE = 2;
-    var blockStyles = {};
-    var currentColor = 0;
     var pointStyles = [];
     var colors = GlobalSettings.dpColor;
 
@@ -25,25 +23,6 @@ angular.module('mapView')
     var stroke = new ol.style.Stroke({
         color: '#3399CC',
         width: 1.25
-    });
-
-    var inactivestroke = new ol.style.Stroke({
-        color: '#a5a5a5',
-        width: 1.25
-    });
-
-    var pathLinkStyle = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: "purple",
-            width: 3
-        })
-    });
-
-    var connectingLinkStyle = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: "aqua",
-            width: 3
-        })
     });
 
     var roadLinkStyle = new ol.style.Style({
@@ -62,14 +41,7 @@ angular.module('mapView')
         })
     });
 
-    var splitRouteStyle = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: "grey",
-            width: 3
-        })
-    });
-
-function deliveryPointStyle(feature){
+  function deliveryPointStyle(feature){
     if(typeof feature=='object'){
     var modValue = hashCode(feature.getProperties().postcode)%colors.length;
     var colour = colors[modValue];
@@ -78,10 +50,7 @@ function deliveryPointStyle(feature){
         return pointStyles[modValue];
     } else {
         var style = new ol.style.Style({
-            text: new ol.style.Text({
-            text: '\uf041',
-            font: 'normal 16px FontAwesome',
-            textBaseline: 'Bottom',
+            image: new ol.style.Circle({
             fill: new ol.style.Fill({
                 color: colour,
             }),
@@ -95,21 +64,19 @@ function deliveryPointStyle(feature){
         pointStyles[modValue] = style;
         return style;
     }
-    }
+}
     else{
         
       return  new ol.style.Style({
-        text: new ol.style.Text({
-            text: '\uf041',
-            font: 'normal 16px FontAwesome',
-            textBaseline: 'Bottom',
+        image: new ol.style.Circle({
             fill: new ol.style.Fill({
                 color: '#da202a',
             }),
             stroke: new ol.style.Stroke({
                 color: '#000',
                 width: 2
-            })
+            }),
+            radius: 5
         })
     });
     }
@@ -131,22 +98,6 @@ function deliveryPointStyle(feature){
             return colors.length - 1;
         }
         };
-
-
-    var inactivePointStyle = new ol.style.Style({
-        text: new ol.style.Text({
-            text: '\uf041',
-            font: 'normal 18px FontAwesome',
-            textBaseline: 'Bottom',
-            fill: new ol.style.Fill({
-                color: '#666666',
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#c4c4c4',
-                width: 2
-            })
-        })
-    });
 
     var selectedPointStyle = new ol.style.Style({
         text: new ol.style.Text({
@@ -171,16 +122,6 @@ function deliveryPointStyle(feature){
         })
     });
 
-    var inactiveDefaultStyle = new ol.style.Style({
-        image: new ol.style.Circle({
-            fill: whiteFill,
-            stroke: inactivestroke,
-            radius: 5
-        }),
-        fill: whiteFill,
-        stroke: inactivestroke
-    });
-
     var defaultStyle = new ol.style.Style({
         image: new ol.style.Circle({
             fill: fill,
@@ -189,70 +130,6 @@ function deliveryPointStyle(feature){
         }),
         fill: fill,
         stroke: stroke
-    });
-
-    var conversionStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(255, 0, 0, 0.5)',
-            width: 2
-        })
-    });
-
-    var tenementStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(46, 114, 23, 1)',
-            width: 2
-        })
-    });
-
-    var complexStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(47, 25, 245, 1)',
-            width: 2
-        })
-    });
-
-    var skyscraperStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(245, 165, 25, 1)',
-            width: 2
-        })
-    });
-
-    var selectedConversionStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(255, 0, 0, 0.5)',
-            width: 4
-        })
-    });
-
-    var selectedTenementStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(46, 114, 23, 1)',
-            width: 4
-        })
-    });
-
-    var selectedComplexStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(47, 25, 245, 1)',
-            width: 4
-        })
-    });
-
-    var selectedSkyscraperStyle = new ol.style.Style({
-        fill: whiteFill,
-        stroke: new ol.style.Stroke({
-            color: 'rgba(245, 165, 25, 1)',
-            width: 4
-        })
     });
 
     return {
