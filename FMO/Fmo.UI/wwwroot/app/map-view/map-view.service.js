@@ -254,7 +254,7 @@ function mapService($http,
         roadLinkLayerSelector.layerName = GlobalSettings.roadLinkLayerName;
         roadLinkLayerSelector.layer = roadLinkLayer;
         roadLinkLayerSelector.group = "";
-        roadLinkLayerSelector.zIndex = 8;
+        roadLinkLayerSelector.zIndex = 6;
         roadLinkLayerSelector.selected = false;
         roadLinkLayerSelector.onMiniMap = false;
         roadLinkLayerSelector.selectorVisible = true;

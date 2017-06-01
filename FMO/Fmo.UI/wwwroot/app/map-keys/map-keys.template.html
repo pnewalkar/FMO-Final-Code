@@ -1,7 +1,7 @@
 <div class="panel-body">
 <div layout="row"
      ng-show="vm.showKey(pointType.id)"
-     ng-repeat="pointType in vm.pointTypes" class="mapKeys">
+     ng-repeat="pointType in vm.pointTypes">
      <i class="fa fa-map-marker selcetedKey" aria-hidden="true" ng-show="pointType.text=='Selected'" title="{{ 'GENERAL.SELECTED' | translate }}"></i>
     <i class="fa fa-map-marker deliveryKey" aria-hidden="true" ng-show="pointType.text=='Delivery Point'" title="{{ 'GENERAL.DELIVERY_POINT' | translate }}"></i>
     <i class="fa fa-minus accessKey" aria-hidden="true" ng-show="pointType.text=='Access Link'" title="{{ 'GENERAL.ACCESS_LINK' | translate }}"></i>
@@ -10,6 +10,6 @@
     
     <span flex="5"></span>
     
-    <div class="mapKeys">{{pointType.text}}</div>
+    <span class="mapKeys">{{pointType.text}}</span>
 </div>
 </div>
