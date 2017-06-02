@@ -466,7 +466,9 @@ function mapService($http,
         }
 
         var dpCoordinates = coordinatesService.getCordinates();
-        coordinates[0] = dpCoordinates;
+        if(dpCoordinates && dpCoordinates !== ''){
+         coordinates[0] = dpCoordinates;   
+        }
         geometry.setCoordinates(coordinates);
         return geometry;
 

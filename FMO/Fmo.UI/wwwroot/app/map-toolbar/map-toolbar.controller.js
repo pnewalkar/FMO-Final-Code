@@ -14,7 +14,6 @@ function MapToolbarController(
 
     var vm = this;
     vm.setSelectedButton = setSelectedButton;
-    vm.deselectButton = deselectButton;
     vm.showButton = showButton();
     vm.selectedButton = null;
     vm.mapButtons = mapToolbarService.getMapButtons();
@@ -22,8 +21,8 @@ function MapToolbarController(
 
     function setSelectedButton(button) {
         var shape = getShapeForButton(button);
-        var emit = mapToolbarService.setSelectedButton(button, vm.selectedButton);
-        if (emit) {
+        var isActive = mapToolbarService.setSelectedButton(button, vm.selectedButton);
+        if (isActive) {
             vm.selectedButton = button;
             $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": true });
         }
@@ -34,17 +33,6 @@ function MapToolbarController(
 
     }
 
-    function deselectButton(button) {
-        var shape = getShapeForButton(button);
-        var emitseelct = mapToolbarService.deselectButton(button);
-        if (emitseelct == true) {
-            $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
-        }
-        else {
-            $scope.$emit('mapToolChange', { "name": button, "shape": shape, "enabled": false });
-        }
-
-    }
 
     function getShapeForButton(button) {
         return mapToolbarService.getShapeForButton(button)

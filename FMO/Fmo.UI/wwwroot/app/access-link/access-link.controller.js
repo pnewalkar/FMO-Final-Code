@@ -1,4 +1,4 @@
-﻿angular
+angular
     .module('accessLink')
     .controller("AccessLinkController",
     [
@@ -68,6 +68,7 @@ function AccessLinkController(
                 vm.enableBack = false;
                 vm.enableSave = false;
                 vm.pathLength = '';
+                coordinatesService.setCordinates('');
                 mapService.refreshLayers();
                 $rootScope.$broadcast('redirectTo', {
                     contextTitle: GlobalSettings.deliveryPointLayerName

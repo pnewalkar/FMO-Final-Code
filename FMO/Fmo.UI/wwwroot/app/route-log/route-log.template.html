@@ -48,7 +48,8 @@
 
             <custom-searchable-dropdown label-text="'ROUTE_SIMULATION.ROUTE'" place-holder="'ROUTE_SIMULATION.NO_ROUTE_SELECTED'" search-term="vm.searchTerm" is-delivery-route-disabled="vm.isDeliveryRouteDisabled"
                                         selected-route="vm.selectedRoute"  select-header-class="vm.selectClass" delivery-route="vm.deliveryRoute"
-                                        no-result-found="'ROUTE_SIMULATION.NO_RESULT_FOUND'" is-route-log="true">
+                                        no-result-found="'ROUTE_SIMULATION.NO_RESULT_FOUND'" is-route-log="true"
+                                        class="routeSelectSearch">
             </custom-searchable-dropdown>
 
         </div>
@@ -146,7 +147,7 @@
                 <div flex="20" class="md-text"><sub>*</sub>All Alias information is shown on detailed route log </div>
             </div>
         </md-list>
-        <md-list ng-hide="!vm.routeDetails">
+        <md-list ng-hide="!vm.routeDetails" class="routeLogList">
             <md-subheader>Generate</md-subheader>
             <md-list-item>
                 <md-checkbox></md-checkbox>

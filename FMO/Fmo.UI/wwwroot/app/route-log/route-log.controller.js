@@ -29,7 +29,6 @@ function RouteLogController(routeLogAPIService,
     }
 
     $scope.$on('selectionChanged', function (event, args) {
-        debugger;
         let selectedRoute = args.selectedRoute;
         deliveryRouteChange(selectedRoute.id);
     });

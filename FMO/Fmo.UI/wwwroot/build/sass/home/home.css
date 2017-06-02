@@ -56,6 +56,9 @@ md-input-container {
   margin: 10px 0px 0px 0px;
   padding: 0px 0px 0px 0px; }
 
+md-list-item .md-list-item-inner > md-checkbox, md-list-item > md-checkbox {
+  margin: 0px 0px 0px 0px; }
+
 .errorDialog {
   width: 425px;
   height: 216px; }

@@ -115,7 +115,7 @@ span.closeRouteWindow {
     border-right:1px solid black;
 }
 .routeGenerate{
-    margin-left: 20px;
+    @include margin(0px 0px 0px 20px);
 }
 
 .routeDetailstable table {
@@ -132,4 +132,9 @@ span.closeRouteWindow {
 
 .routeDetailstable tr:nth-child(even) {
     @include background($white-smoke,none);
+}
+
+.routeLogList  md-list-item, md-list-item .md-list-item-inner{
+    @include height(28px);
+    min-height: 28px;
 }

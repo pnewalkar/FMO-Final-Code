@@ -67,8 +67,9 @@ function DeliveryPointController(
     vm.hide = $stateParams.hide;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
-        if (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1])
+        if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
             openAlert();
+        
     }, true);
     vm.initialize();
 

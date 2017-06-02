@@ -109,7 +109,7 @@ span.closeRouteWindow {
   border-right: 1px solid black; }
 
 .routeGenerate {
-  margin-left: 20px; }
+  margin: 0px 0px 0px 20px; }
 
 .routeDetailstable table {
   width: 100%;
@@ -124,3 +124,7 @@ span.closeRouteWindow {
   background-color: #f5f5f5; }
   .routeDetailstable tr:nth-child(even):hover {
     background-color: none; }
+
+.routeLogList md-list-item, md-list-item .md-list-item-inner {
+  height: 28px;
+  min-height: 28px; }
