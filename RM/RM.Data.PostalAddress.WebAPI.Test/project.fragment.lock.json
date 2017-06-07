@@ -1,6 +1,30 @@
 {
   "version": 2,
   "exports": {
+    "RM.CommonLibrary.EntityFramework/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5.2",
+      "compile": {
+        "bin/Debug/RM.CommonLibrary.EntityFramework.dll": {}
+      },
+      "runtime": {
+        "../packages/AutoMapper.6.0.2/lib/net45/AutoMapper.dll": {},
+        "../packages/EnterpriseLibrary.Common.6.0.1304.0/lib/NET45/Microsoft.Practices.EnterpriseLibrary.Common.dll": {},
+        "../packages/EnterpriseLibrary.Logging.6.0.1304.0/lib/NET45/Microsoft.Practices.EnterpriseLibrary.Logging.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
+        "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
+        "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
+        "bin/Debug/RM.CommonLibrary.EntityFramework.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/RM.CommonLibrary.EntityFramework.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
     "RM.CommonLibrary/1.0.0": {
       "type": "project",
       "framework": ".NETFramework,Version=v4.5.2",
@@ -83,30 +107,6 @@
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "utilities/resourcefile/messagesconstants.resx"
-        }
-      }
-    },
-    "RM.CommonLibrary.EntityFramework/1.0.0": {
-      "type": "project",
-      "framework": ".NETFramework,Version=v4.5.2",
-      "compile": {
-        "bin/Debug/RM.CommonLibrary.EntityFramework.dll": {}
-      },
-      "runtime": {
-        "../packages/AutoMapper.6.0.2/lib/net45/AutoMapper.dll": {},
-        "../packages/EnterpriseLibrary.Common.6.0.1304.0/lib/NET45/Microsoft.Practices.EnterpriseLibrary.Common.dll": {},
-        "../packages/EnterpriseLibrary.Logging.6.0.1304.0/lib/NET45/Microsoft.Practices.EnterpriseLibrary.Logging.dll": {},
-        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
-        "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
-        "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
-        "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
-        "bin/Debug/RM.CommonLibrary.EntityFramework.dll": {}
-      },
-      "contentFiles": {
-        "bin/Debug/RM.CommonLibrary.EntityFramework.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
         }
       }
     }

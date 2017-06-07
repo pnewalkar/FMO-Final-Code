@@ -11,6 +11,15 @@
 
   "frameworks": {
     "net452": {
+      "imports": "dnxcore50",
+      "dependencies": {
+        "RM.CommonLibrary": {
+          "target": "project"
+        },
+        "RM.CommonLibrary.EntityFramework": {
+          "target": "project"
+        }
+      }
     }
   }
 }

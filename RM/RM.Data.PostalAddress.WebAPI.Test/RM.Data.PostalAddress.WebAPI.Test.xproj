@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>92df2c25-7906-467f-bf48-59d812416f89</ProjectGuid>
+    <ProjectGuid>91b45ddc-aab3-46f7-a4da-782c9db3a662</ProjectGuid>
     <RootNamespace>RM.Data.PostalAddress.WebAPI.Test</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
@@ -15,6 +15,10 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RM.CommonLibrary.EntityFramework\RM.CommonLibrary.EntityFramework.csproj" />
+    <ProjectReference Include="..\RM.CommonLibrary\RM.CommonLibrary.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
