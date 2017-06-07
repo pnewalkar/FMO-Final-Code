@@ -1,0 +1,29 @@
+@import './app/variables';
+
+.unitSelector.md-text {
+    @extend %body-content;
+    @include font-color($white);
+}
+
+.noResult {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 16px;
+    font-family: PF DIN;
+}
+
+.unitText .md-select-value>span:not(.md-select-icon) .md-text > .delivery{
+    display: none;
+} 
+
+.unitText .md-select-value span{
+    border-bottom-color: white;
+}
+
+.unitText .md-select-value>span:not(.md-select-icon) .md-text  {
+    @include font-color($white);
+}
+
+.unitText md-select.md-default-theme .md-select-value, md-select .md-select-value {
+    border-bottom-color: white;
+}

@@ -1,0 +1,131 @@
+@import './app/variables';
+
+i.fa.fa-map-marker.delivery{
+    @include font-color($red);
+}
+i.fa.fa-map-marker.postcode{
+    @include font-color($go-green);
+}
+i.fa.fa-map-marker.street{
+    @include font-color($dynamic-yellow);
+}
+i.fa.fa-map-marker.route{
+    @include font-color($clear-blue);
+}
+
+.searchText input[type="text"]{
+    @extend %body-content;
+    @include font-color($white);
+    border-bottom-color: $white;
+    @include margin(10px 0px 0px 0px);
+}
+
+.searchText label{
+    @include font-color($white);
+}
+
+.searchText md-input-container.md-input-focused label{
+    @include font-color($white);
+}
+
+.searchText md-input-container.md-input-has-value label{
+    @include font-color($white);
+}
+
+.searchText md-input-container.md-input-focused input[type="text"]{
+    border-bottom-color: white;
+}
+
+.searchInput{
+    @extend %body-content;
+    @include background($white,none);
+    @include padding(5px 5px 5px 5px);
+}
+
+.searchContent{
+    @include margin(-31px 0px 0px 0px);
+}
+
+.searchData{
+    @include background($white,none);
+    @include font-color($strong-grey);
+    @include width(265px);
+    @include padding(5px 5px 5px 5px);
+    @include border-bottom(1px solid $grey);
+    @include cursor(pointer);
+
+    & span{
+        @extend %body-content;
+    }
+}
+
+.searchIccon {
+    @include font-color($white);
+    @include margin(0px 0px 0px 15px);
+}
+
+.viewResult {
+    @include padding(3px 3px 3px 3px);
+    @extend %body-content;
+    @include cursor(pointer);
+    width: 126%;
+    @include background($white,none);
+    @include border(1px solid $recess-grey);
+    @include margin(-2px 0px -3px 0px);
+   }
+.noResult {
+    @extend %body-content;
+    @include cursor(pointer);
+    width: width-percent(1);
+    @include background($white,none);
+    @include border(1px solid $recess-grey);
+    @include margin(-5px 0px 0px 0px);
+    }
+
+i.fa.fa-angle-double-right {
+    @include font-color($black);
+    @include margin(0px 0px 0px 65px);
+}
+
+.viewResult a {
+    @extend %body-content;
+    @include float(left);
+}
+
+i.fa.fa-angle-right.searchRight {
+    @include font-color($black);
+    @include float(right);
+    @include margin(0px 10px 0px 0px);
+}
+
+.searchContext h1 {
+    @extend %body-content;
+    }
+
+.searchContext span{
+    @extend %body-content;
+    @include margin(15px 0px 10px 15px);
+}
+
+
+.numberCircle {
+    @include background($positive-blue,none);
+    @include position(absolute);
+    @include border-radius(50%);
+    width: width-percent(20);
+    @include border(1px solid $black);
+    @include margin(0px 0px 0px -68px);
+    bottom: 16px;
+}
+
+.numberCircle span {
+    @include font-color($white);
+    text-align: center;
+    line-height: 32px;
+    display: block;
+    font-size: 12px;
+}
+
+.searchText.layout-column {
+    width: 85%;
+}

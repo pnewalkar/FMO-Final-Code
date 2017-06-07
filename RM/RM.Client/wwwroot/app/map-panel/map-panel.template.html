@@ -1,0 +1,16 @@
+<div md-whiteframe="3dp"
+     ng-class="{'map-panel':vm.collapsed,
+                'show-panel map-panel ': (!vm.collapsed) && !vm.isleftpanel,
+                'show-left-panel map-panel full-height': (!vm.collapsed) && vm.isleftpanel,
+                'hide-panel':vm.isleftpanel,
+                'hide-right-panel':vm.collapsed && !vm.isleftpanel}",
+                >
+    <ul ng-show="vm.showheader">
+        <li class="panel-header" ng-click="vm.togglePanel()">{{vm.paneltitle}}
+            <i ng-show="!vm.collapsed" class="fa pull-right fa-minus-circle" title="{{ 'GENERAL.BUTTONS.COLLAPSED' | translate }}"></i>
+            <i ng-show="vm.collapsed" class="fa pull-right fa-plus-circle" title="{{ 'GENERAL.BUTTONS.EXPAND' | translate }}"></i>
+        </li>
+    </ul>
+    
+    <div ng-transclude ng-hide="vm.collapsed" class="map-panel-content"></div>
+</div>

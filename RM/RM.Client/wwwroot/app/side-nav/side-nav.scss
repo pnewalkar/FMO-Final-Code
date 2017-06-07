@@ -1,0 +1,18 @@
+@import './app/variables';
+
+h2 {
+    @extend %header-content;
+} 
+
+md-list-item{
+    @extend %body-content;
+}
+
+.md-toolbar-tools > h2 {
+    @extend %header-content;
+}
+
+.version{
+    @extend %body-content;
+    @include font-color($white);
+}

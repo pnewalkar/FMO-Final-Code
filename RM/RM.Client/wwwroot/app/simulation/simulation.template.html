@@ -1,0 +1,19 @@
+<div layout="column" class="md-padding">
+    <md-radio-group layout="row" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()" layout-align="space-around start">
+        <md-radio-button ng-repeat="status in vm.RouteStatusObj" ng-value="status.id">
+            <label ng-bind="status.value"></label>   <br>
+        </md-radio-button>
+    </md-radio-group>
+
+    <md-input-container class="md-block">
+        <label>{{'ROUTE_SIMULATION.SCENARIO' | translate }}</label>
+        <md-select ng-model="vm.selectedRouteScenario" ng-disabled="!filterScenario.length" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="simulationSelect">
+            <md-option ng-repeat="scenario in filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
+        </md-select>
+        <div ng-show="!filterScenario.length" class="noResult">No Result Found</div>
+    </md-input-container>
+
+    <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" selected-item="vm.selectedRoute" search-placeholder="ROUTE_SIMULATION.NO_ROUTE_SELECTED" 
+                                header-text="ROUTE_SIMULATION.ROUTE" order-by="displayText"
+                                items="vm.deliveryRoute"></custom-searchable-dropdown>
+</div>

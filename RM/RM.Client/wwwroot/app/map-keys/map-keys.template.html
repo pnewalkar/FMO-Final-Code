@@ -1,0 +1,15 @@
+<div class="panel-body">
+<div layout="row"
+     ng-show="vm.showKey(pointType.id)"
+     ng-repeat="pointType in vm.pointTypes">
+     <i class="fa fa-play fa-rotate-270 selcetedKey" aria-hidden="true" ng-show="pointType.text=='Selected'" title="{{ 'GENERAL.SELECTED' | translate }}"></i>
+    <i class="fa fa-circle-o deliveryKey" aria-hidden="true" ng-show="pointType.text=='Delivery Point'" title="{{ 'GENERAL.DELIVERY_POINT' | translate }}"></i>
+    <i class="fa fa-minus accessKey" aria-hidden="true" ng-show="pointType.text=='Access Link'" title="{{ 'GENERAL.ACCESS_LINK' | translate }}"></i>
+    <i class="fa fa-minus roadKey" aria-hidden="true" ng-show="pointType.text=='Road'"
+       title="{{ 'GENERAL.ROAD' | translate }}"></i>
+    
+    <span flex="5"></span>
+    
+    <span class="mapKeys">{{pointType.text}}</span>
+</div>
+</div>

@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{64E21968-AAA7-47BA-9CCA-1B8727EFA46A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RM.CommonLibrary.EntityFramework</RootNamespace>
+    <AssemblyName>RM.CommonLibrary.EntityFramework</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\RM.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=6.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.0.2\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataService\AccessLinkDataService.cs" />
+    <Compile Include="DataService\AccessManager\ActionManagerDataService.cs" />
+    <Compile Include="DataService\AccessManager\UserRoleUnitDataService.cs" />
+    <Compile Include="DataService\AddressLocationDataService.cs" />
+    <Compile Include="DataService\AddressDataService.cs" />
+    <Compile Include="DataService\BlockSequenceDataService.cs" />
+    <Compile Include="DataService\DeliveryPointsDataService.cs" />
+    <Compile Include="DataService\DeliveryRouteDataService.cs" />
+    <Compile Include="DataService\FileProcessingLogDataService.cs" />
+    <Compile Include="DataService\Interfaces\IAccessLinkDataService.cs" />
+    <Compile Include="DataService\Interfaces\IActionManagerDataService.cs" />
+    <Compile Include="DataService\Interfaces\IAddressLocationDataService.cs" />
+    <Compile Include="DataService\Interfaces\IAddressDataService.cs" />
+    <Compile Include="DataService\Interfaces\IBlockSequenceDataService.cs" />
+    <Compile Include="DataService\Interfaces\IDeliveryPointsDataService.cs" />
+    <Compile Include="DataService\Interfaces\IDeliveryRouteDataService.cs" />
+    <Compile Include="DataService\Interfaces\IFileProcessingLogDataService.cs" />
+    <Compile Include="DataService\Interfaces\INotificationDataService.cs" />
+    <Compile Include="DataService\Interfaces\IOSRoadLinkDataService.cs" />
+    <Compile Include="DataService\Interfaces\IPostCodeDataService.cs" />
+    <Compile Include="DataService\Interfaces\IPostCodeSectorDataService.cs" />
+    <Compile Include="DataService\Interfaces\IReferenceDataCategoryDataService.cs" />
+    <Compile Include="DataService\Interfaces\IReferenceDataDataService.cs" />
+    <Compile Include="DataService\Interfaces\IRoadNameDataService.cs" />
+    <Compile Include="DataService\Interfaces\IScenarioDataService.cs" />
+    <Compile Include="DataService\Interfaces\IStreetNetworkDataService.cs" />
+    <Compile Include="DataService\Interfaces\IUnitLocationDataService.cs" />
+    <Compile Include="DataService\Interfaces\IUserRoleUnitDataService.cs" />
+    <Compile Include="DataService\MappingConfiguration\GenericMapper.cs" />
+    <Compile Include="DataService\MappingConfiguration\MappingExpressionExtensions.cs" />
+    <Compile Include="DataService\NotificationDataService.cs" />
+    <Compile Include="DataService\OSRoadLinkDataService.cs" />
+    <Compile Include="DataService\PostCodeDataService.cs" />
+    <Compile Include="DataService\PostCodeSectorDataService.cs" />
+    <Compile Include="DataService\ReferenceDataCategoryDataService.cs" />
+    <Compile Include="DataService\ReferenceDataDataService.cs" />
+    <Compile Include="DataService\RoadNameDataService.cs" />
+    <Compile Include="DataService\ScenarioDataService.cs" />
+    <Compile Include="DataService\StreetNetworkDataService.cs" />
+    <Compile Include="DataService\UnitLocationDataService.cs" />
+    <Compile Include="DBContext\AuditContext.cs" />
+    <Compile Include="DBContext\RMDBContext.cs" />
+    <Compile Include="DTO\AccessActionDTO.cs" />
+    <Compile Include="DTO\AccessLinkDTO.cs" />
+    <Compile Include="DTO\ActionManager\RoleAccessDTO.cs" />
+    <Compile Include="DTO\ActionManager\UserUnitInfoDTO.cs" />
+    <Compile Include="DTO\AddDeliveryPointDTO.cs" />
+    <Compile Include="DTO\AddressLocationDTO.cs" />
+    <Compile Include="DTO\BlockSequenceDTO.cs" />
+    <Compile Include="DTO\DeliveryPointAliasDTO.cs" />
+    <Compile Include="DTO\DeliveryPointDTO.cs" />
+    <Compile Include="DTO\DeliveryRouteDTO.cs" />
+    <Compile Include="DTO\FileProcessingLogDTO.cs" />
+    <Compile Include="DTO\FileProcessing\AddressLocationUSRDTO.cs" />
+    <Compile Include="DTO\FileProcessing\AddressLocationUSRPOSTDTO.cs" />
+    <Compile Include="DTO\Model\AccessLinkManualAddModelDTO.cs" />
+    <Compile Include="DTO\Model\CreateDeliveryPointModelDTO.cs" />
+    <Compile Include="DTO\Model\DeliveryPointModelDTO.cs" />
+    <Compile Include="DTO\Model\RouteLogSummaryModelDTO.cs" />
+    <Compile Include="DTO\Model\UpdateDeliveryPointModelDTO.cs" />
+    <Compile Include="DTO\NetworkLinkDTO.cs" />
+    <Compile Include="DTO\NotificationDTO.cs" />
+    <Compile Include="DTO\OsRoadLinkDTO.cs" />
+    <Compile Include="DTO\PostalAddressDTO.cs" />
+    <Compile Include="DTO\PostCodeDTO.cs" />
+    <Compile Include="DTO\PostCodeSectorDTO.cs" />
+    <Compile Include="DTO\Properties.cs" />
+    <Compile Include="DTO\ReferenceDataCategoryDTO.cs" />
+    <Compile Include="DTO\ReferenceDataDTO.cs" />
+    <Compile Include="DTO\ReferenceData\ListItems.cs" />
+    <Compile Include="DTO\ReferenceData\NameValuePair.cs" />
+    <Compile Include="DTO\ReferenceData\NameValuePairs.cs" />
+    <Compile Include="DTO\ReferenceData\SimpleListDTO.cs" />
+    <Compile Include="DTO\ResponseData.cs" />
+    <Compile Include="DTO\RoadNameDTO.cs" />
+    <Compile Include="DTO\RouteLogSequencedPointsDTO.cs" />
+    <Compile Include="DTO\RouteSummaryGroupDTO.cs" />
+    <Compile Include="DTO\ScenarioDTO.cs" />
+    <Compile Include="DTO\SearchCountDTO.cs" />
+    <Compile Include="DTO\SearchResultDTO.cs" />
+    <Compile Include="DTO\SearchResultItemDTO.cs" />
+    <Compile Include="DTO\StreetNameDTO.cs" />
+    <Compile Include="DTO\UIDropdowns\BindingEntity.cs" />
+    <Compile Include="DTO\UnitLocationDTO.cs" />
+    <Compile Include="Entities\AccessLink.cs" />
+    <Compile Include="Entities\Action.cs" />
+    <Compile Include="Entities\AddressLocation.cs" />
+    <Compile Include="Entities\AMUChangeRequest.cs" />
+    <Compile Include="Entities\AreaHazard.cs" />
+    <Compile Include="Entities\AuditLog.cs" />
+    <Compile Include="Entities\Block.cs" />
+    <Compile Include="Entities\BlockSequence.cs" />
+    <Compile Include="Entities\CollectionRoute.cs" />
+    <Compile Include="Entities\DeliveryGroup.cs" />
+    <Compile Include="Entities\DeliveryPoint.cs" />
+    <Compile Include="Entities\DeliveryPointAlias.cs" />
+    <Compile Include="Entities\DeliveryRoute.cs" />
+    <Compile Include="Entities\DeliveryRouteActivity.cs" />
+    <Compile Include="Entities\DeliveryRouteBlock.cs" />
+    <Compile Include="Entities\DeliveryRouteNetworkLink.cs" />
+    <Compile Include="Entities\DeliveryRoutePostcode.cs" />
+    <Compile Include="Entities\FileProcessingLog.cs" />
+    <Compile Include="Entities\Function.cs" />
+    <Compile Include="Entities\GroupHazard.cs" />
+    <Compile Include="Entities\NetworkLink.cs" />
+    <Compile Include="Entities\NetworkLinkReference.cs" />
+    <Compile Include="Entities\NetworkNode.cs" />
+    <Compile Include="Entities\NetworkReference.cs" />
+    <Compile Include="Entities\Notification.cs" />
+    <Compile Include="Entities\OSAccessRestriction.cs" />
+    <Compile Include="Entities\OSConnectingLink.cs" />
+    <Compile Include="Entities\OSConnectingNode.cs" />
+    <Compile Include="Entities\OSPathLink.cs" />
+    <Compile Include="Entities\OSPathNode.cs" />
+    <Compile Include="Entities\OSRestrictionForVehicle.cs" />
+    <Compile Include="Entities\OSRoadLink.cs" />
+    <Compile Include="Entities\OSRoadNode.cs" />
+    <Compile Include="Entities\OSTurnRestriction.cs" />
+    <Compile Include="Entities\POBox.cs" />
+    <Compile Include="Entities\PointHazard.cs" />
+    <Compile Include="Entities\Polygon.cs" />
+    <Compile Include="Entities\PolygonObject.cs" />
+    <Compile Include="Entities\PostalAddress.cs" />
+    <Compile Include="Entities\Postcode.cs" />
+    <Compile Include="Entities\PostcodeArea.cs" />
+    <Compile Include="Entities\PostcodeDistrict.cs" />
+    <Compile Include="Entities\PostcodeSector.cs" />
+    <Compile Include="Entities\ReferenceData.cs" />
+    <Compile Include="Entities\ReferenceDataCategory.cs" />
+    <Compile Include="Entities\RMGDeliveryPoint.cs" />
+    <Compile Include="Entities\RMGLink.cs" />
+    <Compile Include="Entities\RMGNode.cs" />
+    <Compile Include="Entities\RoadName.cs" />
+    <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\RoleFunction.cs" />
+    <Compile Include="Entities\Scenario.cs" />
+    <Compile Include="Entities\SpecialInstruction.cs" />
+    <Compile Include="Entities\StreetName.cs" />
+    <Compile Include="Entities\StreetNameNetworkLink.cs" />
+    <Compile Include="Entities\TempPostalAddress.cs" />
+    <Compile Include="Entities\UnitLocation.cs" />
+    <Compile Include="Entities\UnitLocationPostcode.cs" />
+    <Compile Include="Entities\UnitPostcodeSector.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserRoleUnit.cs" />
+    <Compile Include="Entities\Views\AccessFunction.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ReferenceData\ReferenceDataHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RM.CommonLibrary\RM.CommonLibrary.csproj">
+      <Project>{9bc1e5cc-3647-46b6-9a1d-eee3199a66e9}</Project>
+      <Name>RM.CommonLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
