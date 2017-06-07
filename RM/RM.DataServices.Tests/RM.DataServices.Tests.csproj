@@ -89,21 +89,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DataService\AccessLinkRepositoryFixture.cs" />
-    <Compile Include="DataService\AddressRepositoryFixture.cs" />
-    <Compile Include="DataService\AddressRepositoryPAFFixture.cs" />
-    <Compile Include="DataService\BlockSequenceRepositoryFixture.cs" />
-    <Compile Include="DataService\DeliveryPointRepositoryFixture.cs" />
-    <Compile Include="DataService\DeliveryPointsRepositoryFixture.cs" />
-    <Compile Include="DataService\DeliveryRouteRepositoryFixture.cs" />
-    <Compile Include="DataService\OSRoadLinkRepositoryFixture.cs" />
+    <Compile Include="DataService\AccessLinkDataServiceFixture.cs" />
+    <Compile Include="DataService\AddressDataServiceFixture.cs" />
+    <Compile Include="DataService\AddressDataServicePAFFixture.cs" />
+    <Compile Include="DataService\BlockSequenceDataServiceFixture.cs" />
+    <Compile Include="DataService\DeliveryPointDataServiceFixture.cs" />
+    <Compile Include="DataService\DeliveryPointsDataServiceFixture.cs" />
+    <Compile Include="DataService\DeliveryRouteDataServiceFixture.cs" />
+    <Compile Include="DataService\OSRoadLinkDataServiceFixture.cs" />
     <Compile Include="DataService\UnitLocationRepositoryFixture.cs" />
-    <Compile Include="DataService\PostCodeRepositoryFixture.cs" />
-    <Compile Include="DataService\ReferenceDataCategoryRepositoryFixture.cs" />
-    <Compile Include="DataService\RoadNameRepositoryFixture.cs" />
-    <Compile Include="DataService\ScenarioRepositoryFixture.cs" />
-    <Compile Include="DataService\SerarchDeliveryPointsRepositoryFixture.cs" />
-    <Compile Include="DataService\StreetNetworkRepositoryFixture.cs" />
+    <Compile Include="DataService\PostCodeDataServiceFixture.cs" />
+    <Compile Include="DataService\ReferenceDataCategoryDataServiceFixture.cs" />
+    <Compile Include="DataService\RoadNameDataServiceFixture.cs" />
+    <Compile Include="DataService\ScenarioDataServiceFixture.cs" />
+    <Compile Include="DataService\SerarchDeliveryPointsDataServiceFixture.cs" />
+    <Compile Include="DataService\StreetNetworkDataServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -120,11 +120,11 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\WorkSpace\RM\RM.CommonLibrary.EntityFramework\RM.CommonLibrary.EntityFramework.csproj">
+    <ProjectReference Include="..\RM.CommonLibrary.EntityFramework\RM.CommonLibrary.EntityFramework.csproj">
       <Project>{64E21968-AAA7-47BA-9CCA-1B8727EFA46A}</Project>
       <Name>RM.CommonLibrary.EntityFramework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\WorkSpace\RM\RM.CommonLibrary\RM.CommonLibrary.csproj">
+    <ProjectReference Include="..\RM.CommonLibrary\RM.CommonLibrary.csproj">
       <Project>{9BC1E5CC-3647-46B6-9A1D-EEE3199A66E9}</Project>
       <Name>RM.CommonLibrary</Name>
     </ProjectReference>
