@@ -1,9 +1,0 @@
-@import './app/variables';
-
-.baseLayer{
-    @extend %body-content;
-}
-
-.thin-switch{
-    @include margin(0px 0px 0px 0px);
-}
