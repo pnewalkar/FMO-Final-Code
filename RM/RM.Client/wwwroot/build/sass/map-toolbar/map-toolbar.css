@@ -1,0 +1,35 @@
+.maptoolBarText {
+  font-family: PF_DIN;
+  font-size: 16px; }
+
+.map-toolbar {
+  top: 75px;
+  position: absolute;
+  left: 375px; }
+
+.map-toolbar .button {
+  padding: 0px 10px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  border-radius: 0px;
+  min-width: 2.5%; }
+
+.pad-icon {
+  margin: 0px 5px 0px 10px; }
+
+.map-toolbar .button.selected, .md-button.md-raised:not([disabled]).button:hover {
+  background-color: #aadaea; }
+
+.map-toolbar .material-icons {
+  font-size: 16px;
+  line-height: 1.3; }
+
+.map-toolbar .md-button.md-raised:not([disabled]) {
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.26); }
+
+/*.button-small{
+    padding:0;
+    margin:0;
+    border-radius: 0;
+    width: 40px;
+    min-width: 40px;
+}*/

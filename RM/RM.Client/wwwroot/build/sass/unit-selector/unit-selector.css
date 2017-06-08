@@ -1,0 +1,25 @@
+.unitSelector.md-text {
+  color: #2a2a2d;
+  font-family: PF_DIN;
+  font-size: 16px; }
+
+.unitSelector.md-text {
+  color: #ffffff; }
+
+.noResult {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 16px;
+  font-family: PF DIN; }
+
+.unitText .md-select-value > span:not(.md-select-icon) .md-text > .delivery {
+  display: none; }
+
+.unitText .md-select-value span {
+  border-bottom-color: white; }
+
+.unitText .md-select-value > span:not(.md-select-icon) .md-text {
+  color: #ffffff; }
+
+.unitText md-select.md-default-theme .md-select-value, md-select .md-select-value {
+  border-bottom-color: white; }

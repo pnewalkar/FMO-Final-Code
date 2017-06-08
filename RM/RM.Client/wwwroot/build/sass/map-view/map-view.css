@@ -1,0 +1,45 @@
+.mapContainer {
+  width: 100%;
+  height: 100%; }
+
+#mini-map {
+  height: 150px; }
+
+#leftPanel {
+  position: absolute;
+  top: 75px;
+  left: 15px;
+  height: calc(100% - 85px);
+  pointer-events: none; }
+
+#rightPanel {
+  position: absolute;
+  top: 75px;
+  height: calc(100% - 85px);
+  right: 15px; }
+
+.zoom-control {
+  position: absolute;
+  top: -10px;
+  left: -50px; }
+
+.levelDanger {
+  color: red;
+  border: 1px solid red; }
+
+.zoom-scale {
+  position: absolute;
+  width: 35.00175%;
+  left: -56%; }
+
+.labletext {
+  margin: 4px 0px 0px 9px;
+  position: absolute;
+  font-size: 16px; }
+
+input[name="zoom-scale"] {
+  width: 95.51098%;
+  text-indent: 22px; }
+
+.context-panel {
+  height: calc(100% - 30px); }

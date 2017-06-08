@@ -1,0 +1,12 @@
+h2, .md-toolbar-tools > h2 {
+  color: #ffffff;
+  font-family: Chevin;
+  font-size: 18px; }
+
+md-list-item, .version {
+  color: #2a2a2d;
+  font-family: PF_DIN;
+  font-size: 16px; }
+
+.version {
+  color: #ffffff; }
