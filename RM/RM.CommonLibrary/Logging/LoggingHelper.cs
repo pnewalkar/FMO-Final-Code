@@ -11,22 +11,17 @@ namespace RM.CommonLibrary.LoggingMiddleware
     /// </summary>
     public class LoggingHelper : ILoggingHelper
     {
-        private static TraceManager traceManager = null;
-        private static LogWriter logWriter = null;
+        private static IRMTraceManager traceManager = null;
 
-        public LoggingHelper()
+        public LoggingHelper(LogWriter logWriter)
         {
-            IConfigurationSource source = ConfigurationSourceFactory.Create();
-            LogWriterFactory log = new LogWriterFactory(source);
-            logWriter = log.Create();
-            Logger.SetLogWriter(logWriter, false);
-            traceManager = new TraceManager(logWriter);
+            traceManager = new RMTraceManager(logWriter);
         }
 
         /// <summary>
         /// Gets trace manager.
         /// </summary>
-        public TraceManager RMTraceManager
+        public IRMTraceManager RMTraceManager
         {
             get
             {

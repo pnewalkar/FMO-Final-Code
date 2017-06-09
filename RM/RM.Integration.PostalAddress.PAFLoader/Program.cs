@@ -22,8 +22,12 @@
             ILoggingHelper loggingHelper = kernel.Get<ILoggingHelper>();
             IConfigurationHelper configurationHelper = kernel.Get<IConfigurationHelper>();
 
-            ServiceBase[] servicesToRun = new ServiceBase[] { new PAFImport(pafLoader, loggingHelper, configurationHelper) };
-            ServiceBase.Run(servicesToRun);
+            //ServiceBase[] servicesToRun = new ServiceBase[] { new PAFImport(pafLoader, loggingHelper, configurationHelper) };
+            //ServiceBase.Run(servicesToRun);
+
+            PAFImport myService = new PAFImport(pafLoader, loggingHelper, configurationHelper);
+            myService.OnDebug();
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
         }
     }
 }

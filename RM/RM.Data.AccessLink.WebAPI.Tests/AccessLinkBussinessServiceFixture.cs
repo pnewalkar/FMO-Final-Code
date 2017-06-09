@@ -200,6 +200,10 @@ namespace RM.Data.AccessLink.WebAPI.Test
 
             loggingHelperMock = new Mock<ILoggingHelper>();
 
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             // loggingHelperMock.Setup(x => x.RMTraceManager).Returns(CreateMock<IRMTraceManager>().Object);
 
             testCandidate = new AccessLinkBusinessService(mockaccessLinkRepository.Object, loggingHelperMock.Object, new Mock<IAccessLinkIntegrationService>().Object);
