@@ -18,7 +18,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {
     public class AccessLinkIntegrationService : IAccessLinkIntegrationService
     {
-        #region Property Declarations
+        #region Member Variables
 
         private string referenceDataWebAPIName = string.Empty;
         private string networkManagerDataWebAPIName = string.Empty;
@@ -27,6 +27,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
         #endregion Property Declarations
 
+        #region Constructor
         public AccessLinkIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
             this.httpHandler = httpHandler;
@@ -34,7 +35,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             this.networkManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.NetworkManagerDataWebAPIName).ToString() : string.Empty;
             this.deliveryPointManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
@@ -45,9 +48,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             var operationalObjectPointJson = JsonConvert.SerializeObject(operationalObjectPoint, new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-
-                // Converters = new List<JsonConverter> { new DbGeometryConverter() }
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(networkManagerDataWebAPIName + "/nearestnamedroad/" + streetName, operationalObjectPointJson);
@@ -111,8 +112,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             return networkLink;
         }
 
-        /// <summary> Gets the name of the reference data categories by category. </summary> <param
-        /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
+        /// <summary> Gets the name of the reference data categories by category. </summary> 
+        /// <param name="categoryNames">The category names.</param> 
+        /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public async Task<List<ReferenceDataCategoryDTO>> GetReferenceDataNameValuePairs(List<string> categoryNames)
         {
             List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
@@ -135,8 +137,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             return listReferenceCategories;
         }
 
-        /// <summary> Gets the name of the reference data categories by category. </summary> <param
-        /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
+        /// <summary> Gets the name of the reference data categories by category. </summary> 
+        /// <param name="categoryNames">The category names.</param> 
+        /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public async Task<List<ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
         {
             List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
@@ -163,9 +166,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             var accessLinkCoordinatesJson = JsonConvert.SerializeObject(accessLinkCoordinates, new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-
-                //Converters = new List<JsonConverter> { new DbGeometryConverter() }
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(networkManagerDataWebAPIName + "networklink/" + boundingBoxCoordinates, accessLinkCoordinatesJson);
@@ -239,16 +240,15 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             return success;
         }
 
-        /// <summary> This method is used to get the delivery points crossing an operational object
-        /// </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param
-        /// name="accessLink">access link coordinate array</param> <returns>List<DeliveryPointDTO></returns>
+        /// <summary> This method is used to get the delivery points crossing an operational object </summary> 
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param> 
+        /// <param name="accessLink">access link coordinate array</param> 
+        /// <returns>List<DeliveryPointDTO></returns>
         public async Task<List<DeliveryPointDTO>> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject)
         {
             var operationalObjectJson = JsonConvert.SerializeObject(operationalObject, new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-
-                //Converters = new List<JsonConverter> { new DbGeometryConverter() }
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerDataWebAPIName + "deliverypoint/crosses/operationalobject/" + boundingBoxCoordinates, operationalObjectJson);
@@ -262,6 +262,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             var success = JsonConvert.DeserializeObject<List<DeliveryPointDTO>>(result.Content.ReadAsStringAsync().Result);
             return success;
-        }
+        } 
+        #endregion
     }
 }
