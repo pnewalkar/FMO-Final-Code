@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
@@ -20,11 +18,11 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
     public class DeliveryPointBusinessServiceFixture : TestFixtureBase
     {
         private IDeliveryPointBusinessService testCandidate;
-        private Mock<IDeliveryPointsDataService> mockDeliveryPointsRepository;
-
-        private Mock<IConfigurationHelper> mockConfigurationRepository;
-        private Mock<ILoggingHelper> mockLoggingRepository;
+        private Mock<IDeliveryPointsDataService> mockDeliveryPointsDataService;
+        private Mock<IConfigurationHelper> mockConfigurationDataService;
+        private Mock<ILoggingHelper> mockLoggingDataService;
         private Mock<RMTraceManager> mockTraceManager;
+        private Mock<IDeliveryPointIntegrationService> mockDeliveryPointIntegrationService;
         private Guid unitGuid = Guid.NewGuid();
         private AddDeliveryPointDTO addDeliveryPointDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
@@ -37,7 +35,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
 
             var result = testCandidate.GetDeliveryPoints(coordinates, unitGuid);
-            mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>()), Times.Once);
+            mockDeliveryPointsDataService.Verify(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>()), Times.Once);
             Assert.IsNotNull(result);
         }
 
@@ -52,23 +50,24 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             objdeliverypointDTO.PostalAddress = new PostalAddressDTO();
             lstDeliveryPointDTO.Add(objdeliverypointDTO);
 
-            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
             var coordinates = testCandidate.GetDeliveryPointByUDPRN(udprn);
-            mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>()), Times.Once);
+            mockDeliveryPointsDataService.Verify(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>()), Times.Once);
             Assert.IsNotNull(coordinates);
         }
 
         [Test]
-        public void Test_CreateDeliveryPoint()
+        public async Task Test_CreateDeliveryPoint()
         {
-            var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO);
+            var result = await testCandidate.CreateDeliveryPoint(addDeliveryPointDTO);
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Result.Message == "Delivery Point created successfully");
+            Assert.IsTrue(result.Message == "Delivery Point created successfully");
         }
 
         [Test]
         public void Test_CreateDeliveryPoint_Duplicate()
         {
+            mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).ReturnsAsync(true);
             var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Result.Message == "There is a duplicate of this Delivery Point in the system");
@@ -77,6 +76,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public void Test_CreateDeliveryPoint_Duplicate_WithPostCode()
         {
+            OnSetup();
             var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Result.Message == "This address is in the NYB file under the postcode 123");
@@ -98,11 +98,10 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
 
         protected override void OnSetup()
         {
-            mockDeliveryPointsRepository = CreateMock<IDeliveryPointsDataService>();
-
-            mockConfigurationRepository = CreateMock<IConfigurationHelper>();
-            mockLoggingRepository = CreateMock<ILoggingHelper>();
-
+            mockDeliveryPointsDataService = CreateMock<IDeliveryPointsDataService>();
+            mockConfigurationDataService = CreateMock<IConfigurationHelper>();
+            mockLoggingDataService = CreateMock<ILoggingHelper>();
+            mockDeliveryPointIntegrationService = CreateMock<IDeliveryPointIntegrationService>();
 
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<RM.CommonLibrary.EntityFramework.Entities.DeliveryPoint> lstDeliveryPoint = new List<RM.CommonLibrary.EntityFramework.Entities.DeliveryPoint>();
@@ -186,10 +185,20 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                 RowVersion = BitConverter.GetBytes(1)
             };
 
-            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
-            //      mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(deliveryPointModelDTO.ID));
-            mockDeliveryPointsRepository.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
-            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, CreateMock<IDeliveryPointIntegrationService>().Object);
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
+            mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointRowVersion(It.IsAny<Guid>())).Returns(BitConverter.GetBytes(1));
+            mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
+
+            mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns(Task.FromResult("ABC"));
+            mockDeliveryPointIntegrationService.Setup(x => x.CreateBlockSequenceForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            mockDeliveryPointIntegrationService.Setup(x => x.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid());
+            mockDeliveryPointIntegrationService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).ReturnsAsync(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
+            mockDeliveryPointIntegrationService.Setup(x => x.CreateAccessLink(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);
+            mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).ReturnsAsync("123");
+
+            testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsDataService.Object, mockLoggingDataService.Object, mockConfigurationDataService.Object, mockDeliveryPointIntegrationService.Object);
         }
     }
 }
