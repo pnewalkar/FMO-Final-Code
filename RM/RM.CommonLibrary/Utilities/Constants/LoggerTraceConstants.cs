@@ -10,6 +10,11 @@
 
         public const int CreateDeliveryPointPriority = 8;
         public const int UpdateDeliveryPointPriority = 8;
+        public const int UpdateDeliveryPointLocationOnUDPRNPriority = 8;
+        public const int UpdateDeliveryPointLocationOnIDPriority = 8;
+        public const int InsertDeliveryPointPriority = 8;
+        public const int UpdateDeliveryPointAccessLinkCreationStatusPriority = 8;
+        public const int CreateAccessLinkPriority = 8;
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
         public const int SaveDeliveryPointProcessPriority = 8;
@@ -28,6 +33,11 @@
 
         #region EventId
 
+        public const int CreateAccessLinkAPIMethodEntryEventId = 8003;
+        public const int CreateAccessLinkAPIMethodExitEventId = 8004;
+        public const int CreateManualAccessLinkAPIMethodEntryEventId = 8005;
+        public const int CreateManualAccessLinkAPIMethodExitEventId = 8006;
+
         public const int CreateDeliveryPointAPIMethodEntryEventId = 9003;
         public const int CreateDeliveryPointAPIMethodExitEventId = 9004;
         public const int CreateDeliveryPoinBusinessMethodEntryEventId = 9013;
@@ -35,6 +45,14 @@
 
         public const int UpdateDeliveryPointAPIMethodEntryEventId = 9103;
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;
+        public const int UpdateDeliveryPointLocationOnUDPRNAPIMethodEntryEventId = 9105;
+        public const int UpdateDeliveryPointLocationOnUDPRNAPIMethodExitEventId = 9106;
+        public const int UpdateDeliveryPointLocationOnIDAPIMethodEntryEventId = 9107;
+        public const int UpdateDeliveryPointLocationOnIDAPIMethodExitEventId = 9108;
+        public const int InsertDeliveryPointAPIMethodEntryEventId = 9109;
+        public const int InsertDeliveryPointAPIMethodExitEventId = 9110;
+        public const int UpdateDeliveryPointAccessLinkCreationStatusAPIMethodEntryEventId = 9111;
+        public const int UpdateDeliveryPointAccessLinkCreationStatusAPIMethodExitEventId = 9112;
         public const int UpdateDeliveryPoinBusinessMethodEntryEventId = 9113;
         public const int UpdateDeliveryPoinBusinessMethodExitEventId = 9114;
 
