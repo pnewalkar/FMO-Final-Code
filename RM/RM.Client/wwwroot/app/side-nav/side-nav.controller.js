@@ -9,7 +9,8 @@ SideNavController.$inject = [
     '$mdSidenav',
     '$mdDialog',
     'sideNavService',
-    'CommonConstants'
+    'CommonConstants',
+    '$rootScope'
 ];
 
 function SideNavController(
@@ -19,13 +20,18 @@ function SideNavController(
     $mdSidenav,
     $mdDialog,
     sideNavService,
-    CommonConstants) {
+    CommonConstants,
+    $rootScope) {
 
     var vm = this;
     vm.initialize = initialize;
     vm.fetchActions = fetchActions;
     vm.closeSideNav = closeSideNav;
     vm.initialize();
+
+    $rootScope.$on("disablePrintMap", function (event, args) {
+        vm.isDisabledAction = args.disable;
+    });
 
     function initialize() {
         vm.RolesActionResult = sideNavService.fetchActionItems().RolesActionResult;
