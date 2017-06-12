@@ -11,6 +11,9 @@
     </md-toolbar> 
     <md-content>
         <md-list>
+            <md-list-item ng-click="vm.fetchActions('PrintMap',vm.selectedDeliveryUnit)">
+                Print Map <i class="fa fa-info-circle" aria-hidden="true" style="margin-left: 10px;"></i>
+            </md-list-item>
           <md-list-item  ng-repeat="Item in vm.RolesActionResult| unique: 'ActionName'" ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)">
             {{Item.ActionName}}
           </md-list-item>

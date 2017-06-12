@@ -54,6 +54,9 @@ function SideNavController(
                 vm.contextTitle = CommonConstants.AccessLinkActionName;
                 $state.go("referenceData");
                 break;
+            case 'PrintMap':
+                $mdDialog.show(popUpSettingService.printMap());
+                break;
             default:
                 break;
         }
