@@ -180,6 +180,7 @@
     <Compile Include="Utilities\DataService\DataServiceBase.cs" />
     <Compile Include="Utilities\Enums\ValueAttribute.cs" />
     <Compile Include="Utilities\Geometry\DbGeometryConverter.cs" />
+    <Compile Include="Utilities\HelperMiddleware\Common\MethodHelper.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Coordinates.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Feature.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\GeoJson.cs" />
