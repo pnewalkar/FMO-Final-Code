@@ -555,7 +555,9 @@ function mapService($http,
                 showDeliveryPointDetails(deliveryPointDetails);
                 
                              } else {
-                             setSelections(null, []);
+                setSelections(null, []);
+                var deliveryPointDetails = null;
+                showDeliveryPointDetails(deliveryPointDetails);
                              }
 
         });
@@ -704,24 +706,33 @@ function mapService($http,
              }
 
     function showDeliveryPointDetails(deliveryPointDetails) {
-        deliveryPointDetails.routeName = null;
-        mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
-              .then(function (response) {
-                  if (response != null) {
-                      if (response[0].key == CommonConstants.RouteName) {
-                          deliveryPointDetails.routeName = [response[0].value];
-                          if (response[1].key == CommonConstants.DpUse) {
-                              deliveryPointDetails.dpUse = response[1].value;
+        if (deliveryPointDetails != null) {
+            deliveryPointDetails.routeName = null;
+            mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
+                  .then(function (response) {
+                      if (response != null) {
+                          if (response[0].key == CommonConstants.RouteName) {
+                              deliveryPointDetails.routeName = [response[0].value];
+                              if (response[1].key == CommonConstants.DpUse) {
+                                  deliveryPointDetails.dpUse = response[1].value;
+                              }
+                          }
+                          else if (response[0].key == CommonConstants.DpUse) {
+                              deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
-                      else if (response[0].key == CommonConstants.DpUse) {
-                          deliveryPointDetails.dpUse = response[0].value;
-                      }
-                  }
-                  $state.go('deliveryPointDetails', {
-                      selectedDeliveryPoint: deliveryPointDetails
-                  }, { reload: true });
-              });
+                      $state.go('deliveryPointDetails', {
+                          selectedDeliveryPoint: deliveryPointDetails
+                      }, { reload: true });
+                  });
+        }
+        else
+        {
+            $state.go('deliveryPointDetails', {
+
+                selectedDeliveryPoint: deliveryPointDetails
+            }, { reload: true });
+        }
     }
 
 }
