@@ -6,27 +6,20 @@ namespace RM.CommonLibrary.EntityFramework.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("FMO.NetworkNode")]
-    public partial class NetworkNode
+    [Table("FMO.PostalAddressLocation")]
+    public partial class PostalAddressLocation
     {
         public Guid ID { get; set; }
 
-        public Guid NetworkNodeType_GUID { get; set; }
+        public Guid? LocationGUID { get; set; }
 
-        [StringLength(20)]
-        public string TOID { get; set; }
+        public Guid PostalAddressGUID { get; set; }
 
         [Column(TypeName = "datetime2")]
         public DateTime RowCreateDateTime { get; set; }
 
-        public Guid? DataProviderGUID { get; set; }
-
-        public virtual DeliveryPoint DeliveryPoint { get; set; }
-
         public virtual Location Location { get; set; }
 
-        public virtual ReferenceData ReferenceData { get; set; }
-
-        public virtual ReferenceData ReferenceData1 { get; set; }
+        public virtual PostalAddress PostalAddress { get; set; }
     }
 }

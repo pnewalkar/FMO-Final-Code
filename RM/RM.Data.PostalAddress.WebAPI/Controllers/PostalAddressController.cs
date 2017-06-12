@@ -18,14 +18,24 @@ namespace Fmo.API.Services.Controllers
     [Route("api/postaladdressmanager")]
     public class PostalAddressController : RMBaseController
     {
+        #region Member Variables
+
         private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        #endregion Member Variables
+
+        #region Constructors
 
         public PostalAddressController(IPostalAddressBusinessService _businessService, ILoggingHelper _loggingHelper)
         {
             businessService = _businessService;
             loggingHelper = _loggingHelper;
         }
+
+        #endregion Constructors
+
+        #region Public Methods
 
         /// <summary>
         /// Api to save NYB details in DB.
@@ -275,5 +285,7 @@ namespace Fmo.API.Services.Controllers
                 throw realExceptions;
             }
         }
+
+        #endregion Public Methods
     }
 }
