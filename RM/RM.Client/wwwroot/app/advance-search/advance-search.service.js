@@ -89,15 +89,15 @@ function advanceSearchService(advanceSearchAPIService,
             else {
                 deliveryRouteobj = { 'type': CommonConstants.EntityType.Route, 'name': arrDeliveryRoutes, 'open': false };
             }
-
-            if (arrDeliverypoints.length > 0) {
-                arrRoutes.push(deliveryPointObj);
-            }
+     
             if (arrPostCodes.length > 0) {
                 arrRoutes.push(postCodeObj);
             }
             if (arrStreetNames.length > 0) {
                 arrRoutes.push(streetnameObj);
+            }
+            if (arrDeliverypoints.length > 0) {
+                arrRoutes.push(deliveryPointObj);
             }
             if (arrDeliveryRoutes.length > 0) {
                 arrRoutes.push(deliveryRouteobj);
