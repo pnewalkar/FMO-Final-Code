@@ -14,7 +14,8 @@ DeliveryPointController.$inject = [
         'guidService',
         '$state',
         '$stateParams',
-        'deliveryPointService'];
+        'deliveryPointService',
+        '$rootScope'];
 
 function DeliveryPointController(
     mapToolbarService,
@@ -28,7 +29,8 @@ function DeliveryPointController(
     guidService,
     $state,
     $stateParams,
-    deliveryPointService
+    deliveryPointService,
+    $rootScope
 ) {
 
     var vm = this;
@@ -91,6 +93,9 @@ function DeliveryPointController(
     function deliveryPoint() {
         deliveryPointService.openModalPopup(popUpSettingService.deliveryPoint(vm));
         $scope.$emit("dialogOpen", "deliveryPoint");
+        $rootScope.$broadcast('disablePrintMap', {
+            disable: true
+        });
     }
 
     function closeWindow() {
@@ -224,7 +229,9 @@ function DeliveryPointController(
                 guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
                 vm.closeWindow();
-
+                $rootScope.$broadcast('disablePrintMap', {
+                    disable: false
+                });
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);

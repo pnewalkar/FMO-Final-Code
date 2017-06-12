@@ -137,6 +137,7 @@
     <Compile Include="DTO\PostalAddressDTO.cs" />
     <Compile Include="DTO\PostCodeDTO.cs" />
     <Compile Include="DTO\PostCodeSectorDTO.cs" />
+    <Compile Include="DTO\PrintMapDTO.cs" />
     <Compile Include="DTO\Properties.cs" />
     <Compile Include="DTO\ReferenceDataCategoryDTO.cs" />
     <Compile Include="DTO\ReferenceDataDTO.cs" />
