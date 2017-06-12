@@ -28,6 +28,8 @@
         public const string XMLFileFolderSettings = "XMLFileFolderSettings";
         public const string MethodExecutionStarted = " Method exceution started";
         public const string MethodExecutionCompleted = " Method exceution completed";
+        public const char LF = '\r';
+        public const char NL = '\n';
         public const string CRLF = "\r\n";
         public const string NEWLINE = "\n";
         public const string COLON = " : ";
@@ -202,6 +204,11 @@
         public const string UnSequenced = "U";
 
         #endregion DeliveryPoints
+
+        #region Access Link
+        public const string NWLinkTypeException = "Network Link Type other than defined is checked.";
+        public const string DPUseIndicatorTypeException = "DP Use Indicator Type other than defined is checked.";
+        #endregion
 
         #region MyRegion
 
