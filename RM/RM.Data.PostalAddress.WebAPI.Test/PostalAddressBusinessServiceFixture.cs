@@ -6,6 +6,7 @@ using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -26,6 +27,8 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         private Mock<IPostalAddressIntegrationService> mockPostalAddressIntegrationService;
         private IPostalAddressBusinessService testCandidate;
         private PostalAddressDTO postalAddressDTO;
+        private AddDeliveryPointDTO addDeliveryPointDTO;
+        private List<ReferenceDataCategoryDTO> referenceDataCategoryDTOList;
 
         [Test]
         public void Test_ValidPostalAddressData()
@@ -135,9 +138,44 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_GetPostalAddress()
+        {
+            mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDTO));
+            var result = testCandidate.GetPostalAddress(12345);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_CheckForDuplicateNybRecords()
+        {
+            mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataSimpleLists(It.IsAny<string>())).Returns(Task.FromResult(referenceDataCategoryDTOList[0]));
+            mockPostalAddressDataService.Setup(n => n.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>(), It.IsAny<Guid>())).Returns("abc");
+            var result = testCandidate.CheckForDuplicateNybRecords(postalAddressDTO);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result, "abc");
+        }
+
+        [Test]
+        public void Test_CheckForDuplicateAddressWithDeliveryPoints()
+        {
+            mockPostalAddressDataService.Setup(n => n.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDTO>())).Returns(true);
+            var result = testCandidate.CheckForDuplicateAddressWithDeliveryPoints(postalAddressDTO);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void Test_CreateAddressAndDeliveryPoint()
+        {
+            mockPostalAddressDataService.Setup(n => n.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid() });
+            var result = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+            Assert.IsNotNull(result);
+        }
+
         protected override void OnSetup()
         {
-            List<ReferenceDataCategoryDTO> referenceDataCategoryDTOList = new List<ReferenceDataCategoryDTO>()
+            referenceDataCategoryDTOList = new List<ReferenceDataCategoryDTO>()
             {
                 new ReferenceDataCategoryDTO()
                 {
@@ -193,6 +231,16 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             };
 
             List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>() { postalAddressDTO };
+
+            addDeliveryPointDTO = new AddDeliveryPointDTO()
+            {
+                PostalAddressDTO = new PostalAddressDTO()
+                {
+                    PostCodeGUID = Guid.NewGuid(),
+                    AddressType_GUID = Guid.NewGuid(),
+                    AddressStatus_GUID = Guid.NewGuid()
+                }
+            };
 
             mockPostalAddressDataService = CreateMock<IPostalAddressDataService>();
             mockFileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();

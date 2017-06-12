@@ -24,8 +24,12 @@ namespace RM.Data.PostalAddress.PAFReceiver
             IConfigurationHelper configurationHelper = kernel.Get<IConfigurationHelper>();
             ILoggingHelper loggingHelper = kernel.Get<ILoggingHelper>();
 
-            ServiceBase[] servicesToRun = new ServiceBase[] { new PAFReceiver(msgPAF, httpHandler, configurationHelper, loggingHelper) };
-            ServiceBase.Run(servicesToRun);
+            //ServiceBase[] servicesToRun = new ServiceBase[] { new PAFReceiver(msgPAF, httpHandler, configurationHelper, loggingHelper) };
+            //ServiceBase.Run(servicesToRun);
+
+            PAFReceiver myService = new PAFReceiver(msgPAF, httpHandler, configurationHelper, loggingHelper);
+            myService.OnDebug();
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
         }
     }
 }

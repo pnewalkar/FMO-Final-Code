@@ -651,9 +651,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             return isDeliveryPointUpdated;
         }
 
-        /// <summary> This method is used to get the delivery points crossing the operationalObject
-        /// </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param
-        /// name="accessLink">access link coordinate array</param> <returns>List<DeliveryPointDTO></returns>
+        /// <summary> This method is used to get the delivery points crossing the operationalObject for a given extent</summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param> 
+        /// <param name="accessLink">access link coordinate array</param>
+        /// <returns>List<DeliveryPointDTO></returns>
         public List<DeliveryPointDTO> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject)
         {
             List<DeliveryPointDTO> deliveryPointDTOs = new List<DeliveryPointDTO>();
@@ -666,12 +667,15 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             Mapper.Configuration.CreateMapper();
             DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+
             List<DeliveryPoint> crossingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Crosses(operationalObject)).ToList();
             List<DeliveryPointDTO> crossingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(crossingDeliveryPoints);
             deliveryPointDTOs.AddRange(crossingAccessLinkDTOs);
+
             List<DeliveryPoint> overLappingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Overlaps(operationalObject)).ToList();
             List<DeliveryPointDTO> overLappingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(overLappingDeliveryPoints);
             deliveryPointDTOs.AddRange(overLappingAccessLinkDTOs);
+
             return deliveryPointDTOs;
         }
 

@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService;
@@ -40,8 +41,33 @@ namespace RM.Data.AccessLink.WebAPI.Test
         [Test]
         public void Test_CreateAccessLink()
         {
-            bool expectedResult = testCandidate.CreateAccessLink(operationalObjectId, operationObjectTypeId);
-            Assert.IsTrue(expectedResult);
+            // TODO
+            bool result = testCandidate.CreateAccessLink(operationalObjectId, operationObjectTypeId);
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void Test_CalculateWorkloadLength()
+        {
+            // TODO
+            bool result = testCandidate.CreateAccessLink(new AccessLinkManualCreateModelDTO() { AccessLinkLine = "LINESTRING" });
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void Test_GetAdjPathLength()
+        {
+            // TODO
+            var result = testCandidate.GetAdjPathLength(new AccessLinkManualCreateModelDTO() { });
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_CheckManualAccessLinkIsValid()
+        {
+            // TODO
+            var result = testCandidate.CheckManualAccessLinkIsValid("","");
+            Assert.IsNotNull(result);
         }
 
         protected override void OnSetup()
@@ -199,6 +225,10 @@ namespace RM.Data.AccessLink.WebAPI.Test
             mockaccessLinkDataService = new Mock<IAccessLinkDataService>();
             mockAccessLinkIntegrationService = CreateMock<IAccessLinkIntegrationService>();
             loggingHelperMock = new Mock<ILoggingHelper>();
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDTO>>);
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(new List<ReferenceDataCategoryDTO>() { });

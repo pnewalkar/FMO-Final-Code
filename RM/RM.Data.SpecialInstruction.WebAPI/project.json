@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "EnterpriseLibrary.Logging": "6.0.1304",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.1",
     "Microsoft.AspNetCore.Routing": "1.0.1",

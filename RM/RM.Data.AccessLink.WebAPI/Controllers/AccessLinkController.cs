@@ -14,22 +14,28 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
     [Route("api/AccessLinkManager")]
     public class AccessLinkController : RMBaseController
     {
+        #region Member Variables
         private IAccessLinkBusinessService accessLinkBusinessService;
 
         private ILoggingHelper loggingHelper;
+        #endregion
 
+        #region Constructor
         public AccessLinkController(IAccessLinkBusinessService accessLinkBusinessService, ILoggingHelper loggingHelper)
         {
             this.accessLinkBusinessService = accessLinkBusinessService;
             this.loggingHelper = loggingHelper;
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// This method is used to create automatic Access Link .
         /// </summary>
         /// <param name="operationalObjectId">Operational Object unique identifier.</param>
         /// <param name="operationalObjectTypeId">Operational Object type unique identifier.</param>
         /// <returns>If <true>then access link creation succeeded,else failure.</true></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [HttpGet]
         [Route("AccessLink/{operationalObjectId}/{operationalObjectTypeId}")]
         public IActionResult CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
@@ -66,6 +72,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// </summary>
         ///<param name="accessLinkDto">access link object to be stored</param>
         /// <returns>If <true> then access link creation succeeded,else failure.</true></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [HttpPost("AccessLink/Manual")]
         public IActionResult CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
         {
@@ -91,8 +98,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// This method is used to fetch Access Link.
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
-        /// <returns>string of Access link data</returns>
-        [Microsoft.AspNetCore.Authorization.Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
+        /// <returns>GeoJson string of Access link data</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [HttpGet("AccessLinks")]
         public IActionResult GetAccessLinks(string bbox)
         {
@@ -105,9 +112,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// </summary>
         ///<param name="accessLinkManualCreateModelDTO">access link object of which adj length needs to be calculated</param>
         /// <returns>returns calculated path length</true></returns>
-        [Authorize]
-
-        // [Route("GetWorkloadLength")]
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [HttpPost("AccessLink/PathLength")]
         public IActionResult GetAdjPathLength([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
@@ -120,12 +125,13 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// </summary>
         ///<param name="accessLinkManualCreateModelDTO">access link object to be checked for valid access link</param>
         /// <returns>returns whether an access link is valid</true></returns>
-        [Authorize]
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewAccessLinks)]
         [HttpPost("AccessLink/Valid")]
         public IActionResult CheckAccessLinkIsValid([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
             bool isValid = accessLinkBusinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
             return Ok(isValid);
-        }
+        } 
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace RM.Integration.PostalAddress.PAFLoader
 {
+    using Microsoft.Practices.EnterpriseLibrary.Logging;
     using Ninject.Modules;
     using RM.CommonLibrary.ConfigurationMiddleware;
     using RM.CommonLibrary.EntityFramework.DTO;
@@ -15,8 +16,14 @@
         {
             this.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             this.Bind<IPAFFileProcessUtility>().To<PAFFileProcessUtility>();
-            Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
-            Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope();
+
+            //---Adding scope for all classes
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
+            Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope().WithConstructorArgument<LogWriter>(logWriter);
+            Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope().WithConstructorArgument<LogWriter>(logWriter);
             this.Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
         }
     }
