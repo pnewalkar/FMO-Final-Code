@@ -92,6 +92,7 @@
   "PRINT_MAP": {
     "SIZE": "Size",
     "TITLE": "Title",
+    "ORIENTATION":"Orientation",
     "BUTTONS": {
       "DISABLE_ALERT": "This action is disabled until the user has completed the action they are currently carrying out."
     }
