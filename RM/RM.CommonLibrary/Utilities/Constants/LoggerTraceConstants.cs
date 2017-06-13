@@ -10,6 +10,10 @@
 
         public const int DeliveryPointAPIPriority = 8;
         public const int AccessLinkAPIPriority = 8;
+        public const int DeliveryRouteAPIPriority = 8;
+        public const int PostalAddressAPIPriority = 8;
+        public const int FileProcessingLogPriority = 8;
+
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
         public const int SaveDeliveryPointProcessPriority = 8;
@@ -48,6 +52,24 @@
         public const int AccessLinkDataServiceMethodExitEventId = 9114;
         public const int AccessLinkIntegrationMethodEntryEventId = 9123;
         public const int AccessLinkIntegrationMethodExitEventId = 9124;
+
+        public const int DeliveryRouteControllerMethodEntryEventId = 9203;
+        public const int DeliveryRouteControllerMethodExitEventId = 9204;
+        public const int DeliveryRouteBusinessServiceMethodEntryEventId = 9213;
+        public const int DeliveryRouteBusinessServiceMethodExitEventId = 9214;
+        public const int DeliveryRouteDataServiceMethodEntryEventId = 9223;
+        public const int DeliveryRouteDataServiceMethodExitEventId = 9224;
+
+        public const int PostalAddressControllerMethodEntryEventId = 9303;
+        public const int PostalAddressControllerMethodExitEventId = 9304;
+        public const int PostalAddressBusinessServiceMethodEntryEventId = 9313;
+        public const int PostalAddressBusinessServiceMethodExitEventId = 9314;
+        public const int PostalAddressDataServiceMethodEntryEventId = 9323;
+        public const int PostalAddressDataServiceMethodExitEventId = 9324;
+        public const int PostalAddressIntegrationServiceMethodEntryEventId = 9333;
+        public const int PostalAddressIntegrationServiceMethodExitEventId = 9334;
+        public const int FileProcessingLogPriorityDataServiceMethodEntryEventId = 9343;
+        public const int FileProcessingLogPriorityDataServiceMethodExitEventId = 9344;
 
         public const int UpdateDeliveryPointAPIMethodEntryEventId = 9103;
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;

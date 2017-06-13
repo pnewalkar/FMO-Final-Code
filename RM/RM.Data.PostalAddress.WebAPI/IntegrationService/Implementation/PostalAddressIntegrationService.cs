@@ -15,6 +15,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation
@@ -178,51 +179,52 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         /// <returns>bool</returns>
         public async Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Integration.InsertDeliveryPoint"))
-            //{
-            string methodName = MethodBase.GetCurrentMethod().Name;
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.InsertDeliveryPoint"))
+            {
+                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                // method logic here
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                }));
+                if (!result.IsSuccessStatusCode)
+                {
+                    // Log error with statuscode
+                    var responseContent = result.ReasonPhrase;
+                    this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
+                    return false;
+                }
 
-            // method logic here
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            }));
-            if (!result.IsSuccessStatusCode)
-            {
-                // Log error with statuscode
-                var responseContent = result.ReasonPhrase;
-                this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
-                return false;
+                bool isDeliveryPointCreated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return Convert.ToBoolean(isDeliveryPointCreated);
             }
-
-            bool isDeliveryPointCreated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-            return Convert.ToBoolean(isDeliveryPointCreated);
-
-            // }
         }
 
         /// <summary> Add new notification to the database </summary> <param
         /// name="notificationDTO">NotificationDTO object</param> <returns>Task<int></returns>
         public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Integration.AddNewNotification"))
-            //{
-            string methodName = MethodBase.GetCurrentMethod().Name;
-
-            // method logic here
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.AddNewNotification"))
             {
-                // Log error with statuscode
-                var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
-                this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
-                return 0;
+                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                // method logic here
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // Log error with statuscode
+                    var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
+                    this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
+                    return 0;
+                }
+
+                int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                return status;
             }
-
-            int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-            return status;
-
-            // }
         }
 
         /// <summary>

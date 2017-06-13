@@ -7,6 +7,7 @@ using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService;
 using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService;
@@ -24,6 +25,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         private List<DeliveryRouteDTO> actualDeliveryRouteResult = null;
         private List<ReferenceDataDTO> actualReferenceDataCategoryResult = null;
         private List<ScenarioDTO> actualScenarioResult = null;
+        private Mock<ILoggingHelper> mockLoggingHelper;
 
         private Guid deliveryUnitID = System.Guid.NewGuid();
         private Guid operationalStateID = System.Guid.NewGuid();
@@ -104,6 +106,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
 
         protected override void OnSetup()
         {
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockScenarioDataService = CreateMock<IScenarioDataService>();
             mockDeliveryRouteIntegrationService = CreateMock<IDeliveryRouteIntegrationService>();
             mockBlockSequenceDataService = CreateMock<IBlockSequenceDataService>();
@@ -143,7 +146,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
 
             mockDeliveryRouteIntegrationService.Setup(n => n.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryDTOList));
 
-            testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteDataService.Object, mockScenarioDataService.Object, mockDeliveryRouteIntegrationService.Object, mockBlockSequenceDataService.Object);
+            testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteDataService.Object, mockScenarioDataService.Object, mockDeliveryRouteIntegrationService.Object, mockBlockSequenceDataService.Object, mockLoggingHelper.Object);
         }
     }
 }
