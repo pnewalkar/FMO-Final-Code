@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>386cf943-9de8-42ac-b434-f7476be49a50</ProjectGuid>
+    <ProjectGuid>ee57c445-0cb0-4dbd-b6d3-7464d1cdd0c5</ProjectGuid>
     <RootNamespace>RM.Data.AccessLink.WebAPI.Test</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
