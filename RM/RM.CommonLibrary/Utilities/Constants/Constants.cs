@@ -28,6 +28,8 @@
         public const string XMLFileFolderSettings = "XMLFileFolderSettings";
         public const string MethodExecutionStarted = " Method exceution started";
         public const string MethodExecutionCompleted = " Method exceution completed";
+        public const char LF = '\r';
+        public const char NL = '\n';
         public const string CRLF = "\r\n";
         public const string NEWLINE = "\n";
         public const string COLON = " : ";
@@ -203,6 +205,11 @@
 
         #endregion DeliveryPoints
 
+        #region Access Link
+        public const string NWLinkTypeException = "Network Link Type other than defined is checked.";
+        public const string DPUseIndicatorTypeException = "DP Use Indicator Type other than defined is checked.";
+        #endregion
+
         #region MyRegion
 
         public const string ConcurrencyMessage = "Data has been already updated by another user";
@@ -222,6 +229,7 @@
         public const string PDFGeneratorWebAPIName = "PDFGeneratorWebAPIName";
         public const string NotificationManagerWebAPIName = "NotificationManagerWebAPIName";
         public const string XSLTFilePath = "XSLTFilePath";
+        public const string PDFFileLoaction = "PDFFileLoaction";
 
         public const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
         public const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";

@@ -287,19 +287,23 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             return networkLinkDTO;
         }
 
-        /// <summary> Get the Network Links crossing access link </summary> <param
-        /// name="boundingBoxCoordinates">bbox coordinates</param> <param name="accessLink">access
-        /// link coordinate array</param> <returns>List<NetworkLinkDTO></returns>
+        /// <summary> Get the Network Links crossing the operational Object for a given extent</summary> 
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param> 
+        /// <param name="accessLink">accesslink coordinate array</param>
+        /// <returns>List<NetworkLinkDTO></returns>
         public List<NetworkLinkDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
         {
             List<NetworkLinkDTO> networkLinkDTOs = new List<NetworkLinkDTO>();
             DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+
             List<NetworkLink> crossingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Crosses(accessLink)).ToList();
             List<NetworkLinkDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(crossingNetworkLinks);
             networkLinkDTOs.AddRange(crossingNetworkLinkDTOs);
+
             List<NetworkLink> overLappingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Overlaps(accessLink)).ToList();
             List<NetworkLinkDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(overLappingNetworkLinks);
             networkLinkDTOs.AddRange(overLappingNetworkLinkDTOs);
+
             return networkLinkDTOs;
         }
     }

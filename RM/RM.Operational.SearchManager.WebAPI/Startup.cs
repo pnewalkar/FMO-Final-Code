@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
@@ -72,9 +73,20 @@ namespace RM.Operational.SearchManager.WebAPI
             //---Adding scope for all classes
             services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
 
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
             //---Adding scope for all classes
-            services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddSingleton<IExceptionHelper, ExceptionHelper>();
+            services.AddSingleton<ILoggingHelper, LoggingHelper>(serviceProvider =>
+            {
+                return new LoggingHelper(logWriter);
+            });
+
+            services.AddSingleton<IExceptionHelper, ExceptionHelper>(serviceProvider =>
+            {
+                return new ExceptionHelper(logWriter);
+            });
 
             // BusinessServices
             services.AddScoped<ISearchBusinessService, SearchBusinessService>();

@@ -6,11 +6,10 @@
     using System.Linq;
     using DataMiddleware;
     using HelperMiddleware;
-    using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-    using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
-    using RM.CommonLibrary.EntityFramework.DTO;
-    using RM.CommonLibrary.EntityFramework.Entities;
+    using Interfaces;
+    using MappingConfiguration;
+    using DTO;
+    using Entities;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -76,19 +75,14 @@
         public List<AccessLinkDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink)
         {
             List<AccessLinkDTO> accessLinkDTOs = new List<AccessLinkDTO>();
-
             DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
             List<AccessLink> crossingAccessLinks = DataContext.AccessLinks.AsNoTracking().Where(al => al.AccessLinkLine != null && al.AccessLinkLine.Intersects(extent) && al.AccessLinkLine.Crosses(accessLink)).ToList();
-
             List<AccessLinkDTO> crossingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDTO>(crossingAccessLinks);
-
             accessLinkDTOs.AddRange(crossingAccessLinkDTOs);
 
             List<AccessLink> overLappingAccessLinks = DataContext.AccessLinks.AsNoTracking().Where(al => al.AccessLinkLine != null && al.AccessLinkLine.Intersects(extent) && al.AccessLinkLine.Overlaps(accessLink)).ToList();
-
             List<AccessLinkDTO> overLappingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDTO>(overLappingAccessLinks);
-
             accessLinkDTOs.AddRange(overLappingAccessLinkDTOs);
 
             return accessLinkDTOs;
