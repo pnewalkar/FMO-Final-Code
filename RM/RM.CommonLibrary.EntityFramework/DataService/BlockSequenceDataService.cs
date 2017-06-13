@@ -1,26 +1,32 @@
-﻿using RM.CommonLibrary.DataMiddleware;
+﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.ResourceFile;
-using System;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data.Entity;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
     public class BlockSequenceDataService : DataServiceBase<BlockSequence, RMDBContext>, IBlockSequenceDataService
     {
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockSequenceDataService"/> class.
         /// </summary>
         /// <param name="databaseFactory">IDatabaseFactory reference</param>
-        public BlockSequenceDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        public BlockSequenceDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
         }
@@ -36,16 +42,23 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             bool isBlockSequencInserted = false;
             try
             {
-                var block_Guid = await (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
-                                        join b in DataContext.Blocks.AsNoTracking() on dr.Block_GUID equals b.ID
-                                        where b.BlockType == Constants.UnSequenced && dr.DeliveryRoute_GUID == deliveryRouteId
-                                        select b.ID).SingleOrDefaultAsync();
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateBlockSequenceForDeliveryPoint"))
+                {
+                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                BlockSequence blockSequenceEntity = GenericMapper.Map<BlockSequenceDTO, BlockSequence>(blockSequenceDTO);
-                blockSequenceEntity.Block_GUID = block_Guid;
-                DataContext.BlockSequences.Add(blockSequenceEntity);
-                DataContext.SaveChanges();
-                isBlockSequencInserted = true;
+                    var block_Guid = await (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
+                                            join b in DataContext.Blocks.AsNoTracking() on dr.Block_GUID equals b.ID
+                                            where b.BlockType == Constants.UnSequenced && dr.DeliveryRoute_GUID == deliveryRouteId
+                                            select b.ID).SingleOrDefaultAsync();
+
+                    BlockSequence blockSequenceEntity = GenericMapper.Map<BlockSequenceDTO, BlockSequence>(blockSequenceDTO);
+                    blockSequenceEntity.Block_GUID = block_Guid;
+                    DataContext.BlockSequences.Add(blockSequenceEntity);
+                    DataContext.SaveChanges();
+                    isBlockSequencInserted = true;
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
