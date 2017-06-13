@@ -13,6 +13,8 @@
         public const int DeliveryRouteAPIPriority = 8;
         public const int PostalAddressAPIPriority = 8;
         public const int FileProcessingLogPriority = 8;
+        public const int ThirdPartyAddressLocationAPIPriority = 8;
+        public const int NotificationAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -70,6 +72,22 @@
         public const int PostalAddressIntegrationServiceMethodExitEventId = 9334;
         public const int FileProcessingLogPriorityDataServiceMethodEntryEventId = 9343;
         public const int FileProcessingLogPriorityDataServiceMethodExitEventId = 9344;
+
+        public const int ThirdPartyAddressLocationControllerMethodEntryEventId = 9403;
+        public const int ThirdPartyAddressLocationControllerMethodExitEventId = 9404;
+        public const int ThirdPartyAddressLocationBusinessServiceMethodEntryEventId = 9413;
+        public const int ThirdPartyAddressLocationBusinessServiceMethodExitEventId = 9414;
+        public const int ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId = 9423;
+        public const int ThirdPartyAddressLocationIntegrationServiceMethodExitEventId = 9424;
+        public const int ThirdPartyAddressLocationDataServiceMethodEntryEventId = 9433;
+        public const int ThirdPartyAddressLocationDataServiceMethodExitEventId = 9434;
+
+        public const int NotificationControllerMethodEntryEventId = 9503;
+        public const int NotificationControllerMethodExitEventId = 9504;
+        public const int NotificationBusinessServiceMethodEntryEventId = 9513;
+        public const int NotificationBusinessServiceMethodExitEventId = 9514;
+        public const int NotificationDataServiceMethodEntryEventId = 9523;
+        public const int NotificationDataServiceMethodExitEventId = 9524;
 
         public const int UpdateDeliveryPointAPIMethodEntryEventId = 9103;
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;
