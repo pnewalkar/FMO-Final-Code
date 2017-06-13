@@ -8,13 +8,8 @@
 
         #region Priority
 
-        public const int CreateDeliveryPointPriority = 8;
-        public const int UpdateDeliveryPointPriority = 8;
-        public const int UpdateDeliveryPointLocationOnUDPRNPriority = 8;
-        public const int UpdateDeliveryPointLocationOnIDPriority = 8;
-        public const int InsertDeliveryPointPriority = 8;
-        public const int UpdateDeliveryPointAccessLinkCreationStatusPriority = 8;
-        public const int CreateAccessLinkPriority = 8;
+        public const int DeliveryPointAPIPriority = 8;
+        public const int AccessLinkAPIPriority = 8;
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
         public const int SaveDeliveryPointProcessPriority = 8;
@@ -33,15 +28,15 @@
 
         #region EventId
 
-        public const int CreateAccessLinkAPIMethodEntryEventId = 8003;
-        public const int CreateAccessLinkAPIMethodExitEventId = 8004;
+        public const int AccessLinkControllerMethodEntryEventId = 8003;
+        public const int AccessLinkControllerMethodExitEventId = 8004;
         public const int CreateManualAccessLinkAPIMethodEntryEventId = 8005;
         public const int CreateManualAccessLinkAPIMethodExitEventId = 8006;
 
-        public const int CreateDeliveryPointAPIMethodEntryEventId = 9003;
-        public const int CreateDeliveryPointAPIMethodExitEventId = 9004;
-        public const int CreateDeliveryPoinBusinessMethodEntryEventId = 9013;
-        public const int CreateDeliveryPoinBusinessMethodExitEventId = 9014;
+        public const int DeliveryPointControllerMethodEntryEventId = 9003;
+        public const int DeliveryPointControllerMethodExitEventId = 9004;
+        public const int DeliveryPointBusinessServiceMethodEntryEventId = 9013;
+        public const int DeliveryPointBusinessServiceMethodExitEventId = 9014;
 
         public const int UpdateDeliveryPointAPIMethodEntryEventId = 9103;
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;

@@ -46,10 +46,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
                 try
                 {
                     string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateAccessLinkPriority, LoggerTraceConstants.CreateAccessLinkAPIMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     success = accessLinkBusinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateAccessLinkPriority, LoggerTraceConstants.CreateAccessLinkAPIMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
                 }
                 catch (AggregateException ex)
                 {
@@ -80,7 +80,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
             {
                 string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateManualAccessLinkPriority, LoggerTraceConstants.CreateManualAccessLinkAPIMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 if (!ModelState.IsValid)
                 {
@@ -88,7 +88,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
                 }
 
                 bool isSaved = accessLinkBusinessService.CreateAccessLink(accessLinkDto);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateManualAccessLinkPriority, LoggerTraceConstants.CreateManualAccessLinkAPIMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
 
                 return Ok(isSaved);
             }
