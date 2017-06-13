@@ -80,7 +80,8 @@ function DeliveryPointController(
     });
     function initialize() {
         deliveryPointService.deliveryPointTypes().then(function (response) {
-            vm.deliveryPointTypes = [response[0]];
+            // vm.deliveryPointTypes = [response[0]];
+            vm.deliveryPointTypes = response;
         });
         deliveryPointService.deliveryPointUseType().then(function (response) {
             vm.dpUseType = response;
