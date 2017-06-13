@@ -64,14 +64,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         [Test]
         public void Test_GetRoadRoutes()
         {
-            try
-            {
-                var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid());
-                Assert.IsNotNull(result);
-            }
-            catch (Exception e)
-            {
-            }
+            var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid());
+            Assert.IsNotNull(result);
         }
 
         [Test]
@@ -141,6 +135,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test
 
             mockOsRoadLinkDataService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("abc");
             mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>())).Returns(new List<NetworkLinkDTO>() { networkLink });
+
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
 
             testCandidate = new NetworkManagerBusinessService(mockStreetNetworkDataService.Object, mockNetworkManagerIntegrationService.Object, mockOsRoadLinkDataService.Object, mockRoadNameDataService.Object);
         }
