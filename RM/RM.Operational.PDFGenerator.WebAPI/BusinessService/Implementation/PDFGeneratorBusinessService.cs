@@ -4,12 +4,16 @@ using System.Xml.Xsl;
 using Microsoft.Extensions.FileProviders;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
+using Fonet;
+using System;
+using RM.CommonLibrary.EntityFramework.DTO;
 
 namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
 {
     public class PDFGeneratorBusinessService : IPDFGeneratorBusinessService
     {
         private string xsltFilepath = string.Empty;
+        private string pdfFilepath = string.Empty;
         private IFileProvider fileProvider = default(IFileProvider);
 
         /// <summary>
@@ -21,6 +25,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
         public PDFGeneratorBusinessService(IFileProvider fileProvider, IConfigurationHelper configurationHelper)
         {
             this.fileProvider = fileProvider;
+            this.pdfFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PDFFileLoaction).ToString() : string.Empty;
             this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.XSLTFilePath).ToString() : string.Empty;
         }
 
@@ -37,8 +42,27 @@ namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
                 StringWriter strWriter = new StringWriter();
                 xslTransformer.Load(xsltReader);
                 xslTransformer.Transform(xmlReader, null, strWriter);
-                return strWriter.ToString();
+                return GenerateRouteLogSummaryPdf(strWriter.ToString());
             }
+        }
+
+        public PdfFileDTO GeneratePdfReport(string pdfFilename)
+        {
+            byte[] pdfBytes = File.ReadAllBytes(pdfFilepath + pdfFilename);
+            PdfFileDTO pdfFileDTO = new PdfFileDTO { Data = pdfBytes, FileName = pdfFilename };
+            return pdfFileDTO;
+        }
+
+        private string GenerateRouteLogSummaryPdf(string xml)
+        {
+            string pdfFileName = Guid.NewGuid() + ".pdf";
+            MemoryStream stream = new MemoryStream();
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(xml);
+            FonetDriver driver = FonetDriver.Make();
+            driver.Render(xmlDocument, stream);
+            File.WriteAllBytes(pdfFilepath + pdfFileName, stream.ToArray());
+            return pdfFileName;
         }
     }
 }

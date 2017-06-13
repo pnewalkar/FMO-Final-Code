@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using RM.Common.Notification.WebAPI.Authentication;
+using RM.CommonLibrary.Authentication;
 
 namespace RM.Common.Notification.WebAPI
 {
