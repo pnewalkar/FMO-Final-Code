@@ -115,6 +115,10 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
             mockScenarioDataService = CreateMock<IScenarioDataService>();
             mockDeliveryRouteDataService = CreateMock<IDeliveryRouteDataService>();
 
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             referenceDataCategoryDTOList = new List<ReferenceDataCategoryDTO>()
             {
                 new ReferenceDataCategoryDTO()
