@@ -2,7 +2,8 @@
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using RM.CommonLibrary.ExceptionMiddleware;
-using RM.Operational.SearchManager.WebAPI.ExceptionHandling.ResponseExceptionHandler;
+using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
+using System.Data.Entity.Infrastructure;
 
 namespace RM.Operational.SearchManager.WebAPI
 {
@@ -19,6 +20,7 @@ namespace RM.Operational.SearchManager.WebAPI
                 options.Map<ObjectDisposedException>(HttpStatusCode.RequestedRangeNotSatisfiable);
                 options.Map<InvalidOperationException>(HttpStatusCode.BadRequest);
                 options.Map<UnauthorizedAccessException>(HttpStatusCode.Unauthorized);
+                options.Map<DbUpdateException>(HttpStatusCode.Conflict);
 
                 options.Map<ServiceException>(HttpStatusCode.InternalServerError);
                 options.Map<DataAccessException>(HttpStatusCode.NotAcceptable);

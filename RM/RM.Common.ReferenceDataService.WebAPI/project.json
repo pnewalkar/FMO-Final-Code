@@ -45,6 +45,9 @@
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
         }
+      },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0"
       }
     }
   },

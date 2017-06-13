@@ -136,7 +136,6 @@ namespace RM.CommonLibrary.HttpHandler
         private async Task<string> GetSecurityToken()
         {
             object objtoken;
-            string tokenResponse = Constants.TokenResponse;
             var content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>(Constants.UserName, userName) });
             var result = await client.PostAsync(tokenGenerationURl, content);
             string token = await result.Content.ReadAsStringAsync();
