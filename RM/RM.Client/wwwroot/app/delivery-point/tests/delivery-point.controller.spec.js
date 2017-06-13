@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 
 describe('deliveryPoint Test', function () {
     
@@ -23,4 +23,4 @@ describe('deliveryPoint Test', function () {
             });
         });
     });
-});
+});*/

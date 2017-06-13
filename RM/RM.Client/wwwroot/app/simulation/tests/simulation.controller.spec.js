@@ -1,4 +1,4 @@
-﻿
+﻿/*
 describe('SimulationController', function () {
     var $controller, $stateParams, simulationService;
    
@@ -18,4 +18,4 @@ describe('SimulationController', function () {
        });
 
 
-});
+});*/

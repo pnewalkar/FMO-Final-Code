@@ -6,73 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>RM Spec</title>
+    <title>RM Specs</title>
     <!--favicon-->
     <link rel="icon" href="../app/images/RMGIcon.ico"/>
     <!--styles-->
-    <link rel="stylesheet" href="../bower_components/reset-css/reset.css">
-    <!--angular material style-->
-    <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css">
-    <!--angular material data-table style-->
-    <link rel="stylesheet" href="../bower_components/angular-material-data-table/dist/md-data-table.min.css">
-    <!--open layers style-->
-    <link rel="stylesheet" href="../node_modules/openlayers/dist/ol.css" />
-    <!--icons CSS toolkit -->
-    <link rel="stylesheet" href="../bower_components/components-font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="../bower_components/material-design-icons-iconfont/dist/material-design-icons.css" />
-    <!--custom styles-->
-    <link rel="stylesheet" href="../build/sass/variables.css"/>
-    <link rel="stylesheet" href="../build/sass/home/home.css" />
-    <link rel="stylesheet" href="../build/sass/map-view/map-view.css" />
-    <link rel="stylesheet" href="../build/sass/map-panel/map-panel.css" />
-    <link rel="stylesheet" href="../build/sass/search/search.css" />
-    <link rel="stylesheet" href="../build/sass/side-nav/side-nav.css" />
-    <link rel="stylesheet" href="../build/sass/map-toolbar/map-toolbar.css" />
-    <link rel="stylesheet" href="../build/sass/layers/layers.css" />
-    <link rel="stylesheet" href="../build/sass/route-log/route-log.css" />
-    <link rel="stylesheet" href="../build/sass/map-keys/map-keys.css" />
-    <link rel="stylesheet" href="../build/sass/advance-search/advance-search.css" />
-    <link rel="stylesheet" href="../build/sass/unit-selector/unit-selector.css" />
-    <link rel="stylesheet" href="../build/sass/delivery-point/delivery-point.css" />
-    <link rel="stylesheet" href="../build/sass/access-link/access-link.css" />
-
     <!--Jasmine -->
     <link href="../node_modules/jasmine-core/lib/jasmine-core/jasmine.css" rel="stylesheet" />
     <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
     <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine-html.js"></script>
     <script src="../node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
-
-    <!--angular material scripts-->
+    <!--angular scripts-->
     <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
-    <script src="../bower_components/angular-aria/angular-aria.min.js"></script>
-    <script src="../bower_components/angular-messages/angular-messages.min.js"></script>
-    <script src="../bower_components/angular-material/angular-material.min.js"></script>
     <script src="../bower_components/angular-route/angular-route.min.js"></script>
-    <script src="../bower_components/svg-assets-cache.js/svg-assets-cache.js"></script>
-   
-   <!-- Angular translate-->  
-    <script src="../bower_components/angular-translate/angular-translate.js"></script>
     <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
-    <!--angular material data-table script-->
-    <script src="../bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
-    <!--Open Layer-->
-    <script src="../node_modules/openlayers/dist/ol-debug.js"></script>    
-    <script src="../bower_components/proj4/dist/proj4.js"></script>
     <!--custom scripts-->
     <script src="./app.module.js"></script>
-    <script src="./app.config.js"></script>
-    <script src="./app.constant.js"></script>
-    <script src="./security/auth.Interceptor.service.js"></script>
-    <script src="./common/popup-setting.service.js"></script>
-    <script src="./common/common.constants.js"></script>
-    <!--Manage Access-->
-    <script src="./manage-access/manage-access.module.js"></script>
-    <script src="./manage-access/manage-access.service.js"></script>
-    <script src="./manage-access/manage-access.factory.js"></script>
-    <script src="./manage-access/manage-access.controller.js"></script>
-    <script src="./manage-access/manage-access.component.js"></script>
     <!--home-->
     <script src="./home/home.module.js"></script>
     <script src="./home/home.controller.js"></script>
@@ -83,8 +31,6 @@
      <script src="./route-log/route-log.factory.js"></script>
     <script src="./route-log/route-log.controller.js"></script>
     <script src="./route-log/route-log.component.js"></script>
-    <!--route log spec-->
-    <script src="./route-log/tests/route-log.controller.spec.js"></script>
     <!--side nav-->
     <script src="./side-nav/side-nav.module.js"></script>
     <script src="./side-nav/side-nav.filter.js"></script>
@@ -124,9 +70,6 @@
     <script src="./map-toolbar/map-toolbar.controller.js"></script>
     <script src="./map-toolbar/map-toolbar.service.js"></script>
     <script src="./map-toolbar/map-toolbar.component.js"></script>
-    <!--map toolbar spec-->
-    <script src="./map-toolbar/tests/map-toolbar.controller.spec.js"></script>
-    <!--<script src="./map-toolbar/tests/map-toolbar.service.spec.js"></script>-->
     <!--map panel-->
     <script src="./map-panel/map-panel.module.js"></script>
     <script src="./map-panel/map-panel.controller.js"></script>
@@ -160,21 +103,36 @@
     <script src="./delivery-point/delivery-point.service.js"></script>
     <script src="./delivery-point/delivery-point.controller.js"></script>
     <script src="./delivery-point/delivery-point.component.js"></script>
-    <!--reference Data-->
-    <script src="./reference-data/reference-data.module.js"></script>
-    <script src="./reference-data/reference-data.constant.js"></script>
-    <script src="./reference-data/reference-data.factory.js"></script>
-    <script src="./reference-data/reference-data.controller.js"></script>
-    <script src="./reference-data/reference-data.component.js"></script>
     <!--access link-->
     <script src="./access-link/access-link.module.js"></script>
     <script src="./access-link/access-link.factory.js"></script>
     <script src="./access-link/access-link.service.js"></script>
     <script src="./access-link/access-link.controller.js"></script>
     <script src="./access-link/access-link.component.js"></script>
+    <!-- specs -->
+    <!--route log spec-->
+    <script src="./route-log/tests/route-log.controller.spec.js"></script>
+    <!--map toolbar spec-->
+    <script src="./map-toolbar/tests/map-toolbar.controller.spec.js"></script>
+    <script src="./map-toolbar/tests/map-toolbar.service.spec.js"></script>
+    <!--delivery point spec-->
+    <script src="./delivery-point/tests/delivery-point.controller.spec.js"></script>
+    <!--map keys spec-->
+    <script src="./map-keys/tests/map-keys.controller.spec.js"></script>
+    <script src="./map-keys/tests/map-keys.service.spec.js"></script>
+    <!--map panel spec-->
+    <script src="./map-panel/tests/map-panel.controller.spec.js"></script>
+    <!--route simulation spec-->
+    <script src="./simulation/tests/simulation.controller.spec.js"></script>
 
 </head>
 <body>
-    
+    <div>
+        <ul>
+            <li><b>Done:-3</b></li>
+            <li><b>Pending:-13</b></li>
+            <li><b>Current:-Route Log</b></li>
+        </ul>
+    </div>
 </body>
 </html>
