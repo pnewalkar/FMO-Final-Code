@@ -1,4 +1,4 @@
-﻿<md-dialog>
+﻿<md-dialog aria-label="Print Map" class="mdDialog">
     <form name="vm.printMapForm">
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -21,22 +21,16 @@
             </div>
             <div layout="row">
                 <div layout="column" flex>
-
-                    <!--<md-input-container>
-                        <label>Orientation</label>
-                    </md-input-container>-->
-                    <md-input-container>
-                        <md-radio-group ng-model="vm.printOptions.orientation" layout="row">
+                        <label>{{ 'PRINT_MAP.ORIENTATION'| translate }}</label>
+                        <md-radio-group ng-model="vm.printOptions.orientation" layout="row" class="printMap">
                             <md-radio-button value="Landscape" class="md-primary">Landscape</md-radio-button>
                             <md-radio-button value="Portrait"> Portrait </md-radio-button>
                         </md-radio-group>
-                    </md-input-container>
 
                 </div>
             </div>
             <div layout="row">
                 <div layout="column" flex>
-
                     <md-input-container>
                         <label>{{ 'PRINT_MAP.SIZE'| translate }}</label>
                         <md-select ng-model="vm.printOptions.size">
@@ -63,6 +57,7 @@
             </md-button>
             <span flex></span>
             <md-button ng-disabled="(!vm.printMapForm.$valid)" ng-click="vm.createDeliveryPoint()" class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.GENERATE' | translate }}">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                 {{ 'GENERAL.BUTTONS.GENERATE' | translate }}
             </md-button>
         </md-dialog-actions>
