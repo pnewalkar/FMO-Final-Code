@@ -5,7 +5,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 
-namespace RM.DataManagement.UnitManager.WebAPI.Authentication
+namespace RM.CommonLibrary.Authentication
 {
     /// <summary>
     /// Adds a token generation endpoint to an application pipeline.

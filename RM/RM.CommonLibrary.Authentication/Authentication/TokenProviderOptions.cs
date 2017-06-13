@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace RM.DataManagement.UnitManager.WebAPI.Authentication
+namespace RM.CommonLibrary.Authentication
 {
     /// <summary>
     /// Provides options for <see cref="TokenProviderMiddleware"/>.

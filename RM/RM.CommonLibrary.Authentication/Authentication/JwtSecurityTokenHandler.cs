@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.IdentityModel.Tokens;
 
-namespace RM.DataManagement.UnitManager.WebAPI.Authentication
+namespace RM.CommonLibrary.Authentication
 {
     public class CustomJwtDataFormat : ISecureDataFormat<AuthenticationTicket>
     {

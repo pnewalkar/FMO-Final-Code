@@ -2,19 +2,12 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 
-namespace RM.DataManagement.UnitManager.WebAPI.Authentication
+namespace RM.CommonLibrary.Authentication
 {
     /// <summary>
     /// Token generator middleware component which is added to an HTTP pipeline.
@@ -24,23 +17,20 @@ namespace RM.DataManagement.UnitManager.WebAPI.Authentication
     /// </summary>
     public class TokenProviderMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly TokenProviderOptions _options;
-        private readonly ILogger _logger;
-        private readonly JsonSerializerSettings _serializerSettings;
+        private readonly RequestDelegate next;
+        private readonly TokenProviderOptions options;
+        private readonly JsonSerializerSettings serializerSettings;
 
         public TokenProviderMiddleware(
             RequestDelegate next,
-            IOptions<TokenProviderOptions> options,
-            ILoggerFactory loggerFactory)
+            IOptions<TokenProviderOptions> options)
         {
-            _next = next;
-            _logger = loggerFactory.CreateLogger<TokenProviderMiddleware>();
+            this.next = next;
 
-            _options = options.Value;
-            ThrowIfInvalidOptions(_options);
+            this.options = options.Value;
+            ThrowIfInvalidOptions(this.options);
 
-            _serializerSettings = new JsonSerializerSettings
+            this.serializerSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
             };
@@ -60,9 +50,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.Authentication
         public Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
-            if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
+            if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
             {
-                return _next(context);
+                return next(context);
             }
 
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
@@ -73,9 +63,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Authentication
                 return context.Response.WriteAsync("Bad request.");
             }
 
-            _logger.LogInformation("Handling request: " + context.Request.Path);
-
-            return _next(context);
+            return next(context);
         }
 
         private static void ThrowIfInvalidOptions(TokenProviderOptions options)
