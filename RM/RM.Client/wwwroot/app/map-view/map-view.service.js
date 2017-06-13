@@ -44,10 +44,12 @@ function mapService($http,
     };
     vm.layersForContext = [];
     vm.activeSelection = null;
-    vm.secondarySelections =[];
+    vm.secondarySelections = [];
     vm.routeName = "";
-    vm.selectionListeners =[];
+    vm.selectionListeners = [];
     vm.features = null;
+    vm.selectedDP = null;
+    vm.selectedLayer = null;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -440,11 +442,21 @@ function mapService($http,
 
         switch (button.name) {
             case "accesslink":
+                var dpCoordinates = coordinatesService.getCordinates();
+
+                function drawCondition(e) {
+                    if (dpCoordinates === '') {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
                 draw = new ol.interaction.Draw({
                     source: vm.drawingLayer.layer.getSource(),
                     type: button.shape,
                     style: style,
-                    condition: ol.events.condition.primaryAction,
+                    condition: drawCondition,
                     geometryFunction: setAccessLinkCoordinates,
                     finishCondition: finishCondition
                 });
@@ -466,8 +478,8 @@ function mapService($http,
         }
 
         var dpCoordinates = coordinatesService.getCordinates();
-        if(dpCoordinates && dpCoordinates !== ''){
-         coordinates[0] = dpCoordinates;   
+        if (dpCoordinates && dpCoordinates !== '') {
+            coordinates[0] = dpCoordinates;
         }
         geometry.setCoordinates(coordinates);
         return geometry;
@@ -476,12 +488,17 @@ function mapService($http,
     function setupAccessLink() {
         var startLineCoordinate = [];
         var endLineCoordinate = [];
+        if (vm.selectedDP && vm.selectedLayer) {
+            setSelections({
+                featureID: vm.selectedDP.getId(), layer: vm.selectedLayer
+            }, []);
+        }
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    removeInteraction('select');
+			    //removeInteraction('select');
 			    clearDrawingLayer(true);
-			    setSelections(null, []);
+			    // setSelections(null, []);
 			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
@@ -497,10 +514,10 @@ function mapService($http,
 			    });
 
 			    $rootScope.$broadcast('redirectTo', {
-			        
-			            feature: evt.feature,
-			            contextTitle: GlobalSettings.accessLinkLayerName
-			        
+
+			        feature: evt.feature,
+			        contextTitle: GlobalSettings.accessLinkLayerName
+
 			    });
 			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
 			    //    reload: 'accessLink'
@@ -549,16 +566,19 @@ function mapService($http,
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
                 setSelections({
-                                     featureID: e.selected[0].getId(), layer: lastLayer
+                    featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
                 var deliveryPointDetails = e.selected[0].getProperties();
+                coordinatesService.setCordinates(deliveryPointDetails.geometry.flatCoordinates);
+                guidService.setGuid(deliveryPointDetails.deliveryPointId);
                 showDeliveryPointDetails(deliveryPointDetails);
-                
-                             } else {
+                vm.selectedDP = e.selected[0];
+                vm.selectedLayer = lastLayer;
+            } else {
                 setSelections(null, []);
                 var deliveryPointDetails = null;
                 showDeliveryPointDetails(deliveryPointDetails);
-                             }
+            }
 
         });
         persistSelection();
@@ -703,7 +723,7 @@ function mapService($http,
             });
 
         }
-             }
+    }
 
     function showDeliveryPointDetails(deliveryPointDetails) {
         if (deliveryPointDetails != null) {
@@ -726,8 +746,7 @@ function mapService($http,
                       }, { reload: true });
                   });
         }
-        else
-        {
+        else {
             $state.go('deliveryPointDetails', {
 
                 selectedDeliveryPoint: deliveryPointDetails
