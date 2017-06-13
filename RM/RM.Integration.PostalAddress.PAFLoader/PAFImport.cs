@@ -176,11 +176,6 @@
 
                     // Add the systemWatcher to the list
                     listFileSystemWatcher.Add(fileSWatch);
-
-                    // Record a log entry into Windows Event Log
-
-                    // CustomLogEvent(String.Format( "Starting to monitor files with extension ({0})
-                    // in the folder ({1})", fileSWatch.Filter, fileSWatch.Path));
                 }
             }
         }
