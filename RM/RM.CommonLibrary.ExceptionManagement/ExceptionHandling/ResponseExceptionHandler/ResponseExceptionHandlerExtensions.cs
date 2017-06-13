@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 
-namespace RM.Common.ActionManager.WebAPI.ExceptionHandling.ResponseExceptionHandler
+namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
 {
     public static class ResponseExceptionHandlerExtensions
     {

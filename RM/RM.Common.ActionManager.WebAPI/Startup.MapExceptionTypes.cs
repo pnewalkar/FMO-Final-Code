@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
-using RM.Common.ActionManager.WebAPI.ExceptionHandling.ResponseExceptionHandler;
+using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
 using RM.CommonLibrary.ExceptionMiddleware;
 
 namespace RM.Common.ActionManager.WebAPI

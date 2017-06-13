@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace RM.Common.ActionManager.WebAPI.ExceptionHandling.ResponseExceptionHandler
+namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
 {
     public class Error
     {

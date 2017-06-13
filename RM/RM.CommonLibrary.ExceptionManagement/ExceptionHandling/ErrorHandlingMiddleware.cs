@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using RM.Common.ReferenceData.WebAPI.ExceptionHandling.ResponseExceptionHandler;
+using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 
-namespace RM.Common.ReferenceData.WebAPI.ExceptionHandling
+namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
 {
     /// <summary>
     /// Error Handling Middleware. Interceptor for handling all the errors in controllers.
@@ -50,9 +50,7 @@ namespace RM.Common.ReferenceData.WebAPI.ExceptionHandling
             }
             catch (Exception ex)
             {
-                loggingHelper.Log(ex, TraceEventType.Error);
-                Exception newException;
-                exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
+                exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap);
                 if (ex.InnerException == null)
                 {
                     await WriteExceptionToContextAsync(context, ex);
@@ -84,8 +82,7 @@ namespace RM.Common.ReferenceData.WebAPI.ExceptionHandling
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    var errorCode = GenerateErrorCode(_options.ErrorCodePrefix);
-                    response = CreateErrorResponse(errorCode, _options.DefaultErrorMessage);
+                    response = CreateErrorResponse(_options.DefaultErrorMessage);
                 }
 
                 var result = JsonConvert.SerializeObject(response, _options.SerializerSettings);
@@ -129,20 +126,8 @@ namespace RM.Common.ReferenceData.WebAPI.ExceptionHandling
         /// <returns></returns>
         private Error CreateErrorResponse(string message)
         {
-            return CreateErrorResponse(GenerateErrorCode(_options.ErrorCodePrefix), message);
-        }
-
-        /// <summary>
-        /// Creates the error response.
-        /// </summary>
-        /// <param name="errorCode">The error code.</param>
-        /// <param name="message">The message.</param>
-        /// <returns></returns>
-        private Error CreateErrorResponse(string errorCode, string message)
-        {
             return new Error
             {
-                ErrorCode = errorCode,
                 Message = message
             };
         }

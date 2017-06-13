@@ -22,6 +22,7 @@
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options": "1.1.1",
     "Newtonsoft.Json": "10.0.2",
+    "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
     "StyleCop.Analyzers": "1.0.0"
   },
 

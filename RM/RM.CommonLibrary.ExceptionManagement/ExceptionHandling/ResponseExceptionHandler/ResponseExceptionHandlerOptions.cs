@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.HelperMiddleware;
 
-namespace RM.Common.ReferenceData.WebAPI.ExceptionHandling.ResponseExceptionHandler
+namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
 {
     public class ResponseExceptionHandlerOptions
     {
