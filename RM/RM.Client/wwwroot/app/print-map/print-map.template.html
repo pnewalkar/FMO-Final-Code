@@ -33,7 +33,7 @@
                 <div layout="column" flex>
                     <md-input-container>
                         <label>{{ 'PRINT_MAP.SIZE'| translate }}</label>
-                        <md-select ng-model="vm.printOptions.size">
+                        <md-select ng-model="vm.printOptions.size" class="printMapOption">
                             <md-option ng-repeat="type in vm.sizeList" ng-value="type" ng-selected="{{type.value=='A4' ? true : false}}">
                                 {{type.value}}
                             </md-option>
@@ -53,6 +53,7 @@
 
         <md-dialog-actions layout="row">
             <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}">
+                <i class="fa fa-times" aria-hidden="true"></i>
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
