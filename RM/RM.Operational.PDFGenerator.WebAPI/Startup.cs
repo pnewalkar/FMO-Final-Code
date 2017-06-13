@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.ExceptionMiddleware;
@@ -68,9 +69,21 @@ namespace RM.Operational.PDFGenerator.WebAPI
             services.AddScoped<IPDFGeneratorBusinessService, PDFGeneratorBusinessService>();
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
 
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
             //---Adding scope for all classes
-            services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddSingleton<IExceptionHelper, ExceptionHelper>();
+            services.AddSingleton<ILoggingHelper, LoggingHelper>(serviceProvider =>
+            {
+                return new LoggingHelper(logWriter);
+            });
+
+            services.AddSingleton<IExceptionHelper, ExceptionHelper>(serviceProvider =>
+            {
+                return new ExceptionHelper(logWriter);
+            });
+
             var embeddedProvider = new EmbeddedFileProvider(Assembly.GetEntryAssembly());
             services.AddSingleton<IFileProvider>(embeddedProvider);
         }

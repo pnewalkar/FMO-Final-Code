@@ -60,7 +60,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.ExceptionHandling
             }
             catch (Exception ex)
             {
-                loggingHelper.Log(ex, TraceEventType.Error);
+                // loggingHelper.Log(ex, TraceEventType.Error);
                 Exception newException;
                 exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap, out newException);
                 if (ex.InnerException == null)

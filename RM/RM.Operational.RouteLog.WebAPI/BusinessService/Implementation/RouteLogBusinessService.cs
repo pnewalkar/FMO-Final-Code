@@ -34,25 +34,24 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="deliveryRouteDto">deliveryRouteDto</param>
         /// <returns>deliveryRouteDto</returns>
-        public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        public async Task<string> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
         {
-            string pdXslFo = string.Empty;
+            string pdfFilename = string.Empty;
             var routeLogSummaryModelDTO = await routeLogIntegrationService.GenerateRouteLog(deliveryRouteDto);
             if (routeLogSummaryModelDTO != null)
             {
                 routeLogSummaryModelDTO.RouteLogSequencedPoints = GetRouteSummary(routeLogSummaryModelDTO.RouteLogSequencedPoints);
-                pdXslFo = await routeLogIntegrationService.GenerateRouteLogSummaryReport(XmlSerializer(routeLogSummaryModelDTO), xsltFilepath);
+                pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(XmlSerializer(routeLogSummaryModelDTO), xsltFilepath);
             }
 
-            return GenerateRouteLogSummaryPdf(pdXslFo);
+            return pdfFilename;
         }
-        
         /// <summary>
         /// Attempts to add the specified address to the group
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>True if the address could be added to the group, otherwise false</returns>
-        public bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
         {
             // Determine whether the address should be part of the current group
             //
