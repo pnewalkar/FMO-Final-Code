@@ -37,6 +37,17 @@
         public const int DeliveryPointControllerMethodExitEventId = 9004;
         public const int DeliveryPointBusinessServiceMethodEntryEventId = 9013;
         public const int DeliveryPointBusinessServiceMethodExitEventId = 9014;
+        public const int DeliveryPointDataServiceMethodEntryEventId = 9023;
+        public const int DeliveryPointDataServiceMethodExitEventId = 9024;
+        public const int DeliveryPointIntegrationServiceMethodEntryEventId = 9033;
+        public const int DeliveryPointIntegrationServiceMethodExitEventId = 9034;
+
+        public const int AccessLinkBusinessMethodEntryEventId = 9103;
+        public const int AccessLinkBusinessMethodExitEventId = 9104;
+        public const int AccessLinkDataServiceMethodEntryEventId = 9113;
+        public const int AccessLinkDataServiceMethodExitEventId = 9114;
+        public const int AccessLinkIntegrationMethodEntryEventId = 9123;
+        public const int AccessLinkIntegrationMethodExitEventId = 9124;
 
         public const int UpdateDeliveryPointAPIMethodEntryEventId = 9103;
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;

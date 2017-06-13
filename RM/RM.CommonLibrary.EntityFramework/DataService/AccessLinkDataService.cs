@@ -3,23 +3,29 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
+    using System.Diagnostics;
     using System.Linq;
+    using System.Reflection;
     using DataMiddleware;
-    using HelperMiddleware;
-    using Interfaces;
-    using MappingConfiguration;
     using DTO;
     using Entities;
+    using HelperMiddleware;
+    using Interfaces;
+    using LoggingMiddleware;
+    using MappingConfiguration;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
     /// </summary>
     public class AccessLinkDataService : DataServiceBase<AccessLink, RMDBContext>, IAccessLinkDataService
     {
-        public AccessLinkDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public AccessLinkDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
         }
+
         /// <summary>
         /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
@@ -40,30 +46,37 @@
         /// <returns>Success.</returns>
         public bool CreateAccessLink(AccessLinkDTO accessLinkDto)
         {
-            bool accessLinkCreationSuccess = false;
-
-            AccessLink accessLink = new AccessLink
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAccessLink"))
             {
-                ID = Guid.NewGuid(),
-                OperationalObjectPoint = accessLinkDto.OperationalObjectPoint,
-                NetworkIntersectionPoint = accessLinkDto.NetworkIntersectionPoint,
-                AccessLinkLine = accessLinkDto.AccessLinkLine,
-                ActualLengthMeter = accessLinkDto.ActualLengthMeter,
-                WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
-                Approved = accessLinkDto.Approved,
-                OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
-                NetworkLink_GUID = accessLinkDto.NetworkLink_GUID,
-                AccessLinkType_GUID = accessLinkDto.AccessLinkType_GUID,
-                LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
-                LinkDirection_GUID = accessLinkDto.LinkDirection_GUID,
-                OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
-            };
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            DataContext.AccessLinks.Add(accessLink);
+                bool accessLinkCreationSuccess = false;
 
-            accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
+                AccessLink accessLink = new AccessLink
+                {
+                    ID = Guid.NewGuid(),
+                    OperationalObjectPoint = accessLinkDto.OperationalObjectPoint,
+                    NetworkIntersectionPoint = accessLinkDto.NetworkIntersectionPoint,
+                    AccessLinkLine = accessLinkDto.AccessLinkLine,
+                    ActualLengthMeter = accessLinkDto.ActualLengthMeter,
+                    WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
+                    Approved = accessLinkDto.Approved,
+                    OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
+                    NetworkLink_GUID = accessLinkDto.NetworkLink_GUID,
+                    AccessLinkType_GUID = accessLinkDto.AccessLinkType_GUID,
+                    LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
+                    LinkDirection_GUID = accessLinkDto.LinkDirection_GUID,
+                    OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
+                };
 
-            return accessLinkCreationSuccess;
+                DataContext.AccessLinks.Add(accessLink);
+
+                accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
+
+                return accessLinkCreationSuccess;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+            }
         }
 
         /// <summary>
@@ -106,6 +119,5 @@
 
             return null;
         }
-
     }
 }

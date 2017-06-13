@@ -15,20 +15,25 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
     public class AccessLinkController : RMBaseController
     {
         #region Member Variables
+
         private IAccessLinkBusinessService accessLinkBusinessService;
 
         private ILoggingHelper loggingHelper;
-        #endregion
+
+        #endregion Member Variables
 
         #region Constructor
+
         public AccessLinkController(IAccessLinkBusinessService accessLinkBusinessService, ILoggingHelper loggingHelper)
         {
             this.accessLinkBusinessService = accessLinkBusinessService;
             this.loggingHelper = loggingHelper;
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Methods
+
         /// <summary>
         /// This method is used to create automatic Access Link .
         /// </summary>
@@ -45,7 +50,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
                 bool success = false;
                 try
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodBase.GetCurrentMethod().Name;
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     success = accessLinkBusinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
@@ -78,7 +83,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateManualAccessLink"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodBase.GetCurrentMethod().Name;
 
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
@@ -131,7 +136,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         {
             bool isValid = accessLinkBusinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
             return Ok(isValid);
-        } 
-        #endregion
+        }
+
+        #endregion Methods
     }
 }
