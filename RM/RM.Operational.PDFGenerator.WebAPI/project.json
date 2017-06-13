@@ -24,7 +24,8 @@
     "Fonet": "1.0.0",
     "StyleCop.Analyzers": "1.0.0",
     "Microsoft.Extensions.FileProviders.Embedded": "1.0.0",
-    "RM.CommonLibrary.ExceptionManagement": "1.0.0-*"
+    "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
+    "RM.CommonLibrary.Authentication": "1.0.0-*"
   },
 
   "tools": {

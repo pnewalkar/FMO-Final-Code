@@ -21,6 +21,7 @@
     "Microsoft.IdentityModel.Tokens": "5.1.3",
     "Microsoft.SqlServer.Types": "14.0.314.76",
     "Newtonsoft.Json": "10.0.2",
+    "RM.CommonLibrary.Authentication": "1.0.0-*",
     "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
     "StyleCop.Analyzers": "1.0.0",
     "System.Data.SqlClient": "4.1.0",
