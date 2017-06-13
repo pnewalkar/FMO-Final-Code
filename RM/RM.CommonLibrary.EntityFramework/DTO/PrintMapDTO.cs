@@ -8,6 +8,10 @@
 
         public string CurrentScale { get; set; }
 
+        public string PdfOrientation { get; set; }
+
+        public string PdfSize { get; set; }
+
         public int MapScale { get; set; }
 
         public string EncodedString { get; set; }
