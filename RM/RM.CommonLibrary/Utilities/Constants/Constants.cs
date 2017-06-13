@@ -229,6 +229,7 @@
         public const string PDFGeneratorWebAPIName = "PDFGeneratorWebAPIName";
         public const string NotificationManagerWebAPIName = "NotificationManagerWebAPIName";
         public const string XSLTFilePath = "XSLTFilePath";
+        public const string PDFFileLoaction = "PDFFileLoaction";
 
         public const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
         public const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";

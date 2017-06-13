@@ -10,6 +10,6 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="deliveryRouteDto">deliveryRouteDto</param>
         /// <returns>deliveryRouteDto</returns>
-        Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto);
+        Task<string> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto);
     }
 }

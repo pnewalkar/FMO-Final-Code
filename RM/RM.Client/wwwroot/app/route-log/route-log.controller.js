@@ -21,7 +21,6 @@ function RouteLogController(routeLogService,
     vm.closeWindow = closeWindow;
     vm.selectClass = "routeSearch md-text";
     vm.generateRouteLogSummary = generateRouteLogSummary;
-    vm.emptyID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
     vm.generateSummaryReport = false;
     vm.initialize();
     function initialize() {
@@ -109,31 +108,26 @@ function RouteLogController(routeLogService,
             });
         }
     }
-    function displayRouteLogPdfReport(data) {
-        if (data) {
-            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                var fileName = generateGuid() + ".pdf";
-                var byteCharacters = atob(data);
-                var byteNumbers = new Array(byteCharacters.length);
-                for (var i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+    function displayRouteLogPdfReport(pdfFileName) {
+        if (pdfFileName) {
+            routeLogService.generatePdf(pdfFileName).then(function (response) {
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    var byteCharacters = atob(response.data);
+                    var byteNumbers = new Array(byteCharacters.length);
+                    for (var i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    var byteArray = new Uint8Array(byteNumbers);
+                    var blob = new Blob([byteArray], {
+                        type: 'application/pdf'
+                    });
+                    window.navigator.msSaveOrOpenBlob(blob, response.fileName);
+                } else {
+                    var base64EncodedPDF = response.data;
+                    var dataURI = "data:application/pdf;base64," + base64EncodedPDF;
+                    window.open(dataURI, "_blank");
                 }
-                var byteArray = new Uint8Array(byteNumbers);
-                var blob = new Blob([byteArray], {
-                    type: 'application/pdf'
-                });
-                window.navigator.msSaveOrOpenBlob(blob, fileName);
-            } else {
-                var base64EncodedPDF = data;
-                var dataURI = "data:application/pdf;base64," + base64EncodedPDF;
-                window.open(dataURI, "_blank");
-            }
+            });
         }
-    }
-    function generateGuid() {
-        return vm.emptyID.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
     }
 }
