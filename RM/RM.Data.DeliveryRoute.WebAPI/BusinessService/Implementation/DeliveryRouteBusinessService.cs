@@ -38,6 +38,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             this.scenarioDataService = scenarioDataService;
             this.deliveryRouteIntegrationService = deliveryRouteIntegrationService;
             this.blockSequenceDataService = blockSequenceDataService;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
