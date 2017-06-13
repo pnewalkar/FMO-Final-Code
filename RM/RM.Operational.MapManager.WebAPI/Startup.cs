@@ -19,6 +19,7 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.BusinessService;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace RM.Operational.MapManager.WebAPI
 {
@@ -73,9 +74,22 @@ namespace RM.Operational.MapManager.WebAPI
                     new CamelCasePropertyNamesContractResolver();
             });
 
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
             //---Adding scope for all classes
-            services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddSingleton<IExceptionHelper, ExceptionHelper>();
+            services.AddSingleton<ILoggingHelper, LoggingHelper>(serviceProvider =>
+            {
+                return new LoggingHelper(logWriter);
+            });
+
+            services.AddSingleton<IExceptionHelper, ExceptionHelper>(serviceProvider =>
+            {
+                return new ExceptionHelper(logWriter);
+            });
+
+            //---Adding scope for all classes
             services.AddSingleton<IMapBusinessService, MapBusinessService>();
             services.AddSingleton<IMapIntegrationService, MapIntegrationService>();
 

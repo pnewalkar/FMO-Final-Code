@@ -10,6 +10,6 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="printMapDTO">printMapDTO</param>
         /// <returns>printMapDTO</returns>
-        Task<byte[]> GenerateReportWithMap(PrintMapDTO printMapDTO);
+        Task<string> GenerateReportWithMap(PrintMapDTO printMapDTO);
     }
 }

@@ -32,22 +32,12 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="printMapDTO">printMapDTO</param>
         /// <returns>deliveryRouteDto</returns>
-        public async Task<byte[]> GenerateReportWithMap(PrintMapDTO printMapDTO)
+        public async Task<string> GenerateReportWithMap(PrintMapDTO printMapDTO)
         {
             string pdXslFo = string.Empty;
-            var routeLogSummaryModelDTO = await mapIntegrationService.GenerateReportWithMap("", "");
+           // var pdfFileName = await mapIntegrationService.GenerateReportWithMap("", "");
 
-            return GeneratePdf(pdXslFo);
-        }
-
-        private byte[] GeneratePdf(string xml)
-        {
-            MemoryStream stream = new MemoryStream();
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(xml);
-            FonetDriver driver = FonetDriver.Make();
-            driver.Render(xmlDocument, stream);
-            return stream.ToArray();
+            return "cf62faa5-619d-4244-be08-6c249bcde479.pdf";
         }
 
         /// <summary>
