@@ -100,7 +100,8 @@ function mapService($http,
         setSelectedObjectsVisibility: setSelectedObjectsVisibility,
         removeInteraction: removeInteraction,
         deleteAccessLinkFeature: deleteAccessLinkFeature,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        showDeliveryPointDetails: showDeliveryPointDetails,
+        clearDrawingLayer: clearDrawingLayer
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
