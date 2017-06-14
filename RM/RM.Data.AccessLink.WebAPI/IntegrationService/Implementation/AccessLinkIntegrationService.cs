@@ -60,8 +60,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -86,8 +85,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -107,8 +105,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -129,7 +126,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "nameValuePairs?appGroupName=" + category);
                 if (!result.IsSuccessStatusCode)
                 {
-                    // LOG ERROR WITH Statuscode
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
@@ -153,8 +149,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -178,8 +173,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -199,8 +193,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -214,7 +207,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Status code
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -240,8 +232,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
