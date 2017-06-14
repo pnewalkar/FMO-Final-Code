@@ -6,6 +6,7 @@ namespace RM.CommonLibrary.Utilities.HelperMiddleware
 {
     public class MethodHelper
     {
+        //public static MethodBase GetRealMethodFromAsyncMethod(MethodBase asyncMethod)
         public static MethodBase GetRealMethodFromAsyncMethod(MethodBase asyncMethod)
         {
             var generatedType = asyncMethod.DeclaringType;
@@ -20,5 +21,7 @@ namespace RM.CommonLibrary.Utilities.HelperMiddleware
             var foundMethod = matchingMethods.Single();
             return foundMethod;
         }
+
+        public static string GetActualAsyncMethodName([CallerMemberName]string name = null) => name;
     }
 }

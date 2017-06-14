@@ -95,7 +95,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.AddDeliveryPoint"))
                 {
                     CreateDeliveryPointModelDTO createDeliveryPointModelDTO = null;
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (!ModelState.IsValid)
@@ -135,7 +135,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPoint"))
                 {
                     UpdateDeliveryPointModelDTO updateDeliveryPointModelDTO = null;
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (!ModelState.IsValid)
@@ -292,7 +292,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPointLocationOnUDPRN"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     int deliveryPointGuid = await businessService.UpdateDeliveryPointLocationOnUDPRN(JsonConvert.DeserializeObject<DeliveryPointDTO>(deliveryPointDTO));
@@ -325,7 +325,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPointLocationOnID"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     Guid deliveryPointGuid = await businessService.UpdateDeliveryPointLocationOnID(JsonConvert.DeserializeObject<DeliveryPointDTO>(deliveryPointDTO));
@@ -424,7 +424,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.InsertDeliveryPoint"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     bool success = await businessService.InsertDeliveryPoint(JsonConvert.DeserializeObject<DeliveryPointDTO>(objDeliveryPointJson));

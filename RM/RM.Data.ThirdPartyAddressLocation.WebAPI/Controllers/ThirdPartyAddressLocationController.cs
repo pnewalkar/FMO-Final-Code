@@ -91,7 +91,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveUSRDetails"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (!ModelState.IsValid)

@@ -148,7 +148,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CreateBlockSequenceForDeliveryPoint"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isBlockSequencInserted = false;

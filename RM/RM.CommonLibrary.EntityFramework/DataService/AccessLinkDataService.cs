@@ -24,6 +24,7 @@
         public AccessLinkDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>

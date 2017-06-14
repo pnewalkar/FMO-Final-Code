@@ -190,7 +190,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
             {
                 using (logginghelper.RMTraceManager.StartTrace("Controller.CreateBlockSequenceForDeliveryPoint"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     logginghelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var result = await deliveryRouteLogBusinessService.CreateBlockSequenceForDeliveryPoint(deliveryRouteId, deliveryPointId);
