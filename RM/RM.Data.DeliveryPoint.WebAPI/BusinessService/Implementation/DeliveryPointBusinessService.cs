@@ -142,8 +142,9 @@
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                return await deliveryPointsDataService.InsertDeliveryPoint(objDeliveryPoint);
+                var isInserted = await deliveryPointsDataService.InsertDeliveryPoint(objDeliveryPoint);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return isInserted;
             }
         }
 
@@ -332,8 +333,9 @@
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                return await deliveryPointsDataService.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDto);
+                var status = await deliveryPointsDataService.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDto);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return status;
             }
         }
 
@@ -349,8 +351,9 @@
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                return await deliveryPointsDataService.UpdateDeliveryPointLocationOnID(deliveryPointDto);
+                var deliveryPointId = await deliveryPointsDataService.UpdateDeliveryPointLocationOnID(deliveryPointDto);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return deliveryPointId;
             }
         }
 
@@ -386,8 +389,9 @@
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                return deliveryPointsDataService.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDTO);
+                var isDeliveryPointUpdated = deliveryPointsDataService.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDTO);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointUpdated;
             }
         }
 
