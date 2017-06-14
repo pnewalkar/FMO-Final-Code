@@ -31,6 +31,7 @@
         private AddDeliveryPointDTO addDeliveryPointDTO1;
         private AddDeliveryPointDTO addDeliveryPointDTO2;
         private AddDeliveryPointDTO addDeliveryPointDTO3;
+        private PostalAddressDTO dtoPostalAddresses;
 
         [Test]
         public void Test_UpdateAddressValidTestCase()
@@ -77,11 +78,30 @@
         }
 
         [Test]
+        public void Test_GetPostalAddress()
+        {
+            SetUpdataWithDeliverypoints();
+            var result = testCandidate.GetPostalAddress(dtoPostalAddresses);
+            Assert.NotNull(result);
+        }
+
+        [Test]
         public void Test_DeleteAddressWithoutDeliveryPoint()
         {
             SetUpdataWithOutDeliverypoints();
             List<int> lstUDPRNS = new List<int>() { 158623, 85963 };
             var result = testCandidate.DeleteNYBPostalAddress(lstUDPRNS, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
+            mockFmoDbContext.Verify(n => n.SaveChangesAsync(), Times.Once);
+            Assert.NotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        [Test]
+        public void Test_UpdateAddress()
+        {
+            SetUpdataWithDeliverypoints();
+            List<int> lstUDPRNS = new List<int>() { 158623, 85963 };
+            var result = testCandidate.UpdateAddress(dtoPostalAddresses, "abc", new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
             mockFmoDbContext.Verify(n => n.SaveChangesAsync(), Times.Once);
             Assert.NotNull(result);
             Assert.IsTrue(result.Result);
@@ -495,6 +515,27 @@
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
             };
 
+            dtoPostalAddresses = new PostalAddressDTO()
+            {
+                BuildingName = "bldg1",
+                BuildingNumber = 1,
+                SubBuildingName = "subbldg",
+                OrganisationName = "org",
+                DepartmentName = "department",
+                Thoroughfare = "ThoroughFare1",
+                DependentThoroughfare = "DependentThoroughFare1",
+                Postcode = "PostcodeNew",
+                PostTown = "PostTown",
+                POBoxNumber = "POBoxNumber",
+                UDPRN = 12345,
+                PostcodeType = "xyz",
+                SmallUserOrganisationIndicator = "indicator",
+                DeliveryPointSuffix = "DeliveryPointSuffix",
+                PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
+                ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
+            };
+
             var mockPostalAddressEnumerable = new DbAsyncEnumerable<PostalAddress>(lstPostalAddress);
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockLoggingHelper = CreateMock<ILoggingHelper>();
@@ -518,6 +559,7 @@
             mockFmoDbContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
+            mockPostalAddressDBSet.Setup(x => x.Include("DeliveryPoint"));
 
             mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddress);
@@ -783,7 +825,6 @@
             mockPostalAddress.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockPostalAddressEnumerable.AsQueryable().Expression);
             mockPostalAddress.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockPostalAddressEnumerable.AsQueryable().ElementType);
             mockPostalAddress.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<PostalAddress>)mockPostalAddressEnumerable).GetAsyncEnumerator());
-            mockPostalAddress.Setup(x => x.Include("DeliveryRoutePostcode"));
 
             mockPostcode.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockPostcodeEnumerable.AsQueryable().Provider);
             mockPostcode.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockPostcodeEnumerable.AsQueryable().Expression);
