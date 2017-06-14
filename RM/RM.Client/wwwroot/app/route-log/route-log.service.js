@@ -47,7 +47,7 @@ referenceDataConstants) {
     }
     function loadRouteLogStatus() {
         var deferred = $q.defer();
-        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.OperationalStatus.AppCategoryName).then(function (response) {
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.DeliveryRouteOperationalStatus.AppCategoryName).then(function (response) {
             deferred.resolve(response.listItems);
         });
         return deferred.promise;

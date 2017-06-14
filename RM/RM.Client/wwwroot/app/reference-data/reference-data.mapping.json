@@ -1,8 +1,8 @@
 {
   "CategoryNames": [
     {
-      "AppCategoryName": "AccessLinkStatus",
-      "DBCategoryName": "Access Link Status",
+      "AppCategoryName": "PostalAddressType",
+      "DBCategoryName": "Postal Address Type",
       "ReferenceDataNames": []
     },
     {
@@ -36,14 +36,107 @@
       "ReferenceDataNames": []
     },
     {
-      "AppCategoryName": "UI_RouteLog_Status",
-      "DBCategoryName": "UI_RouteLog_Status",
-      "ReferenceDataNames": []
-    },
-    {
       "AppCategoryName": "UI_DeliveryPoint_Type",
       "DBCategoryName": "UI_DeliveryPoint_Type",
       "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "PDF_PageSize",
+      "DBCategoryName": "PDF_PageSize",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "PDF_PageSize_A0",
+          "DBReferenceDataName": "PDF_PageSize_A0"
+        },
+        {
+          "AppReferenceDataName": "PDF_PageSize_A1",
+          "DBReferenceDataName": "PDF_PageSize_A1"
+        },
+        {
+          "AppReferenceDataName": "PDF_PageSize_A2",
+          "DBReferenceDataName": "PDF_PageSize_A2"
+        },
+        {
+          "AppReferenceDataName": "PDF_PageSize_A3",
+          "DBReferenceDataName": "PDF_PageSize_A3"
+        },
+        {
+          "AppReferenceDataName": "PDF_PageSize_A4",
+          "DBReferenceDataName": "PDF_PageSize_A4"
+        }
+      ]
+    },
+    {
+      "AppCategoryName": "PrintMap_DPI",
+      "DBCategoryName": "PrintMap_DPI",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "PrintMap_DPI",
+          "DBReferenceDataName": "PrintMap_DPI"
+        }
+      ]
+    },
+    {
+      "AppCategoryName": "PrintMap_mmPerInch",
+      "DBCategoryName": "PrintMap_mmPerInch",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "PrintMap_mmPerInch",
+          "DBReferenceDataName": "PrintMap_mmPerInch"
+        }
+      ]
+    },
+    {
+      "AppCategoryName": "PrintMap_ImageWidthmm",
+      "DBCategoryName": "PrintMap_ImageWidthmm",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "PrintMap_ImageWidthmm_A0",
+          "DBReferenceDataName": "PrintMap_ImageWidthmm_A0"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageWidthmm_A1",
+          "DBReferenceDataName": "PrintMap_ImageWidthmm_A1"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageWidthmm_A3",
+          "DBReferenceDataName": "PrintMap_ImageWidthmm_A3"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageWidthmm_A4",
+          "DBReferenceDataName": "PrintMap_ImageWidthmm_A4"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageWidthmm_A2",
+          "DBReferenceDataName": "PrintMap_ImageWidthmm_A2"
+        }
+      ]
+    },
+    {
+      "AppCategoryName": "PrintMap_ImageHeightmm",
+      "DBCategoryName": "PrintMap_ImageHeightmm",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "PrintMap_ImageHeightmm_A0",
+          "DBReferenceDataName": "PrintMap_ImageHeightmm_A0"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageHeightmm_A1",
+          "DBReferenceDataName": "PrintMap_ImageHeightmm_A1"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageHeightmm_A2",
+          "DBReferenceDataName": "PrintMap_ImageHeightmm_A2"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageHeightmm_A3",
+          "DBReferenceDataName": "PrintMap_ImageHeightmm_A3"
+        },
+        {
+          "AppReferenceDataName": "PrintMap_ImageHeightmm_A4",
+          "DBReferenceDataName": "PrintMap_ImageHeightmm_A4"
+        }
+      ]
     },
     {
       "AppCategoryName": "UI_SearchRules",
@@ -213,8 +306,8 @@
       "ReferenceDataNames": []
     },
     {
-      "AppCategoryName": "OperationalStatus",
-      "DBCategoryName": "Operational Status",
+      "AppCategoryName": "DeliveryPointOperationalStatus",
+      "DBCategoryName": "Delivery Point Operational Status",
       "ReferenceDataNames": []
     }
   ]
