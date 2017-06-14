@@ -7,6 +7,9 @@ using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
 using System;
 using System.Diagnostics;
 using RM.CommonLibrary.LoggingMiddleware;
+using System.Reflection;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.CommonLibrary.HelperMiddleware;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
 {
@@ -86,13 +89,21 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveUSRDetails"))
                 {
-                    return BadRequest(ModelState);
-                }
+                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                await this.thirdPartyAddressLocationBusinessService.SaveUSRDetails(addressLocationUsrpostdtos);
-                return Ok("Saved successfully");
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    await this.thirdPartyAddressLocationBusinessService.SaveUSRDetails(addressLocationUsrpostdtos);
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                    return Ok("Saved successfully");
+                }
             }
             catch (AggregateException ae)
             {

@@ -29,6 +29,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         public BlockSequenceDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
