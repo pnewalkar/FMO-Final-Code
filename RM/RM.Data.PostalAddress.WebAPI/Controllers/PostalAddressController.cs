@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 
@@ -39,19 +41,25 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                bool isSaved = false;
-                if (!ModelState.IsValid)
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.SaveAddressdetails"))
                 {
-                    return BadRequest(ModelState);
-                }
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                if (lstAddressDetails != null && lstAddressDetails.Count > 0)
-                {
-                    isSaved = await businessService.SavePostalAddressForNYB(lstAddressDetails, strFileName);
+                    bool isSaved = false;
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    if (lstAddressDetails != null && lstAddressDetails.Count > 0)
+                    {
+                        isSaved = await businessService.SavePostalAddressForNYB(lstAddressDetails, strFileName);
+                        return Ok(isSaved);
+                    }
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(isSaved);
                 }
-
-                return Ok(isSaved);
             }
             catch (AggregateException ae)
             {
@@ -75,19 +83,25 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                bool IsPAFSaved = false;
-                if (!ModelState.IsValid)
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.SavePAFDetails"))
                 {
-                    return BadRequest(ModelState);
-                }
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                if (postalAddress != null && postalAddress.Count > 0)
-                {
-                    IsPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
+                    bool IsPAFSaved = false;
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    if (postalAddress != null && postalAddress.Count > 0)
+                    {
+                        IsPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
+                        return Ok(IsPAFSaved);
+                    }
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(IsPAFSaved);
                 }
-
-                return Ok(IsPAFSaved);
             }
             catch (AggregateException ae)
             {
@@ -261,8 +275,15 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                return Ok(deliveryPointAddressDetails);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressAndDeliveryPoint"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(deliveryPointAddressDetails);
+                }
             }
             catch (AggregateException ae)
             {

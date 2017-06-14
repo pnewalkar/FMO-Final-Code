@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Diagnostics;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
@@ -13,6 +15,8 @@ using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {
@@ -24,11 +28,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         private string networkManagerDataWebAPIName = string.Empty;
         private string deliveryPointManagerDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion Property Declarations
 
         #region Constructor
-        public AccessLinkIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
+        public AccessLinkIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
@@ -221,7 +226,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
         public async Task<bool> UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO)
         {
-            var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointAccessLinkCreationStatus"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
@@ -238,6 +248,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             var success = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
 
             return success;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+            }
         }
 
         /// <summary> This method is used to get the delivery points crossing an operational object </summary> 

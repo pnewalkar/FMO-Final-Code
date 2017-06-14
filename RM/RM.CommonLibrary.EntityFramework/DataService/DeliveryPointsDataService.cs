@@ -12,6 +12,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     using System.Reflection;
     using System.Threading.Tasks;
     using AutoMapper;
+    using CommonLibrary.Utilities.HelperMiddleware;
     using ExceptionMiddleware;
     using HelperMiddleware;
     using LoggingMiddleware;
@@ -109,33 +110,40 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>bool</returns>
         public async Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
-            bool isDeliveryPointInserted = false;
-            DeliveryPoint newDeliveryPoint = new DeliveryPoint();
-            if (objDeliveryPoint != null)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.InsertDeliveryPoint"))
             {
-                try
-                {
-                    newDeliveryPoint.ID = objDeliveryPoint.ID;
-                    newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
-                    newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
-                    newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
-                    newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
-                    newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
-                    newDeliveryPoint.LocationProvider_GUID = objDeliveryPoint.LocationProvider_GUID;
-                    newDeliveryPoint.DeliveryPointUseIndicator_GUID = objDeliveryPoint.DeliveryPointUseIndicator_GUID;
-                    DataContext.DeliveryPoints.Add(newDeliveryPoint);
-                    await DataContext.SaveChangesAsync();
-                    isDeliveryPointInserted = true;
-                }
-                catch (Exception dbUpdateException)
-                {
-                    isDeliveryPointInserted = false;
-                    DataContext.Entry(newDeliveryPoint).State = EntityState.Unchanged;
-                    throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
-                }
-            }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return isDeliveryPointInserted;
+                bool isDeliveryPointInserted = false;
+                DeliveryPoint newDeliveryPoint = new DeliveryPoint();
+                if (objDeliveryPoint != null)
+                {
+                    try
+                    {
+                        newDeliveryPoint.ID = objDeliveryPoint.ID;
+                        newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
+                        newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
+                        newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
+                        newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
+                        newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
+                        newDeliveryPoint.LocationProvider_GUID = objDeliveryPoint.LocationProvider_GUID;
+                        newDeliveryPoint.DeliveryPointUseIndicator_GUID = objDeliveryPoint.DeliveryPointUseIndicator_GUID;
+                        DataContext.DeliveryPoints.Add(newDeliveryPoint);
+                        await DataContext.SaveChangesAsync();
+                        isDeliveryPointInserted = true;
+                    }
+                    catch (Exception dbUpdateException)
+                    {
+                        isDeliveryPointInserted = false;
+                        DataContext.Entry(newDeliveryPoint).State = EntityState.Unchanged;
+                        throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
+                    }
+                }
+
+                return isDeliveryPointInserted;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+            }
         }
 
         /// <summary>
@@ -392,22 +400,29 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             int status = 0;
             try
             {
-                using (RMDBContext rmDbContext = new RMDBContext())
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateDeliveryPointLocationOnUDPRN"))
                 {
-                    DeliveryPoint deliveryPoint =
-                        rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.UDPRN == deliveryPointDto.UDPRN);
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    if (deliveryPoint != null)
+                    using (RMDBContext rmDbContext = new RMDBContext())
                     {
-                        deliveryPoint.Longitude = deliveryPointDto.Longitude;
-                        deliveryPoint.Latitude = deliveryPointDto.Latitude;
-                        deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
-                        deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
-                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
-                        status = await rmDbContext.SaveChangesAsync();
-                    }
+                        DeliveryPoint deliveryPoint =
+                            rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.UDPRN == deliveryPointDto.UDPRN);
 
-                    return status;
+                        if (deliveryPoint != null)
+                        {
+                            deliveryPoint.Longitude = deliveryPointDto.Longitude;
+                            deliveryPoint.Latitude = deliveryPointDto.Latitude;
+                            deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
+                            deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
+                            deliveryPoint.Positioned = deliveryPointDto.Positioned;
+                            status = await rmDbContext.SaveChangesAsync();
+                        }
+
+                        return status;
+                    }
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -439,25 +454,32 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             try
             {
-                using (RMDBContext rmDbContext = new RMDBContext())
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateDeliveryPointLocationOnID"))
                 {
-                    DeliveryPoint deliveryPoint =
-                        rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    if (deliveryPoint != null)
+                    using (RMDBContext rmDbContext = new RMDBContext())
                     {
-                        deliveryPoint.Longitude = deliveryPointDto.Longitude;
-                        deliveryPoint.Latitude = deliveryPointDto.Latitude;
-                        deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
-                        deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
-                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
+                        DeliveryPoint deliveryPoint =
+                            rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
 
-                        rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
-                        rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
-                        await rmDbContext.SaveChangesAsync();
+                        if (deliveryPoint != null)
+                        {
+                            deliveryPoint.Longitude = deliveryPointDto.Longitude;
+                            deliveryPoint.Latitude = deliveryPointDto.Latitude;
+                            deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
+                            deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
+                            deliveryPoint.Positioned = deliveryPointDto.Positioned;
+
+                            rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
+                            rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
+                            await rmDbContext.SaveChangesAsync();
+                        }
+
+                        return deliveryPoint.ID;
                     }
-
-                    return deliveryPoint.ID;
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -633,26 +655,33 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
         public bool UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO)
         {
-            bool isDeliveryPointUpdated = false;
-            using (RMDBContext rmDbContext = new RMDBContext())
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateDeliveryPointAccessLinkCreationStatus"))
             {
-                DeliveryPoint deliveryPoint = rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                if (deliveryPoint != null)
+                bool isDeliveryPointUpdated = false;
+                using (RMDBContext rmDbContext = new RMDBContext())
                 {
-                    deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
+                    DeliveryPoint deliveryPoint = rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDTO.ID);
 
-                    rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
-                    rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
-                    isDeliveryPointUpdated = rmDbContext.SaveChanges() > 0;
+                    if (deliveryPoint != null)
+                    {
+                        deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
+
+                        rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
+                        rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
+                        isDeliveryPointUpdated = rmDbContext.SaveChanges() > 0;
+                    }
                 }
-            }
 
-            return isDeliveryPointUpdated;
+                return isDeliveryPointUpdated;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+            }
         }
 
         /// <summary> This method is used to get the delivery points crossing the operationalObject for a given extent</summary>
-        /// <param name="boundingBoxCoordinates">bbox coordinates</param> 
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
         /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<DeliveryPointDTO></returns>
         public List<DeliveryPointDTO> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject)

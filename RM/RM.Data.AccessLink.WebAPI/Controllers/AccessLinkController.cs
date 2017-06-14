@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Controllers
@@ -13,20 +15,25 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
     public class AccessLinkController : RMBaseController
     {
         #region Member Variables
+
         private IAccessLinkBusinessService accessLinkBusinessService;
 
         private ILoggingHelper loggingHelper;
-        #endregion
+
+        #endregion Member Variables
 
         #region Constructor
+
         public AccessLinkController(IAccessLinkBusinessService accessLinkBusinessService, ILoggingHelper loggingHelper)
         {
             this.accessLinkBusinessService = accessLinkBusinessService;
             this.loggingHelper = loggingHelper;
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Methods
+
         /// <summary>
         /// This method is used to create automatic Access Link .
         /// </summary>
@@ -38,32 +45,31 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         [Route("AccessLink/{operationalObjectId}/{operationalObjectTypeId}")]
         public IActionResult CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Controller.CreaEteAccessLink"))
-            //{
-            bool success = false;
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAccessLink"))
             {
-                loggingHelper.Log("Method CreateAccessLink entered", TraceEventType.Verbose, null, "General", 8, 8003, "Trace Log");
-
-                success = accessLinkBusinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
-
-                loggingHelper.Log("Method CreateAccessLink exited", TraceEventType.Verbose, null, "General", 8, 8004, "Trace Log");
-            }
-            catch (AggregateException ex)
-            {
-                foreach (var exception in ex.InnerExceptions)
+                bool success = false;
+                try
                 {
-                    loggingHelper.Log(exception, TraceEventType.Error);
+                    string methodName = MethodBase.GetCurrentMethod().Name;
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    success = accessLinkBusinessService.CreateAccessLink(operationalObjectId, operationalObjectTypeId);
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
+                }
+                catch (AggregateException ex)
+                {
+                    foreach (var exception in ex.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ex.Flatten().InnerException;
+
+                    throw realExceptions;
                 }
 
-                var realExceptions = ex.Flatten().InnerException;
-
-                throw realExceptions;
+                return Ok(success);
             }
-
-            return Ok(success);
-
-            // }
         }
 
         /// <summary>
@@ -75,21 +81,22 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         [HttpPost("AccessLink/Manual")]
         public IActionResult CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateManualAccessLink"))
-            //{
-            loggingHelper.Log("Method CreateManualAccessLink entered", TraceEventType.Verbose, null, "General", 8, 8103, "Trace Log");
-
-            if (!ModelState.IsValid)
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateManualAccessLink"))
             {
-                return BadRequest(ModelState);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                bool isSaved = accessLinkBusinessService.CreateAccessLink(accessLinkDto);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                return Ok(isSaved);
             }
-
-            bool isSaved = accessLinkBusinessService.CreateAccessLink(accessLinkDto);
-
-            loggingHelper.Log("Method CreateManualAccessLink exited", TraceEventType.Verbose, null, "General", 8, 8104, "Trace Log");
-            return Ok(isSaved);
-
-            //}
         }
 
         /// <summary>
@@ -129,7 +136,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         {
             bool isValid = accessLinkBusinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
             return Ok(isValid);
-        } 
-        #endregion
+        }
+
+        #endregion Methods
     }
 }
