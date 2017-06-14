@@ -8,12 +8,6 @@ namespace RM.CommonLibrary.ExceptionMiddleware
 {
     public class ExceptionHelper : IExceptionHelper
     {
-        #region Member Variables
-
-        private static bool isInitialized = false;
-
-        #endregion Member Variables
-
         #region Public Methods
 
         public ExceptionHelper(LogWriter logWriter)
