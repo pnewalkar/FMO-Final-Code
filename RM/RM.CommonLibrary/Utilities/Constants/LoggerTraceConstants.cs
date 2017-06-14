@@ -15,6 +15,7 @@
         public const int FileProcessingLogPriority = 8;
         public const int ThirdPartyAddressLocationAPIPriority = 8;
         public const int NotificationAPIPriority = 8;
+        public const int SearchManagerAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -36,8 +37,13 @@
 
         public const int AccessLinkControllerMethodEntryEventId = 8003;
         public const int AccessLinkControllerMethodExitEventId = 8004;
-        public const int CreateManualAccessLinkAPIMethodEntryEventId = 8005;
-        public const int CreateManualAccessLinkAPIMethodExitEventId = 8006;
+
+        public const int SearchManagerControllerMethodEntryEventId = 8103;
+        public const int SearchManagerControllerMethodExitEventId = 8104;
+        public const int SearchManagerBusinessServiceMethodEntryEventId = 8113;
+        public const int SearchManagerBusinessServiceMethodExitEventId = 8114;
+        public const int SearchManagerIntegrationServiceMethodEntryEventId = 8123;
+        public const int SearchManagerIntegrationServiceMethodExitEventId = 8124;
 
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;

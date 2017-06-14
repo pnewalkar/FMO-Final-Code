@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO;
@@ -35,6 +35,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchBasicSearchDetails"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var deliveryRoutes = await searchIntegrationService.FetchDeliveryRouteForBasicSearch(searchText);
                 var deliveryRouteCount = await searchIntegrationService.GetDeliveryRouteCount(searchText);
@@ -49,8 +50,9 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                 var streetNetworkCount = await searchIntegrationService.GetStreetNameCount(searchText);
 
                 var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
-                return searchResultDTO;
 
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return searchResultDTO;
             }
         }
 
@@ -62,18 +64,21 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <returns>search Result Dto</returns>
         public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Business.FetchAdvanceSearchDetails"))
-            //{
-            var deliveryRoutes = await searchIntegrationService.FetchDeliveryRouteForAdvanceSearch(searchText);
-            var postcodes = await searchIntegrationService.FetchPostCodeUnitForAdvanceSearch(searchText);
-            var streetNames = await searchIntegrationService.FetchStreetNamesForAdvanceSearch(searchText);
-            var deliveryPoints = await searchIntegrationService.FetchDeliveryPointsForAdvanceSearch(searchText);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchAdvanceSearchDetails"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
+                var deliveryRoutes = await searchIntegrationService.FetchDeliveryRouteForAdvanceSearch(searchText);
+                var postcodes = await searchIntegrationService.FetchPostCodeUnitForAdvanceSearch(searchText);
+                var streetNames = await searchIntegrationService.FetchStreetNamesForAdvanceSearch(searchText);
+                var deliveryPoints = await searchIntegrationService.FetchDeliveryPointsForAdvanceSearch(searchText);
 
-            return searchResultDTO;
+                var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
 
-            // }
+                return searchResultDTO;
+            }
         }
 
         /// <summary>
