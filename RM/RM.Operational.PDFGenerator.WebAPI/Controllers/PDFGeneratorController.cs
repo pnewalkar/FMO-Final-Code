@@ -24,8 +24,8 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
         {
             try
             {
-                var xslFo = pdfGeneratorBusinessService.GenerateRouteLogSummaryReport(xml, fileName);
-                return Ok(xslFo);
+                var pdfFile = pdfGeneratorBusinessService.GenerateRouteLogSummaryReport(xml, fileName);
+                return Ok(pdfFile);
             }
             catch (Exception ex)
             {
@@ -34,5 +34,23 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
             }
 
         }
+
+        [Route("PDFReports/{pdfFileName}")]
+        [HttpGet]
+        public IActionResult GeneratePdfReport(string pdfFileName)
+        {
+            try
+            {
+                var pdfData = pdfGeneratorBusinessService.GeneratePdfReport(pdfFileName);
+                return Ok(pdfData);
+            }
+            catch (Exception ex)
+            {
+                this.logginghelper.Log(ex, TraceEventType.Error);
+                throw;
+            }
+
+        }
+
     }
 }

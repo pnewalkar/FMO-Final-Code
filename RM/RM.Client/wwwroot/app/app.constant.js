@@ -114,3 +114,6 @@ GlobalSettings.getRouteSimulationScenario = "/RouteSimulation/FetchDeliveryScena
 GlobalSettings.getRouteSimulationRoutes = "/RouteSimulation/FetchDeliveryRoute?operationStateID={0}&deliveryScenarioID={1}&fields=DisplayText,ID"
 //-----Unit Selector Factory---------------//
 GlobalSettings.getDeliveryUnit = "/UnitManager/Unit";
+
+//-----Pdf Generator Factory---------------//
+GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
