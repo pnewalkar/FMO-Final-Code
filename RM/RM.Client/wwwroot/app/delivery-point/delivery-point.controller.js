@@ -4,6 +4,7 @@ angular
 
 DeliveryPointController.$inject = [
         'mapToolbarService',
+        'mapService',
         '$scope',
         '$mdDialog',
         'popUpSettingService',
@@ -18,6 +19,7 @@ DeliveryPointController.$inject = [
 
 function DeliveryPointController(
     mapToolbarService,
+    mapService,
     $scope,
     $mdDialog,
     popUpSettingService,
@@ -65,6 +67,7 @@ function DeliveryPointController(
     vm.disable = true;
     vm.items = [];
     vm.hide = $stateParams.hide;
+    vm.dpIsChecked = false;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
@@ -149,8 +152,14 @@ function DeliveryPointController(
     }
 
     function toggle(item) {
-        vm.selectedItem = item;
-        setDP();
+        vm.dpIsChecked = !vm.dpIsChecked;
+        if (vm.dpIsChecked === true) {
+            vm.selectedItem = item;
+            setDP();
+        }
+        else {
+            resetDP();
+        }
     };
 
     function openAlert() {
@@ -188,12 +197,18 @@ function DeliveryPointController(
                 });
             }
         }, function () {
+            mapService.clearDrawingLayer(true);
         });
     };
 
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+    }
+
+    function resetDP() {
+        var shape = mapToolbarService.getShapeForButton('point');
+        $scope.$emit('mapToolChange', { "name": 'select', "shape": shape, "enabled": true });
     }
 
     function savePositionedDeliveryPoint() {
@@ -229,7 +244,7 @@ function DeliveryPointController(
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
-                setDP();
+            //    setDP();
                 vm.closeWindow();
 
             }
@@ -257,7 +272,7 @@ function DeliveryPointController(
         }
         else {
             manualDeliveryPointPosition(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion)
-            setDP();
+          //  setDP();
         }
     }
 
