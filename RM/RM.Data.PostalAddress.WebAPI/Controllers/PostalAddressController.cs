@@ -43,7 +43,7 @@ namespace Fmo.API.Services.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.SaveAddressdetails"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     bool isSaved = false;
@@ -85,7 +85,7 @@ namespace Fmo.API.Services.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.SavePAFDetails"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     bool IsPAFSaved = false;
@@ -277,7 +277,7 @@ namespace Fmo.API.Services.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressAndDeliveryPoint"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);

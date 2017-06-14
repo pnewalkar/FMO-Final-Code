@@ -40,7 +40,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.AddNewNotification"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
@@ -81,7 +81,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteNotificationbyUDPRNAndAction"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 int deleteCount = default(int);

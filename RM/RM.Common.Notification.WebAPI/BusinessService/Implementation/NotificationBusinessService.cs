@@ -29,7 +29,7 @@ namespace RM.Common.Notification.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.AddNewNotification"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
@@ -64,7 +64,7 @@ namespace RM.Common.Notification.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.DeleteNotificationbyUDPRNAndAction"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try

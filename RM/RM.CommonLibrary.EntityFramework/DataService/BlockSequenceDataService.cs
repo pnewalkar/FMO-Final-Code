@@ -45,7 +45,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateBlockSequenceForDeliveryPoint"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var block_Guid = await (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()

@@ -100,7 +100,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateAddressAndDeliveryPoint"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/savedeliverypointaddress/", addDeliveryPointDTO);
@@ -161,7 +161,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateBlockSequenceForDeliveryPoint"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 blockSequenceWebAPIName = blockSequenceWebAPIName + "deliveryroute/deliverypointsequence/" + deliveryRouteId + "/" + deliveryPointId + "/";

@@ -36,7 +36,7 @@ namespace RM.Common.Notification.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.AddNewNotification"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     int status = await notificationBusinessService.AddNewNotification(notificationDTO);
@@ -97,7 +97,7 @@ namespace RM.Common.Notification.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteNotificationbyUDPRNAndAction"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     int status = await notificationBusinessService.DeleteNotificationbyUDPRNAndAction(udprn, actionname);

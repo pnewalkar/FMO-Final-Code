@@ -112,7 +112,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.InsertDeliveryPoint"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isDeliveryPointInserted = false;
@@ -402,7 +402,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateDeliveryPointLocationOnUDPRN"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     using (RMDBContext rmDbContext = new RMDBContext())
@@ -456,7 +456,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateDeliveryPointLocationOnID"))
                 {
-                    string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     using (RMDBContext rmDbContext = new RMDBContext())

@@ -228,7 +228,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointAccessLinkCreationStatus"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings

@@ -8,6 +8,7 @@ using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.Operational.SearchManager.WebAPI.Integration
 {
@@ -51,6 +52,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         /// <returns></returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
         {
+            string methodName = MethodHelper.GetActualAsyncMethodName();
             HttpResponseMessage result = await httpHandler.GetAsync(deliveryRouteManagerDataWebAPIName + "deliveryroutes/basic/" + searchText);
 
             if (!result.IsSuccessStatusCode)

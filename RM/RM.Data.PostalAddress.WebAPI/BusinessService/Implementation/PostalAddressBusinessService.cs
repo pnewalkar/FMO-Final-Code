@@ -79,7 +79,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.SavePostalAddressForNYB"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isPostalAddressInserted = false;
@@ -144,7 +144,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.SavePAFDetails"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isPostalAddressProcessed = false;
@@ -185,7 +185,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.SaveDeliveryPointProcess"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
             // Call postalAddressIntegrationService to get reference data
@@ -494,7 +494,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.SavePAFRecords"))
             {
-                string methodName = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
             FileProcessingLogDTO objFileProcessingLog = null;

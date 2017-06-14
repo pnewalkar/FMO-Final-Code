@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.SearchManager.WebAPI.Integration;
 
 namespace RM.Operational.SearchManager.WebAPI.BusinessService
@@ -31,24 +32,26 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <returns>The result set after filtering the values.</returns>
         public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Business.FetchBasicSearchDetails"))
-            //{
-            var deliveryRoutes = await searchIntegrationService.FetchDeliveryRouteForBasicSearch(searchText);
-            var deliveryRouteCount = await searchIntegrationService.GetDeliveryRouteCount(searchText);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchBasicSearchDetails"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
 
-            var postcodes = await searchIntegrationService.FetchPostCodeUnitForBasicSearch(searchText);
-            var postCodeCount = await searchIntegrationService.GetPostCodeUnitCount(searchText);
+                var deliveryRoutes = await searchIntegrationService.FetchDeliveryRouteForBasicSearch(searchText);
+                var deliveryRouteCount = await searchIntegrationService.GetDeliveryRouteCount(searchText);
 
-            var deliveryPoints = await searchIntegrationService.FetchDeliveryPointsForBasicSearch(searchText);
-            var deliveryPointsCount = await searchIntegrationService.GetDeliveryPointsCount(searchText);
+                var postcodes = await searchIntegrationService.FetchPostCodeUnitForBasicSearch(searchText);
+                var postCodeCount = await searchIntegrationService.GetPostCodeUnitCount(searchText);
 
-            var streetNames = await searchIntegrationService.FetchStreetNamesForBasicSearch(searchText);
-            var streetNetworkCount = await searchIntegrationService.GetStreetNameCount(searchText);
+                var deliveryPoints = await searchIntegrationService.FetchDeliveryPointsForBasicSearch(searchText);
+                var deliveryPointsCount = await searchIntegrationService.GetDeliveryPointsCount(searchText);
 
-            var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
-            return searchResultDTO;
+                var streetNames = await searchIntegrationService.FetchStreetNamesForBasicSearch(searchText);
+                var streetNetworkCount = await searchIntegrationService.GetStreetNameCount(searchText);
 
-            // }
+                var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
+                return searchResultDTO;
+
+            }
         }
 
         /// <summary>
