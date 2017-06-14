@@ -10,3 +10,7 @@ md-list-item, .version {
 
 .version {
   color: #ffffff; }
+
+.versionBox {
+  position: absolute;
+  bottom: 0px; }

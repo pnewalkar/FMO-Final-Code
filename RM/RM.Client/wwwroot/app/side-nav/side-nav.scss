@@ -16,3 +16,8 @@ md-list-item{
     @extend %body-content;
     @include font-color($white);
 }
+
+.versionBox{
+	position:absolute;
+	bottom:0px;
+}
