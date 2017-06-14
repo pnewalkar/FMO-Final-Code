@@ -99,6 +99,11 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             ThirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), Constants.USRACTION)).Returns(Task.FromResult(1));
             ThirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(new PostalAddressDTO() {BuildingName ="abcd" }));
             ThirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.AddNewNotification(It.IsAny<NotificationDTO>())).Returns(Task.FromResult(1));
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, ThirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
         }
     }
