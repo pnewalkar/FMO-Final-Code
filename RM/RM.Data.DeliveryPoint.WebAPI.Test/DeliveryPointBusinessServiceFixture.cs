@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -11,7 +10,6 @@ using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
 using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
 
@@ -110,7 +108,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public void Test_FetchDeliveryPointsForBasicSearch()
         {
-            var result = testCandidate.FetchDeliveryPointsForBasicSearch("abc",Guid.NewGuid());
+            var result = testCandidate.FetchDeliveryPointsForBasicSearch("abc", Guid.NewGuid());
             Assert.IsNotNull(result);
         }
 

@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using NUnit.Framework;
 using RM.Common.Notification.WebAPI.BusinessService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
@@ -55,6 +56,10 @@ namespace RM.Common.Notification.WebAPI.Test
             mockNotificationDataService.Setup(x => x.CheckIfNotificationExists(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(true);
             mockNotificationDataService.Setup(x => x.DeleteNotificationbyUDPRNAndAction(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(1);
             mockNotificationDataService.Setup(x => x.GetNotificationByUDPRN(It.IsAny<int>())).ReturnsAsync(new NotificationDTO() { });
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             testCandidate = new NotificationBusinessService(mockNotificationDataService.Object, mockLoggingHelper.Object);
         }
