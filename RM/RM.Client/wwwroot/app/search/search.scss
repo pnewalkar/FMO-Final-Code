@@ -68,7 +68,7 @@ i.fa.fa-map-marker.route{
     @include padding(3px 3px 3px 3px);
     @extend %body-content;
     @include cursor(pointer);
-    width: 126%;
+    @include width(265px);
     @include background($white,none);
     @include border(1px solid $recess-grey);
     @include margin(-2px 0px -3px 0px);
