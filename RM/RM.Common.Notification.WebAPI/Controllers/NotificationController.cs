@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.Common.Notification.WebAPI.BusinessService;
 using RM.CommonLibrary.EntityFramework.DTO;
-using System;
-using System.Diagnostics;
 using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Common.Notification.WebAPI.Controllers

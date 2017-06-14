@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
-using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
-using System;
-using System.Diagnostics;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
 {

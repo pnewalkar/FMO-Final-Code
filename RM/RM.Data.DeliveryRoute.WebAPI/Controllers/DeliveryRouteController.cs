@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService;
 using RM.CommonLibrary.LoggingMiddleware;
-using System.Diagnostics;
+using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
 {
