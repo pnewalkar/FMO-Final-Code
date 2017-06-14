@@ -83,6 +83,7 @@
         public const string NameValuePair = "nameValuePair";
         public const string XsltFilePath = "XSLTFilePath";
         public const string RefDataXMLFileName = "RefDataXMLFileName";
+        public const char CommaChar = ',';
         #endregion Common
 
         #region NYB
@@ -99,6 +100,24 @@
         public const string TokenResponse = "FMO FileLoader:Request token recieved from authorization: ";
         public const string NYBFLATFILENAME = "CSV Not Yet Built";
         public const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
+
+        public const int NYBPostcode = 0;
+        public const int NYBPostTown = 1;
+        public const int NYBDependentLocality = 2;
+        public const int NYBDoubleDependentLocality = 3;
+        public const int NYBThoroughfare = 4;
+        public const int NYBDependentThoroughfare = 5;
+        public const int NYBBuildingNumber = 6;
+        public const int NYBBuildingName = 7;
+        public const int NYBSubBuildingName = 8;
+        public const int NYBPOBoxNumber = 9;
+        public const int NYBDepartmentName = 10;
+        public const int NYBOrganisationName = 11;
+        public const int NYBUDPRN = 12;
+        public const int NYBPostcodeType = 13;
+        public const int NYBSmallUserOrganisationIndicator = 14;
+        public const int NYBDeliveryPointSuffix = 15;
+
 
         #endregion NYB
 
@@ -169,6 +188,27 @@
         public const string PAFFLATFILENAME = "CSV PAF Changes Single";
         public const string PAFZIPFILENAME = "^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
 
+        public const int PAFDate = 0;
+        public const int PAFTime = 1;
+        public const int PAFAmendmentType = 2;
+        public const int PAFAmendmentDesc = 3;
+        public const int PAFPostcode = 4;
+        public const int PAFPostTown = 5;
+        public const int PAFDependentLocality = 6;
+        public const int PAFDoubleDependentLocality = 7;
+        public const int PAFThoroughfare = 8;
+        public const int PAFDependentThoroughfare = 9;
+        public const int PAFBuildingNumber = 10;
+        public const int PAFBuildingName = 11;
+        public const int PAFSubBuildingName = 12;
+        public const int PAFPOBoxNumber = 13;
+        public const int PAFDepartmentName = 14;
+        public const int PAFOrganisationName = 15;
+        public const int PAFUDPRN = 16;
+        public const int PAFPostcodeType = 17;
+        public const int PAFSmallUserOrganisationIndicator = 18;
+        public const int PAFDeliveryPointSuffix = 19;
+
         #endregion PAF
 
         #endregion File Processing
@@ -229,6 +269,7 @@
         public const string PDFGeneratorWebAPIName = "PDFGeneratorWebAPIName";
         public const string NotificationManagerWebAPIName = "NotificationManagerWebAPIName";
         public const string XSLTFilePath = "XSLTFilePath";
+        public const string PDFFileLoaction = "PDFFileLoaction";
 
         public const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
         public const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";

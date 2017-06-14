@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using RM.Operational.PDFGenerator.WebAPI.Authentication;
+using RM.CommonLibrary.Authentication;
 
 namespace RM.Operational.PDFGenerator.WebAPI
 {
