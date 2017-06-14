@@ -16,3 +16,10 @@ md-list-item{
     @extend %body-content;
     @include font-color($white);
 }
+
+.printInfo{
+	top:12px;
+	position:absolute;
+	left:30%;
+	@include margin(0px 0px 0px 10px);
+}

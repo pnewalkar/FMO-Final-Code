@@ -10,3 +10,9 @@ md-list-item, .version {
 
 .version {
   color: #ffffff; }
+
+.printInfo {
+  top: 12px;
+  position: absolute;
+  left: 30%;
+  margin: 0px 0px 0px 10px; }

@@ -66,9 +66,6 @@ md-list-item .md-list-item-inner > md-checkbox, md-list-item > md-checkbox {
   width: 425px;
   height: 216px; }
 
-.shiftRight {
-  margin: 0px 0px 0px 10px; }
-
 /*fonts*/
 /*Chevin Light Font*/
 @font-face {
