@@ -12,14 +12,15 @@ function mapToolbarService(
 
     var vm = this;
        vm.selectedButton = null;
-   
+       vm.dpSelected = false;
        return {
            setSelectedButton: setSelectedButton,
            deselectButton: deselectButton,
            getShapeForButton: getShapeForButton,
            showButton: showButton,
            autoSelect: autoSelect,
-           getMapButtons: getMapButtons
+           getMapButtons: getMapButtons,
+           selectDP: selectDP
        };
 
     function getMapButtons()
@@ -42,6 +43,7 @@ function mapToolbarService(
             vm.selectedButton = button;
             return true;
         }
+
 
     }
 
@@ -88,5 +90,10 @@ function mapToolbarService(
     function autoSelect()
     {      
         setSelectedButton(mapService.getMapButtons()[0], CommonConstants.ButtonShapeType.select);
+    }
+
+    function selectDP(isSelected) {
+        debugger;
+      return isSelected;                             
     }
 }
