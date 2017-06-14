@@ -16,7 +16,8 @@ mapService.$inject = ['$http',
                      '$state',
                      '$stateParams',
                      '$rootScope',
-                     'layersAPIService'];
+                     'layersAPIService'
+                    ];
 
 function mapService($http,
                     mapFactory,
@@ -33,9 +34,11 @@ function mapService($http,
                     $state,
                     $stateParams,
                     $rootScope,
-                    layersAPIService) {
+                    layersAPIService
+                   ) {
     var vm = this;
     vm.map = null;
+    $rootScope.state = true;
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
@@ -506,6 +509,7 @@ function mapService($http,
 			    evt.feature.set("type", "accesslink");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    accessLinkCoordinatesService.setCordinates(coordinates);
+			    $rootScope.state =false;
 			    $stateParams.accessLinkFeature = evt.feature;
 			    var layer = mapFactory.getLayer('Drawing');
 			    vm.map.getInteractions().forEach(function (interaction) {
@@ -571,6 +575,7 @@ function mapService($http,
                 }, []);
                 var deliveryPointDetails = e.selected[0].getProperties();
                 coordinatesService.setCordinates(deliveryPointDetails.geometry.flatCoordinates);
+                $rootScope.state = false;
                 guidService.setGuid(deliveryPointDetails.deliveryPointId);
                 showDeliveryPointDetails(deliveryPointDetails);
                 vm.selectedDP = e.selected[0];
@@ -613,6 +618,7 @@ function mapService($http,
 			    evt.feature.set("type", "deliverypoint");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    coordinatesService.setCordinates(coordinates);
+			    $rootScope.state = false;
 
 			});
     }
