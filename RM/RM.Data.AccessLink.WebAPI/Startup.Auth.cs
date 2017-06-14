@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using RM.DataManagement.AccessLink.Authentication;
-using RM.DataManagement.AccessLink.WebAPI.Authentication;
+using RM.CommonLibrary.Authentication;
 
 namespace RM.DataManagement.AccessLink.WebAPI
 {

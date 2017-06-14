@@ -102,9 +102,9 @@
                 // timer.Interval is in milliseconds, so times above by 1000
                 m_mainTimer.Enabled = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                loggingHelper.Log(ex, TraceEventType.Error);
             }
             finally
             {
