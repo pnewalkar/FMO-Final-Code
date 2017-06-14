@@ -34,8 +34,8 @@
                     <md-input-container>
                         <label>{{ 'PRINT_MAP.SIZE'| translate }}</label>
                         <md-select ng-model="vm.printOptions.size" class="printMapOption">
-                            <md-option ng-repeat="type in vm.sizeList" ng-value="type" ng-selected="{{type.value=='A4' ? true : false}}">
-                                {{type.value}}
+                            <md-option ng-repeat="type in vm.pdfSize" ng-value="type.Value" ng-selected="{{type.Value=='A4' ? true : false}}">
+                                {{type.Value}}
                             </md-option>
                         </md-select>
                     </md-input-container>
