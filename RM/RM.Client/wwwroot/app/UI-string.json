@@ -16,6 +16,7 @@
       "GENERATE": "Generate"
     },
     "UNIT": "Unit",
+    "AVAILABLE_ACTIONS": "Available Actions",
     "SEARCH": "Search",
     "ADD_DELIVERY_POINT": "Add Delivery Point",
     "SELECT_ALL": "Select All",
@@ -90,9 +91,13 @@
     "NO_ROUTE_SELECTED": "No Route Selected"
   },
   "PRINT_MAP": {
+    "HEADER": "Print Map Options",
     "SIZE": "Size",
     "TITLE": "Title",
+    "LANDSCAPE": "Landscape",
+    "PORTRAIT": "Portrait",
     "ORIENTATION":"Orientation",
+    "CONDITION": "*If you are unable to print this locally,please generate and send to your printing service facility",
     "BUTTONS": {
       "DISABLE_ALERT": "This action is disabled until the user has completed the action they are currently carrying out."
     }
