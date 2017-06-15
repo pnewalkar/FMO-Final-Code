@@ -1,12 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
+using Fonet;
 using Microsoft.Extensions.FileProviders;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using Fonet;
-using System;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.HelperMiddleware;
 
 namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
 {

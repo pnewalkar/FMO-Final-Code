@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.RouteLog.WebAPI.BusinessService;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
@@ -15,29 +12,33 @@ namespace RM.Operational.RouteLog.WebAPI.Test
     [TestFixture]
     public class RouteLogBusinessServiceFixture : TestFixtureBase
     {
-        IRouteLogBusinessService testCandidate;
-        Mock<IRouteLogIntegrationService> mockRouteLogIntegrationService;
-        Mock<IConfigurationHelper> mockConfigurationHelper;
-        DeliveryRouteDTO deliveryRouteDto;
-        RouteLogSequencedPointsDTO address;
-        RouteSummaryGroupDTO grp;
+        private IRouteLogBusinessService testCandidate;
+        private Mock<IRouteLogIntegrationService> mockRouteLogIntegrationService;
+        private Mock<IConfigurationHelper> mockConfigurationHelper;
+        private DeliveryRouteDTO deliveryRouteDto;
+        private RouteLogSequencedPointsDTO address;
+        private RouteSummaryGroupDTO grp;
 
         [Test]
         public void Test_ValidPostalAddressData()
         {
-           
-            var result = testCandidate.GenerateRouteLog(deliveryRouteDto);            
-             Assert.IsNotNull(result);
+            var result = testCandidate.GenerateRouteLog(deliveryRouteDto);
+            Assert.IsNotNull(result);
         }
 
         protected override void OnSetup()
         {
-
             mockRouteLogIntegrationService = CreateMock<IRouteLogIntegrationService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
-            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(It.IsAny<string>())).Returns("xsltFilepath");
-            testCandidate = new RouteLogBusinessService(mockRouteLogIntegrationService.Object, mockConfigurationHelper.Object);
+            deliveryRouteDto = new DeliveryRouteDTO() { };
+            RouteLogSummaryModelDTO routeLogSummaryModelDTO = new RouteLogSummaryModelDTO() { };
 
+            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(It.IsAny<string>())).Returns("xsltFilepath");
+
+            mockRouteLogIntegrationService.Setup(x => x.GenerateRouteLog(It.IsAny<DeliveryRouteDTO>())).ReturnsAsync(routeLogSummaryModelDTO);
+            mockRouteLogIntegrationService.Setup(x => x.GenerateRouteLogSummaryReport(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("<note><body>abc</body></note>");
+
+            testCandidate = new RouteLogBusinessService(mockRouteLogIntegrationService.Object, mockConfigurationHelper.Object);
         }
     }
 }

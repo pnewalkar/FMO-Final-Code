@@ -19,8 +19,8 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ResponseExceptionHandlerOptions _options;
-        private readonly Func<object, Task> _clearCacheHeadersDelegate;
+        private readonly ResponseExceptionHandlerOptions options;
+        private readonly Func<object, Task> clearCacheHeadersDelegate;
         private IExceptionHelper exceptionHelper;
         private ILoggingHelper loggingHelper;
 
@@ -33,8 +33,8 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
             this._next = next;
             this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
-            this._options = options.Value;
-            this._clearCacheHeadersDelegate = ClearCacheHeaders;
+            this.options = options.Value;
+            this.clearCacheHeadersDelegate = ClearCacheHeaders;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
             {
                 ExceptionResponse exceptionResponse;
                 object response;
-                if (_options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
+                if (options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
                 {
                     context.Response.StatusCode = exceptionResponse.StatusCode; // Replace default status code with actual.
                     response = GetExceptionResponse(exception, exceptionResponse);
@@ -82,10 +82,10 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    response = CreateErrorResponse(_options.DefaultErrorMessage);
+                    response = CreateErrorResponse(options.DefaultErrorMessage);
                 }
 
-                var result = JsonConvert.SerializeObject(response, _options.SerializerSettings);
+                var result = JsonConvert.SerializeObject(response, options.SerializerSettings);
                 context.Response.ContentType = "application/json";
                 return context.Response.WriteAsync(result);
             }
@@ -108,6 +108,10 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
             if (!string.IsNullOrWhiteSpace(exceptionResponse.Message))
             {
                 return CreateErrorResponse(exceptionResponse.Message);
+            }
+            else if(exceptionResponse.StatusCode.Equals((int)HttpStatusCode.InternalServerError) && ex.Data.Count.Equals(0))
+            {
+                return CreateErrorResponse(options.DefaultErrorMessage);
             }
 
             if (ex.Data.Count > 0)
