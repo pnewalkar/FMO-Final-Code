@@ -14,10 +14,10 @@ namespace RM.Data.UnitManager.WebAPI.Test
     [TestFixture]
     public class UnitLocationBusinessServiceFixture : TestFixtureBase
     {
-        private Mock<IUnitLocationDataService> mockUnitLocationRepository;
+        private Mock<IUnitLocationDataService> mockUnitLocationDataService;
         private Mock<IPostCodeSectorDataService> mockPostCodeSectorDataService;
         private Mock<IPostCodeDataService> mockPostCodeDataService;
-        private Mock<IScenarioDataService> mockIScenarioDataService;
+        private Mock<IScenarioDataService> mockScenarioDataService;
         private UnitLocationDTO actualDeliveryUnitResult = null;
         private List<UnitLocationDTO> actualDeliveryUnitListForUserResult = null;
         private Guid deliveryUnitID = System.Guid.NewGuid();
@@ -25,7 +25,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
         private IUnitLocationBusinessService testCandidate;
 
         [Test]
-        public void TestFetchDeliveryUnitForUser()
+        public void Test_FetchDeliveryUnitForUser()
         {
             List<UnitLocationDTO> expectedDeliveryUnitListResult = testCandidate.FetchDeliveryUnitsForUser(userID);
             Assert.NotNull(expectedDeliveryUnitListResult);
@@ -36,31 +36,76 @@ namespace RM.Data.UnitManager.WebAPI.Test
         }
 
         [Test]
-        public void TestFetchDeliveryUnit()
+        public void Test_GetPostCodeSectorByUDPRN()
         {
-            //  UnitLocationDTO expectedDeliveryUnitResult = testCandidate.FetchDeliveryUnit(Guid.NewGuid());
-            //   Assert.NotNull(expectedDeliveryUnitResult);
-            // Assert.AreEqual(expectedDeliveryUnitResult, actualDeliveryUnitResult);
+            var result = testCandidate.GetPostCodeSectorByUDPRN(12345);
+            Assert.NotNull(result);
+        }
+
+        [Test]
+        public void Test_FetchPostCodeUnitForBasicSearch()
+        {
+            var result = testCandidate.FetchPostCodeUnitForBasicSearch("abc",Guid.NewGuid());
+            Assert.NotNull(result);
+        }
+
+        [Test]
+        public void Test_GetPostCodeUnitCount()
+        {
+            var result = testCandidate.GetPostCodeUnitCount("abc", Guid.NewGuid());
+            Assert.NotNull(result);
+            Assert.AreEqual(result.Result, 5);
+        }
+
+        [Test]
+        public void Test_FetchPostCodeUnitForAdvanceSearch()
+        {
+            var result = testCandidate.FetchPostCodeUnitForAdvanceSearch("abc", Guid.NewGuid());
+            Assert.NotNull(result);
+        }
+
+        [Test]
+        public void Test_GetPostCodeID()
+        {
+            var result = testCandidate.GetPostCodeID("123");
+            Assert.NotNull(result);
+            Assert.AreEqual(result.Result, System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"));
+        }
+
+        [Test]
+        public void Test_FetchDeliveryScenario()
+        {
+            var result = testCandidate.FetchDeliveryScenario(Guid.NewGuid(), Guid.NewGuid());
+            Assert.NotNull(result);
         }
 
         protected override void OnSetup()
         {
-            mockUnitLocationRepository = CreateMock<IUnitLocationDataService>();
+            mockUnitLocationDataService = CreateMock<IUnitLocationDataService>();
             mockPostCodeSectorDataService = CreateMock<IPostCodeSectorDataService>();
             mockPostCodeDataService = CreateMock<IPostCodeDataService>();
-            mockIScenarioDataService = CreateMock<IScenarioDataService>();
+            mockScenarioDataService = CreateMock<IScenarioDataService>();
 
             userID = System.Guid.Parse("A867065B-B91E-E711-9F8C-28D244AEF9ED");
             deliveryUnitID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
             var unitBoundary = DbGeometry.PolygonFromText("POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))", 27700);
             actualDeliveryUnitListForUserResult = new List<UnitLocationDTO>() { new UnitLocationDTO() { ID = Guid.NewGuid(), ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne", UnitBoundryPolygon = unitBoundary } };
-            mockUnitLocationRepository = CreateMock<IUnitLocationDataService>();
-            mockUnitLocationRepository.Setup(n => n.FetchDeliveryUnitsForUser(userID)).Returns(actualDeliveryUnitListForUserResult);
+            mockUnitLocationDataService = CreateMock<IUnitLocationDataService>();
+            mockUnitLocationDataService.Setup(n => n.FetchDeliveryUnitsForUser(userID)).Returns(actualDeliveryUnitListForUserResult);
 
             actualDeliveryUnitResult = new UnitLocationDTO() { ID = Guid.NewGuid(), ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne" };
-            mockUnitLocationRepository.Setup(n => n.FetchDeliveryUnit(deliveryUnitID)).Returns(actualDeliveryUnitResult);
+            mockUnitLocationDataService.Setup(n => n.FetchDeliveryUnit(deliveryUnitID)).Returns(actualDeliveryUnitResult);
 
-            testCandidate = new UnitLocationBusinessService(mockUnitLocationRepository.Object, mockPostCodeSectorDataService.Object, mockPostCodeDataService.Object, mockIScenarioDataService.Object);
+            mockPostCodeSectorDataService.Setup(x => x.GetPostCodeSectorByUDPRN(It.IsAny<int>())).ReturnsAsync(new PostCodeSectorDTO() { });
+
+            mockPostCodeDataService.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<PostCodeDTO>() { });
+            mockPostCodeDataService.Setup(x => x.GetPostCodeUnitCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
+            mockPostCodeDataService.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<PostCodeDTO>() { });
+            mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).ReturnsAsync(System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"));
+
+            mockScenarioDataService.Setup(x => x.FetchScenario(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(new List<ScenarioDTO>());
+
+            testCandidate = new UnitLocationBusinessService(mockUnitLocationDataService.Object, mockPostCodeSectorDataService.Object, mockPostCodeDataService.Object, mockScenarioDataService.Object);
 
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
         }

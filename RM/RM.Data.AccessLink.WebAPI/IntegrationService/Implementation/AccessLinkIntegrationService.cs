@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
@@ -13,6 +14,8 @@ using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {
@@ -24,20 +27,24 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         private string networkManagerDataWebAPIName = string.Empty;
         private string deliveryPointManagerDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        #endregion Property Declarations
+        #endregion Member Variables
 
         #region Constructor
-        public AccessLinkIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
+
+        public AccessLinkIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
             this.networkManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.NetworkManagerDataWebAPIName).ToString() : string.Empty;
             this.deliveryPointManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Methods
+
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
@@ -55,8 +62,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -81,8 +87,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -102,8 +107,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -112,8 +116,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             return networkLink;
         }
 
-        /// <summary> Gets the name of the reference data categories by category. </summary> 
-        /// <param name="categoryNames">The category names.</param> 
+        /// <summary> Gets the name of the reference data categories by category. </summary>
+        /// <param name="categoryNames">The category names.</param>
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public async Task<List<ReferenceDataCategoryDTO>> GetReferenceDataNameValuePairs(List<string> categoryNames)
         {
@@ -124,7 +128,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "nameValuePairs?appGroupName=" + category);
                 if (!result.IsSuccessStatusCode)
                 {
-                    // LOG ERROR WITH Statuscode
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
@@ -137,8 +140,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             return listReferenceCategories;
         }
 
-        /// <summary> Gets the name of the reference data categories by category. </summary> 
-        /// <param name="categoryNames">The category names.</param> 
+        /// <summary> Gets the name of the reference data categories by category. </summary>
+        /// <param name="categoryNames">The category names.</param>
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public async Task<List<ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
         {
@@ -148,8 +151,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -173,8 +175,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -194,8 +195,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
@@ -209,7 +209,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Status code
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -221,28 +220,33 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
         public async Task<bool> UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO)
         {
-            var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointAccessLinkCreationStatus"))
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
 
-            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerDataWebAPIName + "deliverypoint/accesslinkstatus", deliveryPointDTOJson);
+                var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
+
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerDataWebAPIName + "deliverypoint/accesslinkstatus", deliveryPointDTOJson);
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = string.Concat("Status Code:" + result.StatusCode.GetHashCode(), " Reason:", result.ReasonPhrase);
+                var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
 
-            var success = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-
-            return success;
+                var success = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                return success;
+            }
         }
 
-        /// <summary> This method is used to get the delivery points crossing an operational object </summary> 
-        /// <param name="boundingBoxCoordinates">bbox coordinates</param> 
-        /// <param name="accessLink">access link coordinate array</param> 
+        /// <summary> This method is used to get the delivery points crossing an operational object </summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<DeliveryPointDTO></returns>
         public async Task<List<DeliveryPointDTO>> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject)
         {
@@ -262,7 +266,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             var success = JsonConvert.DeserializeObject<List<DeliveryPointDTO>>(result.Content.ReadAsStringAsync().Result);
             return success;
-        } 
-        #endregion
+        }
+
+        #endregion Methods
     }
 }

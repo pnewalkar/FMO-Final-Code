@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService;
 using RM.CommonLibrary.LoggingMiddleware;
-using System.Diagnostics;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
 {
@@ -186,8 +188,16 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         {
             try
             {
-                var result = await deliveryRouteLogBusinessService.CreateBlockSequenceForDeliveryPoint(deliveryRouteId, deliveryPointId);
-                return Ok(result);
+                using (logginghelper.RMTraceManager.StartTrace("Controller.CreateBlockSequenceForDeliveryPoint"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    logginghelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    var result = await deliveryRouteLogBusinessService.CreateBlockSequenceForDeliveryPoint(deliveryRouteId, deliveryPointId);
+                    logginghelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(result);
+                }
+                
             }
             catch (AggregateException ae)
             {

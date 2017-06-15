@@ -180,6 +180,7 @@
     <Compile Include="Utilities\DataService\DataServiceBase.cs" />
     <Compile Include="Utilities\Enums\ValueAttribute.cs" />
     <Compile Include="Utilities\Geometry\DbGeometryConverter.cs" />
+    <Compile Include="Utilities\HelperMiddleware\Common\MethodHelper.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Coordinates.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Feature.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\GeoJson.cs" />
@@ -194,18 +195,6 @@
     <Compile Include="Utilities\MessageBrokerMiddleware\MessageBroker.cs" />
     <Compile Include="Utilities\MessageBrokerMiddleware\MessageEventArgs.cs" />
     <Compile Include="Utilities\HelperMiddleware\SummarizedObject\CreateSummaryObject.cs" />
-    <Compile Include="Utilities\ResourceFile\ErrorMessageIds.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ErrorMessageIds.resx</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Utilities\ResourceFile\MessagesConstants.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MessagesConstants.resx</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Utilities\ResourceFile\ReferenceDataCategoryNames.Designer.cs" />
     <Compile Include="Utilities\ResourceFile\ReferenceDataValues.Designer.cs" />
     <Compile Include="Utilities\Geometry\SqlGeometry.cs" />
@@ -232,20 +221,8 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Authentication\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Utilities\ResourceFile\ErrorMessageIds.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ErrorMessageIds.Designer.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\ResourceFile\MessagesConstants.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MessagesConstants.Designer.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="Utilities\ResourceFile\ReferenceDataCategoryNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FmoReferenceDataCategoryNames.Designer.cs</LastGenOutput>
