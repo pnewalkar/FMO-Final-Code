@@ -35,14 +35,14 @@
                         <label>{{ 'PRINT_MAP.SIZE'| translate }}</label>
                         <md-select ng-model="vm.printOptions.size" class="printMapOption">
                             <md-option ng-repeat="type in vm.pdfSize" ng-value="type.Value" ng-selected="{{type.Value=='A4' ? true : false}}">
-                                {{type.Value}}
+                                {{type.DisplayText}}
                             </md-option>
                         </md-select>
                     </md-input-container>
 
                 </div>
             </div>
-            <div layout="row" ng-show="vm.printOptions.size.value === 'A2*' || vm.printOptions.size.value === 'A1*' || vm.printOptions.size.value === 'A0*'">
+            <div layout="row" ng-show="vm.printOptions.size === 'A2' || vm.printOptions.size === 'A1' || vm.printOptions.size === 'A0'">
                 <div layout="column" flex>
                     <div>
                         <span>*If you are unable to print this locally,please generate and send to your printing service facility</span>

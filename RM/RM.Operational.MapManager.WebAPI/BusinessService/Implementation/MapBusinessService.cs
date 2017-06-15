@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
@@ -7,12 +8,14 @@ using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
 using Fonet;
+using System;
 
 namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
     public class MapBusinessService : IMapBusinessService
     {
         private string xsltFilepath = string.Empty;
+        private string imagePath = string.Empty;
         private IMapIntegrationService mapIntegrationService;
 
         /// <summary>
@@ -25,6 +28,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         {
             this.mapIntegrationService = mapIntegrationService;
             this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.XSLTFilePath).ToString() : string.Empty;
+            this.imagePath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ImagePath).ToString() : string.Empty;
         }
 
         /// <summary>
@@ -32,12 +36,15 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="printMapDTO">printMapDTO</param>
         /// <returns>deliveryRouteDto</returns>
-        public async Task<string> GenerateReportWithMap(PrintMapDTO printMapDTO)
+        public PrintMapDTO SaveImage(PrintMapDTO printMapDTO)
         {
             string pdXslFo = string.Empty;
-           // var pdfFileName = await mapIntegrationService.GenerateReportWithMap("", "");
-
-            return "cf62faa5-619d-4244-be08-6c249bcde479.pdf";
+            if (printMapDTO != null)
+            {
+                printMapDTO.PrintTime = string.Format(Constants.PrintMapDateTimeFormat, DateTime.Now);
+                SaveMapImage(printMapDTO);
+            }
+            return printMapDTO;
         }
 
         /// <summary>
@@ -53,5 +60,20 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             xmlSerilzer.Serialize(xmlString, type);
             return xmlString.ToString();
         }
+
+        private void SaveMapImage(PrintMapDTO printMapDTO)
+        {
+            string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
+            string imageLocation = imagePath + Guid.NewGuid() + ".png";
+
+            if (encodedStringArray != null && encodedStringArray.Count() > 0)
+            {
+                byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
+                File.WriteAllBytes(imageLocation, imageBytes);
+            }
+            printMapDTO.ImagePath = imageLocation;
+        }
+
+
     }
 }

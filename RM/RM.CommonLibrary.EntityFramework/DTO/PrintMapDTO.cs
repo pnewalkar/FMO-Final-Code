@@ -12,7 +12,7 @@
 
         public string PdfSize { get; set; }
 
-        public int MapScale { get; set; }
+        public string ImagePath { get; set; }
 
         public string EncodedString { get; set; }
     }

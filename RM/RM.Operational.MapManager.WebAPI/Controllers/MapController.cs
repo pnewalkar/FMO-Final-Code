@@ -20,14 +20,29 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
             this.mapGeneratorBusinessService = mapGeneratorBusinessService;
         }
 
-        [Route("MapImages")]
+        [Route("MapImage")]
         [HttpPost]
         public IActionResult GenerateReportWithMap([FromBody]PrintMapDTO printMapDTO)
         {
             try
             {
-                var xslFo = mapGeneratorBusinessService.GenerateReportWithMap(printMapDTO);
-                return Ok(xslFo);
+                var result = mapGeneratorBusinessService.SaveImage(printMapDTO);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                this.logginghelper.Log(ex, TraceEventType.Error);
+                throw;
+            }
+        }
+
+        [Route("MapPDF")]
+        [HttpPost]
+        public IActionResult GeneratePdf([FromBody]PrintMapDTO printMapDTO)
+        {
+            try
+            {
+                return Ok("cf62faa5-619d-4244-be08-6c249bcde479.pdf");
             }
             catch (Exception ex)
             {
