@@ -21,6 +21,7 @@
     using ResourceFile;
     using ExceptionMiddleware;
     using System.Diagnostics;
+    using AutoMapper;
 
     /// <summary>
     /// DataService to interact with postal address entity
@@ -198,8 +199,18 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPostalAddress(int? uDPRN)
         {
-            var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
-            return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            var postalAddress = await DataContext.PostalAddresses.Include(m => m.PostalAddressStatus).Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>();
+                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
+            });
+            Mapper.Configuration.CreateMapper();
+
+            var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            return dtoPostalAddress;
+
         }
 
         /// <summary>
@@ -209,7 +220,7 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
-            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(l => l.PostalAddressStatus).Include(m => m.DeliveryPoints)
                 .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
                                      && ((n.BuildingName ==
                                           (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
@@ -277,7 +288,15 @@
                                               ? objPostalAddress.DependentThoroughfare
                                               : string.Empty))));
 
-            return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<PostalAddress, PostalAddressDTO>();
+                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
+            });
+            Mapper.Configuration.CreateMapper();
+
+            var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            return dtoPostalAddress;
         }
 
         /// <summary>
@@ -468,7 +487,7 @@
                                     objDelPoint.DeliveryPointUseIndicator_GUID = deliveryPointUseIndicatorPAF;
                                 }
 
-                                objDelPoint.UDPRN = objPostalAddress.UDPRN;
+                                // objDelPoint.UDPRN = objPostalAddress.UDPRN;
                             }
                         }
                     }
@@ -660,7 +679,7 @@
         public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             try
-            {             
+            {
                 bool isAddressLocationAvailable = false;
                 Guid returnGuid = new Guid(Constants.DEFAULTGUID);
                 double? addLocationXCoOrdinate = 0;
@@ -672,8 +691,8 @@
 
                     DeliveryPoint objDeliveryPoint = new DeliveryPoint()
                     {
-                        ID = Guid.NewGuid(),
-                        UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN,
+                        // ID = Guid.NewGuid(),
+                        // UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN,
                         DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID,
                         MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
                         MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
@@ -682,10 +701,10 @@
                     if (objAddressLocation != null)
                     {
                         SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
-                        objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
-                        objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
-                        objDeliveryPoint.Longitude = objAddressLocation.Longitude;
-                        objDeliveryPoint.Positioned = true;
+                        //objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
+                        //objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
+                        //objDeliveryPoint.Longitude = objAddressLocation.Longitude;
+                        //objDeliveryPoint.Positioned = true;
                         isAddressLocationAvailable = true;
                         addLocationXCoOrdinate = deliveryPointSqlGeometry.STX.Value;
                         addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
@@ -705,7 +724,7 @@
                         objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
                         objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
                         objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
-                        objPostalAddress.AddressStatus_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID;
+                        //objPostalAddress.AddressStatus_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID;
                         objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
                     }
                     else
@@ -760,13 +779,13 @@
                 DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
                 MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
                 MailVolume = deliveryPointDTO.MailVolume,
-                DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
-                {
-                    ID = Guid.NewGuid(),
-                    DeliveryPoint_GUID = deliveryPointID,
-                    DPAlias = n.DPAlias,
-                    Preferred = n.Preferred
-                }).ToList()
+                //DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
+                //{
+                //    ID = Guid.NewGuid(),
+                //    DeliveryPoint_GUID = deliveryPointID,
+                //    DPAlias = n.DPAlias,
+                //    Preferred = n.Preferred
+                //}).ToList()
             };
         }
     }

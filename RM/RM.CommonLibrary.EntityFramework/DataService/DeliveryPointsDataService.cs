@@ -46,11 +46,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             try
             {
-                var objDeliveryPoint = await DataContext.DeliveryPoints.AsNoTracking().Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
-
+                /* POC data modal change comment*/
+                var objDeliveryPoint = await DataContext.DeliveryPoints.AsNoTracking().Include(s=>s.PostalAddress).Where(n => n.PostalAddress.UDPRN == udprn).SingleOrDefaultAsync();
+                
                 Mapper.Initialize(cfg =>
                 {
                     cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                    cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
                     cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
                 });
 
@@ -79,7 +81,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             {
                 if (objDeliveryPoint != null)
                 {
+                    /* POC data modal change comment
                     objDeliveryPoint.UDPRN = udprn;
+                    */
                     DataContext.SaveChanges();
                     isDeliveryPointUpdated = true;
                 }
@@ -117,11 +121,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 {
                     newDeliveryPoint.ID = objDeliveryPoint.ID;
                     newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
+                    /* POC data modal change comment
                     newDeliveryPoint.UDPRN = objDeliveryPoint.UDPRN;
                     newDeliveryPoint.LocationXY = objDeliveryPoint.LocationXY;
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
-                    newDeliveryPoint.LocationProvider_GUID = objDeliveryPoint.LocationProvider_GUID;
+                    newDeliveryPoint.LocationProvider_GUID = objDeliveryPoint.LocationProvider_GUID;*/
                     newDeliveryPoint.DeliveryPointUseIndicator_GUID = objDeliveryPoint.DeliveryPointUseIndicator_GUID;
                     DataContext.DeliveryPoints.Add(newDeliveryPoint);
                     await DataContext.SaveChangesAsync();
@@ -131,7 +136,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 {
                     isDeliveryPointInserted = false;
                     DataContext.Entry(newDeliveryPoint).State = EntityState.Unchanged;
-                    throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
+                    /* POC data modal change comment
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));*/
                 }
             }
 
@@ -148,10 +154,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
-            var result = await DataContext.DeliveryPoints.AsNoTracking()
+            var result = new List<DeliveryPointDTO>(); /* POC data modal change comment await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
                 .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
-                                || x.PostalAddress.BuildingName.Contains(searchText)
+                                || 
+                                x.PostalAddress.BuildingName.Contains(searchText)
                                 || x.PostalAddress.SubBuildingName.Contains(searchText)
                                 || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                                 || x.PostalAddress.Thoroughfare.Contains(searchText)
@@ -169,9 +176,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                         UDPRN = l.PostalAddress.UDPRN
                                     }
                                 })
-                                .ToListAsync();
+                                .ToListAsync();*/
 
-            return result;
+                    return result;
         }
 
         /// <summary>
@@ -193,7 +200,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid)
                 .Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
-            var result = await DataContext.DeliveryPoints.AsNoTracking()
+            var result = new List<DeliveryPointDTO>(); /* POC data modal change comment await DataContext.DeliveryPoints.AsNoTracking()
                 .Include(l => l.PostalAddress)
                 .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
                                                                  || x.PostalAddress.BuildingName.Contains(searchText)
@@ -217,7 +224,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     }
                 })
                 .Take(takeCount)
-                .ToListAsync();
+                .ToListAsync();*/
 
             return result;
         }
@@ -237,12 +244,14 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                 var result = await DataContext.DeliveryPoints.AsNoTracking()
                   .Include(l => l.PostalAddress)
+                  /* POC data modal change comment
                   .Where(x => x.LocationXY.Intersects(polygon) && (x.PostalAddress.OrganisationName.Contains(searchText)
                                   || x.PostalAddress.BuildingName.Contains(searchText)
                                   || x.PostalAddress.SubBuildingName.Contains(searchText)
                                   || SqlFunctions.StringConvert((double)x.PostalAddress.BuildingNumber).StartsWith(searchText)
                                   || x.PostalAddress.Thoroughfare.Contains(searchText)
-                                  || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
+                                  || x.PostalAddress.DependentLocality.Contains(searchText)))*/
+                  .CountAsync();
 
                 return result;
             }
@@ -395,15 +404,16 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 using (RMDBContext rmDbContext = new RMDBContext())
                 {
                     DeliveryPoint deliveryPoint =
-                        rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.UDPRN == deliveryPointDto.UDPRN);
+                        null; /* POC data modal change comment rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.UDPRN == deliveryPointDto.UDPRN);*/
 
                     if (deliveryPoint != null)
                     {
+                        /* POC data modal change comment
                         deliveryPoint.Longitude = deliveryPointDto.Longitude;
                         deliveryPoint.Latitude = deliveryPointDto.Latitude;
                         deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
                         deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
-                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
+                        deliveryPoint.Positioned = deliveryPointDto.Positioned;*/
                         status = await rmDbContext.SaveChangesAsync();
                     }
 
@@ -446,11 +456,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                     if (deliveryPoint != null)
                     {
+                        /* POC data modal change comment
                         deliveryPoint.Longitude = deliveryPointDto.Longitude;
                         deliveryPoint.Latitude = deliveryPointDto.Latitude;
                         deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
                         deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
-                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
+                        deliveryPoint.Positioned = deliveryPointDto.Positioned;*/
 
                         rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
                         rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
@@ -487,7 +498,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>deliveryPoint DTO</returns>
         public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
         {
-            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();
+            List<DeliveryPoint> deliveryPoints = null; /* POC data modal change comment DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();*/
 
             Mapper.Initialize(cfg =>
             {
@@ -512,7 +523,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
                                   join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
                                   join al in DataContext.AddressLocations.AsNoTracking() on pa.UDPRN equals al.UDPRN
-                                  where dp.UDPRN == udprn
+                                  /* POC data modal change comment where dp.UDPRN == udprn*/
                                   select new
                                   {
                                       DeliveryPoint = dp,
@@ -570,7 +581,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>boolean value true or false</returns>
         public async Task<bool> DeliveryPointExists(int udprn)
         {
-            return await DataContext.DeliveryPoints.AsNoTracking().Where(dp => ((int)dp.UDPRN).Equals(udprn)).AnyAsync();
+            return true;
+            /* return await POC data modal change comment DataContext.DeliveryPoints.AsNoTracking().Where(dp => ((int)dp.UDPRN).Equals(udprn)).AnyAsync();*/
         }
 
         /// <summary>
@@ -666,10 +678,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             Mapper.Configuration.CreateMapper();
             DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-            List<DeliveryPoint> crossingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Crosses(operationalObject)).ToList();
+            List<DeliveryPoint> crossingDeliveryPoints = null;/* POC data modal change comment DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Crosses(operationalObject)).ToList();*/
             List<DeliveryPointDTO> crossingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(crossingDeliveryPoints);
             deliveryPointDTOs.AddRange(crossingAccessLinkDTOs);
-            List<DeliveryPoint> overLappingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Overlaps(operationalObject)).ToList();
+            List<DeliveryPoint> overLappingDeliveryPoints = null;/* POC data modal change comment DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Overlaps(operationalObject)).ToList();*/
             List<DeliveryPointDTO> overLappingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(overLappingDeliveryPoints);
             deliveryPointDTOs.AddRange(overLappingAccessLinkDTOs);
             return deliveryPointDTOs;
@@ -694,12 +706,15 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                 DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
+                /* POC data modal change comment
                 deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
-            }
+                */
+        }
 
-            return deliveryPoints;
+                    return deliveryPoints;
         }
 
         #endregion Private Methods
     }
 }
+ 

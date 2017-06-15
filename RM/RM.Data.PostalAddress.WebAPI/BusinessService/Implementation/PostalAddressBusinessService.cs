@@ -111,7 +111,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         foreach (var postalAddress in lstPostalAddress)
                         {
-                            postalAddress.AddressStatus_GUID = addressStatusId;
+                            postalAddress.PostalAddressStatus.Add(GetPostalAddressStatus(postalAddress.ID, addressStatusId));
                             postalAddress.AddressType_GUID = addressTypeId;
                             postalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(postalAddress.Postcode);
                             await addressDataService.SaveAddress(postalAddress, strFileName);
@@ -140,7 +140,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="lstPostalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
-        public async Task<bool> SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        public async Task<bool> SavePAFDetails(List<PostalAddressBatchDTO> lstPostalAddress)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.SavePAFDetails"))
             //{
@@ -457,9 +457,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                 if (addDeliveryPointDTO != null && addDeliveryPointDTO.PostalAddressDTO != null)
                 {
+                    addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
                     addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID = postalAddressIntegrationService.GetPostCodeID(addDeliveryPointDTO.PostalAddressDTO.Postcode).Result;
                     addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID = usrAddressTypeId;
-                    addDeliveryPointDTO.PostalAddressDTO.AddressStatus_GUID = liveAddressStatusId;
+                    addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
                 }
 
                 return addressDataService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
@@ -483,7 +484,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="addressTypeNYB">addressType Guid for NYB</param>
         /// <param name="addressTypePAF">addressType Guid for PAF</param>
         /// <param name="strFileName">FileName on PAF events to track against DB</param>
-        private async Task SavePAFRecords(PostalAddressDTO objPostalAddress, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
+        private async Task SavePAFRecords(PostalAddressBatchDTO objPostalAddressBatch, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.SavePAFRecords"))
             //{
@@ -496,10 +497,32 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
             try
             {
+                // Construct New PostalAddressDTO
+                PostalAddressDTO objPostalAddress = new PostalAddressDTO
+                {
+                    Postcode = objPostalAddressBatch.Postcode,
+                    PostTown = objPostalAddressBatch.PostTown,
+                    DependentLocality = objPostalAddressBatch.DependentLocality,
+                    DoubleDependentLocality = objPostalAddressBatch.DoubleDependentLocality,
+                    Thoroughfare = objPostalAddressBatch.Thoroughfare,
+                    DependentThoroughfare = objPostalAddressBatch.DependentThoroughfare,
+                    BuildingNumber = objPostalAddressBatch.BuildingNumber,
+                    BuildingName = objPostalAddressBatch.BuildingName,
+                    SubBuildingName = objPostalAddressBatch.SubBuildingName,
+                    POBoxNumber = objPostalAddressBatch.POBoxNumber,
+                    DepartmentName = objPostalAddressBatch.DepartmentName,
+                    OrganisationName = objPostalAddressBatch.OrganisationName,
+                    UDPRN = objPostalAddressBatch.UDPRN,
+                    PostcodeType = objPostalAddressBatch.PostcodeType,
+                    SmallUserOrganisationIndicator = objPostalAddressBatch.SmallUserOrganisationIndicator,
+                    DeliveryPointSuffix = objPostalAddressBatch.DeliveryPointSuffix
+                };
+
+
                 // Address type will be PAF only in case of Inserting and updating records
                 objPostalAddress.AddressType_GUID = addressTypePAF;
                 var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(Constants.PostalAddressStatus).Result;
-                objPostalAddress.AddressStatus_GUID = referenceDataCategoryList.ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(PostCodeStatus.Live.ToString(), StringComparison.OrdinalIgnoreCase)).Select(a => a.ID).FirstOrDefault();
+                var addressStatus_GUID = referenceDataCategoryList.ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(PostCodeStatus.Live.ToString(), StringComparison.OrdinalIgnoreCase)).Select(a => a.ID).FirstOrDefault();
 
                 // match if PostalAddress exists on UDPRN match
                 PostalAddressDTO objPostalAddressMatchedUDPRN = await addressDataService.GetPostalAddress(objPostalAddress.UDPRN);
@@ -518,6 +541,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                         objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
                         objPostalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
+                        objPostalAddress.PostalAddressStatus = objPostalAddressMatchedUDPRN.PostalAddressStatus;
                         if (await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF))
                         {
                             // calling delivery point web api
@@ -534,7 +558,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         {
                             FileID = Guid.NewGuid(),
                             UDPRN = objPostalAddress.UDPRN ?? default(int),
-                            AmendmentType = objPostalAddress.AmendmentType,
+                            AmendmentType = objPostalAddressBatch.AmendmentType,
                             FileName = strFileName,
                             FileProcessing_TimeStamp = DateTime.UtcNow,
                             FileType = FileType.Paf.ToString(),
@@ -559,6 +583,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                         .ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                                         .Select(a => a.ID).FirstOrDefault();
 
+                            objPostalAddress.PostalAddressStatus = objPostalAddressMatchedUDPRN.PostalAddressStatus;
+
                             // Update address and delivery point for USR records
                             await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF);
                         }
@@ -568,7 +594,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             {
                                 FileID = Guid.NewGuid(),
                                 UDPRN = objPostalAddress.UDPRN ?? default(int),
-                                AmendmentType = objPostalAddress.AmendmentType,
+                                AmendmentType = objPostalAddressBatch.AmendmentType,
                                 FileName = strFileName,
                                 FileProcessing_TimeStamp = DateTime.UtcNow,
                                 FileType = FileType.Paf.ToString(),
@@ -585,7 +611,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         {
                             FileID = Guid.NewGuid(),
                             UDPRN = objPostalAddress.UDPRN ?? default(int),
-                            AmendmentType = objPostalAddress.AmendmentType,
+                            AmendmentType = objPostalAddressBatch.AmendmentType,
                             FileName = strFileName,
                             FileProcessing_TimeStamp = DateTime.UtcNow,
                             FileType = FileType.Paf.ToString(),
@@ -600,6 +626,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 {
                     objPostalAddress.ID = Guid.NewGuid();
                     objPostalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
+                    objPostalAddress.PostalAddressStatus.Add(GetPostalAddressStatus(objPostalAddress.ID, addressStatus_GUID));
                     await addressDataService.InsertAddress(objPostalAddress, strFileName);
                     await SaveDeliveryPointProcess(objPostalAddress);
                 }
@@ -633,6 +660,23 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         objPostalAddress.DoubleDependentLocality + Constants.Comma +
                         objPostalAddress.PostTown + Constants.Comma +
                         objPostalAddress.Postcode;
+        }
+
+        /// <summary>
+        /// Construct Postal Address Status for resp Postal Address
+        /// </summary>
+        /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
+        /// <returns>returns postal address DTO</returns>
+        private PostalAddressStatusDTO GetPostalAddressStatus(Guid postalAddressGUID, Guid operationalStatusGUID)
+        {
+            return new PostalAddressStatusDTO
+            {
+                ID = Guid.NewGuid(),
+                PostalAddressGUID = postalAddressGUID,
+                OperationalStatusGUID = operationalStatusGUID,
+                StartDateTime = DateTime.UtcNow,
+                RowCreateDateTime = DateTime.UtcNow
+            };
         }
 
         #endregion private methods

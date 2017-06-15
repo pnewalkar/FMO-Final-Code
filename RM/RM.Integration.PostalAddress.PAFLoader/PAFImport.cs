@@ -177,6 +177,11 @@
                     // Add the systemWatcher to the list
                     listFileSystemWatcher.Add(fileSWatch);
 
+                    while (true)
+                    {
+                        fileSWatch.WaitForChanged(WatcherChangeTypes.Created);
+                    }
+
                     // Record a log entry into Windows Event Log
 
                     // CustomLogEvent(String.Format( "Starting to monitor files with extension ({0})
@@ -229,6 +234,23 @@
             finally
             {
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            }
+        }
+
+        private bool FileIsReady(string path)
+        {
+            // One exception per file rather than several like in the polling pattern
+            try
+            {
+                // If we can't open the file, it's still copying
+                using (var file = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    return true;
+                }
+            }
+            catch (IOException)
+            {
+                return false;
             }
         }
 

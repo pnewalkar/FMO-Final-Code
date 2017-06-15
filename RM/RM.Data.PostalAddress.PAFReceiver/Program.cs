@@ -19,13 +19,22 @@ namespace RM.Data.PostalAddress.PAFReceiver
         private static void Main()
         {
             IKernel kernel = new StandardKernel(new StartUp());
-            IMessageBroker<PostalAddressDTO> msgPAF = kernel.Get<IMessageBroker<PostalAddressDTO>>();
+            IMessageBroker<PostalAddressBatchDTO> msgPAF = kernel.Get<IMessageBroker<PostalAddressBatchDTO>>();
             IHttpHandler httpHandler = kernel.Get<IHttpHandler>();
             IConfigurationHelper configurationHelper = kernel.Get<IConfigurationHelper>();
             ILoggingHelper loggingHelper = kernel.Get<ILoggingHelper>();
 
+#if DEBUG
+            using (PAFReceiver myService = new PAFReceiver(msgPAF, httpHandler, configurationHelper, loggingHelper))
+            {
+                myService.OnDebug();
+                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+            }
+#else
+
             ServiceBase[] servicesToRun = new ServiceBase[] { new PAFReceiver(msgPAF, httpHandler, configurationHelper, loggingHelper) };
             ServiceBase.Run(servicesToRun);
+#endif
         }
     }
 }

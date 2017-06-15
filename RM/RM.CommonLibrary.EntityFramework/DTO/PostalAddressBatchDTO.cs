@@ -1,24 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO.UIDropdowns;
 
 namespace RM.CommonLibrary.EntityFramework.DTO
 {
-    public class PostalAddressDTO
+    public class PostalAddressBatchDTO
     {
-        public PostalAddressDTO()
-        {
-            this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
-        }
         /// <summary>
         /// This class represents data transfer object for PostalAddress entity
         /// </summary>
-
-        public Guid ID { get; set; }
-
         public string PostcodeType { get; set; }
 
         public string OrganisationName { get; set; }
@@ -53,14 +43,26 @@ namespace RM.CommonLibrary.EntityFramework.DTO
 
         public string POBoxNumber { get; set; }
 
+        public Guid ID { get; set; }
+
         public Guid PostCodeGUID { get; set; }
 
         public Guid AddressType_GUID { get; set; }
 
-        public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
+        public Guid? AddressStatus_GUID { get; set; }
 
-        public List<BindingEntity> NybAddressDetails { get; set; }
+        public bool IsValidData { get; set; }
 
-        public List<BindingEntity> RouteDetails { get; set; }
+        public string InValidRemarks { get; set; }
+
+        public string Date { get; set; }
+
+        public string Time { get; set; }
+
+        public string AmendmentType { get; set; }
+
+        public string AmendmentDesc { get; set; }
+
+        public string FileName { get; set; }
     }
 }

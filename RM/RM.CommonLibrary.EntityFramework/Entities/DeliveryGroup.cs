@@ -13,7 +13,6 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         public DeliveryGroup()
         {
             BlockSequences = new HashSet<BlockSequence>();
-            DeliveryPoints = new HashSet<DeliveryPoint>();
             DeliveryRouteActivities = new HashSet<DeliveryRouteActivity>();
             GroupHazards = new HashSet<GroupHazard>();
         }
@@ -53,9 +52,6 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         public virtual ReferenceData ReferenceData { get; set; }
 
         public virtual ReferenceData ReferenceData1 { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryPoint> DeliveryPoints { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }

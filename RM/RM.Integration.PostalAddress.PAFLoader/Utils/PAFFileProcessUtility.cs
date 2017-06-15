@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Text.RegularExpressions;
+    using System.Threading;
     using System.Web.Script.Serialization;
     using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.EntityFramework.DTO;
@@ -27,7 +28,7 @@
         private static int noOfCharactersForPAF = default(int); // Constants.NoOfCharactersForNYB; // 15;
         private static int maxCharactersForPAF = default(int); // Constants.maxCharactersForNYB; // 507;
         private static int csvPAFValues = default(int); // Constants.csvValuesForNYB; // 16;
-        private readonly IMessageBroker<PostalAddressDTO> msgBroker;
+        private readonly IMessageBroker<PostalAddressBatchDTO> msgBroker;
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private IConfigurationHelper configurationHelper;
@@ -37,7 +38,7 @@
 
         #region constructor
 
-        public PAFFileProcessUtility(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
+        public PAFFileProcessUtility(IMessageBroker<PostalAddressBatchDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
             this.configurationHelper = configurationHelper;
@@ -52,6 +53,92 @@
         #endregion constructor
 
         #region public methods
+
+        /// <summary>
+        /// Waits until a file can be opened with write permission
+        /// <param name="fileName">file to be processed</param>
+        /// </summary>
+        public void WaitReady(string fileName)
+        {
+            bool isPAFFileProcessed = false;
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+
+            while (true)
+            {
+                try
+                {
+                    if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME.ToString()))
+                    {
+                        using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                        {
+                            foreach (ZipArchiveEntry entry in zip.Entries)
+                            {
+                                string strLine = string.Empty;
+                                string strfileName = string.Empty;
+                                using (Stream stream = entry.Open())
+                                {
+                                    var reader = new StreamReader(stream);
+                                    strLine = reader.ReadToEnd();
+                                    strfileName = entry.Name;
+
+                                    if (CheckFileName(new FileInfo(strfileName).Name, Constants.PAFFLATFILENAME))
+                                    {
+                                        List<PostalAddressBatchDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
+                                        string postaLAddress = serializer.Serialize(lstPAFDetails);
+                                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
+
+                                        if (lstPAFDetails != null && lstPAFDetails.Count > 0)
+                                        {
+                                            var invalidRecordsCount = lstPAFDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                                            if (invalidRecordsCount > 0)
+                                            {
+                                                File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                                this.loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                            }
+                                            else
+                                            {
+                                                if (SavePAFDetails(lstPAFDetails))
+                                                {
+                                                    File.WriteAllText(Path.Combine(strPAFProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                                    isPAFFileProcessed = true;
+                                                }
+                                                else
+                                                {
+                                                    File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                                    this.loggingHelper.Log(string.Format(Constants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            this.loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (FileNotFoundException ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message));
+                }
+                catch (IOException ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message));
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message));
+                }
+
+                Thread.Sleep(500);
+            }
+        }
 
         /// <summary>
         /// Read files from zip file and validate and save records
@@ -82,7 +169,7 @@
 
                                 if (CheckFileName(new FileInfo(strfileName).Name, Constants.PAFFLATFILENAME))
                                 {
-                                    List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
+                                    List<PostalAddressBatchDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
                                     string postaLAddress = serializer.Serialize(lstPAFDetails);
                                     LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
 
@@ -120,9 +207,17 @@
                     }
                 }
             }
-            catch (System.Exception)
+            catch (FileNotFoundException ex)
             {
-                throw;
+                loggingHelper.Log(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message), TraceEventType.Error);
+            }
+            catch (IOException ex)
+            {
+                loggingHelper.Log(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message), TraceEventType.Error);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                loggingHelper.Log(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message), TraceEventType.Error);
             }
             finally
             {
@@ -133,14 +228,14 @@
         }
 
         /// <summary>
-        /// Reads data from CSV file and maps to postalAddressDTO object
+        /// Reads data from CSV file and maps to PostalAddressBatchDTO object
         /// </summary>
         /// <param name="line">Line read from CSV File</param>
         /// <param name="strFileName">FileName required to track the error in db against each records</param>
         /// <returns>Postal Address DTO</returns>
-        public List<PostalAddressDTO> ProcessPAF(string line, string strFileName)
+        public List<PostalAddressBatchDTO> ProcessPAF(string line, string strFileName)
         {
-            List<PostalAddressDTO> lstAddressDetails = null;
+            List<PostalAddressBatchDTO> lstAddressDetails = null;
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
@@ -153,7 +248,7 @@
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
-                        // Validate PAF Details ,validates each property of PostalAddressDTO as per
+                        // Validate PAF Details ,validates each property of PostalAddressBatchDTO as per
                         // the business rule and set the Value of IsValid property to either true or
                         // false.Depending on the count of IsValid property data wil either will be
                         // saved in DB or file will be moved to error folder.
@@ -191,7 +286,7 @@
         /// </summary>
         /// <param name="lstPostalAddress">List of mapped address dto to validate each records</param>
         /// <returns>If success returns true else returns false</returns>
-        public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
+        public bool SavePAFDetails(List<PostalAddressBatchDTO> lstPostalAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
@@ -304,14 +399,14 @@
         }
 
         /// <summary>
-        /// Mapping comma separated value to postalAddressDTO object
+        /// Mapping comma separated value to PostalAddressBatchDTO object
         /// </summary>
         /// <param name="csvLine">Line read from CSV File</param>
         /// <param name="fileName">File Name</param>
         /// <returns>Returns mapped DTO</returns>
-        private PostalAddressDTO MapPAFDetailsToDTO(string csvLine, string fileName)
+        private PostalAddressBatchDTO MapPAFDetailsToDTO(string csvLine, string fileName)
         {
-            PostalAddressDTO objAddDTO = new PostalAddressDTO();
+            PostalAddressBatchDTO objAddDTO = new PostalAddressBatchDTO();
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
@@ -356,16 +451,16 @@
         }
 
         /// <summary>
-        /// Perform business validation on postalAddressDTO object
+        /// Perform business validation on PostalAddressBatchDTO object
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
-        private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
+        private void ValidatePAFDetails(List<PostalAddressBatchDTO> lstAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
-                foreach (PostalAddressDTO objAdd in lstAddress)
+                foreach (PostalAddressBatchDTO objAdd in lstAddress)
                 {
                     if (string.IsNullOrEmpty(objAdd.AmendmentType) ||
                         !new string[] { Constants.PAFNOACTION, Constants.PAFINSERT, Constants.PAFUPDATE, Constants.PAFDELETE }.Any(s => objAdd.AmendmentType.Contains(s)))

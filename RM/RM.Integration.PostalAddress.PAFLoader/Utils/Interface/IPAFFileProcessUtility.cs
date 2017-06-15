@@ -7,8 +7,8 @@
     {
         bool LoadPAF(string fileName);
 
-        List<PostalAddressDTO> ProcessPAF(string strLine, string strfileName);
+        List<PostalAddressBatchDTO> ProcessPAF(string strLine, string strfileName);
 
-        bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress);
+        bool SavePAFDetails(List<PostalAddressBatchDTO> lstPostalAddress);
     }
 }

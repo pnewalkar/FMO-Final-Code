@@ -189,13 +189,14 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                         if (intersectionCountForRoadOrPath == 0)
                         {
+                            /* POC data modal change comment
                             var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
                            .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
 
                             if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.AsNoTracking().Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
                             {
                                 networkIntersectionPoint = accessLinkLine.STEndPoint();
-                            }
+                            }*/
                         }
                     }
                 }
@@ -252,6 +253,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 {
                     DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
 
+                    /* POC data modal change comment
                     var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
                             .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
 
@@ -261,7 +263,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         networkIntersectionPoint = accessLinkLine.STEndPoint();
 
                         break;
-                    }
+                    }*/
                 }
             }
 

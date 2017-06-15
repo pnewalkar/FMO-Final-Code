@@ -122,6 +122,7 @@
     <Compile Include="DTO\BlockSequenceDTO.cs" />
     <Compile Include="DTO\DeliveryPointAliasDTO.cs" />
     <Compile Include="DTO\DeliveryPointDTO.cs" />
+    <Compile Include="DTO\DeliveryPointStatusDTO.cs" />
     <Compile Include="DTO\DeliveryRouteDTO.cs" />
     <Compile Include="DTO\FileProcessingLogDTO.cs" />
     <Compile Include="DTO\FileProcessing\AddressLocationUSRDTO.cs" />
@@ -132,9 +133,12 @@
     <Compile Include="DTO\Model\RouteLogSummaryModelDTO.cs" />
     <Compile Include="DTO\Model\UpdateDeliveryPointModelDTO.cs" />
     <Compile Include="DTO\NetworkLinkDTO.cs" />
+    <Compile Include="DTO\NetworkNodeDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\OsRoadLinkDTO.cs" />
+    <Compile Include="DTO\PostalAddressBatchDTO.cs" />
     <Compile Include="DTO\PostalAddressDTO.cs" />
+    <Compile Include="DTO\PostalAddressStatus.cs" />
     <Compile Include="DTO\PostCodeDTO.cs" />
     <Compile Include="DTO\PostCodeSectorDTO.cs" />
     <Compile Include="DTO\Properties.cs" />

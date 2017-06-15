@@ -81,7 +81,7 @@ namespace Fmo.API.Services.Controllers
         /// <param name="postalAddress">List of posatl address DTO</param>
         /// <returns></returns>
         [HttpPost("pafaddresses")]
-        public async Task<IActionResult> SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
+        public async Task<IActionResult> SavePAFDetails([FromBody] List<PostalAddressBatchDTO> postalAddress)
         {
             try
             {
