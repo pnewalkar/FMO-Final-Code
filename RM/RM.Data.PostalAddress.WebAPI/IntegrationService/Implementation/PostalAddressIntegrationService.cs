@@ -62,8 +62,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             Guid referenceId = Guid.Empty;
             HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + categoryName);
             if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
+            {                
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -86,7 +85,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + listName);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -105,8 +103,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", listNames);
             if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
+            { 
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -132,7 +129,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + udprn);
             if (!result.IsSuccessStatusCode)
             {
-                // Log error with statuscode
                 var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                 this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                 return null;
@@ -159,7 +155,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/addressId:" + addressId);
             if (!result.IsSuccessStatusCode)
             {
-                // Log error with statuscode
                 var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                 this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                 return null;
@@ -189,7 +184,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }));
             if (!result.IsSuccessStatusCode)
             {
-                // Log error with statuscode
                 var responseContent = result.ReasonPhrase;
                 this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                 return false;
@@ -213,7 +207,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
             if (!result.IsSuccessStatusCode)
             {
-                // Log error with statuscode
                 var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                 this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                 return 0;
@@ -240,7 +233,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             HttpResponseMessage result = await httpHandler.GetAsync(addressLocationManagerDataWebAPIName + "addresslocation/udprn:" + udprn);
             if (!result.IsSuccessStatusCode)
             {
-                // Log error with statuscode
                 var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                 this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                 return null;
@@ -267,7 +259,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/guid/" + postCode);
             if (!result.IsSuccessStatusCode)
             {
-                // Log error with statuscode
                 var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                 this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                 return Guid.Empty;

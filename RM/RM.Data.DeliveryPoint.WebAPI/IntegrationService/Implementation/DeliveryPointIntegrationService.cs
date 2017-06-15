@@ -54,8 +54,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             string requestUrl = referenceDataWebAPIName + actionUrl;
             HttpResponseMessage result = httpHandler.GetAsync(requestUrl).Result;
             if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
+            {                
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -69,8 +68,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             accessLinkWebAPIName = accessLinkWebAPIName + "AccessLink/" + operationalObjectId + "/" + operationObjectTypeId;
             HttpResponseMessage result = httpHandler.GetAsync(accessLinkWebAPIName).Result;
             if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
+            {        
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -106,7 +104,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/nybduplicate/", objPostalAddress);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -124,7 +121,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/duplicatedeliverypoint/", objPostalAddress);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -144,7 +140,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             HttpResponseMessage result = await httpHandler.GetAsync(blockSequenceWebAPIName);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
