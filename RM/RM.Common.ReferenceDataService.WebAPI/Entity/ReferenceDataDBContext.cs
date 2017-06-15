@@ -2,6 +2,9 @@
 
 namespace RM.Common.ReferenceData.WebAPI.Entities
 {
+    /// <summary>
+    /// Reference Data Database Context
+    /// </summary>
     public class ReferenceDataDBContext : DbContext
     {
         public ReferenceDataDBContext()

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace RM.Common.ReferenceData.WebAPI.DTO
+namespace RM.Common.ReferenceData.WebAPI.Utils
 {
     public class CategoryName
     {
