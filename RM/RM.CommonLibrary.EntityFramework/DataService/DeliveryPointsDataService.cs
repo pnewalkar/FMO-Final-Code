@@ -349,44 +349,31 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
 
-            //using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
-            //{
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodEntryEventId, LoggerTraceConstants.Title);
-            string dpUsetype = string.Empty;
-
-            //Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
-            //   .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-            //   .SelectMany(x => x.ReferenceDatas)
-            //   .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
-            //   .SingleOrDefault();
-
-            //Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
-            //    .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-            //    .SelectMany(x => x.ReferenceDatas)
-            //    .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
-            //    .SingleOrDefault();
-
-            var dpUse = from dp in DataContext.DeliveryPoints.AsNoTracking()
-                        where dp.ID == deliveryPointId
-                        select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
-
-            List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
-            if (deliveryPointUseIndicator.Count > 0)
+            using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
             {
-                if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodEntryEventId, LoggerTraceConstants.Title);
+                string dpUsetype = string.Empty;
+
+                var dpUse = from dp in DataContext.DeliveryPoints.AsNoTracking()
+                            where dp.ID == deliveryPointId
+                            select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
+
+                List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
+                if (deliveryPointUseIndicator.Count > 0)
                 {
-                    dpUsetype = Constants.DpUseOrganisation;
+                    if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+                    {
+                        dpUsetype = Constants.DpUseOrganisation;
+                    }
+                    else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
+                    {
+                        dpUsetype = Constants.DpUseResidential;
+                    }
                 }
-                else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
-                {
-                    dpUsetype = Constants.DpUseResidential;
-                }
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodExitEventId, LoggerTraceConstants.Title);
+                return dpUsetype;
             }
-
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodExitEventId, LoggerTraceConstants.Title);
-            return dpUsetype;
-
-            // }
         }
 
         /// <summary>
@@ -475,7 +462,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                             await rmDbContext.SaveChangesAsync();
                         }
                         loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                        return deliveryPoint.ID;
+                        return deliveryPoint != null ? deliveryPoint.ID : Guid.Empty;
                     }
                 }
             }
