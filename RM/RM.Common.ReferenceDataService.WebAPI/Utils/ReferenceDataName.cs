@@ -1,4 +1,4 @@
-﻿namespace RM.Common.ReferenceData.WebAPI.DTO
+﻿namespace RM.Common.ReferenceData.WebAPI.Utils
 {
     public class ReferenceDataName
     {
