@@ -180,7 +180,6 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            //testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object, mockReferenceDataCategoryDataService.Object);
             testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object);
         }
 
