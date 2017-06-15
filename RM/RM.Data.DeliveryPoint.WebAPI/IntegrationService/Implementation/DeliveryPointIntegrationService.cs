@@ -86,8 +86,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 }
 
                 string returnvalue = result.Content.ReadAsStringAsync().Result;
-                return Convert.ToBoolean(returnvalue);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return Convert.ToBoolean(returnvalue);
             }
         }
 
@@ -109,9 +109,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
-
-                return JsonConvert.DeserializeObject<CreateDeliveryPointModelDTO>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return JsonConvert.DeserializeObject<CreateDeliveryPointModelDTO>(result.Content.ReadAsStringAsync().Result);
             }
         }
 
@@ -174,8 +173,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 }
 
                 string returnvalue = result.Content.ReadAsStringAsync().Result;
-                return Convert.ToBoolean(returnvalue);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return Convert.ToBoolean(returnvalue);
             }
         }
 

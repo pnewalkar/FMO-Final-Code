@@ -74,9 +74,8 @@
                 DataContext.AccessLinks.Add(accessLink);
 
                 accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-
-                return accessLinkCreationSuccess;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return accessLinkCreationSuccess;
             }
         }
 

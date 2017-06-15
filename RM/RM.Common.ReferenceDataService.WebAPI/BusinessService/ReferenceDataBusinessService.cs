@@ -21,8 +21,6 @@
         private string RefDataXMLFileName = string.Empty;
         private IReferenceDataDataService referenceDataDataService;
 
-        //private IConfigurationHelper configHelper = default(IConfigurationHelper);
-
         #region Constructor
 
         /// <summary>

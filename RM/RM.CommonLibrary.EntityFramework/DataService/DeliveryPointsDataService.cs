@@ -140,9 +140,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
                     }
                 }
-
-                return isDeliveryPointInserted;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointInserted;
             }
         }
 
@@ -419,10 +418,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                             deliveryPoint.Positioned = deliveryPointDto.Positioned;
                             status = await rmDbContext.SaveChangesAsync();
                         }
-
+                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                         return status;
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -476,10 +474,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                             rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
                             await rmDbContext.SaveChangesAsync();
                         }
-
+                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                         return deliveryPoint.ID;
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -674,9 +671,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         isDeliveryPointUpdated = rmDbContext.SaveChanges() > 0;
                     }
                 }
-
-                return isDeliveryPointUpdated;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointUpdated;
             }
         }
 
