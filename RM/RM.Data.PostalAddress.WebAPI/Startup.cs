@@ -15,10 +15,13 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.PostalAddress.WebAPI.Entities;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
+using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation;
+using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
 
 namespace RM.DataManagement.PostalAddress.WebAPI
 {
@@ -79,7 +82,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI
             services.AddSingleton<IExceptionHelper, ExceptionHelper>();
 
             // Infrastructure
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            services.AddScoped<IDatabaseFactory<PostalAddressDBContext>, DatabaseFactory<PostalAddressDBContext>>();
 
             // DataServices
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();

@@ -4,7 +4,7 @@ using System.Data.Entity.Spatial;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 
-namespace RM.CommonLibrary.EntityFramework.DTO
+namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
     /// <summary>
     /// This class represents data transfer object for DeliveryPoint entity
