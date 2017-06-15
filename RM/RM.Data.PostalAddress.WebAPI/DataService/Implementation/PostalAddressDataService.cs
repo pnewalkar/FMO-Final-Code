@@ -220,7 +220,7 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
-            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(l => l.PostalAddressStatus).Include(m => m.DeliveryPoints)
+            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(l => l.PostalAddressStatus)//.Include(m => m.DeliveryPoints)
                 .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
                                      && ((n.BuildingName ==
                                           (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
@@ -371,75 +371,75 @@
             return postCode;
         }
 
-        /// <summary>
-        /// Check For Duplicate Address With DeliveryPoints
-        /// </summary>
-        /// <param name="objPostalAddress">objPostalAddress</param>
-        /// <returns>bool</returns>
-        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
-        {
-            bool isDuplicate = false;
+        ///// <summary>
+        ///// Check For Duplicate Address With DeliveryPoints
+        ///// </summary>
+        ///// <param name="objPostalAddress">objPostalAddress</param>
+        ///// <returns>bool</returns>
+        //public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        //{
+        //    bool isDuplicate = false;
 
-            var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
-                .Where(n => n.Postcode == objPostalAddress.Postcode);
+        //    var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+        //        .Where(n => n.Postcode == objPostalAddress.Postcode);
 
-            if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
-            {
-                postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
+        //    if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
+        //    {
+        //        postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
+        //            StringComparison.OrdinalIgnoreCase));
+        //    }
 
-            if (objPostalAddress.BuildingNumber != null)
-            {
-                postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
-            }
+        //    if (objPostalAddress.BuildingNumber != null)
+        //    {
+        //        postalAddress = postalAddress.Where(n => n.BuildingNumber == objPostalAddress.BuildingNumber);
+        //    }
 
-            if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
-            {
-                postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
+        //    if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
+        //    {
+        //        postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
+        //            StringComparison.OrdinalIgnoreCase));
+        //    }
 
-            if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
-            {
-                postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
+        //    if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
+        //    {
+        //        postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
+        //            StringComparison.OrdinalIgnoreCase));
+        //    }
 
-            if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
-            {
-                postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
-                    StringComparison.OrdinalIgnoreCase));
-            }
+        //    if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
+        //    {
+        //        postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
+        //            StringComparison.OrdinalIgnoreCase));
+        //    }
 
-            if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
-            {
-                postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare,
-                    StringComparison.OrdinalIgnoreCase));
-            }
+        //    if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
+        //    {
+        //        postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare,
+        //            StringComparison.OrdinalIgnoreCase));
+        //    }
 
-            if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
-            {
-                postalAddress =
-                    postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
-                        StringComparison.OrdinalIgnoreCase));
-            }
+        //    if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
+        //    {
+        //        postalAddress =
+        //            postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
+        //                StringComparison.OrdinalIgnoreCase));
+        //    }
 
-            var addressDetails = postalAddress.ToList();
-            if (addressDetails != null && addressDetails.Count > 0)
-            {
-                foreach (var address in addressDetails)
-                {
-                    if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
-                    {
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-            }
+        //    var addressDetails = postalAddress.ToList();
+        //    if (addressDetails != null && addressDetails.Count > 0)
+        //    {
+        //        foreach (var address in addressDetails)
+        //        {
+        //            if (address != null && address.DeliveryPoints != null && address.DeliveryPoints.Count > 0)
+        //            {
+        //                isDuplicate = true;
+        //                break;
+        //            }
+        //        }
+        //    }
 
-            return isDuplicate;
-        }
+        //    return isDuplicate;
+        //}
 
         /// <summary>
         /// Update PAF details depending on the UDPRN

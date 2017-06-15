@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
@@ -79,9 +79,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param
         /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
-        public async Task<ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listName)
+        public async Task<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listName)
         {
-            ReferenceDataCategoryDTO referenceCategories = new ReferenceDataCategoryDTO();
+            CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO referenceCategories = new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO();
 
             HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + listName);
             if (!result.IsSuccessStatusCode)
@@ -99,9 +99,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param
         /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
-        public async Task<List<ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
+        public async Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
         {
-            List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
+            List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", listNames);
             if (!result.IsSuccessStatusCode)
@@ -122,7 +122,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         /// </summary>
         /// <param name="udprn">udprn as int</param>
         /// <returns>DeliveryPointDTO</returns>
-        public async Task<DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn)
+        public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByUDPRN"))
             //{
@@ -138,7 +138,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 return null;
             }
 
-            DeliveryPointDTO deliveryPoint = JsonConvert.DeserializeObject<DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+            DTO.DeliveryPointDTO deliveryPoint = JsonConvert.DeserializeObject<DTO.DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
             return deliveryPoint;
 
             // }
@@ -149,7 +149,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         /// </summary>
         /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
         /// <returns>DeliveryPointDTO object</returns>
-        public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId)
+        public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByPostalAddress"))
             //{
@@ -165,7 +165,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 return null;
             }
 
-            DeliveryPointDTO deliveryPoint = JsonConvert.DeserializeObject<DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+            DTO.DeliveryPointDTO deliveryPoint = JsonConvert.DeserializeObject<DTO.DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
             return deliveryPoint;
 
             // }
@@ -176,7 +176,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
         /// <returns>bool</returns>
-        public async Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
+        public async Task<bool> InsertDeliveryPoint(DTO.DeliveryPointDTO objDeliveryPoint)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Integration.InsertDeliveryPoint"))
             //{
@@ -230,7 +230,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <returns>AddressLocationDTO object</returns>
-        public async Task<AddressLocationDTO> GetAddressLocationByUDPRN(int udprn)
+        public async Task<DTO.AddressLocationDTO> GetAddressLocationByUDPRN(int udprn)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetAddressLocationByUDPRN"))
             //{
@@ -246,7 +246,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 return null;
             }
 
-            AddressLocationDTO addressLocation = JsonConvert.DeserializeObject<AddressLocationDTO>(result.Content.ReadAsStringAsync().Result);
+            DTO.AddressLocationDTO addressLocation = JsonConvert.DeserializeObject<DTO.AddressLocationDTO>(result.Content.ReadAsStringAsync().Result);
             return addressLocation;
 
             // }

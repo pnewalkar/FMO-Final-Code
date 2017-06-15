@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.DataManagement.PostalAddress.WebAPI.DTO;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
 {
@@ -21,11 +20,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param
         /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
-        Task<ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listNames);
+        Task<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listNames);
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param
         /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
-        Task<List<ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
+        Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
 
         /// <summary>
         /// Get the delivery points by the UDPRN id
