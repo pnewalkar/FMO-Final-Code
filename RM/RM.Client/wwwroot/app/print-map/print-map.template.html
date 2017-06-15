@@ -2,7 +2,7 @@
     <form name="vm.printMapForm">
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Print Map Options</h2>
+                <h2>{{ 'PRINT_MAP.HEADER'| translate }}</h2>
                 <span flex></span>
                 <md-button class="md-icon-button" ng-click="vm.closeWindow()" aria-label="Close Window" title="Close">
                     <i class="fa fa-times" aria-hidden="true"></i>
@@ -23,8 +23,12 @@
                 <div layout="column" flex>
                         <label>{{ 'PRINT_MAP.ORIENTATION'| translate }}</label>
                         <md-radio-group ng-model="vm.printOptions.orientation" layout="row" class="printMap">
-                            <md-radio-button value="Landscape" class="md-primary">Landscape</md-radio-button>
-                            <md-radio-button value="Portrait"> Portrait </md-radio-button>
+                            <md-radio-button value="Landscape" class="md-primary">
+                                {{ 'PRINT_MAP.LANDSCAPE'| translate }}
+                            </md-radio-button>
+                            <md-radio-button value="Portrait">
+                                {{ 'PRINT_MAP.PORTRAIT'| translate }}
+                            </md-radio-button>
                         </md-radio-group>
 
                 </div>
@@ -45,7 +49,7 @@
             <div layout="row" ng-show="vm.printOptions.size === 'A2' || vm.printOptions.size === 'A1' || vm.printOptions.size === 'A0'">
                 <div layout="column" flex>
                     <div>
-                        <span>*If you are unable to print this locally,please generate and send to your printing service facility</span>
+                        <span>{{ 'PRINT_MAP.CONDITION'| translate }}</span>
                     </div>
                 </div>
             </div>

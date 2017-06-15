@@ -159,10 +159,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CreateAccessLink(Guid operationalObjectId, Guid operationObjectTypeId)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Business.CreateAutomaticAccessLink"))
-            //{
+            using (loggingHelper.RMTraceManager.StartTrace("Business.CreateAutomaticAccessLink"))
+            {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateAutomaticAccessLinkPriority, LoggerTraceConstants.CreateAutomaticAccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
             bool isAccessLinkCreated = false;
 
@@ -336,10 +336,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 }
             }
 
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateAutomaticAccessLinkPriority, LoggerTraceConstants.CreateAutomaticAccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
             return isAccessLinkCreated;
 
-            // }
+             }
         }
 
         /// <summary>
@@ -351,10 +351,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Business.CreateManualAccessLink"))
-            //{
+            using (loggingHelper.RMTraceManager.StartTrace("Business.CreateManualAccessLink"))
+            {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateManualAccessLinkPriority, LoggerTraceConstants.CreateManualAccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
             bool isAccessLinkCreated = false;
 
@@ -444,10 +444,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 }
             }
 
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.CreateManualAccessLinkPriority, LoggerTraceConstants.CreateManualAccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
             return isAccessLinkCreated;
 
-            // }
+             }
         }
 
         /// <summary>

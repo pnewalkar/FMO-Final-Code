@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.RouteLog.WebAPI.BusinessService;
 using RM.Operational.RouteLog.WebAPI.Controllers.BaseController;
-using System;
-using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Operational.RouteLog.WebAPI.Controllers
 {
