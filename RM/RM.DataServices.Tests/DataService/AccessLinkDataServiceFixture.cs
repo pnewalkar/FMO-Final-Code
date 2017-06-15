@@ -4,10 +4,10 @@ namespace RM.DataServices.Tests.DataService
 {
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
-    using System.Data.Entity.Spatial;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.EntityFramework.DataService;
     using CommonLibrary.EntityFramework.DataService.Interfaces;
+    using CommonLibrary.EntityFramework.DTO;
     using CommonLibrary.EntityFramework.Entities;
     using CommonLibrary.LoggingMiddleware;
     using Moq;
@@ -26,12 +26,20 @@ namespace RM.DataServices.Tests.DataService
         private Guid unit3Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid user1Id;
         private Guid user2Id;
+        private AccessLinkDTO accessLinkDto;
 
         [Test]
         public void Test_GetAccessLinks()
         {
             coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
             var actualResult = testCandidate.GetAccessLinks(coordinates, unit1Guid);
+            Assert.IsNotNull(actualResult);
+        }
+
+        [Test]
+        public void Test_CreateAccessLink()
+        {
+            var actualResult = testCandidate.CreateAccessLink(accessLinkDto);
             Assert.IsNotNull(actualResult);
         }
 
@@ -63,6 +71,17 @@ namespace RM.DataServices.Tests.DataService
                       }
             };
 
+            accessLinkDto = new AccessLinkDTO()
+            {
+                OperationalObjectPoint = DbGeometry.PointFromText("POINT (488938 197021)", 27700),
+                NetworkIntersectionPoint = null,
+                AccessLinkLine = null,
+                ActualLengthMeter = 3,
+                WorkloadLengthMeter = 5,
+                Approved = true,
+                OperationalObject_GUID = Guid.NewGuid()
+            };
+
             var mockAsynEnumerable = new DbAsyncEnumerable<AccessLink>(accessLink);
             var mockAccessLinkDataService = MockDbSet(accessLink);
             mockFmoDbContext = CreateMock<RMDBContext>();
@@ -78,6 +97,11 @@ namespace RM.DataServices.Tests.DataService
             mockAccessLinkDataService2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockAccessLinkDataService2.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate = new AccessLinkDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
