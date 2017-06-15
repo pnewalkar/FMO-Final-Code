@@ -17,7 +17,9 @@ referenceDataConstants) {
     return {
         closeWindow: closeWindow,
         printMap:printMap,
-        generatePdf: generatePdf
+        generatePdf: generatePdf,
+        loadPdfSize: loadPdfSize,
+        getReferencedata: getReferencedata
     };
     function closeWindow() {
         $mdDialog.cancel();
@@ -36,4 +38,28 @@ referenceDataConstants) {
         });
         return deferred.promise;
     };
+    function loadPdfSize() {
+        var deferred = $q.defer();
+        referencedataApiService.getNameValueReferenceData(referenceDataConstants.PDF_PageSize.DBCategoryName).then(function (response) {
+            var pdfSizeResult = [];
+            angular.forEach(response, function (value, key) {
+                pdfSizeResult.push({ "DisplayText": value.description, "Value": value.value });
+                deferred.resolve(pdfSizeResult);
+                   
+            });
+        });
+        return deferred.promise;
+    }
+    function getReferencedata(categoryName) {
+        var deferred = $q.defer();
+        referencedataApiService.getNameValueReferenceData(categoryName).then(function (response) {
+            var refdataResult = [];
+            angular.forEach(response, function (value, key) {
+                refdataResult.push({ "Name": value.name, "Value": value.value });
+                deferred.resolve(refdataResult);
+
+            });
+        });
+        return deferred.promise;
+    }
 }

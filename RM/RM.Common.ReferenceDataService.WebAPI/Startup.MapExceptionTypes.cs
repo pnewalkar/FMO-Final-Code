@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
 using RM.CommonLibrary.ExceptionMiddleware;
-using System.Data.Entity.Infrastructure;
 
 namespace RM.Common.ReferenceData.WebAPI
 {

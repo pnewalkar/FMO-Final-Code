@@ -12,7 +12,7 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExcepti
         public ResponseExceptionHandlerOptions()
         {
             ErrorCodePrefix = "ERR_";
-            DefaultErrorMessage = ErrorConstants.Err_UnHandled;
+            DefaultErrorMessage = ErrorConstants.LogAndThrowErrorMessage;
 
             SerializerSettings = new JsonSerializerSettings
             {

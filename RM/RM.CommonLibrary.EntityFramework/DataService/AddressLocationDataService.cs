@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
-using System.Data.Entity.Infrastructure;
 using RM.CommonLibrary.ExceptionMiddleware;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.ResourceFile;
-using System.Data.Entity;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -19,10 +23,14 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class AddressLocationDataService : DataServiceBase<AddressLocation, RMDBContext>, IAddressLocationDataService
     {
-        public AddressLocationDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public AddressLocationDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
+
         /// <summary>
         /// Find AddressLocation by UDPRN
         /// </summary>
@@ -54,26 +62,32 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             try
             {
-                var addressLocationEntity = new AddressLocation();
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveNewAddressLocation"))
+                {
+                    string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                GenericMapper.Map(addressLocationDTO, addressLocationEntity);
-                DataContext.AddressLocations.Add(addressLocationEntity);
+                    var addressLocationEntity = new AddressLocation();
 
-                return await DataContext.SaveChangesAsync();
+                    GenericMapper.Map(addressLocationDTO, addressLocationEntity);
+                    DataContext.AddressLocations.Add(addressLocationEntity);
+                    loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return await DataContext.SaveChangesAsync();
+                }
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Address Location for UDPRN:", addressLocationDTO.UDPRN)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
     }

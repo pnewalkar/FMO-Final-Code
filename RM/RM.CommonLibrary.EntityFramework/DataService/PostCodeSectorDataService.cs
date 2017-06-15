@@ -25,18 +25,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>PostCodeSectorDTO object</returns>
         public async Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN)
         {
-            try
-            {
-                PostalAddress postalAddress = await DataContext.PostalAddresses.AsNoTracking().Where(pa => pa.UDPRN == uDPRN).SingleOrDefaultAsync();
-                PostcodeSector postCodeSector = postalAddress.Postcode1.PostcodeSector;
-                PostCodeSectorDTO postCodeSectorDTO = new PostCodeSectorDTO();
-                GenericMapper.Map(postCodeSector, postCodeSectorDTO);
-                return postCodeSectorDTO;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            PostalAddress postalAddress = await DataContext.PostalAddresses.AsNoTracking().Where(pa => pa.UDPRN == uDPRN).SingleOrDefaultAsync();
+            PostcodeSector postCodeSector = postalAddress.Postcode1.PostcodeSector;
+            PostCodeSectorDTO postCodeSectorDTO = new PostCodeSectorDTO();
+            GenericMapper.Map(postCodeSector, postCodeSectorDTO);
+            return postCodeSectorDTO;
+
         }
     }
 }
