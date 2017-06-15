@@ -121,6 +121,6 @@
             return simpleDtoList;
         }
 
-        #endregion Reference Data Manager methods
+        #endregion Methods
     }
 }
