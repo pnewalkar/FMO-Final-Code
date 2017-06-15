@@ -61,8 +61,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
+                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
         }
 
@@ -137,7 +137,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     {
                         isDeliveryPointInserted = false;
                         DataContext.Entry(newDeliveryPoint).State = EntityState.Unchanged;
-                        throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
+                        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
                     }
                 }
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
@@ -191,7 +191,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             if (string.IsNullOrWhiteSpace(searchText) || Guid.Empty.Equals(unitGuid))
             {
-                throw new ArgumentNullException(searchText, string.Format(ErrorMessageIds.Err_ArgumentmentNullException, string.Concat(searchText, unitGuid)));
+                throw new ArgumentNullException(searchText, string.Format(ErrorConstants.Err_ArgumentmentNullException, string.Concat(searchText, unitGuid)));
             }
 
             int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
@@ -255,13 +255,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -425,21 +425,21 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
 
@@ -481,21 +481,21 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
 

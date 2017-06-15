@@ -83,30 +83,6 @@
           "codeLanguage": "any",
           "copyToOutput": true,
           "outputPath": "sqlservertypes/x86/sqlserverspatial140.dll"
-        },
-        "bin/Debug/utilities/resourcefile/errormessageids.designer.cs": {
-          "buildAction": "Compile",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "utilities/resourcefile/errormessageids.designer.cs"
-        },
-        "bin/Debug/utilities/resourcefile/errormessageids.resx": {
-          "buildAction": "EmbeddedResource",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "utilities/resourcefile/errormessageids.resx"
-        },
-        "bin/Debug/utilities/resourcefile/messagesconstants.designer.cs": {
-          "buildAction": "Compile",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "utilities/resourcefile/messagesconstants.designer.cs"
-        },
-        "bin/Debug/utilities/resourcefile/messagesconstants.resx": {
-          "buildAction": "EmbeddedResource",
-          "codeLanguage": "any",
-          "copyToOutput": true,
-          "outputPath": "utilities/resourcefile/messagesconstants.resx"
         }
       }
     }

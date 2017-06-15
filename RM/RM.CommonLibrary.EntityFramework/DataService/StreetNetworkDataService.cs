@@ -114,13 +114,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 

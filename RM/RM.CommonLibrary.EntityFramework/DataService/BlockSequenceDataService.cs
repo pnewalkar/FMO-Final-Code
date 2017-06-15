@@ -63,7 +63,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
             }
 
             return isBlockSequencInserted;

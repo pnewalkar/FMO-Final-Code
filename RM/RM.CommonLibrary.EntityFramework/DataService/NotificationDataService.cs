@@ -52,17 +52,17 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
                 finally
                 {
@@ -99,17 +99,17 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlDeleteException, string.Concat("notification for:", actionLink)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("notification for:", actionLink)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
                 finally
                 {
