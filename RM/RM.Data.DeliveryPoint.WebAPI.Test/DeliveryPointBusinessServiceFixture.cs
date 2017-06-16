@@ -44,7 +44,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public void Test_GetDeliveryPointByUDPRN()
         {
-            int udprn = 10875813;
+            Guid  id = Guid.NewGuid();
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             DeliveryPointDTO objdeliverypointDTO = new DeliveryPointDTO();
             objdeliverypointDTO.ID = Guid.NewGuid();

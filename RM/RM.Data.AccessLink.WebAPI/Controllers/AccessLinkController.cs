@@ -122,6 +122,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         public IActionResult GetAdjPathLength([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
             decimal pathlength = accessLinkBusinessService.GetAdjPathLength(accessLinkManualCreateModelDTO);
+            pathlength= Math.Round(pathlength);
             return Ok(pathlength);
         }
 

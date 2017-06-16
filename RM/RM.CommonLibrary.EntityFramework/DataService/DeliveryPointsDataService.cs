@@ -174,7 +174,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                         Thoroughfare = l.PostalAddress.Thoroughfare,
                                         DependentLocality = l.PostalAddress.DependentLocality,
                                         UDPRN = l.PostalAddress.UDPRN
-                                    }
+                                       
+                                    },
+                                    ID=l.ID
                                 })
                                 .ToListAsync();
 
@@ -221,7 +223,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         Thoroughfare = l.PostalAddress.Thoroughfare,
                         DependentLocality = l.PostalAddress.DependentLocality,
                         UDPRN = l.UDPRN
-                    }
+                    },
+                    ID = l.ID
                 })
                 .Take(takeCount)
                 .ToListAsync();
@@ -487,13 +490,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         }
 
         /// <summary>
-        /// This method fetches delivery point data for given UDPRN
+        /// This method fetches delivery point data for given Guid
         /// </summary>
-        /// <param name="udprn">udprn as int</param>
+        /// <param name="Guid">Guid as unique Identifier</param>
         /// <returns>deliveryPoint DTO</returns>
-        public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
+        public List<DeliveryPointDTO> GetDeliveryPointListByGuid(Guid id)
         {
-            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.UDPRN == udprn).ToList();
+            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.ID == id).ToList();
 
             Mapper.Initialize(cfg =>
             {

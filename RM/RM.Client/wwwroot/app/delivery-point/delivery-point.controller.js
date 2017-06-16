@@ -4,6 +4,7 @@ angular
 
 DeliveryPointController.$inject = [
         'mapToolbarService',
+        'mapService',
         '$scope',
         '$mdDialog',
         'popUpSettingService',
@@ -18,6 +19,7 @@ DeliveryPointController.$inject = [
 
 function DeliveryPointController(
     mapToolbarService,
+    mapService,
     $scope,
     $mdDialog,
     popUpSettingService,
@@ -64,7 +66,8 @@ function DeliveryPointController(
     vm.display = false;
     vm.disable = true;
     vm.items = [];
-    vm.hide = $stateParams.hide;
+   /* vm.hide = $stateParams.hide;*/
+    vm.dpIsChecked = false;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
         if (newValue !== '' && (newValue[0] !== oldValue[0] || newValue[1] !== oldValue[1]))
@@ -80,7 +83,8 @@ function DeliveryPointController(
     });
     function initialize() {
         deliveryPointService.deliveryPointTypes().then(function (response) {
-            vm.deliveryPointTypes = [response[0]];
+            // vm.deliveryPointTypes = [response[0]];
+            vm.deliveryPointTypes = response;
         });
         deliveryPointService.deliveryPointUseType().then(function (response) {
             vm.dpUseType = response;
@@ -94,7 +98,7 @@ function DeliveryPointController(
     }
 
     function closeWindow() {
-        vm.hide = true;
+        vm.hide = false;
         deliveryPointService.closeModalPopup();
         $scope.$emit("dialogClosed");
     }
@@ -107,6 +111,7 @@ function DeliveryPointController(
 
     function OnChangeItem(selectedItem) {
         if (selectedItem) {
+            vm.dpUse = "";
             vm.routeId = "";
             vm.notyetBuilt = "";
             vm.searchText = selectedItem;
@@ -137,6 +142,7 @@ function DeliveryPointController(
             vm.addressDetails.subBuildingName = "";
             vm.addressDetails.organisationName = "";
             vm.addressDetails.departmentName = "";
+            vm.dpUse = "";
         }
     }
 
@@ -148,8 +154,14 @@ function DeliveryPointController(
     }
 
     function toggle(item) {
-        vm.selectedItem = item;
-        setDP();
+        vm.dpIsChecked = !vm.dpIsChecked;
+        if (vm.dpIsChecked === true) {
+            vm.selectedItem = item;
+            setDP();
+        }
+        else {
+            resetDP();
+        }
     };
 
     function openAlert() {
@@ -187,12 +199,18 @@ function DeliveryPointController(
                 });
             }
         }, function () {
+            mapService.clearDrawingLayer(true);
         });
     };
 
     function setDP() {
         var shape = mapToolbarService.getShapeForButton('point');
         $scope.$emit('mapToolChange', { "name": 'deliverypoint', "shape": shape, "enabled": true });
+    }
+
+    function resetDP() {
+        var shape = mapToolbarService.getShapeForButton('point');
+        $scope.$emit('mapToolChange', { "name": 'select', "shape": shape, "enabled": true });
     }
 
     function savePositionedDeliveryPoint() {
@@ -228,7 +246,7 @@ function DeliveryPointController(
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
-                setDP();
+            //    setDP();
                 vm.closeWindow();
 
             }
@@ -248,15 +266,15 @@ function DeliveryPointController(
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.street)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postCode);
+            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
 
         if (vm.addressDetails.udprn && hasLocation) {
             locateDeliveryPoint(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion);
         }
         else {
             manualDeliveryPointPosition(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion)
-            setDP();
+          //  setDP();
         }
     }
 
@@ -308,7 +326,7 @@ function DeliveryPointController(
 
                     $state.go("deliveryPoint", {
                         positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList,
-                        hide: true
+                       /* hide: true*/
                     })
 
                     mapFactory.locateDeliveryPoint(long, lat);
@@ -327,7 +345,7 @@ function DeliveryPointController(
         vm.deliveryPointList.push(deliveryPointListObj);
         $state.go("deliveryPoint", {
             deliveryPointList: vm.deliveryPointList,
-            hide: true
+            /*hide: true*/
         })
 
     }
