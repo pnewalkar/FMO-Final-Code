@@ -44,7 +44,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public void Test_GetDeliveryPointByUDPRN()
         {
-            int udprn = 10875813;
+            Guid  id = Guid.NewGuid();
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             DeliveryPointDTO objdeliverypointDTO = new DeliveryPointDTO();
             objdeliverypointDTO.ID = Guid.NewGuid();
@@ -52,9 +52,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             objdeliverypointDTO.PostalAddress = new PostalAddressDTO();
             lstDeliveryPointDTO.Add(objdeliverypointDTO);
 
-            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
-            var coordinates = testCandidate.GetDeliveryPointByUDPRN(udprn);
-            mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>()), Times.Once);
+            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByGuid(It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
+            var coordinates = testCandidate.GetDeliveryPointByGuid(id);
+            mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPointListByGuid(It.IsAny<Guid>()), Times.Once);
             Assert.IsNotNull(coordinates);
         }
 

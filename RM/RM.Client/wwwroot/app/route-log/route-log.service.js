@@ -56,8 +56,8 @@ referenceDataConstants) {
         var isShowMultiSelectionRoute = false;
         if (selectionType === CommonConstants.RouteLogSelectionType.Multiple) {
             return {
-                isDeliveryRouteDisabled: false,
-                isShowMultiSelectionRoute: false
+                isDeliveryRouteDisabled: true,
+                isShowMultiSelectionRoute: true
             };
         } else {
             return {
@@ -85,7 +85,7 @@ referenceDataConstants) {
             } else {
                 multiSelectiondeliveryRoute = response;
                 deliveryRoute = null;               
-                deliveryRouteResult.push({ "deliveryRoute": response, "multiSelectiondeliveryRoute": null });
+                deliveryRouteResult.push({ "deliveryRoute": null, "multiSelectiondeliveryRoute": response });
                 deferred.resolve(deliveryRouteResult);
             }
         });

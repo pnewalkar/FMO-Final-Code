@@ -43,7 +43,7 @@ function advanceSearchService(advanceSearchAPIService,
             angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
                 if (value.type === CommonConstants.EntityType.DeliveryPoint)
                 {
-                    obj = { 'displayText': value.displayText, 'UDPRN': value.udprn, 'type': CommonConstants.EntityType.DeliveryPoint }
+                    obj = { 'displayText': value.displayText, 'UDPRN': value.udprn, 'type': CommonConstants.EntityType.DeliveryPoint, 'ID': value.deliveryPointGuid }
                     arrDeliverypoints.push(obj);
                 }
                 else if (value.type === CommonConstants.EntityType.Postcode) {
@@ -109,8 +109,9 @@ function advanceSearchService(advanceSearchAPIService,
 
     function onChangeItem(selectedItem) {
         var deferred = $q.defer();
-        var coordinatesData = null;  
-            searchService.GetDeliveryPointByUDPRN(selectedItem.UDPRN)
+        var coordinatesData = null;
+   
+        searchService.GetDeliveryPointByGuid(selectedItem.ID)
                 .then(function (response) {
                     coordinatesData = response;
                     lat = coordinatesData.features[0].geometry.coordinates[1];

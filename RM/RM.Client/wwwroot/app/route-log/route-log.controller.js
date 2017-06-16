@@ -61,12 +61,11 @@ function RouteLogController(routeLogService,
         });
     }
     function scenarioChange() {
-         clearDeliveryRoute();
         var result = routeLogService.scenarioChange(vm.selectedRouteSelectionObj.value);
         vm.isDeliveryRouteDisabled = result.isDeliveryRouteDisabled;
         vm.isShowMultiSelectionRoute = result.isShowMultiSelectionRoute;
         loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
-      
+        clearDeliveryRoute();
     }
     function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
         routeLogService.loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
@@ -84,7 +83,7 @@ function RouteLogController(routeLogService,
     }
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, vm.selectedRouteSelectionObj.value).then(function (response) {
-            vm.multiSelectiondeliveryRoute = response[0].deliveryRoute;
+            vm.multiSelectiondeliveryRoute = response[0].multiSelectiondeliveryRoute;
             vm.deliveryRoute = response[0].deliveryRoute;
         });
     }

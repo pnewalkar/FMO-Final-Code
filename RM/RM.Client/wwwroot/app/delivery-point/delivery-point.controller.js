@@ -111,6 +111,7 @@ function DeliveryPointController(
 
     function OnChangeItem(selectedItem) {
         if (selectedItem) {
+            vm.dpUse = "";
             vm.routeId = "";
             vm.notyetBuilt = "";
             vm.searchText = selectedItem;
@@ -141,6 +142,7 @@ function DeliveryPointController(
             vm.addressDetails.subBuildingName = "";
             vm.addressDetails.organisationName = "";
             vm.addressDetails.departmentName = "";
+            vm.dpUse = "";
         }
     }
 
@@ -264,8 +266,8 @@ function DeliveryPointController(
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.subBuildingName)
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.organisationName)
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.departmentName)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.street)
-            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postCode);
+            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.thoroughfare)
+            + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postcode);
 
         if (vm.addressDetails.udprn && hasLocation) {
             locateDeliveryPoint(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion);

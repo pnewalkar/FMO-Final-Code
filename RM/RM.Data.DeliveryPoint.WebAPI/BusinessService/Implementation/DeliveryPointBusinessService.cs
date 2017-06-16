@@ -77,13 +77,13 @@
         }
 
         /// <summary>
-        /// Get coordinates of the delivery point by UDPRN
+        /// Get coordinates of the delivery point by Guid
         /// </summary>
-        /// <param name="udprn">The UDPRN number</param>
+        /// <param name="Guid">The Guid </param>
         /// <returns>The coordinates of the delivery point</returns>
-        public object GetDeliveryPointByUDPRN(int udprn)
+        public object GetDeliveryPointByGuid(Guid id)
         {
-            return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPointListByUDPRN(udprn));
+            return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPointListByGuid(id));
         }
 
         /// <summary>

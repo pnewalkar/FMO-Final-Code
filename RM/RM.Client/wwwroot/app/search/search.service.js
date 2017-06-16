@@ -82,7 +82,7 @@ function searchBusinessService(
     function OnChangeItem(selectedItem) {
         var contextTitle;
         if (selectedItem.type === CommonConstants.EntityType.DeliveryPoint) {
-            searchService.GetDeliveryPointByUDPRN(selectedItem.udprn)
+            searchService.GetDeliveryPointByGuid(selectedItem.deliveryPointGuid)
                 .then(function (response) {
                     var data = response;
                     var lat = data.features[0].geometry.coordinates[1];
