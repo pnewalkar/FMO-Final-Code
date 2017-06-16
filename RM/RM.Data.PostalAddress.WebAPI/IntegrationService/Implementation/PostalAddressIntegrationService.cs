@@ -120,16 +120,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         /// <summary>
         /// This method will call Delivery point web api which is used to fetch Delivery Point by udprn.
         /// </summary>
-        /// <param name="udprn">udprn as int</param>
+        /// <param name="addressGuid">addressGuid instead of udprn</param>
         /// <returns>DeliveryPointDTO</returns>
-        public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn)
+        public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByUDPRN"))
+            //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByID"))
             //{
             string methodName = MethodBase.GetCurrentMethod().Name;
 
             // method logic here
-            HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + udprn);
+            HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + addressGuid);
             if (!result.IsSuccessStatusCode)
             {
                 // Log error with statuscode
@@ -187,6 +187,34 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             }));
+            if (!result.IsSuccessStatusCode)
+            {
+                // Log error with statuscode
+                var responseContent = result.ReasonPhrase;
+                this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
+                return false;
+            }
+
+            bool isDeliveryPointCreated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+            return Convert.ToBoolean(isDeliveryPointCreated);
+
+            // }
+        }
+
+        /// <summary>
+        /// This method will call Delivery point web api which is used to 
+        /// update delivery point for resp PostalAddress which has type <USR>.
+        /// </summary>
+        /// <param name="objDeliveryPoint">Delivery point dto as object</param>
+        /// <returns>bool</returns>
+        public async Task<bool> UpdateDeliveryPoint(Guid addressId, Guid deliveryPointUseIndicatorPAF)
+        {
+            //using (loggingHelper.RMTraceManager.StartTrace("Integration.InsertDeliveryPoint"))
+            //{
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            // method logic here
+            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + addressId, deliveryPointUseIndicatorPAF);
             if (!result.IsSuccessStatusCode)
             {
                 // Log error with statuscode

@@ -45,8 +45,7 @@
         },
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
-        }
-      },
+        }      },
       "frameworkAssemblies": {
         "System.Web.Extensions": "4.0.0.0"
       }

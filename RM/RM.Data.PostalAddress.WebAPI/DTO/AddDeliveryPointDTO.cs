@@ -11,7 +11,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         /// <summary>
         /// Gets or sets a Postal Address for entity types searched while adding delivery point.
         /// </summary>
-        public PostalAddressDTO PostalAddressDTO { get; set; }
+        public PostalAddressDBDTO PostalAddressDTO { get; set; }
 
         /// <summary>
         /// Gets or sets a delivery point for entity types searched while adding delivery point.

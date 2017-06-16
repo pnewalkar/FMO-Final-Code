@@ -7,9 +7,9 @@ using RM.DataManagement.PostalAddress.WebAPI.DTO.UIDropdowns;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
-    public class PostalAddressDTO
+    public class PostalAddressDBDTO
     {
-        public PostalAddressDTO()
+        public PostalAddressDBDTO()
         {
             this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
         }

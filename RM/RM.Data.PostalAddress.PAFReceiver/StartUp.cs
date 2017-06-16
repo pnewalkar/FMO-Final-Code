@@ -13,7 +13,7 @@ namespace RM.Data.PostalAddress.PAFReceiver
     {
         public override void Load()
         {
-            Bind<IMessageBroker<PostalAddressBatchDTO>>().To<MessageBroker<PostalAddressBatchDTO>>();
+            Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             Bind<IHttpHandler>().To<HttpHandler>();
             Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
             Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope();

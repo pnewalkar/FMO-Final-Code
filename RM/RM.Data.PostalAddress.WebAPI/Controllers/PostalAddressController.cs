@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-// using RM.CommonLibrary.EntityFramework.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -46,7 +45,7 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         // [HttpPost("SaveAddressdetails/{strFileName}")]
         [HttpPost("nybaddresses/{strFileName}")]
-        public async Task<IActionResult> SaveAddressdetails(string strFileName, [FromBody] List<PostalAddressDTO> lstAddressDetails)
+        public async Task<IActionResult> SaveAddressdetails(string strFileName, [FromBody] List<PostalAddressDBDTO> lstAddressDetails)
         {
             try
             {
@@ -82,7 +81,7 @@ namespace Fmo.API.Services.Controllers
         /// <param name="postalAddress">List of posatl address DTO</param>
         /// <returns></returns>
         [HttpPost("pafaddresses")]
-        public async Task<IActionResult> SavePAFDetails([FromBody] List<PostalAddressBatchDTO> postalAddress)
+        public async Task<IActionResult> SavePAFDetails([FromBody] List<PostalAddressDTO> postalAddress)
         {
             try
             {
@@ -151,7 +150,7 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+                PostalAddressDBDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
                 return Ok(postalAddressDto);
             }
             catch (AggregateException ae)
@@ -176,7 +175,7 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("postaladdress/filter/addressguid:{addressguid}")]
         public IActionResult GetPostalAddressByGuid(Guid addressGuid)
         {
-            PostalAddressDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
+            PostalAddressDBDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
             return Ok(postalAddressDto);
         }
 
@@ -192,7 +191,7 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                PostalAddressDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
+                PostalAddressDBDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
                 return Ok(postalAddressDTO);
             }
             catch (AggregateException ae)
@@ -215,7 +214,7 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateNybRecords")]
         [HttpPost("postaladdress/nybduplicate/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public async Task<IActionResult> CheckForDuplicateNybRecords([FromBody] PostalAddressDTO objPostalAddress)
+        public async Task<IActionResult> CheckForDuplicateNybRecords([FromBody] PostalAddressDBDTO objPostalAddress)
         {
             try
             {
@@ -242,7 +241,7 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateAddressWithDeliveryPoints")]
         [HttpPost("postaladdress/duplicatedeliverypoint/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public async Task<IActionResult> CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDTO objPostalAddress)
+        public async Task<IActionResult> CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDBDTO objPostalAddress)
         {
             try
             {

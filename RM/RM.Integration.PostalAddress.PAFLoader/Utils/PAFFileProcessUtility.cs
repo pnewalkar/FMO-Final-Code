@@ -28,7 +28,7 @@
         private static int noOfCharactersForPAF = default(int); // Constants.NoOfCharactersForNYB; // 15;
         private static int maxCharactersForPAF = default(int); // Constants.maxCharactersForNYB; // 507;
         private static int csvPAFValues = default(int); // Constants.csvValuesForNYB; // 16;
-        private readonly IMessageBroker<PostalAddressBatchDTO> msgBroker;
+        private readonly IMessageBroker<PostalAddressDTO> msgBroker;
         private string strPAFProcessedFilePath = string.Empty;
         private string strPAFErrorFilePath = string.Empty;
         private IConfigurationHelper configurationHelper;
@@ -38,7 +38,7 @@
 
         #region constructor
 
-        public PAFFileProcessUtility(IMessageBroker<PostalAddressBatchDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
+        public PAFFileProcessUtility(IMessageBroker<PostalAddressDTO> messageBroker, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgBroker = messageBroker;
             this.configurationHelper = configurationHelper;
@@ -85,7 +85,7 @@
 
                                     if (CheckFileName(new FileInfo(strfileName).Name, Constants.PAFFLATFILENAME))
                                     {
-                                        List<PostalAddressBatchDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
+                                        List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
                                         string postaLAddress = serializer.Serialize(lstPAFDetails);
                                         LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
 
@@ -169,7 +169,7 @@
 
                                 if (CheckFileName(new FileInfo(strfileName).Name, Constants.PAFFLATFILENAME))
                                 {
-                                    List<PostalAddressBatchDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
+                                    List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
                                     string postaLAddress = serializer.Serialize(lstPAFDetails);
                                     LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
 
@@ -228,14 +228,14 @@
         }
 
         /// <summary>
-        /// Reads data from CSV file and maps to PostalAddressBatchDTO object
+        /// Reads data from CSV file and maps to PostalAddressDTO object
         /// </summary>
         /// <param name="line">Line read from CSV File</param>
         /// <param name="strFileName">FileName required to track the error in db against each records</param>
         /// <returns>Postal Address DTO</returns>
-        public List<PostalAddressBatchDTO> ProcessPAF(string line, string strFileName)
+        public List<PostalAddressDTO> ProcessPAF(string line, string strFileName)
         {
-            List<PostalAddressBatchDTO> lstAddressDetails = null;
+            List<PostalAddressDTO> lstAddressDetails = null;
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
@@ -248,7 +248,7 @@
 
                     if (lstAddressDetails != null && lstAddressDetails.Count > 0)
                     {
-                        // Validate PAF Details ,validates each property of PostalAddressBatchDTO as per
+                        // Validate PAF Details ,validates each property of PostalAddressDTO as per
                         // the business rule and set the Value of IsValid property to either true or
                         // false.Depending on the count of IsValid property data wil either will be
                         // saved in DB or file will be moved to error folder.
@@ -286,7 +286,7 @@
         /// </summary>
         /// <param name="lstPostalAddress">List of mapped address dto to validate each records</param>
         /// <returns>If success returns true else returns false</returns>
-        public bool SavePAFDetails(List<PostalAddressBatchDTO> lstPostalAddress)
+        public bool SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
@@ -399,14 +399,14 @@
         }
 
         /// <summary>
-        /// Mapping comma separated value to PostalAddressBatchDTO object
+        /// Mapping comma separated value to PostalAddressDTO object
         /// </summary>
         /// <param name="csvLine">Line read from CSV File</param>
         /// <param name="fileName">File Name</param>
         /// <returns>Returns mapped DTO</returns>
-        private PostalAddressBatchDTO MapPAFDetailsToDTO(string csvLine, string fileName)
+        private PostalAddressDTO MapPAFDetailsToDTO(string csvLine, string fileName)
         {
-            PostalAddressBatchDTO objAddDTO = new PostalAddressBatchDTO();
+            PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
@@ -451,16 +451,16 @@
         }
 
         /// <summary>
-        /// Perform business validation on PostalAddressBatchDTO object
+        /// Perform business validation on PostalAddressDTO object
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
-        private void ValidatePAFDetails(List<PostalAddressBatchDTO> lstAddress)
+        private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
             try
             {
-                foreach (PostalAddressBatchDTO objAdd in lstAddress)
+                foreach (PostalAddressDTO objAdd in lstAddress)
                 {
                     if (string.IsNullOrEmpty(objAdd.AmendmentType) ||
                         !new string[] { Constants.PAFNOACTION, Constants.PAFINSERT, Constants.PAFUPDATE, Constants.PAFDELETE }.Any(s => objAdd.AmendmentType.Contains(s)))

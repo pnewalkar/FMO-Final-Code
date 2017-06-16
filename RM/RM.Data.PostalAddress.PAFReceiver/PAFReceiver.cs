@@ -25,7 +25,7 @@
         private string PAFWebApiName = string.Empty;
 
         private System.Timers.Timer m_mainTimer;
-        private IMessageBroker<PostalAddressBatchDTO> msgPAF = default(IMessageBroker<PostalAddressBatchDTO>);
+        private IMessageBroker<PostalAddressDTO> msgPAF = default(IMessageBroker<PostalAddressDTO>);
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
@@ -37,7 +37,7 @@
         /// <summary>
         /// Constructor for the receiver class.
         /// </summary>
-        public PAFReceiver(IMessageBroker<PostalAddressBatchDTO> msgPAF, IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
+        public PAFReceiver(IMessageBroker<PostalAddressDTO> msgPAF, IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.msgPAF = msgPAF;
             this.configurationHelper = configurationHelper;
@@ -148,14 +148,14 @@
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
-                List<PostalAddressBatchDTO> lstPostalAddress = new List<PostalAddressBatchDTO>();
+                List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
 
                 //The Message queue is checked whether there are pending messages in the queue. This loop runs till all the messages are popped out of the message queue.
                 while (msgPAF.HasMessage(Constants.QUEUEPAF, Constants.QUEUEPATH))
                 {
                     //Receive Message picks up one message from queue for processing
                     //Message broker internally deserializes the message to the POCO type.
-                    PostalAddressBatchDTO objPostalAddress = msgPAF.ReceiveMessage(Constants.QUEUEPAF, Constants.QUEUEPATH);
+                    PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(Constants.QUEUEPAF, Constants.QUEUEPATH);
                     if (objPostalAddress != null)
                     {
                         lstPostalAddress.Add(objPostalAddress);
@@ -179,7 +179,7 @@
         /// </summary>
         /// <param name="postalAddress"></param>
         /// <returns></returns>
-        private async Task<bool> SavePAFDetails(List<PostalAddressBatchDTO> postalAddress)
+        private async Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);

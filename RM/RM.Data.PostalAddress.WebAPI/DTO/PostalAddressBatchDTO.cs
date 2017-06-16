@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using RM.CommonLibrary.EntityFramework.DTO.UIDropdowns;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
-    public class PostalAddressBatchDTO
+    public class PostalAddressDTO
     {
         /// <summary>
         /// This class represents data transfer object for PostalAddress entity

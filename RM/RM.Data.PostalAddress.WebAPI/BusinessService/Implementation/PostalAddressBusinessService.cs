@@ -67,7 +67,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>returns PostalAddress object</returns>
-        public async Task<PostalAddressDTO> GetPostalAddress(int? uDPRN)
+        public async Task<PostalAddressDBDTO> GetPostalAddress(int? uDPRN)
         {
             return await addressDataService.GetPostalAddress(uDPRN);
         }
@@ -78,7 +78,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="lstPostalAddress">List Of address DTO</param>
         /// <param name="strFileName">CSV filename</param>
         /// <returns>returns true or false</returns>
-        public async Task<bool> SavePostalAddressForNYB(List<PostalAddressDTO> lstPostalAddress, string strFileName)
+        public async Task<bool> SavePostalAddressForNYB(List<PostalAddressDBDTO> lstPostalAddress, string strFileName)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.SavePostalAddressForNYB"))
             //{
@@ -144,7 +144,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="lstPostalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
-        public async Task<bool> SavePAFDetails(List<PostalAddressBatchDTO> lstPostalAddress)
+        public async Task<bool> SavePAFDetails(List<PostalAddressDTO> lstPostalAddress)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.SavePAFDetails"))
             //{
@@ -186,7 +186,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// Method implementation to save delivery point and Task for notification for PAF create events
         /// </summary>
         /// <param name="objPostalAddress">pass PostalAddreesDTO</param>
-        public async Task SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
+        public async Task SaveDeliveryPointProcess(PostalAddressDBDTO objPostalAddress)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.SaveDeliveryPointProcess"))
             //{
@@ -316,7 +316,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        public async Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
+        public async Task<PostalAddressDBDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressDetails"))
             //{
@@ -326,7 +326,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             try
             {
                 List<BindingEntity> nybDetails = new List<BindingEntity>();
-                PostalAddressDTO postalAddressDto = null;
+                PostalAddressDBDTO postalAddressDto = null;
                 var postalAddressDetails = await addressDataService.GetPostalAddressDetails(selectedItem, unitGuid);
                 Guid nybAddressTypeId = postalAddressIntegrationService.GetReferenceDataGuId(Constants.PostalAddressType, FileType.Nyb.ToString()).Result;
                 if (postalAddressDetails != null && postalAddressDetails.Count > 0)
@@ -367,7 +367,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Postal Address DTO</returns>
-        public PostalAddressDTO GetPostalAddressDetails(Guid id)
+        public PostalAddressDBDTO GetPostalAddressDetails(Guid id)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressDetails"))
             //{
@@ -396,7 +396,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">PostalAddressDTO as input</param>
         /// <returns>string</returns>
-        public string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        public string CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress)
         {
             try
             {
@@ -421,7 +421,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress)
         {
             try
             {
@@ -488,7 +488,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="addressTypeNYB">addressType Guid for NYB</param>
         /// <param name="addressTypePAF">addressType Guid for PAF</param>
         /// <param name="strFileName">FileName on PAF events to track against DB</param>
-        private async Task SavePAFRecords(PostalAddressBatchDTO objPostalAddressBatch, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
+        private async Task SavePAFRecords(PostalAddressDTO objPostalAddressBatch, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.SavePAFRecords"))
             //{
@@ -502,7 +502,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             try
             {
                 // Construct New PostalAddressDTO
-                PostalAddressDTO objPostalAddress = new PostalAddressDTO
+                PostalAddressDBDTO objPostalAddress = new PostalAddressDBDTO
                 {
                     Postcode = objPostalAddressBatch.Postcode,
                     PostTown = objPostalAddressBatch.PostTown,
@@ -529,7 +529,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 var addressStatus_GUID = referenceDataCategoryList.ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(PostCodeStatus.Live.ToString(), StringComparison.OrdinalIgnoreCase)).Select(a => a.ID).FirstOrDefault();
 
                 // match if PostalAddress exists on UDPRN match
-                PostalAddressDTO objPostalAddressMatchedUDPRN = await addressDataService.GetPostalAddress(objPostalAddress.UDPRN);
+                PostalAddressDBDTO objPostalAddressMatchedUDPRN = await addressDataService.GetPostalAddress(objPostalAddress.UDPRN);
 
                 // match if PostalAddress exists on Address match
                 var objPostalAddressMatchedAddress = await addressDataService.GetPostalAddress(objPostalAddress);
@@ -550,7 +550,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         if (await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF))
                         {
                             // calling delivery point web api
-                            var objDeliveryPoint = await postalAddressIntegrationService.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? default(int));
+                            var objDeliveryPoint = await postalAddressIntegrationService.GetDeliveryPointByID(objPostalAddress.ID);
                             if (objDeliveryPoint == null)
                             {
                                 await SaveDeliveryPointProcess(objPostalAddress);
@@ -593,7 +593,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             // Update address and delivery point for USR records
                             await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF);
 
-                            await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
+                            await postalAddressIntegrationService.UpdateDeliveryPoint(objPostalAddress.ID, deliveryPointUseIndicatorPAF);
                         }
                         else
                         {
@@ -653,7 +653,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
         /// <returns>returns concatenated value of address field</returns>
-        private string AddressFields(PostalAddressDTO objPostalAddress)
+        private string AddressFields(PostalAddressDBDTO objPostalAddress)
         {
             return Constants.PAFTaskBodyPreText +
                         objPostalAddress.OrganisationName + Constants.Comma +

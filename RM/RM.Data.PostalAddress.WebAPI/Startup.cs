@@ -83,14 +83,15 @@ namespace RM.DataManagement.PostalAddress.WebAPI
 
             // Infrastructure
             services.AddScoped<IDatabaseFactory<PostalAddressDBContext>, DatabaseFactory<PostalAddressDBContext>>();
+            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
 
             // DataServices
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
             services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
             services.AddScoped<DataService.Interfaces.IPostalAddressDataService, DataService.Implementation.PostalAddressDataService>();
             services.AddScoped<DataService.Interfaces.IFileProcessingLogDataService, DataService.Implementation.FileProcessingLogDataService>();
-            services.AddScoped<IPostCodeDataService, PostCodeDataService>();
-            services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
+            //services.AddScoped<IPostCodeDataService, PostCodeDataService>();
+            //services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
 
             // Integration Services
             services.AddScoped<IPostalAddressIntegrationService, PostalAddressIntegrationService>();

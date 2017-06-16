@@ -29,9 +29,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <summary>
         /// Get the delivery points by the UDPRN id
         /// </summary>
-        /// <param name="udprn">UDPRN id</param>
+        /// <param name="addressGuid">addressGuid instead of udprn</param>
         /// <returns>DeliveryPointDTO object</returns>
-        Task<DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn);
+        Task<DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid);
 
         /// <summary>
         /// Get the delivery points by the Postal Address Guid
@@ -46,6 +46,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <param name="objDeliveryPoint">DeliveryPointDTO object</param>
         /// <returns>boolean value</returns>
         Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
+
+        /// <summary>
+        /// This method will call Delivery point web api which is used to 
+        /// update delivery point for resp PostalAddress which has type <USR>.
+        /// </summary>
+        /// <param name="objDeliveryPoint">Delivery point dto as object</param>
+        /// <returns>bool</returns>
+        Task<bool> UpdateDeliveryPoint(Guid addressId, Guid deliveryPointUseIndicatorPAF);
 
         /// <summary>
         /// Add new notification to the database

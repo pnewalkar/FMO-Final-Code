@@ -13,7 +13,7 @@
     {
         public override void Load()
         {
-            this.Bind<IMessageBroker<PostalAddressBatchDTO>>().To<MessageBroker<PostalAddressBatchDTO>>();
+            this.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             this.Bind<IPAFFileProcessUtility>().To<PAFFileProcessUtility>();
             Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
             Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope();

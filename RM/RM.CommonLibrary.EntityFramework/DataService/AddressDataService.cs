@@ -760,13 +760,13 @@
                 DeliveryPointUseIndicator_GUID = deliveryPointDTO.DeliveryPointUseIndicator_GUID,
                 MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount,
                 MailVolume = deliveryPointDTO.MailVolume,
-                DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
-                {
-                    ID = Guid.NewGuid(),
-                    DeliveryPoint_GUID = deliveryPointID,
-                    DPAlias = n.DPAlias,
-                    Preferred = n.Preferred
-                }).ToList()
+                //DeliveryPointAlias = deliveryPointDTO.DeliveryPointAliasDTO.Select(n => new DeliveryPointAlias
+                //{
+                //    ID = Guid.NewGuid(),
+                //    DeliveryPoint_GUID = deliveryPointID,
+                //    DPAlias = n.DPAlias,
+                //    Preferred = n.Preferred
+                //}).ToList()
             };
         }
     }
