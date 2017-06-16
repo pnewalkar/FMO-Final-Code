@@ -79,6 +79,14 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.NotNull(result);
         }
 
+        [Test]
+        public void TestFetchDeliveryUnit()
+        {
+            UnitLocationDTO expectedDeliveryUnitResult = testCandidate.FetchDeliveryUnit(deliveryUnitID);
+            Assert.NotNull(expectedDeliveryUnitResult);
+            Assert.AreEqual(expectedDeliveryUnitResult, actualDeliveryUnitResult);
+        }
+
         protected override void OnSetup()
         {
             mockUnitLocationDataService = CreateMock<IUnitLocationDataService>();
