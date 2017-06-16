@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO.UIDropdowns;
+using RM.DataManagement.PostalAddress.WebAPI.DTO.UIDropdowns;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
