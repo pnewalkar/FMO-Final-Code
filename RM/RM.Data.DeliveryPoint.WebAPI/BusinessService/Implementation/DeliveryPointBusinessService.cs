@@ -189,9 +189,10 @@
                     {
                         // Call Postal Address integration API
                         CreateDeliveryPointModelDTO createDeliveryPointModelDTO = await deliveryPointIntegrationService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                        if(createDeliveryPointModelDTO == null)
+
+                        if (createDeliveryPointModelDTO == null)
                         {
-                            throw new EntityNotFoundException(ErrorConstants.Err_EntityNotFoundException +": PostalAddressId - "+addDeliveryPointDTO.PostalAddressDTO.ID);
+                            throw new EntityNotFoundException(ErrorConstants.Err_EntityNotFoundException + ": PostalAddressId - " + addDeliveryPointDTO.PostalAddressDTO.ID);
                         }
 
                         rowVersion = deliveryPointsDataService.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
