@@ -261,7 +261,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

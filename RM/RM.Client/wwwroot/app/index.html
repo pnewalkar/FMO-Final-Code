@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="../build/sass/delivery-point/delivery-point.css" />
     <link rel="stylesheet" href="../build/sass/access-link/access-link.css" />
     <link rel="stylesheet" href="../build/sass/common/searchable-dropdown.css" />
+    <link rel="stylesheet" href="../build/sass/print-map/print-map.css">
     <!--angular material scripts-->
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
@@ -63,7 +64,8 @@
     <!--common scripts-->
     <script src="./common/popup-setting.service.js"></script>
     <script src="./common/common.constants.js"></script>
-    <script src="common/string-format.service.js"></script>
+    <script src="./common/string-format.service.js"></script>
+    <script src="./common/previous-page.directive.js"></script>
     <!--Manage Access-->
     <script src="./manage-access/manage-access.module.js"></script>
     <script src="./manage-access/manage-access.service.js"></script>
@@ -190,6 +192,12 @@
     <script src="./access-link/access-link.controller.js"></script>
     <script src="./access-link/access-link.component.js"></script>
 
+    <!--Print Map-->
+
+    <script src="../app/print-map/print-map.module.js"></script>
+    <script src="../app/print-map/print-map.controller.js"></script>
+    <script src="../app/print-map/print-map.factory.js"></script>
+    <script src="../app/print-map/print-map.service.js"></script>
 </head>
 <body>
      <manage-accesss></manage-accesss>

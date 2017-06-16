@@ -41,7 +41,6 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteWebAPIName + "deliveryroute/deliveryroutesummaries/", deliveryRouteDto);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -61,7 +60,6 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName, xml);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

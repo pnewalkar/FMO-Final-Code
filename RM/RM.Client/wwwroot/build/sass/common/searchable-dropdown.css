@@ -17,3 +17,6 @@
 
 .searchableDropdown md-content._md {
   max-height: 240px; }
+
+.search-input::-ms-clear {
+  display: none; }

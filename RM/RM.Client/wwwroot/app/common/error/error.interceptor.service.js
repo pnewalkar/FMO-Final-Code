@@ -12,15 +12,18 @@ function errorInterceptorService($rootScope, $q) {
     var _responseError = function (rejection) {
 
 
-        if (rejection.status != 401) {
-            //update to proper default text from reference service
+        if (rejection.status === 401 || rejection.status === 404 || rejection.status === 500) {
+
             var message = "There was an error processing your request";
-            if (rejection.data && rejection.data.message) {
-                // message = rejection.data.message;
-                message = "There was an error processing your request";
-            }
             $rootScope.$broadcast("showError", message);
 
+        }
+        else {
+            if (rejection.data && rejection.data.message) {
+                message = rejection.data.message;
+                $rootScope.$broadcast("showError", message);
+            }
+         
         }
         return $q.reject(rejection);
     }

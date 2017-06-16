@@ -39,7 +39,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
                 HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "nameValuePairs?appGroupName=" + category);
                 if (!result.IsSuccessStatusCode)
                 {
-                    // LOG ERROR WITH Statuscode
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
@@ -61,7 +60,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", listNames);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

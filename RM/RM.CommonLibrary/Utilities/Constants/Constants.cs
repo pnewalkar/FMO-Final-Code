@@ -229,6 +229,8 @@
         public const string Longitude = "longitude";
         public const string LinestringObject = "LINESTRING";
         public const string PointObject = "POINT";
+        public const string PrintMapDateTimeFormat = "{0:dd/MM/yyyy HH:mm}";
+
         #endregion OtherLayers
 
         #region DeliveryPoints
@@ -269,7 +271,9 @@
         public const string PDFGeneratorWebAPIName = "PDFGeneratorWebAPIName";
         public const string NotificationManagerWebAPIName = "NotificationManagerWebAPIName";
         public const string XSLTFilePath = "XSLTFilePath";
+        public const string ImagePath = "ImagePath";
         public const string PDFFileLoaction = "PDFFileLoaction";
+
 
         public const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
         public const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
