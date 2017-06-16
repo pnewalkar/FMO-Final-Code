@@ -455,7 +455,8 @@
             {
                 if (objPostalAddress != null)
                 {
-                    objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    //objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                    objAddress = DataContext.PostalAddresses.Include(m => m.PostalAddressStatus).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
 
                     if (objAddress != null)
                     {
@@ -478,7 +479,12 @@
                         objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
                         objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
 
-                        if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                        if (objAddress.PostalAddressStatus != null && objAddress.PostalAddressStatus.Count > 0)
+                        {
+
+                        }
+
+                            if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
                         {
                             foreach (var objDelPoint in objAddress.DeliveryPoints)
                             {

@@ -22,7 +22,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public DateTime RowCreateDateTime { get; set; }
         // public NetworkNodeDTO NetworkNode { get; set; }
         public PostalAddressDTO PostalAddress { get; set; }
-        public ReferenceDataDTO ReferenceData { get; set; }
+        // public ReferenceDataDTO ReferenceData { get; set; }
         // public List<DeliveryPointStatusDTO> DeliveryPointStatus { get; set; }
 
 

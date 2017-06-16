@@ -258,7 +258,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 {
                     ID = Guid.NewGuid(),
                     Address_GUID = objPostalAddress.ID,
-                    UDPRN = objAddressLocation.UDPRN,
+                    // UDPRN = objAddressLocation.UDPRN,
                     LocationXY = objAddressLocation.LocationXY,
                     Latitude = objAddressLocation.Lattitude,
                     Longitude = objAddressLocation.Longitude,
@@ -546,6 +546,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
                         objPostalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
                         objPostalAddress.PostalAddressStatus = objPostalAddressMatchedUDPRN.PostalAddressStatus;
+
                         if (await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF))
                         {
                             // calling delivery point web api
@@ -591,6 +592,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                             // Update address and delivery point for USR records
                             await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF);
+
+                            await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
                         }
                         else
                         {
