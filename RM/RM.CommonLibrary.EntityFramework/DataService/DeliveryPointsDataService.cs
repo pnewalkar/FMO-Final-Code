@@ -61,8 +61,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
+                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
         }
 
@@ -137,12 +137,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     {
                         isDeliveryPointInserted = false;
                         DataContext.Entry(newDeliveryPoint).State = EntityState.Unchanged;
-                        throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
+                        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", newDeliveryPoint.UDPRN)));
                     }
                 }
-
-                return isDeliveryPointInserted;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointInserted;
             }
         }
 
@@ -192,7 +191,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             if (string.IsNullOrWhiteSpace(searchText) || Guid.Empty.Equals(unitGuid))
             {
-                throw new ArgumentNullException(searchText, string.Format(ErrorMessageIds.Err_ArgumentmentNullException, string.Concat(searchText, unitGuid)));
+                throw new ArgumentNullException(searchText, string.Format(ErrorConstants.Err_ArgumentmentNullException, string.Concat(searchText, unitGuid)));
             }
 
             int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
@@ -256,13 +255,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -350,44 +349,31 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
 
-            //using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
-            //{
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodEntryEventId, LoggerTraceConstants.Title);
-            string dpUsetype = string.Empty;
-
-            //Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
-            //   .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-            //   .SelectMany(x => x.ReferenceDatas)
-            //   .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
-            //   .SingleOrDefault();
-
-            //Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
-            //    .Where(x => x.CategoryName == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-            //    .SelectMany(x => x.ReferenceDatas)
-            //    .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
-            //    .SingleOrDefault();
-
-            var dpUse = from dp in DataContext.DeliveryPoints.AsNoTracking()
-                        where dp.ID == deliveryPointId
-                        select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
-
-            List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
-            if (deliveryPointUseIndicator.Count > 0)
+            using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
             {
-                if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodEntryEventId, LoggerTraceConstants.Title);
+                string dpUsetype = string.Empty;
+
+                var dpUse = from dp in DataContext.DeliveryPoints.AsNoTracking()
+                            where dp.ID == deliveryPointId
+                            select new { DeliveryPointUseIndicator_GUID = dp.DeliveryPointUseIndicator_GUID };
+
+                List<Guid> deliveryPointUseIndicator = dpUse.Select(n => n.DeliveryPointUseIndicator_GUID).ToList();
+                if (deliveryPointUseIndicator.Count > 0)
                 {
-                    dpUsetype = Constants.DpUseOrganisation;
+                    if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpOrganisation)
+                    {
+                        dpUsetype = Constants.DpUseOrganisation;
+                    }
+                    else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
+                    {
+                        dpUsetype = Constants.DpUseResidential;
+                    }
                 }
-                else if (deliveryPointUseIndicator[0] == operationalObjectTypeForDpResidential)
-                {
-                    dpUsetype = Constants.DpUseResidential;
-                }
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodExitEventId, LoggerTraceConstants.Title);
+                return dpUsetype;
             }
-
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodExitEventId, LoggerTraceConstants.Title);
-            return dpUsetype;
-
-            // }
         }
 
         /// <summary>
@@ -419,29 +405,28 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                             deliveryPoint.Positioned = deliveryPointDto.Positioned;
                             status = await rmDbContext.SaveChangesAsync();
                         }
-
+                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                         return status;
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
 
@@ -476,29 +461,28 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                             rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
                             await rmDbContext.SaveChangesAsync();
                         }
-
-                        return deliveryPoint.ID;
+                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                        return deliveryPoint != null ? deliveryPoint.ID : Guid.Empty;
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
 
@@ -674,9 +658,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         isDeliveryPointUpdated = rmDbContext.SaveChanges() > 0;
                     }
                 }
-
-                return isDeliveryPointUpdated;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointUpdated;
             }
         }
 

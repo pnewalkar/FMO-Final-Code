@@ -94,7 +94,6 @@ namespace RM.DataServices.Tests.DataService
                }
             };
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();

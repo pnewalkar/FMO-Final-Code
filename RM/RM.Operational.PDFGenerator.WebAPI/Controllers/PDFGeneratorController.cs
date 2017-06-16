@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 using RM.Operational.PDFGenerator.WebAPI.BusinessService;
-using System;
-using System.Diagnostics;
 
 namespace RM.Operational.PDFGenerator.WebAPI.Controllers
 {
@@ -12,6 +12,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
     {
         private IPDFGeneratorBusinessService pdfGeneratorBusinessService = default(IPDFGeneratorBusinessService);
         private ILoggingHelper logginghelper = default(ILoggingHelper);
+
         public PDFGeneratorController(IPDFGeneratorBusinessService pdfGeneratorBusinessService, ILoggingHelper logginghelper)
         {
             this.logginghelper = logginghelper;
@@ -32,7 +33,6 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
                 this.logginghelper.Log(ex, TraceEventType.Error);
                 throw;
             }
-
         }
 
         [Route("PDFReports/{pdfFileName}")]
@@ -49,8 +49,6 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
                 this.logginghelper.Log(ex, TraceEventType.Error);
                 throw;
             }
-
         }
-
     }
 }

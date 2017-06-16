@@ -1,5 +1,4 @@
 ﻿using RM.CommonLibrary.EntityFramework.DTO;
-using System.Threading.Tasks;
 
 namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
 {

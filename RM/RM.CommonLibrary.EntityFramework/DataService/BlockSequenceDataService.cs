@@ -43,9 +43,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             bool isBlockSequencInserted = false;
             try
             {
-                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateBlockSequenceForDeliveryPoint"))
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                using (loggingHelper.RMTraceManager.StartTrace(methodName))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var block_Guid = await (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
@@ -63,7 +63,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (DbUpdateConcurrencyException)
             {
-                throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("creating block sequence for selected delivery route")));
             }
 
             return isBlockSequencInserted;
