@@ -37,7 +37,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -59,7 +58,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -82,7 +80,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, strCategoryname));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -104,7 +101,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -127,7 +123,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString(), action));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -150,7 +145,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.DeleteAsync(string.Format(serviceUrl + route, uDPRN.ToString(), action));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -172,7 +166,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync<NotificationDTO>(serviceUrl + route, notificationDTO);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -194,7 +187,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -216,7 +208,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

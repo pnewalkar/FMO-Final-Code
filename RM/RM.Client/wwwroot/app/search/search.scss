@@ -32,6 +32,11 @@ i.fa.fa-map-marker.route{
     @include font-color($white);
 }
 
+.searchText md-input-container{
+    height: 10px;
+    margin-top: 0px;
+}
+
 .searchText md-input-container.md-input-focused input[type="text"]{
     border-bottom-color: white;
 }
@@ -43,7 +48,7 @@ i.fa.fa-map-marker.route{
 }
 
 .searchContent{
-    @include margin(-31px 0px 0px 0px);
+    @include margin(33px 0px 0px 0px);
 }
 
 .searchData{
@@ -114,7 +119,7 @@ i.fa.fa-angle-right.searchRight {
     @include border-radius(50%);
     width: width-percent(20);
     @include border(1px solid $black);
-    @include margin(0px 0px 0px -68px);
+    @include margin(0px 0px 10px -74px);
     bottom: 16px;
 }
 

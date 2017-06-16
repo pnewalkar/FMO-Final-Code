@@ -29,6 +29,10 @@ i.fa.fa-map-marker.route {
 .searchText md-input-container.md-input-has-value label {
   color: #ffffff; }
 
+.searchText md-input-container {
+  height: 10px;
+  margin-top: 0px; }
+
 .searchText md-input-container.md-input-focused input[type="text"] {
   border-bottom-color: white; }
 
@@ -39,7 +43,7 @@ i.fa.fa-map-marker.route {
     background-color: none; }
 
 .searchContent {
-  margin: -31px 0px 0px 0px; }
+  margin: 33px 0px 0px 0px; }
 
 .searchData {
   background-color: #ffffff;
@@ -95,7 +99,7 @@ i.fa.fa-angle-right.searchRight {
   border-radius: 50%;
   width: 5%;
   border: 1px solid #2a2a2d;
-  margin: 0px 0px 0px -68px;
+  margin: 0px 0px 10px -74px;
   bottom: 16px; }
   .numberCircle:hover {
     background-color: none; }

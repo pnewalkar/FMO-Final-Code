@@ -66,7 +66,7 @@ function DeliveryPointController(
     vm.display = false;
     vm.disable = true;
     vm.items = [];
-    vm.hide = $stateParams.hide;
+   /* vm.hide = $stateParams.hide;*/
     vm.dpIsChecked = false;
 
     $scope.$watch(function () { return coordinatesService.getCordinates() }, function (newValue, oldValue) {
@@ -98,7 +98,7 @@ function DeliveryPointController(
     }
 
     function closeWindow() {
-        vm.hide = true;
+        vm.hide = false;
         deliveryPointService.closeModalPopup();
         $scope.$emit("dialogClosed");
     }
@@ -326,7 +326,7 @@ function DeliveryPointController(
 
                     $state.go("deliveryPoint", {
                         positionedThirdPartyDeliveryPointList: vm.positionedThirdPartyDeliveryPointList,
-                        hide: true
+                       /* hide: true*/
                     })
 
                     mapFactory.locateDeliveryPoint(long, lat);
@@ -345,7 +345,7 @@ function DeliveryPointController(
         vm.deliveryPointList.push(deliveryPointListObj);
         $state.go("deliveryPoint", {
             deliveryPointList: vm.deliveryPointList,
-            hide: true
+            /*hide: true*/
         })
 
     }
