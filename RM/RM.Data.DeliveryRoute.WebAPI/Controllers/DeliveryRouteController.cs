@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -121,6 +120,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 {
                     logginghelper.Log(exception, TraceEventType.Error);
                 }
+
                 var realExceptions = ae.Flatten().InnerException;
                 throw realExceptions;
             }
@@ -200,7 +200,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                     logginghelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(result);
                 }
-                
             }
             catch (AggregateException ae)
             {

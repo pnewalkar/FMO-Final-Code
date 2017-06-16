@@ -25,6 +25,7 @@ namespace RM.DataServices.Tests.DataService
         {
             var result = testCandidate.AddBlockSequence(blockSequenceDTO, new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13"));
             Assert.IsNotNull(result);
+
             // Assert.IsTrue(result);
         }
 

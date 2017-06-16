@@ -6,7 +6,8 @@ function PopUpSettingService() {
         advanceSearch: advanceSearch,
         routeLog: routeLog,
         deliveryPoint: deliveryPoint,
-        openAlert: openAlert
+        openAlert: openAlert,
+        printMap: printMap
     };
 
     function advanceSearch(query) {
@@ -40,6 +41,14 @@ function PopUpSettingService() {
             clickOutsideToClose: false,
             controllerAs: "vm",
             preserveScope: true
+        };
+    }
+
+    function printMap() {
+        return {
+            templateUrl: './print-map/print-map.template.html',
+            clickOutsideToClose: true,
+            controller: 'PrintMapController as vm'
         };
     }
 

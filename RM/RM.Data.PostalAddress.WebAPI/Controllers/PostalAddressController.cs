@@ -22,10 +22,10 @@ namespace Fmo.API.Services.Controllers
         private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public PostalAddressController(IPostalAddressBusinessService _businessService, ILoggingHelper _loggingHelper)
+        public PostalAddressController(IPostalAddressBusinessService businessService, ILoggingHelper loggingHelper)
         {
-            businessService = _businessService;
-            loggingHelper = _loggingHelper;
+            this.businessService = businessService;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -56,6 +56,7 @@ namespace Fmo.API.Services.Controllers
                         isSaved = await businessService.SavePostalAddressForNYB(lstAddressDetails, strFileName);
                         return Ok(isSaved);
                     }
+
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(isSaved);
                 }
@@ -87,7 +88,7 @@ namespace Fmo.API.Services.Controllers
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    bool IsPAFSaved = false;
+                    bool isPAFSaved = false;
                     if (!ModelState.IsValid)
                     {
                         return BadRequest(ModelState);
@@ -95,11 +96,12 @@ namespace Fmo.API.Services.Controllers
 
                     if (postalAddress != null && postalAddress.Count > 0)
                     {
-                        IsPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
-                        return Ok(IsPAFSaved);
+                        isPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
+                        return Ok(isPAFSaved);
                     }
+
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
-                    return Ok(IsPAFSaved);
+                    return Ok(isPAFSaved);
                 }
             }
             catch (AggregateException ae)

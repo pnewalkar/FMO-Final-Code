@@ -26,7 +26,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         private string accessLinkWebAPIName = string.Empty;
         private string blockSequenceWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
-        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion Property Declarations
@@ -59,8 +58,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             string requestUrl = referenceDataWebAPIName + actionUrl;
             HttpResponseMessage result = httpHandler.GetAsync(requestUrl).Result;
             if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
+            {                
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -109,6 +107,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
+
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return JsonConvert.DeserializeObject<CreateDeliveryPointModelDTO>(result.Content.ReadAsStringAsync().Result);
             }
@@ -124,7 +123,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/nybduplicate/", objPostalAddress);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -142,7 +140,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/duplicatedeliverypoint/", objPostalAddress);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

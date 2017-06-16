@@ -53,10 +53,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// <returns>Nearest street and the intersection point.</returns>
         public async Task<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName)
         {
-            var operationalObjectPointJson = JsonConvert.SerializeObject(operationalObjectPoint, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            var operationalObjectPointJson = JsonConvert.SerializeObject(
+                operationalObjectPoint,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(networkManagerDataWebAPIName + "/nearestnamedroad/" + streetName, operationalObjectPointJson);
 
@@ -232,11 +234,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
                 HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerDataWebAPIName + "deliverypoint/accesslinkstatus", deliveryPointDTOJson);
 
-            if (!result.IsSuccessStatusCode)
-            {
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
 
                 var success = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
@@ -259,7 +261,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

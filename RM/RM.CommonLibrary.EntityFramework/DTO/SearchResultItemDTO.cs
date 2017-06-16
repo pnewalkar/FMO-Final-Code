@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RM.CommonLibrary.HelperMiddleware;
+using System;
 
 namespace RM.CommonLibrary.EntityFramework.DTO
 {
@@ -24,5 +25,10 @@ namespace RM.CommonLibrary.EntityFramework.DTO
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public SearchBusinessEntityType Type { get; set; }
+
+        /// <summary>
+        /// The DeliveryPoint Id is used to fetch location as per Guid<see cref="DeliveryPointGuid"/>.
+        /// </summary>
+        public Guid DeliveryPointGuid { get; set; }
     }
 }

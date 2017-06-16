@@ -46,6 +46,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 
             return pdfFilename;
         }
+
         /// <summary>
         /// Attempts to add the specified address to the group
         /// </summary>
@@ -124,9 +125,9 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             List<RouteLogSequencedPointsDTO> routeSummary = new List<RouteLogSequencedPointsDTO>();
             if (addressList != null && addressList.Count > 0)
             {
-                //   Route summary group
-                //   The route summary group keeps track of the current group while the route summary
-                //   is being generated
+                // Route summary group
+                // The route summary group keeps track of the current group while the route summary
+                // is being generated
                 RouteSummaryGroupDTO group = null;
 
                 // Step through the addresses
@@ -173,7 +174,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                     routeSummary.Add(row);
                 }
             }
-            
+
             // Return the route summary
             return routeSummary;
         }
@@ -206,7 +207,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             // Return whether the address continues the current group
             return doesContinueGroup;
         }
-        
+
         /// <summary>
         /// Gets the group type description for a specified group type
         /// </summary>
@@ -404,7 +405,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         private bool IsEven(short number)
         {
             // The number is even if remainder when dividing by two is zero
-            return (number % 2 == 0);
+            return number % 2 == 0;
         }
     }
 }

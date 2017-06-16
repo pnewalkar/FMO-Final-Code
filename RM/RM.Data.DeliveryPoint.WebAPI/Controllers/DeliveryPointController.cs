@@ -52,16 +52,16 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get coordinates of the delivery point by UDPRN
+        /// Get coordinates of the delivery point by Guid
         /// </summary>
-        /// <param name="udprn">The UDPRN number</param>
+        /// <param name="Guid">The Guid </param>
         /// <returns>The coordinates of the delivery point</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
-        [Route("deliverypoint/udprn/{udprn}")]
+        [Route("deliverypoint/Guid/{id}")]
         [HttpGet]
-        public IActionResult GetDeliveryPointByUDPRN(int udprn, [FromQuery]string fields)
+        public IActionResult GetDeliveryPointByGuId(Guid id, [FromQuery]string fields)
         {
-            var geoJsonfeature = businessService.GetDeliveryPointByUDPRN(udprn);
+            var geoJsonfeature = businessService.GetDeliveryPointByGuid(id);
             return Ok(geoJsonfeature);
         }
 
@@ -363,8 +363,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         {
             try
             {
-                //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByUDPRN"))
-                //{
+                // using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByUDPRN"))
+                // {
                 DeliveryPointDTO deliveryPointDTO = await businessService.GetDeliveryPointByUDPRNforBatch(udprn);
                 return Ok(deliveryPointDTO);
 
@@ -393,8 +393,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         {
             try
             {
-                //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByPostalAddress"))
-                //{
+                // using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByPostalAddress"))
+                // {
                 var deliveryPoint = businessService.GetDeliveryPointByPostalAddress(addressId);
                 if (deliveryPoint == null)
                 {

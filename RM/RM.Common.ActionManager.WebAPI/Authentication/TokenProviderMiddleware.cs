@@ -27,9 +27,9 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
     /// </summary>
     public class TokenProviderMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly RequestDelegate next;
         private readonly TokenProviderOptions _options;
-        private readonly JsonSerializerSettings _serializerSettings;
+        private readonly JsonSerializerSettings serializerSettings;
         private ILoggingHelper loggingHelper;
         private IActionManagerDataService actionManagerService = default(IActionManagerDataService);
         private IUserRoleUnitDataService userRoleUnitService = default(IUserRoleUnitDataService);
@@ -41,13 +41,13 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             IActionManagerDataService actionManagerService,
             IUserRoleUnitDataService userRoleUnitService)
         {
-            _next = next;
+            this.next = next;
             this.loggingHelper = loggingHelper;
 
             _options = options.Value;
             ThrowIfInvalidOptions(_options);
 
-            _serializerSettings = new JsonSerializerSettings
+            this.serializerSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
             };
@@ -72,7 +72,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             // If the request path doesn't match, skip
             if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
             {
-                return _next(context);
+                return next(context);
             }
 
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
@@ -189,7 +189,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
 
                 // Serialize and return the response
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(response, _serializerSettings));
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(response, serializerSettings));
             }
             catch (Exception ex)
             {

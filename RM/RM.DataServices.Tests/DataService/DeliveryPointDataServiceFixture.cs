@@ -4,15 +4,15 @@ namespace RM.DataServices.Tests.DataService
 {
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
+    using CommonLibrary.LoggingMiddleware;
+    using Moq;
+    using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.DTO;
     using RM.CommonLibrary.EntityFramework.Entities;
     using RM.CommonLibrary.HelperMiddleware;
-    using Moq;
-    using NUnit.Framework;
-    using CommonLibrary.LoggingMiddleware;
 
     [TestFixture]
     public class DeliveryPointDataServiceFixture : RepositoryFixtureBase
@@ -124,7 +124,6 @@ namespace RM.DataServices.Tests.DataService
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-          //  mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();
@@ -188,7 +187,6 @@ namespace RM.DataServices.Tests.DataService
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-         //   mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();

@@ -13,7 +13,7 @@
                     </span>
                     <span ng-show="item.type!='Warning'">
                         {{ item.displayText | limitTo: 30 }}
-                        <i ng-show="item.displayText.length >= 30" class="fa fa-angle-right searchRight" aria-hidden="true"></i>
+                        <i ng-show="item.displayText.length >= 30" class="fa fa-angle-right searchRight"   aria-hidden="true"></i>
                     </span>
                     <span ng-show="item.type=='Warning'"> {{ item.displayText }}</span>
                 </a>
@@ -34,5 +34,5 @@
     <div class="numberCircle" ng-show="vm.resultscount[0].count > 0 && vm.isResultDisplay">
         <span>{{vm.resultscount[0].count}}</span>
     </div>
-    <i class="fa fa-search searchInputIcon" aria-hidden="true" flex title="{{ 'GENERAL.SEARCH' | translate }}"></i>
+    <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.advanceSearch(vm.searchText)" flex title="{{ 'GENERAL.SEARCH' | translate }}"></i>
 </div>

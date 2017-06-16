@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Nate Barbettini. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
 
 namespace RM.CommonLibrary.Authentication
 {
+    using System;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using Microsoft.IdentityModel.Tokens;
+
     /// <summary>
     /// Provides options for <see cref="TokenProviderMiddleware"/>.
     /// </summary>

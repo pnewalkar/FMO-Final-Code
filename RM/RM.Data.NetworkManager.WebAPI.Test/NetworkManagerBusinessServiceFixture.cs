@@ -118,7 +118,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName= Constants.PostalAddressType
+                    CategoryName = Constants.PostalAddressType
                 }
             };
 

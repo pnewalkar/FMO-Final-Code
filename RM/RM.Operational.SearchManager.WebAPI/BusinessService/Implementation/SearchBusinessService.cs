@@ -140,7 +140,8 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                         ",+",
                         ", ").Trim(','),
                     UDPRN = deliveryPoint.PostalAddress.UDPRN,
-                    Type = SearchBusinessEntityType.DeliveryPoint
+                    Type = SearchBusinessEntityType.DeliveryPoint,
+                    DeliveryPointGuid= deliveryPoint.ID
                 });
             }
 

@@ -1,0 +1,70 @@
+﻿<md-dialog aria-label="Print Map" class="mdDialog">
+    <form name="vm.printMapForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{ 'PRINT_MAP.HEADER'| translate }}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="vm.closeWindow()" aria-label="Close Window" title="Close">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content layout-padding class="contentHeight">
+            <div layout="row">
+                <div layout="column" flex>
+                    <md-input-container>
+                        <label>{{ 'PRINT_MAP.TITLE'| translate }}</label>
+                        <input ng-model="vm.printOptions.title" type="text" required>
+                    </md-input-container>
+
+                </div>
+            </div>
+            <div layout="row">
+                <div layout="column" flex>
+                        <label>{{ 'PRINT_MAP.ORIENTATION'| translate }}</label>
+                        <md-radio-group ng-model="vm.printOptions.orientation" layout="row" class="printMap">
+                            <md-radio-button value="Landscape" class="md-primary">
+                                {{ 'PRINT_MAP.LANDSCAPE'| translate }}
+                            </md-radio-button>
+                            <md-radio-button value="Portrait">
+                                {{ 'PRINT_MAP.PORTRAIT'| translate }}
+                            </md-radio-button>
+                        </md-radio-group>
+
+                </div>
+            </div>
+            <div layout="row">
+                <div layout="column" flex>
+                    <md-input-container>
+                        <label>{{ 'PRINT_MAP.SIZE'| translate }}</label>
+                        <md-select ng-model="vm.printOptions.size" class="printMapOption">
+                            <md-option ng-repeat="type in vm.pdfSize" ng-value="type.Value" ng-selected="{{type.Value=='A4' ? true : false}}">
+                                {{type.DisplayText}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+
+                </div>
+            </div>
+            <div layout="row" ng-show="vm.printOptions.size === 'A2' || vm.printOptions.size === 'A1' || vm.printOptions.size === 'A0'">
+                <div layout="column" flex>
+                    <div>
+                        <span>{{ 'PRINT_MAP.CONDITION'| translate }}</span>
+                    </div>
+                </div>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button class="md-raised md-primary" ng-click="vm.closeWindow()" flex="40" title="{{ 'GENERAL.BUTTONS.CANCEL' | translate }}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+                {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
+            </md-button>
+            <span flex></span>
+            <md-button ng-disabled="(!vm.printMapForm.$valid)" ng-click="vm.printMap()" class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.GENERATE' | translate }}">
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                {{ 'GENERAL.BUTTONS.GENERATE' | translate }}
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
