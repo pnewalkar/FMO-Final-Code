@@ -83,7 +83,8 @@
               DBReferenceDataName: "PrintMap_ImageHeightmm_A4"
           }
         ]
-    }
+    },
+    SenarioOperationState: { AppCategoryName: "SenarioOperationState", DBCategoryName: "Senario Operation State", ReferenceDataNames: [] }
 };
 
 angular.module('RMApp')

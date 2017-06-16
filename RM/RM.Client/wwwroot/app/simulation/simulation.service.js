@@ -19,7 +19,7 @@ function simulationService(simulationAPIService,
 
     function loadRouteLogStatus(RouteStatusObj, selectedRouteStatusObj, selectedRouteStatusObj, selectedDeliveryUnitObj) {
         var deferred = $q.defer();
-        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.DeliveryPointOperationalStatus.DBCategoryName).then(function (response) {
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.SenarioOperationState.DBCategoryName).then(function (response) {
             deferred.resolve(response.listItems);
         });
         return deferred.promise;

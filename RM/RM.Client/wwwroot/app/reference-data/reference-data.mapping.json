@@ -1,14 +1,45 @@
 {
   "CategoryNames": [
     {
-      "AppCategoryName": "PostalAddressType",
-      "DBCategoryName": "Postal Address Type",
+      "AppCategoryName": "AccessLinkStatus",
+      "DBCategoryName": "Access Link Status",
       "ReferenceDataNames": []
     },
     {
       "AppCategoryName": "NotificationPriority",
       "DBCategoryName": "Notification Priority",
       "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "RouteLogSelectionType",
+      "DBCategoryName": "Route Log Selection Type",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "Map_License_Information",
+      "DBCategoryName": "Map_License_Information",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "OrdnanceSurvey_NI_Licensing",
+          "DBReferenceDataName": "OrdnanceSurvey_NI_Licensing"
+        },
+        {
+          "AppReferenceDataName": "GeoPlan_Licensing",
+          "DBReferenceDataName": "GeoPlan_Licensing"
+        },
+        {
+          "AppReferenceDataName": "OrdnanceSurvey_GB_Licensing",
+          "DBReferenceDataName": "OrdnanceSurvey_GB_Licensing"
+        },
+        {
+          "AppReferenceDataName": "ThirdParty_GB_Licensing",
+          "DBReferenceDataName": "ThirdParty_GB_Licensing"
+        },
+        {
+          "AppReferenceDataName": "ThirdParty_NI_Licensing",
+          "DBReferenceDataName": "ThirdParty_NI_Licensing"
+        }
+      ]
     },
     {
       "AppCategoryName": "NetworkLinkType",
@@ -73,16 +104,6 @@
         {
           "AppReferenceDataName": "PrintMap_DPI",
           "DBReferenceDataName": "PrintMap_DPI"
-        }
-      ]
-    },
-    {
-      "AppCategoryName": "PrintMap_mmPerInch",
-      "DBCategoryName": "PrintMap_mmPerInch",
-      "ReferenceDataNames": [
-        {
-          "AppReferenceDataName": "PrintMap_mmPerInch",
-          "DBReferenceDataName": "PrintMap_mmPerInch"
         }
       ]
     },
@@ -278,6 +299,11 @@
     {
       "AppCategoryName": "NetworkNodeType",
       "DBCategoryName": "Network Node Type",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "SenarioOperationState",
+      "DBCategoryName": "Senario Operation State",
       "ReferenceDataNames": []
     },
     {
