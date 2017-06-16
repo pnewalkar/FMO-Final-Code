@@ -45,7 +45,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
         [Test]
         public void Test_FetchPostCodeUnitForBasicSearch()
         {
-            var result = testCandidate.FetchPostCodeUnitForBasicSearch("abc",Guid.NewGuid());
+            var result = testCandidate.FetchPostCodeUnitForBasicSearch("abc", Guid.NewGuid());
             Assert.NotNull(result);
         }
 
@@ -77,14 +77,6 @@ namespace RM.Data.UnitManager.WebAPI.Test
         {
             var result = testCandidate.FetchDeliveryScenario(Guid.NewGuid(), Guid.NewGuid());
             Assert.NotNull(result);
-        }
-
-        [Test]
-        public void TestFetchDeliveryUnit()
-        {
-            UnitLocationDTO expectedDeliveryUnitResult = testCandidate.FetchDeliveryUnit(deliveryUnitID);
-            Assert.NotNull(expectedDeliveryUnitResult);
-            Assert.AreEqual(expectedDeliveryUnitResult, actualDeliveryUnitResult);
         }
 
         protected override void OnSetup()
