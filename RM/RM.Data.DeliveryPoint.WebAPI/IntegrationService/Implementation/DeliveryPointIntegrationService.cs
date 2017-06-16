@@ -5,12 +5,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
+//using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
@@ -101,7 +102,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
         /// <returns>string</returns>
-        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress)
         {
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/nybduplicate/", objPostalAddress);
             if (!result.IsSuccessStatusCode)
@@ -119,7 +120,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress)
         {
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/duplicatedeliverypoint/", objPostalAddress);
             if (!result.IsSuccessStatusCode)

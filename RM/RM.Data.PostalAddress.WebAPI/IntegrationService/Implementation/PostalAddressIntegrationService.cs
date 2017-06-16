@@ -129,7 +129,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             string methodName = MethodBase.GetCurrentMethod().Name;
 
             // method logic here
-            HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + addressGuid);
+            HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/addressGuid:" + addressGuid);
             if (!result.IsSuccessStatusCode)
             {
                 // Log error with statuscode

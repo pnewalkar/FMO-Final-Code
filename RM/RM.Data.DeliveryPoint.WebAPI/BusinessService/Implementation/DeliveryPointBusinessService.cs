@@ -12,7 +12,8 @@
     using Newtonsoft.Json.Linq;
     using RM.CommonLibrary.ConfigurationMiddleware;
     using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
-    using RM.CommonLibrary.EntityFramework.DTO;
+    //using RM.CommonLibrary.EntityFramework.DTO;
+    using RM.Data.DeliveryPoint.WebAPI.DTO;
     using RM.CommonLibrary.EntityFramework.DTO.Model;
     using RM.CommonLibrary.HelperMiddleware;
     using RM.CommonLibrary.LoggingMiddleware;
@@ -84,6 +85,16 @@
         public object GetDeliveryPointByUDPRN(int udprn)
         {
             return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPointListByUDPRN(udprn));
+        }
+
+        /// <summary>
+        /// Get coordinates of the delivery point by address Id
+        /// </summary>
+        /// <param name="udprn">The UDPRN number</param>
+        /// <returns>The coordinates of the delivery point</returns>
+        public async Task<DeliveryPointDTO> GetDeliveryPointByAddressId(Guid addressId)
+        {
+            return await deliveryPointsDataService.GetDeliveryPointByID(addressId);
         }
 
         /// <summary>

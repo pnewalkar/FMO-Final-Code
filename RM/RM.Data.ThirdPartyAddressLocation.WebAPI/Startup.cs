@@ -87,7 +87,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI
             // DeliveryPointsDataService>(); services.AddScoped<IFileProcessingLogDataService,
             // FileProcessingLogDataService>(); services.AddScoped<IAddressLocationDataService,
             // AddressLocationDataService>(); services.AddScoped<INotificationDataService, NotificationDataService>();
-            services.AddScoped<IDeliveryPointsDataService, DeliveryPointsDataService>();
+            //services.AddScoped<IDeliveryPointsDataService, DeliveryPointsDataService>();
             //services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
             services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
             services.AddScoped<IDeliveryRouteDataService, DeliveryRouteDataService>();

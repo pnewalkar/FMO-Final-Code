@@ -16,7 +16,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <returns>DeliveryPointDTO object</returns>
-        Task<DeliveryPointDatabaseDTO> GetDeliveryPointByUDPRN(int udprn);
+        Task<DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn);
 
         /// <summary>
         /// Update UDPRN of Delivery Point by matching udprn of postal address id.
@@ -31,11 +31,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="objDeliveryPoint">DeliveryPointDTO object</param>
         /// <returns>boolean value</returns>
-        Task<bool> InsertDeliveryPoint(DeliveryPointDatabaseDTO objDeliveryPoint);
+        Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
         /// <summary> Update the delivery point based on the UDPRN id </summary> <param
         /// name="deliveryPointDto">DeliveryPointDTO object</param> <returns>Task<Guid></returns>
-        Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDatabaseDTO deliveryPointDto);
+        Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDto);
 
         /// <summary>
         /// This method is used to fetch Delivery Points as per advance search.
@@ -43,7 +43,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDatabaseDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// This method is used to fetch Delivery Points as per basic search.
@@ -51,7 +51,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDatabaseDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Gets the delivery points count.
@@ -67,14 +67,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="boundingBox">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
-        List<DeliveryPointDatabaseDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);
+        List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);
 
         /// <summary>
         /// Get the list of delivery points by the UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <returns>DeliveryPointDTO object</returns>
-        List<DeliveryPointDatabaseDTO> GetDeliveryPointListByUDPRN(int udprn);
+        List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
 
         /// <summary>
         /// Get the list of delivery points by the UDPRN id
@@ -88,7 +88,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
         /// <returns>DeliveryPointDTO object</returns>
-        DeliveryPointDatabaseDTO GetDeliveryPointByPostalAddress(Guid addressId);
+        DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId);
 
         /// <summary>
         /// Check if the delivery point exists for a given UDPRN id
@@ -103,7 +103,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="deliveryPointDTO">DeliveryPointDTO object</param>
         /// <param name="newPoint">DbGeometry object</param>
         /// <returns>double?</returns>
-        double? GetDeliveryPointDistance(DeliveryPointDatabaseDTO deliveryPointDTO, DbGeometry newPoint);
+        double? GetDeliveryPointDistance(DeliveryPointDTO deliveryPointDTO, DbGeometry newPoint);
 
         /// <summary>
         /// Get the delivery point row version
@@ -117,14 +117,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="deliveryPointGuid">Delivery point unique identifier.</param>
         /// <returns>DeliveryPointDTO</returns>
-        DeliveryPointDatabaseDTO GetDeliveryPoint(Guid deliveryPointGuid);
+        DeliveryPointDTO GetDeliveryPoint(Guid deliveryPointGuid);
 
         /// <summary>
         /// This method updates delivery point access link status
         /// </summary>
         /// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
-        bool UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDatabaseDTO deliveryPointDTO);
+        bool UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
 
         /// <summary>
         /// This Method provides Route Name for a single DeliveryPoint
@@ -146,13 +146,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <summary> This method is used to get the delivery points crossing the created operational
         /// object </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param
         /// name="accessLink">access link coordinate array</param> <returns>List<DeliveryPointDTO></returns>
-        List<DeliveryPointDatabaseDTO> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject);
+        List<DeliveryPointDTO> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject);
 
 
         /// <summary> Update the delivery point based on the id </summary> <param
         /// name="deliveryPointDto">DeliveryPointDTO object</param> <returns>Task<Guid></returns>
-        Task<Guid> UpdateDeliveryPointLocationOnID(DeliveryPointDatabaseDTO deliveryPointDto);
+        Task<Guid> UpdateDeliveryPointLocationOnID(DeliveryPointDTO deliveryPointDto);
 
         Task<bool> UpdatePAFIndicator(Guid addressGuid, Guid pafIndicator);
+
+        Task<DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid);
     }
 }

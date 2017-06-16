@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DTO;
+//using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -353,6 +354,36 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByUDPRN"))
                 //{
                 DeliveryPointDTO deliveryPointDTO = await businessService.GetDeliveryPointByUDPRNforBatch(udprn);
+                return Ok(deliveryPointDTO);
+
+                // }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to fetch Delivery Point by udprn.
+        /// </summary>
+        /// <param name="udprn">udprn as int</param>
+        /// <returns>DeliveryPointDTO</returns>
+        [Route("deliverypoint/batch/addressGuid:{addressGuid}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveryPointByAddressIdforBatch(Guid addressGuid)
+        {
+            try
+            {
+                //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByUDPRN"))
+                //{
+                DeliveryPointDTO deliveryPointDTO = await businessService.GetDeliveryPointByAddressId(addressGuid);
                 return Ok(deliveryPointDTO);
 
                 // }

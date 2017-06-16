@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.DataMiddleware;
+//using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.Entities;
@@ -15,7 +15,9 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.DeliveryPoint.WebAPI.Entities;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
+using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
 using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI
@@ -77,6 +79,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI
 
             // Infrastructure
             services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            services.AddScoped<IDatabaseFactory<DeliveryPointDBContext>, DatabaseFactory<DeliveryPointDBContext>>();
 
             // BusinessServices
             services.AddScoped<IDeliveryPointsDataService, DeliveryPointsDataService>();

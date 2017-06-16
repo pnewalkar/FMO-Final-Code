@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RM.DataManagement.PostalAddress.WebAPI.DTO
+namespace RM.Data.DeliveryPoint.WebAPI.DTO
 {
     public class PostalAddressDTO
     {

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
+//using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
 {
@@ -26,6 +27,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// <param name="udprn">udprn as string</param>
         /// <returns>delivery points data as object</returns>
         object GetDeliveryPointByUDPRN(int udprn);
+
+        /// <summary>
+        /// Get coordinates of the delivery point by address Id
+        /// </summary>
+        /// <param name="udprn">The UDPRN number</param>
+        /// <returns>The coordinates of the delivery point</returns>
+        Task<DeliveryPointDTO> GetDeliveryPointByAddressId(Guid addressId);
 
         /// <summary>
         /// This method is used to fetch ..........
