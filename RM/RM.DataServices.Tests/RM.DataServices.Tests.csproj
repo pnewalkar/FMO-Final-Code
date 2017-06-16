@@ -114,7 +114,6 @@
     <Compile Include="DataService\ReferenceDataCategoryDataServiceFixture.cs" />
     <Compile Include="DataService\RoadNameDataServiceFixture.cs" />
     <Compile Include="DataService\ScenarioDataServiceFixture.cs" />
-    <Compile Include="DataService\SerarchDeliveryPointsDataServiceFixture.cs" />
     <Compile Include="DataService\StreetNetworkDataServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
