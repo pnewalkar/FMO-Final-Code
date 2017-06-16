@@ -501,6 +501,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             Mapper.Configuration.CreateMapper();
             var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
 
+            deliveryPointDto.ForEach(dpDTO => {
+                dpDTO.PostalAddress = GenericMapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.Where(dp => dp.ID == dpDTO.ID).SingleOrDefault().PostalAddress);
+            });
+
             return deliveryPointDto;
         }
 
