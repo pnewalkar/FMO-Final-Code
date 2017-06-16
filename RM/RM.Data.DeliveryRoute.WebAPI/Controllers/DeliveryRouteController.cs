@@ -32,6 +32,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <param name="deliveryScenarioID">deliveryScenario ID</param>
         /// <param name="fields">The fields to be returned</param>
         /// <returns>List</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroute/{operationStateID}/{deliveryScenarioID}/{fields}")]
         public IActionResult FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID, string fields)
         {
@@ -53,7 +54,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <returns>Task</returns>
-       // [Authorize]
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroutes/basic/{searchText}")]
         public async Task<IActionResult> FetchDeliveryRouteForBasicSearch(string searchText)
         {
@@ -79,6 +80,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <returns>The total count of delivery route</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroutes/count/{searchText}")]
         public async Task<IActionResult> GetDeliveryRouteCount(string searchText)
         {
@@ -104,6 +106,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <returns>Task</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroutes/advance/{searchText}")]
         public async Task<IActionResult> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
@@ -154,7 +157,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryRouteDto">The delivery route dto.</param>
         /// <returns></returns>
-        [Authorize]
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpPost("deliveryroute/deliveryroutesummaries")]
         public async Task<IActionResult> GenerateRouteLog([FromBody]DeliveryRouteDTO deliveryRouteDto)
         {
@@ -181,7 +184,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <param name="deliveryRouteId">deliveryRouteId</param>
         /// <param name="deliveryPointId">deliveryPointId</param>
         /// <returns>boolean</returns>
-        [Authorize]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet]
         [Route("deliveryroute/deliverypointsequence/{deliveryRouteId}/{deliveryPointId}")]
         public async Task<IActionResult> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)

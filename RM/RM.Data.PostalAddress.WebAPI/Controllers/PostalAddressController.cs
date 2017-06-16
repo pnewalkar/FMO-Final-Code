@@ -120,8 +120,6 @@ namespace Fmo.API.Services.Controllers
         /// <param name="searchText">searchText</param>
         /// <returns></returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-
-        // [HttpGet("SearchAddressdetails")]
         [HttpGet("postaladdress/search/{searchText}")]
         public async Task<IActionResult> SearchAddressdetails(string searchText)
         {
