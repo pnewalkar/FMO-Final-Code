@@ -140,7 +140,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     DeliveryPointSuffix = "DeliveryPointSuffix",
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
-                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
+                    ID = 
+                    "019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
             },
                 new PostalAddressDTO()
                 {

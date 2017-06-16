@@ -139,5 +139,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
         Task<Guid> UpdateDeliveryPointLocationOnID(DeliveryPointDTO deliveryPointDto);
+
+        Task<bool> UpdatePAFIndicator(Guid addressGuid, Guid pafIndicator);
     }
 }
