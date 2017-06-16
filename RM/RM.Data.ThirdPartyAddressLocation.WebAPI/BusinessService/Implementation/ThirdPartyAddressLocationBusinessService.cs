@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
 using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
@@ -196,6 +195,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                     LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
                 }
+
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
             }
         }

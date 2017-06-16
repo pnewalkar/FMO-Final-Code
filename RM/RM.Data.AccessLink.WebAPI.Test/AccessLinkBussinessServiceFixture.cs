@@ -66,7 +66,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
         public void Test_CheckManualAccessLinkIsValid()
         {
             // TODO
-            var result = testCandidate.CheckManualAccessLinkIsValid("", "");
+            var result = testCandidate.CheckManualAccessLinkIsValid(string.Empty, string.Empty);
             Assert.IsNotNull(result);
         }
 

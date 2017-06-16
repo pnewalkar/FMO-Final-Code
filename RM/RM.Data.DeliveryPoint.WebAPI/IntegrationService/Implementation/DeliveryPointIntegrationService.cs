@@ -26,7 +26,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         private string accessLinkWebAPIName = string.Empty;
         private string blockSequenceWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
-        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion Property Declarations
@@ -109,6 +108,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
+
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return JsonConvert.DeserializeObject<CreateDeliveryPointModelDTO>(result.Content.ReadAsStringAsync().Result);
             }

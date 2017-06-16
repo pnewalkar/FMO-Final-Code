@@ -20,10 +20,10 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         private readonly ISearchBusinessService searchBussinessService = default(ISearchBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public SearchController(ISearchBusinessService searchBussinessService, ILoggingHelper _loggingHelper)
+        public SearchController(ISearchBusinessService searchBussinessService, ILoggingHelper loggingHelper)
         {
             this.searchBussinessService = searchBussinessService;
-            this.loggingHelper = _loggingHelper;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>

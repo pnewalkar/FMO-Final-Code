@@ -20,7 +20,7 @@ namespace RM.Common.ReferenceData.WebAPI.Test
         [Test]
         public void Test_GetReferenceDataByNameValuePairs()
         {
-            var result = testCandidate.GetReferenceDataByNameValuePairs("", "");
+            var result = testCandidate.GetReferenceDataByNameValuePairs(string.Empty, string.Empty);
             Assert.IsNull(result);
         }
 

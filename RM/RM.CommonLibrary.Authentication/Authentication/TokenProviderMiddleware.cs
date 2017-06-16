@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Nate Barbettini. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-
 namespace RM.CommonLibrary.Authentication
 {
+    using System;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Options;
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Token generator middleware component which is added to an HTTP pipeline.
     /// This class is not created by application code directly,
@@ -50,9 +50,9 @@ namespace RM.CommonLibrary.Authentication
         public Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
-            if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
+            if (!context.Request.Path.Equals(this.options.Path, StringComparison.Ordinal))
             {
-                return next(context);
+                return this.next(context);
             }
 
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
@@ -63,7 +63,7 @@ namespace RM.CommonLibrary.Authentication
                 return context.Response.WriteAsync("Bad request.");
             }
 
-            return next(context);
+            return this.next(context);
         }
 
         private static void ThrowIfInvalidOptions(TokenProviderOptions options)

@@ -6,15 +6,14 @@
     using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Threading.Tasks;
+    using CommonLibrary.LoggingMiddleware;
+    using Moq;
+    using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-    using RM.CommonLibrary.EntityFramework.DTO;
     using RM.CommonLibrary.EntityFramework.Entities;
     using RM.CommonLibrary.HelperMiddleware;
-    using Moq;
-    using NUnit.Framework;
-    using CommonLibrary.LoggingMiddleware;
 
     [TestFixture]
     public class DeliveryPointsDataServiceFixture : RepositoryFixtureBase
@@ -139,7 +138,6 @@
                }
             };
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-          //  mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);

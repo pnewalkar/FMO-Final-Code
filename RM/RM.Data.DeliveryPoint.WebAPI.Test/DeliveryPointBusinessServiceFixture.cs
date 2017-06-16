@@ -22,7 +22,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         private Mock<IDeliveryPointsDataService> mockDeliveryPointsDataService;
         private Mock<IConfigurationHelper> mockConfigurationDataService;
         private Mock<ILoggingHelper> mockLoggingDataService;
-        private Mock<RMTraceManager> mockTraceManager;
         private Mock<IDeliveryPointIntegrationService> mockDeliveryPointIntegrationService;
         private Guid unitGuid = Guid.NewGuid();
         private AddDeliveryPointDTO addDeliveryPointDTO;

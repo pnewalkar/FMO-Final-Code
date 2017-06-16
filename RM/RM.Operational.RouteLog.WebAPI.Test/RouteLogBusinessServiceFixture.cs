@@ -16,8 +16,6 @@ namespace RM.Operational.RouteLog.WebAPI.Test
         private Mock<IRouteLogIntegrationService> mockRouteLogIntegrationService;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
         private DeliveryRouteDTO deliveryRouteDto;
-        private RouteLogSequencedPointsDTO address;
-        private RouteSummaryGroupDTO grp;
 
         [Test]
         public void Test_ValidPostalAddressData()
