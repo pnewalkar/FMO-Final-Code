@@ -104,6 +104,15 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
             Assert.IsTrue(actualDeliveryRouteResult.Result);
         }
 
+        [Test]
+        public void TestGenerateRouteLog()
+        {
+            DeliveryRouteDTO deliveryRouteDTO = new DeliveryRouteDTO() { DeliveryRouteBarcode = "D0001234", ID = Guid.NewGuid(), DeliveryScenario_Id = 1, ExternalId = 1, OperationalStatus_Id = 1, RouteMethodType_Id = 1, RouteName = "RouteOneTwothree", RouteNumber = "R004341566" };
+            var unitGuid = Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
+            var expectedDeliveryRouteResult = testCandidate.GenerateRouteLog(deliveryRouteDTO, unitGuid);
+            Assert.NotNull(expectedDeliveryRouteResult);
+        }
+
         protected override void OnSetup()
         {
             mockLoggingHelper = CreateMock<ILoggingHelper>();
