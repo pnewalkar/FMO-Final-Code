@@ -491,6 +491,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             return Ok(deliveryPoint);
         }
 
+
+        [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
+        public Task<bool> UpdatePAFIndicator(Guid addressGuid, [FromBody] Guid pafIndicator)
+        {
+           return businessService.UpdatePAFIndicator(addressGuid, pafIndicator);
+        }
+
         #endregion Methods
     }
 }

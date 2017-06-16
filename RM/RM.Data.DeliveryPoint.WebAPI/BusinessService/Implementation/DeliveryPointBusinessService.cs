@@ -11,7 +11,7 @@
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
     using RM.CommonLibrary.ConfigurationMiddleware;
-    using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
+    using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
     using RM.CommonLibrary.EntityFramework.DTO;
     using RM.CommonLibrary.EntityFramework.DTO.Model;
     using RM.CommonLibrary.HelperMiddleware;
@@ -370,6 +370,12 @@
         public List<DeliveryPointDTO> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject)
         {
             return deliveryPointsDataService.GetDeliveryPointsCrossingOperationalObject(boundingBoxCoordinates, operationalObject);
+        }
+
+
+        public Task<bool> UpdatePAFIndicator(Guid addressGuid, Guid pafIndicator)
+        {
+            return deliveryPointsDataService.UpdatePAFIndicator(addressGuid, pafIndicator);
         }
 
         #endregion Public Methods
