@@ -2,14 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
     using System.Net;
-    using System.Xml.Serialization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.FileProviders;
     using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
-    using RM.Common.ReferenceData.WebAPI.DTO;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
     using RM.CommonLibrary.ExceptionMiddleware;
     using RM.CommonLibrary.HelperMiddleware;
@@ -17,7 +12,9 @@
     [Route("api/ReferenceDataManager")]
     public class ReferenceDataController : RMBaseController
     {
-        private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);   
+        #region Member Variables
+        private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);    
+        #endregion
 
         #region Constructor
 
@@ -28,7 +25,7 @@
 
         #endregion Constructor
 
-        #region Reference Data Manager methods
+        #region Methods
 
         /// <summary>
         /// retrieval of name-value pairs as a discrete type of reference data addressed via the URI
@@ -40,6 +37,11 @@
         [HttpGet("nameValuePair")]
         public IActionResult GetNameValueReferenceData(string appGroupName, string appItemName)
         {
+            if (string.IsNullOrEmpty(appGroupName) || string.IsNullOrEmpty(appItemName))
+            {
+                return BadRequest();
+            }
+
             var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName, appItemName);
 
             Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(Constants.NameValuePair, nameValuePairsObject);
@@ -62,6 +64,11 @@
         [HttpGet("nameValuePairs")]
         public IActionResult GetNameValueReferenceData(string appGroupName)
         {
+            if (string.IsNullOrEmpty(appGroupName))
+            {
+                return BadRequest();
+            }
+
             var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName);
             Tuple<string, List<NameValuePair>> nameValueList = new Tuple<string, List<NameValuePair>>(Constants.NameValuePairs, nameValuePairsObject);
 
@@ -81,6 +88,11 @@
         [HttpGet("simpleLists")]
         public IActionResult GetSimpleListsReferenceData(string listName)
         {
+            if (string.IsNullOrEmpty(listName))
+            {
+                return BadRequest();
+            }
+
             var simpleListObject = referenceDataBusinessService.GetSimpleListsReferenceData(listName);
 
             Tuple<string, SimpleListDTO> nameValueSingleResource = new Tuple<string, SimpleListDTO>(Constants.SimpleList, simpleListObject);
@@ -101,6 +113,11 @@
         [HttpPost("simpleLists")]
         public IActionResult GetSimpleListsReferenceData([FromBody]List<string> listNames)
         {
+            if (listNames == null)
+            {
+                return BadRequest();
+            }
+
             var simpleDtoList = referenceDataBusinessService.GetSimpleListsReferenceData(listNames);
 
             if (simpleDtoList.Count == 0)

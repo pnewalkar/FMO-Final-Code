@@ -111,7 +111,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             {
                 networkIntersectionPoint = accessLinkDTO[0].OperationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry()).STEndPoint();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
 

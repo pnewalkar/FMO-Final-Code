@@ -7,19 +7,21 @@
     using System.Xml.Serialization;
     using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.HelperMiddleware;
-    using DTO;
     using Microsoft.Extensions.FileProviders;
     using RM.Common.DataService.Interface;
     using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
+    using Utils;
 
     public class ReferenceDataBusinessService : IReferenceDataBusinessService
     {
+        #region Member Variables
         private static ReferenceDataMapping referenceDataMapping;
         private readonly IFileProvider fileProvider;
         private IConfigurationHelper configHelper = default(IConfigurationHelper);
-        private string RefDataXMLFileName = string.Empty;
-        private IReferenceDataDataService referenceDataDataService;
+        private string refDataXMLFileName = string.Empty;
+        private IReferenceDataDataService referenceDataDataService; 
+        #endregion
 
         #region Constructor
 
@@ -33,8 +35,8 @@
             this.fileProvider = fileProvider;
             this.referenceDataDataService = referenceDataDataService;
             IDirectoryContents contents = fileProvider.GetDirectoryContents(string.Empty); // the applicationRoot contents
-            RefDataXMLFileName = configHelper.ReadAppSettingsConfigurationValues(Constants.RefDataXMLFileName);
-            IFileInfo fileInfo = fileProvider.GetFileInfo(RefDataXMLFileName); // a file under applicationRoot
+            refDataXMLFileName = configHelper.ReadAppSettingsConfigurationValues(Constants.RefDataXMLFileName);
+            IFileInfo fileInfo = fileProvider.GetFileInfo(refDataXMLFileName); // a file under applicationRoot
 
             XmlSerializer serializer = new XmlSerializer(typeof(ReferenceDataMapping));
 
@@ -47,7 +49,7 @@
 
         #endregion Constructor
 
-        #region Reference Data Manager methods
+        #region Methods
 
         /// <summary> Gets all reference data. </summary> <param name="group">group is recorded as
         /// the category name</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
@@ -119,6 +121,6 @@
             return simpleDtoList;
         }
 
-        #endregion Reference Data Manager methods
+        #endregion Methods
     }
 }

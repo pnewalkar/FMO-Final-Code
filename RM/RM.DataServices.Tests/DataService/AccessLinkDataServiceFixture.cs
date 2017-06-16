@@ -4,7 +4,6 @@ namespace RM.DataServices.Tests.DataService
 {
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
-    using System.Data.Entity.Spatial;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.EntityFramework.DataService;
     using CommonLibrary.EntityFramework.DataService.Interfaces;
