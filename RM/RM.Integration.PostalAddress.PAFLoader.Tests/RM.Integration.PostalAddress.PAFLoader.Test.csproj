@@ -58,6 +58,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestData\InvalidFile\InValidNYB.zip" />
+    <None Include="TestData\InvalidFile\InValidPostCode.zip" />
+    <None Include="TestData\InvalidFile\InValidPostCodeType.zip" />
+    <None Include="TestData\ValidFile\ValidNYB.zip" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
