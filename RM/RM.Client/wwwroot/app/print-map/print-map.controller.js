@@ -213,11 +213,12 @@ function PrintMapController(
         });
     }
     function getMapPerInch() {
-        printMapService.getReferencedata('PrintMap_mmPerInch').then(function (response) {
-            if (response) {
-                vm.printMapmmPerInch = response[0].Value;
-            }
-        });
+        return 25.4;
+        //printMapService.getReferencedata('PrintMap_mmPerInch').then(function (response) {
+        //    if (response) {
+        //        vm.printMapmmPerInch = response[0].Value;
+        //    }
+        //});
     }
     function getImageHeight() {
         printMapService.getReferencedata('PrintMap_ImageHeightmm').then(function (response) {

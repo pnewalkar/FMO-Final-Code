@@ -96,17 +96,11 @@
     "TITLE": "Title",
     "LANDSCAPE": "Landscape",
     "PORTRAIT": "Portrait",
-    "ORIENTATION":"Orientation",
+    "ORIENTATION": "Orientation",
     "CONDITION": "*If you are unable to print this locally,please generate and send to your printing service facility",
     "BUTTONS": {
       "DISABLE_ALERT": "This action is disabled until the user has completed the action they are currently carrying out."
     }
   }
 
-  },
-  "VALIDATION": {
-        "MINIMUM_CHARACTERS": "Value entered is longer than {{count}}",
-        "REQUIRED":"This field is required*",
-        "PATTERN":"Value entered is not valid"
-    }
 }
