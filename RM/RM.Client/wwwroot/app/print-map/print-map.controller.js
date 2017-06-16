@@ -26,6 +26,7 @@ function PrintMapController(
     vm.getImageHeight = getImageHeight;
     vm.getImageWidth = getImageWidth;
     vm.printMap = printMap;
+    vm.mapSize;
     vm.printMapDto = { "MapTitle": "Title", "PrintTime": null, "CurrentScale": "200", "PdfOrientation": "Landscape", "PdfSize": "A4", "MapScale": 25, "EncodedString": "sdfsdf" };
     vm.printOptions = { orientation: "Landscape" };
     vm.initialize();
@@ -37,6 +38,7 @@ function PrintMapController(
         vm.getImageWidth();
         vm.loadPdfSize();
         vm.map = mapFactory.getMap();
+        vm.mapSize = vm.map.getSize();
         vm.map.addControl(new ol.control.ScaleLine());
         document.getElementsByClassName('ol-overlaycontainer-stopevent')[0].style.visibility = "hidden";
     }
@@ -44,13 +46,18 @@ function PrintMapController(
         $mdDialog.cancel();
     }
     function printMap() {
-        var test = vm.printMapDPI;
-        captureImage();
-        //printMapService.printMap(vm.printMapDto).then(function (response) {
-        //    generatePdf(response.result);
-        //});
+        var imageWidthmm = getMapImageWidth(vm.printOptions.size);
+        var imageHeightmm = getMapImageHeight(vm.printOptions.size);
+        var mapWidth = Math.round((imageWidthmm * parseInt(vm.printMapDPI)) / parseInt(vm.printMapmmPerInch));
+        var mapHeight = Math.round((imageHeightmm * parseInt(vm.printMapDPI)) / parseInt(vm.printMapmmPerInch));
+        vm.map.setSize([mapWidth, mapHeight]);
+
+        vm.map.once('postcompose', function (event) {
+            writeScaletoCanvas(event);
+        });
+        vm.map.renderSync();
     }
-    function generatePdf(pdfFileName) {
+    function displayPdf(pdfFileName) {
         if (pdfFileName) {
             printMapService.generatePdf(pdfFileName).then(function (response) {
                 if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -72,15 +79,7 @@ function PrintMapController(
             });
         }
     }
-    function captureImage() {
-        vm.map.once('postcompose', function (event) {
-            writeScaletoCanvas(event);
-        });
-        vm.map.renderSync();
-    }
     function writeScaletoCanvas(e) {
-
-
         var ctx = e.context;
         var canvas = e.context.canvas;
         //get the Scaleline div container the style-width property
@@ -100,8 +99,7 @@ function PrintMapController(
         var scalenumber = parseInt(scale, 10);
         var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
 
-        var calculatedScale = Math.round(setScaleUnit(scalenumber, scaleunit));
-        scaleunit = 'mi';
+        var calculatedScale = setScaleUnit(scalenumber, scaleunit);
         //Scale Text
         ctx.beginPath();
         ctx.textAlign = "left";
@@ -109,8 +107,8 @@ function PrintMapController(
         ctx.fillStyle = "#000000";
         ctx.lineWidth = 5;
         ctx.font = font1;
-        ctx.strokeText([calculatedScale + ' ' + scaleunit], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
-        ctx.fillText([calculatedScale + ' ' + scaleunit], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+        ctx.strokeText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+        ctx.fillText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
 
         //Scale Dimensions
         var xzero = scalewidth + x_offset;
@@ -158,16 +156,48 @@ function PrintMapController(
         ctx.lineTo(xfourth, yzero);
         ctx.stroke();
 
-        var dataURI = canvas.toDataURL('image/png');
+        var resolution = vm.map.getView().getResolution();
+
+        vm.printMapDto = {
+            "MapTitle": vm.printOptions.title,
+            "CurrentScale": '1 : ' + Math.round(mapFactory.getScaleFromResolution(resolution)),
+            "PdfOrientation": vm.printOptions.orientation,
+            "PdfSize": vm.printOptions.size,
+            "MapScale": 25,
+            "EncodedString": canvas.toDataURL('image/png')
+        };
+        var dataURI = canvas.toDataURL('image/png')
+        vm.map.setSize(vm.mapSize);
         mapService.refreshLayers();
+        printMapService.printMap(vm.printMapDto).then(function (response) {
+            generatePdf(response);
+        });
         window.open(dataURI, "_blank");
+    }
+    function generatePdf(data) {
+        printMapService.mapPdf(data).then(function (response) {
+            displayPdf(response);
+        });
     }
     function setScaleUnit(scalenumber, scaleunit) {
         if (scaleunit == 'km') {
-            return scalenumber * 0.621371;
+            var scale = scalenumber * 0.621371;
+            if (scale < 1) {
+                scale = scalenumber * 1000
+                return Math.round(scale) + ' m';
+            }
+            else {
+                return Math.round(scale) + ' mi';
+            }
         }
         else if (scaleunit == 'm') {
-            return scalenumber * 0.000621371;
+            var scale = scalenumber * 0.000621371;
+            if (scale < 1) {
+                return scalenumber + ' m';
+            }
+            else {
+                return Math.round(scale) + ' mi';
+            }
         }
     }
     function loadPdfSize() {
@@ -177,12 +207,16 @@ function PrintMapController(
     }
     function getMapDpi() {
         printMapService.getReferencedata('PrintMap_DPI').then(function (response) {
-            vm.printMapDPI = response;
+            if (response) {
+                vm.printMapDPI = response[0].Value;
+            }
         });
     }
     function getMapPerInch() {
         printMapService.getReferencedata('PrintMap_mmPerInch').then(function (response) {
-            vm.printMapmmPerInch = response;
+            if (response) {
+                vm.printMapmmPerInch = response[0].Value;
+            }
         });
     }
     function getImageHeight() {
@@ -194,6 +228,56 @@ function PrintMapController(
         printMapService.getReferencedata('PrintMap_ImageWidthmm').then(function (response) {
             vm.imageWidth = response;
         });
+    }
+    function getMapImageWidth(printSize) {
+        var categoryName;
+        switch (printSize) {
+            case 'A0':
+                categoryName = 'PrintMap_ImageWidthmm_A0';
+                break;
+            case 'A1':
+                categoryName = 'PrintMap_ImageWidthmm_A1';
+                break;
+            case 'A2':
+                categoryName = 'PrintMap_ImageWidthmm_A2';
+                break;
+            case 'A3':
+                categoryName = 'PrintMap_ImageWidthmm_A3';
+                break;
+            case 'A4':
+                categoryName = 'PrintMap_ImageWidthmm_A4';
+                break;
+        }
+
+        var result = vm.imageWidth.filter(function (e) {
+            return (e.Name === categoryName);
+        });
+        return result[0].Value;
+    }
+    function getMapImageHeight(printSize) {
+        var categoryName;
+        switch (printSize) {
+            case 'A0':
+                categoryName = 'PrintMap_ImageHeightmm_A0';
+                break;
+            case 'A1':
+                categoryName = 'PrintMap_ImageHeightmm_A1';
+                break;
+            case 'A2':
+                categoryName = 'PrintMap_ImageHeightmm_A2';
+                break;
+            case 'A3':
+                categoryName = 'PrintMap_ImageHeightmm_A3';
+                break;
+            case 'A4':
+                categoryName = 'PrintMap_ImageHeightmm_A4';
+                break;
+        }
+
+        var result = vm.imageHeight.filter(function (e) {
+            return (e.Name === categoryName);
+        });
+        return result[0].Value;
     }
 }
 

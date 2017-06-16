@@ -13,13 +13,26 @@ function printMapAPIService($http,
 
     return {
         printMap: printMap,
-        generatePdf: generatePdf
+        generatePdf: generatePdf,
+        mapPdf: mapPdf
     }
 
     function generatePdf(pdfFilename) {
         var deferred = $q.defer();
 
         $http.get(GlobalSettings.pdfGeneratorApiUrl + GlobalSettings.getPdfreport + pdfFilename).success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+    function mapPdf(printMapDTO) {
+        var deferred = $q.defer();
+
+        $http.post(GlobalSettings.mapManagerApiUrl + GlobalSettings.generatePdf, printMapDTO).success(function (response) {
             deferred.resolve(response);
 
         }).error(function (err, status) {

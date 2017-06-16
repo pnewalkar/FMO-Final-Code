@@ -120,4 +120,5 @@ GlobalSettings.getDeliveryUnit = "/UnitManager/Unit";
 GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
 
 //-----Map manager Factory---------------//
-GlobalSettings.generateReportWithMap = "/MapManager/MapImages/";
+GlobalSettings.generateReportWithMap = "/MapManager/MapImage/";
+GlobalSettings.generatePdf = "/MapManager/MapPDF/";

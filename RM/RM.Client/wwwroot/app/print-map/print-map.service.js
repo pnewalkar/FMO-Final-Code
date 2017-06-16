@@ -19,7 +19,8 @@ referenceDataConstants) {
         printMap:printMap,
         generatePdf: generatePdf,
         loadPdfSize: loadPdfSize,
-        getReferencedata: getReferencedata
+        getReferencedata: getReferencedata,
+        mapPdf: mapPdf
     };
     function closeWindow() {
         $mdDialog.cancel();
@@ -30,14 +31,21 @@ referenceDataConstants) {
             deferred.resolve(response);
         });
         return deferred.promise;
-    };
+    }
+    function mapPdf(printMapDto) {
+        var deferred = $q.defer();
+        printMapAPIService.mapPdf(printMapDto).then(function (response) {
+            deferred.resolve(response);
+        });
+        return deferred.promise;
+    }
     function printMap(printMapDTO) {
         var deferred = $q.defer();
         printMapAPIService.printMap(printMapDTO).then(function (response) {
             deferred.resolve(response);
         });
         return deferred.promise;
-    };
+    }
     function loadPdfSize() {
         var deferred = $q.defer();
         referencedataApiService.getNameValueReferenceData(referenceDataConstants.PDF_PageSize.DBCategoryName).then(function (response) {
