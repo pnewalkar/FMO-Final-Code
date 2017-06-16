@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>9e24744c-5946-4afe-8ddb-8e576fe344ca</ProjectGuid>
-    <RootNamespace>RM.Common.Notification.WebAPI.Test</RootNamespace>
+    <ProjectGuid>a13eb33e-d2d8-492d-ba8a-682ac6486c4c</ProjectGuid>
+    <RootNamespace>RM.Operational.MapManager.WebAPI</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -19,8 +19,5 @@
     <ProjectReference Include="..\RM.CommonLibrary.EntityFramework\RM.CommonLibrary.EntityFramework.csproj" />
     <ProjectReference Include="..\RM.CommonLibrary\RM.CommonLibrary.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-  <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(VSToolsPath)\DotNet.Web\Microsoft.DotNet.Web.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

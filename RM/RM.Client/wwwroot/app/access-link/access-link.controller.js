@@ -75,6 +75,9 @@ function AccessLinkController(
                 $rootScope.$broadcast('redirectTo', {
                     contextTitle: GlobalSettings.deliveryPointLayerName
                 });
+                $rootScope.$broadcast('disablePrintMap', {
+                    disable: false
+                });
             }
         });
     }
