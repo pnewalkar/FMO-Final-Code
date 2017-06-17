@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 //using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
+using System.Collections.Generic;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
@@ -52,5 +53,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <param name="deliveryPointId">deliveryPointId</param>
         /// <returns>bool</returns>
         Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
+
+        /// <summary>
+        /// Method to get postal address data
+        /// </summary>
+        /// <param name="addressGuids">addressGuids</param>
+        /// <returns>Task<List<PostalAddressDBDTO>></returns>
+        Task<List<PostalAddressDBDTO>> GetPostalAddress(List<Guid> addressGuids);
     }
 }

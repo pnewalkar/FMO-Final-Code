@@ -153,6 +153,24 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             string returnvalue = result.Content.ReadAsStringAsync().Result;
             return Convert.ToBoolean(returnvalue);
         }
+
+
+        /// <summary>
+        /// Method to get postal address data
+        /// </summary>
+        /// <param name="addressGuids">addressGuids</param>
+        /// <returns>Task<List<PostalAddressDBDTO>></returns>
+        public async Task<List<PostalAddressDBDTO>> GetPostalAddress(List<Guid> addressGuids)
+        {
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/postaladdresses/", addressGuids);
+            if (!result.IsSuccessStatusCode)
+            {
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            return JsonConvert.DeserializeObject<List<PostalAddressDBDTO>>(result.Content.ReadAsStringAsync().Result);
+        }
         #endregion public methods
     }
 }
