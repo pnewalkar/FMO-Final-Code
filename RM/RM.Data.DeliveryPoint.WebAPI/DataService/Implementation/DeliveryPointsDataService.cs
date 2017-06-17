@@ -69,35 +69,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
 
 
-        /// <summary>
-        /// This method is used to fetch Delivery Point by Address guid.
-        /// </summary>
-        /// <param name="address guid">address guid as guid</param>
-        /// <returns>DeliveryPointDTO</returns>
-        public async Task<DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
-        {
-            try
-            {
-                /* POC data modal change comment*/
-                var objDeliveryPoint = await DataContext.DeliveryPoints.AsNoTracking().Where(n => n.Address_GUID == addressGuid).SingleOrDefaultAsync();
-
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                    //cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
-                    //cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-                });
-
-                Mapper.Configuration.CreateMapper();
-
-                return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
-            }
-            catch (InvalidOperationException ex)
-            {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
-            }
-        }
+        
 
         /// <summary>
         /// This method is used to update UDPRN of Delivery Point by matching udprn of postal address id.
@@ -162,8 +134,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
                     newDeliveryPoint.LocationProvider_GUID = objDeliveryPoint.LocationProvider_GUID;*/
-                    newDeliveryPointStatus.LocationGUID = (Guid)objDeliveryPoint.LocationProvider_GUID;
-                    newDeliveryPointStatus.OperationalStatusGUID = Guid.Empty; // TODO: OperationalStatusGUID
+                    newDeliveryPointStatus.LocationGUID = objDeliveryPoint.ID;
+                    newDeliveryPointStatus.OperationalStatusGUID = (Guid)objDeliveryPoint.OperationalStatus_GUID;
                     newDeliveryPointStatus.RowCreateDateTime = DateTime.UtcNow;
                     newDeliveryPointStatus.StartDateTime = DateTime.UtcNow;
                     newDeliveryPoint.ID = objDeliveryPoint.ID;
@@ -174,7 +146,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     newNetworkNode.DataProviderGUID = objDeliveryPoint.LocationProvider_GUID;
                     newNetworkNode.RowCreateDateTime = DateTime.UtcNow;
                     newNetworkNode.DeliveryPoint = newDeliveryPoint;
-                    newNetworkNode.NetworkNodeType_GUID = Guid.Empty; // TODO: Network Node Type Guid
+                    newNetworkNode.NetworkNodeType_GUID = (Guid)objDeliveryPoint.NetworkNodeType_GUID;
 
                     newLocation.Shape = objDeliveryPoint.LocationXY;
                     newLocation.ID = objDeliveryPoint.ID;
@@ -619,23 +591,24 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <summary>
         /// Get the delivery points by the Postal Address Guid
         /// </summary>
-        /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
+        /// <param name = "addressId" > Postal Address Guid to find corresponding delivery point</param>
         /// <returns>DeliveryPointDTO object</returns>
-        ////public DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId)
-        ////{
-        ////    DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId)
-        ////        .SingleOrDefault();
+        public DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId)
+        {
+            DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.Address_GUID == addressId)
+                .SingleOrDefault();
 
-        ////    Mapper.Initialize(cfg =>
-        ////    {
-        ////        cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-        ////        cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-        ////    });
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+            });
 
-        ////    Mapper.Configuration.CreateMapper();
-        ////    var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
-        ////    return deliveryPointDto;
-        ////}
+            Mapper.Configuration.CreateMapper();
+            var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+            return deliveryPointDto;
+        }
+
+        
 
         /// <summary>
         /// This method checks delivery point for given UDPRN exists or not
@@ -718,11 +691,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         }
 
         public AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId)
         {
             throw new NotImplementedException();
         }

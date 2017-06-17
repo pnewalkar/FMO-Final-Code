@@ -370,35 +370,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// This method is used to fetch Delivery Point by udprn.
-        /// </summary>
-        /// <param name="udprn">udprn as int</param>
-        /// <returns>DeliveryPointDTO</returns>
-        [Route("deliverypoint/batch/addressGuid:{addressGuid}")]
-        [HttpGet]
-        public async Task<IActionResult> GetDeliveryPointByAddressIdforBatch(Guid addressGuid)
-        {
-            try
-            {
-                //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByUDPRN"))
-                //{
-                DeliveryPointDTO deliveryPointDTO = await businessService.GetDeliveryPointByAddressId(addressGuid);
-                return Ok(deliveryPointDTO);
-
-                // }
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
-
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
-            }
-        }
+        
 
         /// <summary>
         /// This method is used to fetch delivery points by the Postal Address Guid

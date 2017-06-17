@@ -198,7 +198,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         Constants.TASKNOTIFICATION,
                         Constants.NETWORKLINKDATAPROVIDER,
-                        Constants.DeliveryPointUseIndicator
+                        Constants.DeliveryPointUseIndicator,
+                        ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
+                        ReferenceDataCategoryNames.NetworkNodeType
                     };
             var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
             Guid tasktypeId = referenceDataCategoryList
@@ -216,6 +218,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             .SelectMany(list => list.ReferenceDatas)
                             .Where(item => item.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                             .Select(s => s.ID).SingleOrDefault();
+            Guid OperationalStatusGUIDLive = referenceDataCategoryList
+                            .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointOperationalStatus)
+                            .SelectMany(list => list.ReferenceDatas)
+                            .Where(item => item.ReferenceDataValue.Equals(Constants.OperationalStatusGUIDLive, StringComparison.OrdinalIgnoreCase))
+                            .Select(s => s.ID).SingleOrDefault();
+            Guid NetworkNodeTypeRMGServiceNode = referenceDataCategoryList
+                            .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkNodeType)
+                            .SelectMany(list => list.ReferenceDatas)
+                            .Where(item => item.ReferenceDataValue.Equals(Constants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
+                            .Select(s => s.ID).SingleOrDefault();
 
             // Search Address Location for Postal Address If found, Add delivery point as per Address
             // Location details Else, Add delivery point w/o Address location details and also add
@@ -226,14 +238,18 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
             if (objAddressLocation == null)
             {
+                /* Poc do not create dp if adddress location does not exist
                 var newDeliveryPoint = new DeliveryPointDTO
                 {
                     ID = Guid.NewGuid(),
                     Address_GUID = objPostalAddress.ID,
                     UDPRN = objPostalAddress.UDPRN,
-                    DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator
+                    DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
+
+                    OperationalStatus_GUID = OperationalStatusGUIDLive,
+                    NetworkNodeType_GUID = NetworkNodeTypeRMGServiceNode
                 };
-                await postalAddressIntegrationService.InsertDeliveryPoint(newDeliveryPoint);
+                await postalAddressIntegrationService.InsertDeliveryPoint(newDeliveryPoint);*/
 
                 // Create task
                 var objTask = new NotificationDTO
@@ -263,7 +279,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     Latitude = objAddressLocation.Lattitude,
                     Longitude = objAddressLocation.Longitude,
                     LocationProvider_GUID = locationProviderId,
-                    DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator
+                    DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
+
+                    OperationalStatus_GUID = OperationalStatusGUIDLive,
+                    NetworkNodeType_GUID = NetworkNodeTypeRMGServiceNode
                 };
                 await postalAddressIntegrationService.InsertDeliveryPoint(newDeliveryPoint);
             }
@@ -550,7 +569,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         if (await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF))
                         {
                             // calling delivery point web api
-                            var objDeliveryPoint = await postalAddressIntegrationService.GetDeliveryPointByID(objPostalAddress.ID);
+                            var objDeliveryPoint = await postalAddressIntegrationService.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
                             if (objDeliveryPoint == null)
                             {
                                 await SaveDeliveryPointProcess(objPostalAddress);
