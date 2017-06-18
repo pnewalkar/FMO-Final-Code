@@ -760,6 +760,35 @@
         //    }
         //}
 
+        public async Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids)
+        {
+            try
+            {
+                var addressDetails = await DataContext.PostalAddresses.Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
+                    //cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
+                    //cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+                });
+
+                Mapper.Configuration.CreateMapper();
+
+                return Mapper.Map<List<PostalAddress>, List<PostalAddressDBDTO>>(addressDetails);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
         /// </summary>

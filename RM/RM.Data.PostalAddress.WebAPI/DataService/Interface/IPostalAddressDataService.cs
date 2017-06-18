@@ -102,5 +102,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">objPostalAddress</param>
         /// <returns>bool</returns>
         bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress);
+
+        Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids);
     }
 }

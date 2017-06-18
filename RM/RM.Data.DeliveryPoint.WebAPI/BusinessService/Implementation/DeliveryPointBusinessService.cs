@@ -18,6 +18,7 @@
     using RM.CommonLibrary.HelperMiddleware;
     using RM.CommonLibrary.LoggingMiddleware;
     using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
+    using AutoMapper;
 
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
@@ -69,7 +70,20 @@
             if (!string.IsNullOrEmpty(boundaryBox))
             {
                 var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
+                List<DeliveryPointDTO> deliveryPointDtos = deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid);
+                List<Guid> addressGuids = new List<Guid>();
+                deliveryPointDtos.ForEach(dp => addressGuids.Add(dp.Address_GUID));
+                List<PostalAddressDBDTO> postAddressDBs = deliveryPointIntegrationService.GetPostalAddress(addressGuids).Result;
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddressDBDTO, PostalAddressDTO>();
+                    //cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
+                    //cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+                });
+                List<PostalAddressDTO> postalAddressDtos = Mapper.Map<List<PostalAddressDBDTO>, List<PostalAddressDTO>>(postAddressDBs);
+                deliveryPointDtos.ForEach(dp => dp.PostalAddress = postalAddressDtos.Find(pa => pa.ID == dp.Address_GUID));
+
+                return GetDeliveryPointsJsonData(deliveryPointDtos);
             }
             else
             {
@@ -404,7 +418,7 @@
                     var feature = new Feature
                     {
                         id = point.ID.ToString(),
-                        properties = new Dictionary<string, JToken>
+                    properties = new Dictionary<string, JToken>
                     {
                         { Constants.BuildingName, point.PostalAddress.BuildingName },
                         { Constants.BuildingNumber, point.PostalAddress.BuildingNumber },

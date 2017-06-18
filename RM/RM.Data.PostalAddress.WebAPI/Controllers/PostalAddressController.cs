@@ -286,6 +286,27 @@ namespace Fmo.API.Services.Controllers
             }
         }
 
+
+        [HttpPost("postaladdress/postaladdresses/")]
+        public async Task<IActionResult> GetPostalAddresses([FromBody] List<Guid> addressGuids)
+        {
+            try
+            {
+                var addressDetails = await businessService.GetPostalAddresses(addressGuids);
+                return Ok(addressDetails);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
         #endregion Public Methods
     }
 }

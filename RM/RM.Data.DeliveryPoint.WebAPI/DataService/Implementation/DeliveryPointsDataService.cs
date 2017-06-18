@@ -308,26 +308,50 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
-        ////public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
-        ////{
-        ////    List<DeliveryPoint> deliveryPoints = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+        public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
+        {
+            List<Location> locations = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+            List<DeliveryPointDTO> deliveryPointDto = new List<DeliveryPointDTO>();
 
-        ////    Mapper.Initialize(cfg =>
-        ////    {
-        ////        cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-        ////        cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-        ////    });
+            foreach (Location location in locations)
+            {
+                if (location.NetworkNode.DeliveryPoint != null)
+                {
+                    DeliveryPointDTO dpDTO = new DeliveryPointDTO();
+                    dpDTO.ID = location.NetworkNode.DeliveryPoint.ID;
+                    dpDTO.AccessLinkPresent = location.NetworkNode.DeliveryPoint.AccessLinkPresent;
+                    dpDTO.Address_GUID = location.NetworkNode.DeliveryPoint.Address_GUID;
+                    dpDTO.LocationXY = location.Shape;
+                    deliveryPointDto.Add(dpDTO);
+                }
+            }
 
-        ////    Mapper.Configuration.CreateMapper();
-        ////    var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+            //locations.ForEach(l => {
+            //    deliveryPointDto.Add(new DeliveryPointDTO
+            //    {
+            //        ID = l.NetworkNode.DeliveryPoint.ID,
+            //        AccessLinkPresent = l.NetworkNode.DeliveryPoint.AccessLinkPresent,
+            //        Address_GUID = l.NetworkNode.DeliveryPoint.Address_GUID,
+            //        LocationXY = l.Shape
+            //    });
+            //});
 
-        ////    deliveryPointDto.ForEach(dpDTO =>
-        ////    {
-        ////        dpDTO.PostalAddress = GenericMapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.Where(dp => dp.ID == dpDTO.ID).SingleOrDefault().PostalAddress);
-        ////    });
+            //Mapper.Initialize(cfg =>
+            //{
+            //    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+            //    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+            //});
 
-        ////    return deliveryPointDto;
-        ////}
+            //Mapper.Configuration.CreateMapper();
+            //var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+
+            //deliveryPointDto.ForEach(dpDTO =>
+            //{
+            //    dpDTO.PostalAddress = GenericMapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.Where(dp => dp.ID == dpDTO.ID).SingleOrDefault().PostalAddress);
+            //});
+
+            return deliveryPointDto;
+        }
 
         /// <summary>
         /// This Method provides Route Name for a single DeliveryPoint
@@ -680,11 +704,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             throw new NotImplementedException();
         }
 
-        public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn)
         {
             throw new NotImplementedException();
@@ -798,22 +817,28 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Entity</returns>
-        ////private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
-        ////{
-        ////    IEnumerable<DeliveryPoint> deliveryPoints = default(IEnumerable<DeliveryPoint>);
-        ////    if (!string.IsNullOrEmpty(boundingBoxCoordinates))
-        ////    {
-        ////        DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+        private IEnumerable<Location> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
+        {
+            IEnumerable<Location> locations = default(IEnumerable<Location>);
+            DbGeometry polygon = default(DbGeometry);
+            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
+            {
+                using (CommonLibrary.EntityFramework.Entities.RMDBContext rmDbContext = new CommonLibrary.EntityFramework.Entities.RMDBContext())
+                {
+                    polygon = rmDbContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+                }
 
-        ////        DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                locations = DataContext.Locations.Where(l => l.Shape.Intersects(extent) && l.Shape.Intersects(polygon));
 
-        ////        /* POC data modal change comment
-        ////        deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
-        ////        */
-        ////}
+                /* POC data modal change comment
+                deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
 
-        ////            return deliveryPoints;
-        ////}
+                */
+            }
+
+            return locations;
+        }
 
         #endregion Private Methods
     }

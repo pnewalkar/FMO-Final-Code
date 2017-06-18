@@ -76,5 +76,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>returns PostalAddress object</returns>
         Task<PostalAddressDBDTO> GetPostalAddress(int? uDPRN);
+
+        Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids);
     }
 }
