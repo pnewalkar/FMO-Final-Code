@@ -10,7 +10,7 @@ namespace RM.CommonLibrary.LoggingMiddleware
         /// <summary>
         /// Gets trace manager.
         /// </summary>
-     // TraceManager RMTraceManager { get; }
+        IRMTraceManager RMTraceManager { get; }
 
         /// <summary>
         /// Logs an entry.

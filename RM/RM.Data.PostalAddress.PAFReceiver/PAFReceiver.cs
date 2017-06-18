@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics;
     using System.Reflection;
     using System.ServiceProcess;
@@ -23,6 +24,7 @@
         #region private member declaration
 
         private string PAFWebApiName = string.Empty;
+        private double TimerIntervalInSeconds = default(double);
 
         private System.Timers.Timer m_mainTimer;
         private IMessageBroker<PostalAddressDTO> msgPAF = default(IMessageBroker<PostalAddressDTO>);
@@ -47,6 +49,7 @@
 
             this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
             this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
+            this.TimerIntervalInSeconds= configurationHelper != null ? Convert.ToDouble(configurationHelper.ReadAppSettingsConfigurationValues(Constants.TimerIntervalInSeconds)) : default(double);
         }
 
         #endregion Constructor
@@ -96,8 +99,7 @@
                 m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
 
                 //set timer interval
-                //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]);
-                double timeInSeconds = 100.0;
+                double timeInSeconds = TimerIntervalInSeconds;//Convert.ToDouble(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]);
                 m_mainTimer.Interval = (timeInSeconds * 1000);
 
                 // timer.Interval is in milliseconds, so times above by 1000
@@ -165,7 +167,10 @@
                 if (lstPostalAddress != null && lstPostalAddress.Count > 0)
                 {
                     count += lstPostalAddress.Count;
-                    var result = SavePAFDetails(lstPostalAddress);
+                    m_mainTimer.Elapsed -= new ElapsedEventHandler(m_mainTimer_Elapsed);
+                    var result = SavePAFDetails(lstPostalAddress).ContinueWith( p=> {
+                        m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
+                    });
                 }
             }
             catch (Exception ex)

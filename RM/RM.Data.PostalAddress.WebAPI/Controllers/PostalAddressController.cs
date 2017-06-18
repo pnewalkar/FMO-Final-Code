@@ -10,6 +10,7 @@ using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 using System.Diagnostics;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -86,19 +87,24 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                bool IsPAFSaved = false;
-                if (!ModelState.IsValid)
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.SavePAFDetails"))
                 {
-                    return BadRequest(ModelState);
-                }
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                    bool IsPAFSaved = false;
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
 
-                if (postalAddress != null && postalAddress.Count > 0)
-                {
-                    IsPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
+                    if (postalAddress != null && postalAddress.Count > 0)
+                    {
+                        IsPAFSaved = await this.businessService.SavePAFDetails(postalAddress);
+                        return Ok(IsPAFSaved);
+                    }
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(IsPAFSaved);
                 }
-
-                return Ok(IsPAFSaved);
             }
             catch (AggregateException ae)
             {
