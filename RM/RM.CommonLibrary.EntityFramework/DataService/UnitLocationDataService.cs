@@ -7,6 +7,8 @@ using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.DataMiddleware;
+using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -53,6 +55,30 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                           where g.User_GUID == userId && a.UnitBoundryPolygon != null
                           select new UnitLocationDTO { ID = a.ID, UnitName = a.UnitName, Area = f.Area, UnitAddressUDPRN = a.UnitAddressUDPRN, UnitBoundryPolygon = a.UnitBoundryPolygon, ExternalId = a.ExternalId }).ToList();
             return result;
+        }
+
+
+        public async Task<List<PostCodeDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid unitGuid)
+        {
+            var result = await (from pc in DataContext.Postcodes.AsNoTracking()
+                          join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                          where postcodeGuids.Contains(pc.ID) && ul.Unit_GUID == unitGuid
+                          select pc).ToListAsync();
+
+            return GenericMapper.MapList<Postcode, PostCodeDTO>(result);
+
+        }
+
+
+        public async Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid)
+        {
+            var result = await (from pc in DataContext.Postcodes.AsNoTracking()
+                                join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                where pc.ID == postcodeGuid && ul.Unit_GUID == unitGuid
+                                select pc).SingleOrDefaultAsync();
+
+            return GenericMapper.Map<Postcode, PostCodeDTO>(result);
+
         }
     }
 }

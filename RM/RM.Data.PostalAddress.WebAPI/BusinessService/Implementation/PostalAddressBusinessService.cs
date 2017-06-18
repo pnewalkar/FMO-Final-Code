@@ -314,8 +314,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 List<Guid> addresstypeIDs = referenceDataCategoryList.ReferenceDatas
                 .Where(a => listNames.Contains(a.ReferenceDataValue))
                 .Select(a => a.ID).ToList();
-
-                return await addressDataService.GetPostalAddressSearchDetails(searchText, unitGuid, addresstypeIDs);
+                List<Guid> postcodeGuids = await addressDataService.GetPostcodeGuids(searchText);
+                List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = await postalAddressIntegrationService.GetPostcodes(unitGuid, postcodeGuids);
+                return await addressDataService.GetPostalAddressSearchDetails(searchText, unitGuid, addresstypeIDs, postcodes);
             }
             catch (Exception ex)
             {
@@ -347,7 +348,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             {
                 List<BindingEntity> nybDetails = new List<BindingEntity>();
                 PostalAddressDBDTO postalAddressDto = null;
-                var postalAddressDetails = await addressDataService.GetPostalAddressDetails(selectedItem, unitGuid);
+                var postCodeGuids = addressDataService.GetSelectedPostcode(selectedItem).Result;
+                var selectedPostcode = await postalAddressIntegrationService.GetPostcodes(unitGuid, postCodeGuids);
+                var postalAddressDetails = await addressDataService.GetPostalAddressDetails(selectedItem, unitGuid, selectedPostcode);
                 Guid nybAddressTypeId = postalAddressIntegrationService.GetReferenceDataGuId(Constants.PostalAddressType, FileType.Nyb.ToString()).Result;
                 if (postalAddressDetails != null && postalAddressDetails.Count > 0)
                 {
@@ -463,7 +466,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         {
             try
             {
-                List<string> listNames = new List<string> { ReferenceDataCategoryNames.PostalAddressType, ReferenceDataCategoryNames.PostalAddressStatus };
+                List<string> listNames = new List<string> { ReferenceDataCategoryNames.PostalAddressType, ReferenceDataCategoryNames.PostalAddressStatus};
 
                 var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(listNames).Result;
 
@@ -487,7 +490,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
                 }
 
-                return addressDataService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                return addressDataService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
             }
             catch (Exception ex)
             {

@@ -189,5 +189,20 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
             return Ok(deliveryScenerioList);
         }
+
+
+        [HttpPost("postcode/search/{unitGuid}")]
+        public async Task<IActionResult> GetPostCodes(Guid unitGuid, [FromBody] List<Guid> postcodeGuids)
+        {
+            List<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostCodes(unitGuid, postcodeGuids);        
+            return Ok(postCodes);
+        }
+
+        [HttpGet("postcode/select/{postcodeGuid}/{unitGuid}")]
+        public async Task<IActionResult> GetSelectedPostCode(Guid postcodeGuid, Guid unitGuid)
+        {
+            PostCodeDTO postCode = await unitLocationBusinessService.GetSelectedPostCode(unitGuid, postcodeGuid);
+            return Ok(postCode);
+        }
     }
 }

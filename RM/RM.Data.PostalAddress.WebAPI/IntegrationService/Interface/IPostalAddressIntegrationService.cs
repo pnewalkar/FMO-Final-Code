@@ -68,5 +68,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <param name="postCode"> Post Code</param>
         /// <returns>Post code ID</returns>
         Task<Guid> GetPostCodeID(string postCode);
+
+        Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids);
+
+        Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid);
     }
 }

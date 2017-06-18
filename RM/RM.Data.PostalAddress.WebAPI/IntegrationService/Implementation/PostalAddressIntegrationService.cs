@@ -118,6 +118,68 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             return listReferenceCategories;
         }
 
+        public async Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids)
+        {
+            List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = new List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>();
+
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(unitManagerDataWebAPIName + "postcode/search/" + unitGuid, postcodeGuids);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            postcodes = JsonConvert.DeserializeObject<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>>(result.Content.ReadAsStringAsync().Result);
+
+            return postcodes;
+        }
+
+
+        public async Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid)
+        {
+            CommonLibrary.EntityFramework.DTO.PostCodeDTO postcode = new CommonLibrary.EntityFramework.DTO.PostCodeDTO();
+
+            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/select/" + postcodeGuid +"/" + unitGuid);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            postcode = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.PostCodeDTO>(result.Content.ReadAsStringAsync().Result);
+
+            return postcode;
+        }
+
+        ///// <summary>
+        ///// This method will call Delivery point web api which is used to fetch Delivery Point by udprn.
+        ///// </summary>
+        ///// <param name="addressGuid">addressGuid instead of udprn</param>
+        ///// <returns>DeliveryPointDTO</returns>
+        //public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
+        //{
+        //    //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByID"))
+        //    //{
+        //    string methodName = MethodBase.GetCurrentMethod().Name;
+
+        //    // method logic here
+        //    HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/addressGuid:" + addressGuid);
+        //    if (!result.IsSuccessStatusCode)
+        //    {
+        //        // Log error with statuscode
+        //        var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
+        //        this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
+        //        return null;
+        //    }
+
+        //    DTO.DeliveryPointDTO deliveryPoint = JsonConvert.DeserializeObject<DTO.DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+        //    return deliveryPoint;
+
+        //    // }
+        //}
+
         /// <summary>
         /// Get the delivery points by the Postal Address Guid
         /// </summary>

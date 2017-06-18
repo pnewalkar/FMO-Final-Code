@@ -12,6 +12,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
+using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
@@ -170,6 +171,25 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             }
 
             return JsonConvert.DeserializeObject<List<PostalAddressDBDTO>>(result.Content.ReadAsStringAsync().Result);
+        }
+
+
+        public async Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
+        {
+            List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
+
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "/simpleLists", listNames);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
+
+            listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
+            return listReferenceCategories;
         }
         #endregion public methods
     }

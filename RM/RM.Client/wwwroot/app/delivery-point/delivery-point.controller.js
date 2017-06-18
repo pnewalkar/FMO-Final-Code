@@ -211,34 +211,33 @@ function DeliveryPointController(
                     "MultipleOccupancyCount": vm.mailvol,
                     "MailVolume": vm.multiocc,
                     "DeliveryPointAliasDTO": vm.items,
-                    "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id,
-                    "DeliveryRoute_Guid": vm.routeId
+                    "DeliveryPointUseIndicator_GUID": vm.dpUse[0].id
                 },
                 "AddressLocationDTO": null
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
 
-            if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
-                setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
-                mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
-                guidService.setGuid(response.id);
-                mapFactory.setAccessLink();
-                vm.closeWindow();
+            //if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
+            //    setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
+            //    mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
+            //    guidService.setGuid(response.id);
+            //    mapFactory.setAccessLink();
+            //    vm.closeWindow();
 
-            }
-            else if (response.message && response.message == "Delivery Point created successfully without location") {
+            //}
+            //else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
                 setDP();
                 vm.closeWindow();
 
-            }
-            else {
-                vm.isError = true;
-                vm.isDisable = true;
-                vm.errorMessage = response.message;
-                vm.errorMessageTitle = "Duplicates found";
+            //}
+            //else {
+            //    vm.isError = true;
+            //    vm.isDisable = true;
+            //    vm.errorMessage = response.message;
+            //    vm.errorMessageTitle = "Duplicates found";
 
-            }
+            //}
         });
     }
 
@@ -251,13 +250,13 @@ function DeliveryPointController(
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.street)
             + ' ' + deliveryPointService.isUndefinedOrNull(postalAddress.postCode);
 
-        if (vm.addressDetails.udprn && hasLocation) {
-            locateDeliveryPoint(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion);
-        }
-        else {
+        //if (vm.addressDetails.udprn && hasLocation) {
+        //    locateDeliveryPoint(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion);
+        //}
+        //else {
             manualDeliveryPointPosition(vm.addressDetails.udprn, address, vm.addressDetails.id, id, rowversion)
             setDP();
-        }
+        //}
     }
 
     function getAddressLocation(udprn) {
@@ -319,7 +318,7 @@ function DeliveryPointController(
     function manualDeliveryPointPosition(udprn, locality, addressGuid, deliveryPointGuid, rowversion) {
 
         var deliveryPointListObj = {
-            udprn: udprn, locality: locality, addressGuid: addressGuid, id: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
+            udprn: udprn, locality: locality, addressGuid: deliveryPointGuid, id: deliveryPointGuid, xCoordinate: null, yCoordinate: null, latitude: null, longitude: null, rowversion: rowversion
         };
         if (vm.deliveryPointList == null) {
             vm.deliveryPointList = [];

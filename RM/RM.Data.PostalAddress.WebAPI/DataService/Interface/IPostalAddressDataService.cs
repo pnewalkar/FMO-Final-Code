@@ -64,7 +64,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="searchText">searchText</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postcodes</returns>
-        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs);
+        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs);
 
         /// <summary>
         /// Get Postal Address based on postcode
@@ -72,7 +72,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
+        Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodeDTOs);
 
         /// <summary>
         /// Get Postal Address based on postal address id.
@@ -94,7 +94,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus);
 
         /// <summary>
         /// Check For Duplicate Address With DeliveryPoints
@@ -104,5 +104,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress);
 
         Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids);
+
+        Task<List<Guid>> GetPostcodeGuids(string searchText);
+
+        Task<List<Guid>> GetSelectedPostcode(string selectedItem);
     }
 }
