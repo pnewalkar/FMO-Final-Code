@@ -414,26 +414,26 @@
                 string[] values = csvLine.Split(',');
                 if (values.Count() == csvPAFValues)
                 {
-                    objAddDTO.Date = values[0];
-                    objAddDTO.Time = values[1];
-                    objAddDTO.AmendmentType = values[2];
-                    objAddDTO.AmendmentDesc = values[3];
-                    objAddDTO.Postcode = values[4];
-                    objAddDTO.PostTown = values[5];
-                    objAddDTO.DependentLocality = values[6];
-                    objAddDTO.DoubleDependentLocality = values[7];
-                    objAddDTO.Thoroughfare = values[8];
-                    objAddDTO.DependentThoroughfare = values[9];
-                    objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[10]) && !string.IsNullOrWhiteSpace(values[10]) ? Convert.ToInt16(values[10]) : Convert.ToInt16(0);
-                    objAddDTO.BuildingName = values[11];
-                    objAddDTO.SubBuildingName = values[12];
-                    objAddDTO.POBoxNumber = values[13];
-                    objAddDTO.DepartmentName = values[14];
-                    objAddDTO.OrganisationName = values[15];
+                    objAddDTO.Date = values[0] == string.Empty ? null : values[0];
+                    objAddDTO.Time = values[1] == string.Empty ? null : values[1];
+                    objAddDTO.AmendmentType = values[2] == string.Empty ? null : values[2];
+                    objAddDTO.AmendmentDesc = values[3] == string.Empty ? null : values[3];
+                    objAddDTO.Postcode = values[4] == string.Empty ? null : values[4];
+                    objAddDTO.PostTown = values[5] == string.Empty ? null : values[5];
+                    objAddDTO.DependentLocality = values[6] == string.Empty ? null : values[6];
+                    objAddDTO.DoubleDependentLocality = values[7] == string.Empty ? null : values[7];
+                    objAddDTO.Thoroughfare = values[8] == string.Empty ? null : values[8];
+                    objAddDTO.DependentThoroughfare = values[9] == string.Empty ? null : values[9];
+                    objAddDTO.BuildingNumber = (!string.IsNullOrEmpty(values[10]) && !string.IsNullOrWhiteSpace(values[10])) ? Convert.ToInt16(values[10]) as short? : null;
+                    objAddDTO.BuildingName = values[11] == string.Empty ? null : values[11];
+                    objAddDTO.SubBuildingName = values[12] == string.Empty ? null : values[12];
+                    objAddDTO.POBoxNumber = values[13] == string.Empty ? null : values[13];
+                    objAddDTO.DepartmentName = values[14] == string.Empty ? null : values[14];
+                    objAddDTO.OrganisationName = values[15] == string.Empty ? null : values[15];
                     objAddDTO.UDPRN = !string.IsNullOrEmpty(values[16]) && !string.IsNullOrWhiteSpace(values[16]) ? Convert.ToInt32(values[16]) : 0;
-                    objAddDTO.PostcodeType = values[17];
-                    objAddDTO.SmallUserOrganisationIndicator = values[18];
-                    objAddDTO.DeliveryPointSuffix = values[19];
+                    objAddDTO.PostcodeType = values[17] == string.Empty ? null : values[17];
+                    objAddDTO.SmallUserOrganisationIndicator = values[18] == string.Empty ? null : values[18];
+                    objAddDTO.DeliveryPointSuffix = values[19] == string.Empty ? null : values[19];
                     objAddDTO.IsValidData = true;
                     objAddDTO.FileName = fileName;
                 }

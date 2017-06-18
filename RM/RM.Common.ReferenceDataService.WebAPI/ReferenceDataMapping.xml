@@ -204,4 +204,8 @@
     <AppCategoryName>OperationalStatus</AppCategoryName>
     <DBCategoryName>Operational Status</DBCategoryName>
   </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryPointOperationalStatus</AppCategoryName>
+    <DBCategoryName>Delivery Point Operational Status</DBCategoryName>
+  </CategoryName>
 </ReferenceDataMapping>

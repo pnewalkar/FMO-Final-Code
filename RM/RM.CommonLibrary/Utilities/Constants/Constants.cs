@@ -52,6 +52,8 @@
         public const string USRFILENAME = "OSABP_E[0-9]{3}$";
         public const string NotShown = "Not Shown";
         public const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
+        public const string OperationalStatusGUIDLive = "Live";
+        public const string NetworkNodeTypeRMGServiceNode = "RMG Service Node";
         public const string DependentLocality = "dependentLocality";
         public const string DoubleDependentLocality = "doubleDependentLocality";
         public const string Thoroughfare = "thoroughfare";

@@ -29,6 +29,7 @@
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int count = 0;
 
         #endregion private member declaration
 
@@ -59,7 +60,7 @@
         protected override void OnStart(string[] args)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            //LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 //instantiate timer
@@ -72,7 +73,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                //LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
         }
 
@@ -86,7 +87,7 @@
         private void InitTimer()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            //LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 m_mainTimer = new System.Timers.Timer();
@@ -96,7 +97,7 @@
 
                 //set timer interval
                 //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]);
-                double timeInSeconds = 3.0;
+                double timeInSeconds = 100.0;
                 m_mainTimer.Interval = (timeInSeconds * 1000);
 
                 // timer.Interval is in milliseconds, so times above by 1000
@@ -108,7 +109,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                //LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
             }
         }
 
@@ -120,7 +121,7 @@
         private void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            //LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
             try
             {
                 PAFMessageReceived();
@@ -162,7 +163,10 @@
                     }
                 }
                 if (lstPostalAddress != null && lstPostalAddress.Count > 0)
-                    SavePAFDetails(lstPostalAddress).Wait();
+                {
+                    count += lstPostalAddress.Count;
+                    var result = SavePAFDetails(lstPostalAddress);
+                }
             }
             catch (Exception ex)
             {

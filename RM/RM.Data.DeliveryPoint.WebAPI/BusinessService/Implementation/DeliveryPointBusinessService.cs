@@ -102,16 +102,6 @@
         }
 
         /// <summary>
-        /// Get coordinates of the delivery point by address Id
-        /// </summary>
-        /// <param name="udprn">The UDPRN number</param>
-        /// <returns>The coordinates of the delivery point</returns>
-        public async Task<DeliveryPointDTO> GetDeliveryPointByAddressId(Guid addressId)
-        {
-            return await deliveryPointsDataService.GetDeliveryPointByID(addressId);
-        }
-
-        /// <summary>
         /// This method is used to fetch .......
         /// </summary>
         /// <param name="udprn">The UDPRN number</param>

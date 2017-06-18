@@ -27,13 +27,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
 
         /// <summary>
-        /// Get the delivery points by the UDPRN id
-        /// </summary>
-        /// <param name="addressGuid">addressGuid instead of udprn</param>
-        /// <returns>DeliveryPointDTO object</returns>
-        Task<DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid);
-
-        /// <summary>
         /// Get the delivery points by the Postal Address Guid
         /// </summary>
         /// <param name="addressId">Postal Address Guid to find corresponding delivery point</param>
