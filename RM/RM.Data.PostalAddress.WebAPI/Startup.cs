@@ -22,6 +22,7 @@ using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace RM.DataManagement.PostalAddress.WebAPI
 {
@@ -77,9 +78,20 @@ namespace RM.DataManagement.PostalAddress.WebAPI
                           new CamelCasePropertyNamesContractResolver();
             });
 
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
             //---Adding scope for all classes
-            services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddSingleton<IExceptionHelper, ExceptionHelper>();
+            services.AddSingleton<ILoggingHelper, LoggingHelper>(serviceProvider =>
+            {
+                return new LoggingHelper(logWriter);
+            });
+
+            services.AddSingleton<IExceptionHelper, ExceptionHelper>(serviceProvider =>
+            {
+                return new ExceptionHelper(logWriter);
+            });
 
             // Infrastructure
             services.AddScoped<IDatabaseFactory<PostalAddressDBContext>, DatabaseFactory<PostalAddressDBContext>>();
