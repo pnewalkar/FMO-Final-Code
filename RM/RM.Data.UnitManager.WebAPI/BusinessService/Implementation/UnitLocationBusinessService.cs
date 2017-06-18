@@ -224,5 +224,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 
             return jsonData;
         }
+
+        public async Task<List<PostCodeDTO>> GetPostCodes(Guid unitGuid, List<Guid> postcodeGuids)
+        {
+            return await unitLocationRespository.GetPostCodes(postcodeGuids, unitGuid);
+        }
+
+        public async Task<PostCodeDTO> GetSelectedPostCode(Guid unitGuid, Guid postcodeGuid)
+        {
+            return await unitLocationRespository.GetSelectedPostcode(postcodeGuid, unitGuid);
+        }
     }
 }

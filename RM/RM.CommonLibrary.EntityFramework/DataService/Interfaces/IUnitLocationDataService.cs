@@ -1,6 +1,7 @@
 ﻿using RM.CommonLibrary.EntityFramework.DTO;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
 {
@@ -23,5 +24,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// The list of <see cref="UnitLocationDTO"/>.
         /// </returns>
         List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId);
+
+        Task<List<PostCodeDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid unitGuid);
+
+        Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid);
     }
 }

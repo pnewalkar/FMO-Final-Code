@@ -545,125 +545,191 @@
             return isPostalAddressUpdated;
         }
 
-        ///// <summary>
-        ///// Filter PostalAddress based on the search text
-        ///// </summary>
-        ///// <param name="searchText">searchText</param>
-        ///// <param name="unitGuid">unitGuid</param>
-        ///// <returns>List of Postcodes</returns>
-        //public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs)
-        //{
-        //    try
-        //    {
-        //        List<string> searchdetails = new List<string>();
-        //        var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-        //                                   join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
-        //                                   join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-        //                                   where addresstypeIDs.Contains(pa.AddressType_GUID) &&
-        //                                   (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText)) &&
-        //                                   ul.Unit_GUID == unitGuid
-        //                                   select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
+        /// <summary>
+        /// Filter PostalAddress based on the search text
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <param name="unitGuid">unitGuid</param>
+        /// <returns>List of Postcodes</returns>
+        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs)
+        {
+            try
+            {
+                List<string> searchdetails = new List<string>();
+                List<Guid> postCodeGuids = new List<Guid>();
+                postCodeDTOs.ForEach(pc => postCodeGuids.Add(pc.ID));
 
-        //        return searchresults.Select(n => n.SearchResult).ToList();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.loggingHelper.Log(ex, TraceEventType.Error);
-        //        throw;
-        //    }
-        //}
+                var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                           //join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
+                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                           where postCodeGuids.Contains(pa.PostCodeGUID) && addresstypeIDs.Contains(pa.AddressType_GUID)
+                                           select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
-        ///// <summary>
-        ///// Filter PostalAddress based on post code. Also, it fetches the route information based on
-        ///// the postcode and if there are no matching routes then the routes for the unit is fetched.
-        ///// </summary>
-        ///// <param name="selectedItem">selectedItem</param>
-        ///// <param name="unitGuid">unitGuid</param>
-        ///// <returns>List of Postal Address</returns>
-        //public async Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
-        //{
-        //    List<string> lstPocodes = new List<string>();
-        //    List<PostalAddressDBDTO> PostalAddressDBDTO = new List<PostalAddressDBDTO>();
-        //    string[] selectedItems = selectedItem.Split(',');
-        //    string postCode = string.Empty;
-        //    string streetName = string.Empty;
-        //    List<PostalAddress> postalAddress = null;
+                return searchresults.Select(n => n.SearchResult).ToList();
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.Log(ex, TraceEventType.Error);
+                throw;
+            }
+        }
 
-        //    if (selectedItems.Count() == 2)
-        //    {
-        //        postCode = selectedItems[1].Trim();
-        //        streetName = selectedItems[0].Trim();
-        //        postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-        //                               join pc in DataContext.Postcodes.AsNoTracking()
-        //                               on pa.PostCodeGUID equals pc.ID
-        //                               join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-        //                               where pc.PostcodeUnit == postCode && pa.Thoroughfare == streetName && ul.Unit_GUID == unitGuid
-        //                               select pa).ToListAsync();
-        //    }
-        //    else
-        //    {
-        //        postCode = selectedItems[0].Trim();
-        //        postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-        //                               join pc in DataContext.Postcodes.AsNoTracking()
-        //                               on pa.PostCodeGUID equals pc.ID
-        //                               join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-        //                               where pc.PostcodeUnit == postCode && ul.Unit_GUID == unitGuid
-        //                               select pa).ToListAsync();
-        //    }
 
-        //    PostalAddressDBDTO = GenericMapper.MapList<PostalAddress, PostalAddressDBDTO>(postalAddress);
+        public async Task<List<Guid>> GetPostcodeGuids(string searchText)
+        {
+            try
+            {
+                var postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                           where (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText))
+                                           select pa.PostCodeGUID).ToListAsync();
 
-        //    postalAddress.ForEach(p => p.Postcode1.DeliveryRoutePostcodes.ToList().ForEach(d =>
-        //    {
-        //        if (d.IsPrimaryRoute)
-        //        {
-        //            PostalAddressDBDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
-        //            {
-        //                if (paDTO.RouteDetails == null)
-        //                {
-        //                    paDTO.RouteDetails = new List<BindingEntity>();
-        //                }
+                return postcodeGuids;
+            }
+            catch (Exception ex)
+            {
+                this.loggingHelper.Log(ex, TraceEventType.Error);
+                throw;
+            }
+        }
 
-        //                if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()))
-        //                {
-        //                    paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
-        //                }
-        //            });
-        //        }
-        //        else
-        //        {
-        //            PostalAddressDBDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
-        //            {
-        //                if (paDTO.RouteDetails == null)
-        //                {
-        //                    paDTO.RouteDetails = new List<BindingEntity>();
-        //                }
+        /// <summary>
+        /// Filter PostalAddress based on post code. Also, it fetches the route information based on
+        /// the postcode and if there are no matching routes then the routes for the unit is fetched.
+        /// </summary>
+        /// <param name="selectedItem">selectedItem</param>
+        /// <param name="unitGuid">unitGuid</param>
+        /// <returns>List of Postal Address</returns>
+        public async Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodeDTOs)
+        {
+            List<string> lstPocodes = new List<string>();
+            List<PostalAddressDBDTO> PostalAddressDBDTO = new List<PostalAddressDBDTO>();
+            string[] selectedItems = selectedItem.Split(',');
+            string postCode = string.Empty;
+            string streetName = string.Empty;
+            List<PostalAddress> postalAddress = null;
+            List<Guid> postcodeGuids = new List<Guid>();
 
-        //                if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()))
-        //                {
-        //                    paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
-        //                }
-        //            });
-        //        }
-        //    }));
+            postcodeDTOs.ForEach(pc => postcodeGuids.Add(pc.ID));
 
-        //    var postCodes = await DataContext.UnitLocationPostcodes.AsNoTracking().Where(p => p.Unit_GUID == unitGuid).Select(s => s.PoscodeUnit_GUID).Distinct().ToListAsync();
-        //    if (PostalAddressDBDTO != null && PostalAddressDBDTO.Count > 0 && (PostalAddressDBDTO[0].RouteDetails == null || PostalAddressDBDTO[0].RouteDetails.Count == 0))
-        //    {
-        //        List<BindingEntity> routeDetails = new List<BindingEntity>();
-        //        var routes = await DataContext.DeliveryRoutePostcodes.AsNoTracking().Where(dr => postCodes.Contains(dr.Postcode_GUID)).ToListAsync();
-        //        routes.ForEach(r =>
-        //        {
-        //            if (!routeDetails.Where(rd => rd.Value == r.DeliveryRoute.ID).Any())
-        //            {
-        //                routeDetails.Add(new BindingEntity() { DisplayText = r.DeliveryRoute.RouteName, Value = r.DeliveryRoute.ID });
-        //            }
-        //        });
-        //        PostalAddressDBDTO[0].RouteDetails = new List<BindingEntity>(routeDetails.Distinct().OrderBy(n => n.DisplayText));
-        //    }
+            postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                   where postcodeGuids.Contains(pa.PostCodeGUID)
+                                   select pa).ToListAsync();
 
-        //    return PostalAddressDBDTO;
-        //}
+            /*if (selectedItems.Count() == 2)
+            {
+                postCode = selectedItems[1].Trim();
+                streetName = selectedItems[0].Trim();
+                postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                           //join pc in DataContext.Postcodes.AsNoTracking()
+                                           //on pa.PostCodeGUID equals pc.ID
+                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                           //where pa.PostcodeUnit == postCode && pa.Thoroughfare == streetName && ul.Unit_GUID == unitGuid
+                                       where pa.PostCodeGUID == postcodeDTO.ID
+                                       select pa).ToListAsync();
+            }
+            else
+            {
+                postCode = selectedItems[0].Trim();
+                postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                       join pc in DataContext.Postcodes.AsNoTracking()
+                                       on pa.PostCodeGUID equals pc.ID
+                                       join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                       where pc.PostcodeUnit == postCode && ul.Unit_GUID == unitGuid
+                                       select pa).ToListAsync();
+            }*/
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
+                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
+            });
+            Mapper.Configuration.CreateMapper();
+
+            return Mapper.Map<List<PostalAddress>, List<PostalAddressDBDTO>> (postalAddress);
+
+
+            //postalAddress.ForEach(p => p.Postcode1.DeliveryRoutePostcodes.ToList().ForEach(d =>
+            //{
+            //    if (d.IsPrimaryRoute)
+            //    {
+            //        PostalAddressDBDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
+            //        {
+            //            if (paDTO.RouteDetails == null)
+            //            {
+            //                paDTO.RouteDetails = new List<BindingEntity>();
+            //            }
+
+            //            if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()))
+            //            {
+            //                paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
+            //            }
+            //        });
+            //    }
+            //    else
+            //    {
+            //        PostalAddressDBDTO.Where(pa => pa.Postcode == d.Postcode.PostcodeUnit).Select(pa => pa).ToList().ForEach(paDTO =>
+            //        {
+            //            if (paDTO.RouteDetails == null)
+            //            {
+            //                paDTO.RouteDetails = new List<BindingEntity>();
+            //            }
+
+            //            if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()))
+            //            {
+            //                paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
+            //            }
+            //        });
+            //    }
+            //}));
+
+            //var postCodes = await DataContext.UnitLocationPostcodes.AsNoTracking().Where(p => p.Unit_GUID == unitGuid).Select(s => s.PoscodeUnit_GUID).Distinct().ToListAsync();
+            //if (PostalAddressDBDTO != null && PostalAddressDBDTO.Count > 0 && (PostalAddressDBDTO[0].RouteDetails == null || PostalAddressDBDTO[0].RouteDetails.Count == 0))
+            //{
+            //    List<BindingEntity> routeDetails = new List<BindingEntity>();
+            //    var routes = await DataContext.DeliveryRoutePostcodes.AsNoTracking().Where(dr => postCodes.Contains(dr.Postcode_GUID)).ToListAsync();
+            //    routes.ForEach(r =>
+            //    {
+            //        if (!routeDetails.Where(rd => rd.Value == r.DeliveryRoute.ID).Any())
+            //        {
+            //            routeDetails.Add(new BindingEntity() { DisplayText = r.DeliveryRoute.RouteName, Value = r.DeliveryRoute.ID });
+            //        }
+            //    });
+            //    PostalAddressDBDTO[0].RouteDetails = new List<BindingEntity>(routeDetails.Distinct().OrderBy(n => n.DisplayText));
+            //}
+
+        }
+
+        public async Task<List<Guid>> GetSelectedPostcode(string selectedItem)
+        {
+            string[] selectedItems = selectedItem.Split(',');
+            string postCode = string.Empty;
+            string streetName = string.Empty;
+            List<Guid> postcodeGuids = new List<Guid>();
+
+            if (selectedItems.Count() == 2)
+            {
+                postCode = selectedItems[1].Trim();
+                streetName = selectedItems[0].Trim();
+                postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                           //join pc in DataContext.Postcodes.AsNoTracking()
+                                           //on pa.PostCodeGUID equals pc.ID
+                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                       where pa.Postcode == postCode && pa.Thoroughfare == streetName
+                                       select pa.PostCodeGUID).ToListAsync();
+            }
+            else
+            {
+                postCode = selectedItems[0].Trim();
+                postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                       //join pc in DataContext.Postcodes.AsNoTracking()
+                                       //on pa.PostCodeGUID equals pc.ID
+                                       //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                       where pa.Postcode == postCode
+                                      select pa.PostCodeGUID).ToListAsync();
+            }
+
+            return postcodeGuids;
+        }
 
         /// <summary>
         /// Filter PostalAddress based on postal address id.
@@ -684,81 +750,101 @@
             }
         }
 
-        ///// <summary>
-        ///// Create delivery point for PAF and NYB details
-        ///// </summary>
-        ///// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
-        ///// <returns>bool</returns>
-        //public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
-        //{
-        //    try
-        //    {
-        //        bool isAddressLocationAvailable = false;
-        //        Guid returnGuid = new Guid(Constants.DEFAULTGUID);
-        //        double? addLocationXCoOrdinate = 0;
-        //        double? addLocationYCoOrdinate = 0;
-        //        if (addDeliveryPointDTO.PostalAddressDBDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
-        //        {
-        //            var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.ID == addDeliveryPointDTO.PostalAddressDBDTO.ID);
-        //            var objAddressLocation = DataContext.AddressLocations.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDBDTO.UDPRN);
+        /// <summary>
+        /// Create delivery point for PAF and NYB details
+        /// </summary>
+        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <returns>bool</returns>
+        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
+        {
+            try
+            {
+                bool isAddressLocationAvailable = false;
+                Guid returnGuid = new Guid(Constants.DEFAULTGUID);
+                double? addLocationXCoOrdinate = 0;
+                double? addLocationYCoOrdinate = 0;
+                if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
+                {
+                    var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
+                    //var objAddressLocation = DataContext.AddressLocations.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
 
-        //            DeliveryPoint objDeliveryPoint = new DeliveryPoint()
-        //            {
-        //                // ID = Guid.NewGuid(),
-        //                // UDPRN = addDeliveryPointDTO.PostalAddressDBDTO.UDPRN,
-        //                DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID,
-        //                MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
-        //                MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
-        //            };
+                    //DeliveryPoint objDeliveryPoint = new DeliveryPoint()
+                    //{
+                    //    // ID = Guid.NewGuid(),
+                    //    // UDPRN = addDeliveryPointDTO.PostalAddressDBDTO.UDPRN,
+                    //    DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID,
+                    //    MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
+                    //    MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
+                    //};
 
-        //            if (objAddressLocation != null)
-        //            {
-        //                SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
-        //                //objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
-        //                //objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
-        //                //objDeliveryPoint.Longitude = objAddressLocation.Longitude;
-        //                //objDeliveryPoint.Positioned = true;
-        //                isAddressLocationAvailable = true;
-        //                addLocationXCoOrdinate = deliveryPointSqlGeometry.STX.Value;
-        //                addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
-        //            }
+                    //if (objAddressLocation != null)
+                    //{
+                    //    SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
+                    //    //objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
+                    //    //objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
+                    //    //objDeliveryPoint.Longitude = objAddressLocation.Longitude;
+                    //    //objDeliveryPoint.Positioned = true;
+                    //    isAddressLocationAvailable = true;
+                    //    addLocationXCoOrdinate = deliveryPointSqlGeometry.STX.Value;
+                    //    addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
+                    //}
 
-        //            if (objPostalAddress != null)
-        //            {
-        //                objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDBDTO.BuildingNumber;
-        //                objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDBDTO.BuildingName;
-        //                objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDBDTO.SubBuildingName;
-        //                objPostalAddress.POBoxNumber = addDeliveryPointDTO.PostalAddressDBDTO.POBoxNumber;
-        //                objPostalAddress.DepartmentName = addDeliveryPointDTO.PostalAddressDBDTO.DepartmentName;
-        //                objPostalAddress.OrganisationName = addDeliveryPointDTO.PostalAddressDBDTO.OrganisationName;
-        //                objPostalAddress.UDPRN = addDeliveryPointDTO.PostalAddressDBDTO.UDPRN;
-        //                objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDBDTO.PostcodeType;
-        //                objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDBDTO.SmallUserOrganisationIndicator;
-        //                objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDBDTO.DeliveryPointSuffix;
-        //                objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDBDTO.PostCodeGUID;
-        //                objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDBDTO.AddressType_GUID;
-        //                //objPostalAddress.AddressStatus_GUID = addDeliveryPointDTO.PostalAddressDBDTO.AddressStatus_GUID;
-        //                objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
-        //            }
-        //            else
-        //            {
-        //                addDeliveryPointDTO.PostalAddressDBDTO.ID = Guid.NewGuid();
-        //                var entity = GenericMapper.Map<PostalAddressDBDTO, PostalAddress>(addDeliveryPointDTO.PostalAddressDBDTO);
-        //                entity.DeliveryPoints.Add(objDeliveryPoint);
-        //                DataContext.PostalAddresses.Add(entity);
-        //            }
 
-        //            DataContext.SaveChanges();
-        //            returnGuid = objDeliveryPoint.ID;
-        //        }
+                    if (objPostalAddress != null)
+                    {
+                        objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
+                        objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
+                        objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;
+                        objPostalAddress.POBoxNumber = addDeliveryPointDTO.PostalAddressDTO.POBoxNumber;
+                        objPostalAddress.DepartmentName = addDeliveryPointDTO.PostalAddressDTO.DepartmentName;
+                        objPostalAddress.OrganisationName = addDeliveryPointDTO.PostalAddressDTO.OrganisationName;
+                        objPostalAddress.UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN;
+                        objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDTO.PostcodeType;
+                        objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
+                        objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
+                        objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
+                        objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
+                        //objPostalAddress.AddressStatus_GUID = addDeliveryPointDTO.PostalAddressDBDTO.AddressStatus_GUID;
+                        //objPostalAddress.DeliveryPoints.Add(objDeliveryPoint);
+                    }
+                    /*else
+                    {
+                        addDeliveryPointDTO.PostalAddressDTO.ID = Guid.NewGuid();
+                        addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus = new List<PostalAddressStatusDTO>();
+                        addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(new PostalAddressStatusDTO {
+                            ID = Guid.NewGuid(),
+                            PostalAddressGUID = addDeliveryPointDTO.PostalAddressDTO.ID,
+                            StartDateTime = DateTime.UtcNow,
+                            RowCreateDateTime = DateTime.UtcNow,
+                            OperationalStatusGUID = OperationalStatus
 
-        //        return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
-        //    }
-        //    catch (DbUpdateException dbUpdateException)
-        //    {
-        //        throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", addDeliveryPointDTO.PostalAddressDBDTO.UDPRN)));
-        //    }
-        //}
+                        });
+                        
+                        Mapper.Initialize(cfg =>
+                        {
+                            cfg.CreateMap<PostalAddressDBDTO, PostalAddress>();
+                            cfg.CreateMap<PostalAddressStatusDTO, PostalAddressStatus>();
+                        });
+                        Mapper.Configuration.CreateMapper();
+
+                        var objAddress = Mapper.Map<PostalAddressDBDTO, PostalAddress>(addDeliveryPointDTO.PostalAddressDTO);
+
+                        DataContext.PostalAddresses.Add(objAddress);
+                        returnGuid = objAddress.ID;
+                    }*/
+
+                    returnGuid = objPostalAddress.ID;
+                    DataContext.SaveChanges();
+                    
+                }
+
+                return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", addDeliveryPointDTO.PostalAddressDTO.UDPRN)));
+            }
+        }
 
         public async Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids)
         {
@@ -769,6 +855,7 @@
                 Mapper.Initialize(cfg =>
                 {
                     cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
+                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
                     //cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
                     //cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
                 });
@@ -827,10 +914,10 @@
             throw new NotImplementedException();
         }
 
-        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
-        {
-            throw new NotImplementedException();
-        }
+        //public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress)
         {

@@ -9,6 +9,7 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 using System.Diagnostics;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 
 namespace Fmo.API.Services.Controllers
 {
