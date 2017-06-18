@@ -134,6 +134,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     newDeliveryPoint.Latitude = objDeliveryPoint.Latitude;
                     newDeliveryPoint.Longitude = objDeliveryPoint.Longitude;
                     newDeliveryPoint.LocationProvider_GUID = objDeliveryPoint.LocationProvider_GUID;*/
+                    newDeliveryPointStatus.ID = Guid.NewGuid();
                     newDeliveryPointStatus.LocationGUID = objDeliveryPoint.ID;
                     newDeliveryPointStatus.OperationalStatusGUID = (Guid)objDeliveryPoint.OperationalStatus_GUID;
                     newDeliveryPointStatus.RowCreateDateTime = DateTime.UtcNow;
