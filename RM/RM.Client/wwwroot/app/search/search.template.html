@@ -34,5 +34,5 @@
     <div class="numberCircle" ng-show="vm.resultscount[0].count > 0 && vm.isResultDisplay">
         <span>{{vm.resultscount[0].count}}</span>
     </div>
-    <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.advanceSearch(vm.searchText)" flex title="{{ 'GENERAL.SEARCH' | translate }}"></i>
+    <i class="fa fa-search searchInputIcon" aria-hidden="true" ng-click="vm.onEnterKeypress(vm.searchText)" flex title="{{ 'GENERAL.SEARCH' | translate }}"></i>
 </div>
