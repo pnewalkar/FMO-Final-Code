@@ -43,6 +43,16 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(actualResult);
         }
 
+        [Test]
+        public void Test_GetAccessLinksCrossingOperationalObject()
+        {
+            string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
+            DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
+            var actualResult = testCandidate.GetAccessLinksCrossingOperationalObject(coordinates, accessLinkLine);
+            Assert.IsNotNull(actualResult);
+            Assert.AreEqual(actualResult.Count, 0);
+        }
+
         protected override void OnSetup()
         {
             mockLoggingHelper = CreateMock<ILoggingHelper>();
