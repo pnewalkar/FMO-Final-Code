@@ -88,10 +88,6 @@
     "NO_RESULT_FOUND": "No Result Found",
     "NO_ROUTE_SELECTED": "No Route Selected"
 
-  },
-  "VALIDATION": {
-        "MINIMUM_CHARACTERS": "Value entered is longer than {{count}}",
-        "REQUIRED":"This field is required*",
-        "PATTERN":"Value entered is not valid"
-    }
+  }
+  
 }
