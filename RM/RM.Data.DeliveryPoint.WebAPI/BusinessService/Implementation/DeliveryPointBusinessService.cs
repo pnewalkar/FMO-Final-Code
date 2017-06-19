@@ -20,6 +20,7 @@
     using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
     using AutoMapper;
     using System.Linq;
+    using CommonLibrary.Utilities.HelperMiddleware;
 
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
@@ -68,27 +69,35 @@
         /// <returns>Object</returns>
         public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
-            if (!string.IsNullOrEmpty(boundaryBox))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPoints"))
             {
-                var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                List<DeliveryPointDTO> deliveryPointDtos = deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid);
-                List<Guid> addressGuids = new List<Guid>();
-                deliveryPointDtos.ForEach(dp => addressGuids.Add(dp.Address_GUID));
-                List<PostalAddressDBDTO> postAddressDBs = deliveryPointIntegrationService.GetPostalAddress(addressGuids).Result;
-                Mapper.Initialize(cfg =>
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (!string.IsNullOrEmpty(boundaryBox))
                 {
-                    cfg.CreateMap<PostalAddressDBDTO, PostalAddressDTO>();
+                    var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
+                    List<DeliveryPointDTO> deliveryPointDtos = deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid);
+                    List<Guid> addressGuids = new List<Guid>();
+                    deliveryPointDtos.ForEach(dp => addressGuids.Add(dp.Address_GUID));
+                    List<PostalAddressDBDTO> postAddressDBs = deliveryPointIntegrationService.GetPostalAddress(addressGuids).Result;
+                    Mapper.Initialize(cfg =>
+                    {
+                        cfg.CreateMap<PostalAddressDBDTO, PostalAddressDTO>();
                     //cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
                     //cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
                 });
-                List<PostalAddressDTO> postalAddressDtos = Mapper.Map<List<PostalAddressDBDTO>, List<PostalAddressDTO>>(postAddressDBs);
-                deliveryPointDtos.ForEach(dp => dp.PostalAddress = postalAddressDtos.Find(pa => pa.ID == dp.Address_GUID));
+                    List<PostalAddressDTO> postalAddressDtos = Mapper.Map<List<PostalAddressDBDTO>, List<PostalAddressDTO>>(postAddressDBs);
+                    deliveryPointDtos.ForEach(dp => dp.PostalAddress = postalAddressDtos.Find(pa => pa.ID == dp.Address_GUID));
 
-                return GetDeliveryPointsJsonData(deliveryPointDtos);
-            }
-            else
-            {
-                return null;
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return GetDeliveryPointsJsonData(deliveryPointDtos);
+                }
+                else
+                {
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return null;
+                }
             }
         }
 
@@ -168,7 +177,7 @@
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.AddDeliveryPoint"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
             string addDeliveryDtoLogDetails = new JavaScriptSerializer().Serialize(addDeliveryPointDTO);
