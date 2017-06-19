@@ -51,7 +51,7 @@
 
         <md-input-container flex="50" ng-show="vm.selectedDeliveryPoint.routeName != null && vm.selectedDeliveryPoint.routeName != undefined && vm.selectedDeliveryPoint.routeName[0].length != 0" ng-class="{'disabledText':vm.selectedDeliveryPoint.routeName[0].length==1}">
             <label>{{ 'DELIVERY_POINTS.ROUTE' | translate }}</label>
-            <md-select name="routeName" ng-model="vm.selectedDeliveryPoint.routeName" ng-disabled="true">
+            <md-select name="routeName" ng-model="vm.selectedDeliveryPoint.routeName" ng-disabled="true" class="deliveryRoute">
                 <md-option ng-repeat="route in vm.selectedDeliveryPoint.routeName" ng-value="route"
                            ng-selected="{{vm.selectedDeliveryPoint.routeName[0] === route}}">
                     {{route}}
