@@ -84,6 +84,7 @@
         public const string XsltFilePath = "XSLTFilePath";
         public const string RefDataXMLFileName = "RefDataXMLFileName";
         public const char CommaChar = ',';
+        public const string TimerIntervalInSeconds = "TimerIntervalInSeconds";
         #endregion Common
 
         #region NYB
