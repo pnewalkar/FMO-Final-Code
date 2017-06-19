@@ -58,7 +58,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             string requestUrl = referenceDataWebAPIName + actionUrl;
             HttpResponseMessage result = httpHandler.GetAsync(requestUrl).Result;
             if (!result.IsSuccessStatusCode)
-            {                
+            {
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

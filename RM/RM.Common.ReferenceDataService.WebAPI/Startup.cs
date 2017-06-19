@@ -86,7 +86,7 @@ namespace RM.Common.ReferenceData.WebAPI
             // Infrastructure
             services.AddTransient<IDatabaseFactory<ReferenceDataDBContext>, DatabaseFactory<ReferenceDataDBContext>>();
 
-            //---Adding scope for all classes           
+            //---Adding scope for all classes
             services.AddScoped<IReferenceDataBusinessService, ReferenceDataBusinessService>();
             services.AddScoped<DataService.Interface.IReferenceDataDataService, DataService.ReferenceDataDataService>();
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();

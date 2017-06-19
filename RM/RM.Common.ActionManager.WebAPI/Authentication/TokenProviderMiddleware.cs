@@ -28,7 +28,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
     public class TokenProviderMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly TokenProviderOptions _options;
+        private readonly TokenProviderOptions options;
         private readonly JsonSerializerSettings serializerSettings;
         private ILoggingHelper loggingHelper;
         private IActionManagerDataService actionManagerService = default(IActionManagerDataService);
@@ -44,8 +44,8 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             this.next = next;
             this.loggingHelper = loggingHelper;
 
-            _options = options.Value;
-            ThrowIfInvalidOptions(_options);
+            this.options = options.Value;
+            ThrowIfInvalidOptions(this.options);
 
             this.serializerSettings = new JsonSerializerSettings
             {
@@ -70,7 +70,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         public Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
-            if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
+            if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
             {
                 return next(context);
             }
@@ -132,7 +132,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 Guid unitGuid;
                 bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
 
-                var identity = await _options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
+                var identity = await options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
                 if (identity == null)
                 {
                     context.Response.StatusCode = 400;
@@ -160,7 +160,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
+                new Claim(JwtRegisteredClaimNames.Jti, await options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
                 new Claim(ClaimTypes.UserData, roleAccessDto.FirstOrDefault().Unit_GUID.ToString()),
                 new Claim(ClaimTypes.Name, username),
@@ -171,18 +171,18 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
 
                 // Create the JWT and write it to a string
                 var jwt = new JwtSecurityToken(
-                    issuer: _options.Issuer,
-                    audience: _options.Audience,
+                    issuer: options.Issuer,
+                    audience: options.Audience,
                     claims: claims,
                     notBefore: now,
-                    expires: now.Add(_options.Expiration),
-                    signingCredentials: _options.SigningCredentials);
+                    expires: now.Add(options.Expiration),
+                    signingCredentials: options.SigningCredentials);
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
                 var response = new
                 {
                     access_token = encodedJwt,
-                    expires_in = (int)_options.Expiration.TotalSeconds,
+                    expires_in = (int)options.Expiration.TotalSeconds,
                     roleActions = roleAccessDto,
                     username = username
                 };

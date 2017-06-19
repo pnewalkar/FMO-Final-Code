@@ -63,7 +63,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             Guid referenceId = Guid.Empty;
             HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + categoryName);
             if (!result.IsSuccessStatusCode)
-            {                
+            {
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -104,7 +104,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", listNames);
             if (!result.IsSuccessStatusCode)
-            { 
+            {
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

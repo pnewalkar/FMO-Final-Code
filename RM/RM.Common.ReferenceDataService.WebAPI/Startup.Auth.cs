@@ -17,7 +17,7 @@ namespace RM.Common.ReferenceData.WebAPI
         private static readonly string SecretKey = "mysupersecret_secretkey!123";
 
         private static readonly string Issuer = "RMG";
-        private static readonly string audience = "RMG_AD_Clients";
+        private static readonly string Audience = "RMG_AD_Clients";
 
         private void ConfigureAuth(IApplicationBuilder app)
         {
@@ -26,7 +26,7 @@ namespace RM.Common.ReferenceData.WebAPI
             app.UseSimpleTokenProvider(new TokenProviderOptions
             {
                 Path = "/api/token",
-                Audience = audience,
+                Audience = Audience,
                 Issuer = Issuer,
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
                 IdentityResolver = GetIdentity
@@ -44,7 +44,7 @@ namespace RM.Common.ReferenceData.WebAPI
 
                 // Validate the JWT Audience (aud) claim
                 ValidateAudience = true,
-                ValidAudience = audience,
+                ValidAudience = Audience,
 
                 // Validate the token expiry
                 ValidateLifetime = true,

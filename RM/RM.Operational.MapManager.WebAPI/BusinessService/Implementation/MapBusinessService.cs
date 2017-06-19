@@ -1,14 +1,11 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿using System;
+using System.IO;
 using System.Linq;
-using System.Xml;
 using System.Xml.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
-using Fonet;
-using System;
 
 namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
@@ -44,6 +41,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                 printMapDTO.PrintTime = string.Format(Constants.PrintMapDateTimeFormat, DateTime.Now);
                 SaveMapImage(printMapDTO);
             }
+
             return printMapDTO;
         }
 
@@ -71,9 +69,8 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                 byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
                 File.WriteAllBytes(imageLocation, imageBytes);
             }
+
             printMapDTO.ImagePath = imageLocation;
         }
-
-
     }
 }
