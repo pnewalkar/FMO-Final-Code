@@ -4,7 +4,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
 {
     public interface IPDFGeneratorBusinessService
     {
-        string GenerateRouteLogSummaryReport(string xml, string fileName);
+        string CreateReport(string xml, string fileName);
 
         PdfFileDTO GeneratePdfReport(string pdfFilename);
     }

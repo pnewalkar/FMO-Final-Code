@@ -52,7 +52,7 @@
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
     "embed": [
-      "XSLFOTemplates/FMO_PDFReport_DeliveryRouteLogSummary.xslt"
+      "XSLFOTemplates/FMO_PDFReport_Generic.xslt"
     ],
     "additionalArguments": [ "/ruleset:../RM.ruleset" ]
   },

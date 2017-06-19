@@ -22,18 +22,16 @@ function PrintMapController(
     vm.loadPdfSize = loadPdfSize;
     vm.initialize = initialize;
     vm.getMapDpi = getMapDpi;
-    vm.getMapPerInch = getMapPerInch;
     vm.getImageHeight = getImageHeight;
     vm.getImageWidth = getImageWidth;
     vm.printMap = printMap;
+    vm.printMapmmPerInch = 25.4;
     vm.mapSize;
-    vm.printMapDto = { "MapTitle": "Title", "PrintTime": null, "CurrentScale": "200", "PdfOrientation": "Landscape", "PdfSize": "A4", "MapScale": 25, "EncodedString": "sdfsdf" };
     vm.printOptions = { orientation: "Landscape" };
     vm.initialize();
 
     function initialize() {
         vm.getMapDpi();
-        vm.getMapPerInch();
         vm.getImageHeight();
         vm.getImageWidth();
         vm.loadPdfSize();
@@ -172,7 +170,6 @@ function PrintMapController(
         printMapService.printMap(vm.printMapDto).then(function (response) {
             generatePdf(response);
         });
-        window.open(dataURI, "_blank");
     }
     function generatePdf(data) {
         printMapService.mapPdf(data).then(function (response) {
@@ -211,9 +208,6 @@ function PrintMapController(
                 vm.printMapDPI = response[0].Value;
             }
         });
-    }
-    function getMapPerInch() {
-        return 25.4;        
     }
     function getImageHeight() {
         printMapService.getReferencedata('PrintMap_ImageHeightmm').then(function (response) {

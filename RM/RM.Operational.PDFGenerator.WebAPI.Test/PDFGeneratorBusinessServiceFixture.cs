@@ -20,7 +20,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         [Test]
         public void Test_GenerateRouteLogSummaryReport()
         {
-            var result = testCandidate.GenerateRouteLogSummaryReport("<note><body>abc</body></note>", "file1");
+            var result = testCandidate.CreateReport("<note><body>abc</body></note>", "file1");
         }
         protected override void OnSetup()
         {
