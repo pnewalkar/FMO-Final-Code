@@ -17,5 +17,8 @@
         }
       }
     }
+  },
+  "buildOptions": {
+    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
   }
 }

@@ -20,7 +20,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         private string input = "road";
 
         [Test]
-        public async Task Test_Fetch_Advance_Search_Details()
+        public void Test_Fetch_Advance_Search_Details()
         {
             Exception mockException = It.IsAny<Exception>();
             var output = testCandidate.FetchAdvanceSearchDetails(input);
@@ -28,7 +28,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         }
 
         [Test]
-        public async Task Test_Fetch_Basic_Search_Details()
+        public void Test_Fetch_Basic_Search_Details()
         {
             Exception mockException = It.IsAny<Exception>();
             var output = testCandidate.FetchBasicSearchDetails(input);

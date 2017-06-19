@@ -43,7 +43,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         {
             int udprn = 0;
             Exception mockException = It.IsAny<Exception>();
-            var result = testCandidate.GetAddressLocationByUDPRNJson(udprn);
+            var result =await testCandidate.GetAddressLocationByUDPRNJson(udprn);
             Assert.NotNull(result);
         }
 
@@ -51,7 +51,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         /// Test the method get Address location by Udprn.
         /// </summary>
         [Test]
-        public async Task Test_Save_USR_Details_Valid_Scenario()
+        public void Test_Save_USR_Details_Valid_Scenario()
         {
             List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos = new List<AddressLocationUSRPOSTDTO>() { new AddressLocationUSRPOSTDTO { UDPRN = 1234, XCoordinate = 12, YCoordinate = 10 } };
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(Task.FromResult(true));
@@ -63,7 +63,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         }
 
         [Test]
-        public async Task Test_Save_USR_Details_Invalid_Scenario()
+        public void Test_Save_USR_Details_Invalid_Scenario()
         {
             List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos = new List<AddressLocationUSRPOSTDTO>() { new AddressLocationUSRPOSTDTO { UDPRN = 1234, XCoordinate = 12, YCoordinate = 10 } };
             thirdPartyAddressLocationIntegrationServiceMock.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).Returns(Task.FromResult(true));
