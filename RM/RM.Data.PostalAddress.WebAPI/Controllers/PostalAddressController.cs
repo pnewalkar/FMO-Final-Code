@@ -217,23 +217,10 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateNybRecords")]
         [HttpPost("postaladdress/nybduplicate/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public async Task<IActionResult> CheckForDuplicateNybRecords([FromBody] PostalAddressDTO objPostalAddress)
+        public IActionResult CheckForDuplicateNybRecords([FromBody] PostalAddressDTO objPostalAddress)
         {
-            try
-            {
-                string postCode = businessService.CheckForDuplicateNybRecords(objPostalAddress);
-                return Ok(postCode);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
-
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
-            }
+            string postCode = businessService.CheckForDuplicateNybRecords(objPostalAddress);
+            return Ok(postCode);
         }
 
         /// <summary>
@@ -244,23 +231,10 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateAddressWithDeliveryPoints")]
         [HttpPost("postaladdress/duplicatedeliverypoint/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public async Task<IActionResult> CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDTO objPostalAddress)
+        public IActionResult CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDTO objPostalAddress)
         {
-            try
-            {
-                bool isDuplicate = businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
-                return Ok(isDuplicate);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
-
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
-            }
+            bool isDuplicate = businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
+            return Ok(isDuplicate);
         }
 
         /// <summary>
@@ -270,29 +244,16 @@ namespace Fmo.API.Services.Controllers
         /// <returns>bool</returns>
         [HttpPost("postaladdress/savedeliverypointaddress/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public async Task<IActionResult> CreateAddressAndDeliveryPoint([FromBody] AddDeliveryPointDTO addDeliveryPointDTO)
+        public IActionResult CreateAddressAndDeliveryPoint([FromBody] AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressAndDeliveryPoint"))
             {
-                using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressAndDeliveryPoint"))
-                {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
-                    return Ok(deliveryPointAddressDetails);
-                }
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
-
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(deliveryPointAddressDetails);
             }
         }
     }

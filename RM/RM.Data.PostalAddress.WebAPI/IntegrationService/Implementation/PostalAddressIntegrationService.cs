@@ -29,7 +29,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
 
         private string referenceDataWebAPIName = string.Empty;
         private string deliveryPointManagerWebAPIName = string.Empty;
-        private string NotificationManagerDataWebAPIName = string.Empty;
         private string addressLocationManagerDataWebAPIName = string.Empty;
         private string unitManagerDataWebAPIName = string.Empty;
         private string notificationManagerDataWebAPIName = string.Empty;
@@ -48,7 +47,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             this.loggingHelper = loggingHelper;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
             this.deliveryPointManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
-            this.NotificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerDataWebAPIName).ToString() : string.Empty;
             this.addressLocationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.AddressLocationManagerDataWebAPIName).ToString() : string.Empty;
             this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.UnitManagerDataWebAPIName).ToString() : string.Empty;
             this.notificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerDataWebAPIName).ToString() : string.Empty;
@@ -208,10 +206,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 // method logic here
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(notificationManagerDataWebAPIName + "notifications/add", notificationDTO);
                 if (!result.IsSuccessStatusCode)
                 {
-                    // Log error with statuscode
+                    // Log error with statuscodel;
                     var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                     this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                     return 0;

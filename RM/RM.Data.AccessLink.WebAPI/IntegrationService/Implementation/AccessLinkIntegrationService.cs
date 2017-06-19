@@ -53,12 +53,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// <returns>Nearest street and the intersection point.</returns>
         public async Task<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName)
         {
-            var operationalObjectPointJson = JsonConvert.SerializeObject(
-                operationalObjectPoint,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+            var jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            var operationalObjectPointJson = JsonConvert.SerializeObject(operationalObjectPoint, jsonSerializerSettings);
+                
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(networkManagerDataWebAPIName + "/nearestnamedroad/" + streetName, operationalObjectPointJson);
 
@@ -227,7 +227,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings
+                var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, 
+                    new JsonSerializerSettings
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
