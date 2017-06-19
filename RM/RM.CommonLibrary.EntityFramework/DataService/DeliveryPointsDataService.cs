@@ -167,9 +167,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                         Thoroughfare = l.PostalAddress.Thoroughfare,
                                         DependentLocality = l.PostalAddress.DependentLocality,
                                         UDPRN = l.PostalAddress.UDPRN
-                                       
+
                                     },
-                                    ID=l.ID
+                                    ID = l.ID
                                 })
                                 .ToListAsync();
 
@@ -442,26 +442,25 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             try
             {
-                using (RMDBContext rmDbContext = new RMDBContext())
+        
+                DeliveryPoint deliveryPoint =
+                    DataContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
+
+                if (deliveryPoint != null)
                 {
-                    DeliveryPoint deliveryPoint =
-                        rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
+                    deliveryPoint.Longitude = deliveryPointDto.Longitude;
+                    deliveryPoint.Latitude = deliveryPointDto.Latitude;
+                    deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
+                    deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
+                    deliveryPoint.Positioned = deliveryPointDto.Positioned;
 
-                    if (deliveryPoint != null)
-                    {
-                        deliveryPoint.Longitude = deliveryPointDto.Longitude;
-                        deliveryPoint.Latitude = deliveryPointDto.Latitude;
-                        deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
-                        deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
-                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
-
-                        rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
-                        rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
-                        await rmDbContext.SaveChangesAsync();
-                    }
-
-                    return deliveryPoint.ID;
+                    DataContext.Entry(deliveryPoint).State = EntityState.Modified;
+                    DataContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
+                    await DataContext.SaveChangesAsync();
                 }
+
+                return deliveryPoint.ID;
+              
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -501,7 +500,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             Mapper.Configuration.CreateMapper();
             var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
 
-            deliveryPointDto.ForEach(dpDTO => {
+            deliveryPointDto.ForEach(dpDTO =>
+            {
                 dpDTO.PostalAddress = GenericMapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.Where(dp => dp.ID == dpDTO.ID).SingleOrDefault().PostalAddress);
             });
 
