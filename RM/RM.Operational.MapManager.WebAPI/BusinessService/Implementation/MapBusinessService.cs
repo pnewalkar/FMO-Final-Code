@@ -47,18 +47,91 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             return printMapDTO;
         }
 
-        /// <summary>
-        /// Serialze object to xml
-        /// </summary>
-        /// <typeparam name="T">Class </typeparam>
-        /// <param name="type">object</param>
-        /// <returns>xml as string</returns>
-        private string XmlSerializer<T>(T type)
+        public async Task<string> GenerateMapPdfReport(PrintMapDTO printMapDTO)
         {
-            var xmlSerilzer = new XmlSerializer(type.GetType());
-            var xmlString = new StringWriter();
-            xmlSerilzer.Serialize(xmlString, type);
-            return xmlString.ToString();
+            string pdfFilename = string.Empty;
+            if (printMapDTO != null)
+            {
+                string pdfXml = GenerateXml(printMapDTO);
+                pdfFilename = await mapIntegrationService.GenerateReportWithMap(pdfXml, xsltFilepath);
+            }
+
+            return pdfFilename;
+        }
+
+        /// <summary>
+        /// Custom serialization of Map DTO
+        /// </summary>
+        /// <param name="printMapDTO"></param>
+        /// <returns></returns>
+        private string GenerateXml(PrintMapDTO printMapDTO)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlElement report = doc.CreateElement("report");
+            XmlElement pageHeader = doc.CreateElement("pageHeader");
+            XmlElement pageFooter = doc.CreateElement("pageFooter");
+            XmlElement content = doc.CreateElement("content");
+            XmlElement heading1 = doc.CreateElement("heading1");
+            XmlElement heading1CenterAligned = doc.CreateElement("heading1CenterAligned");
+            XmlElement image = doc.CreateElement("image");
+            XmlElement section = null;
+            XmlElement sectionColumn = null;
+
+            report.SetAttribute("outputTo", printMapDTO.PdfSize + printMapDTO.PdfOrientation);
+            pageHeader.SetAttribute("caption", "");
+            pageFooter.SetAttribute("caption", "");
+            pageFooter.SetAttribute("pageNumbers", "true");
+            report.AppendChild(pageHeader);
+            report.AppendChild(pageFooter);
+            report.AppendChild(content);
+
+            //Section 1 Header
+            section = doc.CreateElement("section");
+
+            //Section 1 Header 1
+            sectionColumn = doc.CreateElement("sectionColumn");
+            sectionColumn.SetAttribute("width", "1");
+            heading1CenterAligned.InnerText = printMapDTO.MapTitle;
+            sectionColumn.AppendChild(heading1CenterAligned);
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            //Section 2
+            section = doc.CreateElement("section");
+
+            //Section 2 columns 1 i.e Table 1
+            sectionColumn = doc.CreateElement("sectionColumn");
+            sectionColumn.SetAttribute("width", "1");
+            image.SetAttribute("source", printMapDTO.ImagePath);
+            sectionColumn.AppendChild(image);
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+
+            //Section 3
+            section = doc.CreateElement("section");
+            sectionColumn = doc.CreateElement("sectionColumn");
+            sectionColumn.SetAttribute("width", "1");
+            sectionColumn.InnerText = "Date : " + printMapDTO.PrintTime;
+            section.AppendChild(sectionColumn);
+
+            sectionColumn = doc.CreateElement("sectionColumn");
+            sectionColumn.SetAttribute("width", "1");
+            sectionColumn.InnerText = "Scale : " + printMapDTO.CurrentScale;
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+
+            //Section 4
+            section = doc.CreateElement("section");
+            sectionColumn = doc.CreateElement("sectionColumn");
+            sectionColumn.SetAttribute("width", "1");
+            sectionColumn.InnerText = "TO DO *** Implement Licensing ***";
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            doc.AppendChild(report); ;
+            return doc.InnerXml;
         }
 
         private void SaveMapImage(PrintMapDTO printMapDTO)

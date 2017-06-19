@@ -5,6 +5,7 @@ using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.MapManager.WebAPI.Controllers;
 using RM.Operational.MapManager.WebAPI.BusinessService;
+using System.Threading.Tasks;
 
 namespace RM.Operational.MapManager.WebAPI.Controllers
 {
@@ -38,16 +39,22 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
 
         [Route("MapPDF")]
         [HttpPost]
-        public IActionResult GeneratePdf([FromBody]PrintMapDTO printMapDTO)
+        public async Task<IActionResult> GeneratePdf([FromBody]PrintMapDTO printMapDTO)
         {
             try
             {
-                return Ok("cf62faa5-619d-4244-be08-6c249bcde479.pdf");
+                var result = await mapGeneratorBusinessService.GenerateMapPdfReport(printMapDTO);
+                return Ok(result);
             }
-            catch (Exception ex)
+            catch (AggregateException ae)
             {
-                this.logginghelper.Log(ex, TraceEventType.Error);
-                throw;
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    logginghelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
     }
