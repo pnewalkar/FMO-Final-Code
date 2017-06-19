@@ -49,7 +49,7 @@ else if (GlobalSettings.env === "dev") {
     GlobalSettings.pdfGeneratorApiUrl = "http://172.18.5.7/PDFGenerator/api";
     GlobalSettings.routeLogApiUrl = "http://172.18.5.7/RouteLog/api";
     GlobalSettings.searchManagerApiUrl = "http://172.18.5.7/SearchManager/api";
-    GlobalSettings.indexUrl = http://172.18.4.4/app/index.html
+    GlobalSettings.indexUrl = "http://172.18.4.4/app/index.html";
 
 }
 else if (GlobalSettings.env === "test") {
