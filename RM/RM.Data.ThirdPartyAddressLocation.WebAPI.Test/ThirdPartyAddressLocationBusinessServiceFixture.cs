@@ -43,7 +43,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         {
             int udprn = 0;
             Exception mockException = It.IsAny<Exception>();
-            var result =await testCandidate.GetAddressLocationByUDPRNJson(udprn);
+            var result = await testCandidate.GetAddressLocationByUDPRNJson(udprn);
             Assert.NotNull(result);
         }
 
