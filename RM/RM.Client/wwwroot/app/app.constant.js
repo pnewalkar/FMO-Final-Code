@@ -32,6 +32,7 @@ if (GlobalSettings.env === "localhost") {
     GlobalSettings.pdfGeneratorApiUrl = "http://localhost:50241/api";
     GlobalSettings.routeLogApiUrl = "http://localhost:50240/api";
     GlobalSettings.searchManagerApiUrl = "http://localhost:50243/api";
+    GlobalSettings.mapManagerApiUrl = "http://localhost:1386/api";
     GlobalSettings.indexUrl = "http://localhost:51978/app/index.html"
 }
 else if (GlobalSettings.env === "dev") {
@@ -114,3 +115,10 @@ GlobalSettings.getRouteSimulationScenario = "/RouteSimulation/FetchDeliveryScena
 GlobalSettings.getRouteSimulationRoutes = "/RouteSimulation/FetchDeliveryRoute?operationStateID={0}&deliveryScenarioID={1}&fields=DisplayText,ID"
 //-----Unit Selector Factory---------------//
 GlobalSettings.getDeliveryUnit = "/UnitManager/Unit";
+
+//-----Pdf Generator Factory---------------//
+GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
+
+//-----Map manager Factory---------------//
+GlobalSettings.generateReportWithMap = "/MapManager/MapImage/";
+GlobalSettings.generatePdf = "/MapManager/MapPDF/";

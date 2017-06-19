@@ -77,6 +77,9 @@ function AccessLinkController(
                 $rootScope.$broadcast('redirectTo', {
                     contextTitle: CommonConstants.DeliveryPointActionName
                 });
+                $rootScope.$broadcast('disablePrintMap', {
+                    disable: false
+                });
             }
         });
     }

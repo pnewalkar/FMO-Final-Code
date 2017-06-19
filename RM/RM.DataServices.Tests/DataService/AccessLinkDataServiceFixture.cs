@@ -8,6 +8,7 @@ namespace RM.DataServices.Tests.DataService
     using CommonLibrary.EntityFramework.DataService;
     using CommonLibrary.EntityFramework.DataService.Interfaces;
     using CommonLibrary.EntityFramework.Entities;
+    using CommonLibrary.LoggingMiddleware;
     using Moq;
     using NUnit.Framework;
     using RM.CommonLibrary.HelperMiddleware;
@@ -17,6 +18,7 @@ namespace RM.DataServices.Tests.DataService
         private Mock<RMDBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IAccessLinkDataService testCandidate;
+        private Mock<ILoggingHelper> mockLoggingHelper;
         private string coordinates;
         private Guid unit1Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid unit2Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
@@ -34,6 +36,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();
@@ -73,7 +77,7 @@ namespace RM.DataServices.Tests.DataService
             mockAccessLinkDataService2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockAccessLinkDataService2.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new AccessLinkDataService(mockDatabaseFactory.Object);
+            testCandidate = new AccessLinkDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

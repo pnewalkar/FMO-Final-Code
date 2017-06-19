@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -10,6 +12,8 @@ using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 {
@@ -17,11 +21,13 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
     {
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public ThirdPartyAddressLocationIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
+        public ThirdPartyAddressLocationIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
             this.configurationHelper = configurationHelper;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -95,18 +101,26 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <returns>updated delivery point</returns>
         public async Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDTO deliveryPointDTO)
         {
-            string methodName = Constants.UpdateDeliveryPointLocationOnUDPRN;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointLocationOnUDPRN"))
             {
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
+                string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-            return status;
+                string methodName = Constants.UpdateDeliveryPointLocationOnUDPRN;
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName);
+                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return status;
+            }
         }
 
         /// <summary>
@@ -139,18 +153,26 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <returns>Task<int></returns>
         public async Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action)
         {
-            string methodName = Constants.DeleteNotificationbyUDPRNAndAction;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-            HttpResponseMessage result = await httpHandler.DeleteAsync(string.Format(serviceUrl + route, uDPRN.ToString(), action));
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteNotificationbyUDPRNAndAction"))
             {
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
+                string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-            return status;
+                string methodName = Constants.DeleteNotificationbyUDPRNAndAction;
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerWebAPIName);
+                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+                HttpResponseMessage result = await httpHandler.DeleteAsync(string.Format(serviceUrl + route, uDPRN.ToString(), action));
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return status;
+            }
         }
 
         /// <summary>
@@ -160,18 +182,26 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <returns>Task<int></returns>
         public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
         {
-            string methodName = Constants.AddNewNotification;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync<NotificationDTO>(serviceUrl + route, notificationDTO);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.AddNewNotification"))
             {
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
+                string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-            return status;
+                string methodName = Constants.AddNewNotification;
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerWebAPIName);
+                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync<NotificationDTO>(serviceUrl + route, notificationDTO);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return status;
+            }
         }
 
         /// <summary>

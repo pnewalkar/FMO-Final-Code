@@ -34,25 +34,25 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="deliveryRouteDto">deliveryRouteDto</param>
         /// <returns>deliveryRouteDto</returns>
-        public async Task<byte[]> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        public async Task<string> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
         {
-            string pdXslFo = string.Empty;
+            string pdfFilename = string.Empty;
             var routeLogSummaryModelDTO = await routeLogIntegrationService.GenerateRouteLog(deliveryRouteDto);
             if (routeLogSummaryModelDTO != null)
             {
                 routeLogSummaryModelDTO.RouteLogSequencedPoints = GetRouteSummary(routeLogSummaryModelDTO.RouteLogSequencedPoints);
-                pdXslFo = await routeLogIntegrationService.GenerateRouteLogSummaryReport(XmlSerializer(routeLogSummaryModelDTO), xsltFilepath);
+                pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(XmlSerializer(routeLogSummaryModelDTO), xsltFilepath);
             }
 
-            return GenerateRouteLogSummaryPdf(pdXslFo);
+            return pdfFilename;
         }
-        
+
         /// <summary>
         /// Attempts to add the specified address to the group
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>True if the address could be added to the group, otherwise false</returns>
-        public bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
         {
             // Determine whether the address should be part of the current group
             //
@@ -125,9 +125,9 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             List<RouteLogSequencedPointsDTO> routeSummary = new List<RouteLogSequencedPointsDTO>();
             if (addressList != null && addressList.Count > 0)
             {
-                //   Route summary group
-                //   The route summary group keeps track of the current group while the route summary
-                //   is being generated
+                // Route summary group
+                // The route summary group keeps track of the current group while the route summary
+                // is being generated
                 RouteSummaryGroupDTO group = null;
 
                 // Step through the addresses
@@ -174,7 +174,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                     routeSummary.Add(row);
                 }
             }
-            
+
             // Return the route summary
             return routeSummary;
         }
@@ -207,7 +207,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             // Return whether the address continues the current group
             return doesContinueGroup;
         }
-        
+
         /// <summary>
         /// Gets the group type description for a specified group type
         /// </summary>
@@ -405,7 +405,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         private bool IsEven(short number)
         {
             // The number is even if remainder when dividing by two is zero
-            return (number % 2 == 0);
+            return number % 2 == 0;
         }
     }
 }

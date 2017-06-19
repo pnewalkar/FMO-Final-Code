@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using RM.Common.DataService.Interface;
+    using Interface;
     using RM.Common.ReferenceData.WebAPI.Entities;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
@@ -20,6 +20,8 @@
         }
 
         #endregion Constructor
+
+        #region Methods
 
         /// <summary>
         /// Gets all reference data for category type nameValuePair.
@@ -131,5 +133,7 @@
                 return null;
             }
         }
+
+        #endregion Methods
     }
 }

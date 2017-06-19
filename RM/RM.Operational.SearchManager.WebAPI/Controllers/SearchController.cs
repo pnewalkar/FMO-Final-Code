@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.SearchManager.WebAPI.BusinessService;
 using RM.Operational.SearchManager.WebAPI.Controllers.BaseController;
 
@@ -18,10 +20,10 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         private readonly ISearchBusinessService searchBussinessService = default(ISearchBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public SearchController(ISearchBusinessService searchBussinessService, ILoggingHelper _loggingHelper)
+        public SearchController(ISearchBusinessService searchBussinessService, ILoggingHelper loggingHelper)
         {
             this.searchBussinessService = searchBussinessService;
-            this.loggingHelper = _loggingHelper;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -32,20 +34,30 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         [HttpGet("basic/{searchText}")]
         public async Task<SearchResultDTO> BasicSearch(string searchText)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.BasicSearch"))
             {
-                var unitGuid = this.CurrentUserUnit;
-                return await searchBussinessService.FetchBasicSearchDetails(searchText);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                try
                 {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                    var unitGuid = this.CurrentUserUnit;
+                    return await searchBussinessService.FetchBasicSearchDetails(searchText);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
+                finally
+                {
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                }
             }
         }
 
@@ -57,20 +69,30 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         [HttpGet("advance/{searchText}")]
         public async Task<SearchResultDTO> AdvanceSearch(string searchText)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.AdvanceSearch"))
             {
-                var unitGuid = this.CurrentUserUnit;
-                return await searchBussinessService.FetchAdvanceSearchDetails(searchText);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                try
                 {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                    var unitGuid = this.CurrentUserUnit;
+                    return await searchBussinessService.FetchAdvanceSearchDetails(searchText);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
+                finally
+                {
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                }
             }
         }
     }

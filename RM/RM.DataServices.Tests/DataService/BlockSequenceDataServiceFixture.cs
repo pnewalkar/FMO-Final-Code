@@ -8,6 +8,7 @@ using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -17,19 +18,21 @@ namespace RM.DataServices.Tests.DataService
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IBlockSequenceDataService testCandidate;
         private BlockSequenceDTO blockSequenceDTO;
+        private Mock<ILoggingHelper> mockLoggingHelper;
 
         [Test]
         public void AddBlockSequence()
         {
             var result = testCandidate.AddBlockSequence(blockSequenceDTO, new Guid("119DBBBB-03FB-489C-8C8D-F1085E0D2A13"));
             Assert.IsNotNull(result);
-           // Assert.IsTrue(result);
+
+            // Assert.IsTrue(result);
         }
 
         protected override void OnSetup()
         {
             List<BlockSequence> blockSequence = new List<BlockSequence>() { };
-
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
             blockSequenceDTO = new BlockSequenceDTO() { Block_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11") };
 
             var blocks = new List<Block>()
@@ -63,7 +66,7 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new BlockSequenceDataService(mockDatabaseFactory.Object);
+            testCandidate = new BlockSequenceDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

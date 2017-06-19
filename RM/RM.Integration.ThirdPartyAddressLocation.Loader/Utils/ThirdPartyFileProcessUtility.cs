@@ -52,14 +52,15 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         /// <param name="strPath"></param>
         public void LoadUSRDetailsFromXML(string strPath)
         {
-            List<AddressLocationUSRDTO> lstUSRFiles = null;
-            List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
-
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Service.LoadUSRDetailsFromXML"))
             {
+                List<AddressLocationUSRDTO> lstUSRFiles = null;
+                List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
+
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+
                 if (CheckFileName(new FileInfo(strPath).Name))
                 {
                     if (IsFileValid(strPath))
@@ -73,13 +74,13 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
 
                         lstUSRInsertFiles.ForEach(addressLocation =>
                         {
-                            //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
-                            //needs to be queued.
-                            IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
+                        //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
+                        //needs to be queued.
+                        IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
 
-                            //The messge object created in the above code is then pushed onto the queue. This internally uses the MSMQ Send function to push the message
-                            //to the queue.
-                            msgBroker.SendMessage(USRMsg);
+                        //The messge object created in the above code is then pushed onto the queue. This internally uses the MSMQ Send function to push the message
+                        //to the queue.
+                        msgBroker.SendMessage(USRMsg);
                         });
 
                         fileMover.MoveFile(new string[] { strPath }, new string[] { processed, AppendTimeStamp(new FileInfo(strPath).Name) });
@@ -90,14 +91,9 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                         fileMover.MoveFile(new string[] { strPath }, new string[] { error, AppendTimeStamp(new FileInfo(strPath).Name) });
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
+
                 LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodExitEventId, LoggerTraceConstants.Title);
             }
         }
 
@@ -108,16 +104,9 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         /// <returns></returns>
         private bool CheckFileName(string fileName)
         {
-            try
-            {
-                fileName = Path.GetFileNameWithoutExtension(fileName);
-                Regex reg = new Regex(Constants.USRFILENAME);
-                return reg.IsMatch(fileName);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            fileName = Path.GetFileNameWithoutExtension(fileName);
+            Regex reg = new Regex(Constants.USRFILENAME);
+            return reg.IsMatch(fileName);
         }
 
         /// <summary>
@@ -225,36 +214,27 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-            try
-            {
-                bool result = true;
-                XDocument xDoc = XDocument.Load(new XmlNodeReader(xNode));
-                XmlSchemaSet schemas = new XmlSchemaSet();
-                schemas.Add("", XmlReader.Create(xsdFile));
 
-                xDoc.Validate(schemas, (o, e) =>
+            bool result = true;
+            XDocument xDoc = XDocument.Load(new XmlNodeReader(xNode));
+            XmlSchemaSet schemas = new XmlSchemaSet();
+            schemas.Add("", XmlReader.Create(xsdFile));
+
+            xDoc.Validate(schemas, (o, e) =>
+            {
+                int UDPRN = 0;
+                if (!string.IsNullOrEmpty(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT)).Element(XName.Get(Constants.USRUDPRN)).Value))
                 {
-                    int UDPRN = 0;
-                    if (!string.IsNullOrEmpty(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT)).Element(XName.Get(Constants.USRUDPRN)).Value))
-                    {
-                        UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
-                                                            .Element(XName.Get(Constants.USRUDPRN)).Value);
-                    }
+                    UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
+                                                        .Element(XName.Get(Constants.USRUDPRN)).Value);
+                }
 
                     //logger code to write schema mismatch exception
                     result = false;
-                });
+            });
 
-                return result;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            }
+            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            return result;
         }
 
         /// <summary>

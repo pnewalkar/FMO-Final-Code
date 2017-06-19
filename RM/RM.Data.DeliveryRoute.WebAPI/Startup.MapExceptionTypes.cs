@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Data.Entity.Infrastructure;
 using System.Net;
 using Microsoft.AspNetCore.Builder;
+using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
 using RM.CommonLibrary.ExceptionMiddleware;
-using RM.DataManagement.DeliveryRoute.WebAPI.ExceptionHandling.ResponseExceptionHandler;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI
 {
@@ -19,6 +20,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI
                 options.Map<ObjectDisposedException>(HttpStatusCode.RequestedRangeNotSatisfiable);
                 options.Map<InvalidOperationException>(HttpStatusCode.BadRequest);
                 options.Map<UnauthorizedAccessException>(HttpStatusCode.Unauthorized);
+                options.Map<DbUpdateException>(HttpStatusCode.Conflict);
 
                 options.Map<ServiceException>(HttpStatusCode.InternalServerError);
                 options.Map<DataAccessException>(HttpStatusCode.NotAcceptable);

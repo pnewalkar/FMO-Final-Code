@@ -180,6 +180,7 @@
     <Compile Include="Utilities\DataService\DataServiceBase.cs" />
     <Compile Include="Utilities\Enums\ValueAttribute.cs" />
     <Compile Include="Utilities\Geometry\DbGeometryConverter.cs" />
+    <Compile Include="Utilities\HelperMiddleware\Common\MethodHelper.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Coordinates.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Feature.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\GeoJson.cs" />
@@ -220,9 +221,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Authentication\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Utilities\ResourceFile\ReferenceDataCategoryNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

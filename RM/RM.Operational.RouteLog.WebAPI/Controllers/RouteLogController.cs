@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.RouteLog.WebAPI.BusinessService;
 using RM.Operational.RouteLog.WebAPI.Controllers.BaseController;
-using System;
-using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Operational.RouteLog.WebAPI.Controllers
 {
@@ -22,11 +22,12 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
         }
 
         [HttpPost("routelogs")]
-        public async Task<byte[]> GenerateRouteLogSummaryReport([FromBody]DeliveryRouteDTO deliveryRouteDto)
+        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]DeliveryRouteDTO deliveryRouteDto)
         {
             try
             {
-                return await routeLogBusinessService.GenerateRouteLog(deliveryRouteDto);
+                var pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRouteDto);
+                return Ok(pdfFilename);
             }
             catch (AggregateException ae)
             {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using RM.DataManagement.PostalAddress.WebAPI.Authentication;
+using RM.CommonLibrary.Authentication;
 
 namespace RM.DataManagement.PostalAddress.WebAPI
 {
@@ -14,20 +14,20 @@ namespace RM.DataManagement.PostalAddress.WebAPI
     {
         // The secret key every token will be signed with.
         // Keep this safe on the server!
-        private static readonly string secretKey = "mysupersecret_secretkey!123";
+        private static readonly string SecretKey = "mysupersecret_secretkey!123";
 
-        private static readonly string issuer = "RMG";
-        private static readonly string audience = "RMG_AD_Clients";
+        private static readonly string Issuer = "RMG";
+        private static readonly string Audience = "RMG_AD_Clients";
 
         private void ConfigureAuth(IApplicationBuilder app)
         {
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
 
             app.UseSimpleTokenProvider(new TokenProviderOptions
             {
                 Path = "/api/token",
-                Audience = audience,
-                Issuer = issuer,
+                Audience = Audience,
+                Issuer = Issuer,
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
                 IdentityResolver = GetIdentity
             });
@@ -40,11 +40,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI
 
                 // Validate the JWT Issuer (iss) claim
                 ValidateIssuer = true,
-                ValidIssuer = issuer,
+                ValidIssuer = Issuer,
 
                 // Validate the JWT Audience (aud) claim
                 ValidateAudience = true,
-                ValidAudience = audience,
+                ValidAudience = Audience,
 
                 // Validate the token expiry
                 ValidateLifetime = true,

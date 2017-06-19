@@ -12,6 +12,10 @@ using RM.CommonLibrary.ResourceFile;
 using System.Data.Entity.Infrastructure;
 using RM.CommonLibrary.ExceptionMiddleware;
 using System.Data.Entity;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -20,9 +24,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class NotificationDataService : DataServiceBase<Notification, RMDBContext>, INotificationDataService
     {
-        public NotificationDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        public NotificationDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -32,8 +38,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>Task<int></returns>
         public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.AddNewNotification"))
             {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                try
+                {
                 Notification newNotification = new Notification();
                 GenericMapper.Map(notificationDTO, newNotification);
                 DataContext.Notifications.Add(newNotification);
@@ -53,6 +64,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
+                finally
+                {
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                }
+            }
         }
 
         /// <summary>
@@ -63,7 +79,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>Task<int></returns>
         public async Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action)
         {
-            int deleteCount = default(int);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteNotificationbyUDPRNAndAction"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                int deleteCount = default(int);
             string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
             try
             {
@@ -89,6 +110,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             {
                 disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+            }
+                finally
+                {
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                }
             }
         }
 

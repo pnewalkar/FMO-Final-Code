@@ -1,93 +1,106 @@
- {
-    "GENERAL": {
-        "BUTTONS": {
-            "OK": "OK",
-            "CANCEL": "Cancel",
-            "SAVE": "Save",
-            "BACK": "Back",
-            "HELP": "Help",
-            "SELECT": "Select",
-            "CLOSE_WINDOW": "Close Window",
-            "LINKS": "Links",
-            "EDIT": "Edit",
-            "DELETE": "Delete",
-            "COLLAPSED": "Collapsed",
-            "EXPAND": "Expand"
-        },
-        "UNIT": "Unit",
-        "SEARCH": "Search",
-        "ADD_DELIVERY_POINT": "Add Delivery Point",
-        "SELECT_ALL": "Select All",
-        "DESELECT_ALL": "Deselect All",
-        "COLLAPSE_ALL": "Collapse All",
-        "EXPAND_ALL": "Expand All",
-        "OPEN_SIDE_NAV": "Open Side Nav",
-        "SELECTED": "Selected",
-        "DELIVERY_POINT": "Delivery Point",
-        "ACCESS_LINK": "Access Link",
-        "ROAD": "Road",
-        "POINT": "Point",
-        "LINE": "Line"
-        
+{
+  "GENERAL": {
+    "BUTTONS": {
+      "OK": "OK",
+      "CANCEL": "Cancel",
+      "SAVE": "Save",
+      "BACK": "Back",
+      "HELP": "Help",
+      "SELECT": "Select",
+      "CLOSE_WINDOW": "Close Window",
+      "LINKS": "Links",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "COLLAPSED": "Collapsed",
+      "EXPAND": "Expand",
+      "GENERATE": "Generate"
     },
-    "VALIDATION": {
-        "MINIMUM_CHARACTERS": "At least {{count}} characters are required",
-        "NO_RESULT_FOUND":"No Results Found"
+    "UNIT": "Unit",
+    "AVAILABLE_ACTIONS": "Available Actions",
+    "SEARCH": "Search",
+    "ADD_DELIVERY_POINT": "Add Delivery Point",
+    "SELECT_ALL": "Select All",
+    "DESELECT_ALL": "Deselect All",
+    "COLLAPSE_ALL": "Collapse All",
+    "EXPAND_ALL": "Expand All",
+    "OPEN_SIDE_NAV": "Open Side Nav",
+    "SELECTED": "Selected",
+    "DELIVERY_POINT": "Delivery Point",
+    "ACCESS_LINK": "Access Link",
+    "ROAD": "Road",
+    "POINT": "Point",
+    "LINE": "Line"
 
-    },
-    "ACCESS_LINK": {
-        "TITTLE": "Access Link",
-        "PATH_LENGTH": "Path Length",
-        "METERS": "Meters"
-    },
-    "ADVANCE_SEARCH": {
-        "TITTLE": "Advance Search",
-        "ROUTE": "Route",
-        "POST_CODE": "Postcode",
-        "DELIVERY_POINT": "Delivery Point",
-        "COLLECTION_POINT": "Collection Point",
-        "STREET_NETWORK": "Street Network",
-        "GROUP": "Group",
-        "HAZARD": "Hazard"
-    },
-    "DELIVERY_POINTS": {
-        "TITTLE": "Delivery Point",
-        "ADD_DELIVERY_POINTS": "Add Delivery Points",
-        "NOT_YET_BUILT": "Not yet Built",
-        "STREET": "Street",
-        "POST_CODE": "Postcode",
-        "ROUTE": "Route",
-        "DP_USE": "DP Use",
-        "TYPE": "Type",
-        "ADDRESS": "Address",
-        "BUILDING_NUMBER": "Building Number",
-        "BUILDING_NAME": "Building Name",
-        "SUB_BUILDING_NAME": "Sub-Building Name",
-        "ORGANISATION": "Organisation",
-        "DEPARTMENT_NAME": "Department Name",
-        "ADD_DP_ALIAS": "Add DP Alias",
-        "ALIAS":"Alias",
-        "MULTI_OCC": "Multi Occ",
-        "MAIL_VOL": "Mail Vol",       
-        "LOCALITY": "Locality",
-        "REMOVE_DP_ALIAS": "Remove DP Alias"
-    
-    },
-    "ROUTE_LOG": {
-        "TITTLE": "Route Log",
-        "SELECTION_TYPE": "Selection Type",
-        "STATUS": "Status",
-        "SCENARIO": "Scenario",
-        "ROUTE": "Route",
-        "NO_RESULT_FOUND": "No Result Found"
-    },
+  },
+  "VALIDATION": {
+    "MINIMUM_CHARACTERS": "At least {{count}} characters are required",
+    "NO_RESULT_FOUND": "No Results Found"
+
+  },
+  "ACCESS_LINK": {
+    "TITTLE": "Access Link",
+    "PATH_LENGTH": "Path Length",
+    "METERS": "Meters"
+  },
+  "ADVANCE_SEARCH": {
+    "TITTLE": "Advance Search",
+    "ROUTE": "Route",
+    "POST_CODE": "Postcode",
+    "DELIVERY_POINT": "Delivery Point",
+    "COLLECTION_POINT": "Collection Point",
+    "STREET_NETWORK": "Street Network",
+    "GROUP": "Group",
+    "HAZARD": "Hazard"
+  },
+  "DELIVERY_POINTS": {
+    "TITTLE": "Delivery Point",
+    "ADD_DELIVERY_POINTS": "Add Delivery Points",
+    "NOT_YET_BUILT": "Not yet Built",
+    "STREET": "Street",
+    "POST_CODE": "Postcode",
+    "ROUTE": "Route",
+    "DP_USE": "DP Use",
+    "TYPE": "Type",
+    "ADDRESS": "Address",
+    "BUILDING_NUMBER": "Building Number",
+    "BUILDING_NAME": "Building Name",
+    "SUB_BUILDING_NAME": "Sub-Building Name",
+    "ORGANISATION": "Organisation",
+    "DEPARTMENT_NAME": "Department Name",
+    "ADD_DP_ALIAS": "Add DP Alias",
+    "ALIAS": "Alias",
+    "MULTI_OCC": "Multi Occ",
+    "MAIL_VOL": "Mail Vol",
+    "LOCALITY": "Locality",
+    "REMOVE_DP_ALIAS": "Remove DP Alias"
+
+  },
+  "ROUTE_LOG": {
+    "TITTLE": "Route Log",
+    "SELECTION_TYPE": "Selection Type",
+    "STATUS": "Status",
+    "SCENARIO": "Scenario",
+    "ROUTE": "Route",
+    "NO_RESULT_FOUND": "No Result Found"
+  },
   "ROUTE_SIMULATION": {
     "TITTLE": "Route Simulation",
     "SCENARIO": "Scenario",
     "ROUTE": "Route",
     "NO_RESULT_FOUND": "No Result Found",
     "NO_ROUTE_SELECTED": "No Route Selected"
-
+  },
+  "PRINT_MAP": {
+    "HEADER": "Print Map Options",
+    "SIZE": "Size",
+    "TITLE": "Title",
+    "LANDSCAPE": "Landscape",
+    "PORTRAIT": "Portrait",
+    "ORIENTATION": "Orientation",
+    "CONDITION": "*If you are unable to print this locally,please generate and send to your printing service facility",
+    "BUTTONS": {
+      "DISABLE_ALERT": "This action is disabled until the user has completed the action they are currently carrying out."
+    }
   }
-  
+
 }
