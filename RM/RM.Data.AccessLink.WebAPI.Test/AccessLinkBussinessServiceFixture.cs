@@ -43,6 +43,15 @@ namespace RM.Data.AccessLink.WebAPI.Test
             Assert.True(expectedResult);
         }
 
+        [Test]
+        public void Test_CheckManualAccessLinkIsValid()
+        {
+            string coordinates = "[399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211]";
+            string accessLinkLine = "[488938,197021],[488929.9088937093,197036.37310195228]";
+            bool expectedResult = testCandidate.CheckManualAccessLinkIsValid(coordinates, accessLinkLine);
+            Assert.True(expectedResult);
+        }
+
         protected override void OnSetup()
         {
             deliveryPointDTO = new DeliveryPointDTO
@@ -78,7 +87,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
                 NetworkLinkType_GUID = Guid.Parse("09CE57B1-AF13-4F8E-B4AF-1DE35B4A68A8"),
                 LinkGeometry = DbGeometry.LineFromText("LINESTRING (488952 197048, 488895 197018, 488888 197014, 488880 197008)", 27700)
             };
-            // SqlServerTypes.Utilities.LoadNativeAssemblies(@"C:\RM_Workspace\RM\RM.Data.AccessLink.WebAPI.Test\bin");
+
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
             try
@@ -220,12 +229,16 @@ namespace RM.Data.AccessLink.WebAPI.Test
             loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDTO>>);
+            mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<AccessLinkDTO>() { });
+
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(new List<ReferenceDataCategoryDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(refDataCategotyDTO);
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(deliveryPointDTO);
             mockAccessLinkIntegrationService.Setup(x => x.GetNearestNamedRoad(It.IsAny<DbGeometry>(), It.IsAny<string>())).ReturnsAsync(tuple);
             mockAccessLinkIntegrationService.Setup(x => x.GetNearestSegment(It.IsAny<DbGeometry>())).ReturnsAsync(tuple);
             mockAccessLinkIntegrationService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("Local Road");
+            mockAccessLinkIntegrationService.Setup(x => x.GetCrossingNetworkLinks(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<NetworkLinkDTO>() { });
+            mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
 
             mockaccessLinkDataService.Setup(x => x.CreateAccessLink(It.IsAny<AccessLinkDTO>())).Returns(true);
 
