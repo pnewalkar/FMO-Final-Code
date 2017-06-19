@@ -13,6 +13,9 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
+using System.Diagnostics;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
@@ -26,14 +29,16 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         private string blockSequenceWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion Property Declarations
 
         #region Constructor
 
-        public DeliveryPointIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
+        public DeliveryPointIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
+            this.loggingHelper = loggingHelper;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
             this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.AccessLinkWebAPIName).ToString() : string.Empty;
             this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PostalAddressManagerWebAPIName).ToString() : string.Empty;
@@ -163,14 +168,20 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <returns>Task<List<PostalAddressDBDTO>></returns>
         public async Task<List<PostalAddressDBDTO>> GetPostalAddress(List<Guid> addressGuids)
         {
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/postaladdresses/", addressGuids);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostalAddress"))
             {
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/postaladdresses/", addressGuids);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
 
-            return JsonConvert.DeserializeObject<List<PostalAddressDBDTO>>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return JsonConvert.DeserializeObject<List<PostalAddressDBDTO>>(result.Content.ReadAsStringAsync().Result);
+            }
         }
 
 
