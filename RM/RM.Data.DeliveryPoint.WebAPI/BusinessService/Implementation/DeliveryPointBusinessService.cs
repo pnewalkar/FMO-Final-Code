@@ -67,14 +67,21 @@
         /// <returns>Object</returns>
         public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
-            if (!string.IsNullOrEmpty(boundaryBox))
+            object deliveryPoints = null;
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPoints"))
             {
-                var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
-            }
-            else
-            {
-                return null;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
+                    deliveryPoints = GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
+                }
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                return deliveryPoints;
             }
         }
 
