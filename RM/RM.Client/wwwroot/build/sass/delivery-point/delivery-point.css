@@ -53,3 +53,7 @@ fieldset {
 
 .disabledText {
   color: darkgray; }
+
+.deliveryRoute .md-text {
+    color: darkgray;
+}
