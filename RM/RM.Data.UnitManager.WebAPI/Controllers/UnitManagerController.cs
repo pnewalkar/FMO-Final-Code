@@ -38,6 +38,17 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Fetches Delivery Unit info
+        /// </summary>
+        /// <returns>List</returns>
+        [Authorize]
+        [HttpGet("unit/info/{unitGuid}")]
+        public UnitLocationDTO GetUnitLocation(Guid unitGuid)
+        {
+            return unitLocationBusinessService.FetchUnitDetails(unitGuid);
+        }
+
+        /// <summary>
         /// Fetches Postcode sector
         /// </summary>
         /// <returns>List</returns>

@@ -27,6 +27,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         private string postalAddressManagerWebAPIName = string.Empty;
         private string accessLinkWebAPIName = string.Empty;
         private string blockSequenceWebAPIName = string.Empty;
+        private string unitManagerDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
@@ -43,6 +44,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.AccessLinkWebAPIName).ToString() : string.Empty;
             this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PostalAddressManagerWebAPIName).ToString() : string.Empty;
             this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.UnitManagerDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
@@ -201,6 +203,23 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 
             listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
             return listReferenceCategories;
+        }
+
+        public async Task<CommonLibrary.EntityFramework.DTO.UnitLocationDTO> GetUnitLocationDetails(Guid unitGuid)
+        {
+            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocationDTO = new CommonLibrary.EntityFramework.DTO.UnitLocationDTO();
+
+            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "unit/info/" + unitGuid);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>(result.Content.ReadAsStringAsync().Result);
+
+            return unitLocation;
         }
         #endregion public methods
     }

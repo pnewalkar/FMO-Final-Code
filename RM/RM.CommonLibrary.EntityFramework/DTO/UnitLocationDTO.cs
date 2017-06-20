@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using RM.CommonLibrary.HelperMiddleware;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Spatial;
@@ -17,6 +19,7 @@ namespace RM.CommonLibrary.EntityFramework.DTO
 
         public Guid ID { get; set; }
 
+        [JsonConverter(typeof(DbGeometryConverter))]
         public DbGeometry UnitBoundryPolygon { get; set; }
 
         [NotMapped]
