@@ -1,4 +1,4 @@
-﻿namespace RM.Common.DataService.Interface
+﻿namespace RM.Common.ReferenceData.WebAPI.DataService.Interface
 {
     using System.Collections.Generic;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
