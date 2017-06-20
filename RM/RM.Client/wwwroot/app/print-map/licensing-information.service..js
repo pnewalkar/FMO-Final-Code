@@ -13,7 +13,6 @@ function licensingInfoService($q,mapService, referencedataApiService, $rootScope
             if (layer.selected == true && layer.selectorVisible == true)
                 selectedLayer = layer;
         })
-
         var deferred = $q.defer();
         referencedataApiService.getNameValueReferenceData(GlobalSettings.Map_License_Information).then(function (response) {
             var result = null;
@@ -45,6 +44,7 @@ function licensingInfoService($q,mapService, referencedataApiService, $rootScope
                     });
                 }
             }
+           
             deferred.resolve(result);
         });
         return deferred.promise;
@@ -54,16 +54,13 @@ function licensingInfoService($q,mapService, referencedataApiService, $rootScope
         LicensingInfo().then(function (response) {
             debugger;
             var result = response[0].value.split('©');
-
             var result2 = '';
+            angular.forEach(result, function (value, key) {
+                if (value != "")
+                    result2 = result2 + '<p> ©' + value + '</p>';
+            });
 
-            for (var i = 0; i < result.length; i++) {
-
-                if (result[i] != "")
-                    result2 = result2 + '<p> ©' + result[i] + '</p>';
-            }
             $rootScope.$emit('LicensingInfoText', { displayText: result2 });
-
         });       
     }
 };
