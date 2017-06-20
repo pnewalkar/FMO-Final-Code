@@ -50,13 +50,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPoints"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var getDeliveryPoints = Json(businessService.GetDeliveryPoints(bbox, CurrentUserUnit));
+                object deliveryPoints = businessService.GetDeliveryPoints(bbox, CurrentUserUnit);
 
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
-                return getDeliveryPoints;
+
+                return Json(deliveryPoints);
             }
         }
 
