@@ -2,6 +2,15 @@
 {
     public static class LoggerTraceConstants
     {
+        #region default
+
+        internal const string DefaultLoggingCategory = "General";
+        internal const int DefaultLoggingPriority = 0;
+        internal const int DefaultLoggingEventId = 0;
+        internal const string DefaultLoggingTitle = "";
+
+        #endregion
+
         public const string Category = "General";
         public const string BusinessLayer = "Business.";
         public const string DataLayer = "Data.";
