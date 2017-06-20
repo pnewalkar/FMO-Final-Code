@@ -147,7 +147,7 @@
         public const string CsvPAFValues = "CsvPAFValues";
         public const string PAFWEBAPIURL = "PAFWebApiurl";
         public const string PAFWEBAPINAME = "PAFWebApiName";
-        public const string TASKPAFACTION = "Position new DP";
+        public const string TASKPAFACTION = "Position new DP Location";
         public const string PAFNOACTION = "B";
         public const string PAFINSERT = "I";
         public const string PAFUPDATE = "C";

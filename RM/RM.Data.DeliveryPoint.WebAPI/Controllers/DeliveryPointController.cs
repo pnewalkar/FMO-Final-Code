@@ -526,7 +526,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
         public Task<bool> UpdatePAFIndicator(Guid addressGuid, [FromBody] Guid pafIndicator)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPoint"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdatePAFIndicator"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
