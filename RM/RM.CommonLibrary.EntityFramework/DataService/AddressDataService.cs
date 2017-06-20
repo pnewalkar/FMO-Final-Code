@@ -212,9 +212,9 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPostalAddress(int? uDPRN)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress(udprn)"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
@@ -231,7 +231,7 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress(objPostaladdress)"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
