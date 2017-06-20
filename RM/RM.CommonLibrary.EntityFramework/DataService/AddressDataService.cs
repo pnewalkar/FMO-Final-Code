@@ -15,7 +15,6 @@
     using ExceptionMiddleware;
     using LoggingMiddleware;
     using Microsoft.SqlServer.Types;
-    using ResourceFile;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
@@ -213,8 +212,16 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPostalAddress(int? uDPRN)
         {
-            var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
-            return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            }
         }
 
         /// <summary>
@@ -224,7 +231,12 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPostalAddress(PostalAddressDTO objPostalAddress)
         {
-            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
                 .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
                                      && ((n.BuildingName ==
                                           (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
@@ -291,8 +303,10 @@
                                           (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare)
                                               ? objPostalAddress.DependentThoroughfare
                                               : string.Empty))));
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
-            return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+                return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
+            }
         }
 
         /// <summary>
