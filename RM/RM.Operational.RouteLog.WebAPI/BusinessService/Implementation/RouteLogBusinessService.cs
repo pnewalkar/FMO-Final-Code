@@ -251,23 +251,23 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 
         private XmlElement CreateTableWithFixedRowsColumns(int columnsCount, Dictionary<string, string> data, XmlDocument doc, bool setWidth = false)
         {
-            XmlElement table = doc.CreateElement("table");
-            XmlElement columns = doc.CreateElement("columns");
+            XmlElement table = doc.CreateElement(Constants.Table);
+            XmlElement columns = doc.CreateElement(Constants.Columns);
             XmlElement column = null;
             XmlElement row = null;
             XmlElement cell = null;
 
             if (setWidth)
             {
-                table.SetAttribute("width", "100%");
+                table.SetAttribute(Constants.Width, "100%");
             }
-            table.SetAttribute("borders", "false");
-            table.SetAttribute("useShading", "true");
+            table.SetAttribute(Constants.Borders, "false");
+            table.SetAttribute(Constants.UseShading, "true");
 
             for (int i = 0; i < columnsCount; i++)
             {
-                column = doc.CreateElement("column");
-                column.SetAttribute("width", "1");
+                column = doc.CreateElement(Constants.Columns);
+                column.SetAttribute(Constants.Width, "1");
                 columns.AppendChild(column);
             }
 
@@ -276,18 +276,18 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             for (int i = 0; i < data.Count; i++)
             {
                 var item = data.ElementAt(i);
-                row = doc.CreateElement("row");
+                row = doc.CreateElement(Constants.Row);
 
                 if (i % 2 == 0)
                 {
-                    row.SetAttribute("shade", "true");
+                    row.SetAttribute(Constants.Shade, "true");
                 }
 
-                cell = doc.CreateElement("cell");
+                cell = doc.CreateElement(Constants.Cell);
                 cell.InnerText = item.Key;
                 row.AppendChild(cell);
 
-                cell = doc.CreateElement("cell");
+                cell = doc.CreateElement(Constants.Cell);
                 cell.InnerText = item.Value;
                 row.AppendChild(cell);
                 table.AppendChild(row);
@@ -298,19 +298,19 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 
         private XmlElement CreateTableWithDynamicRowsColumns(List<List<string>> data, XmlDocument doc)
         {
-            XmlElement table = doc.CreateElement("table");
-            XmlElement columns = doc.CreateElement("columns");
+            XmlElement table = doc.CreateElement(Constants.Table);
+            XmlElement columns = doc.CreateElement(Constants.Columns);
             XmlElement column = null;
             XmlElement row = null;
             XmlElement cell = null;
             var columnsCount = data[0].Count;
 
-            table.SetAttribute("useShading", "true");
+            table.SetAttribute(Constants.UseShading, "true");
 
             for (int i = 0; i < columnsCount; i++)
             {
-                column = doc.CreateElement("column");
-                column.SetAttribute("width", "1");
+                column = doc.CreateElement(Constants.Column);
+                column.SetAttribute(Constants.Width, "1");
                 columns.AppendChild(column);
             }
             table.AppendChild(columns);
@@ -321,20 +321,20 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 
                 if (i == 0)
                 {
-                    row = doc.CreateElement("header");
+                    row = doc.CreateElement(Constants.Header);
                 }
                 else
                 {
-                    row = doc.CreateElement("row");
+                    row = doc.CreateElement(Constants.Row);
                 }
                 if (i != 0 && i % 2 == 0)
                 {
-                    row.SetAttribute("shade", "true");
+                    row.SetAttribute(Constants.Shade, "true");
                 }
 
                 for (int j = 0; j < item.Count; j++)
                 {
-                    cell = doc.CreateElement("cell");
+                    cell = doc.CreateElement(Constants.Cell);
                     if (i != 0)
                         cell.SetAttribute("align", "center");
                     cell.InnerText = item[j];
