@@ -14,5 +14,8 @@
   "frameworks": {
     "net452": {
     }
+  },
+  "buildOptions": {    
+    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
   }
 }

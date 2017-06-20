@@ -10,6 +10,7 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
+    using CommonLibrary.Utilities.HelperMiddleware;
     using RM.CommonLibrary.ConfigurationMiddleware;
     using RM.CommonLibrary.EntityFramework.DTO;
     using RM.CommonLibrary.ExceptionMiddleware;
@@ -159,32 +160,37 @@
         /// <returns>If success returns true else returns false</returns>
         public async Task<bool> SaveNybDetails(List<PostalAddressDTO> lstAddress, string fileName)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-            bool isNybDetailsInserted = false;
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Service.SaveNybDetails"))
             {
-                isNybDetailsInserted = true;
-                var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress, isBatchJob: true);
-
-                if (!result.IsSuccessStatusCode)
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+                bool isNybDetailsInserted = false;
+                try
                 {
-                    var responseContent = result.ReasonPhrase;
-                    this.loggingHelper.Log(responseContent, TraceEventType.Error);
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NYBPriority, LoggerTraceConstants.NYBLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+                    isNybDetailsInserted = true;
+                    var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress, isBatchJob: true);
+
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        var responseContent = result.ReasonPhrase;
+                        this.loggingHelper.Log(responseContent, TraceEventType.Error);
+                        isNybDetailsInserted = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.loggingHelper.Log(ex, TraceEventType.Error);
                     isNybDetailsInserted = false;
                 }
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.Log(ex, TraceEventType.Error);
-                isNybDetailsInserted = false;
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-            }
+                finally
+                {
+                    LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NYBPriority, LoggerTraceConstants.NYBLoaderMethodExitEventId, LoggerTraceConstants.Title);
+                }
 
-            return isNybDetailsInserted;
+                return isNybDetailsInserted;
+            }
         }
 
         #endregion public methods

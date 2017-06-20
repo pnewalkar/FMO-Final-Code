@@ -40,34 +40,36 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.AddNewNotification"))
             {
+                int saveChangesAsync = default(int);
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
                 {
-                Notification newNotification = new Notification();
-                GenericMapper.Map(notificationDTO, newNotification);
-                DataContext.Notifications.Add(newNotification);
-                return await DataContext.SaveChangesAsync();
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
-            }
-            catch (NotSupportedException notSupportedException)
-            {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
-            }
-            catch (ObjectDisposedException disposedException)
-            {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
-            }
-                finally
-                {
+                    Notification newNotification = new Notification();
+                    GenericMapper.Map(notificationDTO, newNotification);
+                    DataContext.Notifications.Add(newNotification);
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    saveChangesAsync = await DataContext.SaveChangesAsync();
                 }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    loggingHelper.Log(dbUpdateException, TraceEventType.Error);
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("notification for:", notificationDTO.NotificationActionLink)));
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    loggingHelper.Log(notSupportedException, TraceEventType.Error);
+                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+                }
+                catch (ObjectDisposedException disposedException)
+                {
+                    loggingHelper.Log(disposedException, TraceEventType.Error);
+                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                }
+                return saveChangesAsync;
             }
         }
 
@@ -85,32 +87,32 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 int deleteCount = default(int);
-            string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
-            try
-            {
-                Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
-                if (notification != null)
+                string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+                try
                 {
-                    DataContext.Notifications.Remove(notification);
-                    deleteCount = await DataContext.SaveChangesAsync();
-                }
+                    Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
+                    if (notification != null)
+                    {
+                        DataContext.Notifications.Remove(notification);
+                        deleteCount = await DataContext.SaveChangesAsync();
+                    }
 
-                return deleteCount;
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("notification for:", actionLink)));
-            }
-            catch (NotSupportedException notSupportedException)
-            {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
-            }
-            catch (ObjectDisposedException disposedException)
-            {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
-            }
+                    return deleteCount;
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("notification for:", actionLink)));
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+                }
+                catch (ObjectDisposedException disposedException)
+                {
+                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                }
                 finally
                 {
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
