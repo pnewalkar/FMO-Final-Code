@@ -6,11 +6,10 @@
     </md-radio-group>
 
     <md-input-container class="md-block">
-        <label>{{'ROUTE_SIMULATION.SCENARIO' | translate }}</label>
+        <label>{{filterScenario.length!==0?'ROUTE_SIMULATION.SCENARIO':'VALIDATION.NO_RESULT_FOUND'| translate}}</label>
         <md-select ng-model="vm.selectedRouteScenario" ng-disabled="!filterScenario.length" ng-change="vm.scenarioChange()" placeholer="Select a scenario" class="simulationSelect">
             <md-option ng-repeat="scenario in filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
         </md-select>
-        <div ng-show="!filterScenario.length" class="noResult">No Result Found</div>
     </md-input-container>
 
     <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" selected-item="vm.selectedRoute" search-placeholder="ROUTE_SIMULATION.NO_ROUTE_SELECTED" 
