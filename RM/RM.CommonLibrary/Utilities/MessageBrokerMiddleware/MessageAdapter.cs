@@ -30,7 +30,6 @@ namespace RM.CommonLibrary.MessageBrokerMiddleware
             queueBuilder.Append(queueName);
 
             //KeyValuePair<string, string> queueDetails = fileType.GetQueue(QueueRootPath);
-            //TODO: Route the message to different queue depending on messagetype
             if (MessageQueue.Exists(queueBuilder.ToString()))
             {
                 messageQueue = new MessageQueue(queueBuilder.ToString());
