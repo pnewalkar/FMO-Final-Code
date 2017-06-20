@@ -1,5 +1,5 @@
 ﻿angular.module('licensingInfo')
-        .factory('licensingInfoService', licensingInfoService);
+        .service('licensingInfoService', licensingInfoService);
 licensingInfoService.$inject = ['$q','mapService', 'referencedataApiService', '$rootScope'];
 function licensingInfoService($q,mapService, referencedataApiService, $rootScope) {
 
@@ -18,8 +18,8 @@ function licensingInfoService($q,mapService, referencedataApiService, $rootScope
             var result = null;
             var aValue = sessionStorage.getItem('selectedDeliveryUnit');
             var selectedUnitArea = angular.fromJson(aValue);
-            if (selectedUnitArea.area === "BT") {
-                if (selectedLayer.layerName !== "Base Layer") {
+            if (selectedUnitArea.area === GlobalSettings.BT) {
+                if (selectedLayer.layerName !== GlobalSettings.baseLayerName) {
 
                     result = response.filter(function (e) {
                         return (e.name == GlobalSettings.OrdnanceSurvey_NI_Licensing);
@@ -33,7 +33,7 @@ function licensingInfoService($q,mapService, referencedataApiService, $rootScope
                 }
 
             } else {
-                if (selectedLayer.layerName !== "Base Layer") {
+                if (selectedLayer.layerName !== GlobalSettings.baseLayerName) {
                     var result = response.filter(function (e) {
                         return (e.name == GlobalSettings.OrdnanceSurvey_GB_Licensing);
                     });
