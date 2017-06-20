@@ -347,7 +347,5 @@
         public const string AreaHazards = "Hazards/Area Hazards*";
 
         #endregion PDF Generation constants
-
-
     }
 }
