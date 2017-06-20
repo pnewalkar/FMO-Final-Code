@@ -83,7 +83,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             bool isDeliveryPointUpdated = false;
             using (loggingHelper.RMTraceManager.StartTrace("Data.UpdateDeliveryPointByAddressId"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.Address_GUID == addressId).SingleOrDefault();
                 try
@@ -343,7 +343,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Data.GetDeliveryPoints"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 List<Location> locations = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
@@ -448,8 +448,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
 
-            //using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
-            //{
+            using (loggingHelper.RMTraceManager.StartTrace("Data.GetDPUse"))
+            {
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodEntryEventId, LoggerTraceConstants.Title);
             string dpUsetype = string.Empty;
 
@@ -485,7 +485,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodExitEventId, LoggerTraceConstants.Title);
             return dpUsetype;
 
-            // }
+            }
         }
 
         /// <summary>
