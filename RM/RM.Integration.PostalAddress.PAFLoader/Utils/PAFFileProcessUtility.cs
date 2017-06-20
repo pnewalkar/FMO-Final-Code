@@ -293,26 +293,26 @@
             string[] values = csvLine.Split(Constants.CommaChar);
             if (values.Count() == csvPAFValues)
             {
-                objAddDTO.Date = values[Constants.PAFDate];
-                objAddDTO.Time = values[Constants.PAFTime];
-                objAddDTO.AmendmentType = values[Constants.PAFAmendmentType];
-                objAddDTO.AmendmentDesc = values[Constants.PAFAmendmentDesc];
-                objAddDTO.Postcode = values[Constants.PAFPostcode];
-                objAddDTO.PostTown = values[Constants.PAFPostTown];
-                objAddDTO.DependentLocality = values[Constants.PAFDependentLocality];
-                objAddDTO.DoubleDependentLocality = values[Constants.PAFDoubleDependentLocality];
-                objAddDTO.Thoroughfare = values[Constants.PAFThoroughfare];
-                objAddDTO.DependentThoroughfare = values[Constants.PAFDependentThoroughfare];
-                objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[Constants.PAFBuildingNumber]) && !string.IsNullOrWhiteSpace(values[Constants.PAFBuildingNumber]) ? Convert.ToInt16(values[Constants.PAFBuildingNumber]) : Convert.ToInt16(0);
-                objAddDTO.BuildingName = values[Constants.PAFBuildingName];
-                objAddDTO.SubBuildingName = values[Constants.PAFSubBuildingName];
-                objAddDTO.POBoxNumber = values[Constants.PAFPOBoxNumber];
-                objAddDTO.DepartmentName = values[Constants.PAFDepartmentName];
-                objAddDTO.OrganisationName = values[Constants.PAFOrganisationName];
+                objAddDTO.Date = values[Constants.PAFDate] = values[Constants.PAFDate] == string.Empty ? null : values[Constants.PAFDate];
+                objAddDTO.Time = values[Constants.PAFTime] = values[Constants.PAFTime] == string.Empty ? null : values[Constants.PAFTime];
+                objAddDTO.AmendmentType = values[Constants.PAFAmendmentType] = values[Constants.PAFAmendmentType] == string.Empty ? null : values[Constants.PAFAmendmentType];
+                objAddDTO.AmendmentDesc = values[Constants.PAFAmendmentDesc] = values[Constants.PAFAmendmentDesc] == string.Empty ? null : values[Constants.PAFAmendmentDesc];
+                objAddDTO.Postcode = values[Constants.PAFPostcode] = values[Constants.PAFPostcode] == string.Empty ? null : values[Constants.PAFPostcode];
+                objAddDTO.PostTown = values[Constants.PAFPostTown] = values[Constants.PAFPostTown] == string.Empty ? null : values[Constants.PAFPostTown];
+                objAddDTO.DependentLocality = values[Constants.PAFDependentLocality] = values[Constants.PAFDependentLocality] == string.Empty ? null : values[Constants.PAFDependentLocality];
+                objAddDTO.DoubleDependentLocality = values[Constants.PAFDoubleDependentLocality] = values[Constants.PAFDoubleDependentLocality] == string.Empty ? null : values[Constants.PAFDoubleDependentLocality];
+                objAddDTO.Thoroughfare = values[Constants.PAFThoroughfare] = values[Constants.PAFThoroughfare] == string.Empty ? null : values[Constants.PAFThoroughfare];
+                objAddDTO.DependentThoroughfare = values[Constants.PAFDependentThoroughfare] = values[Constants.PAFDependentThoroughfare] == string.Empty ? null : values[Constants.PAFDependentThoroughfare];
+                objAddDTO.BuildingNumber = (!string.IsNullOrEmpty(values[Constants.PAFBuildingNumber]) && !string.IsNullOrWhiteSpace(values[Constants.PAFBuildingNumber])) ? Convert.ToInt16(values[Constants.PAFBuildingNumber]) as short? : null;
+                objAddDTO.BuildingName = values[Constants.PAFBuildingName] = values[Constants.PAFBuildingName] == string.Empty ? null : values[Constants.PAFBuildingName];
+                objAddDTO.SubBuildingName = values[Constants.PAFSubBuildingName] = values[Constants.PAFSubBuildingName] == string.Empty ? null : values[Constants.PAFSubBuildingName];
+                objAddDTO.POBoxNumber = values[Constants.PAFPOBoxNumber] = values[Constants.PAFPOBoxNumber] == string.Empty ? null : values[Constants.PAFPOBoxNumber];
+                objAddDTO.DepartmentName = values[Constants.PAFDepartmentName] = values[Constants.PAFDepartmentName] == string.Empty ? null : values[Constants.PAFDepartmentName];
+                objAddDTO.OrganisationName = values[Constants.PAFOrganisationName] = values[Constants.PAFOrganisationName] == string.Empty ? null : values[Constants.PAFOrganisationName];
                 objAddDTO.UDPRN = !string.IsNullOrEmpty(values[Constants.PAFUDPRN]) && !string.IsNullOrWhiteSpace(values[Constants.PAFUDPRN]) ? Convert.ToInt32(values[Constants.PAFUDPRN]) : 0;
-                objAddDTO.PostcodeType = values[Constants.PAFPostcodeType];
-                objAddDTO.SmallUserOrganisationIndicator = values[Constants.PAFSmallUserOrganisationIndicator];
-                objAddDTO.DeliveryPointSuffix = values[Constants.PAFDeliveryPointSuffix];
+                objAddDTO.PostcodeType = values[Constants.PAFPostcodeType] = values[Constants.PAFPostcodeType] == string.Empty ? null : values[Constants.PAFPostcodeType];
+                objAddDTO.SmallUserOrganisationIndicator = values[Constants.PAFSmallUserOrganisationIndicator] = values[Constants.PAFSmallUserOrganisationIndicator] == string.Empty ? null : values[Constants.PAFSmallUserOrganisationIndicator];
+                objAddDTO.DeliveryPointSuffix = values[Constants.PAFDeliveryPointSuffix] = values[Constants.PAFDeliveryPointSuffix] == string.Empty ? null : values[Constants.PAFDeliveryPointSuffix];
                 objAddDTO.IsValidData = true;
                 objAddDTO.FileName = fileName;
             }

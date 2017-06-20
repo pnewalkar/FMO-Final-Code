@@ -5,7 +5,7 @@
 
 var GlobalSettings = {
     apiUrl: '',
-    env: 'dev', // Here set the current environment
+    env: 'localhost', // Here set the current environment
     indexUrl: ''
 };
 
