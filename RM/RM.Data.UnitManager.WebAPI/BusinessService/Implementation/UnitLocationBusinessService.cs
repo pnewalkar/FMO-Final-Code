@@ -77,6 +77,13 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             return unitLocationDTOList;
         }
 
+
+        public UnitLocationDTO FetchUnitDetails(Guid unitGuid)
+        {
+            return unitLocationRespository.FetchUnitDetails(unitGuid);
+
+        }
+
         /// <summary>
         /// Get the postcode sector by the UDPRN id
         /// </summary>
