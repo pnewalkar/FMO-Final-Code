@@ -236,11 +236,11 @@
 
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MAIL_VOL' | translate }} </label>
-                    <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
+                    <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="6" required>
                     <div ng-messages="vm.deliveryPointForm.mailvol.$error"
                          ng-show="vm.deliveryPointForm.mailvol.$touched" role="alert">
                         <div ng-message="required">This field is required*</div>
-                        <div ng-message="maxlength">Value entered is longer than 4</div>
+                        <div ng-message="maxlength">Value entered is longer than 6</div>
                         <div ng-message="pattern">Value entered is not valid</div>
                     </div>
                 </md-input-container>

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Serialization;
 using Fonet;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Utilities.Enums;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
@@ -41,7 +42,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             if (routeLogSummaryModelDTO != null)
             {
                 routeLogSummaryModelDTO.RouteLogSequencedPoints = GetRouteSummary(routeLogSummaryModelDTO.RouteLogSequencedPoints);
-                pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(XmlSerializer(routeLogSummaryModelDTO), xsltFilepath);
+                pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(RouteSummaryXMLSerialization(routeLogSummaryModelDTO), xsltFilepath);
             }
 
             return pdfFilename;
@@ -111,12 +112,239 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// <typeparam name="T">Class </typeparam>
         /// <param name="type">object</param>
         /// <returns>xml as string</returns>
-        private string XmlSerializer<T>(T type)
+        /// <summary>
+        /// Serialze object to xml
+        /// </summary>
+        /// <typeparam name="T">Class </typeparam>
+        /// <param name="type">object</param>
+        /// <returns>xml as string</returns>
+        /// <summary>
+        /// Serialze object to xml
+        /// </summary>
+        /// <typeparam name="T">Class </typeparam>
+        /// <param name="type">object</param>
+        /// <returns>xml as string</returns>
+        private string RouteSummaryXMLSerialization(RouteLogSummaryModelDTO routeLogSummaryModelDTO)
         {
-            var xmlSerilzer = new XmlSerializer(type.GetType());
-            var xmlString = new StringWriter();
-            xmlSerilzer.Serialize(xmlString, type);
-            return xmlString.ToString();
+            XmlDocument doc = new XmlDocument();
+            XmlElement report = doc.CreateElement(Constants.Report);
+            XmlElement pageHeader = doc.CreateElement(Constants.PageHeader);
+            XmlElement pageFooter = doc.CreateElement(Constants.PageFooter);
+            XmlElement content = doc.CreateElement(Constants.Content);
+            XmlElement heading1 = doc.CreateElement(Constants.Heading1);
+            XmlElement heading2 = doc.CreateElement(Constants.Heading2);
+            XmlElement section = null;
+            XmlElement sectionColumn = null;
+            XmlElement table = null;
+            XmlElement paragraph = null;
+            Dictionary<string, string> data;
+
+            report.SetAttribute(Constants.PdfOutPut, Constants.A4Portrait);
+            pageHeader.SetAttribute(Constants.Caption, string.Empty);
+            pageFooter.SetAttribute(Constants.Caption, string.Empty);
+            pageFooter.SetAttribute(Constants.PageNumber, "true");
+            report.AppendChild(pageHeader);
+            report.AppendChild(pageFooter);
+            report.AppendChild(content);
+
+            //Section 1 Header
+            section = doc.CreateElement(Constants.Section);
+
+            //Section 1 Header 1
+            sectionColumn = doc.CreateElement(Constants.SectionColumn);
+            sectionColumn.SetAttribute(Constants.Width, "1");
+            heading1.InnerText = Constants.RouteSummaryHeader;
+            sectionColumn.AppendChild(heading1);
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            //Section 2
+            section = doc.CreateElement(Constants.Section);
+
+            //Section 2 columns 1 i.e Table 1
+            sectionColumn = doc.CreateElement(Constants.SectionColumn);
+            sectionColumn.SetAttribute(Constants.Width, "1");
+            data = GetSectionColumnData(1, routeLogSummaryModelDTO);
+            table = CreateTableWithFixedRowsColumns(2, data, doc, true);
+            sectionColumn.AppendChild(table);
+            section.AppendChild(sectionColumn);
+
+            //Section 2 columns 2 i.e Table 2
+            sectionColumn = doc.CreateElement(Constants.SectionColumn);
+            sectionColumn.SetAttribute(Constants.Width, "1");
+            data = GetSectionColumnData(2, routeLogSummaryModelDTO);
+            table = CreateTableWithFixedRowsColumns(2, data, doc);
+            sectionColumn.AppendChild(table);
+            section.AppendChild(sectionColumn);
+
+            //Section 2 columns 3 i.e Table 3
+            sectionColumn = doc.CreateElement(Constants.SectionColumn);
+            paragraph = doc.CreateElement(Constants.Paragraph);
+            paragraph.InnerText = Constants.RouteSummaryAlias;
+            sectionColumn.SetAttribute(Constants.Width, "1");
+            data = GetSectionColumnData(3, routeLogSummaryModelDTO);
+            table = CreateTableWithFixedRowsColumns(2, data, doc);
+            sectionColumn.AppendChild(table);
+            sectionColumn.AppendChild(paragraph);
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            //Section 3
+            section = doc.CreateElement(Constants.Section);
+
+            //Section 1 Header 1
+            sectionColumn = doc.CreateElement(Constants.SectionColumn);
+            sectionColumn.SetAttribute(Constants.Width, "1");
+            heading2.InnerText = Constants.RouteSummarySequencedPoints;
+            table = CreateTableWithDynamicRowsColumns(GetSectionColumnData(routeLogSummaryModelDTO.RouteLogSequencedPoints), doc);
+            sectionColumn.AppendChild(heading2);
+            sectionColumn.AppendChild(table);
+            section.AppendChild(sectionColumn);
+
+            content.AppendChild(section);
+            doc.AppendChild(report);
+            return doc.InnerXml; ;
+        }
+
+        private Dictionary<string, string> GetSectionColumnData(int sectionNumber, RouteLogSummaryModelDTO routeLogSummaryModelDTO)
+        {
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            if (sectionNumber == 1)
+            {
+                data.Add(Constants.RouteSummaryName, routeLogSummaryModelDTO.DeliveryRoute.RouteName);
+                data.Add(Constants.Number, routeLogSummaryModelDTO.DeliveryRoute.RouteNumber);
+                data.Add(Constants.RouteMethod, routeLogSummaryModelDTO.DeliveryRoute.Method);
+                data.Add(Constants.DeliveryOffice, routeLogSummaryModelDTO.DeliveryRoute.DeliveryOffice);
+                data.Add(Constants.Aliases, routeLogSummaryModelDTO.DeliveryRoute.Aliases.ToString());
+                data.Add(Constants.Block, routeLogSummaryModelDTO.DeliveryRoute.Blocks.ToString());
+                data.Add(Constants.Scenario, routeLogSummaryModelDTO.DeliveryRoute.ScenarioName);
+            }
+            else if (sectionNumber == 2)
+            {
+                data.Add(Constants.CollectionPoint, "0");
+                data.Add(Constants.DeliveryPoint, routeLogSummaryModelDTO.DeliveryRoute.DPs.ToString());
+                data.Add(Constants.BusinessDeliveryPoint, routeLogSummaryModelDTO.DeliveryRoute.BusinessDPs.ToString());
+                data.Add(Constants.ResidentialDeliveryPoint, routeLogSummaryModelDTO.DeliveryRoute.ResidentialDPs.ToString());
+                data.Add(Constants.AccelerationIn, routeLogSummaryModelDTO.DeliveryRoute.AccelarationIn);
+                data.Add(Constants.AccelerationOut, routeLogSummaryModelDTO.DeliveryRoute.AccelarationOut);
+                data.Add(Constants.PairedRoute, routeLogSummaryModelDTO.DeliveryRoute.PairedRoute);
+            }
+            else
+            {
+                data.Add(Constants.NoD2D, "0");
+                data.Add(Constants.DPExemptions, "0");
+            }
+            return data;
+        }
+
+        private List<List<string>> GetSectionColumnData(List<RouteLogSequencedPointsDTO> routeLogSequencedPointsDTOs)
+        {
+            List<List<string>> data = new List<List<string>>();
+            data.Add(new List<string> { Constants.Street, Constants.Number, Constants.DeliveryPoint, Constants.MultipleOccupancy, Constants.SpecialInstructions, Constants.AreaHazards });
+            foreach (var routeLogSequencedPointsDTO in routeLogSequencedPointsDTOs)
+            {
+                data.Add(new List<string> { routeLogSequencedPointsDTO.StreetName, routeLogSequencedPointsDTO.Description,routeLogSequencedPointsDTO.DeliveryPointCount.ToString(),
+                    routeLogSequencedPointsDTO.MultipleOccupancy!=null ?routeLogSequencedPointsDTO.MultipleOccupancy.ToString(): "0", string.Empty,string.Empty});
+            }
+            return data;
+        }
+
+        private XmlElement CreateTableWithFixedRowsColumns(int columnsCount, Dictionary<string, string> data, XmlDocument doc, bool setWidth = false)
+        {
+            XmlElement table = doc.CreateElement(Constants.Table);
+            XmlElement columns = doc.CreateElement(Constants.Columns);
+            XmlElement column = null;
+            XmlElement row = null;
+            XmlElement cell = null;
+
+            if (setWidth)
+            {
+                table.SetAttribute(Constants.Width, "100%");
+            }
+            table.SetAttribute(Constants.Borders, "false");
+            table.SetAttribute(Constants.UseShading, "true");
+
+            for (int i = 0; i < columnsCount; i++)
+            {
+                column = doc.CreateElement(Constants.Columns);
+                column.SetAttribute(Constants.Width, "1");
+                columns.AppendChild(column);
+            }
+
+            table.AppendChild(columns);
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                var item = data.ElementAt(i);
+                row = doc.CreateElement(Constants.Row);
+
+                if (i % 2 == 0)
+                {
+                    row.SetAttribute(Constants.Shade, "true");
+                }
+
+                cell = doc.CreateElement(Constants.Cell);
+                cell.InnerText = item.Key;
+                row.AppendChild(cell);
+
+                cell = doc.CreateElement(Constants.Cell);
+                cell.InnerText = item.Value;
+                row.AppendChild(cell);
+                table.AppendChild(row);
+            }
+
+            return table;
+        }
+
+        private XmlElement CreateTableWithDynamicRowsColumns(List<List<string>> data, XmlDocument doc)
+        {
+            XmlElement table = doc.CreateElement(Constants.Table);
+            XmlElement columns = doc.CreateElement(Constants.Columns);
+            XmlElement column = null;
+            XmlElement row = null;
+            XmlElement cell = null;
+            var columnsCount = data[0].Count;
+
+            table.SetAttribute(Constants.UseShading, "true");
+
+            for (int i = 0; i < columnsCount; i++)
+            {
+                column = doc.CreateElement(Constants.Column);
+                column.SetAttribute(Constants.Width, "1");
+                columns.AppendChild(column);
+            }
+            table.AppendChild(columns);
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                var item = data.ElementAt(i);
+
+                if (i == 0)
+                {
+                    row = doc.CreateElement(Constants.Header);
+                }
+                else
+                {
+                    row = doc.CreateElement(Constants.Row);
+                }
+                if (i != 0 && i % 2 == 0)
+                {
+                    row.SetAttribute(Constants.Shade, "true");
+                }
+
+                for (int j = 0; j < item.Count; j++)
+                {
+                    cell = doc.CreateElement(Constants.Cell);
+                    if (i != 0)
+                        cell.SetAttribute("align", "center");
+                    cell.InnerText = item[j];
+                    row.AppendChild(cell);
+                }
+
+                table.AppendChild(row);
+            }
+
+            return table;
         }
 
         private List<RouteLogSequencedPointsDTO> GetRouteSummary(List<RouteLogSequencedPointsDTO> addressList)

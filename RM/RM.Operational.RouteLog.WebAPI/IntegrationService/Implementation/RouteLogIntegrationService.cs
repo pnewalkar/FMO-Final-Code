@@ -56,8 +56,7 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         /// <returns>byte array</returns>
         public async Task<string> GenerateRouteLogSummaryReport(string xml, string fileName)
         {
-            pdfGeneratorWebAPIName = pdfGeneratorWebAPIName + "PDFReports/" + fileName;
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName, xml);
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName + "PDFReports/" + fileName, xml);
             if (!result.IsSuccessStatusCode)
             {
                 var responseContent = result.ReasonPhrase;

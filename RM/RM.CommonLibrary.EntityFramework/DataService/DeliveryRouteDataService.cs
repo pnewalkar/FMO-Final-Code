@@ -398,7 +398,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             if (routeResults != null && routeResults.Count > 0)
             {
-                pairedRoute = string.Join(",", routeResults);
+                foreach (var item in routeResults)
+                {
+                    pairedRoute = pairedRoute + "," + item.RouteNumber;
+                }
                 pairedRoute = Regex.Replace(pairedRoute, ",+", ",").Trim(',');
             }
 
