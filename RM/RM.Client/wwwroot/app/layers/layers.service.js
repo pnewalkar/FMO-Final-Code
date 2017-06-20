@@ -3,11 +3,11 @@
 layersService.$inject = [
  'mapService',
  'mapStylesFactory',
-'layersAPIService'];
+'layersAPIService','licensingInfoService'];
 
 function layersService(mapService,
                        mapStylesFactory,
-                       layersAPIService) {
+                       layersAPIService,licensingInfoService) {
     var vm = this;
 
     return {
@@ -76,6 +76,7 @@ function layersService(mapService,
   
     function setSelectedObjectsVisibility(selectedLayer) {
         mapService.setSelectedObjectsVisibility(selectedLayer);
+        licensingInfoService.getLicensingInfo();
     }
 
 }

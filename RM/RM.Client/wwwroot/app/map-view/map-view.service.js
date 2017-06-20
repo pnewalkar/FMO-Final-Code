@@ -104,7 +104,15 @@ function mapService($http,
         removeInteraction: removeInteraction,
         deleteAccessLinkFeature: deleteAccessLinkFeature,
         showDeliveryPointDetails: showDeliveryPointDetails,
-        clearDrawingLayer: clearDrawingLayer
+        clearDrawingLayer: clearDrawingLayer,
+        LicenceInfo: LicenceInfo
+    }
+
+
+
+    function LicenceInfo(displayText)
+    {
+        return mapFactory.LicenceInfo(displayText);
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
