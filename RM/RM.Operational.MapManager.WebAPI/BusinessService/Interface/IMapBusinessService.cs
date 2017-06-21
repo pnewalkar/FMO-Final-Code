@@ -12,7 +12,6 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <returns>printMapDTO</returns>
         PrintMapDTO SaveImage(PrintMapDTO printMapDTO);
 
-        
         /// <summary>
         /// Generate map report
         /// </summary>

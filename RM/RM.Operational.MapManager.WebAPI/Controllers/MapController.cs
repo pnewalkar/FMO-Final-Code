@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.MapManager.WebAPI.Controllers;
 using RM.Operational.MapManager.WebAPI.BusinessService;
-using System.Threading.Tasks;
 
 namespace RM.Operational.MapManager.WebAPI.Controllers
 {
@@ -21,9 +21,14 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
             this.mapGeneratorBusinessService = mapGeneratorBusinessService;
         }
 
+        /// <summary>
+        /// Api to save captured map image in png format
+        /// </summary>
+        /// <param name="printMapDTO">printMapDTO</param>
+        /// <returns>Dto with saved image name</returns>
         [Route("MapImage")]
         [HttpPost]
-        public IActionResult GenerateReportWithMap([FromBody]PrintMapDTO printMapDTO)
+        public IActionResult SaveMapImage([FromBody]PrintMapDTO printMapDTO)
         {
             try
             {
@@ -37,6 +42,11 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Api to generate Print Map pdf using xsl fo
+        /// </summary>
+        /// <param name="printMapDTO">printMapDTO</param>
+        /// <returns>Pdf file name </returns>
         [Route("MapPDF")]
         [HttpPost]
         public async Task<IActionResult> GeneratePdf([FromBody]PrintMapDTO printMapDTO)
