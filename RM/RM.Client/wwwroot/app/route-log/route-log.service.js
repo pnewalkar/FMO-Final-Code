@@ -86,7 +86,7 @@ referenceDataConstants) {
             } else {
                 multiSelectiondeliveryRoute = response;
                 deliveryRoute = null;
-                deliveryRouteResult.push({ "deliveryRoute": null, "multiSelectiondeliveryRoute": response });
+                deliveryRouteResult.push({ "deliveryRoute": [], "multiSelectiondeliveryRoute": response });
                 deferred.resolve(deliveryRouteResult);
             }
         });
