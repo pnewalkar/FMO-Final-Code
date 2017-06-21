@@ -90,11 +90,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataService\AccessLinkDataServiceFixture.cs" />
-    <Compile Include="DataService\AddressDataServiceFixture.cs" />
-    <Compile Include="DataService\AddressDataServicePAFFixture.cs" />
     <Compile Include="DataService\BlockSequenceDataServiceFixture.cs" />
-    <Compile Include="DataService\DeliveryPointDataServiceFixture.cs" />
-    <Compile Include="DataService\DeliveryPointsDataServiceFixture.cs" />
     <Compile Include="DataService\DeliveryRouteDataServiceFixture.cs" />
     <Compile Include="DataService\OSRoadLinkDataServiceFixture.cs" />
     <Compile Include="DataService\UnitLocationRepositoryFixture.cs" />
