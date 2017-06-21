@@ -71,8 +71,20 @@ function MapFactory($http,
         setAccessLink : setAccessLink,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
-        GetRouteForDeliveryPoint: GetRouteForDeliveryPoint
+        GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
+        LicenceInfo: LicenceInfo
     };
+
+    function LicenceInfo(displayText) {
+     
+        var map = getMap();
+
+        var attribution = new ol.Attribution({
+            html: displayText
+        })
+        map.getLayers().getArray()[0].getSource().setAttributions(attribution);
+
+    }
 
     function initialiseMap() {
         availableResolutionForCurrentExtent = defaultResolutions;
@@ -94,8 +106,20 @@ function MapFactory($http,
             renderBuffer: 1000
         });
 
+     
         map = new ol.Map({
-            layers: layers.map(function (a) { return a.layer }),
+            //layers: layers.map(function (a) { return a.layer }),
+            layers: [
+          new ol.layer.Tile({
+              source: new ol.source.OSM({
+                  attributions: [
+                    new ol.Attribution({
+                     
+                    })
+                  ]
+              })
+          })
+            ],
             target: 'map',
             view: view,
             loadTilesWhileAnimating: true,
@@ -104,7 +128,7 @@ function MapFactory($http,
         });
 
         map.addControl(getCustomScaleLine());
-
+        map.addControl(new ol.control.Attribution());
         var external_control = new ol.control.Zoom({
             target: $document[0].getElementById('zoom-control')
         });
@@ -116,6 +140,8 @@ function MapFactory($http,
         map.addControl(new ol.control.ScaleLine());
         document.getElementsByClassName('ol-overlaycontainer-stopevent')[0].style.visibility = "hidden";
     }
+
+
 
     function initialiseMiniMap() {
         if (view == null)

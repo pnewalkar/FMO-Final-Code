@@ -5,12 +5,14 @@ angular.module('mapView')
                                   'mapService',
                                   'mapFactory',
                                   'CommonConstants',
+                                  '$rootScope',
                                   MapController])
 function MapController($scope,
                        $state,
                        mapService,
                        mapFactory,
-                       CommonConstants) {
+                       CommonConstants,
+                       $rootScope) {
     var vm = this;
     var contextTitle = vm.contextTitle;
     vm.initialise = initialise();
@@ -23,6 +25,11 @@ function MapController($scope,
     vm.selectFeatures = selectFeatures
     vm.onEnterKeypress = onEnterKeypress;
 
+    $rootScope.$on('LicensingInfoText', function (event, args) {
+        debugger;
+        var test = args.displayText;
+        mapService.LicenceInfo(args.displayText);
+    });
 
     $scope.$on('refreshLayers', mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
