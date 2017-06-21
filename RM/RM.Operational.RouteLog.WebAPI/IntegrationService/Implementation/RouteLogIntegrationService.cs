@@ -5,8 +5,8 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.ExceptionMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.Operational.RouteLog.WebAPI.Utils;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {
@@ -25,8 +25,8 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         public RouteLogIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
             this.httpHandler = httpHandler;
-            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
-            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PDFGeneratorWebAPIName).ToString() : string.Empty;
+            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(RouteLogConstants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(RouteLogConstants.PDFGeneratorWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor

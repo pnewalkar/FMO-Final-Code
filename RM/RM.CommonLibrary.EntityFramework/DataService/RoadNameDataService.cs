@@ -9,7 +9,6 @@ using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -18,6 +17,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class RoadNameDataService : DataServiceBase<RoadName, RMDBContext>, IRoadNameDataService
     {
+        private const int BNGCOORDINATESYSTEM = 27700;
         public RoadNameDataService(IDatabaseFactory<RMDBContext> databaseFactory)
             : base(databaseFactory)
         {
@@ -54,7 +54,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                     var roadLinkTypeId = DataContext.ReferenceDatas.AsNoTracking().Where(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).Select(x => x.ID).SingleOrDefault();
 
-                    DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates, Constants.BNGCOORDINATESYSTEM);
+                    DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates, BNGCOORDINATESYSTEM);
 
                     networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => (x.LinkGeometry != null && x.LinkGeometry.Intersects(extent) && x.LinkGeometry.Intersects(polygon)) && x.NetworkLinkType_GUID == roadLinkTypeId).ToList();
                 }
@@ -63,7 +63,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
         }

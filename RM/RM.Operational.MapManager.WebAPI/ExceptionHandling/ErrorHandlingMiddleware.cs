@@ -129,7 +129,7 @@ namespace RM.Operational.MapManager.WebAPI.ExceptionHandling
 
             if (ex.Data.Count > 0)
             {
-                string userFriendlyMessage = ex.Data["userFriendlyMessage"].ToString();
+                string userFriendlyMessage = ex.Data[ErrorConstants.UserFriendlyErrorMessage].ToString();
                 return exceptionResponse.Response ?? CreateErrorResponse(userFriendlyMessage.Replace(Environment.NewLine, " "));
             }
 

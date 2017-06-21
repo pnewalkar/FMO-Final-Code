@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
-using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.CommonLibrary.HttpHandler
 {
@@ -17,6 +15,16 @@ namespace RM.CommonLibrary.HttpHandler
     /// </summary>
     public class HttpHandler : IHttpHandler
     {
+        #region constants
+
+        private const string FMOTokenGenerationUrl = "FMOTokenGenerationUrl";
+        private const string FMOWebAPIUser = "FMOWebAPIUser";
+        private const string UserName = "username";
+        private const string AccessToken = "access_token";
+        private const string Bearer = "bearer";
+
+        #endregion constants
+
         private HttpClient client;
         private string tokenGenerationURl = string.Empty;
         private string userName = string.Empty;
@@ -29,8 +37,8 @@ namespace RM.CommonLibrary.HttpHandler
                 client = new HttpClient();
             }
 
-            tokenGenerationURl = ConfigurationManager.AppSettings[Constants.FMOTokenGenerationUrl].ToString();
-            userName = ConfigurationManager.AppSettings[Constants.FMOWebAPIUser].ToString();
+            tokenGenerationURl = ConfigurationManager.AppSettings[FMOTokenGenerationUrl].ToString();
+            userName = ConfigurationManager.AppSettings[FMOWebAPIUser].ToString();
             serilaize = new JavaScriptSerializer();
         }
 
@@ -62,7 +70,7 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.PostAsJsonAsync<T>(url, content);
         }
 
@@ -85,7 +93,7 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.PutAsJsonAsync<T>(url, content);
         }
 
@@ -107,7 +115,7 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.GetAsync(url);
         }
 
@@ -129,20 +137,20 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.DeleteAsync(url);
         }
 
         private async Task<string> GetSecurityToken()
         {
             object objtoken;
-            var content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>(Constants.UserName, userName) });
+            var content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>(UserName, userName) });
             var result = await client.PostAsync(tokenGenerationURl, content);
             string token = await result.Content.ReadAsStringAsync();
             if (!string.IsNullOrEmpty(token))
             {
                 Dictionary<string, object> response = serilaize.Deserialize<Dictionary<string, object>>(token);
-                response.TryGetValue(Constants.AccessToken, out objtoken);
+                response.TryGetValue(AccessToken, out objtoken);
                 return objtoken.ToString();
             }
             else

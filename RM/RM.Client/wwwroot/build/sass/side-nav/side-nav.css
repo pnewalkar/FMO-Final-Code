@@ -12,11 +12,16 @@ md-list-item, .version {
   color: #ffffff; }
 
 .printInfo {
-  top: 12px;
+  top: 36%;
   position: absolute;
   left: 30%;
   margin: 0px 0px 0px 10px; }
 
 .versionBox {
   position: absolute;
-  bottom: 0px; }
+  bottom: 0px;
+  min-height: 36px;
+  height: 36px; }
+
+.sideList .md-button {
+  min-height: 48px; }

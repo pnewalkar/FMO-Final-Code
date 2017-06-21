@@ -17,6 +17,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
     /// <seealso cref="Fmo.BusinessServices.Interfaces.IUnitLocationBusinessService" />
     public class UnitLocationBusinessService : IUnitLocationBusinessService
     {
+        private const int BNGCOORDINATESYSTEM = 27700;
+
         private IUnitLocationDataService unitLocationRespository;
         private IPostCodeSectorDataService postcodeSectorDataService = default(IPostCodeSectorDataService);
         private IPostCodeDataService postCodeDataService = default(IPostCodeDataService);
@@ -65,7 +67,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             foreach (var unitLocationDTO in unitLocationDTOList)
             {
                 // take the unit boundry plus 1 mile envelope
-                var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(unitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
+                var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(unitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
 
                 unitLocationDTO.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
 
@@ -172,7 +174,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 {
                     geometry.type = OpenGisGeometryType.Polygon.ToString();
 
-                    sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
+                    sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
                     List<List<double[]>> listCords = new List<List<double[]>>();
                     List<double[]> cords = new List<double[]>();
 
@@ -190,7 +192,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 {
                     geometry.type = OpenGisGeometryType.MultiPolygon.ToString();
 
-                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
+                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
                     List<List<List<double[]>>> listCords = new List<List<List<double[]>>>();
 
                     List<List<double[]>> cords = new List<List<double[]>>();

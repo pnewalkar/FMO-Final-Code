@@ -15,6 +15,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test
     [TestFixture]
     public class NetworkManagerBusinessServiceFixture : TestFixtureBase
     {
+        private const string PostalAddressType = "Postal Address Type";
+
         private Mock<IStreetNetworkDataService> mockStreetNetworkDataService;
         private Mock<INetworkManagerIntegrationService> mockNetworkManagerIntegrationService;
         private Mock<IOSRoadLinkDataService> mockOsRoadLinkDataService;
@@ -92,6 +94,13 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             Assert.AreEqual(result.Result[0].LocalName, "abc");
         }
 
+        [Test]
+        public void TestGetRoadName()
+        {
+            string coordinates = "399545.5590911182,649744.6394892789,400454.4409088818,650255.3605107211";
+            var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid());
+            Assert.IsNotNull(result);
+        }
         protected override void OnSetup()
         {
             mockStreetNetworkDataService = CreateMock<IStreetNetworkDataService>();
@@ -118,7 +127,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName = Constants.PostalAddressType
+                    CategoryName = PostalAddressType
                 }
             };
 

@@ -15,6 +15,8 @@ namespace RM.CommonLibrary.MessageBrokerMiddleware
     /// <typeparam name="T"></typeparam>
     internal class MessageAdapter<T> : IMessageAdapter<T>
     {
+        private const string MSGQUEUEPERMISSION = "Everyone";
+
         //here is where we implement the message queue technology of our choice
         private MessageQueue messageQueue = null;
 
@@ -30,7 +32,6 @@ namespace RM.CommonLibrary.MessageBrokerMiddleware
             queueBuilder.Append(queueName);
 
             //KeyValuePair<string, string> queueDetails = fileType.GetQueue(QueueRootPath);
-            //TODO: Route the message to different queue depending on messagetype
             if (MessageQueue.Exists(queueBuilder.ToString()))
             {
                 messageQueue = new MessageQueue(queueBuilder.ToString());
@@ -41,7 +42,7 @@ namespace RM.CommonLibrary.MessageBrokerMiddleware
                 // Create the Queue
                 MessageQueue.Create(queueBuilder.ToString());
                 messageQueue = new MessageQueue(queueBuilder.ToString());
-                messageQueue.SetPermissions(Constants.MSGQUEUEPERMISSION, MessageQueueAccessRights.FullControl);
+                messageQueue.SetPermissions(MSGQUEUEPERMISSION, MessageQueueAccessRights.FullControl);
                 messageQueue.Label = queueName;
             }
         }

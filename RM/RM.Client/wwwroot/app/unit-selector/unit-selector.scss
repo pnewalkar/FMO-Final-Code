@@ -16,14 +16,14 @@
     display: none;
 } 
 
-.unitText .md-select-value span{
-    border-bottom-color: white;
-}
-
 .unitText .md-select-value>span:not(.md-select-icon) .md-text  {
     @include font-color($white);
 }
 
-.unitText md-select.md-default-theme .md-select-value, md-select .md-select-value {
+/*.unitText md-select.md-default-theme .md-select-value, md-select .md-select-value {
     border-bottom-color: white;
-}
+}*/
+
+.unitText md-select-value#select_value_label_1 {
+    border-bottom-color: white;
+}                                

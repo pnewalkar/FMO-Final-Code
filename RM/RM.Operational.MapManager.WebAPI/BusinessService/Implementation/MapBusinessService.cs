@@ -11,6 +11,10 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
     public class MapBusinessService : IMapBusinessService
     {
+        private const string XSLTFilePath = "XSLTFilePath";
+        private const string ImagePath = "ImagePath";
+        private const string PrintMapDateTimeFormat = "{0:dd/MM/yyyy HH:mm}";
+
         private string xsltFilepath = string.Empty;
         private string imagePath = string.Empty;
         private IMapIntegrationService mapIntegrationService;
@@ -24,8 +28,8 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         public MapBusinessService(IMapIntegrationService mapIntegrationService, IConfigurationHelper configurationHelper)
         {
             this.mapIntegrationService = mapIntegrationService;
-            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.XSLTFilePath).ToString() : string.Empty;
-            this.imagePath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ImagePath).ToString() : string.Empty;
+            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(XSLTFilePath).ToString() : string.Empty;
+            this.imagePath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ImagePath).ToString() : string.Empty;
         }
 
         /// <summary>
@@ -38,7 +42,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             string pdXslFo = string.Empty;
             if (printMapDTO != null)
             {
-                printMapDTO.PrintTime = string.Format(Constants.PrintMapDateTimeFormat, DateTime.Now);
+                printMapDTO.PrintTime = string.Format(PrintMapDateTimeFormat, DateTime.Now);
                 SaveMapImage(printMapDTO);
             }
 

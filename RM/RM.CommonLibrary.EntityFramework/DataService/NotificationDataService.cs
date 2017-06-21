@@ -1,21 +1,18 @@
 ﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
-using System.Data.Entity.Infrastructure;
 using RM.CommonLibrary.ExceptionMiddleware;
-using System.Data.Entity;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-using System.Reflection;
-using System.Diagnostics;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -24,7 +21,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class NotificationDataService : DataServiceBase<Notification, RMDBContext>, INotificationDataService
     {
+        private const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
         public NotificationDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
@@ -42,14 +42,14 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             {
                 int saveChangesAsync = default(int);
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
                 {
                     Notification newNotification = new Notification();
                     GenericMapper.Map(notificationDTO, newNotification);
                     DataContext.Notifications.Add(newNotification);
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                     saveChangesAsync = await DataContext.SaveChangesAsync();
                 }
                 catch (DbUpdateException dbUpdateException)
@@ -60,13 +60,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 catch (NotSupportedException notSupportedException)
                 {
                     loggingHelper.Log(notSupportedException, TraceEventType.Error);
-                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
                 }
                 catch (ObjectDisposedException disposedException)
                 {
                     loggingHelper.Log(disposedException, TraceEventType.Error);
-                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
                 }
                 return saveChangesAsync;
@@ -84,10 +84,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteNotificationbyUDPRNAndAction"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 int deleteCount = default(int);
-                string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+                string actionLink = string.Format(USRNOTIFICATIONLINK, uDPRN);
                 try
                 {
                     Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
@@ -105,17 +105,17 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 }
                 catch (NotSupportedException notSupportedException)
                 {
-                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
                 }
                 catch (ObjectDisposedException disposedException)
                 {
-                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
                 }
                 finally
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
         }
@@ -127,7 +127,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>NotificationDTO object</returns>
         public async Task<NotificationDTO> GetNotificationByUDPRN(int uDPRN)
         {
-            string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+            string actionLink = string.Format(USRNOTIFICATIONLINK, uDPRN);
             Notification notification = await DataContext.Notifications
                 .Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefaultAsync();
             NotificationDTO notificationDTO = new NotificationDTO();
@@ -143,7 +143,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>boolean value</returns>
         public async Task<bool> CheckIfNotificationExists(int uDPRN, string action)
         {
-            string notificationActionlink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN.ToString());
+            string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());
             return await DataContext.Notifications.AsNoTracking()
                 .AnyAsync(notific => notific.NotificationActionLink.Equals(notificationActionlink) &&
                                   notific.Notification_Heading.Trim().Equals(action));

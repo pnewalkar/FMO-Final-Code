@@ -12,6 +12,9 @@ namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
 {
     public class PDFGeneratorBusinessService : IPDFGeneratorBusinessService
     {
+        private const string XSLTFilePath = "XSLTFilePath";
+        private const string PDFFileLoaction = "PDFFileLoaction";
+
         private string xsltFilepath = string.Empty;
         private string pdfFilepath = string.Empty;
         private IFileProvider fileProvider = default(IFileProvider);
@@ -25,8 +28,8 @@ namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
         public PDFGeneratorBusinessService(IFileProvider fileProvider, IConfigurationHelper configurationHelper)
         {
             this.fileProvider = fileProvider;
-            this.pdfFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PDFFileLoaction).ToString() : string.Empty;
-            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.XSLTFilePath).ToString() : string.Empty;
+            this.pdfFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PDFFileLoaction).ToString() : string.Empty;
+            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(XSLTFilePath).ToString() : string.Empty;
         }
 
         public string GenerateRouteLogSummaryReport(string xml, string fileName)

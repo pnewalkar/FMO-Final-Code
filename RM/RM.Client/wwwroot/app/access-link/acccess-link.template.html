@@ -1,9 +1,11 @@
 <div layout="column">
      <div layout="row" class="md-padding" layout-align="end start">
-         <md-button class="context-button" aria-label="Back" ng-show="vm.enableBack" ng-click="vm.clearAccessLink()" title="{{ 'GENERAL.BUTTONS.BACK' | translate }}">
-            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <md-button class="context-button" ng-show="vm.enableBack" aria-label="Back" title="{{ 'GENERAL.BUTTONS.BACK' | translate }}">
+            <span previous-page ng-click="go_back()">
+                <i class ="fa fa-arrow-circle-left" aria-hidden="true"></i>
+            </span>
         </md-button>
-         <md-button class="context-button" aria-label="Save" ng-show="vm.enableSave" ng-click="vm.createAccessLink()" ui-sref="deliveryPoint" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+        <md-button class="context-button" aria-label="Save" ng-show="vm.enableSave" ng-click="vm.createAccessLink()" ui-sref="deliveryPoint" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
         </md-button>
          <md-button class="context-button" aria-label="Help" title="{{ 'GENERAL.BUTTONS.HELP' | translate }}">

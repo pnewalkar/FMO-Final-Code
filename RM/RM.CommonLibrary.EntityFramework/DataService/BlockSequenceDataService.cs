@@ -3,7 +3,6 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
@@ -13,13 +12,14 @@ using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.ResourceFile;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
     public class BlockSequenceDataService : DataServiceBase<BlockSequence, RMDBContext>, IBlockSequenceDataService
     {
+        private const string UnSequenced = "U";
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         /// <summary>
@@ -46,11 +46,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 using (loggingHelper.RMTraceManager.StartTrace(methodName))
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var block_Guid = await (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
                                             join b in DataContext.Blocks.AsNoTracking() on dr.Block_GUID equals b.ID
-                                            where b.BlockType == Constants.UnSequenced && dr.DeliveryRoute_GUID == deliveryRouteId
+                                            where b.BlockType == UnSequenced && dr.DeliveryRoute_GUID == deliveryRouteId
                                             select b.ID).SingleOrDefaultAsync();
 
                     BlockSequence blockSequenceEntity = GenericMapper.Map<BlockSequenceDTO, BlockSequence>(blockSequenceDTO);
@@ -58,7 +58,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     DataContext.BlockSequences.Add(blockSequenceEntity);
                     DataContext.SaveChanges();
                     isBlockSequencInserted = true;
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)

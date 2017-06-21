@@ -1,27 +1,25 @@
-﻿using Ninject;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.ServiceProcess;
+using System.Text;
+using System.Xml.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Integration.ThirdPartyAddressLocation.Loader.Utils;
 using RM.Integration.ThirdPartyAddressLocation.Loader.Utils.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace RM.Integration.ThirdPartyAddressLocation.Loader
 {
     public partial class ThirdPartyImport : ServiceBase
     {
+        private const string XMLFileFolderSettings = "XMLFileFolderSettings";
+        private const string BatchServiceName = "ServiceName";
+
         #region Property Declarations
 
         private List<FileSystemWatcher> listFileSystemWatcher;
@@ -39,7 +37,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
             this.usrLoader = usrLoader;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
-            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
+            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(BatchServiceName);
         }
 
         #endregion Constructor
@@ -117,7 +115,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
         private void PopulateListFileSystemWatchers()
         {
             // Get the XML file name from the App.config file
-            string fileNameXML = ConfigurationManager.AppSettings[Constants.XMLFileFolderSettings];
+            string fileNameXML = ConfigurationManager.AppSettings[XMLFileFolderSettings];
 
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
@@ -174,7 +172,6 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
 
                     // Add the systemWatcher to the list
                     listFileSystemWatcher.Add(fileSWatch);
-
                 }
             }
         }
@@ -211,7 +208,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
         private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Args)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
             string fileName = e.FullPath;
             try
             {
@@ -223,7 +220,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             }
         }
 
@@ -237,7 +234,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
         /// <param name="separator">separator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodExitEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodExitEventId, LoggerTraceConstants.Title);
         }
     }
 }

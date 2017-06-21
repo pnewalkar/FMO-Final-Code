@@ -15,6 +15,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
 {
     public class NetworkManagerIntegrationService : INetworkManagerIntegrationService
     {
+        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
         #region Property Declarations
 
         private string referenceDataWebAPIName = string.Empty;
@@ -25,7 +26,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
         public NetworkManagerIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
             this.httpHandler = httpHandler;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
         }
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param

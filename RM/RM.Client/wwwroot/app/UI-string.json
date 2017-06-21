@@ -86,7 +86,7 @@
   "ROUTE_SIMULATION": {
     "TITTLE": "Route Simulation",
     "SCENARIO": "Scenario",
-    "ROUTE": "Route",
+    "SELECT_A_ROUTE": "Select a route",
     "NO_RESULT_FOUND": "No Result Found",
     "NO_ROUTE_SELECTED": "No Route Selected"
   },

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault='unqualified' elementFormDefault='qualified' xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+  <xs:element name='addressLocation'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='udprn' type='xs:integer' nillable='false'>
+          <xs:annotation>
+            <xs:documentation>Royal Mail’s Unique Delivery Point Reference Number (UDPRN)</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name='xCoordinate' type='xs:decimal'>
+          <xs:annotation>
+            <xs:documentation>A value in metres defining the x location in accordance to the British National Grid</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name='yCoordinate' type='xs:decimal'>
+          <xs:annotation>
+            <xs:documentation>A value in metres defining the y location in accordance to the British National Grid</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name='latitude' type='xs:decimal'>
+          <xs:annotation>
+            <xs:documentation>A value defining the Latitude location in accordance with the ETRS89 coordinate reference system</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name='longitude' type='xs:decimal'>
+          <xs:annotation>
+            <xs:documentation>A value defining the Longitude location in accordance with the ETRS89 coordinate reference system</xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name='changeType'>
+          <xs:annotation>
+            <xs:documentation>Type of record change</xs:documentation>
+          </xs:annotation>
+          <xs:simpleType>
+            <xs:restriction base='xs:string'>
+              <xs:length fixed='true' value='1'/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
