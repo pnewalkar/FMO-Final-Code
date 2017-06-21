@@ -1,26 +1,26 @@
-describe('MapToolbar: Controller', function () {
-
+describe('MapToolbar: Controller', function() {
+    
     var ctrl;
     var $scope;
     var mapToolbarService;
 
     var MockMapToolbarService = {
-        getMapButtons: function () { return [] },
-        showButton: function () { return [] },
-        autoSelect: function () { return [] },
-        getShapeForButton: function () { return [] },
-        setSelectedButton: function () { return true }
-    };
+        getMapButtons: function() {return []},
+        showButton: function() {return []},
+        autoSelect: function() {return []},
+        getShapeForButton: function() { return []},
+        setSelectedButton:  function() { return true }
+     };
 
     beforeEach(module('mapToolbar'));
 
-    beforeEach(module(function ($provide) {
-        $provide.value('mapToolbarService', MockMapToolbarService);
+    beforeEach(module(function($provide){
+        $provide.value('mapToolbarService',MockMapToolbarService);
     }));
 
-
+    
     beforeEach(inject(function ($rootScope, $controller) {
-        $scope = $rootScope.$new();
+        $scope = $rootScope.$new();    
         ctrl = $controller('MapToolbarController', {
             $scope: $scope,
             mapToolbarService: MockMapToolbarService
@@ -31,22 +31,22 @@ describe('MapToolbar: Controller', function () {
         $scope.$emit.and.stub()
 
     }));
-
-    it('should have selectedButton is `select` when initialised', function () {
-        expect(ctrl.selectedButton).toBeDefined();
+   
+    it('should have selectedButton is `select` when initialised', function() {        
+        expect(ctrl.selectedButton).toBeDefined();  
         expect(ctrl.selectedButton).toBe('select');
-        expect(ctrl.selectedButton.length).toEqual(6);
+        expect(ctrl.selectedButton.length).toEqual(6);      
     });
 
-    it('should have an selected button of `line` after emit fired', function () {
+    it('should have an selected button of `line` after emit fired', function() {
 
         spyOn(MockMapToolbarService, 'setSelectedButton').and.returnValue(true);
-        spyOn(ctrl, 'setSelectedButton').and.callThrough();
+        spyOn(ctrl,'setSelectedButton').and.callThrough();
 
         //Set to define our map toolbar object
         var name = 'line';
         var shape = [];
-        var enabled = true;
+        var enabled = true;            
 
         var SetMapButtonObj = { name: name, shape: shape, enabled: enabled };
 
@@ -59,17 +59,17 @@ describe('MapToolbar: Controller', function () {
         expect($scope.$emit).toHaveBeenCalled();
         expect($scope.$emit).toHaveBeenCalledWith('mapToolChange', SetMapButtonObj);
 
-    });
+    });    
 
-    it('should have an  selected button of `select` after emit fired', function () {
+    it('should have an  selected button of `select` after emit fired', function() {
 
         spyOn(MockMapToolbarService, 'setSelectedButton').and.returnValue(false);
-        spyOn(ctrl, 'setSelectedButton').and.callThrough();
+        spyOn(ctrl,'setSelectedButton').and.callThrough();
 
         //Set to define our map toolbar object
         var name = 'select';
         var shape = [];
-        var enabled = true;
+        var enabled = true;            
 
         var SetMapButtonObj = { name: name, shape: shape, enabled: enabled };
 
@@ -82,15 +82,14 @@ describe('MapToolbar: Controller', function () {
         expect($scope.$emit).toHaveBeenCalled();
         expect($scope.$emit).toHaveBeenCalledWith('mapToolChange', SetMapButtonObj);
 
-    });
+    });       
 
 
-    it('should have initialize showButton', function () {
-        spyOn(ctrl, 'showButton');
-        ctrl.showButton('point');
+    it('should have initialize showButton', function(){            
+        spyOn(ctrl, 'showButton'); 
+        ctrl.showButton('point');          
         expect(ctrl.showButton).toHaveBeenCalledWith('point');
 
     });
-
+    
 });
-

@@ -1,4 +1,4 @@
-﻿describe('mapPanel:Controller', function () {
+﻿describe('mapPanel:Controller', function() {
 
     var $rootScope;
     var $scope;
@@ -10,17 +10,17 @@
     beforeEach(module('mapPanel'));
 
     //get instance of module 
-    beforeEach(inject(function ($rootScope, $controller, _$timeout_) {
+    beforeEach(inject(function ($rootScope, $controller,_$timeout_) {
         ctrl = $controller('MapPanelController', {
             $timeout: _$timeout_,
         });
     }));
 
 
-    it('should be initialize mapView', function () {
-
+    it('should be initialize mapView', function() {
+        
         //Need to create spy and call
-        spyOn(ctrl, 'initialize');
+        spyOn(ctrl,'initialize');
 
         //cal to function
         ctrl.initialize();
@@ -36,9 +36,9 @@
 
     });
 
-    it('should be togglePanel collapsed if true', function () {
-
-        spyOn(ctrl, 'togglePanel');
+    it('should be togglePanel collapsed if true', function() {
+        
+        spyOn(ctrl,'togglePanel');
         ctrl.togglePanel();
         expect(ctrl.collapsed).toBeUndefined();
 
