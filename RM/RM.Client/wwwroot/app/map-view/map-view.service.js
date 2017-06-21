@@ -108,7 +108,8 @@ function mapService($http,
         setSize: setSize,
         composeMap: composeMap,
         getResolution: getResolution,
-        setOriginalSize: setOriginalSize
+        setOriginalSize: setOriginalSize,
+        LicenceInfo: LicenceInfo
     }
 
     function LicenceInfo(displayText) {

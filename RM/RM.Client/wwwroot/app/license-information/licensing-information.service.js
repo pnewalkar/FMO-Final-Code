@@ -1,7 +1,7 @@
 ﻿angular.module('licensingInfo')
         .service('licensingInfoService', licensingInfoService);
-licensingInfoService.$inject = ['$q','mapService', 'referencedataApiService', '$rootScope'];
-function licensingInfoService($q,mapService, referencedataApiService, $rootScope) {
+licensingInfoService.$inject = ['$q', 'mapService', 'referencedataApiService', '$rootScope', 'licensingInformationAccessorService'];
+function licensingInfoService($q, mapService, referencedataApiService, $rootScope, licensingInformationAccessorService) {
 
     return {
         LicensingInfo:LicensingInfo,
@@ -44,7 +44,7 @@ function licensingInfoService($q,mapService, referencedataApiService, $rootScope
                     });
                 }
             }
-           
+            licensingInformationAccessorService.setLicensingInformation(result);
             deferred.resolve(result);
         });
         return deferred.promise;
@@ -52,7 +52,6 @@ function licensingInfoService($q,mapService, referencedataApiService, $rootScope
     }
     function getLicensingInfo(selectedUnitArea) {
         LicensingInfo().then(function (response) {
-            debugger;
             var result = response[0].value.split('©');
             var result2 = '';
             angular.forEach(result, function (value, key) {

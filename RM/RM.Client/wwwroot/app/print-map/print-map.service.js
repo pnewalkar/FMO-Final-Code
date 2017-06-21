@@ -12,7 +12,8 @@ printMapService.$inject =
         'mapService',
         '$rootScope',
         'mapFactory',
-        '$timeout'
+        '$timeout',
+        'licensingInformationAccessorService'
     ];
 
 function printMapService(
@@ -25,7 +26,8 @@ function printMapService(
         mapService,
         $rootScope,
         mapFactory,
-        $timeout) {
+        $timeout,
+        licensingInformationAccessorService) {
     return {
         initialize: initialize,
         closeWindow: closeWindow,
@@ -175,7 +177,7 @@ function printMapService(
             "PdfSize": printOptions.size,
             "MapScale": 25,
             "EncodedString": $rootScope.canvas.toDataURL('image/png'),
-            "License": "Test License"
+            "License": licensingInformationAccessorService.getLicensingInformation()[0].value
         };
 
         mapService.setOriginalSize();

@@ -129,6 +129,10 @@ function MapFactory($http,
 
         map.addControl(getCustomScaleLine());
         map.addControl(new ol.control.Attribution());
+
+        map.addControl(new ol.control.ScaleLine());
+      //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";
+
         var external_control = new ol.control.Zoom({
             target: $document[0].getElementById('zoom-control')
         });
@@ -136,9 +140,7 @@ function MapFactory($http,
 
         units = map.getView().getProjection().getUnits();
         mpu = ol.proj.METERS_PER_UNIT[units];
-
-        map.addControl(new ol.control.ScaleLine());
-        document.getElementsByClassName('ol-overlaycontainer-stopevent')[0].style.visibility = "hidden";
+      
     }
 
 
