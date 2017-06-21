@@ -194,10 +194,10 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 using (logginghelper.RMTraceManager.StartTrace("Controller.CreateBlockSequenceForDeliveryPoint"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
-                    logginghelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                    logginghelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var result = await deliveryRouteLogBusinessService.CreateBlockSequenceForDeliveryPoint(deliveryRouteId, deliveryPointId);
-                    logginghelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    logginghelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(result);
                 }
             }

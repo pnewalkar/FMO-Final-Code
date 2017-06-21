@@ -20,6 +20,8 @@ namespace RM.CommonLibrary.HttpHandler
         private const string FMOTokenGenerationUrl = "FMOTokenGenerationUrl";
         private const string FMOWebAPIUser = "FMOWebAPIUser";
         private const string UserName = "username";
+        private const string AccessToken = "access_token";
+        private const string Bearer = "bearer";
 
         #endregion constants
 
@@ -68,7 +70,7 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.PostAsJsonAsync<T>(url, content);
         }
 
@@ -91,7 +93,7 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.PutAsJsonAsync<T>(url, content);
         }
 
@@ -113,7 +115,7 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.GetAsync(url);
         }
 
@@ -135,7 +137,7 @@ namespace RM.CommonLibrary.HttpHandler
                 token = await GetSecurityTokenForAPI();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Bearer, token);
             return await client.DeleteAsync(url);
         }
 
@@ -148,7 +150,7 @@ namespace RM.CommonLibrary.HttpHandler
             if (!string.IsNullOrEmpty(token))
             {
                 Dictionary<string, object> response = serilaize.Deserialize<Dictionary<string, object>>(token);
-                response.TryGetValue(Constants.AccessToken, out objtoken);
+                response.TryGetValue(AccessToken, out objtoken);
                 return objtoken.ToString();
             }
             else

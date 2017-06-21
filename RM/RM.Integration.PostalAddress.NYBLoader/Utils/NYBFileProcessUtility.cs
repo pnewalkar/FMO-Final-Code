@@ -27,7 +27,7 @@
 
         #region private member declaration
 
-        private static string dateTimeFormat = Constants.DATETIMEFORMAT;
+        private static string dateTimeFormat = NYBLoaderConstants.DATETIMEFORMAT;
         private static int noOfCharacters = default(int);
         private static int maxCharacters = default(int);
         private static int csvValues = default(int);
@@ -69,7 +69,7 @@
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             if (CheckFileName(new FileInfo(fileName).Name, NYBLoaderConstants.PAFZIPFILENAME))
             {
@@ -86,7 +86,7 @@
                             {
                                 List<PostalAddressDTO> lstNYBDetails = LoadNybDetailsFromCsv(strLine.Trim());
                                 string postaLAddress = serializer.Serialize(lstNYBDetails);
-                                LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
+                                LogMethodInfoBlock(methodName, NYBLoaderConstants.POSTALADDRESSDETAILS + postaLAddress, LoggerTraceConstants.COLON);
 
                                 if (lstNYBDetails != null && lstNYBDetails.Count > 0)
                                 {
@@ -114,7 +114,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
         }
 
         /// <summary>
@@ -125,10 +125,10 @@
         public List<PostalAddressDTO> LoadNybDetailsFromCsv(string line)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
             List<PostalAddressDTO> lstAddressDetails = null;
 
-            string[] arrPAFDetails = line.Split(new string[] { Constants.CRLF, Constants.NEWLINE }, StringSplitOptions.None);
+            string[] arrPAFDetails = line.Split(new string[] { NYBLoaderConstants.CRLF, NYBLoaderConstants.NEWLINE }, StringSplitOptions.None);
 
             if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
             {
@@ -148,7 +148,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
 
             return lstAddressDetails;
         }
@@ -164,11 +164,11 @@
             using (loggingHelper.RMTraceManager.StartTrace("Service.SaveNybDetails"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
                 bool isNybDetailsInserted = false;
                 try
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NYBPriority, LoggerTraceConstants.NYBLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NYBPriority, LoggerTraceConstants.NYBLoaderMethodEntryEventId, LoggerTraceConstants.Title);
                     isNybDetailsInserted = true;
                     var result = await httpHandler.PostAsJsonAsync(strFMOWebAPIName + fileName, lstAddress, isBatchJob: true);
 
@@ -186,8 +186,8 @@
                 }
                 finally
                 {
-                    LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NYBPriority, LoggerTraceConstants.NYBLoaderMethodExitEventId, LoggerTraceConstants.Title);
+                    LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NYBPriority, LoggerTraceConstants.NYBLoaderMethodExitEventId, LoggerTraceConstants.Title);
                 }
 
                 return isNybDetailsInserted;
@@ -217,7 +217,7 @@
         {
             bool isFileValid = true;
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             foreach (string line in arrLines)
             {
@@ -234,7 +234,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
 
             return isFileValid;
         }
@@ -247,7 +247,7 @@
         private PostalAddressDTO MapNybDetailsToDTO(string csvLine)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string[] values = csvLine.Split(',');
@@ -272,7 +272,7 @@
                 objAddDTO.IsValidData = true;
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             return objAddDTO;
         }
 
@@ -283,7 +283,7 @@
         private void ValidateNybDetails(List<PostalAddressDTO> lstAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             foreach (PostalAddressDTO objAdd in lstAddress)
             {
@@ -320,7 +320,7 @@
                 if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
                 {
                     char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, NYBLoaderConstants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -339,7 +339,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
         }
 
         /// <summary>
@@ -351,7 +351,7 @@
         private bool ValidatePostCode(string strPostCode)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             bool isValid = true;
             if (!string.IsNullOrEmpty(strPostCode))
@@ -375,7 +375,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             return isValid;
         }
 
@@ -387,7 +387,7 @@
         /// <param name="seperator">seperator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
         }
 
         /// <summary>

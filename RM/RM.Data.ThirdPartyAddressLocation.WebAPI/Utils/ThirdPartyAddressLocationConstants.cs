@@ -15,6 +15,10 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string USRREFERENCEDATANAME = "Action required";
         internal const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         internal const string PAFTaskBodyPreText = "Please position the DP ";
+        internal const string NETWORKLINKDATAPROVIDER = "Data Provider";
+        internal const string EXTERNAL = "External";
+        internal const int BNGCOORDINATESYSTEM = 27700;
+        internal const string Comma = ", ";
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
         internal const string GetDeliveryPointByUDPRNForThirdParty = "GetDeliveryPointByUDPRNForThirdParty";
@@ -25,5 +29,11 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string AddNewNotification = "AddNewNotification";
         internal const string GetPostCodeSectorByUDPRN = "GetPostCodeSectorByUDPRN";
         internal const string GetPostalAddress = "GetPostalAddress";
+
+        internal const string UDPRN = "udprn";
+        internal const string Latitude = "latitude";
+        internal const string Longitude = "longitude";
+
+        internal const int NOTIFICATIONDUE = 24;
     }
 }

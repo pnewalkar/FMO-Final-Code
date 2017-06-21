@@ -19,6 +19,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test
     [TestFixture]
     public class PostalAddressBusinessServiceFixture : TestFixtureBase
     {
+        private const string PostalAddressStatus = "Postal Address Status";
+        private const string PostalAddressType = "Postal Address Type";
+
         private Mock<IPostalAddressDataService> mockPostalAddressDataService;
         private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
@@ -187,7 +190,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName = Constants.PostalAddressType
+                    CategoryName = PostalAddressType
                 },
 
                 new ReferenceDataCategoryDTO()
@@ -200,7 +203,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName = Constants.PostalAddressStatus
+                    CategoryName = PostalAddressStatus
                 },
 
                 new ReferenceDataCategoryDTO()
@@ -213,7 +216,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName = Constants.PostalAddressStatus
+                    CategoryName = PostalAddressStatus
                 }
             };
 

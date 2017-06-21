@@ -64,7 +64,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryRouteForBasicSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryRouteManagerDataWebAPIName + "deliveryroutes/basic/" + searchText);
 
@@ -75,7 +75,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<DeliveryRouteDTO> networkLinks = JsonConvert.DeserializeObject<List<DeliveryRouteDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return networkLinks;
             }
@@ -92,7 +92,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryRouteCount"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryRouteManagerDataWebAPIName + "deliveryroutes/count/" + searchText);
 
@@ -103,7 +103,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 int networkLinks = result.Content.ReadAsStringAsync().Result.Equals("[]") ? 0 : Convert.ToInt32(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return networkLinks;
             }
@@ -121,7 +121,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchPostCodeUnitForBasicSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcodes/basic/" + searchText);
 
@@ -132,7 +132,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<PostCodeDTO> networkLinks = JsonConvert.DeserializeObject<List<PostCodeDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return networkLinks;
             }
@@ -149,7 +149,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostCodeUnitCount"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcodes/count/" + searchText);
 
@@ -160,7 +160,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 int postCodes = result.Content.ReadAsStringAsync().Result.Equals("[]") ? 0 : Convert.ToInt32(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return postCodes;
             }
@@ -177,7 +177,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryPointsForBasicSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerDataWebAPIName + "deliverypoints/basic/" + searchText);
 
@@ -188,7 +188,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<DeliveryPointDTO> deliveryPoints = JsonConvert.DeserializeObject<List<DeliveryPointDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return deliveryPoints;
             }
@@ -199,7 +199,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointsCount"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerDataWebAPIName + "deliverypoints/count/" + searchText);
 
@@ -210,7 +210,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 int deliveryPoints = result.Content.ReadAsStringAsync().Result.Equals("[]") ? 0 : Convert.ToInt32(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return deliveryPoints;
             }
@@ -227,7 +227,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchStreetNamesForBasicSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(networkManagerDataWebAPIName + "streetnames/basic/" + searchText);
 
@@ -238,7 +238,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<StreetNameDTO> streetNames = JsonConvert.DeserializeObject<List<StreetNameDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return streetNames;
             }
@@ -255,7 +255,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetStreetNameCount"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(networkManagerDataWebAPIName + "streetnames/count/" + searchText);
 
@@ -266,7 +266,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 int streetNames = result.Content.ReadAsStringAsync().Result.Equals("[]") ? 0 : Convert.ToInt32(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return streetNames;
             }
@@ -285,7 +285,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchPostCodeUnitForAdvanceSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcodes/advance/" + searchText);
 
@@ -296,7 +296,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<PostCodeDTO> postCodes = JsonConvert.DeserializeObject<List<PostCodeDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return postCodes;
             }
@@ -313,7 +313,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryRouteForAdvanceSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryRouteManagerDataWebAPIName + "deliveryroutes/advance/" + searchText);
 
@@ -324,7 +324,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<DeliveryRouteDTO> deliveryRoutes = JsonConvert.DeserializeObject<List<DeliveryRouteDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return deliveryRoutes;
             }
@@ -341,7 +341,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchStreetNamesForAdvanceSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(networkManagerDataWebAPIName + "streetnames/advance/" + searchText);
 
@@ -352,7 +352,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<StreetNameDTO> streetNames = JsonConvert.DeserializeObject<List<StreetNameDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return streetNames;
             }
@@ -369,7 +369,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryPointsForAdvanceSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerDataWebAPIName + "deliverypoints/advance/" + searchText);
 
@@ -380,7 +380,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                 }
 
                 List<DeliveryPointDTO> deliveryPoints = JsonConvert.DeserializeObject<List<DeliveryPointDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return deliveryPoints;
             }

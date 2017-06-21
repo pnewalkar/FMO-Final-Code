@@ -13,6 +13,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
     {
         private const string XSLTFilePath = "XSLTFilePath";
         private const string ImagePath = "ImagePath";
+        private const string PrintMapDateTimeFormat = "{0:dd/MM/yyyy HH:mm}";
 
         private string xsltFilepath = string.Empty;
         private string imagePath = string.Empty;
@@ -41,7 +42,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             string pdXslFo = string.Empty;
             if (printMapDTO != null)
             {
-                printMapDTO.PrintTime = string.Format(Constants.PrintMapDateTimeFormat, DateTime.Now);
+                printMapDTO.PrintTime = string.Format(PrintMapDateTimeFormat, DateTime.Now);
                 SaveMapImage(printMapDTO);
             }
 

@@ -230,7 +230,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointAccessLinkCreationStatus"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var jsonSerializerSettings = new JsonSerializerSettings()
                 {
@@ -247,7 +247,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 }
 
                 var success = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
                 return success;
             }
         }

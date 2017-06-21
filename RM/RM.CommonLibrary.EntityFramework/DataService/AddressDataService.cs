@@ -28,6 +28,11 @@
     public class PostalAddressDataService : DataServiceBase<PostalAddress, RMDBContext>, IPostalAddressDataService
     {
         private const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
+        private const string PRIMARYROUTE = "Primary - ";
+        private const string SECONDARYROUTE = "Secondary - ";
+        private const string DEFAULTGUID = "00000000-0000-0000-0000-000000000000";
+        private const string INSERT = "I";
+        private const int BNGCOORDINATESYSTEM = 27700;
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogDataService fileProcessingLog = default(IFileProcessingLogDataService);
@@ -52,7 +57,7 @@
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.DeleteNYBPostalAddress"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     bool isPostalAddressDeleted = false;
                     string nybDeleteMsg = NYBErrorMessageForDelete;
@@ -77,7 +82,7 @@
                             isPostalAddressDeleted = true;
                         }
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                     return isPostalAddressDeleted;
                 }
@@ -170,7 +175,7 @@
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.InsertAddress"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (objPostalAddress != null)
                     {
@@ -180,7 +185,7 @@
                         await DataContext.SaveChangesAsync();
                         isPostalAddressInserted = true;
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateException dbUpdateException)
@@ -217,10 +222,10 @@
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress(udprn)"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
@@ -236,7 +241,7 @@
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress(objPostaladdress)"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
                 .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
@@ -305,7 +310,7 @@
                                           (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare)
                                               ? objPostalAddress.DependentThoroughfare
                                               : string.Empty))));
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
             }
@@ -468,7 +473,7 @@
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateAddress"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (objPostalAddress != null)
                     {
@@ -511,7 +516,7 @@
 
                         await DataContext.SaveChangesAsync();
                         isPostalAddressUpdated = true;
-                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                     }
                 }
             }
@@ -630,9 +635,9 @@
                             paDTO.RouteDetails = new List<BindingEntity>();
                         }
 
-                        if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()))
+                        if (paDTO.RouteDetails.All(b => b.DisplayText != PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim()))
                         {
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = PRIMARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
                         }
                     });
                 }
@@ -645,9 +650,9 @@
                             paDTO.RouteDetails = new List<BindingEntity>();
                         }
 
-                        if (paDTO.RouteDetails.All(b => b.DisplayText != Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()))
+                        if (paDTO.RouteDetails.All(b => b.DisplayText != SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim()))
                         {
-                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = Constants.SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
+                            paDTO.RouteDetails.Add(new BindingEntity() { DisplayText = SECONDARYROUTE + d.DeliveryRoute.RouteName.Trim(), Value = d.DeliveryRoute.ID });
                         }
                     });
                 }
@@ -702,10 +707,10 @@
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAddressAndDeliveryPoint"))
                 {
                     string methodName = MethodBase.GetCurrentMethod().Name;
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     bool isAddressLocationAvailable = false;
-                    Guid returnGuid = new Guid(Constants.DEFAULTGUID);
+                    Guid returnGuid = new Guid(DEFAULTGUID);
                     double? addLocationXCoOrdinate = 0;
                     double? addLocationYCoOrdinate = 0;
                     if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
@@ -724,7 +729,7 @@
 
                         if (objAddressLocation != null)
                         {
-                            SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
+                            SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), BNGCOORDINATESYSTEM);
                             objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
                             objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
                             objDeliveryPoint.Longitude = objAddressLocation.Longitude;
@@ -762,7 +767,7 @@
                         DataContext.SaveChanges();
                         returnGuid = objDeliveryPoint.ID;
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                     return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
                 }
@@ -786,7 +791,7 @@
             {
                 FileID = Guid.NewGuid(),
                 UDPRN = uDPRN,
-                AmendmentType = Constants.INSERT,
+                AmendmentType = INSERT,
                 FileName = strFileName,
                 FileProcessing_TimeStamp = DateTime.UtcNow,
                 FileType = fileType,

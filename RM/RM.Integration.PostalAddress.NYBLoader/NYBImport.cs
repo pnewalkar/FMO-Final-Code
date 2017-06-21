@@ -39,7 +39,7 @@
             this.nybLoader = nybLoader;
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
-            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
+            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.BatchServiceName);
             this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.ProcessedFilePath);
             this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.ErrorFilePath);
         }
@@ -119,7 +119,7 @@
         private void PopulateListFileSystemWatchers()
         {
             // Get the XML file name from the App.config file
-            string fileNameXML = ConfigurationManager.AppSettings[Constants.XMLFileFolderSettings];
+            string fileNameXML = ConfigurationManager.AppSettings[NYBLoaderConstants.XMLFileFolderSettings];
 
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
@@ -212,7 +212,7 @@
         private void FileSWatch_Created(object sender, FileSystemEventArgs e, string action_Args)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
             string fileName = e.FullPath;
             try
             {
@@ -224,7 +224,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             }
         }
 
@@ -238,7 +238,7 @@
         /// <param name="separator">separator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
         }
     }
 }

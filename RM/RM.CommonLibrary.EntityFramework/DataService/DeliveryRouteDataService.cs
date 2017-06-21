@@ -22,6 +22,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class DeliveryRouteDataService : DataServiceBase<DeliveryRoute, RMDBContext>, IDeliveryRouteDataService
     {
+        private const string SearchResultCount = "SearchResultCount";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteRepository"/> class.
         /// </summary>
@@ -75,7 +77,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>The result set of delivery route.</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
             searchText = searchText ?? string.Empty;
             var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
                 .Where(l => (l.Scenario.Unit_GUID == userUnit) &&

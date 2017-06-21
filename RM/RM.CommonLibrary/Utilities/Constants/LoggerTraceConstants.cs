@@ -15,6 +15,10 @@
         public const string BusinessLayer = "Business.";
         public const string DataLayer = "Data.";
 
+        public const string MethodExecutionStarted = " Method execution started";
+        public const string MethodExecutionCompleted = " Method execution completed";
+        public const string COLON = " : ";
+
         #region Priority
 
         public const int DeliveryPointAPIPriority = 8;

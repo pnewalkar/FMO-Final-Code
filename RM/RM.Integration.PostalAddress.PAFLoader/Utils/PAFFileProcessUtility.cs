@@ -23,7 +23,7 @@
     {
         #region private member declaration
 
-        private static string dateTimeFormat = Constants.DATETIMEFORMAT;
+        private static string dateTimeFormat = PAFLoaderConstants.DATETIMEFORMAT;
         private static int noOfCharactersForPAF = default(int); // Constants.NoOfCharactersForNYB; // 15;
         private static int maxCharactersForPAF = default(int); // Constants.maxCharactersForNYB; // 507;
         private static int csvPAFValues = default(int); // Constants.csvValuesForNYB; // 16;
@@ -63,7 +63,7 @@
             using (loggingHelper.RMTraceManager.StartTrace("Service.LoadPAF"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isPAFFileProcessed = false;
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -86,7 +86,7 @@
                                 {
                                     List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
                                     string postaLAddress = serializer.Serialize(lstPAFDetails);
-                                    LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
+                                    LogMethodInfoBlock(methodName, PAFLoaderConstants.POSTALADDRESSDETAILS + postaLAddress, LoggerTraceConstants.COLON);
 
                                     if (lstPAFDetails != null && lstPAFDetails.Count > 0)
                                     {
@@ -122,7 +122,7 @@
                     }
                 }
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodExitEventId, LoggerTraceConstants.Title);
 
                 return isPAFFileProcessed;
             }
@@ -139,10 +139,10 @@
             using (loggingHelper.RMTraceManager.StartTrace("Service.LoadPAF"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
 
                 List<PostalAddressDTO> lstAddressDetails = null;
-                string[] arrPAFDetails = line.Split(new string[] { Constants.CRLF, Constants.NEWLINE }, StringSplitOptions.None);
+                string[] arrPAFDetails = line.Split(new string[] { PAFLoaderConstants.CRLF, PAFLoaderConstants.NEWLINE }, StringSplitOptions.None);
 
                 if (arrPAFDetails.Count() > 0 && ValidateFile(arrPAFDetails))
                 {
@@ -171,7 +171,7 @@
                     }
                 }
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodExitEventId, LoggerTraceConstants.Title);
 
                 return lstAddressDetails;
             }
@@ -191,7 +191,7 @@
                 try
                 {
                     isMessageQueued = true;
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
                     var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == PAFLoaderConstants.PAFINSERT).ToList();
 
                     lstPAFInsertEvents.ForEach(postalAddress =>
@@ -199,7 +199,7 @@
                             // Message is created and the Postal Address DTO is passed as the object to
                             // be queued along with the queue name and queue path where the object needs
                             // to be queued.
-                            IMessage msg = msgBroker.CreateMessage(postalAddress, PAFLoaderConstants.QUEUEPAF, Constants.QUEUEPATH);
+                            IMessage msg = msgBroker.CreateMessage(postalAddress, PAFLoaderConstants.QUEUEPAF, PAFLoaderConstants.QUEUEPATH);
 
                             // The messge object created in the above code is then pushed onto the queue.
                             // This internally uses the MSMQ Send function to push the message to the queue.
@@ -212,7 +212,7 @@
                     isMessageQueued = false;
                 }
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodExitEventId, LoggerTraceConstants.Title);
 
                 return isMessageQueued;
             }
@@ -257,11 +257,11 @@
         {
             bool isFileValid = true;
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             foreach (string line in arrLines)
             {
-                if (line.Count(n => n == Constants.CommaChar) != noOfCharactersForPAF)
+                if (line.Count(n => n == PAFLoaderConstants.CommaChar) != noOfCharactersForPAF)
                 {
                     isFileValid = false;
                     break;
@@ -274,7 +274,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             return isFileValid;
         }
 
@@ -288,9 +288,9 @@
         {
             PostalAddressDTO objAddDTO = new PostalAddressDTO();
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
-            string[] values = csvLine.Split(Constants.CommaChar);
+            string[] values = csvLine.Split(PAFLoaderConstants.CommaChar);
             if (values.Count() == csvPAFValues)
             {
                 objAddDTO.Date = values[PAFLoaderConstants.PAFDate] = values[PAFLoaderConstants.PAFDate] == string.Empty ? null : values[PAFLoaderConstants.PAFDate];
@@ -317,7 +317,7 @@
                 objAddDTO.FileName = fileName;
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             return objAddDTO;
         }
 
@@ -328,7 +328,7 @@
         private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             foreach (PostalAddressDTO objAdd in lstAddress)
             {
@@ -376,7 +376,7 @@
                 if (!string.IsNullOrEmpty(objAdd.DeliveryPointSuffix))
                 {
                     char[] characters = objAdd.DeliveryPointSuffix.ToCharArray();
-                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, Constants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(objAdd.PostcodeType, PostcodeType.L.ToString(), StringComparison.OrdinalIgnoreCase) && !string.Equals(objAdd.DeliveryPointSuffix, PAFLoaderConstants.DeliveryPointSuffix, StringComparison.OrdinalIgnoreCase))
                     {
                         objAdd.IsValidData = false;
                     }
@@ -395,7 +395,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
         }
 
         /// <summary>
@@ -407,7 +407,7 @@
         private bool ValidatePostCode(string strPostCode)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
             bool isValid = true;
 
             if (!string.IsNullOrEmpty(strPostCode))
@@ -432,7 +432,7 @@
                 }
             }
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             return isValid;
         }
 
@@ -444,7 +444,7 @@
         /// <param name="seperator">Seperator used</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
         }
 
         #endregion private methods

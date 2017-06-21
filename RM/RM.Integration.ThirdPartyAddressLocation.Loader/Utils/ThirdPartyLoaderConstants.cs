@@ -8,6 +8,11 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
 {
     public static class ThirdPartyLoaderConstants
     {
+        internal const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
+        internal const string INSERT = "I";
+        internal const string QUEUEPATH = @".\Private$\";
+        internal const string USRFILENAME = "OSABP_E[0-9]{3}$";
+
         internal const string QUEUETHIRDPARTY = "QUEUE_THIRD_PARTY";
         internal const string USRXMLROOT = "USR";
         internal const string ADDRESSLOCATIONXMLROOT = "addressLocation";

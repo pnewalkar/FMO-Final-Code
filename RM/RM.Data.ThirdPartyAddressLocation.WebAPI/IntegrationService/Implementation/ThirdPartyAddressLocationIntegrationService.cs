@@ -111,7 +111,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointLocationOnUDPRN"))
             {
                 string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
-                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 string methodName = ThirdPartyAddressLocationConstants.UpdateDeliveryPointLocationOnUDPRN;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
@@ -125,7 +125,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return status;
             }
         }
@@ -163,7 +163,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteNotificationbyUDPRNAndAction"))
             {
                 string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
-                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 string methodName = ThirdPartyAddressLocationConstants.DeleteNotificationbyUDPRNAndAction;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
@@ -177,7 +177,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return status;
             }
         }
@@ -192,7 +192,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             using (loggingHelper.RMTraceManager.StartTrace("Integration.AddNewNotification"))
             {
                 string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
-                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 string methodName = ThirdPartyAddressLocationConstants.AddNewNotification;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
@@ -206,7 +206,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return status;
             }
         }

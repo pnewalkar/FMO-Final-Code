@@ -19,6 +19,8 @@
     /// </summary>
     public class AccessLinkDataService : DataServiceBase<AccessLink, RMDBContext>, IAccessLinkDataService
     {
+        private const int BNGCOORDINATESYSTEM = 27700;
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public AccessLinkDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
@@ -50,7 +52,7 @@
             using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAccessLink"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool accessLinkCreationSuccess = false;
 
@@ -74,7 +76,7 @@
                 DataContext.AccessLinks.Add(accessLink);
 
                 accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return accessLinkCreationSuccess;
             }
         }
@@ -88,7 +90,7 @@
         public List<AccessLinkDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink)
         {
             List<AccessLinkDTO> accessLinkDTOs = new List<AccessLinkDTO>();
-            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
 
             List<AccessLink> crossingAccessLinks = DataContext.AccessLinks.AsNoTracking().Where(al => al.AccessLinkLine != null && al.AccessLinkLine.Intersects(extent) && al.AccessLinkLine.Crosses(accessLink)).ToList();
             List<AccessLinkDTO> crossingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDTO>(crossingAccessLinks);
@@ -113,7 +115,7 @@
             {
                 DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
                 return DataContext.AccessLinks.AsNoTracking().Where(x => x.AccessLinkLine.Intersects(extent) && x.AccessLinkLine.Intersects(polygon)).ToList();
             }
 

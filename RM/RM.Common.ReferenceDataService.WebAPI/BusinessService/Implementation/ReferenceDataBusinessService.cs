@@ -15,6 +15,8 @@
 
     public class ReferenceDataBusinessService : IReferenceDataBusinessService
     {
+        private const string RefDataXMLFileName = "RefDataXMLFileName";
+
         #region Member Variables
 
         private static ReferenceDataMapping referenceDataMapping;
@@ -36,7 +38,7 @@
             this.fileProvider = fileProvider;
             this.referenceDataDataService = referenceDataDataService;
             IDirectoryContents contents = fileProvider.GetDirectoryContents(string.Empty); // the applicationRoot contents
-            refDataXMLFileName = configHelper.ReadAppSettingsConfigurationValues(Constants.RefDataXMLFileName);
+            refDataXMLFileName = configHelper.ReadAppSettingsConfigurationValues(RefDataXMLFileName);
             IFileInfo fileInfo = fileProvider.GetFileInfo(refDataXMLFileName); // a file under applicationRoot
 
             XmlSerializer serializer = new XmlSerializer(typeof(ReferenceDataMapping));

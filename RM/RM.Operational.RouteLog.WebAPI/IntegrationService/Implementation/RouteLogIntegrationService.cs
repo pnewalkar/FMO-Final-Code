@@ -5,16 +5,13 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.ExceptionMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.Operational.RouteLog.WebAPI.Utils;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {
     public class RouteLogIntegrationService : IRouteLogIntegrationService
     {
-        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
-        private const string PDFGeneratorWebAPIName = "PDFGeneratorWebAPIName";
-
         #region Property Declarations
 
         private string deliveryRouteWebAPIName = string.Empty;
@@ -28,8 +25,8 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         public RouteLogIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
             this.httpHandler = httpHandler;
-            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
-            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PDFGeneratorWebAPIName).ToString() : string.Empty;
+            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(RouteLogConstants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(RouteLogConstants.PDFGeneratorWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor

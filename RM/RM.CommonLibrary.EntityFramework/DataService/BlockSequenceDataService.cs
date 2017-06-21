@@ -48,7 +48,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 using (loggingHelper.RMTraceManager.StartTrace(methodName))
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var block_Guid = await (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
                                             join b in DataContext.Blocks.AsNoTracking() on dr.Block_GUID equals b.ID
@@ -60,7 +60,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     DataContext.BlockSequences.Add(blockSequenceEntity);
                     DataContext.SaveChanges();
                     isBlockSequencInserted = true;
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateConcurrencyException)

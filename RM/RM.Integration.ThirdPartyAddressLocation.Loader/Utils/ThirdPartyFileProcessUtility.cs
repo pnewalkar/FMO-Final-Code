@@ -58,8 +58,8 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                 List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
 
                 string methodName = MethodBase.GetCurrentMethod().Name;
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodEntryEventId, LoggerTraceConstants.Title);
 
                 if (CheckFileName(new FileInfo(strPath).Name))
                 {
@@ -67,7 +67,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                     {
                         lstUSRFiles = GetValidRecords(strPath);
 
-                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
+                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == ThirdPartyLoaderConstants.INSERT).ToList();
 
                         //lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
                         //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
@@ -76,7 +76,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                         {
                             //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
                             //needs to be queued.
-                            IMessage USRMsg = msgBroker.CreateMessage(addressLocation, ThirdPartyLoaderConstants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
+                            IMessage USRMsg = msgBroker.CreateMessage(addressLocation, ThirdPartyLoaderConstants.QUEUETHIRDPARTY, ThirdPartyLoaderConstants.QUEUEPATH);
 
                             //The messge object created in the above code is then pushed onto the queue. This internally uses the MSMQ Send function to push the message
                             //to the queue.
@@ -92,8 +92,8 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                     }
                 }
 
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodExitEventId, LoggerTraceConstants.Title);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodExitEventId, LoggerTraceConstants.Title);
             }
         }
 
@@ -105,7 +105,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         private bool CheckFileName(string fileName)
         {
             fileName = Path.GetFileNameWithoutExtension(fileName);
-            Regex reg = new Regex(Constants.USRFILENAME);
+            Regex reg = new Regex(ThirdPartyLoaderConstants.USRFILENAME);
             return reg.IsMatch(fileName);
         }
 
@@ -117,7 +117,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         {
             bool isFilevalid = true;
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             try
             {
@@ -149,7 +149,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             }
         }
 
@@ -161,7 +161,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         private List<AddressLocationUSRDTO> GetValidRecords(string strPath)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             try
             {
@@ -200,7 +200,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             }
         }
 
@@ -213,7 +213,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         private bool IsXmlValid(string fileName, string xsdFile, XmlNode xNode)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             bool result = true;
             XDocument xDoc = XDocument.Load(new XmlNodeReader(xNode));
@@ -233,7 +233,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                 result = false;
             });
 
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             return result;
         }
 
@@ -246,7 +246,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         {
             return string.Concat(
                 Path.GetFileNameWithoutExtension(strfileName),
-               string.Format(Constants.DATETIMEFORMAT, DateTime.Now),
+               string.Format(ThirdPartyLoaderConstants.DATETIMEFORMAT, DateTime.Now),
                 Path.GetExtension(strfileName)
                 );
         }
@@ -259,7 +259,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         /// <param name="seperator">Seperator used</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string seperator)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodExitEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodExitEventId, LoggerTraceConstants.Title);
         }
     }
 }

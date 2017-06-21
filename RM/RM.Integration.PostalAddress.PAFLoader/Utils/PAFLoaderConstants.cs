@@ -8,6 +8,14 @@ namespace RM.Integration.PostalAddress.PAFLoader.Utils
 {
     public static class PAFLoaderConstants
     {
+        internal const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
+        internal const string QUEUEPATH = @".\Private$\";
+        internal const string DeliveryPointSuffix = "1A";
+        internal const string CRLF = "\r\n";
+        internal const string NEWLINE = "\n";
+        internal const string POSTALADDRESSDETAILS = "Postal Address Details : ";
+        internal const char CommaChar = ',';
+
         internal const string LOGMESSAGEFORPAFDATAVALIDATION = "Load PAF Error Message : PAF File Data is not valid, File Name : {0} : Log Time : {1} ";
         internal const string LOGMESSAGEFORPAFWRONGFORMAT = "Load PAF Error Message : PAF File is not valid due to wrong file format or empty records, File Name : {0} : Log Time : {1}";
         internal const string ERRORLOGMESSAGEFORPAFMSMQ = "Load PAF Error Message : Error occurred while processing it to messaging queue, File Name : {0} : Log Time : {1}";

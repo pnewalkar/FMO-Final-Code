@@ -13,6 +13,7 @@ using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.AccessLink.WebAPI.Utils;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
 
 namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
@@ -22,8 +23,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
     /// </summary>
     public class AccessLinkBusinessService : Interface.IAccessLinkBusinessService
     {
-        private const string NWLinkTypeException = "Network Link Type other than defined is checked.";
-        private const string DPUseIndicatorTypeException = "DP Use Indicator Type other than defined is checked.";
+        
 
         #region Member Variables
 
@@ -69,7 +69,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
             // network link type whether it is road, path or connecting link
             string networkLinkType = referenceDataCategoryList
-                                            .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.NetworkLinkType).SelectMany(x => x.ReferenceDatas)
+                                            .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.NetworkLinkType).SelectMany(x => x.ReferenceDatas)
                                             .Where(x => x.ID == networkObject.NetworkLinkType_GUID)
                                             .Select(x => x.ReferenceDataValue).SingleOrDefault();
 
@@ -79,53 +79,53 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 string roadType = accessLinkIntegrationService.GetOSRoadLink(networkObject.TOID).Result;
 
                 roadWidth = Convert.ToDouble(referenceDataCategoryList
-                                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                        .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL).Equals(roadType, StringComparison.OrdinalIgnoreCase))
+                                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                        .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL).Equals(roadType, StringComparison.OrdinalIgnoreCase))
                                         .Select(x => x.ReferenceDataValue).SingleOrDefault());
             }
             else if (networkLinkType == ReferenceDataValues.NetworkLinkPathLink)
             {
                 roadWidth = Convert.ToDouble(referenceDataCategoryList
-                                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                        .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL).Equals(ReferenceDataValues.PathLink, StringComparison.OrdinalIgnoreCase))
+                                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                        .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL).Equals(ReferenceDataValues.PathLink, StringComparison.OrdinalIgnoreCase))
                                         .Select(x => x.ReferenceDataValue).SingleOrDefault());
             }
             else
             {
-                throw new Exception(NWLinkTypeException);
+                throw new Exception(AccessLinkConstants.NWLinkTypeException);
             }
 
             // get pavement depth from reference data.
             double pavementDepth = Convert.ToDouble(referenceDataCategoryList
-                                                    .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                                    .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL).Equals(ReferenceDataValues.PavementWidth, StringComparison.OrdinalIgnoreCase))
+                                                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL).Equals(ReferenceDataValues.PavementWidth, StringComparison.OrdinalIgnoreCase))
                                                     .Select(x => x.ReferenceDataValue).SingleOrDefault());
 
             // get house depth from reference data
             double houseDepth = Convert.ToDouble(referenceDataCategoryList
-                                                .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                                .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL).Equals(ReferenceDataValues.PropertyDepth, StringComparison.OrdinalIgnoreCase))
+                                                .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL).Equals(ReferenceDataValues.PropertyDepth, StringComparison.OrdinalIgnoreCase))
                                                 .Select(x => x.ReferenceDataValue).SingleOrDefault());
 
             // selected dp is Residential or commercial
             string dpUseIndicatorType = referenceDataCategoryList
-                                                .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator).SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator).SelectMany(x => x.ReferenceDatas)
                                                 .Where(x => x.ID == pointDto.DeliveryPointUseIndicator_GUID)
                                                 .Select(x => x.ReferenceDataValue).SingleOrDefault();
 
             if (dpUseIndicatorType == ReferenceDataValues.Residential)
             {
                 double residentialRoadWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
-                                                .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                                .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL).Equals(ReferenceDataValues.ResidentialRoadWidthMultiplicationFactor, StringComparison.OrdinalIgnoreCase))
+                                                .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL).Equals(ReferenceDataValues.ResidentialRoadWidthMultiplicationFactor, StringComparison.OrdinalIgnoreCase))
                                                 .Select(x => x.ReferenceDataValue).SingleOrDefault());
                 double residentialPavementWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
-                                                    .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                                    .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL) == ReferenceDataValues.ResidentialPavementWidthMultiplicationFactor)
+                                                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL) == ReferenceDataValues.ResidentialPavementWidthMultiplicationFactor)
                                                     .Select(x => x.ReferenceDataValue).SingleOrDefault());
                 double residentialHouseDepthMultFactor = Convert.ToDouble(referenceDataCategoryList
-                                                    .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                                    .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL) == ReferenceDataValues.ResidentialHouseDepthMultiplicationFactor)
+                                                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL) == ReferenceDataValues.ResidentialHouseDepthMultiplicationFactor)
                                                     .Select(x => x.ReferenceDataValue).SingleOrDefault());
 
                 workloadLengthMeter = actualLength -
@@ -136,12 +136,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             else if (dpUseIndicatorType == ReferenceDataValues.Organisation)
             {
                 double businessRoadWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
-                                                .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                                .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL) == ReferenceDataValues.BusinessRoadWidthMultiplicationFactor)
+                                                .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                                .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL) == ReferenceDataValues.BusinessRoadWidthMultiplicationFactor)
                                                 .Select(x => x.ReferenceDataValue).SingleOrDefault());
                 double businessPavementWidthMultFactor = Convert.ToDouble(referenceDataCategoryList
-                                                    .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
-                                                    .Where(x => x.ReferenceDataName.TrimEnd(Constants.LF, Constants.NL) == ReferenceDataValues.BusinessPavementWidthMultiplicationFactor)
+                                                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters).SelectMany(x => x.ReferenceDatas)
+                                                    .Where(x => x.ReferenceDataName.TrimEnd(AccessLinkConstants.LF, AccessLinkConstants.NL) == ReferenceDataValues.BusinessPavementWidthMultiplicationFactor)
                                                     .Select(x => x.ReferenceDataValue).SingleOrDefault());
 
                 workloadLengthMeter = actualLength -
@@ -150,7 +150,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             }
             else
             {
-                throw new Exception(DPUseIndicatorTypeException);
+                throw new Exception(AccessLinkConstants.DPUseIndicatorTypeException);
             }
 
             if (workloadLengthMeter <= 0)
@@ -172,7 +172,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             using (loggingHelper.RMTraceManager.StartTrace("Business.CreateAutomaticAccessLink"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isAccessLinkCreated = false;
 
@@ -203,7 +203,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 // Get details for the OO
                 if (referenceDataCategoryList
-                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
+                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
                         .SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID ==
                     operationObjectTypeId)
@@ -247,7 +247,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                             .STLength();
 
                     var accessLinkSameRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList
-                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters)
+                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters)
                         .SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkSameRoadMaxDistance)
                         .ReferenceDataValue);
@@ -275,7 +275,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                             .ShortestLineTo(networkLink.LinkGeometry.ToSqlGeometry()).STLength();
 
                         var accessLinkDiffRoadMaxDistance = Convert.ToInt32(referenceDataCategoryList
-                            .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters)
+                            .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkParameters)
                             .SelectMany(x => x.ReferenceDatas)
                             .Single(x => x.ReferenceDataName == ReferenceDataValues.AccessLinkDiffRoadMaxDistance)
                             .ReferenceDataValue);
@@ -305,7 +305,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     accessLinkDto.OperationalObjectType_GUID = operationObjectTypeId;
                     accessLinkDto.Approved = accessLinkApproved;
                     if (referenceDataCategoryList
-                            .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
+                            .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
                             .SelectMany(x => x.ReferenceDatas)
                             .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == operationObjectTypeId)
                     {
@@ -314,17 +314,17 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     }
 
                     accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
-                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkType)
+                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkType)
                         .SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == accessLinkType).ID;
 
                     accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
-                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkDirection)
+                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkDirection)
                         .SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == accessLinkDirection).ID;
 
                     accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
-                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkStatus)
+                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkStatus)
                         .SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == accessLinkStatus).ID;
 
@@ -334,7 +334,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     if (isAccessLinkCreated)
                     {
                         if (referenceDataCategoryList
-                                .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
+                                .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
                                 .SelectMany(x => x.ReferenceDatas)
                                 .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID ==
                             operationObjectTypeId)
@@ -346,7 +346,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     }
                 }
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
                 return isAccessLinkCreated;
             }
         }
@@ -363,23 +363,23 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             using (loggingHelper.RMTraceManager.StartTrace("Business.CreateManualAccessLink"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isAccessLinkCreated = false;
 
-                string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, Constants.LinestringObject);
-                string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, Constants.PointObject);
-                string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, Constants.PointObject);
+                string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, AccessLinkConstants.LinestringObject);
+                string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, AccessLinkConstants.PointObject);
+                string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, AccessLinkConstants.PointObject);
                 Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
                 Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
 
                 AccessLinkDTO accessLinkDto = new AccessLinkDTO
                 {
                     ID = Guid.Empty,
-                    AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, Constants.BNGCOORDINATESYSTEM),
-                    NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, Constants.BNGCOORDINATESYSTEM),
+                    AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, AccessLinkConstants.BNGCOORDINATESYSTEM),
+                    NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM),
                     NetworkLink_GUID = networkLinkGuidManual,
-                    OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, Constants.BNGCOORDINATESYSTEM), // need to write logic
+                    OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM), // need to write logic
                     OperationalObject_GUID = operationalObjectGuidManual,
                     OperationalObjectType_GUID = Guid.Empty,
                     Approved = true,
@@ -415,7 +415,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 string roadName = string.Empty;
 
                 accessLinkDto.OperationalObjectType_GUID = referenceDataCategoryList
-                        .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+                        .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
                 var deliveryPointOperationalObject = accessLinkIntegrationService.GetDeliveryPoint(operationalObjectGuidManual).Result;
@@ -423,15 +423,15 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 operationalObject = deliveryPointOperationalObject;
 
                 accessLinkDto.AccessLinkType_GUID = referenceDataCategoryList
-                            .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
+                            .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
                             .Single(x => x.ReferenceDataValue == ReferenceDataValues.UserDefined).ID;
 
                 accessLinkDto.LinkDirection_GUID = referenceDataCategoryList
-                    .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkDirectionBoth).ID;
 
                 accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
-                    .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.UserDefined).ID;
 
                 NetworkLinkDTO networkObject = accessLinkIntegrationService.GetNetworkLink(accessLinkDto.NetworkLink_GUID).Result;
@@ -444,7 +444,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 if (isAccessLinkCreated)
                 {
                     if (referenceDataCategoryList
-                   .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+                   .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == accessLinkDto.OperationalObjectType_GUID)
                     {
                         DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
@@ -453,7 +453,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     }
                 }
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
                 return isAccessLinkCreated;
             }
         }
@@ -471,7 +471,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             if (!string.IsNullOrEmpty(boundaryBox))
             {
                 var accessLinkCoordinates =
-                    GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(Constants.Comma[0]));
+                    GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(AccessLinkConstants.Comma[0]));
                 accessLinkJsonData =
                     GetAccessLinkJsonData(accessLinkDataService.GetAccessLinks(accessLinkCoordinates, unitGuid));
             }
@@ -484,9 +484,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>returns calculated path length as <double>.</true></returns>
         public decimal GetAdjPathLength(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
-            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, Constants.LinestringObject);
-            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, Constants.PointObject);
-            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, Constants.PointObject);
+            string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, AccessLinkConstants.LinestringObject);
+            string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, AccessLinkConstants.PointObject);
+            string networkIntersectionPointManual = ObjectParser.GetGeometry(accessLinkManualDto.NetworkIntersectionPoint, AccessLinkConstants.PointObject);
             Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
             Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
             string roadName = string.Empty;
@@ -494,11 +494,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             AccessLinkDTO accessLinkDto = new AccessLinkDTO
             {
                 ID = Guid.Empty,
-                AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, Constants.BNGCOORDINATESYSTEM),
+                AccessLinkLine = DbGeometry.LineFromText(accessLinkLineManual, AccessLinkConstants.BNGCOORDINATESYSTEM),
                 ActualLengthMeter = Convert.ToDecimal(1.00),
-                NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, Constants.BNGCOORDINATESYSTEM),
+                NetworkIntersectionPoint = DbGeometry.PointFromText(networkIntersectionPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM),
                 NetworkLink_GUID = networkLinkGuidManual,
-                OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, Constants.BNGCOORDINATESYSTEM),
+                OperationalObjectPoint = DbGeometry.PointFromText(operationalObjectPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM),
                 OperationalObject_GUID = operationalObjectGuidManual,
                 OperationalObjectType_GUID = Guid.Empty,
                 Approved = true,
@@ -532,7 +532,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                accessLinkIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
 
             accessLinkDto.OperationalObjectType_GUID = referenceDataCategoryList
-                    .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                     .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
             // get the delivery point data based on the guid.
@@ -548,7 +548,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             accessLinkDto.ActualLengthMeter = Convert.ToDecimal((double)accessLinkDto.AccessLinkLine.ToSqlGeometry().STLength());
 
             if (referenceDataCategoryList
-              .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
+              .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
               .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID == accessLinkDto.OperationalObjectType_GUID)
             {
                 DeliveryPointDTO deliveryPointDto = (DeliveryPointDTO)operationalObject;
@@ -568,10 +568,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CheckManualAccessLinkIsValid(string boundingBoxCoordinates, string accessLinkCoordinates)
         {
-            string parsedAccessLink = ObjectParser.GetGeometry(accessLinkCoordinates, Constants.LinestringObject);
+            string parsedAccessLink = ObjectParser.GetGeometry(accessLinkCoordinates, AccessLinkConstants.LinestringObject);
 
-            DbGeometry accessLink = DbGeometry.LineFromText(parsedAccessLink, Constants.BNGCOORDINATESYSTEM);
-            string formattedBoundaryCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates.Replace(Constants.OpenSquareBracket, string.Empty).Replace(Constants.CloseSquareBracket, string.Empty).Split(Constants.Comma[0]));
+            DbGeometry accessLink = DbGeometry.LineFromText(parsedAccessLink, AccessLinkConstants.BNGCOORDINATESYSTEM);
+            string formattedBoundaryCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates.Replace(AccessLinkConstants.OpenSquareBracket, string.Empty).Replace(AccessLinkConstants.CloseSquareBracket, string.Empty).Split(AccessLinkConstants.Comma[0]));
             List<AccessLinkDTO> accessLinkDTOs = accessLinkDataService.GetAccessLinksCrossingOperationalObject(formattedBoundaryCoordinates, accessLink);
             List<NetworkLinkDTO> networkLinkDTOs = accessLinkIntegrationService.GetCrossingNetworkLinks(formattedBoundaryCoordinates, accessLink).Result;
             List<DeliveryPointDTO> deliveryPointDTOs = accessLinkIntegrationService.GetDeliveryPointsCrossingOperationalObject(formattedBoundaryCoordinates, accessLink).Result;
@@ -598,7 +598,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             if (accessLinkParameters != null && accessLinkParameters.Length == 4)
             {
                 coordinates = string.Format(
-                              Constants.Polygon,
+                              AccessLinkConstants.Polygon,
                               Convert.ToString(accessLinkParameters[0]),
                               Convert.ToString(accessLinkParameters[1]),
                               Convert.ToString(accessLinkParameters[0]),
@@ -638,7 +638,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     SqlGeometry accessLinksqlGeometry = null;
                     if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                        accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
+                        accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
 
                         List<List<double>> cords = new List<List<double>>();
 
@@ -652,16 +652,16 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     }
                     else
                     {
-                        accessLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
+                        accessLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
                         geometry.coordinates = new double[] { accessLinksqlGeometry.STX.Value, accessLinksqlGeometry.STY.Value };
                     }
 
                     Feature feature = new Feature();
                     feature.geometry = geometry;
 
-                    feature.type = Constants.FeatureType;
+                    feature.type = AccessLinkConstants.FeatureType;
                     feature.id = res.ID.ToString();
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.AccessLink.GetDescription()) } };
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { AccessLinkConstants.LayerType, Convert.ToString(OtherLayersType.AccessLink.GetDescription()) } };
 
                     geoJson.features.Add(feature);
                 }
