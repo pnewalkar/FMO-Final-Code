@@ -187,7 +187,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName= Constants.PostalAddressType
+                    CategoryName = Constants.PostalAddressType
                 },
 
                 new ReferenceDataCategoryDTO()
@@ -200,7 +200,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName= Constants.PostalAddressStatus
+                    CategoryName = Constants.PostalAddressStatus
                 },
 
                 new ReferenceDataCategoryDTO()
@@ -213,7 +213,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName= Constants.PostalAddressStatus
+                    CategoryName = Constants.PostalAddressStatus
                 }
             };
 

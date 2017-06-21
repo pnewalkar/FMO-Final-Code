@@ -23,7 +23,7 @@ namespace RM.Common.ReferenceData.WebAPI
 {
     public partial class Startup
     {
-        private IHostingEnvironment _hostingEnvironment;
+        private IHostingEnvironment hostingEnvironment;
 
         public Startup(IHostingEnvironment env)
         {
@@ -38,7 +38,7 @@ namespace RM.Common.ReferenceData.WebAPI
 #else
  SqlServerTypes.Utilities.LoadNativeAssemblies( env.ContentRootPath);
 #endif
-            _hostingEnvironment = env;
+            hostingEnvironment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -86,13 +86,13 @@ namespace RM.Common.ReferenceData.WebAPI
             // Infrastructure
             services.AddTransient<IDatabaseFactory<ReferenceDataDBContext>, DatabaseFactory<ReferenceDataDBContext>>();
 
-            //---Adding scope for all classes           
+            //---Adding scope for all classes
             services.AddScoped<IReferenceDataBusinessService, ReferenceDataBusinessService>();
             services.AddScoped<DataService.Interface.IReferenceDataDataService, DataService.ReferenceDataDataService>();
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
             services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
-            var physicalProvider = _hostingEnvironment.ContentRootFileProvider;
+            var physicalProvider = hostingEnvironment.ContentRootFileProvider;
             var embeddedProvider = new EmbeddedFileProvider(Assembly.GetEntryAssembly());
             services.AddSingleton<IFileProvider>(embeddedProvider);
         }

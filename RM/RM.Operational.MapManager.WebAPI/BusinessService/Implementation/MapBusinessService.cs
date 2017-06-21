@@ -1,14 +1,13 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
-using Fonet;
-using System;
 
 namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
@@ -38,12 +37,12 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <returns>deliveryRouteDto</returns>
         public PrintMapDTO SaveImage(PrintMapDTO printMapDTO)
         {
-            string pdXslFo = string.Empty;
             if (printMapDTO != null)
             {
                 printMapDTO.PrintTime = string.Format(Constants.PrintMapDateTimeFormat, DateTime.Now);
                 SaveMapImage(printMapDTO);
             }
+
             return printMapDTO;
         }
 
@@ -126,7 +125,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             section = doc.CreateElement("section");
             sectionColumn = doc.CreateElement("sectionColumn");
             sectionColumn.SetAttribute("width", "1");
-            sectionColumn.InnerText = "TO DO *** Implement Licensing ***";
+            sectionColumn.InnerText = printMapDTO.License;
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 
@@ -136,17 +135,20 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
 
         private void SaveMapImage(PrintMapDTO printMapDTO)
         {
-            string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
-            string imageLocation = imagePath + Guid.NewGuid() + ".png";
-
-            if (encodedStringArray != null && encodedStringArray.Count() > 0)
+            if (!string.IsNullOrEmpty(printMapDTO.EncodedString))
             {
-                byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
-                File.WriteAllBytes(imageLocation, imageBytes);
+                string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
+                string imageLocation = string.Empty;
+
+                if (encodedStringArray != null && encodedStringArray.Count() > 0)
+                {
+                    imageLocation = imagePath + Guid.NewGuid() + ".png";
+                    byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
+                    File.WriteAllBytes(imageLocation, imageBytes);
+                }
+
+                printMapDTO.ImagePath = imageLocation; 
             }
-            printMapDTO.ImagePath = imageLocation;
         }
-
-
     }
 }

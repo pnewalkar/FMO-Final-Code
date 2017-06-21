@@ -221,12 +221,6 @@
     </fo:block>
   </xsl:template>
 
-  <xsl:template match="heading1CenterAligned">
-    <fo:block font-size="16pt" space-after="0.1cm" text-align="center" keep-with-next.within-page="always">
-      <xsl:apply-templates/>
-    </fo:block>
-  </xsl:template>
-
   <xsl:template match="heading2">
     <fo:block font-size="12pt" space-before="0.3cm" space-after="0.1cm" keep-with-next.within-page="always">
       <xsl:apply-templates/>
@@ -309,6 +303,12 @@
     <fo:table-row text-align="center" border-bottom-width="0.01cm" border-bottom-style="solid">
       <xsl:apply-templates />
     </fo:table-row>
+  </xsl:template>
+
+  <xsl:template match="heading1CenterAligned">
+    <fo:block font-size="16pt" space-after="0.1cm" text-align="center" keep-with-next.within-page="always">
+      <xsl:apply-templates/>
+    </fo:block>
   </xsl:template>
 
   <xsl:template match="footer">

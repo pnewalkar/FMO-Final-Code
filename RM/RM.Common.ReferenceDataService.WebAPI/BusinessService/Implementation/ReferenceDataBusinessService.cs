@@ -8,7 +8,7 @@
     using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.HelperMiddleware;
     using Microsoft.Extensions.FileProviders;
-    using RM.Common.DataService.Interface;
+    using RM.Common.ReferenceData.WebAPI.DataService.Interface;
     using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
     using Utils;
@@ -16,12 +16,13 @@
     public class ReferenceDataBusinessService : IReferenceDataBusinessService
     {
         #region Member Variables
+
         private static ReferenceDataMapping referenceDataMapping;
         private readonly IFileProvider fileProvider;
-        private IConfigurationHelper configHelper = default(IConfigurationHelper);
         private string refDataXMLFileName = string.Empty;
-        private IReferenceDataDataService referenceDataDataService; 
-        #endregion
+        private IReferenceDataDataService referenceDataDataService;
+
+        #endregion Member Variables
 
         #region Constructor
 
@@ -66,8 +67,8 @@
                 itemName = referenceDataMapping.CategoryNames
                                     .Where(a => (a.AppCategoryName.Equals(appGroupName, StringComparison.InvariantCultureIgnoreCase)
                                         || a.DBCategoryName.Equals(appGroupName, StringComparison.InvariantCultureIgnoreCase))
-                                        && (a.ReferenceDataNames.Any(b => b.AppReferenceDataName.Equals(appItemName, StringComparison.InvariantCultureIgnoreCase)
-                                                                       || b.DBReferenceDataName.Equals(appItemName, StringComparison.InvariantCultureIgnoreCase))))
+                                        && a.ReferenceDataNames.Any(b => b.AppReferenceDataName.Equals(appItemName, StringComparison.InvariantCultureIgnoreCase)
+                                                                       || b.DBReferenceDataName.Equals(appItemName, StringComparison.InvariantCultureIgnoreCase)))
                                     .Select(s => s.ReferenceDataNames.Select(t => t.DBReferenceDataName).FirstOrDefault()).FirstOrDefault();
             }
 

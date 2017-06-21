@@ -1,4 +1,4 @@
-﻿namespace RM.Common.DataService
+﻿namespace RM.Common.ReferenceData.WebAPI.DataService
 {
     using System;
     using System.Collections.Generic;
@@ -22,6 +22,7 @@
         #endregion Constructor
 
         #region Methods
+
         /// <summary>
         /// Gets all reference data for category type nameValuePair.
         /// </summary>
@@ -131,7 +132,8 @@
             {
                 return null;
             }
-        } 
-        #endregion
+        }
+
+        #endregion Methods
     }
 }

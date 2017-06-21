@@ -26,8 +26,6 @@ function MapController($scope,
     vm.onEnterKeypress = onEnterKeypress;
 
     $rootScope.$on('LicensingInfoText', function (event, args) {
-        debugger;
-        var test = args.displayText;
         mapService.LicenceInfo(args.displayText);
     });
 

@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-
-using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
-using System;
-using RM.CommonLibrary.ResourceFile;
+﻿using System;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
+using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
+using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
@@ -20,7 +18,6 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             : base(databaseFactory)
         {
         }
-
 
         /// <summary>
         /// This method is used to fetch data for OSRoadLink.

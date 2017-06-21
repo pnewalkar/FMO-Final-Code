@@ -18,23 +18,23 @@ namespace RM.Operational.MapManager.WebAPI.Authentication
     /// </summary>
     public class TokenProviderMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly TokenProviderOptions _options;
-        private readonly ILogger _logger;
-        private readonly JsonSerializerSettings _serializerSettings;
+        private readonly RequestDelegate next;
+        private readonly TokenProviderOptions options;
+        private readonly ILogger logger;
+        private readonly JsonSerializerSettings serializerSettings;
 
         public TokenProviderMiddleware(
             RequestDelegate next,
             IOptions<TokenProviderOptions> options,
             ILoggerFactory loggerFactory)
         {
-            _next = next;
-            _logger = loggerFactory.CreateLogger<TokenProviderMiddleware>();
+            this.next = next;
+            logger = loggerFactory.CreateLogger<TokenProviderMiddleware>();
 
-            _options = options.Value;
-            ThrowIfInvalidOptions(_options);
+            this.options = options.Value;
+            ThrowIfInvalidOptions(this.options);
 
-            _serializerSettings = new JsonSerializerSettings
+            serializerSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
             };
@@ -43,9 +43,9 @@ namespace RM.Operational.MapManager.WebAPI.Authentication
         public Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
-            if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
+            if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
             {
-                return _next(context);
+                return next(context);
             }
 
             // Request must be POST with Content-Type: application/x-www-form-urlencoded
@@ -56,9 +56,9 @@ namespace RM.Operational.MapManager.WebAPI.Authentication
                 return context.Response.WriteAsync("Bad request.");
             }
 
-            _logger.LogInformation("Handling request: " + context.Request.Path);
+            logger.LogInformation("Handling request: " + context.Request.Path);
 
-            return _next(context);
+            return next(context);
         }
 
         private static void ThrowIfInvalidOptions(TokenProviderOptions options)
