@@ -126,7 +126,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             section = doc.CreateElement("section");
             sectionColumn = doc.CreateElement("sectionColumn");
             sectionColumn.SetAttribute("width", "1");
-            sectionColumn.InnerText = "TO DO *** Implement Licensing ***";
+            sectionColumn.InnerText = printMapDTO.License;
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 

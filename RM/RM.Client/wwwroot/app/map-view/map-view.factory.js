@@ -10,7 +10,8 @@ MapFactory.$inject = ['$http',
     '$document',
     'layersAPIService',
     '$q',
-    'stringFormatService'];
+    'stringFormatService',
+'$timeout'];
 
 function MapFactory($http,
     mapStylesFactory,
@@ -19,7 +20,8 @@ function MapFactory($http,
     $document,
     layersAPIService,
     $q,
-    stringFormatService)
+    stringFormatService,
+        $timeout)
     {
     var map = null;
     var miniMap = null;
@@ -110,6 +112,9 @@ function MapFactory($http,
 
         units = map.getView().getProjection().getUnits();
         mpu = ol.proj.METERS_PER_UNIT[units];
+
+        map.addControl(new ol.control.ScaleLine());
+        document.getElementsByClassName('ol-overlaycontainer-stopevent')[0].style.visibility = "hidden";
     }
 
     function initialiseMiniMap() {
@@ -366,8 +371,11 @@ function MapFactory($http,
                 else {
                     setZoomButtonStatus(zoomOutButtons, false);
                 }
-
-                $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                $timeout(function () {
+                    $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                });
+                //$rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                //$rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale });
             }
         };
 
