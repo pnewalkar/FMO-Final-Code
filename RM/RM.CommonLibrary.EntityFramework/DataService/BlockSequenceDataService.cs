@@ -3,7 +3,6 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
@@ -13,7 +12,6 @@ using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.ResourceFile;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService

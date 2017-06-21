@@ -15,7 +15,8 @@
         'GlobalSettings',
         'guidService',
         '$stateParams',
-        '$rootScope',      
+        '$rootScope',
+        'CommonConstants',
          AccessLinkController])
 function AccessLinkController(
     accessLinkAPIService,
@@ -31,7 +32,8 @@ function AccessLinkController(
     GlobalSettings,
     guidService,
     $stateParams,
-    $rootScope 
+    $rootScope ,
+    CommonConstants
 ) {
     vm = this;
     var contextTitle = vm.contextTitle;
@@ -73,7 +75,7 @@ function AccessLinkController(
                 $rootScope.state = true;
                 mapService.refreshLayers();
                 $rootScope.$broadcast('redirectTo', {
-                    contextTitle: GlobalSettings.deliveryPointLayerName
+                    contextTitle: CommonConstants.DeliveryPointActionName
                 });
                 $rootScope.$broadcast('disablePrintMap', {
                     disable: false

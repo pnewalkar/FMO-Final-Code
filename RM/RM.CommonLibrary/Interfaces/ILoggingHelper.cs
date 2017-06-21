@@ -21,7 +21,7 @@ namespace RM.CommonLibrary.LoggingMiddleware
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
         /// <param name="title">Title</param>
-        void Log(Exception exception, TraceEventType severity, string category = Constants.DefaultLoggingCategory, int priority = Constants.DefaultLoggingPriority, int eventId = Constants.DefaultLoggingEventId, string title = Constants.DefaultLoggingTitle);
+        void Log(Exception exception, TraceEventType severity, string category = LoggerTraceConstants.DefaultLoggingCategory, int priority = LoggerTraceConstants.DefaultLoggingPriority, int eventId = LoggerTraceConstants.DefaultLoggingEventId, string title = LoggerTraceConstants.DefaultLoggingTitle);
 
         /// <summary>
         /// Logs an entry.
@@ -33,6 +33,6 @@ namespace RM.CommonLibrary.LoggingMiddleware
         /// <param name="priority">Priority</param>
         /// <param name="eventId">Event ID</param>
         /// <param name="title">Title</param>
-        void Log(string message, TraceEventType severity, Exception exception = null, string category = Constants.DefaultLoggingCategory, int priority = Constants.DefaultLoggingPriority, int eventId = Constants.DefaultLoggingEventId, string title = Constants.DefaultLoggingTitle);
+        void Log(string message, TraceEventType severity, Exception exception = null, string category = LoggerTraceConstants.DefaultLoggingCategory, int priority = LoggerTraceConstants.DefaultLoggingPriority, int eventId = LoggerTraceConstants.DefaultLoggingEventId, string title = LoggerTraceConstants.DefaultLoggingTitle);
     }
 }

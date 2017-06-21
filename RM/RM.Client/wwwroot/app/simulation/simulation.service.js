@@ -36,9 +36,9 @@ function simulationService(simulationAPIService,
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
         simulationAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            if (response.length > 0) {
+          
                 deferred.resolve(response);
-            }
+
         });
         return deferred.promise;
     }

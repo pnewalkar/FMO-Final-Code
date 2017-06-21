@@ -4,13 +4,13 @@
     using System.Collections.Generic;
     using System.Data.Entity.Infrastructure;
     using System.Linq;
+    using Moq;
+    using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.Entities;
     using RM.CommonLibrary.HelperMiddleware;
-    using Moq;
-    using NUnit.Framework;
 
     public class ScenarioDataServiceFixture : RepositoryFixtureBase
     {

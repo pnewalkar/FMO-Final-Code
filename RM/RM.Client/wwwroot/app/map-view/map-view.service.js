@@ -16,8 +16,9 @@ mapService.$inject = ['$http',
                      '$state',
                      '$stateParams',
                      '$rootScope',
-                     'layersAPIService'
-];
+                     'layersAPIService',
+                     'CommonConstants'
+                    ];
 
 function mapService($http,
                     mapFactory,
@@ -34,7 +35,8 @@ function mapService($http,
                     $state,
                     $stateParams,
                     $rootScope,
-                    layersAPIService
+                    layersAPIService,
+                    CommonConstants
                    ) {
     var vm = this;
     vm.map = null;
@@ -532,7 +534,7 @@ function mapService($http,
 			    $rootScope.$broadcast('redirectTo', {
 
 			        feature: evt.feature,
-			        contextTitle: GlobalSettings.accessLinkLayerName
+			        contextTitle: CommonConstants.AccessLinkActionName
 
 			    });
 			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {

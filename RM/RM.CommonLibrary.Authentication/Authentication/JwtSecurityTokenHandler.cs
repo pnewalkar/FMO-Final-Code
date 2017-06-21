@@ -1,12 +1,12 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Authentication;
-using Microsoft.IdentityModel.Tokens;
-
-namespace RM.CommonLibrary.Authentication
+﻿namespace RM.CommonLibrary.Authentication
 {
+    using System;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Http.Authentication;
+    using Microsoft.IdentityModel.Tokens;
+
     public class CustomJwtDataFormat : ISecureDataFormat<AuthenticationTicket>
     {
         private readonly string algorithm;
@@ -19,7 +19,7 @@ namespace RM.CommonLibrary.Authentication
         }
 
         public AuthenticationTicket Unprotect(string protectedText)
-            => Unprotect(protectedText, null);
+            => this.Unprotect(protectedText, null);
 
         public AuthenticationTicket Unprotect(string protectedText, string purpose)
         {
@@ -38,9 +38,9 @@ namespace RM.CommonLibrary.Authentication
                     throw new ArgumentException("Invalid JWT");
                 }
 
-                if (!validJwt.Header.Alg.Equals(algorithm, StringComparison.Ordinal))
+                if (!validJwt.Header.Alg.Equals(this.algorithm, StringComparison.Ordinal))
                 {
-                    throw new ArgumentException($"Algorithm must be '{algorithm}'");
+                    throw new ArgumentException($"Algorithm must be '{this.algorithm}'");
                 }
 
                 // Additional custom validation of JWT claims here (if any)

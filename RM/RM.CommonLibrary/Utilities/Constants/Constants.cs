@@ -65,7 +65,7 @@
         public const string MultipleOccupancyCount = "multipleOccupancyCount";
         public const string Locality = "locality";
         public const string DeliveryPointId = "deliveryPointId";
-        public const string Street = "street";
+        public const string Street = "Street";
         public const string DpUseResidential = "Residential";
         public const string DpUseOrganisation = "Organisation";
         public const string Space = " ";
@@ -84,6 +84,7 @@
         public const string XsltFilePath = "XSLTFilePath";
         public const string RefDataXMLFileName = "RefDataXMLFileName";
         public const char CommaChar = ',';
+        public const string TimerIntervalInSeconds = "TimerIntervalInSeconds";
         #endregion Common
 
         #region NYB
@@ -293,13 +294,58 @@
 
         #endregion Third Party Config params
 
-        #region
+        #region PDF Generation constants
 
-        public const string DefaultLoggingCategory = "General";
-        public const int DefaultLoggingPriority = 0;
-        public const int DefaultLoggingEventId = 0;
-        public const string DefaultLoggingTitle = "";
+        public const string Report = "report";
+        public const string PageHeader = "pageHeader";
+        public const string PageFooter = "pageFooter";
+        public const string Content = "content";
+        public const string Heading1 = "heading1";
+        public const string Heading2 = "heading2";
+        public const string PdfOutPut = "outputTo";
+        public const string A4Portrait = "A4Portrait";
+        public const string Caption = "caption";
+        public const string PageNumber = "pageNumbers";
+        public const string Section = "section";
+        public const string SectionColumn = "sectionColumn";
+        public const string Width = "width";
+        public const string Paragraph = "paragraph";
+        public const string Table = "table";
+        public const string Columns = "columns";
+        public const string Column = "column";
+        public const string Borders = "borders";
+        public const string UseShading = "useShading";
+        public const string Row = "row";
+        public const string Shade = "shade";
+        public const string Cell = "cell";
+        public const string Header = "header";
+        public const string RouteSummaryAlias = "* All Alias, Hazards/Area Hazards and Special Instructions Information is shown on the detailed route log and hazard card.";
+        public const string RouteSummarySequencedPoints = "Sequenced Points";
+        public const string RouteSummaryHeader = "Route Log Summary";
 
-        #endregion
+        /*Route Summary PDF Column Name*/
+        public const string RouteSummaryName = "Name";
+        public const string Number = "Number";
+        public const string RouteMethod = "Method";
+        public const string DeliveryOffice = "Delivery Office";
+        public const string Aliases = "Aliases*";
+        public const string Block = "Blocks";
+        public const string Scenario = "Scenario";
+
+        public const string CollectionPoint = "CPs";
+        public const string DeliveryPoint = "DPs";
+        public const string BusinessDeliveryPoint = "Business DPs";
+        public const string ResidentialDeliveryPoint = "Residential DPs";
+        public const string AccelerationIn = "Acceleration In";
+        public const string AccelerationOut = "Acceleration Out";
+        public const string PairedRoute = "Paired Route";
+
+        public const string NoD2D = "No D2D";
+        public const string DPExemptions = "DP Exemptions";
+        public const string MultipleOccupancy = "Multiple Occupancy";
+        public const string SpecialInstructions = "Special Instructions*";
+        public const string AreaHazards = "Hazards/Area Hazards*";
+
+        #endregion PDF Generation constants
     }
 }

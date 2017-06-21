@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
-
-namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
+﻿namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
 {
+    using System;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.Extensions.Options;
+
     public static class ResponseExceptionHandlerExtensions
     {
         public static IApplicationBuilder UseResponseExceptionHandler(this IApplicationBuilder app) => app.UseResponseExceptionHandler(_ => { });

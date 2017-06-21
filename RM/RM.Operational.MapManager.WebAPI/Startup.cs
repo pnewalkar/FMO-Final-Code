@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
-using Microsoft.AspNetCore.Http;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.ExceptionMiddleware;
-using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.Interfaces;
-using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.DataMiddleware;
+using RM.CommonLibrary.EntityFramework.Entities;
+using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.HttpHandler;
+using RM.CommonLibrary.Interfaces;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.MapManager.WebAPI.BusinessService;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
-using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace RM.Operational.MapManager.WebAPI
 {
