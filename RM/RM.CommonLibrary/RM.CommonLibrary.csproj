@@ -169,7 +169,6 @@
     <Compile Include="Interfaces\IExceptionHelper.cs" />
     <Compile Include="Interfaces\ILoggingHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\Constants\Constants.cs" />
     <Compile Include="Utilities\Constants\ReferenceDataCategoryNames.cs" />
     <Compile Include="Utilities\Constants\ReferenceDataValues.cs" />
     <Compile Include="Utilities\Constants\UserAccessFunctionsConstants.cs" />

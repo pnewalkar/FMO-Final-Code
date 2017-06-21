@@ -198,14 +198,14 @@
             {
                 DataContext.Entry(objAddress).State = EntityState.Unchanged;
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), notSupportedException.ToString());
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
                 DataContext.Entry(objAddress).State = EntityState.Unchanged;
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), disposedException.ToString());
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
 
@@ -538,7 +538,7 @@
                 }
 
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), notSupportedException.ToString());
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
@@ -549,7 +549,7 @@
                 }
 
                 LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), disposedException.ToString());
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
 
