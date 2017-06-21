@@ -319,6 +319,9 @@
         public const string Shade = "shade";
         public const string Cell = "cell";
         public const string Header = "header";
+        public const string Source = "source";
+        public const string Heading1CenterAligned = "heading1CenterAligned";
+        public const string Image = "image";
         public const string RouteSummaryAlias = "* All Alias, Hazards/Area Hazards and Special Instructions Information is shown on the detailed route log and hazard card.";
         public const string RouteSummarySequencedPoints = "Sequenced Points";
         public const string RouteSummaryHeader = "Route Log Summary";
