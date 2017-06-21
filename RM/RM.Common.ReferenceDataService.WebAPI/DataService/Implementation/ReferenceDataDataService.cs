@@ -3,7 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Diagnostics;
     using System.Linq;
+    using System.Reflection;
+    using CommonLibrary.LoggingMiddleware;
     using Interface;
     using RM.Common.ReferenceData.WebAPI.Entities;
     using RM.CommonLibrary.DataMiddleware;
@@ -15,11 +18,14 @@
         private const int ReferenceDataCategoryTypeForNameValuePair = 1;
         private const int ReferenceDataCategoryTypeForSimpleList = 2;
 
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
         #region Constructor
 
-        public ReferenceDataDataService(IDatabaseFactory<ReferenceDataDBContext> databaseFactory)
+        public ReferenceDataDataService(IDatabaseFactory<ReferenceDataDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         #endregion Constructor
@@ -34,34 +40,44 @@
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public NameValuePair GetNameValueReferenceData(string dbGroupName, string dbItemName)
         {
-            RM.Common.ReferenceData.WebAPI.Entities.ReferenceData referenceData = null;
-
-            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
-                .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
-                            && n.CategoryType.Equals(ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
-
-            if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNameValueReferenceData"))
             {
-                referenceData = referenceDataCategories.ReferenceDatas
-                        .Where(n => n.ReferenceDataName.Trim().Equals(dbItemName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-            }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            if (referenceData != null)
-            {
-                return new NameValuePair
+                RM.Common.ReferenceData.WebAPI.Entities.ReferenceData referenceData = null;
+
+                var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
+                    .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
+                                && n.CategoryType.Equals(ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
+
+                if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
                 {
-                    Id = referenceData.ID,
-                    Group = referenceDataCategories.CategoryName,
-                    Name = referenceData.ReferenceDataName,
-                    Value = referenceData.ReferenceDataValue,
-                    DisplayText = referenceData.DisplayText,
-                    Description = referenceData.DataDescription,
-                    maintainable = referenceDataCategories.Maintainable
-                };
-            }
-            else
-            {
-                return null;
+                    referenceData = referenceDataCategories.ReferenceDatas
+                            .Where(n => n.ReferenceDataName.Trim().Equals(dbItemName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                }
+
+                if (referenceData != null)
+                {
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                    return new NameValuePair
+                    {
+                        Id = referenceData.ID,
+                        Group = referenceDataCategories.CategoryName,
+                        Name = referenceData.ReferenceDataName,
+                        Value = referenceData.ReferenceDataValue,
+                        DisplayText = referenceData.DisplayText,
+                        Description = referenceData.DataDescription,
+                        maintainable = referenceDataCategories.Maintainable
+                    };
+                }
+                else
+                {
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return null;
+                }
             }
         }
 
@@ -72,28 +88,34 @@
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public List<NameValuePair> GetNameValueReferenceData(string dbGroupName)
         {
-            List<NameValuePair> nameValuePairList = null;
-
-            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
-                .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
-                            && n.CategoryType.Equals(ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
-            if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNameValueReferenceData"))
             {
-                nameValuePairList = new List<NameValuePair>();
-                referenceDataCategories.ReferenceDatas.ToList().ForEach(refData => nameValuePairList.Add(
-                new NameValuePair
-                {
-                    Id = refData.ID,
-                    Group = referenceDataCategories.CategoryName,
-                    Name = refData.ReferenceDataName,
-                    Value = refData.ReferenceDataValue,
-                    DisplayText = refData.DisplayText,
-                    Description = refData.DataDescription,
-                    maintainable = referenceDataCategories.Maintainable
-                }));
-            }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return nameValuePairList;
+                List<NameValuePair> nameValuePairList = null;
+
+                var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
+                    .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
+                                && n.CategoryType.Equals(ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
+                if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
+                {
+                    nameValuePairList = new List<NameValuePair>();
+                    referenceDataCategories.ReferenceDatas.ToList().ForEach(refData => nameValuePairList.Add(
+                    new NameValuePair
+                    {
+                        Id = refData.ID,
+                        Group = referenceDataCategories.CategoryName,
+                        Name = refData.ReferenceDataName,
+                        Value = refData.ReferenceDataValue,
+                        DisplayText = refData.DisplayText,
+                        Description = refData.DataDescription,
+                        maintainable = referenceDataCategories.Maintainable
+                    }));
+                }
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return nameValuePairList;
+            }
         }
 
         /// <summary>
@@ -103,37 +125,46 @@
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public SimpleListDTO GetSimpleListReferenceData(string dbGroupName)
         {
-            List<ListItems> listItems = new List<ListItems>();
-
-            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
-                .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
-                            && n.CategoryType.Equals(ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();
-
-            if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetSimpleListReferenceData"))
             {
-                referenceDataCategories.ReferenceDatas.ToList().ForEach(refData => listItems.Add(new ListItems
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                List<ListItems> listItems = new List<ListItems>();
+
+                var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
+                    .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
+                                && n.CategoryType.Equals(ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();
+
+                if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
                 {
-                    Id = refData.ID,
-                    Name = refData.ReferenceDataName,
-                    Value = refData.ReferenceDataValue,
-                    DisplayText = refData.DisplayText,
-                    Description = refData.DataDescription
-                }));
-            }
+                    referenceDataCategories.ReferenceDatas.ToList().ForEach(refData => listItems.Add(new ListItems
+                    {
+                        Id = refData.ID,
+                        Name = refData.ReferenceDataName,
+                        Value = refData.ReferenceDataValue,
+                        DisplayText = refData.DisplayText,
+                        Description = refData.DataDescription
+                    }));
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                }
 
-            if (referenceDataCategories != null)
-            {
-                return new SimpleListDTO
+                if (referenceDataCategories != null)
                 {
-                    Id = referenceDataCategories.ID,
-                    ListName = referenceDataCategories.CategoryName,
-                    Maintainable = referenceDataCategories.Maintainable,
-                    ListItems = listItems
-                };
-            }
-            else
-            {
-                return null;
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return new SimpleListDTO
+                    {
+                        Id = referenceDataCategories.ID,
+                        ListName = referenceDataCategories.CategoryName,
+                        Maintainable = referenceDataCategories.Maintainable,
+                        ListItems = listItems
+                    };
+                }
+                else
+                {
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return null;
+                }
             }
         }
 

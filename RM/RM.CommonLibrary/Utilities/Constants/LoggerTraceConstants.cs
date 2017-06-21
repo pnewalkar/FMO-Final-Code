@@ -9,7 +9,7 @@
         internal const int DefaultLoggingEventId = 0;
         internal const string DefaultLoggingTitle = "";
 
-        #endregion
+        #endregion default
 
         public const string Category = "General";
         public const string BusinessLayer = "Business.";
@@ -55,7 +55,6 @@
         public const int AccessLinkControllerMethodEntryEventId = 8003;
         public const int AccessLinkControllerMethodExitEventId = 8004;
 
-
         public const int SearchManagerControllerMethodEntryEventId = 8103;
         public const int SearchManagerControllerMethodExitEventId = 8104;
         public const int SearchManagerBusinessServiceMethodEntryEventId = 8113;
@@ -65,6 +64,10 @@
 
         public const int ReferenceDataControllerMethodEntryEventId = 8203;
         public const int ReferenceDataControllerMethodExitEventId = 8204;
+        public const int ReferenceDataBusinessServiceMethodEntryEventId = 8213;
+        public const int ReferenceDataBusinessServiceMethodExitEventId = 8214;
+        public const int ReferenceDataDataServiceMethodEntryEventId = 8223;
+        public const int ReferenceDataDataServiceMethodExitEventId = 8224;
 
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;

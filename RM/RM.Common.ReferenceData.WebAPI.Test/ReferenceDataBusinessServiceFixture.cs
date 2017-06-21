@@ -9,6 +9,8 @@ using RM.CommonLibrary.HelperMiddleware;
 using System.IO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using System.Collections.Generic;
+using RM.CommonLibrary.LoggingMiddleware;
+using System;
 
 namespace RM.Common.ReferenceData.WebAPI.Test
 {
@@ -20,6 +22,8 @@ namespace RM.Common.ReferenceData.WebAPI.Test
         private Mock<IReferenceDataDataService> mockReferenceDataDataService;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
         private IReferenceDataBusinessService testCandidate;
+        private Mock<ILoggingHelper> loggingHelperMock;
+
         string filepath;
 
         [Test]
@@ -50,6 +54,7 @@ namespace RM.Common.ReferenceData.WebAPI.Test
             mockFileProvider = CreateMock<IFileProvider>();
             mockReferenceDataDataService = CreateMock<IReferenceDataDataService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
             filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug\net452", string.Empty), @"TestData\");
             fileProvider = new PhysicalFileProvider(filepath);
             IFileInfo fileInfo = fileProvider.GetFileInfo(@".\ReferenceDataMapping.xml");
@@ -64,7 +69,11 @@ namespace RM.Common.ReferenceData.WebAPI.Test
             mockReferenceDataDataService.Setup(x => x.GetNameValueReferenceData(It.IsAny<string>(), It.IsAny<string>())).Returns(collection);
             mockReferenceDataDataService.Setup(x => x.GetSimpleListReferenceData(It.IsAny<string>())).Returns(new SimpleListDTO() { });
 
-            testCandidate = new ReferenceDataBusinessService(mockFileProvider.Object, mockReferenceDataDataService.Object, mockConfigurationHelper.Object);
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new ReferenceDataBusinessService(mockFileProvider.Object, mockReferenceDataDataService.Object, mockConfigurationHelper.Object, loggingHelperMock.Object);
         }
     }
 }
