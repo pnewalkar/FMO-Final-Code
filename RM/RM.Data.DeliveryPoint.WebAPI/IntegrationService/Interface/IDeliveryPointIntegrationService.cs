@@ -62,5 +62,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         Task<List<PostalAddressDBDTO>> GetPostalAddress(List<Guid> addressGuids);
 
         Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
+
+        Task<CommonLibrary.EntityFramework.DTO.UnitLocationDTO> GetUnitLocationDetails(Guid unitGuid);
     }
 }

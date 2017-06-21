@@ -26,6 +26,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
 
         public NetworkNodeDatabaseDTO NetworkNode { get; set; }     
            
-        public ICollection<DeliveryPointStatusDatabaseDTO> DeliveryPointStatus { get; set; }
+        //public List<DeliveryPointStatusDatabaseDTO> DeliveryPointStatus { get; set; }
     }
 }

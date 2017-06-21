@@ -83,7 +83,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             bool isDeliveryPointUpdated = false;
             using (loggingHelper.RMTraceManager.StartTrace("Data.UpdateDeliveryPointByAddressId"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 var objDeliveryPoint = DataContext.DeliveryPoints.Where(n => n.Address_GUID == addressId).SingleOrDefault();
                 try
@@ -339,14 +339,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
-        public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
+        public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid, CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Data.GetDeliveryPoints"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                List<Location> locations = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+                List<LocationDatabaseDTO> locations = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid, unitLocation).ToList();
                 List<DeliveryPointDTO> deliveryPointDto = new List<DeliveryPointDTO>();
 
                 locations.ForEach(loc =>
@@ -448,8 +448,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
 
-            //using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
-            //{
+            using (loggingHelper.RMTraceManager.StartTrace("Data.GetDPUse"))
+            {
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodEntryEventId, LoggerTraceConstants.Title);
             string dpUsetype = string.Empty;
 
@@ -485,7 +485,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseDataMethodExitEventId, LoggerTraceConstants.Title);
             return dpUsetype;
 
-            // }
+            }
         }
 
         /// <summary>
@@ -855,31 +855,57 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Entity</returns>
-        private IEnumerable<Location> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
+        private List<LocationDatabaseDTO> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid, CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Data.GetDeliveryPointsCoordinatesDatabyBoundingBox"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-                IEnumerable<Location> locations = default(IEnumerable<Location>);
+                List<Location> locations = default(List<Location>);
                 DbGeometry polygon = default(DbGeometry);
                 if (!string.IsNullOrEmpty(boundingBoxCoordinates))
                 {
-                    using (CommonLibrary.EntityFramework.Entities.RMDBContext rmDbContext = new CommonLibrary.EntityFramework.Entities.RMDBContext())
-                    {
-                        polygon = rmDbContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
-                    }
+                    
+                    polygon = unitLocation.UnitBoundryPolygon;
+                    
 
                     DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
-                    locations = DataContext.Locations.Where(l => l.Shape.Intersects(extent) && l.Shape.Intersects(polygon));
+
+
+                    //locations = (from loc in DataContext.Locations
+                    //             join dp in DataContext.DeliveryPoints
+                    //             on loc.NetworkNode.ID equals dp.ID
+                    //             where loc.Shape.Intersects(extent) && loc.Shape.Intersects(polygon)
+                    //             select loc).ToList();
+
+                    //using (DeliveryPointDBContext dpContext = new DeliveryPointDBContext())
+                    //{
+                    //    locations = dpContext.Locations.Include(loc => loc.NetworkNode.DeliveryPoint).Join(dpContext.DeliveryPoints, ).Where(l => l.Shape.Intersects(extent) && l.Shape.Intersects(polygon)).ToList();
+                    //}
+
+                    locations = DataContext.Locations.Include(loc => loc.NetworkNode.DeliveryPoint).Where(l => l.Shape.Intersects(extent) && l.Shape.Intersects(polygon)).ToList();
+
+                    Mapper.Initialize(cfg =>
+                    {
+                        cfg.CreateMap<Location, LocationDatabaseDTO>().MaxDepth(3);
+                        cfg.CreateMap<NetworkNode, NetworkNodeDatabaseDTO>().MaxDepth(2);
+                        cfg.CreateMap<DeliveryPoint, DeliveryPointDatabaseDTO>().MaxDepth(1);
+                    });
+
+                    Mapper.Configuration.CreateMapper();
+
+                    var locationDatabaseDto = Mapper.Map<List<Location>, List<LocationDatabaseDTO>>(locations);
 
                     /* POC data modal change comment
                     deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
 
                     */
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return locationDatabaseDto;
                 }
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return locations;
+
+                return null;
+                
             }
         }
 

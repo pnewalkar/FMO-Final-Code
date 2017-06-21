@@ -28,5 +28,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         Task<List<PostCodeDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid unitGuid);
 
         Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid);
+
+        UnitLocationDTO FetchUnitDetails(Guid unitGuid);
     }
 }

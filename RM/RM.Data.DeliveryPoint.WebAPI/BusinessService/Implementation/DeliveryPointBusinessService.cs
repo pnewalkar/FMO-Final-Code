@@ -76,8 +76,9 @@
 
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
+                    CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocationDTO = deliveryPointIntegrationService.GetUnitLocationDetails(unitGuid).Result;
                     var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                    List<DeliveryPointDTO> deliveryPointDtos = deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid);
+                    List<DeliveryPointDTO> deliveryPointDtos = deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid, unitLocationDTO);
                     List<Guid> addressGuids = new List<Guid>();
                     deliveryPointDtos.ForEach(dp => addressGuids.Add(dp.Address_GUID));
                     List<PostalAddressDBDTO> postAddressDBs = deliveryPointIntegrationService.GetPostalAddress(addressGuids).Result;
