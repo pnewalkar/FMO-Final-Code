@@ -60,9 +60,8 @@ function RouteLogController(routeLogService,
         });
     }
     function scenarioChange() {
-        var result = routeLogService.scenarioChange(vm.selectedRouteSelectionObj.value);
-        vm.isDeliveryRouteDisabled = result.isDeliveryRouteDisabled;
-        vm.isShowMultiSelectionRoute = result.isShowMultiSelectionRoute;
+        var result = routeLogService.scenarioChange(vm.selectedRouteSelectionObj.value);   
+        vm.isDeliveryRouteDisabled = false;    
         loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
         clearDeliveryRoute();
     }
@@ -84,6 +83,16 @@ function RouteLogController(routeLogService,
         routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, vm.selectedRouteSelectionObj.value).then(function (response) {
             vm.multiSelectiondeliveryRoute = response[0].multiSelectiondeliveryRoute;
             vm.deliveryRoute = response[0].deliveryRoute;
+            if (vm.multiSelectiondeliveryRoute.length === 0 && vm.deliveryRoute.length==0)
+            {
+                vm.isShowMultiSelectionRoute = false;
+            }
+            else if(vm.multiSelectiondeliveryRoute.length> 0 && vm.deliveryRoute.length==0)
+            {
+                vm.isDeliveryRouteDisabled = true;
+                vm.isShowMultiSelectionRoute = true;
+}
+          
         });
     }
     function clearSearchTerm() {
