@@ -15,6 +15,12 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 {
     public class NetworkManagerBusinessService : INetworkManagerBusinessService
     {
+        private const string FeatureType = "Feature";
+        private const string LayerType = "type";
+        private const string Polygon = "POLYGON(({0} {1}, {2} {3}, {4} {5}, {6} {7}, {8} {9}))";
+        private const int BNGCOORDINATESYSTEM = 27700;
+        private const string Comma = ", ";
+
         private IStreetNetworkDataService streetNetworkDataService = default(IStreetNetworkDataService);
         private INetworkManagerIntegrationService networkManagerIntegrationService = default(INetworkManagerIntegrationService);
         private IOSRoadLinkDataService osRoadLinkDataService = default(IOSRoadLinkDataService);
@@ -117,7 +123,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
             if (!string.IsNullOrEmpty(boundarybox))
             {
                 var boundingBoxCoordinates =
-                    GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Constants.Comma[0]));
+                    GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Comma[0]));
                 roadLinkJsonData =
                     GetRoadLinkJsonData(roadNameDataService.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
             }
@@ -176,7 +182,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
             if (roadLinkparameters != null && roadLinkparameters.Length == 4)
             {
                 coordinates = string.Format(
-                                     Constants.Polygon,
+                                     Polygon,
                                      Convert.ToString(roadLinkparameters[0]),
                                      Convert.ToString(roadLinkparameters[1]),
                                      Convert.ToString(roadLinkparameters[0]),
@@ -218,7 +224,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                     SqlGeometry roadLinkSqlGeometry = null;
                     if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                        roadLinkSqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
+                        roadLinkSqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
 
                         List<List<double>> roadLinkCoordinates = new List<List<double>>();
 
@@ -232,15 +238,15 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                     }
                     else
                     {
-                        roadLinkSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), Constants.BNGCOORDINATESYSTEM).MakeValid();
+                        roadLinkSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
                         geometry.coordinates = new double[] { roadLinkSqlGeometry.STX.Value, roadLinkSqlGeometry.STY.Value };
                     }
 
                     Feature feature = new Feature();
                     feature.geometry = geometry;
                     feature.id = res.Id.ToString();
-                    feature.type = Constants.FeatureType;
-                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { Constants.LayerType, Convert.ToString(OtherLayersType.RoadLink.GetDescription()) } };
+                    feature.type = FeatureType;
+                    feature.properties = new Dictionary<string, Newtonsoft.Json.Linq.JToken> { { LayerType, Convert.ToString(OtherLayersType.RoadLink.GetDescription()) } };
                     geoJson.features.Add(feature);
                     i++;
                 }

@@ -12,6 +12,10 @@
     [Route("api/ReferenceDataManager")]
     public class ReferenceDataController : RMBaseController
     {
+        private const string NameValuePairs = "nameValuePairs";
+        private const string SimpleList = "simpleList";
+        private const string NameValuePair = "nameValuePair";
+
         #region Member Variables
 
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
@@ -46,7 +50,7 @@
 
             var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName, appItemName);
 
-            Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(Constants.NameValuePair, nameValuePairsObject);
+            Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(NameValuePair, nameValuePairsObject);
 
             if (nameValuePairsObject == null)
             {
@@ -72,7 +76,7 @@
             }
 
             var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName);
-            Tuple<string, List<NameValuePair>> nameValueList = new Tuple<string, List<NameValuePair>>(Constants.NameValuePairs, nameValuePairsObject);
+            Tuple<string, List<NameValuePair>> nameValueList = new Tuple<string, List<NameValuePair>>(NameValuePairs, nameValuePairsObject);
 
             if (nameValuePairsObject == null)
             {
@@ -97,7 +101,7 @@
 
             var simpleListObject = referenceDataBusinessService.GetSimpleListsReferenceData(listName);
 
-            Tuple<string, SimpleListDTO> nameValueSingleResource = new Tuple<string, SimpleListDTO>(Constants.SimpleList, simpleListObject);
+            Tuple<string, SimpleListDTO> nameValueSingleResource = new Tuple<string, SimpleListDTO>(SimpleList, simpleListObject);
 
             if (simpleListObject == null)
             {

@@ -35,9 +35,9 @@ namespace RM.Integration.PostalAddress.NYBLoader.Tests
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ErrorFilePath")).Returns("d:/errorfile/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIURL")).Returns("http://dunnyURl.com/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIName")).Returns("api/SaveDetails");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.NoOfCharactersForNYB)).Returns("15");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.csvValuesForNYB)).Returns("16");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.maxCharactersForNYB)).Returns("507");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.NoOfCharactersForNYB)).Returns("15");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.CsvValuesForNYB)).Returns("16");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.MaxCharactersForNYB)).Returns("507");
             testCandidate = new NYBFileProcessUtility(httpHandlerMock.Object, configurationHelperMock.Object, mockLoggingHelper.Object, mockExceptioHelper.Object);
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();

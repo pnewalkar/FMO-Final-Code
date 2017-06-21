@@ -21,10 +21,17 @@
     /// </summary>
     public partial class PAFReceiver : ServiceBase
     {
+        private const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
+        private const string PAFWEBAPINAME = "PAFWebApiName";
+        private const string QUEUEPAF = "QUEUE_PAF";
+        private const string QUEUEPATH = @".\Private$\";
+        private const string TimerIntervalInSeconds = "TimerIntervalInSeconds";
+        private const string BatchServiceName = "ServiceName";
+
         #region private member declaration
 
         private string PAFWebApiName = string.Empty;
-        private double TimerIntervalInSeconds = default(double);
+        private double timerIntervalInSeconds = default(double);
 
         private System.Timers.Timer m_mainTimer;
         private IMessageBroker<PostalAddressDTO> msgPAF = default(IMessageBroker<PostalAddressDTO>);
@@ -46,9 +53,9 @@
             this.loggingHelper = loggingHelper;
             this.httpHandler = httpHandler;
 
-            this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
-            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
-            this.TimerIntervalInSeconds = configurationHelper != null ? Convert.ToDouble(configurationHelper.ReadAppSettingsConfigurationValues(Constants.TimerIntervalInSeconds)) : default(double);
+            this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PAFWEBAPINAME).ToString() : string.Empty;
+            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(BatchServiceName);
+            this.timerIntervalInSeconds = configurationHelper != null ? Convert.ToDouble(configurationHelper.ReadAppSettingsConfigurationValues(TimerIntervalInSeconds)) : default(double);
         }
 
         #endregion Constructor
@@ -84,7 +91,7 @@
 
             //set timer interval
             //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]);
-            double timeInSeconds = TimerIntervalInSeconds;
+            double timeInSeconds = timerIntervalInSeconds;
             m_mainTimer.Interval = (timeInSeconds * 1000);
 
             // timer.Interval is in milliseconds, so times above by 1000
@@ -103,14 +110,14 @@
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 try
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
                     PAFMessageReceived();
                 }
                 catch (Exception ex)
                 {
                     loggingHelper.Log(ex, TraceEventType.Error);
                 }
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
             }
         }
 
@@ -128,16 +135,16 @@
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 try
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
 
                     List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
 
                     //The Message queue is checked whether there are pending messages in the queue. This loop runs till all the messages are popped out of the message queue.
-                    while (msgPAF.HasMessage(Constants.QUEUEPAF, Constants.QUEUEPATH))
+                    while (msgPAF.HasMessage(QUEUEPAF, QUEUEPATH))
                     {
                         //Receive Message picks up one message from queue for processing
                         //Message broker internally deserializes the message to the POCO type.
-                        PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(Constants.QUEUEPAF, Constants.QUEUEPATH);
+                        PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(QUEUEPAF, QUEUEPATH);
                         if (objPostalAddress != null)
                         {
                             lstPostalAddress.Add(objPostalAddress);
@@ -155,7 +162,7 @@
                 {
                     this.loggingHelper.Log(ex, TraceEventType.Error);
                 }
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
             }
         }
 
@@ -172,7 +179,7 @@
                 bool isPAFDetailsInserted = false;
                 try
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
                     if (postalAddress != null && postalAddress.Count > 0)
                     {
                         postalAddress.ForEach(objPostalAddress =>
@@ -180,7 +187,7 @@
                             LogMethodInfoBlock(
                                                 methodName,
                                                 string.Format(
-                                                Constants.REQUESTLOG,
+                                                REQUESTLOG,
                                                 objPostalAddress.UDPRN == null ? string.Empty : objPostalAddress.UDPRN.ToString(),
                                                 objPostalAddress.Postcode == null ? string.Empty : objPostalAddress.Postcode.ToString(),
                                                 objPostalAddress.AmendmentType == null ? string.Empty : objPostalAddress.AmendmentType.ToString(),
@@ -211,7 +218,7 @@
                     var realExceptions = ae.Flatten().InnerException;
                     throw realExceptions;
                 }
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
 
                 return isPAFDetailsInserted;
             }
@@ -250,7 +257,7 @@
         /// <param name="logMessage">Message</param>
         private void LogMethodInfoBlock(string methodName, string logMessage)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
         }
     }
 }

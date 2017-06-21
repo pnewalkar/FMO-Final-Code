@@ -64,13 +64,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveNewAddressLocation"))
                 {
                     string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
-                    loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var addressLocationEntity = new AddressLocation();
 
                     GenericMapper.Map(addressLocationDTO, addressLocationEntity);
                     DataContext.AddressLocations.Add(addressLocationEntity);
-                    loggingHelper.Log(method + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                     return await DataContext.SaveChangesAsync();
                 }
             }

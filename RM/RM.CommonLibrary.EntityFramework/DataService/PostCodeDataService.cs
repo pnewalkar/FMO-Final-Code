@@ -18,6 +18,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class PostCodeDataService : DataServiceBase<Postcode, RMDBContext>, IPostCodeDataService
     {
+        private const string SearchResultCount = "SearchResultCount";
+
         public PostCodeDataService(IDatabaseFactory<RMDBContext> databaseFactory)
             : base(databaseFactory)
         {
@@ -33,7 +35,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid unitGuid)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
             searchText = searchText ?? string.Empty;
             var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
                                             join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID

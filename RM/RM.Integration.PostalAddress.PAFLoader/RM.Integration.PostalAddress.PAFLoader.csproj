@@ -97,6 +97,7 @@
     <Compile Include="StartUp.cs" />
     <Compile Include="Utils\Interface\IPAFFileProcessUtility.cs" />
     <Compile Include="Utils\PAFFileProcessUtility.cs" />
+    <Compile Include="Utils\PAFLoaderConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

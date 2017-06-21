@@ -15,6 +15,9 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
     /// </summary>
     public class SearchBusinessService : ISearchBusinessService
     {
+        private const string DeliveryPointFormat = "{0},{1},{2},{3},{4},{5}";
+        private const string StreetNameFormat = "{0},{1}";
+
         private ISearchIntegrationService searchIntegrationService = default(ISearchIntegrationService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
@@ -35,7 +38,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchBasicSearchDetails"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var deliveryRoutes = await searchIntegrationService.FetchDeliveryRouteForBasicSearch(searchText);
                 var deliveryRouteCount = await searchIntegrationService.GetDeliveryRouteCount(searchText);
@@ -51,7 +54,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
 
                 var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return searchResultDTO;
             }
         }
@@ -67,7 +70,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchAdvanceSearchDetails"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var deliveryRoutes = await searchIntegrationService.FetchDeliveryRouteForAdvanceSearch(searchText);
                 var postcodes = await searchIntegrationService.FetchPostCodeUnitForAdvanceSearch(searchText);
@@ -75,7 +78,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                 var deliveryPoints = await searchIntegrationService.FetchDeliveryPointsForAdvanceSearch(searchText);
 
                 var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return searchResultDTO;
             }
@@ -114,7 +117,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                 {
                     DisplayText = Regex.Replace(
                         string.Format(
-                    Constants.StreetNameFormat,
+                    StreetNameFormat,
                     streetName.NationalRoadCode,
                     streetName.DesignatedName),
                         ",+",
@@ -130,7 +133,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                 {
                     DisplayText = Regex.Replace(
                         string.Format(
-                    Constants.DeliveryPointFormat,
+                    DeliveryPointFormat,
                     deliveryPoint.PostalAddress.OrganisationName,
                     deliveryPoint.PostalAddress.BuildingName,
                     deliveryPoint.PostalAddress.SubBuildingName,

@@ -12,6 +12,9 @@
 
     public class ReferenceDataDataService : DataServiceBase<ReferenceDataCategory, ReferenceDataDBContext>, IReferenceDataDataService
     {
+        private const int ReferenceDataCategoryTypeForNameValuePair = 1;
+        private const int ReferenceDataCategoryTypeForSimpleList = 2;
+
         #region Constructor
 
         public ReferenceDataDataService(IDatabaseFactory<ReferenceDataDBContext> databaseFactory)
@@ -35,7 +38,7 @@
 
             var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
                 .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
-                            && n.CategoryType.Equals(Constants.ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
+                            && n.CategoryType.Equals(ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
 
             if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
             {
@@ -73,7 +76,7 @@
 
             var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
                 .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
-                            && n.CategoryType.Equals(Constants.ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
+                            && n.CategoryType.Equals(ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
             if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
             {
                 nameValuePairList = new List<NameValuePair>();
@@ -104,7 +107,7 @@
 
             var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas)
                 .Where(n => n.CategoryName.Equals(dbGroupName, StringComparison.OrdinalIgnoreCase)
-                            && n.CategoryType.Equals(Constants.ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();
+                            && n.CategoryType.Equals(ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();
 
             if (referenceDataCategories?.ReferenceDatas != null && referenceDataCategories.ReferenceDatas.Count > 0)
             {

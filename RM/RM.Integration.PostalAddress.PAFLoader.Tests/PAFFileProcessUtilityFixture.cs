@@ -29,9 +29,9 @@ namespace RM.Integration.PostalAddress.PAFLoader.Tests
             configurationHelperMock = CreateMock<IConfigurationHelper>();
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFProcessedFilePath")).Returns("d:/processedfile/");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFErrorFilePath")).Returns("d:/errorfile/");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.NoOfCharactersForPAF)).Returns("19");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.MaxCharactersForPAF)).Returns("534");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.CsvPAFValues)).Returns("20");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.NoOfCharactersForPAF)).Returns("19");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.MaxCharactersForPAF)).Returns("534");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.CsvPAFValues)).Returns("20");
             testCandidate = new PAFFileProcessUtility(msgBrokerMock.Object, configurationHelperMock.Object, loggingHelperMock.Object);
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();

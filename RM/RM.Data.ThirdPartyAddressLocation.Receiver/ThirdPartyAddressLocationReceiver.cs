@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ServiceProcess;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Timers;
-using System.Reflection;
-using RM.CommonLibrary.MessageBrokerMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
-using RM.CommonLibrary.Interfaces;
-using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using System.Diagnostics;
+using System.Reflection;
+using System.ServiceProcess;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
+using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.Interfaces;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.MessageBrokerMiddleware;
 
 namespace RM.Data.ThirdPartyAddressLocation.Receiver
 {
@@ -21,6 +21,12 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
     /// </summary>
     public partial class ThirdPartyAddressLocationReceiver : ServiceBase
     {
+        private const string QUEUETHIRDPARTY = "QUEUE_THIRD_PARTY";
+        private const string USRWEBAPINAME = "USRWebApiName";
+        private const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
+        private const string QUEUEPATH = @".\Private$\";
+        private const string BatchServiceName = "ServiceName";
+
         private string USRWebApiName = string.Empty;
 
         private System.Timers.Timer m_mainTimer;
@@ -39,8 +45,8 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
             this.loggingHelper = loggingHelper;
             this.httpHandler = httpHandler;
 
-            this.USRWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.USRWEBAPINAME).ToString() : string.Empty;
-            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
+            this.USRWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(USRWEBAPINAME).ToString() : string.Empty;
+            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(BatchServiceName);
         }
 
         /// <summary>
@@ -49,17 +55,17 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         public void USRMessageReceived()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted);
             try
             {
                 List<AddressLocationUSRDTO> lstAddressLocationUSR = new List<AddressLocationUSRDTO>();
 
                 //The Message queue is checked whether there are pending messages in the queue. This loop runs till all the messages are popped out of the message queue.
-                while (msgUSR.HasMessage(Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH))
+                while (msgUSR.HasMessage(QUEUETHIRDPARTY, QUEUEPATH))
                 {
                     //Receive Message picks up one message from queue for processing
                     //Message broker internally deserializes the message to the POCO type.
-                    AddressLocationUSRDTO objAddressLocationUSR = msgUSR.ReceiveMessage(Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
+                    AddressLocationUSRDTO objAddressLocationUSR = msgUSR.ReceiveMessage(QUEUETHIRDPARTY, QUEUEPATH);
                     if (objAddressLocationUSR != null)
                     {
                         lstAddressLocationUSR.Add(objAddressLocationUSR);
@@ -75,7 +81,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted);
             }
         }
 
@@ -94,7 +100,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         protected override void OnStart(string[] args)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted);
             try
             {
                 //instantiate timer
@@ -107,7 +113,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted);
             }
         }
 
@@ -122,7 +128,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         private void InitTimer()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted);
             try
             {
                 m_mainTimer = new System.Timers.Timer();
@@ -144,7 +150,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted);
             }
         }
 
@@ -156,7 +162,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         private async Task SaveUSRDetails(List<AddressLocationUSRDTO> addressLocationUSRDTO)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted);
             try
             {
                 var addressLocationUSRPOSTDTO = GenericMapper.MapList<AddressLocationUSRDTO, AddressLocationUSRPOSTDTO>(addressLocationUSRDTO);
@@ -165,7 +171,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
                     LogMethodInfoBlock(
                                         methodName,
                                         string.Format(
-                                        Constants.REQUESTLOG,
+                                        REQUESTLOG,
                                         addressLocation.UDPRN == null ? string.Empty : addressLocation.UDPRN.ToString(),
                                         addressLocation.XCoordinate == null ? string.Empty : addressLocation.XCoordinate.ToString(),
                                         addressLocation.YCoordinate == null ? string.Empty : addressLocation.YCoordinate.ToString(),
@@ -187,7 +193,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted);
             }
         }
 
@@ -199,7 +205,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         private void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted);
             try
             {
                 USRMessageReceived();
@@ -210,7 +216,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted);
             }
         }
 
@@ -224,7 +230,7 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         /// <param name="logMessage">Message</param>
         private void LogMethodInfoBlock(string methodName, string logMessage)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodExitEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodExitEventId, LoggerTraceConstants.Title);
         }
     }
 }

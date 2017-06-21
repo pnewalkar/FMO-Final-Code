@@ -15,6 +15,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test
     [TestFixture]
     public class NetworkManagerBusinessServiceFixture : TestFixtureBase
     {
+        private const string PostalAddressType = "Postal Address Type";
+
         private Mock<IStreetNetworkDataService> mockStreetNetworkDataService;
         private Mock<INetworkManagerIntegrationService> mockNetworkManagerIntegrationService;
         private Mock<IOSRoadLinkDataService> mockOsRoadLinkDataService;
@@ -125,7 +127,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
                             ID = Guid.NewGuid(),
                         }
                     },
-                    CategoryName = Constants.PostalAddressType
+                    CategoryName = PostalAddressType
                 }
             };
 

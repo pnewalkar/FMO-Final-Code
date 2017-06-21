@@ -97,6 +97,7 @@
     <Compile Include="StartUp.cs" />
     <Compile Include="Utils\Interface\INYBFileProcessUtility.cs" />
     <Compile Include="Utils\NYBFileProcessUtility.cs" />
+    <Compile Include="Utils\NYBLoaderConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
