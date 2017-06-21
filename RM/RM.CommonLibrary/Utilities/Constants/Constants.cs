@@ -310,6 +310,15 @@
         public const string SectionColumn = "sectionColumn";
         public const string Width = "width";
         public const string Paragraph = "paragraph";
+        public const string Table = "table";
+        public const string Columns = "columns";
+        public const string Column = "column";
+        public const string Borders = "borders";
+        public const string UseShading = "useShading";
+        public const string Row = "row";
+        public const string Shade = "shade";
+        public const string Cell = "cell";
+        public const string Header = "header";
         public const string RouteSummaryAlias = "* All Alias, Hazards/Area Hazards and Special Instructions Information is shown on the detailed route log and hazard card.";
         public const string RouteSummarySequencedPoints = "Sequenced Points";
         public const string RouteSummaryHeader = "Route Log Summary";
@@ -338,16 +347,5 @@
         public const string AreaHazards = "Hazards/Area Hazards*";
 
         #endregion PDF Generation constants
-
-
-
-        #region
-
-        public const string DefaultLoggingCategory = "General";
-        public const int DefaultLoggingPriority = 0;
-        public const int DefaultLoggingEventId = 0;
-        public const string DefaultLoggingTitle = "";
-
-        #endregion
     }
 }
