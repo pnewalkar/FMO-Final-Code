@@ -1,6 +1,2 @@
-/*md-select#select_6 md-select#select_9{
-    width: width-percent(1);
-}*/
-.contextContainer {
-  width: 95%;
-  margin-left: 10px; }
+md-select#select_6 md-select#select_9 {
+  width: width-percent(1); }
