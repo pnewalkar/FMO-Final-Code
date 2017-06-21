@@ -159,6 +159,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(isValid);
+            }
         }
 
         #endregion Methods
