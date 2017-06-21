@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
@@ -56,6 +53,10 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Tests
                                             loggingHelperMock.Object,
                                             configHelperMock.Object);
 
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate.LoadUSRDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Exactly(2));
@@ -94,6 +95,10 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Tests
                                             loggingHelperMock.Object,
                                             configHelperMock.Object);
 
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate.LoadUSRDetailsFromXML(filepath);
             msgBrokerMock.Verify(x => x.CreateMessage(It.IsAny<object>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             msgBrokerMock.Verify(x => x.SendMessage(It.IsAny<IMessage>()), Times.Never);
@@ -106,6 +111,5 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Tests
         protected override void OnSetup()
         {
         }
-
     }
 }

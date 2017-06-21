@@ -33,6 +33,10 @@ namespace RM.Integration.PostalAddress.PAFLoader.Tests
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.MaxCharactersForPAF)).Returns("534");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.CsvPAFValues)).Returns("20");
             testCandidate = new PAFFileProcessUtility(msgBrokerMock.Object, configurationHelperMock.Object, loggingHelperMock.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
         }
 
         [Test]

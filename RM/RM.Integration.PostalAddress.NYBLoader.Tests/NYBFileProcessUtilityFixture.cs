@@ -39,6 +39,10 @@ namespace RM.Integration.PostalAddress.NYBLoader.Tests
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.csvValuesForNYB)).Returns("16");
             configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.maxCharactersForNYB)).Returns("507");
             testCandidate = new NYBFileProcessUtility(httpHandlerMock.Object, configurationHelperMock.Object, mockLoggingHelper.Object, mockExceptioHelper.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
         }
 
         [Test]
