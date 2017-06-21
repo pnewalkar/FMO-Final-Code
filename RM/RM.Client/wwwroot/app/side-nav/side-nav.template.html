@@ -16,9 +16,10 @@
                 <i class="fa fa-info-circle printInfo" aria-label="Alert" 
                    title="{{ 'PRINT_MAP.BUTTONS.DISABLE_ALERT' | translate }}"></i>
             </md-list-item> -->
-          <md-list-item  ng-repeat="Item in vm.RolesActionResult | unique: 'ActionName'  track by $index" ng-click="vm.fetchActions(Item.ActionName,vm.selectedDeliveryUnit)" title="{{Item.ActionName}}" ng-disabled="vm.isDisabledAction(Item='Print Map')">
+          <md-list-item  ng-repeat="Item in vm.RolesActionResult | unique: 'ActionName'  track by $index" ng-click="vm.fetchActions(Item.ActionName, vm.selectedDeliveryUnit)" 
+                        title="{{Item.ActionName}}" ng-disabled="vm.isDisabledAction && Item.ActionName === 'Print Map'">
                 {{Item.ActionName}}
-                <i class="fa fa-info-circle printInfo" aria-label="Alert" ng-if="Item.ActionName === 'Print Map'" title="{{ 'PRINT_MAP.BUTTONS.DISABLE_ALERT' | translate }}"></i>
+                <i class="fa fa-info-circle printInfo" aria-label="Alert" ng-if="vm.isDisabledAction && Item.ActionName === 'Print Map'" title="{{ 'PRINT_MAP.BUTTONS.DISABLE_ALERT' | translate }}"></i>
           </md-list-item>
         </md-list>
     </md-content>
