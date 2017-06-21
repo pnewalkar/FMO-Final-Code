@@ -35,6 +35,7 @@ function printMapService(
     };
 
     function initialize() {
+
         var deferred = $q.defer();
 
         var result = { "MapDpi": null, "ImageHeight": null, "ImageWidth": null, "pdfSize": null };
@@ -158,16 +159,19 @@ function printMapService(
     }
 
     function generateMapPDF(printMapDPI, size, imageWidth, imageHeight, resolution, printOptions) {
+        var map = mapFactory.getMap();
+        var scaleline = new ol.control.ScaleLine();
+        map.addControl(scaleline);
         var imageWidthmm = getMapImageWidth(size, imageWidth);
         var imageHeightmm = getMapImageHeight(size, imageHeight);
         var mapWidth = getMapWidth(imageWidthmm, printMapDPI);
         var mapHeight = getMapHeight(imageHeightmm, printMapDPI);
         mapService.setSize(mapWidth, mapHeight);
         //After setting the map size it takes around 6-7 secs to load all the map tiles.Image should be captured after all the map tiles are loaded 
-        $timeout(captureImage, 7000, true, printOptions, resolution);
+        $timeout(captureImage, 7000, true, printOptions, resolution,map,scaleline);
     }
 
-    function captureImage(printOptions, resolution) {
+    function captureImage(printOptions, resolution,map,scaleline) {
         mapService.composeMap();
 
         var printMapDto = {
@@ -179,9 +183,9 @@ function printMapService(
             "EncodedString": $rootScope.canvas.toDataURL('image/png'),
             "License": licensingInformationAccessorService.getLicensingInformation()[0].value
         };
-
-        mapService.setOriginalSize();
+        map.removeControl(scaleline);
         mapService.refreshLayers();
+        mapService.setOriginalSize();
         printMap(printMapDto).then(function (response) {
             mapPdf(response).then(function (response) {
                 displayPdf(response);

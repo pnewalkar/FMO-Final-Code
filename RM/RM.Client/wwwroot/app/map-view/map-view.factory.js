@@ -130,7 +130,7 @@ function MapFactory($http,
         map.addControl(getCustomScaleLine());
         map.addControl(new ol.control.Attribution());
 
-        map.addControl(new ol.control.ScaleLine());
+       // map.addControl(new ol.control.ScaleLine());
       //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";
 
         var external_control = new ol.control.Zoom({

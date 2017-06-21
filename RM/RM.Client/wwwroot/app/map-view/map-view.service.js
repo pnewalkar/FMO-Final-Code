@@ -18,7 +18,7 @@ mapService.$inject = ['$http',
                      '$rootScope',
                      'layersAPIService',
                      'CommonConstants'
-                    ];
+];
 
 function mapService($http,
                     mapFactory,
@@ -783,6 +783,7 @@ function mapService($http,
     }
 
     function composeMap() {
+
         vm.map.once('postcompose', function (event) {
             writeScaletoCanvas(event);
         });
