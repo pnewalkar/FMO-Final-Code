@@ -37,7 +37,6 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <returns>deliveryRouteDto</returns>
         public PrintMapDTO SaveImage(PrintMapDTO printMapDTO)
         {
-            string pdXslFo = string.Empty;
             if (printMapDTO != null)
             {
                 printMapDTO.PrintTime = string.Format(Constants.PrintMapDateTimeFormat, DateTime.Now);
@@ -136,16 +135,20 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
 
         private void SaveMapImage(PrintMapDTO printMapDTO)
         {
-            string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
-            string imageLocation = imagePath + Guid.NewGuid() + ".png";
-
-            if (encodedStringArray != null && encodedStringArray.Count() > 0)
+            if (!string.IsNullOrEmpty(printMapDTO.EncodedString))
             {
-                byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
-                File.WriteAllBytes(imageLocation, imageBytes);
-            }
+                string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
+                string imageLocation = string.Empty;
 
-            printMapDTO.ImagePath = imageLocation;
+                if (encodedStringArray != null && encodedStringArray.Count() > 0)
+                {
+                    imageLocation = imagePath + Guid.NewGuid() + ".png";
+                    byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
+                    File.WriteAllBytes(imageLocation, imageBytes);
+                }
+
+                printMapDTO.ImagePath = imageLocation; 
+            }
         }
     }
 }
