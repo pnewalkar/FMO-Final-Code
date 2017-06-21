@@ -116,7 +116,7 @@
 
             if (ex.Data.Count > 0)
             {
-                string userFriendlyMessage = ex.Data["userFriendlyMessage"].ToString();
+                string userFriendlyMessage = ex.Data[ErrorConstants.UserFriendlyErrorMessage].ToString();
                 return exceptionResponse.Response ?? this.CreateErrorResponse(userFriendlyMessage.Replace(Environment.NewLine, " "));
             }
 

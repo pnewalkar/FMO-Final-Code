@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
     using System.Diagnostics;
     using System.Linq;
@@ -9,6 +10,7 @@
     using DataMiddleware;
     using DTO;
     using Entities;
+    using ExceptionMiddleware;
     using HelperMiddleware;
     using Interfaces;
     using LoggingMiddleware;
@@ -43,41 +45,48 @@
         }
 
         /// <summary>
-        /// Creates access link.
+        /// Creates automatic access link.
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
         public bool CreateAccessLink(AccessLinkDTO accessLinkDto)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAccessLink"))
+            try
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                bool accessLinkCreationSuccess = false;
-
-                AccessLink accessLink = new AccessLink
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAccessLink"))
                 {
-                    ID = Guid.NewGuid(),
-                    OperationalObjectPoint = accessLinkDto.OperationalObjectPoint,
-                    NetworkIntersectionPoint = accessLinkDto.NetworkIntersectionPoint,
-                    AccessLinkLine = accessLinkDto.AccessLinkLine,
-                    ActualLengthMeter = accessLinkDto.ActualLengthMeter,
-                    WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
-                    Approved = accessLinkDto.Approved,
-                    OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
-                    NetworkLink_GUID = accessLinkDto.NetworkLink_GUID,
-                    AccessLinkType_GUID = accessLinkDto.AccessLinkType_GUID,
-                    LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
-                    LinkDirection_GUID = accessLinkDto.LinkDirection_GUID,
-                    OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
-                };
+                    string methodName = MethodBase.GetCurrentMethod().Name;
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                DataContext.AccessLinks.Add(accessLink);
+                    bool accessLinkCreationSuccess = false;
 
-                accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return accessLinkCreationSuccess;
+                    AccessLink accessLink = new AccessLink
+                    {
+                        ID = Guid.NewGuid(),
+                        OperationalObjectPoint = accessLinkDto.OperationalObjectPoint,
+                        NetworkIntersectionPoint = accessLinkDto.NetworkIntersectionPoint,
+                        AccessLinkLine = accessLinkDto.AccessLinkLine,
+                        ActualLengthMeter = accessLinkDto.ActualLengthMeter,
+                        WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
+                        Approved = accessLinkDto.Approved,
+                        OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
+                        NetworkLink_GUID = accessLinkDto.NetworkLink_GUID,
+                        AccessLinkType_GUID = accessLinkDto.AccessLinkType_GUID,
+                        LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
+                        LinkDirection_GUID = accessLinkDto.LinkDirection_GUID,
+                        OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
+                    };
+
+                    DataContext.AccessLinks.Add(accessLink);
+
+                    accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return accessLinkCreationSuccess;
+                }
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
             }
         }
 

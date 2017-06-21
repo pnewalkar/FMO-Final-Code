@@ -74,7 +74,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 }
                 catch (InvalidOperationException ex)
                 {
-                    ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
                 }
                 finally
@@ -298,18 +298,17 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                       || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
-                    return result;
-                }
-                catch (InvalidOperationException ex)
-                {
-                    ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                    throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
-                }
-                catch (OverflowException overflow)
-                {
-                    overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                    throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
-                }
+                return result;
+            }
+            catch (InvalidOperationException ex)
+            {
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+            }
+            catch (OverflowException overflow)
+            {
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -468,12 +467,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
@@ -522,12 +521,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }

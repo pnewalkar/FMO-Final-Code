@@ -80,12 +80,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (NotSupportedException notSupportedException)
             {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
             }
             catch (ObjectDisposedException disposedException)
             {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
