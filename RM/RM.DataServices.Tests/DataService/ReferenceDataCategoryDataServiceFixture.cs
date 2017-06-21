@@ -57,10 +57,20 @@
                             ReferenceDataName = "PAF",
                             DataDescription = "PAF",
                             ReferenceDataCategory_GUID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD"),
-                            ID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD")
+                            ID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ReferenceDataValue = "PAF"
+                        },
+
+                        new ReferenceData()
+                        {
+                            ReferenceDataName = "PAF",
+                            DataDescription = "PAF",
+                            ReferenceDataCategory_GUID = new Guid("4A6F8F73-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ID = new Guid("4A6F8F73-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ReferenceDataValue = "NYB"
                         }
                     }
-                                    }
+                }
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<ReferenceDataCategory>(referenceDataCategory);

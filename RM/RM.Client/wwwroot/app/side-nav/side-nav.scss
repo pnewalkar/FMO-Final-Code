@@ -23,9 +23,14 @@ md-list-item{
 	left:30%;
 	@include margin(0px 0px 0px 10px);
 }
-}
 
 .versionBox{
 	position:absolute;
 	bottom:0px;
+    min-height:36px;
+    height:36px;
+}
+
+.sideList .md-button{
+    min-height:48px;
 }

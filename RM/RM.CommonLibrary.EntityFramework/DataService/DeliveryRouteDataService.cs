@@ -5,15 +5,13 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -451,7 +449,6 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             return deliveryRoutes;
         }
-
 
         #endregion Private Methods
 
