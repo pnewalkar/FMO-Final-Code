@@ -45,7 +45,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         [Route("AccessLink/{operationalObjectId}/{operationalObjectTypeId}")]
         public IActionResult CreateAccessLink(Guid operationalObjectId, Guid operationalObjectTypeId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAccessLink"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.CreateAccessLink"))
             {
                 bool success = false;
                 try
@@ -81,10 +81,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         [HttpPost("AccessLink/Manual")]
         public IActionResult CreateManualAccessLink([FromBody] AccessLinkManualCreateModelDTO accessLinkDto)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateManualAccessLink"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.CreateManualAccessLink"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
-
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 if (!ModelState.IsValid)
@@ -108,8 +107,16 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         [HttpGet("AccessLinks")]
         public IActionResult GetAccessLinks(string bbox)
         {
-            string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, CurrentUserUnit);
-            return Ok(accessLink);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAccessLinks"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, CurrentUserUnit);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(accessLink);
+            }
         }
 
         /// <summary>
@@ -121,9 +128,17 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         [HttpPost("AccessLink/PathLength")]
         public IActionResult GetAdjPathLength([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
-            decimal pathlength = accessLinkBusinessService.GetAdjPathLength(accessLinkManualCreateModelDTO);
-            pathlength = Math.Round(pathlength);
-            return Ok(pathlength);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAdjPathLength"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                decimal pathlength = accessLinkBusinessService.GetAdjPathLength(accessLinkManualCreateModelDTO);
+                pathlength = Math.Round(pathlength);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(pathlength);
+            }
         }
 
         /// <summary>
@@ -135,8 +150,16 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         [HttpPost("AccessLink/Valid")]
         public IActionResult CheckAccessLinkIsValid([FromBody] AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO)
         {
-            bool isValid = accessLinkBusinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
-            return Ok(isValid);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.CheckAccessLinkIsValid"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                bool isValid = accessLinkBusinessService.CheckManualAccessLinkIsValid(accessLinkManualCreateModelDTO.BoundingBoxCoordinates, accessLinkManualCreateModelDTO.AccessLinkLine);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(isValid);
+            }
         }
 
         #endregion Methods
