@@ -19,8 +19,8 @@ namespace RM.Data.PostalAddress.WebAPI.Test
     [TestFixture]
     public class PostalAddressBusinessServiceFixture : TestFixtureBase
     {
-        private Mock<IPostalAddressDataService> mockPostalAddressDataService;
-        private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
+        private Mock<DataManagement.PostalAddress.WebAPI.DataService.Interfaces.IPostalAddressDataService> mockPostalAddressDataService;
+        private Mock<DataManagement.PostalAddress.WebAPI.DataService.Interfaces.IFileProcessingLogDataService> mockFileProcessingLogDataService;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
         private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IHttpHandler> mockHttpHandler;
@@ -58,7 +58,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         [Test]
         public void SavePAFDetails_Check_MatchPostalAddressOnAddress()
         {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO objPostalAddress = new RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO()
             {
                 Time = "7/19/2016",
                 Date = "8:37:00",
@@ -70,9 +70,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO> lstPostalAddress = new List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
-            AddressLocationDTO objAddressLocation = new AddressLocationDTO()
+            RM.DataManagement.PostalAddress.WebAPI.DTO.AddressLocationDTO objAddressLocation = new RM.DataManagement.PostalAddress.WebAPI.DTO.AddressLocationDTO()
             {
                 UDPRN = 54162428
             };
@@ -85,7 +85,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         [Test]
         public void SavePAFDetails_Check_NotMatchPostalAddress()
         {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO objPostalAddress = new RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO()
             {
                 Time = "7/19/2016",
                 Date = "8:37:00",
@@ -97,9 +97,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                 DeliveryPointSuffix = "1A",
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+            List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO> lstPostalAddress = new List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO>();
             lstPostalAddress.Add(objPostalAddress);
-            AddressLocationDTO objAddressLocation = new AddressLocationDTO()
+            RM.DataManagement.PostalAddress.WebAPI.DTO.AddressLocationDTO objAddressLocation = new RM.DataManagement.PostalAddress.WebAPI.DTO.AddressLocationDTO()
             {
                 UDPRN = 54162428
             };
@@ -113,7 +113,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         [Test]
         public async Task Test_SearchByPostcode()
         {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+          RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO objPostalAddress = new RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO()
             {
                 Time = "7/19/2016",
                 Date = "8:37:00",
@@ -126,7 +126,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
 
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>() { objPostalAddress };
+            List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO> lstPostalAddress = new List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO>() { objPostalAddress };
 
             await testCandidate.GetPostalAddressDetails("Postcode1", new Guid("00000000-0000-0000-0000-000000000000"));
 
@@ -135,7 +135,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         [Test]
         public async Task Test_PostalAddressSearchDetails()
         {
-            PostalAddressDTO objPostalAddress = new PostalAddressDTO()
+            RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO objPostalAddress = new RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO()
             {
                 Time = "7/19/2016",
                 Date = "8:37:00",
@@ -148,15 +148,15 @@ namespace RM.Data.PostalAddress.WebAPI.Test
                 AddressType_GUID = new Guid("A08C5212-6123-4EAF-9C27-D4A8035A8974")
             };
 
-            List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>() { objPostalAddress };
+            List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO> lstPostalAddress = new List<RM.DataManagement.PostalAddress.WebAPI.DTO.PostalAddressDTO>() { objPostalAddress };
 
             await testCandidate.GetPostalAddressSearchDetails("Postcode1", new Guid("00000000-0000-0000-0000-000000000000"));
 
         }
         protected override void OnSetup()
         {
-            mockPostalAddressDataService = CreateMock<IPostalAddressDataService>();
-            mockFileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();
+            mockPostalAddressDataService = CreateMock<DataManagement.PostalAddress.WebAPI.DataService.Interfaces.IPostalAddressDataService>();
+            mockFileProcessingLogDataService = CreateMock<DataManagement.PostalAddress.WebAPI.DataService.Interfaces.IFileProcessingLogDataService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockHttpHandler = CreateMock<IHttpHandler>();

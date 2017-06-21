@@ -13,6 +13,7 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
 using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
+using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
 
 namespace RM.Data.DeliveryPoint.WebAPI.Test
 {
@@ -26,9 +27,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         private Mock<ILoggingHelper> mockLoggingRepository;
         private Mock<RMTraceManager> mockTraceManager;
         private Guid unitGuid = Guid.NewGuid();
-        private AddDeliveryPointDTO addDeliveryPointDTO;
-        private AddDeliveryPointDTO addDeliveryPointDTO1;
-        private List<PostalAddressDTO> postalAddressesDTO;
+        private DTO.AddDeliveryPointDTO addDeliveryPointDTO;
+        private DTO.AddDeliveryPointDTO addDeliveryPointDTO1;
+        private List<DTO.PostalAddressDBDTO> postalAddressesDTO;
         private DeliveryPointModelDTO deliveryPointModelDTO;
 
         [Test]
@@ -52,7 +53,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             objdeliverypointDTO.PostalAddress = new PostalAddressDTO();
             lstDeliveryPointDTO.Add(objdeliverypointDTO);
 
-            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
+            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>())).Returns(It.IsAny<List<DTO.DeliveryPointDTO>>);
             var coordinates = testCandidate.GetDeliveryPointByUDPRN(udprn);
             mockDeliveryPointsRepository.Verify(x => x.GetDeliveryPointListByUDPRN(It.IsAny<int>()), Times.Once);
             Assert.IsNotNull(coordinates);
@@ -115,14 +116,14 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                                 Postcode = "123"
                             }
             };
-            DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO()
+            DTO.DeliveryPointDTO deliveryPointDTO = new DTO.DeliveryPointDTO()
             {
                 ID = Guid.NewGuid()
             };
 
-            postalAddressesDTO = new List<PostalAddressDTO>()
+            postalAddressesDTO = new List<DTO.PostalAddressDBDTO>()
             {
-                new PostalAddressDTO()
+                new DTO.PostalAddressDBDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -143,7 +144,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     ID = 
                     new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
             },
-                new PostalAddressDTO()
+                new DTO.PostalAddressDBDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -165,12 +166,12 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             }
             };
 
-            addDeliveryPointDTO = new AddDeliveryPointDTO()
+            addDeliveryPointDTO = new DTO.AddDeliveryPointDTO()
             {
                 PostalAddressDTO = postalAddressesDTO[0],
                 DeliveryPointDTO = deliveryPointDTO
             };
-            addDeliveryPointDTO1 = new AddDeliveryPointDTO()
+            addDeliveryPointDTO1 = new DTO.AddDeliveryPointDTO()
             {
                 PostalAddressDTO = postalAddressesDTO[1],
                 DeliveryPointDTO = deliveryPointDTO
@@ -187,7 +188,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                 RowVersion = BitConverter.GetBytes(1)
             };
 
-            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
+            mockDeliveryPointsRepository.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<DTO.DeliveryPointDTO>>);
             //      mockDeliveryPointsRepository.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(deliveryPointModelDTO.ID));
             mockDeliveryPointsRepository.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsRepository.Object, mockLoggingRepository.Object, mockConfigurationRepository.Object, CreateMock<IDeliveryPointIntegrationService>().Object);
