@@ -8,7 +8,7 @@
     using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.HelperMiddleware;
     using Microsoft.Extensions.FileProviders;
-    using RM.Common.DataService.Interface;
+    using RM.Common.ReferenceData.WebAPI.DataService.Interface;
     using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
     using Utils;

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.FileProviders;
 using Moq;
 using NUnit.Framework;
-using RM.Common.DataService.Interface;
 using RM.Common.ReferenceData.WebAPI.BusinessService;
 using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
+using RM.Common.ReferenceData.WebAPI.DataService.Interface;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 

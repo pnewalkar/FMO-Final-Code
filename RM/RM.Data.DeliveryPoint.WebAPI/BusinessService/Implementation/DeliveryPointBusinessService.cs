@@ -68,23 +68,21 @@
         /// <returns>Object</returns>
         public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            using (loggingHelper.RMTraceManager.StartTrace(methodName))
+            object deliveryPoints = null;
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPoints"))
             {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                    var getDeliveryPoints = GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                    return getDeliveryPoints;
+                    deliveryPoints = GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
                 }
-                else
-                {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                    return null;
-                }
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                return deliveryPoints;
             }
         }
 

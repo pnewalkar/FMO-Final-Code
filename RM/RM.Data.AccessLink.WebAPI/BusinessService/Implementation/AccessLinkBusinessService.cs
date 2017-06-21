@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
@@ -431,7 +432,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 accessLinkDto.LinkStatus_GUID = referenceDataCategoryList
                     .Where(x => x.CategoryName.Replace(Constants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
-                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkStatusDraftPendingReview).ID;
+                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.UserDefined).ID;
 
                 NetworkLinkDTO networkObject = accessLinkIntegrationService.GetNetworkLink(accessLinkDto.NetworkLink_GUID).Result;
 

@@ -1,4 +1,4 @@
-﻿namespace RM.Common.DataService
+﻿namespace RM.Common.ReferenceData.WebAPI.DataService
 {
     using System;
     using System.Collections.Generic;

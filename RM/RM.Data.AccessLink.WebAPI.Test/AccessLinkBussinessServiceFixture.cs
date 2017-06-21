@@ -41,7 +41,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
         [Test]
         public void Test_CreateAccessLink()
         {
-            // TODO
             bool result = testCandidate.CreateAccessLink(operationalObjectId, operationObjectTypeId);
             Assert.IsTrue(result);
         }
@@ -49,7 +48,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
         [Test]
         public void Test_CalculateWorkloadLength()
         {
-            // TODO
             bool result = testCandidate.CreateAccessLink(new AccessLinkManualCreateModelDTO() { AccessLinkLine = "LINESTRING" });
             Assert.IsTrue(result);
         }
@@ -57,7 +55,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
         [Test]
         public void Test_GetAdjPathLength()
         {
-            // TODO
             var result = testCandidate.GetAdjPathLength(new AccessLinkManualCreateModelDTO() { });
             Assert.IsNotNull(result);
         }
@@ -65,7 +62,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
         [Test]
         public void Test_CheckManualAccessLinkIsValid()
         {
-            // TODO
             var result = testCandidate.CheckManualAccessLinkIsValid(string.Empty, string.Empty);
             Assert.IsNotNull(result);
         }
