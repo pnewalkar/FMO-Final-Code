@@ -2,7 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Net;
+    using System.Reflection;
+    using CommonLibrary.LoggingMiddleware;
     using Microsoft.AspNetCore.Mvc;
     using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
@@ -19,14 +22,16 @@
         #region Member Variables
 
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion Member Variables
 
         #region Constructor
 
-        public ReferenceDataController(IReferenceDataBusinessService referenceDataBusinessService)
+        public ReferenceDataController(IReferenceDataBusinessService referenceDataBusinessService, ILoggingHelper loggingHelper)
         {
             this.referenceDataBusinessService = referenceDataBusinessService;
+            this.loggingHelper = loggingHelper;
         }
 
         #endregion Constructor
@@ -43,21 +48,28 @@
         [HttpGet("nameValuePair")]
         public IActionResult GetNameValueReferenceData(string appGroupName, string appItemName)
         {
-            if (string.IsNullOrEmpty(appGroupName) || string.IsNullOrEmpty(appItemName))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNameValueReferenceData"))
             {
-                return BadRequest();
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (string.IsNullOrEmpty(appGroupName) || string.IsNullOrEmpty(appItemName))
+                {
+                    return BadRequest();
+                }
+
+                var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName, appItemName);
+
+                Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(NameValuePair, nameValuePairsObject);
+
+                if (nameValuePairsObject == null)
+                {
+                    throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
+                }
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                return Ok(nameValueSingleResource);
             }
-
-            var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName, appItemName);
-
-            Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(NameValuePair, nameValuePairsObject);
-
-            if (nameValuePairsObject == null)
-            {
-                throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
-            }
-
-            return Ok(nameValueSingleResource);
         }
 
         /// <summary>

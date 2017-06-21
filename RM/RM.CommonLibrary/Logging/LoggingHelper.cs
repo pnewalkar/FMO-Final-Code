@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using RM.CommonLibrary.HelperMiddleware;
 
@@ -85,6 +84,36 @@ namespace RM.CommonLibrary.LoggingMiddleware
             }
 
             Logger.Write(errorMessage, category, priority, eventId, severity, title);
+        }
+
+        /// <summary>
+        /// Starts trace.
+        /// </summary>
+        /// <param name="methodName">message</param>
+        /// <param name="severity">severity</param>
+        /// <param name="exception">exception</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="title">Title</param>
+        public void StartTrace(string methodName, string category = LoggerTraceConstants.DefaultLoggingCategory, int priority = LoggerTraceConstants.DefaultLoggingPriority, int eventId = LoggerTraceConstants.DefaultLoggingEventId, string title = LoggerTraceConstants.DefaultLoggingTitle, TraceEventType severity = TraceEventType.Verbose)
+        {
+            Logger.Write(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, category, priority, eventId, severity, title);
+        }
+
+        /// <summary>
+        /// stiops the trace.
+        /// </summary>
+        /// <param name="methodName">message</param>
+        /// <param name="severity">severity</param>
+        /// <param name="exception">exception</param>
+        /// <param name="category">Category</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="title">Title</param>
+        public void StopTrace(string methodName, string category = LoggerTraceConstants.DefaultLoggingCategory, int priority = LoggerTraceConstants.DefaultLoggingPriority, int eventId = LoggerTraceConstants.DefaultLoggingEventId, string title = LoggerTraceConstants.DefaultLoggingTitle, TraceEventType severity = TraceEventType.Verbose)
+        {
+            Logger.Write(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, category, priority, eventId, severity, title);
         }
     }
 }
