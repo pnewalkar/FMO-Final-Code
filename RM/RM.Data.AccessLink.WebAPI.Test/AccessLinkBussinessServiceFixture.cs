@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService;
@@ -42,21 +43,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             bool expectedResult = testCandidate.CreateAccessLink(operationalObjectId, operationObjectTypeId);
             Assert.True(expectedResult);
         }
-
-        [Test]
-        public void Test_CalculateWorkloadLength()
-        {
-            bool result = testCandidate.CreateAccessLink(new AccessLinkManualCreateModelDTO() { AccessLinkLine = "LINESTRING" });
-            Assert.IsTrue(result);
-        }
-
-        [Test]
-        public void Test_GetAdjPathLength()
-        {
-            var result = testCandidate.GetAdjPathLength(new AccessLinkManualCreateModelDTO() { });
-            Assert.IsNotNull(result);
-        }
-
+               
         [Test]
         public void Test_CheckManualAccessLinkIsValid()
         {

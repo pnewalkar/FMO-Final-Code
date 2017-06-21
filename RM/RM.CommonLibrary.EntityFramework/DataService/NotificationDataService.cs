@@ -1,21 +1,18 @@
 ﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
-using System.Data.Entity.Infrastructure;
 using RM.CommonLibrary.ExceptionMiddleware;
-using System.Data.Entity;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-using System.Reflection;
-using System.Diagnostics;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -25,6 +22,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     public class NotificationDataService : DataServiceBase<Notification, RMDBContext>, INotificationDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
         public NotificationDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {

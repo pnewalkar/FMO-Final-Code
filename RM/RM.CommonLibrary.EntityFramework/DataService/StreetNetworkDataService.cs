@@ -13,7 +13,6 @@ using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -287,8 +286,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             return networkLinkDTO;
         }
 
-        /// <summary> Get the Network Links crossing the operational Object for a given extent</summary> 
-        /// <param name="boundingBoxCoordinates">bbox coordinates</param> 
+        /// <summary> Get the Network Links crossing the operational Object for a given extent</summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
         /// <param name="accessLink">accesslink coordinate array</param>
         /// <returns>List<NetworkLinkDTO></returns>
         public List<NetworkLinkDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
