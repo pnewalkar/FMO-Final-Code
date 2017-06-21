@@ -20,9 +20,9 @@ namespace RM.Operational.MapManager.WebAPI.ExceptionHandling
     {
         #region Member Variables
 
-        private readonly RequestDelegate _next;
-        private readonly ResponseExceptionHandlerOptions _options;
-        private readonly Func<object, Task> _clearCacheHeadersDelegate;
+        private readonly RequestDelegate next;
+        private readonly ResponseExceptionHandlerOptions options;
+        private readonly Func<object, Task> clearCacheHeadersDelegate;
         private IExceptionHelper exceptionHelper;
         private ILoggingHelper loggingHelper;
 
@@ -36,11 +36,11 @@ namespace RM.Operational.MapManager.WebAPI.ExceptionHandling
             IExceptionHelper exceptionHelper,
             IOptions<ResponseExceptionHandlerOptions> options)
         {
-            this._next = next;
+            this.next = next;
             this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
-            this._options = options.Value;
-            this._clearCacheHeadersDelegate = ClearCacheHeaders;
+            this.options = options.Value;
+            this.clearCacheHeadersDelegate = ClearCacheHeaders;
         }
 
         #endregion Constructor
@@ -56,7 +56,7 @@ namespace RM.Operational.MapManager.WebAPI.ExceptionHandling
         {
             try
             {
-                await _next(context);
+                await next(context);
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace RM.Operational.MapManager.WebAPI.ExceptionHandling
             {
                 ExceptionResponse exceptionResponse;
                 object response;
-                if (_options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
+                if (options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
                 {
                     context.Response.StatusCode = exceptionResponse.StatusCode; // Replace default status code with actual.
                     response = GetExceptionResponse(exception, exceptionResponse);
@@ -98,11 +98,11 @@ namespace RM.Operational.MapManager.WebAPI.ExceptionHandling
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    var errorCode = GenerateErrorCode(_options.ErrorCodePrefix);
-                    response = CreateErrorResponse(errorCode, _options.DefaultErrorMessage);
+                    var errorCode = GenerateErrorCode(options.ErrorCodePrefix);
+                    response = CreateErrorResponse(errorCode, options.DefaultErrorMessage);
                 }
 
-                var result = JsonConvert.SerializeObject(response, _options.SerializerSettings);
+                var result = JsonConvert.SerializeObject(response, options.SerializerSettings);
                 context.Response.ContentType = "application/json";
                 return context.Response.WriteAsync(result);
             }
@@ -143,7 +143,7 @@ namespace RM.Operational.MapManager.WebAPI.ExceptionHandling
         /// <returns></returns>
         private Error CreateErrorResponse(string message)
         {
-            return CreateErrorResponse(GenerateErrorCode(_options.ErrorCodePrefix), message);
+            return CreateErrorResponse(GenerateErrorCode(options.ErrorCodePrefix), message);
         }
 
         /// <summary>

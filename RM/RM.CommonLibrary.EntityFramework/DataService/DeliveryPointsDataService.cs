@@ -16,7 +16,6 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     using ExceptionMiddleware;
     using HelperMiddleware;
     using LoggingMiddleware;
-    using ResourceFile;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
@@ -45,24 +44,34 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>DeliveryPointDTO</returns>
         public async Task<DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryPointByUDPRN"))
             {
-                var objDeliveryPoint = await DataContext.DeliveryPoints.AsNoTracking().Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
-
-                Mapper.Initialize(cfg =>
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                try
                 {
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-                });
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                Mapper.Configuration.CreateMapper();
+                    var objDeliveryPoint = await DataContext.DeliveryPoints.Include(dp => dp.PostalAddress).AsNoTracking().Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
 
-                return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
-            }
-            catch (InvalidOperationException ex)
-            {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
+                    Mapper.Initialize(cfg =>
+                    {
+                        cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                        cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+                    });
+
+                    Mapper.Configuration.CreateMapper();
+
+                    return Mapper.Map<DeliveryPoint, DeliveryPointDTO>(objDeliveryPoint);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
+                }
+                finally
+                {
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                }
             }
         }
 
@@ -174,9 +183,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                         Thoroughfare = l.PostalAddress.Thoroughfare,
                                         DependentLocality = l.PostalAddress.DependentLocality,
                                         UDPRN = l.PostalAddress.UDPRN
-                                       
                                     },
-                                    ID=l.ID
+                                    ID = l.ID
                                 })
                                 .ToListAsync();
 
@@ -276,23 +284,27 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List of Delivery Point Dto</returns>
         public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<DeliveryPoint> deliveryPoints = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
-
-            Mapper.Initialize(cfg =>
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryPoints"))
             {
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-            });
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            Mapper.Configuration.CreateMapper();
-            var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+                List<DeliveryPoint> deliveryPoints = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
-            deliveryPointDto.ForEach(dpDTO =>
-            {
-                dpDTO.PostalAddress = GenericMapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.Where(dp => dp.ID == dpDTO.ID).SingleOrDefault().PostalAddress);
-            });
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>();
+                });
 
-            return deliveryPointDto;
+                Mapper.Configuration.CreateMapper();
+
+                var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                return deliveryPointDto;
+            }
         }
 
         /// <summary>
@@ -304,40 +316,40 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
 
-            //using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
-            //{
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointDataMethodEntryEventId, LoggerTraceConstants.Title);
-            string routeName = string.Empty;
-            var result = (from dp in DataContext.DeliveryPoints.AsNoTracking()
-                          join bs in DataContext.BlockSequences.AsNoTracking() on dp.ID equals bs.OperationalObject_GUID
-                          join b in DataContext.Blocks.AsNoTracking() on bs.Block_GUID equals b.ID
-                          join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on b.ID equals drb.Block_GUID
-                          join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
-                          join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
-                          where dp.ID == deliveryPointId && b.BlockType == Constants.UnSequenced
-                          select new
-                          {
-                              RouteName = dr.RouteName,
-                              RouteId = dr.ID,
-                              PostcodeId = pa.PostCodeGUID
-                          }).SingleOrDefault();
-            if (result != null)
+            using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.DataLayer + methodName))
             {
-                var isPrimaryRoute = (from drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() where drp.Postcode_GUID == result.PostcodeId && drp.DeliveryRoute_GUID == result.RouteId select drp.IsPrimaryRoute).ToList();
-                if (isPrimaryRoute != null && isPrimaryRoute.Count > 0)
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointDataMethodEntryEventId, LoggerTraceConstants.Title);
+                string routeName = string.Empty;
+                var result = (from dp in DataContext.DeliveryPoints.AsNoTracking()
+                              join bs in DataContext.BlockSequences.AsNoTracking() on dp.ID equals bs.OperationalObject_GUID
+                              join b in DataContext.Blocks.AsNoTracking() on bs.Block_GUID equals b.ID
+                              join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on b.ID equals drb.Block_GUID
+                              join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
+                              join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
+                              where dp.ID == deliveryPointId && b.BlockType == Constants.UnSequenced
+                              select new
+                              {
+                                  RouteName = dr.RouteName,
+                                  RouteId = dr.ID,
+                                  PostcodeId = pa.PostCodeGUID
+                              }).SingleOrDefault();
+                if (result != null)
                 {
-                    routeName = isPrimaryRoute[0] == true ? Constants.PRIMARYROUTE + result.RouteName.Trim() : Constants.SECONDARYROUTE + result.RouteName.Trim();
+                    var isPrimaryRoute = (from drp in DataContext.DeliveryRoutePostcodes.AsNoTracking() where drp.Postcode_GUID == result.PostcodeId && drp.DeliveryRoute_GUID == result.RouteId select drp.IsPrimaryRoute).ToList();
+                    if (isPrimaryRoute != null && isPrimaryRoute.Count > 0)
+                    {
+                        routeName = isPrimaryRoute[0] == true ? Constants.PRIMARYROUTE + result.RouteName.Trim() : Constants.SECONDARYROUTE + result.RouteName.Trim();
+                    }
+                    else
+                    {
+                        routeName = result.RouteName.Trim();
+                    }
                 }
-                else
-                {
-                    routeName = result.RouteName.Trim();
-                }
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointDataMethodExitEventId, LoggerTraceConstants.Title);
+                return routeName;
+
             }
-
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointDataMethodExitEventId, LoggerTraceConstants.Title);
-            return routeName;
-
-            // }
         }
 
         /// <summary>
@@ -394,23 +406,20 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    using (RMDBContext rmDbContext = new RMDBContext())
-                    {
-                        DeliveryPoint deliveryPoint =
-                            rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.UDPRN == deliveryPointDto.UDPRN);
+                    DeliveryPoint deliveryPoint =
+                        DataContext.DeliveryPoints.SingleOrDefault(dp => dp.UDPRN == deliveryPointDto.UDPRN);
 
-                        if (deliveryPoint != null)
-                        {
-                            deliveryPoint.Longitude = deliveryPointDto.Longitude;
-                            deliveryPoint.Latitude = deliveryPointDto.Latitude;
-                            deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
-                            deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
-                            deliveryPoint.Positioned = deliveryPointDto.Positioned;
-                            status = await rmDbContext.SaveChangesAsync();
-                        }
-                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                        return status;
+                    if (deliveryPoint != null)
+                    {
+                        deliveryPoint.Longitude = deliveryPointDto.Longitude;
+                        deliveryPoint.Latitude = deliveryPointDto.Latitude;
+                        deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
+                        deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
+                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
+                        status = await DataContext.SaveChangesAsync();
                     }
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return status;
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -447,26 +456,24 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    using (RMDBContext rmDbContext = new RMDBContext())
+                    DeliveryPoint deliveryPoint =
+                        DataContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
+
+                    if (deliveryPoint != null)
                     {
-                        DeliveryPoint deliveryPoint =
-                            rmDbContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
+                        deliveryPoint.Longitude = deliveryPointDto.Longitude;
+                        deliveryPoint.Latitude = deliveryPointDto.Latitude;
+                        deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
+                        deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
+                        deliveryPoint.Positioned = deliveryPointDto.Positioned;
 
-                        if (deliveryPoint != null)
-                        {
-                            deliveryPoint.Longitude = deliveryPointDto.Longitude;
-                            deliveryPoint.Latitude = deliveryPointDto.Latitude;
-                            deliveryPoint.LocationXY = deliveryPointDto.LocationXY;
-                            deliveryPoint.LocationProvider_GUID = deliveryPointDto.LocationProvider_GUID;
-                            deliveryPoint.Positioned = deliveryPointDto.Positioned;
-
-                            rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
-                            rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
-                            await rmDbContext.SaveChangesAsync();
-                        }
-                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                        return deliveryPoint != null ? deliveryPoint.ID : Guid.Empty;
+                        DataContext.Entry(deliveryPoint).State = EntityState.Modified;
+                        DataContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
+                        await DataContext.SaveChangesAsync();
                     }
+
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return deliveryPoint != null ? deliveryPoint.ID : Guid.Empty;
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -496,7 +503,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>deliveryPoint DTO</returns>
         public List<DeliveryPointDTO> GetDeliveryPointListByGuid(Guid id)
         {
-            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.ID == id).ToList();
+            List<DeliveryPoint> deliveryPoints = DataContext.DeliveryPoints.Include(dp => dp.PostalAddress).Where(dp => dp.ID == id).ToList();
 
             Mapper.Initialize(cfg =>
             {
@@ -506,6 +513,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             Mapper.Configuration.CreateMapper();
             var deliveryPointDto = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(deliveryPoints);
+
+            deliveryPointDto.ForEach(dpDTO =>
+            {
+                dpDTO.PostalAddress = GenericMapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.Where(dp => dp.ID == dpDTO.ID).SingleOrDefault().PostalAddress);
+            });
 
             return deliveryPointDto;
         }
@@ -558,18 +570,26 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>DeliveryPointDTO object</returns>
         public DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId)
         {
-            DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryPointByPostalAddress"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                DeliveryPoint deliveryPoint = DataContext.DeliveryPoints.Where(dp => dp.Address_GUID == addressId)
                 .SingleOrDefault();
 
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
-                cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
-            });
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
+                    cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+                });
 
-            Mapper.Configuration.CreateMapper();
-            var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
-            return deliveryPointDto;
+                Mapper.Configuration.CreateMapper();
+                var deliveryPointDto = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoint);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                return deliveryPointDto;
+            }
         }
 
         /// <summary>
@@ -683,11 +703,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             Mapper.Configuration.CreateMapper();
             DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
 
-            List<DeliveryPoint> crossingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Crosses(operationalObject)).ToList();
+            List<DeliveryPoint> crossingDeliveryPoints = DataContext.DeliveryPoints.Include(dp => dp.PostalAddress).AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Crosses(operationalObject)).ToList();
             List<DeliveryPointDTO> crossingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(crossingDeliveryPoints);
             deliveryPointDTOs.AddRange(crossingAccessLinkDTOs);
 
-            List<DeliveryPoint> overLappingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Overlaps(operationalObject)).ToList();
+            List<DeliveryPoint> overLappingDeliveryPoints = DataContext.DeliveryPoints.Include(dp => dp.PostalAddress).AsNoTracking().Where(dp => dp.LocationXY != null && dp.LocationXY.Intersects(extent) && dp.LocationXY.Overlaps(operationalObject)).ToList();
             List<DeliveryPointDTO> overLappingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDTO>>(overLappingDeliveryPoints);
             deliveryPointDTOs.AddRange(overLappingAccessLinkDTOs);
 
@@ -706,17 +726,27 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List of Delivery Point Entity</returns>
         private IEnumerable<DeliveryPoint> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
         {
-            IEnumerable<DeliveryPoint> deliveryPoints = default(IEnumerable<DeliveryPoint>);
-            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryPointsCoordinatesDatabyBoundingBox"))
             {
-                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+                IEnumerable<DeliveryPoint> deliveryPoints = default(IEnumerable<DeliveryPoint>);
+                if (!string.IsNullOrEmpty(boundingBoxCoordinates))
+                {
+                    DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
 
-                deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
+                    DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+
+                    deliveryPoints = DataContext.DeliveryPoints.AsNoTracking()
+                        .Include(dp => dp.PostalAddress)
+                        .Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
+                }
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                return deliveryPoints;
             }
-
-            return deliveryPoints;
         }
 
         #endregion Private Methods

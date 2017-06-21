@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.Common.Notification.WebAPI.BusinessService;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using System.Reflection;
 
 namespace RM.Common.Notification.WebAPI.Controllers
 {
@@ -17,10 +16,10 @@ namespace RM.Common.Notification.WebAPI.Controllers
         private INotificationBusinessService notificationBusinessService = default(INotificationBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public NotificationController(INotificationBusinessService notificationBusinessService, ILoggingHelper _loggingHelper)
+        public NotificationController(INotificationBusinessService notificationBusinessService, ILoggingHelper loggingHelper)
         {
             this.notificationBusinessService = notificationBusinessService;
-            this.loggingHelper = _loggingHelper;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>

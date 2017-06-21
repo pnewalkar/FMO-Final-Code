@@ -3,13 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
+    using Moq;
+    using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.Entities;
     using RM.CommonLibrary.HelperMiddleware;
-    using Moq;
-    using NUnit.Framework;
 
     public class UnitLocationDataServiceFixture : RepositoryFixtureBase
     {
@@ -79,7 +79,6 @@
             mockRMDBContext.Setup(x => x.UnitLocations).Returns(mockDeliveryUnitLocationDbSet.Object);
             mockRMDBContext.Setup(x => x.UnitLocations.AsNoTracking()).Returns(mockDeliveryUnitLocationDbSet.Object);
 
-            //    mockDeliveryUnitLocationDbSet.Setup(x => x.SingleOrDefault(It.IsAny<Func<UnitLocation, bool>>())).Returns(unitLocation.FirstOrDefault(u => u.ID == unit1Guid));
             mockDeliveryUnitLocationDbSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryUnitLocationDbSet.Object);
 
             var postalAddresses = new List<PostalAddress>()

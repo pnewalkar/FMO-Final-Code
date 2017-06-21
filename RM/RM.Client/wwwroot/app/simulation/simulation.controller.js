@@ -49,7 +49,7 @@ function SimulationController($stateParams,
                 vm.RouteScenario = response;
             }
             else {
-                vm.RouteScenario = undefined;
+                vm.RouteScenario = [];
                 vm.deliveryRoute = undefined;
                 vm.selectedRoute = null;
                 vm.selectedRouteScenario = null;

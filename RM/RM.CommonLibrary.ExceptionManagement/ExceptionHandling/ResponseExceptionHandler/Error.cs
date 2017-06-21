@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-
-namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
+﻿namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
 {
+    using Newtonsoft.Json;
+
     public class Error
     {
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]

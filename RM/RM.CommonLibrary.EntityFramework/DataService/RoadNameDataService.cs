@@ -9,7 +9,6 @@ using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {

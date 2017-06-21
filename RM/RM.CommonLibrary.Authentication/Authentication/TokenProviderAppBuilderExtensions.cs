@@ -1,12 +1,12 @@
-﻿// Copyright (c) Nate Barbettini. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Options;
+﻿/// Copyright (c) Nate Barbettini. All rights reserved.
+/// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 namespace RM.CommonLibrary.Authentication
 {
+    using System;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.Extensions.Options;
+
     /// <summary>
     /// Adds a token generation endpoint to an application pipeline.
     /// </summary>

@@ -2,6 +2,15 @@
 {
     public static class LoggerTraceConstants
     {
+        #region default
+
+        internal const string DefaultLoggingCategory = "General";
+        internal const int DefaultLoggingPriority = 0;
+        internal const int DefaultLoggingEventId = 0;
+        internal const string DefaultLoggingTitle = "";
+
+        #endregion
+
         public const string Category = "General";
         public const string BusinessLayer = "Business.";
         public const string DataLayer = "Data.";
@@ -16,6 +25,9 @@
         public const int ThirdPartyAddressLocationAPIPriority = 8;
         public const int NotificationAPIPriority = 8;
         public const int SearchManagerAPIPriority = 8;
+        public const int NYBPriority = 8;
+        public const int PAFPriority = 8;
+        public const int ThirdPartyPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -94,6 +106,17 @@
         public const int NotificationBusinessServiceMethodExitEventId = 9514;
         public const int NotificationDataServiceMethodEntryEventId = 9523;
         public const int NotificationDataServiceMethodExitEventId = 9524;
+
+        public const int NYBLoaderMethodEntryEventId = 9603;
+        public const int NYBLoaderMethodExitEventId = 9604;
+
+        public const int PAFLoaderMethodEntryEventId = 9703;
+        public const int PAFLoaderMethodExitEventId = 9704;
+        public const int PAFReceiverMethodEntryEventId = 9713;
+        public const int PAFReceiverMethodExitEventId = 9714;
+
+        public const int ThirdPartyLoaderMethodEntryEventId = 9803;
+        public const int ThirdPartyLoaderMethodExitEventId = 9804;
 
         public const int UpdateDeliveryPointAPIMethodEntryEventId = 9103;
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;

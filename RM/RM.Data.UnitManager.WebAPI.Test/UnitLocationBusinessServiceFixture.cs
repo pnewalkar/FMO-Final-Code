@@ -45,7 +45,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
         [Test]
         public void Test_FetchPostCodeUnitForBasicSearch()
         {
-            var result = testCandidate.FetchPostCodeUnitForBasicSearch("abc",Guid.NewGuid());
+            var result = testCandidate.FetchPostCodeUnitForBasicSearch("abc", Guid.NewGuid());
             Assert.NotNull(result);
         }
 
