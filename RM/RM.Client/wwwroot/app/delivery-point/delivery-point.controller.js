@@ -105,7 +105,6 @@ function DeliveryPointController(
     function closeWindow() {
         vm.hide = false;
         deliveryPointService.closeModalPopup();
-        $scope.$emit("dialogClosed");
     }
 
     function resultSet(query) {
