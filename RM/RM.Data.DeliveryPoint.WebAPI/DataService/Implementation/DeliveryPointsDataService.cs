@@ -22,6 +22,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using CommonLibrary.LoggingMiddleware;
     using Data.DeliveryPoint.WebAPI.DTO;
     using CommonLibrary.Utilities.HelperMiddleware;
+   
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
@@ -865,8 +866,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 DbGeometry polygon = default(DbGeometry);
                 if (!string.IsNullOrEmpty(boundingBoxCoordinates))
                 {
-                    
-                    polygon = unitLocation.UnitBoundryPolygon;
+                    using (CommonLibrary.EntityFramework.Entities.RMDBContext rmDbContext = new CommonLibrary.EntityFramework.Entities.RMDBContext())
+                    {
+                        polygon = rmDbContext.UnitLocations.Where(u => u.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+                    }
                     
 
                     DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
