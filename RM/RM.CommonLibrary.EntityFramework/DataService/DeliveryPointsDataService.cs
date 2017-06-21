@@ -298,17 +298,18 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                       || x.PostalAddress.DependentLocality.Contains(searchText))).CountAsync();
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
-                return result;
-            }
-            catch (InvalidOperationException ex)
-            {
-                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
-            }
-            catch (OverflowException overflow)
-            {
-                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
+                    return result;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                }
+                catch (OverflowException overflow)
+                {
+                    overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
+                }
             }
         }
 
