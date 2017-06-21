@@ -189,6 +189,14 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_UpdatePAFIndicator()
+        {
+            var result = testCandidate.UpdatePAFIndicator(Guid.NewGuid(), Guid.NewGuid());
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
         protected override void OnSetup()
         {
             mockDeliveryPointsDataService = CreateMock<IDeliveryPointsDataService>();
@@ -294,6 +302,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
             mockDeliveryPointsDataService.Setup(x => x.GetDetailDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new AddDeliveryPointDTO() { });
             mockDeliveryPointsDataService.Setup(x => x.FetchDeliveryPointsForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
+            mockDeliveryPointsDataService.Setup(x => x.UpdatePAFIndicator(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDBDTO>())).Returns(Task.FromResult("ABC"));
             mockDeliveryPointIntegrationService.Setup(x => x.CreateBlockSequenceForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
