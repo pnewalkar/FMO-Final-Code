@@ -11,6 +11,9 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
     [TestFixture]
     public class PDFGeneratorBusinessServiceFixture : TestFixtureBase
     {
+        private const string PDFFileLoaction = "PDFFileLoaction";
+        private const string XSLTFilePath = "XSLTFilePath";
+
         private Mock<IFileProvider> mockFileProvider;
         private IFileProvider fileProvider;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
@@ -20,7 +23,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         [Test]
         public void Test_GenerateRouteLogSummaryReport()
         {
-            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.PDFFileLoaction)).Returns(filepath);
+            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(PDFFileLoaction)).Returns(filepath);
             testCandidate = new PDFGeneratorBusinessService(mockFileProvider.Object, mockConfigurationHelper.Object);
             var result = testCandidate.GeneratePdfReport("ef6db2b6-d8b8-40eb-9d10-33c523ecbd50.pdf");
             Assert.IsNotNull(result);
@@ -29,7 +32,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         [Test]
         public void Test_GenerateRouteLogSummaryPdf()
         {
-            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.PDFFileLoaction)).Returns(Path.GetTempPath());
+            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(PDFFileLoaction)).Returns(Path.GetTempPath());
             testCandidate = new PDFGeneratorBusinessService(mockFileProvider.Object, mockConfigurationHelper.Object);
             var result = testCandidate.GenerateRouteLogSummaryReport("<note><body>hi</body></note>", "abc");
             if (File.Exists(Path.GetTempPath() + result))
@@ -49,7 +52,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
             mockFileProvider.Setup(x => x.GetDirectoryContents(It.IsAny<string>())).Returns(It.IsAny<IDirectoryContents>());
             mockFileProvider.Setup(x => x.GetFileInfo(It.IsAny<string>())).Returns(fileInfo);
 
-            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(Constants.XSLTFilePath)).Returns(Path.GetTempPath());
+            mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(XSLTFilePath)).Returns(Path.GetTempPath());
         }
     }
 }

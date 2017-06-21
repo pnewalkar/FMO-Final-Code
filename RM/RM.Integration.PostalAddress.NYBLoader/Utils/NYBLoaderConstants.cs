@@ -31,9 +31,9 @@
         internal const int NYBPostcodeType = 13;
         internal const int NYBSmallUserOrganisationIndicator = 14;
         internal const int NYBDeliveryPointSuffix = 15;
-        internal const string NoOfCharactersForNYB = "NoOfCharactersForNYB";
-        internal const string MaxCharactersForNYB = "maxCharactersForNYB";
-        internal const string CsvValuesForNYB = "csvValuesForNYB";
+        public const string NoOfCharactersForNYB = "NoOfCharactersForNYB";
+        public const string MaxCharactersForNYB = "maxCharactersForNYB";
+        public const string CsvValuesForNYB = "csvValuesForNYB";
         internal const string PAFZIPFILENAME = "^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
 
         internal const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";

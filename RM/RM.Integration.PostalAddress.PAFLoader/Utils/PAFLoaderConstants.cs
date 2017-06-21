@@ -19,9 +19,9 @@ namespace RM.Integration.PostalAddress.PAFLoader.Utils
         internal const string LOGMESSAGEFORPAFDATAVALIDATION = "Load PAF Error Message : PAF File Data is not valid, File Name : {0} : Log Time : {1} ";
         internal const string LOGMESSAGEFORPAFWRONGFORMAT = "Load PAF Error Message : PAF File is not valid due to wrong file format or empty records, File Name : {0} : Log Time : {1}";
         internal const string ERRORLOGMESSAGEFORPAFMSMQ = "Load PAF Error Message : Error occurred while processing it to messaging queue, File Name : {0} : Log Time : {1}";
-        internal const string NoOfCharactersForPAF = "NoOfCharactersForPAF";
-        internal const string MaxCharactersForPAF = "MaxCharactersForPAF";
-        internal const string CsvPAFValues = "CsvPAFValues";
+        public const string NoOfCharactersForPAF = "NoOfCharactersForPAF";
+        public const string MaxCharactersForPAF = "MaxCharactersForPAF";
+        public const string CsvPAFValues = "CsvPAFValues";
         internal const string PAFNOACTION = "B";
         internal const string PAFINSERT = "I";
         internal const string PAFUPDATE = "C";
