@@ -1,6 +1,5 @@
 ﻿namespace RM.Integration.PostalAddress.PAFLoader
 {
-    using System.ServiceProcess;
     using Ninject;
     using RM.CommonLibrary.ConfigurationMiddleware;
     using RM.CommonLibrary.LoggingMiddleware;
@@ -22,12 +21,16 @@
             ILoggingHelper loggingHelper = kernel.Get<ILoggingHelper>();
             IConfigurationHelper configurationHelper = kernel.Get<IConfigurationHelper>();
 
-            //ServiceBase[] servicesToRun = new ServiceBase[] { new PAFImport(pafLoader, loggingHelper, configurationHelper) };
-            //ServiceBase.Run(servicesToRun);
-
-            PAFImport myService = new PAFImport(pafLoader, loggingHelper, configurationHelper);
-            myService.OnDebug();
-            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+#if DEBUG
+            using (PAFImport myService = new PAFImport(pafLoader, loggingHelper, configurationHelper))
+            {
+                myService.OnDebug();
+                System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+            }
+#else
+            ServiceBase[] servicesToRun = new ServiceBase[] { new PAFImport(pafLoader, loggingHelper, configurationHelper) };
+            ServiceBase.Run(servicesToRun);
+#endif
         }
     }
 }

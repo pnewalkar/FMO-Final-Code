@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using RM.CommonLibrary.HelperMiddleware;
-
-namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
+﻿namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Net;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Serialization;
+    using RM.CommonLibrary.HelperMiddleware;
+
     public class ResponseExceptionHandlerOptions
     {
         public ResponseExceptionHandlerOptions()
         {
-            ErrorCodePrefix = "ERR_";
-            DefaultErrorMessage = ErrorConstants.LogAndThrowErrorMessage;
+            this.ErrorCodePrefix = "ERR_";
+            this.DefaultErrorMessage = ErrorConstants.LogAndThrowErrorMessage;
 
-            SerializerSettings = new JsonSerializerSettings
+            this.SerializerSettings = new JsonSerializerSettings
             {
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
-            Responses = new ConcurrentDictionary<Type, ExceptionResponse>();
+            this.Responses = new ConcurrentDictionary<Type, ExceptionResponse>();
         }
 
         public string ErrorCodePrefix { get; set; }
@@ -35,19 +35,19 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExcepti
         public void Map<TException>(HttpStatusCode statusCode)
             where TException : Exception
         {
-            Map<TException>(statusCode, null);
+            this.Map<TException>(statusCode, null);
         }
 
         public void Map<TException>(HttpStatusCode statusCode, string errorMessage)
             where TException : Exception
         {
-            Map<TException>(statusCode, errorMessage, null);
+            this.Map<TException>(statusCode, errorMessage, null);
         }
 
         public void Map<TException>(HttpStatusCode statusCode, object errorResponse)
             where TException : Exception
         {
-            Map<TException>(statusCode, null, errorResponse);
+            this.Map<TException>(statusCode, null, errorResponse);
         }
 
         private void Map<TException>(HttpStatusCode statusCode, string errorMessage, object errorResponse)
@@ -61,15 +61,15 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExcepti
                 Response = errorResponse
             };
 
-            if (Responses.TryAdd(type, response))
+            if (this.Responses.TryAdd(type, response))
             {
                 return;
             }
 
             ExceptionResponse oldItem;
-            if (Responses.TryRemove(type, out oldItem))
+            if (this.Responses.TryRemove(type, out oldItem))
             {
-                Responses.TryAdd(type, response);
+                this.Responses.TryAdd(type, response);
             }
         }
     }

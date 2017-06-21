@@ -13,8 +13,10 @@
     public class ReferenceDataController : RMBaseController
     {
         #region Member Variables
-        private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);    
-        #endregion
+
+        private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
+
+        #endregion Member Variables
 
         #region Constructor
 
@@ -128,6 +130,6 @@
             return Ok(simpleDtoList);
         }
 
-        #endregion Reference Data Manager methods
+        #endregion Methods
     }
 }

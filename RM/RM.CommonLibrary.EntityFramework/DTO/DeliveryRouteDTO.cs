@@ -36,7 +36,7 @@ namespace RM.CommonLibrary.EntityFramework.DTO
             {
                 if (!string.IsNullOrEmpty(RouteNumber) && !string.IsNullOrEmpty(RouteName))
                 {
-                    return "(" + RouteNumber.Trim() + ")" + RouteName;
+                    return RouteName + "(" + RouteNumber.Trim() + ")";
                 }
                 else
                 {

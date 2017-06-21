@@ -30,7 +30,6 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             PostCodeSectorDTO postCodeSectorDTO = new PostCodeSectorDTO();
             GenericMapper.Map(postCodeSector, postCodeSectorDTO);
             return postCodeSectorDTO;
-
         }
     }
 }

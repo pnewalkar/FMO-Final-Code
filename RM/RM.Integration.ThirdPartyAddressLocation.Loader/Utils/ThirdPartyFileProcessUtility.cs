@@ -52,26 +52,28 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
         /// <param name="strPath"></param>
         public void LoadUSRDetailsFromXML(string strPath)
         {
-            List<AddressLocationUSRDTO> lstUSRFiles = null;
-            List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
-
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
-
-
-            if (CheckFileName(new FileInfo(strPath).Name))
+            using (loggingHelper.RMTraceManager.StartTrace("Service.LoadUSRDetailsFromXML"))
             {
-                if (IsFileValid(strPath))
+                List<AddressLocationUSRDTO> lstUSRFiles = null;
+                List<AddressLocationUSRDTO> lstUSRInsertFiles = null;
+
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (CheckFileName(new FileInfo(strPath).Name))
                 {
-                    lstUSRFiles = GetValidRecords(strPath);
-
-                    lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
-
-                    //lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
-                    //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
-
-                    lstUSRInsertFiles.ForEach(addressLocation =>
+                    if (IsFileValid(strPath))
                     {
+                        lstUSRFiles = GetValidRecords(strPath);
+
+                        lstUSRInsertFiles = lstUSRFiles.Where(insertFiles => insertFiles.ChangeType == Constants.INSERT).ToList();
+
+                        //lstUSRUpdateFiles = lstUSRFiles.Where(updateFiles => updateFiles.ChangeType == Constants.UPDATE).ToList();
+                        //lstUSRDeleteFiles = lstUSRFiles.Where(deleteFiles => deleteFiles.ChangeType == Constants.DELETE).ToList();
+
+                        lstUSRInsertFiles.ForEach(addressLocation =>
+                        {
                         //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
                         //needs to be queued.
                         IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
@@ -79,18 +81,20 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                         //The messge object created in the above code is then pushed onto the queue. This internally uses the MSMQ Send function to push the message
                         //to the queue.
                         msgBroker.SendMessage(USRMsg);
-                    });
+                        });
 
-                    fileMover.MoveFile(new string[] { strPath }, new string[] { processed, AppendTimeStamp(new FileInfo(strPath).Name) });
+                        fileMover.MoveFile(new string[] { strPath }, new string[] { processed, AppendTimeStamp(new FileInfo(strPath).Name) });
+                    }
+                    else
+                    {
+                        loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORUSRDATAVALIDATION, new FileInfo(strPath).Name, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                        fileMover.MoveFile(new string[] { strPath }, new string[] { error, AppendTimeStamp(new FileInfo(strPath).Name) });
+                    }
                 }
-                else
-                {
-                    loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORUSRDATAVALIDATION, new FileInfo(strPath).Name, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
-                    fileMover.MoveFile(new string[] { strPath }, new string[] { error, AppendTimeStamp(new FileInfo(strPath).Name) });
-                }
+
+                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyPriority, LoggerTraceConstants.ThirdPartyLoaderMethodExitEventId, LoggerTraceConstants.Title);
             }
-
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
         }
 
         /// <summary>

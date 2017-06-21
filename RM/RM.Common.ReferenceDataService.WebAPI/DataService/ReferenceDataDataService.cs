@@ -22,6 +22,7 @@
         #endregion Constructor
 
         #region Methods
+
         /// <summary>
         /// Gets all reference data for category type nameValuePair.
         /// </summary>
@@ -131,7 +132,8 @@
             {
                 return null;
             }
-        } 
-        #endregion
+        }
+
+        #endregion Methods
     }
 }

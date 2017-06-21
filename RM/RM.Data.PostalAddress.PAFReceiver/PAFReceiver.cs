@@ -8,6 +8,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Timers;
+    using CommonLibrary.Utilities.HelperMiddleware;
     using RM.CommonLibrary.ConfigurationMiddleware;
     using RM.CommonLibrary.EntityFramework.DTO;
     using RM.CommonLibrary.HelperMiddleware;
@@ -23,6 +24,7 @@
         #region private member declaration
 
         private string PAFWebApiName = string.Empty;
+        private double TimerIntervalInSeconds = default(double);
 
         private System.Timers.Timer m_mainTimer;
         private IMessageBroker<PostalAddressDTO> msgPAF = default(IMessageBroker<PostalAddressDTO>);
@@ -46,6 +48,7 @@
 
             this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
             this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
+            this.TimerIntervalInSeconds = configurationHelper != null ? Convert.ToDouble(configurationHelper.ReadAppSettingsConfigurationValues(Constants.TimerIntervalInSeconds)) : default(double);
         }
 
         #endregion Constructor
@@ -59,21 +62,10 @@
         protected override void OnStart(string[] args)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
-            try
-            {
-                //instantiate timer
-                Thread t = new Thread(new ThreadStart(this.InitTimer));
-                t.Start();
-            }
-            catch (Exception ex)
-            {
-                loggingHelper.Log(ex, TraceEventType.Error);
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
-            }
+
+            //instantiate timer
+            Thread t = new Thread(new ThreadStart(this.InitTimer));
+            t.Start();
         }
 
         #endregion OnStart
@@ -85,31 +77,18 @@
         /// </summary>
         private void InitTimer()
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
-            try
-            {
-                m_mainTimer = new System.Timers.Timer();
+            m_mainTimer = new System.Timers.Timer();
 
-                //wire up the timer event
-                m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
+            //wire up the timer event
+            m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
 
-                //set timer interval
-                //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]);
-                double timeInSeconds = 3.0;
-                m_mainTimer.Interval = (timeInSeconds * 1000);
+            //set timer interval
+            //var timeInSeconds = Convert.ToInt32(ConfigurationManager.AppSettings["TimerIntervalInSeconds"]);
+            double timeInSeconds = TimerIntervalInSeconds;
+            m_mainTimer.Interval = (timeInSeconds * 1000);
 
-                // timer.Interval is in milliseconds, so times above by 1000
-                m_mainTimer.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                loggingHelper.Log(ex, TraceEventType.Error);
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
-            }
+            // timer.Interval is in milliseconds, so times above by 1000
+            m_mainTimer.Enabled = true;
         }
 
         /// <summary>
@@ -119,19 +98,19 @@
         /// <param name="e"></param>
         private void m_mainTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Service.m_mainTimer_Elapsed"))
             {
-                PAFMessageReceived();
-            }
-            catch (Exception ex)
-            {
-                loggingHelper.Log(ex, TraceEventType.Error);
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                try
+                {
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
+                    PAFMessageReceived();
+                }
+                catch (Exception ex)
+                {
+                    loggingHelper.Log(ex, TraceEventType.Error);
+                }
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
             }
         }
 
@@ -144,33 +123,39 @@
         /// </summary>
         public void PAFMessageReceived()
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Service.PAFMessageReceived"))
             {
-                List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
-
-                //The Message queue is checked whether there are pending messages in the queue. This loop runs till all the messages are popped out of the message queue.
-                while (msgPAF.HasMessage(Constants.QUEUEPAF, Constants.QUEUEPATH))
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                try
                 {
-                    //Receive Message picks up one message from queue for processing
-                    //Message broker internally deserializes the message to the POCO type.
-                    PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(Constants.QUEUEPAF, Constants.QUEUEPATH);
-                    if (objPostalAddress != null)
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
+
+                    //The Message queue is checked whether there are pending messages in the queue. This loop runs till all the messages are popped out of the message queue.
+                    while (msgPAF.HasMessage(Constants.QUEUEPAF, Constants.QUEUEPATH))
                     {
-                        lstPostalAddress.Add(objPostalAddress);
+                        //Receive Message picks up one message from queue for processing
+                        //Message broker internally deserializes the message to the POCO type.
+                        PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(Constants.QUEUEPAF, Constants.QUEUEPATH);
+                        if (objPostalAddress != null)
+                        {
+                            lstPostalAddress.Add(objPostalAddress);
+                        }
+                    }
+                    if (lstPostalAddress != null && lstPostalAddress.Count > 0)
+                    {
+                        m_mainTimer.Elapsed -= new ElapsedEventHandler(m_mainTimer_Elapsed);
+                        var result = SavePAFDetails(lstPostalAddress).ContinueWith(p => {
+                            m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
+                        });
                     }
                 }
-                if (lstPostalAddress != null && lstPostalAddress.Count > 0)
-                    SavePAFDetails(lstPostalAddress).Wait();
-            }
-            catch (Exception ex)
-            {
-                this.loggingHelper.Log(ex, TraceEventType.Error);
-            }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
+                catch (Exception ex)
+                {
+                    this.loggingHelper.Log(ex, TraceEventType.Error);
+                }
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
             }
         }
 
@@ -181,54 +166,55 @@
         /// <returns></returns>
         private async Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted);
-            bool isPAFDetailsInserted = false;
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Service.SavePAFDetails"))
             {
-                if (postalAddress != null && postalAddress.Count > 0)
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                bool isPAFDetailsInserted = false;
+                try
                 {
-                    postalAddress.ForEach(objPostalAddress =>
+                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodEntryEventId, LoggerTraceConstants.Title);
+                    if (postalAddress != null && postalAddress.Count > 0)
                     {
-                        LogMethodInfoBlock(
-                                            methodName,
-                                            string.Format(
-                                            Constants.REQUESTLOG,
-                                            objPostalAddress.UDPRN == null ? string.Empty : objPostalAddress.UDPRN.ToString(),
-                                            objPostalAddress.Postcode == null ? string.Empty : objPostalAddress.Postcode.ToString(),
-                                            objPostalAddress.AmendmentType == null ? string.Empty : objPostalAddress.AmendmentType.ToString(),
-                                            objPostalAddress.PostTown == null ? string.Empty : objPostalAddress.PostTown.ToString(),
-                                            objPostalAddress.SmallUserOrganisationIndicator == null ? string.Empty : objPostalAddress.SmallUserOrganisationIndicator.ToString(),
-                                            objPostalAddress.DeliveryPointSuffix == null ? string.Empty : objPostalAddress.DeliveryPointSuffix
-                                            ));
-                    });
+                        postalAddress.ForEach(objPostalAddress =>
+                        {
+                            LogMethodInfoBlock(
+                                                methodName,
+                                                string.Format(
+                                                Constants.REQUESTLOG,
+                                                objPostalAddress.UDPRN == null ? string.Empty : objPostalAddress.UDPRN.ToString(),
+                                                objPostalAddress.Postcode == null ? string.Empty : objPostalAddress.Postcode.ToString(),
+                                                objPostalAddress.AmendmentType == null ? string.Empty : objPostalAddress.AmendmentType.ToString(),
+                                                objPostalAddress.PostTown == null ? string.Empty : objPostalAddress.PostTown.ToString(),
+                                                objPostalAddress.SmallUserOrganisationIndicator == null ? string.Empty : objPostalAddress.SmallUserOrganisationIndicator.ToString(),
+                                                objPostalAddress.DeliveryPointSuffix == null ? string.Empty : objPostalAddress.DeliveryPointSuffix
+                                                ));
+                        });
 
-                    var result = await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress, true);
-                    if (!result.IsSuccessStatusCode)
-                    {
-                        //LOG ERROR WITH Statuscode
-                        var responseContent = result.ReasonPhrase;
-                        this.loggingHelper.Log(responseContent, TraceEventType.Error);
-                        isPAFDetailsInserted = false;
+                        var result = await httpHandler.PostAsJsonAsync(PAFWebApiName, postalAddress, true);
+                        if (!result.IsSuccessStatusCode)
+                        {
+                            //LOG ERROR WITH Statuscode
+                            var responseContent = result.ReasonPhrase;
+                            this.loggingHelper.Log(responseContent, TraceEventType.Error);
+                            isPAFDetailsInserted = false;
+                        }
+                        isPAFDetailsInserted = true;
                     }
-                    isPAFDetailsInserted = true;
                 }
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
+                catch (AggregateException ae)
                 {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFReceiverMethodExitEventId, LoggerTraceConstants.Title);
+
+                return isPAFDetailsInserted;
             }
-            finally
-            {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted);
-            }
-            return isPAFDetailsInserted;
         }
 
         #endregion Process PAF from Queue

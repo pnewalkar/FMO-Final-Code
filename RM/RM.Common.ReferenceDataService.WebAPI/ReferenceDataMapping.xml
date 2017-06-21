@@ -9,6 +9,34 @@
     <DBCategoryName>Notification Priority</DBCategoryName>
   </CategoryName>
   <CategoryName>
+    <AppCategoryName>RouteLogSelectionType</AppCategoryName>
+    <DBCategoryName>Route Log Selection Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>Map_License_Information</AppCategoryName>
+    <DBCategoryName>Map_License_Information</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>OrdnanceSurvey_NI_Licensing</AppReferenceDataName>
+      <DBReferenceDataName>OrdnanceSurvey_NI_Licensing</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>GeoPlan_Licensing</AppReferenceDataName>
+      <DBReferenceDataName>GeoPlan_Licensing</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>OrdnanceSurvey_GB_Licensing</AppReferenceDataName>
+      <DBReferenceDataName>OrdnanceSurvey_GB_Licensing</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>ThirdParty_GB_Licensing</AppReferenceDataName>
+      <DBReferenceDataName>ThirdParty_GB_Licensing</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>ThirdParty_NI_Licensing</AppReferenceDataName>
+      <DBReferenceDataName>ThirdParty_NI_Licensing</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
     <AppCategoryName>NetworkLinkType</AppCategoryName>
     <DBCategoryName>Network Link Type</DBCategoryName>
   </CategoryName>
@@ -29,12 +57,88 @@
     <DBCategoryName>UI_RouteLogSearch_SelectionType</DBCategoryName>
   </CategoryName>
   <CategoryName>
-    <AppCategoryName>UI_RouteLog_Status</AppCategoryName>
-    <DBCategoryName>UI_RouteLog_Status</DBCategoryName>
-  </CategoryName>
-  <CategoryName>
     <AppCategoryName>UI_DeliveryPoint_Type</AppCategoryName>
     <DBCategoryName>UI_DeliveryPoint_Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PDF_PageSize</AppCategoryName>
+    <DBCategoryName>PDF_PageSize</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PDF_PageSize_A0</AppReferenceDataName>
+      <DBReferenceDataName>PDF_PageSize_A0</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PDF_PageSize_A1</AppReferenceDataName>
+      <DBReferenceDataName>PDF_PageSize_A1</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PDF_PageSize_A2</AppReferenceDataName>
+      <DBReferenceDataName>PDF_PageSize_A2</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PDF_PageSize_A3</AppReferenceDataName>
+      <DBReferenceDataName>PDF_PageSize_A3</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PDF_PageSize_A4</AppReferenceDataName>
+      <DBReferenceDataName>PDF_PageSize_A4</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PrintMap_DPI</AppCategoryName>
+    <DBCategoryName>PrintMap_DPI</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_DPI</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_DPI</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PrintMap_ImageWidthmm</AppCategoryName>
+    <DBCategoryName>PrintMap_ImageWidthmm</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageWidthmm_A0</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageWidthmm_A0</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageWidthmm_A1</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageWidthmm_A1</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageWidthmm_A3</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageWidthmm_A3</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageWidthmm_A4</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageWidthmm_A4</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageWidthmm_A2</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageWidthmm_A2</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PrintMap_ImageHeightmm</AppCategoryName>
+    <DBCategoryName>PrintMap_ImageHeightmm</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageHeightmm_A0</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageHeightmm_A0</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageHeightmm_A1</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageHeightmm_A1</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageHeightmm_A2</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageHeightmm_A2</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageHeightmm_A3</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageHeightmm_A3</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PrintMap_ImageHeightmm_A4</AppReferenceDataName>
+      <DBReferenceDataName>PrintMap_ImageHeightmm_A4</DBReferenceDataName>
+    </ReferenceDataName>
   </CategoryName>
   <CategoryName>
     <AppCategoryName>UI_SearchRules</AppCategoryName>
@@ -56,40 +160,52 @@
       <DBReferenceDataName>Access Link Diff Road Max Distance</DBReferenceDataName>
     </ReferenceDataName>
     <ReferenceDataName>
-      <AppReferenceDataName>Residential-RoadWidthMultiplicationFactor
-</AppReferenceDataName>
-      <DBReferenceDataName>Residential - Road Width Multiplication Factor
-</DBReferenceDataName>
+      <AppReferenceDataName>
+        Residential-RoadWidthMultiplicationFactor
+      </AppReferenceDataName>
+      <DBReferenceDataName>
+        Residential - Road Width Multiplication Factor
+      </DBReferenceDataName>
     </ReferenceDataName>
     <ReferenceDataName>
-      <AppReferenceDataName>Residential-PavementWidthMultiplicationFactor
-</AppReferenceDataName>
-      <DBReferenceDataName>Residential - Pavement Width Multiplication Factor
-</DBReferenceDataName>
+      <AppReferenceDataName>
+        Residential-PavementWidthMultiplicationFactor
+      </AppReferenceDataName>
+      <DBReferenceDataName>
+        Residential - Pavement Width Multiplication Factor
+      </DBReferenceDataName>
     </ReferenceDataName>
     <ReferenceDataName>
-      <AppReferenceDataName>Residential-HouseDepthMultiplicationFactor
-</AppReferenceDataName>
-      <DBReferenceDataName>Residential - House Depth Multiplication Factor
-</DBReferenceDataName>
+      <AppReferenceDataName>
+        Residential-HouseDepthMultiplicationFactor
+      </AppReferenceDataName>
+      <DBReferenceDataName>
+        Residential - House Depth Multiplication Factor
+      </DBReferenceDataName>
     </ReferenceDataName>
     <ReferenceDataName>
-      <AppReferenceDataName>Business-RoadWidthMultiplicationFactor
-</AppReferenceDataName>
-      <DBReferenceDataName>Business - Road Width Multiplication Factor
-</DBReferenceDataName>
+      <AppReferenceDataName>
+        Business-RoadWidthMultiplicationFactor
+      </AppReferenceDataName>
+      <DBReferenceDataName>
+        Business - Road Width Multiplication Factor
+      </DBReferenceDataName>
     </ReferenceDataName>
     <ReferenceDataName>
-      <AppReferenceDataName>Business-PavementWidthMultiplicationFactor
-</AppReferenceDataName>
-      <DBReferenceDataName>Business - Pavement Width Multiplication Factor
-</DBReferenceDataName>
+      <AppReferenceDataName>
+        Business-PavementWidthMultiplicationFactor
+      </AppReferenceDataName>
+      <DBReferenceDataName>
+        Business - Pavement Width Multiplication Factor
+      </DBReferenceDataName>
     </ReferenceDataName>
     <ReferenceDataName>
-      <AppReferenceDataName>AccesLinkMinimumLength
-</AppReferenceDataName>
-      <DBReferenceDataName>Acces Link Minimum Length
-</DBReferenceDataName>
+      <AppReferenceDataName>
+        AccesLinkMinimumLength
+      </AppReferenceDataName>
+      <DBReferenceDataName>
+        Acces Link Minimum Length
+      </DBReferenceDataName>
     </ReferenceDataName>
     <ReferenceDataName>
       <AppReferenceDataName>Motorway</AppReferenceDataName>
@@ -181,6 +297,10 @@
     <DBCategoryName>Network Node Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
+    <AppCategoryName>SenarioOperationState</AppCategoryName>
+    <DBCategoryName>Senario Operation State</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
     <AppCategoryName>OperationalObjectType</AppCategoryName>
     <DBCategoryName>Operational Object Type</DBCategoryName>
   </CategoryName>
@@ -201,7 +321,7 @@
     <DBCategoryName>Access Link Direction</DBCategoryName>
   </CategoryName>
   <CategoryName>
-    <AppCategoryName>OperationalStatus</AppCategoryName>
-    <DBCategoryName>Operational Status</DBCategoryName>
+    <AppCategoryName>DeliveryPointOperationalStatus</AppCategoryName>
+    <DBCategoryName>Delivery Point Operational Status</DBCategoryName>
   </CategoryName>
 </ReferenceDataMapping>

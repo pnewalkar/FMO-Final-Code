@@ -67,25 +67,32 @@
         /// <returns>Object</returns>
         public object GetDeliveryPoints(string boundaryBox, Guid unitGuid)
         {
-            if (!string.IsNullOrEmpty(boundaryBox))
+            object deliveryPoints = null;
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPoints"))
             {
-                var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
-                return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
-            }
-            else
-            {
-                return null;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (!string.IsNullOrEmpty(boundaryBox))
+                {
+                    var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
+                    deliveryPoints = GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid));
+                }
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                return deliveryPoints;
             }
         }
 
         /// <summary>
-        /// Get coordinates of the delivery point by UDPRN
+        /// Get coordinates of the delivery point by Guid
         /// </summary>
-        /// <param name="udprn">The UDPRN number</param>
+        /// <param name="Guid">The Guid </param>
         /// <returns>The coordinates of the delivery point</returns>
-        public object GetDeliveryPointByUDPRN(int udprn)
+        public object GetDeliveryPointByGuid(Guid id)
         {
-            return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPointListByUDPRN(udprn));
+            return GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPointListByGuid(id));
         }
 
         /// <summary>
@@ -189,9 +196,10 @@
                     {
                         // Call Postal Address integration API
                         CreateDeliveryPointModelDTO createDeliveryPointModelDTO = await deliveryPointIntegrationService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                        if(createDeliveryPointModelDTO == null)
+
+                        if (createDeliveryPointModelDTO == null)
                         {
-                            throw new EntityNotFoundException(ErrorConstants.Err_EntityNotFoundException +": PostalAddressId - "+addDeliveryPointDTO.PostalAddressDTO.ID);
+                            throw new EntityNotFoundException(ErrorConstants.Err_EntityNotFoundException + ": PostalAddressId - " + addDeliveryPointDTO.PostalAddressDTO.ID);
                         }
 
                         rowVersion = deliveryPointsDataService.GetDeliveryPointRowVersion(createDeliveryPointModelDTO.ID);
@@ -290,8 +298,8 @@
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
 
-            //using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.BusinessLayer + methodName))
-            //{
+            // using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.BusinessLayer + methodName))
+            // {
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetRouteForDeliveryPointPriority, LoggerTraceConstants.GetRouteForDeliveryPointBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
             List<KeyValuePair<string, string>> dpDetails = new List<KeyValuePair<string, string>>();
@@ -326,7 +334,14 @@
         /// <returns>DeliveryPointDTO</returns>
         public async Task<DeliveryPointDTO> GetDeliveryPointByUDPRNforBatch(int udprn)
         {
-            return await deliveryPointsDataService.GetDeliveryPointByUDPRN(udprn);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointByUDPRNforBatch"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                var getDeliveryPointByUDPRN = await deliveryPointsDataService.GetDeliveryPointByUDPRN(udprn);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getDeliveryPointByUDPRN;
+            }
         }
 
         /// <summary>
@@ -372,7 +387,15 @@
         /// <returns>DeliveryPointDTO object</returns>
         public DeliveryPointDTO GetDeliveryPointByPostalAddress(Guid addressId)
         {
-            return deliveryPointsDataService.GetDeliveryPointByPostalAddress(addressId);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPointByPostalAddress"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var getDeliveryPointByPostalAddress = deliveryPointsDataService.GetDeliveryPointByPostalAddress(addressId);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getDeliveryPointByPostalAddress;
+            }
         }
 
         /// <summary>
@@ -500,8 +523,8 @@
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
 
-            //using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.BusinessLayer + methodName))
-            //{
+            // using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.BusinessLayer + methodName))
+            // {
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetDPUsePriority, LoggerTraceConstants.GetDPUseBusinessMethodEntryEventId, LoggerTraceConstants.Title);
             Guid deliveryOperationObjectTypeId = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
             Guid operationalObjectTypeForDpOrganisation = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.DeliveryPointUseIndicator, ReferenceDataValues.Organisation);

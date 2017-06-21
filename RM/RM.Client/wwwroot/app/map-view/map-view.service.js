@@ -16,7 +16,9 @@ mapService.$inject = ['$http',
                      '$state',
                      '$stateParams',
                      '$rootScope',
-                     'layersAPIService'];
+                     'layersAPIService',
+                     'CommonConstants'
+                    ];
 
 function mapService($http,
                     mapFactory,
@@ -33,9 +35,12 @@ function mapService($http,
                     $state,
                     $stateParams,
                     $rootScope,
-                    layersAPIService) {
+                    layersAPIService,
+                    CommonConstants
+                   ) {
     var vm = this;
     vm.map = null;
+    $rootScope.state = true;
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
@@ -44,10 +49,12 @@ function mapService($http,
     };
     vm.layersForContext = [];
     vm.activeSelection = null;
-    vm.secondarySelections =[];
+    vm.secondarySelections = [];
     vm.routeName = "";
-    vm.selectionListeners =[];
+    vm.selectionListeners = [];
     vm.features = null;
+    vm.selectedDP = null;
+    vm.selectedLayer = null;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -98,7 +105,8 @@ function mapService($http,
         setSelectedObjectsVisibility: setSelectedObjectsVisibility,
         removeInteraction: removeInteraction,
         deleteAccessLinkFeature: deleteAccessLinkFeature,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        showDeliveryPointDetails: showDeliveryPointDetails,
+        clearDrawingLayer: clearDrawingLayer
     }
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -440,11 +448,21 @@ function mapService($http,
 
         switch (button.name) {
             case "accesslink":
+                var dpCoordinates = coordinatesService.getCordinates();
+
+                function drawCondition(e) {
+                    if (dpCoordinates === '') {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
                 draw = new ol.interaction.Draw({
                     source: vm.drawingLayer.layer.getSource(),
                     type: button.shape,
                     style: style,
-                    condition: ol.events.condition.primaryAction,
+                    condition: drawCondition,
                     geometryFunction: setAccessLinkCoordinates,
                     finishCondition: finishCondition
                 });
@@ -466,8 +484,8 @@ function mapService($http,
         }
 
         var dpCoordinates = coordinatesService.getCordinates();
-        if(dpCoordinates && dpCoordinates !== ''){
-         coordinates[0] = dpCoordinates;   
+        if (dpCoordinates && dpCoordinates !== '') {
+            coordinates[0] = dpCoordinates;
         }
         geometry.setCoordinates(coordinates);
         return geometry;
@@ -476,18 +494,24 @@ function mapService($http,
     function setupAccessLink() {
         var startLineCoordinate = [];
         var endLineCoordinate = [];
+        if (vm.selectedDP && vm.selectedLayer) {
+            setSelections({
+                featureID: vm.selectedDP.getId(), layer: vm.selectedLayer
+            }, []);
+        }
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    removeInteraction('select');
+			    //removeInteraction('select');
 			    clearDrawingLayer(true);
-			    setSelections(null, []);
+			    // setSelections(null, []);
 			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
 			    evt.feature.set("type", "accesslink");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    accessLinkCoordinatesService.setCordinates(coordinates);
+			    $rootScope.state =false;
 			    $stateParams.accessLinkFeature = evt.feature;
 			    var layer = mapFactory.getLayer('Drawing');
 			    vm.map.getInteractions().forEach(function (interaction) {
@@ -497,10 +521,10 @@ function mapService($http,
 			    });
 
 			    $rootScope.$broadcast('redirectTo', {
-			        
-			            feature: evt.feature,
-			            contextTitle: GlobalSettings.accessLinkLayerName
-			        
+
+			        feature: evt.feature,
+			        contextTitle: CommonConstants.AccessLinkActionName
+
 			    });
 			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
 			    //    reload: 'accessLink'
@@ -549,14 +573,20 @@ function mapService($http,
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
                 setSelections({
-                                     featureID: e.selected[0].getId(), layer: lastLayer
+                    featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
                 var deliveryPointDetails = e.selected[0].getProperties();
+                coordinatesService.setCordinates(deliveryPointDetails.geometry.flatCoordinates);
+                $rootScope.state = false;
+                guidService.setGuid(deliveryPointDetails.deliveryPointId);
                 showDeliveryPointDetails(deliveryPointDetails);
-                
-                             } else {
-                             setSelections(null, []);
-                             }
+                vm.selectedDP = e.selected[0];
+                vm.selectedLayer = lastLayer;
+            } else {
+                setSelections(null, []);
+                var deliveryPointDetails = null;
+                showDeliveryPointDetails(deliveryPointDetails);
+            }
 
         });
         persistSelection();
@@ -590,6 +620,7 @@ function mapService($http,
 			    evt.feature.set("type", "deliverypoint");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    coordinatesService.setCordinates(coordinates);
+			    $rootScope.state = false;
 
 			});
     }
@@ -701,27 +732,35 @@ function mapService($http,
             });
 
         }
-             }
+    }
 
     function showDeliveryPointDetails(deliveryPointDetails) {
-        deliveryPointDetails.routeName = null;
-        mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
-              .then(function (response) {
-                  if (response != null) {
-                      if (response[0].key == CommonConstants.RouteName) {
-                          deliveryPointDetails.routeName = [response[0].value];
-                          if (response[1].key == CommonConstants.DpUse) {
-                              deliveryPointDetails.dpUse = response[1].value;
+        if (deliveryPointDetails != null) {
+            deliveryPointDetails.routeName = null;
+            mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
+                  .then(function (response) {
+                      if (response != null) {
+                          if (response[0].key == CommonConstants.RouteName) {
+                              deliveryPointDetails.routeName = [response[0].value];
+                              if (response[1].key == CommonConstants.DpUse) {
+                                  deliveryPointDetails.dpUse = response[1].value;
+                              }
+                          }
+                          else if (response[0].key == CommonConstants.DpUse) {
+                              deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
-                      else if (response[0].key == CommonConstants.DpUse) {
-                          deliveryPointDetails.dpUse = response[0].value;
-                      }
-                  }
-                  $state.go('deliveryPointDetails', {
-                      selectedDeliveryPoint: deliveryPointDetails
-                  }, { reload: true });
-              });
+                      $state.go('deliveryPointDetails', {
+                          selectedDeliveryPoint: deliveryPointDetails
+                      }, { reload: true });
+                  });
+        }
+        else {
+            $state.go('deliveryPointDetails', {
+
+                selectedDeliveryPoint: deliveryPointDetails
+            }, { reload: true });
+        }
     }
 
 }

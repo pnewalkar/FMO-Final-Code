@@ -16,7 +16,9 @@ RouteLogSelectionType: { Single: "Single", Multiple: "Multiple" },
 SearchLessThanThreeCharactersErrorMessage: "At least three characters must be input for a Search",
 SearchErrorType: "Warning",
 RouteName: "ROUTENAME",
-DpUse: "DPUSE"
+DpUse: "DPUSE",
+PrintMapActionName:"Print Map"
+
 
 };
 

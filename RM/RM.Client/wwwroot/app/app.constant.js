@@ -32,11 +32,25 @@ if (GlobalSettings.env === "localhost") {
     GlobalSettings.pdfGeneratorApiUrl = "http://localhost:50241/api";
     GlobalSettings.routeLogApiUrl = "http://localhost:50240/api";
     GlobalSettings.searchManagerApiUrl = "http://localhost:50243/api";
+    GlobalSettings.mapManagerApiUrl = "http://localhost:1386/api";
     GlobalSettings.indexUrl = "http://localhost:51978/app/index.html"
 }
 else if (GlobalSettings.env === "dev") {
-    GlobalSettings.apiUrl = "http://10.246.18.250/fmoapi/api"; // Here comes development enviroment url
-    GlobalSettings.indexUrl = "http://10.246.18.250/fmoui/app/index.html"
+    GlobalSettings.actionManagerApiUrl = "http://172.18.5.7/ActionManager/api";
+    GlobalSettings.referenceDataApiUrl = "http://172.18.5.7/ReferenceData/api";
+    GlobalSettings.accessLinkApiUrl = "http://172.18.5.7/AccessLink/api";
+    GlobalSettings.deliveryPointApiUrl = "http://172.18.5.7/DeliveryPoint/api";
+    GlobalSettings.deliveryRouteApiUrl = "http://172.18.5.7/DeliveryRoute/api";
+    GlobalSettings.networkManagerApiUrl = "http://172.18.5.7/NetworkManager/api";
+    GlobalSettings.postalAddressApiUrl = "http://172.18.5.7/PostalAddress/api";
+    GlobalSettings.specialInstructionApiUrl = "http://172.18.5.7/SpecialInstruction/api";
+    GlobalSettings.thirdPartyAddressLocationApiUrl = "http://172.18.5.7/ThirdPartyAddressLocation/api";
+    GlobalSettings.unitManagerApiUrl = "http://172.18.5.7/UnitManager/api";
+    GlobalSettings.pdfGeneratorApiUrl = "http://172.18.5.7/PDFGenerator/api";
+    GlobalSettings.routeLogApiUrl = "http://172.18.5.7/RouteLog/api";
+    GlobalSettings.searchManagerApiUrl = "http://172.18.5.7/SearchManager/api";
+    GlobalSettings.indexUrl = "http://172.18.4.4/app/index.html";
+
 }
 else if (GlobalSettings.env === "test") {
     GlobalSettings.apiUrl = "http://10.246.18.217/fmoapi/api"; // Here comes test enviroment url
@@ -66,7 +80,7 @@ angular.module('RMApp')
 
 //----Search Factory-------------//
 GlobalSettings.fetchBasicSearchResults = "/searchmanager/basic/";
-GlobalSettings.getDeliveryPointByUDPRN = "/DeliveryPointManager/deliverypoint/udprn/{0}";
+GlobalSettings.getDeliveryPointById = "/DeliveryPointManager/deliverypoint/Guid/{0}";
 
 //----Advance Search Factory-------------//
 GlobalSettings.fetchAdvanceSearchResults = "/searchmanager/advance/";
@@ -104,7 +118,7 @@ GlobalSettings.readJson = "./UI-string.json";
 GlobalSettings.getRouteLogSelectionType = "/RouteLog/RouteLogsSelectionType";
 GlobalSettings.getRouteLogStatus = "/RouteLog/RouteLogsStatus";
 GlobalSettings.getDeliveryRouteScenario = "/UnitManager/scenario/{0}/{1}/ScenarioName,ID";
-GlobalSettings.getDeliveryRoutes = "/DeliveryRouteManager/deliveryroute/{0}/{1}/DisplayText,ID"
+GlobalSettings.getDeliveryRoutes = "/DeliveryRouteManager/deliveryroute/{0}/{1}/DisplayText,ID,RouteName,RouteNumber"
 GlobalSettings.getRouteDetailsByGUID = "/DeliveryRouteManager/deliveryroute/routedetails/{0}";
 GlobalSettings.generateRouteLogSummaryReport = "/RouteLogManager/routelogs/";
 
@@ -117,3 +131,7 @@ GlobalSettings.getDeliveryUnit = "/UnitManager/Unit";
 
 //-----Pdf Generator Factory---------------//
 GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
+
+//-----Map manager Factory---------------//
+GlobalSettings.generateReportWithMap = "/MapManager/MapImage/";
+GlobalSettings.generatePdf = "/MapManager/MapPDF/";

@@ -55,7 +55,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddCors(
-              options => options.AddPolicy("AllowCors",
+              options => options.AddPolicy(
+                  "AllowCors",
                   builder =>
                   {
                       builder
@@ -63,8 +64,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI
                          .AllowAnyMethod()
                          .AllowAnyHeader()
                          .AllowCredentials();
-                  })
-          );
+                  }));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -90,7 +90,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            //Infrastructure
+            // Infrastructure
             services.AddTransient<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
             services.AddScoped<IStreetNetworkDataService, StreetNetworkDataService>();
             services.AddScoped<IOSRoadLinkDataService, OSRoadLinkDataService>();
@@ -114,7 +114,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI
 
             app.UseApplicationInsightsExceptionTelemetry();
 
-            //app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+            // app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             MapExceptionTypes(app);
 
             app.UseMvc(routes =>

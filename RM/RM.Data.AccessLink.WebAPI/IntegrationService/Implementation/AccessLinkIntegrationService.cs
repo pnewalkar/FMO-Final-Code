@@ -53,10 +53,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// <returns>Nearest street and the intersection point.</returns>
         public async Task<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName)
         {
-            var operationalObjectPointJson = JsonConvert.SerializeObject(operationalObjectPoint, new JsonSerializerSettings
+            var jsonSerializerSettings = new JsonSerializerSettings()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            };
+            var operationalObjectPointJson = JsonConvert.SerializeObject(operationalObjectPoint, jsonSerializerSettings);
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(networkManagerDataWebAPIName + "/nearestnamedroad/" + streetName, operationalObjectPointJson);
 
@@ -78,10 +79,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// <returns>Nearest street and the intersection point.</returns>
         public async Task<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint)
         {
-            var operationalObjectPointJson = JsonConvert.SerializeObject(operationalObjectPoint, new JsonSerializerSettings
+            var jsonSerializerSettings = new JsonSerializerSettings()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            };
+            var operationalObjectPointJson = JsonConvert.SerializeObject(operationalObjectPoint, jsonSerializerSettings);
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(networkManagerDataWebAPIName + "nearestsegment", operationalObjectPointJson);
 
@@ -166,10 +168,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// name="accessLinkCoordinates">access link coordinate array</param> <returns>List<NetworkLinkDTO></returns>
         public async Task<List<NetworkLinkDTO>> GetCrossingNetworkLinks(string boundingBoxCoordinates, DbGeometry accessLinkCoordinates)
         {
-            var accessLinkCoordinatesJson = JsonConvert.SerializeObject(accessLinkCoordinates, new JsonSerializerSettings
+            var jsonSerializerSettings = new JsonSerializerSettings()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            };
+            var accessLinkCoordinatesJson = JsonConvert.SerializeObject(accessLinkCoordinates, jsonSerializerSettings);
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(networkManagerDataWebAPIName + "networklink/" + boundingBoxCoordinates, accessLinkCoordinatesJson);
 
@@ -225,18 +228,19 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, new JsonSerializerSettings
+                var jsonSerializerSettings = new JsonSerializerSettings()
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+                };
+                var deliveryPointDTOJson = JsonConvert.SerializeObject(deliveryPointDTO, jsonSerializerSettings);
 
                 HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerDataWebAPIName + "deliverypoint/accesslinkstatus", deliveryPointDTOJson);
 
-            if (!result.IsSuccessStatusCode)
-            {
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
 
                 var success = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
@@ -250,16 +254,16 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// <returns>List<DeliveryPointDTO></returns>
         public async Task<List<DeliveryPointDTO>> GetDeliveryPointsCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry operationalObject)
         {
-            var operationalObjectJson = JsonConvert.SerializeObject(operationalObject, new JsonSerializerSettings
+            var jsonSerializerSettings = new JsonSerializerSettings()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            };
+            var operationalObjectJson = JsonConvert.SerializeObject(operationalObject, jsonSerializerSettings);
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerDataWebAPIName + "deliverypoint/crosses/operationalobject/" + boundingBoxCoordinates, operationalObjectJson);
 
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

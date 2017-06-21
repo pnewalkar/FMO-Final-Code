@@ -1,24 +1,24 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
-using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
-using RM.CommonLibrary.ExceptionMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
-
-namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
+﻿namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
 {
+    using System;
+    using System.Diagnostics;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Options;
+    using Microsoft.Net.Http.Headers;
+    using Newtonsoft.Json;
+    using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
+    using RM.CommonLibrary.ExceptionMiddleware;
+    using RM.CommonLibrary.HelperMiddleware;
+    using RM.CommonLibrary.LoggingMiddleware;
+
     /// <summary>
     /// Error Handling Middleware. Interceptor for handling all the errors in controllers.
     /// </summary>
     public class ErrorHandlingMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly RequestDelegate next;
         private readonly ResponseExceptionHandlerOptions options;
         private readonly Func<object, Task> clearCacheHeadersDelegate;
         private IExceptionHelper exceptionHelper;
@@ -30,11 +30,11 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
             IExceptionHelper exceptionHelper,
             IOptions<ResponseExceptionHandlerOptions> options)
         {
-            this._next = next;
+            this.next = next;
             this.exceptionHelper = exceptionHelper;
             this.loggingHelper = loggingHelper;
             this.options = options.Value;
-            this.clearCacheHeadersDelegate = ClearCacheHeaders;
+            this.clearCacheHeadersDelegate = this.ClearCacheHeaders;
         }
 
         /// <summary>
@@ -46,18 +46,18 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
         {
             try
             {
-                await _next(context);
+                await this.next(context);
             }
             catch (Exception ex)
             {
-                exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap);
+                this.exceptionHelper.HandleException(ex, ExceptionHandlingPolicy.LogAndWrap);
                 if (ex.InnerException == null)
                 {
-                    await WriteExceptionToContextAsync(context, ex);
+                    await this.WriteExceptionToContextAsync(context, ex);
                 }
                 else
                 {
-                    await WriteExceptionToContextAsync(context, ex.InnerException);
+                    await this.WriteExceptionToContextAsync(context, ex.InnerException);
                 }
             }
         }
@@ -74,24 +74,24 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
             {
                 ExceptionResponse exceptionResponse;
                 object response;
-                if (options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
+                if (this.options.Responses.TryGetValue(exception.GetType(), out exceptionResponse))
                 {
                     context.Response.StatusCode = exceptionResponse.StatusCode; // Replace default status code with actual.
-                    response = GetExceptionResponse(exception, exceptionResponse);
+                    response = this.GetExceptionResponse(exception, exceptionResponse);
                 }
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    response = CreateErrorResponse(options.DefaultErrorMessage);
+                    response = this.CreateErrorResponse(this.options.DefaultErrorMessage);
                 }
 
-                var result = JsonConvert.SerializeObject(response, options.SerializerSettings);
+                var result = JsonConvert.SerializeObject(response, this.options.SerializerSettings);
                 context.Response.ContentType = "application/json";
                 return context.Response.WriteAsync(result);
             }
             catch (Exception)
             {
-                loggingHelper.Log(ErrorConstants.Err_ExecutingErrorHandler, TraceEventType.Error, exception);
+                this.loggingHelper.Log(ErrorConstants.Err_ExecutingErrorHandler, TraceEventType.Error, exception);
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = exception.Message }));
             }
@@ -107,20 +107,20 @@ namespace RM.CommonLibrary.ExceptionManagement.ExceptionHandling
         {
             if (!string.IsNullOrWhiteSpace(exceptionResponse.Message))
             {
-                return CreateErrorResponse(exceptionResponse.Message);
+                return this.CreateErrorResponse(exceptionResponse.Message);
             }
-            else if(exceptionResponse.StatusCode.Equals((int)HttpStatusCode.InternalServerError) && ex.Data.Count.Equals(0))
+            else if (exceptionResponse.StatusCode.Equals((int)HttpStatusCode.InternalServerError) && ex.Data.Count.Equals(0))
             {
-                return CreateErrorResponse(options.DefaultErrorMessage);
+                return this.CreateErrorResponse(this.options.DefaultErrorMessage);
             }
 
             if (ex.Data.Count > 0)
             {
                 string userFriendlyMessage = ex.Data["userFriendlyMessage"].ToString();
-                return exceptionResponse.Response ?? CreateErrorResponse(userFriendlyMessage.Replace(Environment.NewLine, " "));
+                return exceptionResponse.Response ?? this.CreateErrorResponse(userFriendlyMessage.Replace(Environment.NewLine, " "));
             }
 
-            return exceptionResponse.Response ?? CreateErrorResponse(ex.Message.Replace(Environment.NewLine, " "));
+            return exceptionResponse.Response ?? this.CreateErrorResponse(ex.Message.Replace(Environment.NewLine, " "));
         }
 
         /// <summary>
