@@ -25,6 +25,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
     /// </summary>
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
+        private const string TASKPAFACTION = "Position new DP";
+        private const string DeliveryPointUseIndicatorPAF = "Organisation";
+        private const string PAFErrorMessageForUnmatchedDeliveryPointForUSRType = "Delivery point not present for Postal address whose address type is <USR>";
+        private const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
+        private const string PAFErrorMessageForAddressTypeUSRNotFound = "Address Type of the selected Postal Address record is not <USR>";
+        private const string PAFTaskBodyPreText = "Please position the DP ";
+        private const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
+
         #region Property Declarations
 
         private IPostalAddressDataService addressDataService = default(IPostalAddressDataService);
@@ -209,7 +217,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 Guid deliveryPointUseIndicator = referenceDataCategoryList
                                 .Where(list => list.CategoryName.Equals(Constants.DeliveryPointUseIndicator, StringComparison.OrdinalIgnoreCase))
                                 .SelectMany(list => list.ReferenceDatas)
-                                .Where(item => item.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
+                                .Where(item => item.ReferenceDataValue.Equals(DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                                 .Select(s => s.ID).SingleOrDefault();
 
                 // Search Address Location for Postal Address If found, Add delivery point as per Address
@@ -237,11 +245,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         NotificationType_GUID = tasktypeId,
                         NotificationPriority_GUID = null,
                         NotificationSource = Constants.TASKSOURCE,
-                        Notification_Heading = Constants.TASKPAFACTION,
+                        Notification_Heading = TASKPAFACTION,
                         Notification_Message = AddressFields(objPostalAddress),
                         PostcodeDistrict = postCodeDistrict,
                         NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
-                        NotificationActionLink = string.Format(Constants.PAFNOTIFICATIONLINK, objPostalAddress.UDPRN)
+                        NotificationActionLink = string.Format(PAFNOTIFICATIONLINK, objPostalAddress.UDPRN)
                     };
 
                     // Call Notification service
@@ -519,7 +527,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         if (objPostalAddressMatchedUDPRN.AddressType_GUID == addressTypeNYB)
                         {
                             deliveryPointUseIndicatorPAF = postalAddressIntegrationService.GetReferenceDataSimpleLists(Constants.DeliveryPointUseIndicator).Result
-                                            .ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
+                                            .ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                                             .Select(a => a.ID).FirstOrDefault();
 
                             objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
@@ -544,7 +552,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                 FileName = strFileName,
                                 FileProcessing_TimeStamp = DateTime.UtcNow,
                                 FileType = FileType.Paf.ToString(),
-                                ErrorMessage = Constants.PAFErrorMessageForAddressTypeNYBNotFound,
+                                ErrorMessage = PAFErrorMessageForAddressTypeNYBNotFound,
                                 SuccessFlag = false
                             };
 
@@ -562,7 +570,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                 objPostalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
 
                                 deliveryPointUseIndicatorPAF = postalAddressIntegrationService.GetReferenceDataSimpleLists(Constants.DeliveryPointUseIndicator).Result
-                                            .ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
+                                            .ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                                             .Select(a => a.ID).FirstOrDefault();
 
                                 // Update address and delivery point for USR records
@@ -578,7 +586,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                     FileName = strFileName,
                                     FileProcessing_TimeStamp = DateTime.UtcNow,
                                     FileType = FileType.Paf.ToString(),
-                                    ErrorMessage = Constants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType,
+                                    ErrorMessage = PAFErrorMessageForUnmatchedDeliveryPointForUSRType,
                                     SuccessFlag = false
                                 };
 
@@ -595,7 +603,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                 FileName = strFileName,
                                 FileProcessing_TimeStamp = DateTime.UtcNow,
                                 FileType = FileType.Paf.ToString(),
-                                ErrorMessage = Constants.PAFErrorMessageForAddressTypeUSRNotFound,
+                                ErrorMessage = PAFErrorMessageForAddressTypeUSRNotFound,
                                 SuccessFlag = false
                             };
 
@@ -626,7 +634,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>returns concatenated value of address field</returns>
         private string AddressFields(PostalAddressDTO objPostalAddress)
         {
-            return Constants.PAFTaskBodyPreText +
+            return PAFTaskBodyPreText +
                         objPostalAddress.OrganisationName + Constants.Comma +
                         objPostalAddress.DepartmentName + Constants.Comma +
                         objPostalAddress.BuildingName + Constants.Comma +

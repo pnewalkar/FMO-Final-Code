@@ -14,11 +14,16 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
     public class DeliveryPointIntegrationService : IDeliveryPointIntegrationService
     {
+        private const string AccessLinkWebAPIName = "AccessLinkWebAPIName";
+        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
+        private const string PostalAddressManagerWebAPIName = "PostalAddressManagerWebAPIName";
+
         #region Property Declarations
 
         private string referenceDataWebAPIName = string.Empty;
@@ -36,10 +41,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         {
             this.httpHandler = httpHandler;
             this.loggingHelper = loggingHelper;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.AccessLinkWebAPIName).ToString() : string.Empty;
-            this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PostalAddressManagerWebAPIName).ToString() : string.Empty;
-            this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(AccessLinkWebAPIName).ToString() : string.Empty;
+            this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressManagerWebAPIName).ToString() : string.Empty;
+            this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor

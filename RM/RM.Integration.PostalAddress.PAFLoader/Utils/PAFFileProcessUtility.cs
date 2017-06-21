@@ -42,11 +42,11 @@
             this.msgBroker = messageBroker;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
-            this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFProcessedFilePath);
-            this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFErrorFilePath);
-            noOfCharactersForPAF = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(Constants.NoOfCharactersForPAF)) : default(int);
-            maxCharactersForPAF = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(Constants.MaxCharactersForPAF)) : default(int);
-            csvPAFValues = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(Constants.CsvPAFValues)) : default(int);
+            this.strPAFProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(PAFLoaderConstants.PAFProcessedFilePath);
+            this.strPAFErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(PAFLoaderConstants.PAFErrorFilePath);
+            noOfCharactersForPAF = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(PAFLoaderConstants.NoOfCharactersForPAF)) : default(int);
+            maxCharactersForPAF = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(PAFLoaderConstants.MaxCharactersForPAF)) : default(int);
+            csvPAFValues = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(PAFLoaderConstants.CsvPAFValues)) : default(int);
         }
 
         #endregion constructor
@@ -68,7 +68,7 @@
                 bool isPAFFileProcessed = false;
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
 
-                if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME.ToString()))
+                if (CheckFileName(new FileInfo(fileName).Name, PAFLoaderConstants.PAFZIPFILENAME.ToString()))
                 {
                     using (ZipArchive zip = ZipFile.OpenRead(fileName))
                     {
@@ -82,7 +82,7 @@
                                 strLine = reader.ReadToEnd();
                                 strfileName = entry.Name;
 
-                                if (CheckFileName(new FileInfo(strfileName).Name, Constants.PAFFLATFILENAME))
+                                if (CheckFileName(new FileInfo(strfileName).Name, PAFLoaderConstants.PAFFLATFILENAME))
                                 {
                                     List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
                                     string postaLAddress = serializer.Serialize(lstPAFDetails);
@@ -95,7 +95,7 @@
                                         if (invalidRecordsCount > 0)
                                         {
                                             File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                            this.loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                            this.loggingHelper.Log(string.Format(PAFLoaderConstants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
                                         }
                                         else
                                         {
@@ -107,14 +107,14 @@
                                             else
                                             {
                                                 File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                                this.loggingHelper.Log(string.Format(Constants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                                this.loggingHelper.Log(string.Format(PAFLoaderConstants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
                                             }
                                         }
                                     }
                                     else
                                     {
                                         File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                        this.loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                        this.loggingHelper.Log(string.Format(PAFLoaderConstants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
                                     }
                                 }
                             }
@@ -163,7 +163,7 @@
 
                         // Remove duplicate PAF events which have create and delete instance for same UDPRN
                         lstAddressDetails = lstAddressDetails
-                                                .SkipWhile(n => n.UDPRN.Equals(Constants.PAFNOACTION))
+                                                .SkipWhile(n => n.UDPRN.Equals(PAFLoaderConstants.PAFNOACTION))
                                                 .GroupBy(x => x.UDPRN)
                                                 .Where(g => g.Count() == 1)
                                                 .SelectMany(g => g.Select(o => o))
@@ -192,14 +192,14 @@
                 {
                     isMessageQueued = true;
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
-                    var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == Constants.PAFINSERT).ToList();
+                    var lstPAFInsertEvents = lstPostalAddress.Where(insertFiles => insertFiles.AmendmentType == PAFLoaderConstants.PAFINSERT).ToList();
 
                     lstPAFInsertEvents.ForEach(postalAddress =>
                         {
                             // Message is created and the Postal Address DTO is passed as the object to
                             // be queued along with the queue name and queue path where the object needs
                             // to be queued.
-                            IMessage msg = msgBroker.CreateMessage(postalAddress, Constants.QUEUEPAF, Constants.QUEUEPATH);
+                            IMessage msg = msgBroker.CreateMessage(postalAddress, PAFLoaderConstants.QUEUEPAF, Constants.QUEUEPATH);
 
                             // The messge object created in the above code is then pushed onto the queue.
                             // This internally uses the MSMQ Send function to push the message to the queue.
@@ -293,26 +293,26 @@
             string[] values = csvLine.Split(Constants.CommaChar);
             if (values.Count() == csvPAFValues)
             {
-                objAddDTO.Date = values[Constants.PAFDate] = values[Constants.PAFDate] == string.Empty ? null : values[Constants.PAFDate];
-                objAddDTO.Time = values[Constants.PAFTime] = values[Constants.PAFTime] == string.Empty ? null : values[Constants.PAFTime];
-                objAddDTO.AmendmentType = values[Constants.PAFAmendmentType] = values[Constants.PAFAmendmentType] == string.Empty ? null : values[Constants.PAFAmendmentType];
-                objAddDTO.AmendmentDesc = values[Constants.PAFAmendmentDesc] = values[Constants.PAFAmendmentDesc] == string.Empty ? null : values[Constants.PAFAmendmentDesc];
-                objAddDTO.Postcode = values[Constants.PAFPostcode] = values[Constants.PAFPostcode] == string.Empty ? null : values[Constants.PAFPostcode];
-                objAddDTO.PostTown = values[Constants.PAFPostTown] = values[Constants.PAFPostTown] == string.Empty ? null : values[Constants.PAFPostTown];
-                objAddDTO.DependentLocality = values[Constants.PAFDependentLocality] = values[Constants.PAFDependentLocality] == string.Empty ? null : values[Constants.PAFDependentLocality];
-                objAddDTO.DoubleDependentLocality = values[Constants.PAFDoubleDependentLocality] = values[Constants.PAFDoubleDependentLocality] == string.Empty ? null : values[Constants.PAFDoubleDependentLocality];
-                objAddDTO.Thoroughfare = values[Constants.PAFThoroughfare] = values[Constants.PAFThoroughfare] == string.Empty ? null : values[Constants.PAFThoroughfare];
-                objAddDTO.DependentThoroughfare = values[Constants.PAFDependentThoroughfare] = values[Constants.PAFDependentThoroughfare] == string.Empty ? null : values[Constants.PAFDependentThoroughfare];
-                objAddDTO.BuildingNumber = (!string.IsNullOrEmpty(values[Constants.PAFBuildingNumber]) && !string.IsNullOrWhiteSpace(values[Constants.PAFBuildingNumber])) ? Convert.ToInt16(values[Constants.PAFBuildingNumber]) as short? : null;
-                objAddDTO.BuildingName = values[Constants.PAFBuildingName] = values[Constants.PAFBuildingName] == string.Empty ? null : values[Constants.PAFBuildingName];
-                objAddDTO.SubBuildingName = values[Constants.PAFSubBuildingName] = values[Constants.PAFSubBuildingName] == string.Empty ? null : values[Constants.PAFSubBuildingName];
-                objAddDTO.POBoxNumber = values[Constants.PAFPOBoxNumber] = values[Constants.PAFPOBoxNumber] == string.Empty ? null : values[Constants.PAFPOBoxNumber];
-                objAddDTO.DepartmentName = values[Constants.PAFDepartmentName] = values[Constants.PAFDepartmentName] == string.Empty ? null : values[Constants.PAFDepartmentName];
-                objAddDTO.OrganisationName = values[Constants.PAFOrganisationName] = values[Constants.PAFOrganisationName] == string.Empty ? null : values[Constants.PAFOrganisationName];
-                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[Constants.PAFUDPRN]) && !string.IsNullOrWhiteSpace(values[Constants.PAFUDPRN]) ? Convert.ToInt32(values[Constants.PAFUDPRN]) : 0;
-                objAddDTO.PostcodeType = values[Constants.PAFPostcodeType] = values[Constants.PAFPostcodeType] == string.Empty ? null : values[Constants.PAFPostcodeType];
-                objAddDTO.SmallUserOrganisationIndicator = values[Constants.PAFSmallUserOrganisationIndicator] = values[Constants.PAFSmallUserOrganisationIndicator] == string.Empty ? null : values[Constants.PAFSmallUserOrganisationIndicator];
-                objAddDTO.DeliveryPointSuffix = values[Constants.PAFDeliveryPointSuffix] = values[Constants.PAFDeliveryPointSuffix] == string.Empty ? null : values[Constants.PAFDeliveryPointSuffix];
+                objAddDTO.Date = values[PAFLoaderConstants.PAFDate] = values[PAFLoaderConstants.PAFDate] == string.Empty ? null : values[PAFLoaderConstants.PAFDate];
+                objAddDTO.Time = values[PAFLoaderConstants.PAFTime] = values[PAFLoaderConstants.PAFTime] == string.Empty ? null : values[PAFLoaderConstants.PAFTime];
+                objAddDTO.AmendmentType = values[PAFLoaderConstants.PAFAmendmentType] = values[PAFLoaderConstants.PAFAmendmentType] == string.Empty ? null : values[PAFLoaderConstants.PAFAmendmentType];
+                objAddDTO.AmendmentDesc = values[PAFLoaderConstants.PAFAmendmentDesc] = values[PAFLoaderConstants.PAFAmendmentDesc] == string.Empty ? null : values[PAFLoaderConstants.PAFAmendmentDesc];
+                objAddDTO.Postcode = values[PAFLoaderConstants.PAFPostcode] = values[PAFLoaderConstants.PAFPostcode] == string.Empty ? null : values[PAFLoaderConstants.PAFPostcode];
+                objAddDTO.PostTown = values[PAFLoaderConstants.PAFPostTown] = values[PAFLoaderConstants.PAFPostTown] == string.Empty ? null : values[PAFLoaderConstants.PAFPostTown];
+                objAddDTO.DependentLocality = values[PAFLoaderConstants.PAFDependentLocality] = values[PAFLoaderConstants.PAFDependentLocality] == string.Empty ? null : values[PAFLoaderConstants.PAFDependentLocality];
+                objAddDTO.DoubleDependentLocality = values[PAFLoaderConstants.PAFDoubleDependentLocality] = values[PAFLoaderConstants.PAFDoubleDependentLocality] == string.Empty ? null : values[PAFLoaderConstants.PAFDoubleDependentLocality];
+                objAddDTO.Thoroughfare = values[PAFLoaderConstants.PAFThoroughfare] = values[PAFLoaderConstants.PAFThoroughfare] == string.Empty ? null : values[PAFLoaderConstants.PAFThoroughfare];
+                objAddDTO.DependentThoroughfare = values[PAFLoaderConstants.PAFDependentThoroughfare] = values[PAFLoaderConstants.PAFDependentThoroughfare] == string.Empty ? null : values[PAFLoaderConstants.PAFDependentThoroughfare];
+                objAddDTO.BuildingNumber = (!string.IsNullOrEmpty(values[PAFLoaderConstants.PAFBuildingNumber]) && !string.IsNullOrWhiteSpace(values[PAFLoaderConstants.PAFBuildingNumber])) ? Convert.ToInt16(values[PAFLoaderConstants.PAFBuildingNumber]) as short? : null;
+                objAddDTO.BuildingName = values[PAFLoaderConstants.PAFBuildingName] = values[PAFLoaderConstants.PAFBuildingName] == string.Empty ? null : values[PAFLoaderConstants.PAFBuildingName];
+                objAddDTO.SubBuildingName = values[PAFLoaderConstants.PAFSubBuildingName] = values[PAFLoaderConstants.PAFSubBuildingName] == string.Empty ? null : values[PAFLoaderConstants.PAFSubBuildingName];
+                objAddDTO.POBoxNumber = values[PAFLoaderConstants.PAFPOBoxNumber] = values[PAFLoaderConstants.PAFPOBoxNumber] == string.Empty ? null : values[PAFLoaderConstants.PAFPOBoxNumber];
+                objAddDTO.DepartmentName = values[PAFLoaderConstants.PAFDepartmentName] = values[PAFLoaderConstants.PAFDepartmentName] == string.Empty ? null : values[PAFLoaderConstants.PAFDepartmentName];
+                objAddDTO.OrganisationName = values[PAFLoaderConstants.PAFOrganisationName] = values[PAFLoaderConstants.PAFOrganisationName] == string.Empty ? null : values[PAFLoaderConstants.PAFOrganisationName];
+                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[PAFLoaderConstants.PAFUDPRN]) && !string.IsNullOrWhiteSpace(values[PAFLoaderConstants.PAFUDPRN]) ? Convert.ToInt32(values[PAFLoaderConstants.PAFUDPRN]) : 0;
+                objAddDTO.PostcodeType = values[PAFLoaderConstants.PAFPostcodeType] = values[PAFLoaderConstants.PAFPostcodeType] == string.Empty ? null : values[PAFLoaderConstants.PAFPostcodeType];
+                objAddDTO.SmallUserOrganisationIndicator = values[PAFLoaderConstants.PAFSmallUserOrganisationIndicator] = values[PAFLoaderConstants.PAFSmallUserOrganisationIndicator] == string.Empty ? null : values[PAFLoaderConstants.PAFSmallUserOrganisationIndicator];
+                objAddDTO.DeliveryPointSuffix = values[PAFLoaderConstants.PAFDeliveryPointSuffix] = values[PAFLoaderConstants.PAFDeliveryPointSuffix] == string.Empty ? null : values[PAFLoaderConstants.PAFDeliveryPointSuffix];
                 objAddDTO.IsValidData = true;
                 objAddDTO.FileName = fileName;
             }
@@ -333,7 +333,7 @@
             foreach (PostalAddressDTO objAdd in lstAddress)
             {
                 if (string.IsNullOrEmpty(objAdd.AmendmentType) ||
-                    !new string[] { Constants.PAFNOACTION, Constants.PAFINSERT, Constants.PAFUPDATE, Constants.PAFDELETE }.Any(s => objAdd.AmendmentType.Contains(s)))
+                    !new string[] { PAFLoaderConstants.PAFNOACTION, PAFLoaderConstants.PAFINSERT, PAFLoaderConstants.PAFUPDATE, PAFLoaderConstants.PAFDELETE }.Any(s => objAdd.AmendmentType.Contains(s)))
                 {
                     objAdd.IsValidData = false;
                 }

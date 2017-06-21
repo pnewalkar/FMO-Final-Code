@@ -24,6 +24,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class NotificationDataService : DataServiceBase<Notification, RMDBContext>, INotificationDataService
     {
+        private const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         public NotificationDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
@@ -87,7 +89,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 int deleteCount = default(int);
-                string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+                string actionLink = string.Format(USRNOTIFICATIONLINK, uDPRN);
                 try
                 {
                     Notification notification = DataContext.Notifications.Where(notific => notific.NotificationActionLink == actionLink && notific.Notification_Heading.Trim().Equals(action)).SingleOrDefault();
@@ -127,7 +129,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>NotificationDTO object</returns>
         public async Task<NotificationDTO> GetNotificationByUDPRN(int uDPRN)
         {
-            string actionLink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN);
+            string actionLink = string.Format(USRNOTIFICATIONLINK, uDPRN);
             Notification notification = await DataContext.Notifications
                 .Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefaultAsync();
             NotificationDTO notificationDTO = new NotificationDTO();
@@ -143,7 +145,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>boolean value</returns>
         public async Task<bool> CheckIfNotificationExists(int uDPRN, string action)
         {
-            string notificationActionlink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN.ToString());
+            string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());
             return await DataContext.Notifications.AsNoTracking()
                 .AnyAsync(notific => notific.NotificationActionLink.Equals(notificationActionlink) &&
                                   notific.Notification_Heading.Trim().Equals(action));

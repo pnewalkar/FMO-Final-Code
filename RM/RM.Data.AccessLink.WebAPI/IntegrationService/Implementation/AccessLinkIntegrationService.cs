@@ -21,6 +21,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {
     public class AccessLinkIntegrationService : IAccessLinkIntegrationService
     {
+        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
+        private const string NetworkManagerDataWebAPIName = "NetworkManagerDataWebAPIName";
+        private const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
+
         #region Member Variables
 
         private string referenceDataWebAPIName = string.Empty;
@@ -36,9 +40,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         public AccessLinkIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.networkManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.NetworkManagerDataWebAPIName).ToString() : string.Empty;
-            this.deliveryPointManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.networkManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(NetworkManagerDataWebAPIName).ToString() : string.Empty;
+            this.deliveryPointManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor

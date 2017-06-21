@@ -21,6 +21,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
     /// </summary>
     public class AccessLinkBusinessService : Interface.IAccessLinkBusinessService
     {
+        private const string NWLinkTypeException = "Network Link Type other than defined is checked.";
+        private const string DPUseIndicatorTypeException = "DP Use Indicator Type other than defined is checked.";
+
         #region Member Variables
 
         private IAccessLinkDataService accessLinkDataService = default(IAccessLinkDataService);
@@ -88,7 +91,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             }
             else
             {
-                throw new Exception(Constants.NWLinkTypeException);
+                throw new Exception(NWLinkTypeException);
             }
 
             // get pavement depth from reference data.
@@ -146,7 +149,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
             }
             else
             {
-                throw new Exception(Constants.DPUseIndicatorTypeException);
+                throw new Exception(DPUseIndicatorTypeException);
             }
 
             if (workloadLengthMeter <= 0)

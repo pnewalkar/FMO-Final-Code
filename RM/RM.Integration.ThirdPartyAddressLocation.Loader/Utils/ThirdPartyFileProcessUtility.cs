@@ -41,9 +41,9 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
             this.fileMover = fileMover;
             this.loggingHelper = loggingHelper;
             this.configHelper = configHelper;
-            this.xsdLocation = configHelper.ReadAppSettingsConfigurationValues(Constants.XSDLOCATIONCONFIG);
-            this.processed = configHelper.ReadAppSettingsConfigurationValues(Constants.USRPROCESSEDFILEPATHCONFIG);
-            this.error = configHelper.ReadAppSettingsConfigurationValues(Constants.USRERRORFILEPATHCONFIG);
+            this.xsdLocation = configHelper.ReadAppSettingsConfigurationValues(ThirdPartyLoaderConstants.XSDLOCATIONCONFIG);
+            this.processed = configHelper.ReadAppSettingsConfigurationValues(ThirdPartyLoaderConstants.USRPROCESSEDFILEPATHCONFIG);
+            this.error = configHelper.ReadAppSettingsConfigurationValues(ThirdPartyLoaderConstants.USRERRORFILEPATHCONFIG);
         }
 
         /// <summary>
@@ -74,20 +74,20 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
 
                         lstUSRInsertFiles.ForEach(addressLocation =>
                         {
-                        //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
-                        //needs to be queued.
-                        IMessage USRMsg = msgBroker.CreateMessage(addressLocation, Constants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
+                            //Message is created and the Postal Address DTO is passed as the object to be queued along with the queue name and queue path where the object
+                            //needs to be queued.
+                            IMessage USRMsg = msgBroker.CreateMessage(addressLocation, ThirdPartyLoaderConstants.QUEUETHIRDPARTY, Constants.QUEUEPATH);
 
-                        //The messge object created in the above code is then pushed onto the queue. This internally uses the MSMQ Send function to push the message
-                        //to the queue.
-                        msgBroker.SendMessage(USRMsg);
+                            //The messge object created in the above code is then pushed onto the queue. This internally uses the MSMQ Send function to push the message
+                            //to the queue.
+                            msgBroker.SendMessage(USRMsg);
                         });
 
                         fileMover.MoveFile(new string[] { strPath }, new string[] { processed, AppendTimeStamp(new FileInfo(strPath).Name) });
                     }
                     else
                     {
-                        loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORUSRDATAVALIDATION, new FileInfo(strPath).Name, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                        loggingHelper.Log(string.Format(ThirdPartyLoaderConstants.LOGMESSAGEFORUSRDATAVALIDATION, new FileInfo(strPath).Name, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
                         fileMover.MoveFile(new string[] { strPath }, new string[] { error, AppendTimeStamp(new FileInfo(strPath).Name) });
                     }
                 }
@@ -121,9 +121,9 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
 
             try
             {
-                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USRXMLROOT));
+                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(ThirdPartyLoaderConstants.USRXMLROOT));
                 XmlDocument validXmlDocument = new XmlDocument();
-                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, Constants.USRXMLROOT, null);
+                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, ThirdPartyLoaderConstants.USRXMLROOT, null);
                 validXmlDocument.AppendChild(rootNode);
 
                 using (TextReader reader = new StreamReader(strPath))
@@ -167,9 +167,9 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
             {
                 List<AddressLocationUSRDTO> lstUSRFiles = new List<AddressLocationUSRDTO>();
 
-                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(Constants.USRXMLROOT));
+                XmlSerializer fledeserializer = new XmlSerializer(typeof(object), new XmlRootAttribute(ThirdPartyLoaderConstants.USRXMLROOT));
                 XmlDocument validXmlDocument = new XmlDocument();
-                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, Constants.USRXMLROOT, null);
+                XmlNode rootNode = validXmlDocument.CreateNode(XmlNodeType.Element, ThirdPartyLoaderConstants.USRXMLROOT, null);
                 validXmlDocument.AppendChild(rootNode);
 
                 using (TextReader reader = new StreamReader(strPath))
@@ -187,7 +187,7 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
                         xmlReader.MoveToContent();
                         lstUSRFiles = (List<AddressLocationUSRDTO>)(new XmlSerializer(
                                                                                       typeof(List<AddressLocationUSRDTO>),
-                                                                                      new XmlRootAttribute(Constants.USRXMLROOT)).Deserialize(xmlReader));
+                                                                                      new XmlRootAttribute(ThirdPartyLoaderConstants.USRXMLROOT)).Deserialize(xmlReader));
                     }
                 };
 
@@ -223,14 +223,14 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader.Utils
             xDoc.Validate(schemas, (o, e) =>
             {
                 int UDPRN = 0;
-                if (!string.IsNullOrEmpty(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT)).Element(XName.Get(Constants.USRUDPRN)).Value))
+                if (!string.IsNullOrEmpty(xDoc.Element(XName.Get(ThirdPartyLoaderConstants.ADDRESSLOCATIONXMLROOT)).Element(XName.Get(ThirdPartyLoaderConstants.USRUDPRN)).Value))
                 {
-                    UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(Constants.ADDRESSLOCATIONXMLROOT))
-                                                        .Element(XName.Get(Constants.USRUDPRN)).Value);
+                    UDPRN = Convert.ToInt32(xDoc.Element(XName.Get(ThirdPartyLoaderConstants.ADDRESSLOCATIONXMLROOT))
+                                                        .Element(XName.Get(ThirdPartyLoaderConstants.USRUDPRN)).Value);
                 }
 
-                    //logger code to write schema mismatch exception
-                    result = false;
+                //logger code to write schema mismatch exception
+                result = false;
             });
 
             LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);

@@ -19,6 +19,7 @@
     using RM.CommonLibrary.HelperMiddleware;
     using RM.CommonLibrary.LoggingMiddleware;
     using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
+    using Utils;
 
     public class DeliveryPointBusinessService : IDeliveryPointBusinessService
     {
@@ -186,12 +187,12 @@
                     // Call Postal Address integration API
                     if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && deliveryPointIntegrationService.CheckForDuplicateAddressWithDeliveryPoints(addDeliveryPointDTO.PostalAddressDTO).Result)
                     {
-                        message = Constants.DUPLICATEDELIVERYPOINT;
+                        message = DeliveryPointConstants.DUPLICATEDELIVERYPOINT;
                         return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate, YCoordinate = returnYCoordinate };
                     }
                     else if (addDeliveryPointDTO.PostalAddressDTO.ID == Guid.Empty && !string.IsNullOrEmpty(postCode))
                     {
-                        message = Constants.DUPLICATENYBRECORDS + postCode;
+                        message = DeliveryPointConstants.DUPLICATENYBRECORDS + postCode;
                         return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate, YCoordinate = returnYCoordinate };
                     }
                     else
@@ -221,12 +222,12 @@
                                     createDeliveryPointModelDTO.ID,
                                     deliveryOperationObjectTypeId);
                             message = isAccessLinkCreated
-                                ? Constants.DELIVERYPOINTCREATED
-                                : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
+                                ? DeliveryPointConstants.DELIVERYPOINTCREATED
+                                : DeliveryPointConstants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
                         }
                         else
                         {
-                            message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
+                            message = DeliveryPointConstants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
                         }
                     }
                 }
@@ -249,12 +250,12 @@
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 string sbLocationXY = string.Format(
-                                                        Constants.USRGEOMETRYPOINT,
+                                                        DeliveryPointConstants.USRGEOMETRYPOINT,
                                                         Convert.ToString(deliveryPointModelDTO.XCoordinate),
                                                         Convert.ToString(deliveryPointModelDTO.YCoordinate));
 
                 DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
-                Guid locationProviderId = deliveryPointIntegrationService.GetReferenceDataGuId(Constants.NETWORKLINKDATAPROVIDER, Constants.INTERNAL);
+                Guid locationProviderId = deliveryPointIntegrationService.GetReferenceDataGuId(Constants.NETWORKLINKDATAPROVIDER, DeliveryPointConstants.INTERNAL);
 
                 DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
                 {

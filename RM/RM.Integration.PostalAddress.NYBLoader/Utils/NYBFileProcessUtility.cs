@@ -24,6 +24,7 @@
     /// </summary>
     public class NYBFileProcessUtility : INYBFileProcessUtility
     {
+
         #region private member declaration
 
         private static string dateTimeFormat = Constants.DATETIMEFORMAT;
@@ -36,8 +37,8 @@
         private IExceptionHelper exceptionHelper;
         private string strProcessedFilePath = string.Empty;
         private string strErrorFilePath = string.Empty;
-        private string nybMessage = Constants.LOADNYBDETAILSLOGMESSAGE;
-        private string nybInvalidDetailMessage = Constants.LOADNYBINVALIDDETAILS;
+        private string nybMessage = NYBLoaderConstants.LOADNYBDETAILSLOGMESSAGE;
+        private string nybInvalidDetailMessage = NYBLoaderConstants.LOADNYBINVALIDDETAILS;
 
         #endregion private member declaration
 
@@ -46,14 +47,14 @@
         public NYBFileProcessUtility(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper, IExceptionHelper exceptionHelper)
         {
             this.httpHandler = httpHandler;
-            this.strFMOWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.FMOWebAPIName).ToString() : string.Empty;
+            this.strFMOWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.FMOWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
             this.exceptionHelper = exceptionHelper;
-            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
-            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
-            noOfCharacters = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(Constants.NoOfCharactersForNYB)) : default(int);
-            maxCharacters = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(Constants.maxCharactersForNYB)) : default(int);
-            csvValues = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(Constants.csvValuesForNYB)) : default(int);
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.ProcessedFilePath);
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.ErrorFilePath);
+            noOfCharacters = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.NoOfCharactersForNYB)) : default(int);
+            maxCharacters = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.MaxCharactersForNYB)) : default(int);
+            csvValues = configurationHelper != null ? Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.CsvValuesForNYB)) : default(int);
         }
 
         #endregion constructor
@@ -70,7 +71,7 @@
             string methodName = MethodBase.GetCurrentMethod().Name;
             LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
 
-            if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME))
+            if (CheckFileName(new FileInfo(fileName).Name, NYBLoaderConstants.PAFZIPFILENAME))
             {
                 using (ZipArchive zip = ZipFile.OpenRead(fileName))
                 {
@@ -81,7 +82,7 @@
                             var reader = new StreamReader(stream);
                             string strLine = reader.ReadToEnd();
                             string strfileName = entry.Name;
-                            if (CheckFileName(new FileInfo(strfileName).Name, Constants.NYBFLATFILENAME))
+                            if (CheckFileName(new FileInfo(strfileName).Name, NYBLoaderConstants.NYBFLATFILENAME))
                             {
                                 List<PostalAddressDTO> lstNYBDetails = LoadNybDetailsFromCsv(strLine.Trim());
                                 string postaLAddress = serializer.Serialize(lstNYBDetails);
@@ -252,22 +253,22 @@
             string[] values = csvLine.Split(',');
             if (values.Count() == csvValues)
             {
-                objAddDTO.Postcode = values[Constants.NYBPostcode].Trim();
-                objAddDTO.PostTown = values[Constants.NYBPostTown];
-                objAddDTO.DependentLocality = values[Constants.NYBDependentLocality];
-                objAddDTO.DoubleDependentLocality = values[Constants.NYBDoubleDependentLocality];
-                objAddDTO.Thoroughfare = values[Constants.NYBThoroughfare];
-                objAddDTO.DependentThoroughfare = values[Constants.NYBDependentThoroughfare];
-                objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[Constants.NYBBuildingNumber]) && !string.IsNullOrWhiteSpace(values[Constants.NYBBuildingNumber]) ? Convert.ToInt16(values[Constants.NYBBuildingNumber]) : Convert.ToInt16(0);
-                objAddDTO.BuildingName = values[Constants.NYBBuildingName];
-                objAddDTO.SubBuildingName = values[Constants.NYBSubBuildingName];
-                objAddDTO.POBoxNumber = values[Constants.NYBPOBoxNumber];
-                objAddDTO.DepartmentName = values[Constants.NYBDepartmentName];
-                objAddDTO.OrganisationName = values[Constants.NYBOrganisationName];
-                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[Constants.NYBUDPRN]) || !string.IsNullOrWhiteSpace(values[Constants.NYBUDPRN]) ? Convert.ToInt32(values[Constants.NYBUDPRN]) : 0;
-                objAddDTO.PostcodeType = values[Constants.NYBPostcodeType];
-                objAddDTO.SmallUserOrganisationIndicator = values[Constants.NYBSmallUserOrganisationIndicator];
-                objAddDTO.DeliveryPointSuffix = values[Constants.NYBDeliveryPointSuffix].Trim();
+                objAddDTO.Postcode = values[NYBLoaderConstants.NYBPostcode].Trim();
+                objAddDTO.PostTown = values[NYBLoaderConstants.NYBPostTown];
+                objAddDTO.DependentLocality = values[NYBLoaderConstants.NYBDependentLocality];
+                objAddDTO.DoubleDependentLocality = values[NYBLoaderConstants.NYBDoubleDependentLocality];
+                objAddDTO.Thoroughfare = values[NYBLoaderConstants.NYBThoroughfare];
+                objAddDTO.DependentThoroughfare = values[NYBLoaderConstants.NYBDependentThoroughfare];
+                objAddDTO.BuildingNumber = !string.IsNullOrEmpty(values[NYBLoaderConstants.NYBBuildingNumber]) && !string.IsNullOrWhiteSpace(values[NYBLoaderConstants.NYBBuildingNumber]) ? Convert.ToInt16(values[NYBLoaderConstants.NYBBuildingNumber]) : Convert.ToInt16(0);
+                objAddDTO.BuildingName = values[NYBLoaderConstants.NYBBuildingName];
+                objAddDTO.SubBuildingName = values[NYBLoaderConstants.NYBSubBuildingName];
+                objAddDTO.POBoxNumber = values[NYBLoaderConstants.NYBPOBoxNumber];
+                objAddDTO.DepartmentName = values[NYBLoaderConstants.NYBDepartmentName];
+                objAddDTO.OrganisationName = values[NYBLoaderConstants.NYBOrganisationName];
+                objAddDTO.UDPRN = !string.IsNullOrEmpty(values[NYBLoaderConstants.NYBUDPRN]) || !string.IsNullOrWhiteSpace(values[NYBLoaderConstants.NYBUDPRN]) ? Convert.ToInt32(values[NYBLoaderConstants.NYBUDPRN]) : 0;
+                objAddDTO.PostcodeType = values[NYBLoaderConstants.NYBPostcodeType];
+                objAddDTO.SmallUserOrganisationIndicator = values[NYBLoaderConstants.NYBSmallUserOrganisationIndicator];
+                objAddDTO.DeliveryPointSuffix = values[NYBLoaderConstants.NYBDeliveryPointSuffix].Trim();
                 objAddDTO.IsValidData = true;
             }
 

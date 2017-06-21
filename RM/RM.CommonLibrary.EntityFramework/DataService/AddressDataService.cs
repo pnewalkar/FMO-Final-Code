@@ -27,6 +27,8 @@
     /// </summary>
     public class PostalAddressDataService : DataServiceBase<PostalAddress, RMDBContext>, IPostalAddressDataService
     {
+        private const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogDataService fileProcessingLog = default(IFileProcessingLogDataService);
 
@@ -53,7 +55,7 @@
                     loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     bool isPostalAddressDeleted = false;
-                    string nybDeleteMsg = Constants.NYBErrorMessageForDelete;
+                    string nybDeleteMsg = NYBErrorMessageForDelete;
                     if (lstUDPRN != null && lstUDPRN.Any())
                     {
                         var lstAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToListAsync();

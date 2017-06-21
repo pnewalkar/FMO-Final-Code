@@ -21,6 +21,10 @@
     /// </summary>
     public partial class PAFReceiver : ServiceBase
     {
+        private const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
+        private const string PAFWEBAPINAME = "PAFWebApiName";
+        private const string QUEUEPAF = "QUEUE_PAF";
+
         #region private member declaration
 
         private string PAFWebApiName = string.Empty;
@@ -46,7 +50,7 @@
             this.loggingHelper = loggingHelper;
             this.httpHandler = httpHandler;
 
-            this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFWEBAPINAME).ToString() : string.Empty;
+            this.PAFWebApiName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PAFWEBAPINAME).ToString() : string.Empty;
             this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
             this.TimerIntervalInSeconds = configurationHelper != null ? Convert.ToDouble(configurationHelper.ReadAppSettingsConfigurationValues(Constants.TimerIntervalInSeconds)) : default(double);
         }
@@ -133,11 +137,11 @@
                     List<PostalAddressDTO> lstPostalAddress = new List<PostalAddressDTO>();
 
                     //The Message queue is checked whether there are pending messages in the queue. This loop runs till all the messages are popped out of the message queue.
-                    while (msgPAF.HasMessage(Constants.QUEUEPAF, Constants.QUEUEPATH))
+                    while (msgPAF.HasMessage(QUEUEPAF, Constants.QUEUEPATH))
                     {
                         //Receive Message picks up one message from queue for processing
                         //Message broker internally deserializes the message to the POCO type.
-                        PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(Constants.QUEUEPAF, Constants.QUEUEPATH);
+                        PostalAddressDTO objPostalAddress = msgPAF.ReceiveMessage(QUEUEPAF, Constants.QUEUEPATH);
                         if (objPostalAddress != null)
                         {
                             lstPostalAddress.Add(objPostalAddress);
@@ -180,7 +184,7 @@
                             LogMethodInfoBlock(
                                                 methodName,
                                                 string.Format(
-                                                Constants.REQUESTLOG,
+                                                REQUESTLOG,
                                                 objPostalAddress.UDPRN == null ? string.Empty : objPostalAddress.UDPRN.ToString(),
                                                 objPostalAddress.Postcode == null ? string.Empty : objPostalAddress.Postcode.ToString(),
                                                 objPostalAddress.AmendmentType == null ? string.Empty : objPostalAddress.AmendmentType.ToString(),

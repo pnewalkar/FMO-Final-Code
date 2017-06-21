@@ -24,6 +24,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
     /// </summary>
     public class PostalAddressIntegrationService : IPostalAddressIntegrationService
     {
+        private const string ResponseContent = "Status Code: {0} Reason: {1} ";
+        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
+        private const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
+        private const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
+        private const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
+        private const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
+
         #region Property Declarations
 
         private string referenceDataWebAPIName = string.Empty;
@@ -44,11 +51,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             this.httpHandler = httpHandler;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.deliveryPointManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
-            this.addressLocationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.AddressLocationManagerDataWebAPIName).ToString() : string.Empty;
-            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.UnitManagerDataWebAPIName).ToString() : string.Empty;
-            this.notificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerDataWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.deliveryPointManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
+            this.addressLocationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(AddressLocationManagerDataWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName).ToString() : string.Empty;
+            this.notificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
@@ -144,7 +151,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + udprn);
                 if (!result.IsSuccessStatusCode)
                 {
-                    var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
+                    var responseContent = string.Format(ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                     this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                     return null;
                 }
@@ -171,7 +178,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/addressId:" + addressId);
                 if (!result.IsSuccessStatusCode)
                 {
-                    var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
+                    var responseContent = string.Format(ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                     this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                     return null;
                 }
@@ -228,7 +235,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 if (!result.IsSuccessStatusCode)
                 {
                     // Log error with statuscodel;
-                    var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
+                    var responseContent = string.Format(ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                     this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                     return 0;
                 }
@@ -256,7 +263,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 HttpResponseMessage result = await httpHandler.GetAsync(addressLocationManagerDataWebAPIName + "addresslocation/udprn:" + udprn);
                 if (!result.IsSuccessStatusCode)
                 {
-                    var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
+                    var responseContent = string.Format(ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                     this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                     return null;
                 }
@@ -283,7 +290,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/guid/" + postCode);
                 if (!result.IsSuccessStatusCode)
                 {
-                    var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
+                    var responseContent = string.Format(ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
                     this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
                     return Guid.Empty;
                 }

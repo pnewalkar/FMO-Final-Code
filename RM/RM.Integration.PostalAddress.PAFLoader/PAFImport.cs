@@ -19,6 +19,9 @@
     /// </summary>
     public partial class PAFImport : ServiceBase
     {
+        private const string PAFProcessedFilePath = "PAFProcessedFilePath";
+        private const string PAFErrorFilePath = "PAFErrorFilePath";
+
         #region Property Declarations
 
         private string processed = string.Empty;
@@ -40,8 +43,8 @@
             this.configurationHelper = configurationHelper;
 
             this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
-            this.processed = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFProcessedFilePath);
-            this.error = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFErrorFilePath);
+            this.processed = configurationHelper.ReadAppSettingsConfigurationValues(PAFProcessedFilePath);
+            this.error = configurationHelper.ReadAppSettingsConfigurationValues(PAFErrorFilePath);
         }
 
         #endregion Constructor

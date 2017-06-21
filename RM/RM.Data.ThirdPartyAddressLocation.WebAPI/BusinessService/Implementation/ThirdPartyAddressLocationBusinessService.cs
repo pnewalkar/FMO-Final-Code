@@ -12,6 +12,7 @@ using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
@@ -117,10 +118,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
 
                                 // Check if a notification exists for the UDPRN.
-                                if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, Constants.USRACTION))
+                                if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION))
                                 {
                                     // Delete the notification if it exists.
-                                    await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, Constants.USRACTION);
+                                    await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION);
                                 }
                             }
                             else
@@ -130,7 +131,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 var straightLineDistance = GetDeliveryPointDistance(deliveryPointDTO, spatialLocationXY);
 
                                 // Check if the new point is within the tolerance limit
-                                if (straightLineDistance < Constants.TOLERANCEDISTANCEINMETERS)
+                                if (straightLineDistance < ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
                                 {
                                     Guid locationProviderId = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(
                                         Constants.NETWORKLINKDATAPROVIDER,
@@ -150,10 +151,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                     await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
 
                                     // Check if the notification exists for the given UDPRN.
-                                    if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, Constants.USRACTION))
+                                    if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION))
                                     {
                                         // Delete the notification if it exists.
-                                        await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, Constants.USRACTION);
+                                        await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION);
                                     }
                                 }
                                 else
@@ -164,8 +165,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                                     // Get the Notification Type from the Reference data table
                                     Guid notificationTypeId_GUID = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(
-                                        Constants.USRCATEGORY,
-                                        Constants.USRREFERENCEDATANAME);
+                                        ThirdPartyAddressLocationConstants.USRCATEGORY,
+                                        ThirdPartyAddressLocationConstants.USRREFERENCEDATANAME);
 
                                     PostalAddressDTO postalAddressDTO = await thirdPartyAddressLocationIntegrationService.GetPostalAddress(fileUdprn);
 
@@ -174,8 +175,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                         ID = Guid.NewGuid(),
                                         NotificationType_GUID = notificationTypeId_GUID,
                                         NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
-                                        NotificationSource = Constants.USRNOTIFICATIONSOURCE,
-                                        Notification_Heading = Constants.USRACTION,
+                                        NotificationSource = ThirdPartyAddressLocationConstants.USRNOTIFICATIONSOURCE,
+                                        Notification_Heading = ThirdPartyAddressLocationConstants.USRACTION,
                                         Notification_Message = AddressFields(postalAddressDTO),
                                         PostcodeDistrict = (postCodeSectorDTO == null || postCodeSectorDTO.District == null)
                                             ? string.Empty
@@ -183,7 +184,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                         PostcodeSector = (postCodeSectorDTO == null || postCodeSectorDTO.Sector == null)
                                             ? string.Empty
                                             : postCodeSectorDTO.Sector,
-                                        NotificationActionLink = string.Format(Constants.USRNOTIFICATIONLINK, fileUdprn)
+                                        NotificationActionLink = string.Format(ThirdPartyAddressLocationConstants.USRNOTIFICATIONLINK, fileUdprn)
                                     };
 
                                     // Insert the new notification.
@@ -249,7 +250,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         private static DbGeometry GetSpatialLocation(AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO)
         {
             string sbLocationXY = string.Format(
-                Constants.USRGEOMETRYPOINT,
+                ThirdPartyAddressLocationConstants.USRGEOMETRYPOINT,
                 Convert.ToString(addressLocationUSRPOSTDTO.XCoordinate),
                 Convert.ToString(addressLocationUSRPOSTDTO.YCoordinate));
 
@@ -267,7 +268,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// <returns>returns concatenated value of address field</returns>
         private string AddressFields(PostalAddressDTO objPostalAddress)
         {
-            return Constants.PAFTaskBodyPreText +
+            return ThirdPartyAddressLocationConstants.PAFTaskBodyPreText +
                         objPostalAddress.OrganisationName + Constants.Comma +
                         objPostalAddress.DepartmentName + Constants.Comma +
                         objPostalAddress.BuildingName + Constants.Comma +

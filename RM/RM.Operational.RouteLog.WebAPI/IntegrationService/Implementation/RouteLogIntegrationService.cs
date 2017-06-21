@@ -12,6 +12,9 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {
     public class RouteLogIntegrationService : IRouteLogIntegrationService
     {
+        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
+        private const string PDFGeneratorWebAPIName = "PDFGeneratorWebAPIName";
+
         #region Property Declarations
 
         private string deliveryRouteWebAPIName = string.Empty;
@@ -25,8 +28,8 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         public RouteLogIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
             this.httpHandler = httpHandler;
-            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
-            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PDFGeneratorWebAPIName).ToString() : string.Empty;
+            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PDFGeneratorWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor

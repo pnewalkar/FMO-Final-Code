@@ -101,6 +101,7 @@
     <Compile Include="Utils\Interfaces\IFileMover.cs" />
     <Compile Include="Utils\Interfaces\IThirdPartyFileProcessUtility.cs" />
     <Compile Include="Utils\ThirdPartyFileProcessUtility.cs" />
+    <Compile Include="Utils\ThirdPartyLoaderConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

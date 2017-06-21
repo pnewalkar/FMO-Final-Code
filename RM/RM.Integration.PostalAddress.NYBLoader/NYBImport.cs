@@ -12,6 +12,7 @@
     using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.HelperMiddleware;
     using CommonLibrary.LoggingMiddleware;
+    using Utils;
     using Utils.Interfaces;
 
     /// <summary>
@@ -39,8 +40,8 @@
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
             this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
-            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ProcessedFilePath);
-            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ErrorFilePath);
+            this.strProcessedFilePath = configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.ProcessedFilePath);
+            this.strErrorFilePath = configurationHelper.ReadAppSettingsConfigurationValues(NYBLoaderConstants.ErrorFilePath);
         }
 
         #endregion Constructor

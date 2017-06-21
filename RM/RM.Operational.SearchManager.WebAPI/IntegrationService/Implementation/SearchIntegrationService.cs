@@ -20,6 +20,11 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
     /// <seealso cref="RM.Operational.SearchManager.WebAPI.Integration.ISearchIntegrationService"/>
     public class SearchIntegrationService : ISearchIntegrationService
     {
+        private const string NetworkManagerDataWebAPIName = "NetworkManagerDataWebAPIName";
+        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
+        private const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
+        private const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
+
         #region Property Declarations
 
         private string deliveryPointManagerDataWebAPIName = string.Empty;
@@ -39,10 +44,10 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         {
             this.httpHandler = httpHandler;
             this.configurationHelper = configurationHelper;
-            this.deliveryPointManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
-            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.UnitManagerDataWebAPIName).ToString() : string.Empty;
-            this.deliveryRouteManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
-            this.networkManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.NetworkManagerDataWebAPIName).ToString() : string.Empty;
+            this.deliveryPointManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName).ToString() : string.Empty;
+            this.deliveryRouteManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.networkManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(NetworkManagerDataWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
         }
 

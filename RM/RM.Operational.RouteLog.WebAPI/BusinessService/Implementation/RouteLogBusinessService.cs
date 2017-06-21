@@ -15,6 +15,9 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
     public class RouteLogBusinessService : IRouteLogBusinessService
     {
+        private const string XSLTFilePath = "XSLTFilePath";
+        private const string Report = "report";
+
         private string xsltFilepath = string.Empty;
         private IRouteLogIntegrationService routeLogIntegrationService;
 
@@ -27,7 +30,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         public RouteLogBusinessService(IRouteLogIntegrationService routeLogIntegrationService, IConfigurationHelper configurationHelper)
         {
             this.routeLogIntegrationService = routeLogIntegrationService;
-            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.XSLTFilePath).ToString() : string.Empty;
+            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(XSLTFilePath).ToString() : string.Empty;
         }
 
         /// <summary>
@@ -127,7 +130,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         private string RouteSummaryXMLSerialization(RouteLogSummaryModelDTO routeLogSummaryModelDTO)
         {
             XmlDocument doc = new XmlDocument();
-            XmlElement report = doc.CreateElement(Constants.Report);
+            XmlElement report = doc.CreateElement(Report);
             XmlElement pageHeader = doc.CreateElement(Constants.PageHeader);
             XmlElement pageFooter = doc.CreateElement(Constants.PageFooter);
             XmlElement content = doc.CreateElement(Constants.Content);

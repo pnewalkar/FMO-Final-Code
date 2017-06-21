@@ -20,6 +20,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 {
     public class BlockSequenceDataService : DataServiceBase<BlockSequence, RMDBContext>, IBlockSequenceDataService
     {
+        private const string UnSequenced = "U";
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                     var block_Guid = await (from dr in DataContext.DeliveryRouteBlocks.AsNoTracking()
                                             join b in DataContext.Blocks.AsNoTracking() on dr.Block_GUID equals b.ID
-                                            where b.BlockType == Constants.UnSequenced && dr.DeliveryRoute_GUID == deliveryRouteId
+                                            where b.BlockType == UnSequenced && dr.DeliveryRoute_GUID == deliveryRouteId
                                             select b.ID).SingleOrDefaultAsync();
 
                     BlockSequence blockSequenceEntity = GenericMapper.Map<BlockSequenceDTO, BlockSequence>(blockSequenceDTO);

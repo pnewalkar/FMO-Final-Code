@@ -27,6 +27,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class DeliveryPointsDataService : DataServiceBase<DeliveryPoint, RMDBContext>, IDeliveryPointsDataService
     {
+        private const string ROWVERSION = "RowVersion";
+        private const string UnSequenced = "U";
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public DeliveryPointsDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
@@ -329,7 +332,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                               join drb in DataContext.DeliveryRouteBlocks.AsNoTracking() on b.ID equals drb.Block_GUID
                               join dr in DataContext.DeliveryRoutes.AsNoTracking() on drb.DeliveryRoute_GUID equals dr.ID
                               join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
-                              where dp.ID == deliveryPointId && b.BlockType == Constants.UnSequenced
+                              where dp.ID == deliveryPointId && b.BlockType == UnSequenced
                               select new
                               {
                                   RouteName = dr.RouteName,
@@ -471,7 +474,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         deliveryPoint.Positioned = deliveryPointDto.Positioned;
 
                         DataContext.Entry(deliveryPoint).State = EntityState.Modified;
-                        DataContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDto.RowVersion;
+                        DataContext.Entry(deliveryPoint).OriginalValues[ROWVERSION] = deliveryPointDto.RowVersion;
                         await DataContext.SaveChangesAsync();
                     }
 
@@ -680,7 +683,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         deliveryPoint.AccessLinkPresent = deliveryPointDTO.AccessLinkPresent;
 
                         rmDbContext.Entry(deliveryPoint).State = EntityState.Modified;
-                        rmDbContext.Entry(deliveryPoint).OriginalValues[Constants.ROWVERSION] = deliveryPointDTO.RowVersion;
+                        rmDbContext.Entry(deliveryPoint).OriginalValues[ROWVERSION] = deliveryPointDTO.RowVersion;
                         isDeliveryPointUpdated = rmDbContext.SaveChanges() > 0;
                     }
                 }
