@@ -64,25 +64,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var result = await testCandidate.CreateDeliveryPoint(addDeliveryPointDTO);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Message == "Delivery Point created successfully");
-        }
-
-        [Test]
-        public void Test_CreateDeliveryPoint_Duplicate()
-        {
-            mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDBDTO>())).ReturnsAsync(true);
-            var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Result.Message == "There is a duplicate of this Delivery Point in the system");
-        }
-
-        [Test]
-        public void Test_CreateDeliveryPoint_Duplicate_WithPostCode()
-        {
-            OnSetup();
-            var result = testCandidate.CreateDeliveryPoint(addDeliveryPointDTO1);
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Result.Message == "This address is in the NYB file under the postcode 123");
-        }
+        }      
 
         [Test]
         public void Test_UpdateDeliveryPointLocation()
@@ -218,6 +200,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingDataService.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             List<RM.CommonLibrary.EntityFramework.Entities.DeliveryPoint> lstDeliveryPoint = new List<RM.CommonLibrary.EntityFramework.Entities.DeliveryPoint>();
             List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>()
@@ -301,7 +285,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                 RowVersion = BitConverter.GetBytes(1)
             };
 
-            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>())).Returns(It.IsAny<List<DeliveryPointDTO>>);
+            var locationXy = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700);
+
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>())).Returns(new List<DeliveryPointDTO>() { new DeliveryPointDTO() { Address_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"), LocationXY = locationXy, ID = Guid.NewGuid(), PostalAddress = new PostalAddressDTO() { OrganisationName  = "abc" } } });
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).Returns(Task.FromResult(1));
             mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointRowVersion(It.IsAny<Guid>())).Returns(BitConverter.GetBytes(1));
@@ -315,6 +301,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).ReturnsAsync(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAccessLink(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDBDTO>())).ReturnsAsync("123");
+            mockDeliveryPointIntegrationService.Setup(x => x.GetPostalAddress(It.IsAny<List<Guid>>())).ReturnsAsync(new List<PostalAddressDBDTO>() { new PostalAddressDBDTO() {ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11") } });
 
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsDataService.Object, mockLoggingDataService.Object, mockConfigurationDataService.Object, mockDeliveryPointIntegrationService.Object);
         }
