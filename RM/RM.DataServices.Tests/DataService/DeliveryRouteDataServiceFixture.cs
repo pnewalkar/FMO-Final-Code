@@ -152,6 +152,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             var deliveryRoute = new List<DeliveryRoute>()
             {
                 new DeliveryRoute() { ID = Guid.NewGuid(), OperationalStatus_GUID = Guid.NewGuid(), DeliveryScenario_GUID = Guid.NewGuid(), RouteName = "testsearch1jbcjkdsghfjks", RouteNumber = "testsearch1jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },

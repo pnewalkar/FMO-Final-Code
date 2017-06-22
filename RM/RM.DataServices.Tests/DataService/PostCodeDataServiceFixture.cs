@@ -71,6 +71,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             var unitPostcodeSectors = new List<UnitPostcodeSector>()
                     {
                         new UnitPostcodeSector()

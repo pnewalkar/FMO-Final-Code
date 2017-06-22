@@ -21,7 +21,7 @@ function RouteLogController(routeLogService,
     vm.closeWindow = closeWindow;
     vm.selectClass = "routeSearch md-text";
     vm.generateRouteLogSummary = generateRouteLogSummary;
-    vm.generateSummaryReport = false;
+    vm.generateSummaryReport = false;   
     vm.initialize();
     function initialize() {
         vm.loadSelectionType();
