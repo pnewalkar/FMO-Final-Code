@@ -259,7 +259,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             {
                 data.Add(new List<string>
                             {
-                                routeLogSequencedPointsDTO.StreetName, routeLogSequencedPointsDTO.Description, routeLogSequencedPointsDTO.DeliveryPointCount.ToString(), 
+                                routeLogSequencedPointsDTO.StreetName, routeLogSequencedPointsDTO.Description, routeLogSequencedPointsDTO.DeliveryPointCount.ToString(),
                                 routeLogSequencedPointsDTO.MultipleOccupancy != null ? routeLogSequencedPointsDTO.MultipleOccupancy.ToString() : "0", string.Empty, string.Empty
                             });
             }
