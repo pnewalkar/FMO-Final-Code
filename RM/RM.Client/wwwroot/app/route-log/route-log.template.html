@@ -46,7 +46,7 @@
 
             <span flex="5"></span>
 
-            <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" search-placeholder="ROUTE_SIMULATION.NO_ROUTE_SELECTED" header-text="ROUTE_SIMULATION.ROUTE" order-by="displayText" 
+            <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" search-placeholder="ROUTE_SIMULATION.NO_ROUTE_SELECTED" header-text="ROUTE_LOG.ROUTE" order-by="displayText" 
                                         items="vm.deliveryRoute" selected-item="vm.selectedRoute" on-selected-item="vm.deliveryRouteChange" class="routeSelectSearch" flex/>
         </div>
 
@@ -146,18 +146,19 @@
         <md-list ng-hide="!vm.routeDetails" class="routeLogList">
             <md-subheader>Generate</md-subheader>
             <md-list-item>
-                <md-checkbox ng-model="vm.generateSummaryReport"></md-checkbox>
+               
+                    <md-checkbox  ng-model="vm.generateSummaryReport"></md-checkbox>   
                 <p>Route Log Summary</p>
             </md-list-item>
             <md-list-item>
-                <md-checkbox></md-checkbox>
+                <md-checkbox ng-model="vm.generateDetailedRouteLogReport"></md-checkbox>
                 <p>Detailed Route Log</p>
             </md-list-item>
             <md-list-item>
-                <md-checkbox></md-checkbox>
+                <md-checkbox ng-model="vm.generateHazardCardReport"></md-checkbox>
                 <p>Hazard Card</p>
             </md-list-item>
-            <md-button class="md-raised routeGenerate" md-whiteframe="3dp" ng-click="vm.generateRouteLogSummary()">Generate</md-button>
+            <md-button class="md-raised routeGenerate" ng-disabled="(!vm.generateSummaryReport&&!vm.generateDetailedRouteLogReport&&!vm.generateHazardCardReport)" md-whiteframe="3dp" ng-click="vm.generateRouteLogSummary()">Generate</md-button>
         </md-list>
     </md-dialog-content>
 </md-dialog>    
