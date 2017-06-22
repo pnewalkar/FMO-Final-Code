@@ -108,18 +108,7 @@ function MapFactory($http,
 
      
         map = new ol.Map({
-            //layers: layers.map(function (a) { return a.layer }),
-            layers: [
-          new ol.layer.Tile({
-              source: new ol.source.OSM({
-                  attributions: [
-                    new ol.Attribution({
-                     
-                    })
-                  ]
-              })
-          })
-            ],
+            layers: layers.map(function (a) { return a.layer }),
             target: 'map',
             view: view,
             loadTilesWhileAnimating: true,
