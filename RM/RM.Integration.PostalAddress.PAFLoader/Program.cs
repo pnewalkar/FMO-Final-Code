@@ -1,5 +1,6 @@
 ﻿namespace RM.Integration.PostalAddress.PAFLoader
 {
+    using System.ServiceProcess;
     using Ninject;
     using RM.CommonLibrary.ConfigurationMiddleware;
     using RM.CommonLibrary.LoggingMiddleware;

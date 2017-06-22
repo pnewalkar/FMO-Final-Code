@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -127,8 +128,17 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                List<string> postalAddressList = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
-                return Ok(postalAddressList);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.SearchAddressdetails"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    List<string> postalAddressList = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                    return Ok(postalAddressList);
+                }
             }
             catch (AggregateException ae)
             {
@@ -153,8 +163,17 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
-                return Ok(postalAddressDto);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.GetAddressByPostCode"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                    return Ok(postalAddressDto);
+                }
             }
             catch (AggregateException ae)
             {
@@ -178,8 +197,17 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("postaladdress/filter/addressguid:{addressguid}")]
         public IActionResult GetPostalAddressByGuid(Guid addressGuid)
         {
-            PostalAddressDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
-            return Ok(postalAddressDto);
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetPostalAddressByGuid"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                PostalAddressDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                return Ok(postalAddressDto);
+            }
         }
 
         /// <summary>
@@ -194,8 +222,17 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                PostalAddressDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
-                return Ok(postalAddressDTO);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.GetPostalAddress"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    PostalAddressDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                    return Ok(postalAddressDTO);
+                }
             }
             catch (AggregateException ae)
             {
@@ -219,8 +256,17 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         public IActionResult CheckForDuplicateNybRecords([FromBody] PostalAddressDTO objPostalAddress)
         {
-            string postCode = businessService.CheckForDuplicateNybRecords(objPostalAddress);
-            return Ok(postCode);
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateNybRecords"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                string postCode = businessService.CheckForDuplicateNybRecords(objPostalAddress);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                return Ok(postCode);
+            }
         }
 
         /// <summary>
@@ -233,8 +279,17 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         public IActionResult CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDTO objPostalAddress)
         {
-            bool isDuplicate = businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
-            return Ok(isDuplicate);
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateAddressWithDeliveryPoints"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                bool isDuplicate = businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                return Ok(isDuplicate);
+            }
         }
 
         /// <summary>

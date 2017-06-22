@@ -15,5 +15,7 @@
         public string ImagePath { get; set; }
 
         public string EncodedString { get; set; }
+
+        public string License { get; set; }
     }
 }

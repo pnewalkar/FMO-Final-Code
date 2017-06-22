@@ -21,11 +21,11 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
 
         [Route("PDFReports/{fileName}")]
         [HttpPost]
-        public IActionResult GenerateRouteLogSummaryReport([FromBody]string xml, string fileName)
+        public IActionResult CreateReport([FromBody]string xml, string fileName)
         {
             try
             {
-                var pdfFile = pdfGeneratorBusinessService.GenerateRouteLogSummaryReport(xml, fileName);
+                var pdfFile = pdfGeneratorBusinessService.CreateReport(xml, fileName);
                 return Ok(pdfFile);
             }
             catch (Exception ex)

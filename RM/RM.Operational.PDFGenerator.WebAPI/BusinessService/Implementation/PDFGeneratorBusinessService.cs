@@ -20,7 +20,6 @@ namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
         private IFileProvider fileProvider = default(IFileProvider);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
         /// </summary>
         /// <param name="deliveryRouteDataService">IDeliveryRouteRepository reference</param>
         /// <param name="scenarioDataService">IScenarioRepository reference</param>
@@ -32,7 +31,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.BusinessService
             this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(XSLTFilePath).ToString() : string.Empty;
         }
 
-        public string GenerateRouteLogSummaryReport(string xml, string fileName)
+        public string CreateReport(string xml, string fileName)
         {
             IDirectoryContents contents = fileProvider.GetDirectoryContents(string.Empty);
             IFileInfo fileInfo = fileProvider.GetFileInfo(xsltFilepath + fileName);

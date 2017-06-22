@@ -34,7 +34,7 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         {
             mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(PDFFileLoaction)).Returns(Path.GetTempPath());
             testCandidate = new PDFGeneratorBusinessService(mockFileProvider.Object, mockConfigurationHelper.Object);
-            var result = testCandidate.GenerateRouteLogSummaryReport("<note><body>hi</body></note>", "abc");
+            var result = testCandidate.CreateReport("<note><body>hi</body></note>", "abc");
             if (File.Exists(Path.GetTempPath() + result))
             {
                 File.Delete(Path.GetTempPath() + result);
