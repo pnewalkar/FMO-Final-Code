@@ -55,6 +55,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             mockLoggingHelper = CreateMock<ILoggingHelper>();
 
             unit1Guid = Guid.NewGuid();
