@@ -243,11 +243,11 @@
 
         protected override void OnSetup()
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
         }
 
         private void SetUpDataForDeliveryPoints()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             postalAddressesDTO = new List<PostalAddressDTO>()
             {
                 new PostalAddressDTO()
@@ -348,11 +348,16 @@
             mockFmoDbContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointsDBSet.Object);
             mockFmoDbContext.Setup(x => x.DeliveryPoints.AsNoTracking()).Returns(mockDeliveryPointsDBSet.Object);
 
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate = new PostalAddressDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
         }
 
         private void SetUpDataForCreateAddressAndDeliveryPoint()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             postalAddressesDTO = new List<PostalAddressDTO>()
             {
                 new PostalAddressDTO()
@@ -485,7 +490,7 @@
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
-        
+
             testCandidate = new PostalAddressDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
         }
 
