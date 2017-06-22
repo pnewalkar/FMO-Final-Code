@@ -217,7 +217,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 UDPRN = 14856
             };
             var result = testCandidate.GetPostalAddress(testObject.UDPRN);
-            Assert.IsNull(result);
+            Assert.IsNotNull(result);
         }
 
         protected override void OnSetup()
@@ -602,7 +602,6 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses.AsNoTracking()).Returns(mockPostalAddressDBSet.Object);
 
-            //mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             mockAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(postalAddress);
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
@@ -689,14 +688,11 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             mockFmoDbContext = CreateMock<PostalAddressDBContext>();
             mockFmoDbContext.Setup(x => x.Set<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
-            // mockReferenceDataCategoryDataService = CreateMock<CommonLibrary.EntityFramework.DataService.Interfaces.IReferenceDataCategoryDataService>();
             mockLoggingHelper = CreateMock<ILoggingHelper>();
 
             mockFileProcessingLog = CreateMock<IFileProcessingLogDataService>();
 
             mockPostalAddressDBSet.Setup(x => x.Include("PostalAddressStatus"));
-            //mockpostCodeDataService = CreateMock<IPostCodeDataService>();
-            //mockpostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<PostalAddressDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
