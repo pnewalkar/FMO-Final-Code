@@ -32,6 +32,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             List<BlockSequence> blockSequence = new List<BlockSequence>() { };
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             blockSequenceDTO = new BlockSequenceDTO() { Block_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11") };

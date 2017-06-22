@@ -67,6 +67,8 @@ GlobalSettings.unitBoundaryLayerName = "Unit Boundary";
 GlobalSettings.deliveryPointLayerName = "Delivery Points";
 GlobalSettings.accessLinkLayerName = "Access Links";
 GlobalSettings.roadLinkLayerName = "Roads";
+GlobalSettings.baseLayerName = "Base Layer";
+GlobalSettings.drawingLayerName = "Drawing";
 GlobalSettings.deliveryPointDetails = "Details of Delivery Point";
 
 
@@ -135,3 +137,16 @@ GlobalSettings.getPdfreport = "/PDFGenerator/PDFReports/";
 //-----Map manager Factory---------------//
 GlobalSettings.generateReportWithMap = "/MapManager/MapImage/";
 GlobalSettings.generatePdf = "/MapManager/MapPDF/";
+
+
+//--- Unit Area ---///
+GlobalSettings.BT = "BT";
+
+
+//--- Licensing Information-----//
+GlobalSettings.Map_License_Information = "Map_License_Information";
+GlobalSettings.OrdnanceSurvey_GB_Licensing = "OrdnanceSurvey_GB_Licensing";
+GlobalSettings.ThirdParty_GB_Licensing="ThirdParty_GB_Licensing";
+GlobalSettings.OrdnanceSurvey_NI_Licensing ="OrdnanceSurvey_NI_Licensing";
+GlobalSettings.ThirdParty_NI_Licensing="ThirdParty_NI_Licensing";
+GlobalSettings.GeoPlan_Licensing = "GeoPlan_Licensing";

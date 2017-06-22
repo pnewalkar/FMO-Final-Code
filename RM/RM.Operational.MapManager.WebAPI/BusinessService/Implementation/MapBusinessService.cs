@@ -1,35 +1,27 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Threading.Tasks;
+using System.Xml;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
+using RM.Operational.MapManager.WebAPI.Utils;
 
 namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
     public class MapBusinessService : IMapBusinessService
     {
-        private const string XSLTFilePath = "XSLTFilePath";
-        private const string ImagePath = "ImagePath";
-        private const string PrintMapDateTimeFormat = "{0:dd/MM/yyyy HH:mm}";
-
         private string xsltFilepath = string.Empty;
         private string imagePath = string.Empty;
         private IMapIntegrationService mapIntegrationService;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
-        /// </summary>
-        /// <param name="deliveryRouteDataService">IDeliveryRouteRepository reference</param>
-        /// <param name="scenarioDataService">IScenarioRepository reference</param>
-        /// <param name="referenceDataBusinessService">The reference data business service.</param>
         public MapBusinessService(IMapIntegrationService mapIntegrationService, IConfigurationHelper configurationHelper)
         {
             this.mapIntegrationService = mapIntegrationService;
-            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(XSLTFilePath).ToString() : string.Empty;
-            this.imagePath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ImagePath).ToString() : string.Empty;
+            this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(MapManagerConstants.XSLTFilePath).ToString() : string.Empty;
+            this.imagePath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(MapManagerConstants.ImagePath).ToString() : string.Empty;
         }
 
         /// <summary>
@@ -39,10 +31,9 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <returns>deliveryRouteDto</returns>
         public PrintMapDTO SaveImage(PrintMapDTO printMapDTO)
         {
-            string pdXslFo = string.Empty;
             if (printMapDTO != null)
             {
-                printMapDTO.PrintTime = string.Format(PrintMapDateTimeFormat, DateTime.Now);
+                printMapDTO.PrintTime = string.Format(MapManagerConstants.PrintMapDateTimeFormat, DateTime.Now);
                 SaveMapImage(printMapDTO);
             }
 
@@ -50,31 +41,115 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         }
 
         /// <summary>
-        /// Serialze object to xml
+        /// generate Print Map pdf using xsl fo
         /// </summary>
-        /// <typeparam name="T">Class </typeparam>
-        /// <param name="type">object</param>
-        /// <returns>xml as string</returns>
-        private string XmlSerializer<T>(T type)
+        /// <param name="printMapDTO">printMapDTO</param>
+        /// <returns>Pdf file name </returns>
+        public async Task<string> GenerateMapPdfReport(PrintMapDTO printMapDTO)
         {
-            var xmlSerilzer = new XmlSerializer(type.GetType());
-            var xmlString = new StringWriter();
-            xmlSerilzer.Serialize(xmlString, type);
-            return xmlString.ToString();
-        }
-
-        private void SaveMapImage(PrintMapDTO printMapDTO)
-        {
-            string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
-            string imageLocation = imagePath + Guid.NewGuid() + ".png";
-
-            if (encodedStringArray != null && encodedStringArray.Count() > 0)
+            string pdfFilename = string.Empty;
+            if (printMapDTO != null)
             {
-                byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
-                File.WriteAllBytes(imageLocation, imageBytes);
+                string pdfXml = GenerateXml(printMapDTO);
+                pdfFilename = await mapIntegrationService.GenerateReportWithMap(pdfXml, xsltFilepath);
             }
 
-            printMapDTO.ImagePath = imageLocation;
+            return pdfFilename;
+        }
+
+        /// <summary>
+        /// Custom serialization of Map DTO
+        /// </summary>
+        /// <param name="printMapDTO">printMapDTO</param>
+        /// <returns>Xml as string</returns>
+        private string GenerateXml(PrintMapDTO printMapDTO)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlElement report = doc.CreateElement(MapManagerConstants.Report);
+            XmlElement pageHeader = doc.CreateElement(MapManagerConstants.PageHeader);
+            XmlElement pageFooter = doc.CreateElement(MapManagerConstants.PageFooter);
+            XmlElement content = doc.CreateElement(MapManagerConstants.Content);
+            XmlElement heading1 = doc.CreateElement(MapManagerConstants.Heading1);
+            XmlElement heading1CenterAligned = doc.CreateElement(MapManagerConstants.Heading1CenterAligned);
+            XmlElement image = doc.CreateElement(MapManagerConstants.Image);
+            XmlElement section = null;
+            XmlElement sectionColumn = null;
+
+            report.SetAttribute(MapManagerConstants.PdfOutPut, printMapDTO.PdfSize + printMapDTO.PdfOrientation);
+            pageHeader.SetAttribute(MapManagerConstants.Caption, string.Empty);
+            pageFooter.SetAttribute(MapManagerConstants.Caption, "");
+            pageFooter.SetAttribute(MapManagerConstants.PageNumber, string.Empty);
+            report.AppendChild(pageHeader);
+            report.AppendChild(pageFooter);
+            report.AppendChild(content);
+
+            //Section 1 Header
+            section = doc.CreateElement(MapManagerConstants.Section);
+
+            //Section 1 Header 1
+            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
+            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+            heading1CenterAligned.InnerText = printMapDTO.MapTitle;
+            sectionColumn.AppendChild(heading1CenterAligned);
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            //Section 2
+            section = doc.CreateElement(MapManagerConstants.Section);
+
+            //Section 2 columns 1 i.e Table 1
+            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
+            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+            image.SetAttribute(MapManagerConstants.Source, printMapDTO.ImagePath);
+            sectionColumn.AppendChild(image);
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            //Section 3
+            section = doc.CreateElement(MapManagerConstants.Section);
+            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
+            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+            sectionColumn.InnerText = "Date : " + printMapDTO.PrintTime;
+            section.AppendChild(sectionColumn);
+
+            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
+            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+            sectionColumn.InnerText = "Scale : " + printMapDTO.CurrentScale;
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            //Section 4
+            section = doc.CreateElement(MapManagerConstants.Section);
+            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
+            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+            sectionColumn.InnerText = printMapDTO.License;
+            section.AppendChild(sectionColumn);
+            content.AppendChild(section);
+
+            doc.AppendChild(report); ;
+            return doc.InnerXml;
+        }
+
+        /// <summary>
+        /// Method to save captured map image in png format.
+        /// </summary>
+        /// <param name="printMapDTO">printMapDTO</param>
+        private void SaveMapImage(PrintMapDTO printMapDTO)
+        {
+            if (!string.IsNullOrEmpty(printMapDTO.EncodedString))
+            {
+                string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
+                string imageLocation = string.Empty;
+
+                if (encodedStringArray != null && encodedStringArray.Count() > 0)
+                {
+                    imageLocation = imagePath + Guid.NewGuid() + ".png";
+                    byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
+                    File.WriteAllBytes(imageLocation, imageBytes);
+                }
+
+                printMapDTO.ImagePath = imageLocation;
+            }
         }
     }
 }

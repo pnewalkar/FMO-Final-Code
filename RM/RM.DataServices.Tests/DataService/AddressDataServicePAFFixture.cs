@@ -58,6 +58,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             List<PostalAddress> lstPostalAddress = new List<PostalAddress>()
                         {
                             new PostalAddress
