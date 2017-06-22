@@ -136,6 +136,11 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
 
