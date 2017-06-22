@@ -7,6 +7,5 @@ namespace RM.Operational.PDFGenerator.WebAPI.Utils
 {
     public static class PDFGeneratorConstants
     {
-        
     }
 }

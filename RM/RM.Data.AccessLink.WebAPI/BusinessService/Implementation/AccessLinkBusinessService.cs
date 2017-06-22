@@ -22,9 +22,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
     /// This class contains methods related to Access Links.
     /// </summary>
     public class AccessLinkBusinessService : Interface.IAccessLinkBusinessService
-    {
-        
-
+    {       
         #region Member Variables
 
         private IAccessLinkDataService accessLinkDataService = default(IAccessLinkDataService);

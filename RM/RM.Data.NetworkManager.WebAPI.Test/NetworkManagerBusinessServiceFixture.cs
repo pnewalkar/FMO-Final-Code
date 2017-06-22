@@ -101,6 +101,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             var result = testCandidate.GetRoadRoutes(coordinates, Guid.NewGuid());
             Assert.IsNotNull(result);
         }
+
         protected override void OnSetup()
         {
             mockStreetNetworkDataService = CreateMock<IStreetNetworkDataService>();
