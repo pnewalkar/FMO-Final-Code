@@ -2,14 +2,40 @@
 {
     public static class LoggerTraceConstants
     {
+        #region default
+
+        internal const string DefaultLoggingCategory = "General";
+        internal const int DefaultLoggingPriority = 0;
+        internal const int DefaultLoggingEventId = 0;
+        internal const string DefaultLoggingTitle = "";
+
+        #endregion default
+
         public const string Category = "General";
         public const string BusinessLayer = "Business.";
         public const string DataLayer = "Data.";
 
+        public const string MethodExecutionStarted = " Method execution started";
+        public const string MethodExecutionCompleted = " Method execution completed";
+        public const string COLON = " : ";
+
         #region Priority
 
-        public const int CreateDeliveryPointPriority = 8;
-        public const int UpdateDeliveryPointPriority = 8;
+        public const int DeliveryPointAPIPriority = 8;
+        public const int AccessLinkAPIPriority = 8;
+        public const int DeliveryRouteAPIPriority = 8;
+        public const int PostalAddressAPIPriority = 8;
+        public const int FileProcessingLogPriority = 8;
+        public const int ThirdPartyAddressLocationAPIPriority = 8;
+        public const int NotificationAPIPriority = 8;
+        public const int SearchManagerAPIPriority = 8;
+        public const int NYBPriority = 8;
+        public const int PAFPriority = 8;
+        public const int ThirdPartyPriority = 8;
+        public const int ReferenceDataAPIPriority = 8;
+        public const int RouteLogAPIPriority = 8;
+        public const int PDFGeneratorAPIPriority = 8;
+
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
         public const int SaveDeliveryPointProcessPriority = 8;
@@ -28,13 +54,106 @@
 
         #region EventId
 
-        public const int CreateDeliveryPointAPIMethodEntryEventId = 9003;
-        public const int CreateDeliveryPointAPIMethodExitEventId = 9004;
-        public const int CreateDeliveryPoinBusinessMethodEntryEventId = 9013;
-        public const int CreateDeliveryPoinBusinessMethodExitEventId = 9014;
+        public const int AccessLinkControllerMethodEntryEventId = 8003;
+        public const int AccessLinkControllerMethodExitEventId = 8004;
+
+        public const int SearchManagerControllerMethodEntryEventId = 8103;
+        public const int SearchManagerControllerMethodExitEventId = 8104;
+        public const int SearchManagerBusinessServiceMethodEntryEventId = 8113;
+        public const int SearchManagerBusinessServiceMethodExitEventId = 8114;
+        public const int SearchManagerIntegrationServiceMethodEntryEventId = 8123;
+        public const int SearchManagerIntegrationServiceMethodExitEventId = 8124;
+
+        public const int ReferenceDataControllerMethodEntryEventId = 8203;
+        public const int ReferenceDataControllerMethodExitEventId = 8204;
+        public const int ReferenceDataBusinessServiceMethodEntryEventId = 8213;
+        public const int ReferenceDataBusinessServiceMethodExitEventId = 8214;
+        public const int ReferenceDataDataServiceMethodEntryEventId = 8223;
+        public const int ReferenceDataDataServiceMethodExitEventId = 8224;
+
+        public const int RouteLogControllerMethodEntryEventId = 8303;
+        public const int RouteLogControllerMethodExitEventId = 8304;
+        public const int RouteLogBusinessServiceMethodEntryEventId = 8313;
+        public const int RouteLogBusinessServiceMethodExitEventId = 8314;
+        public const int RouteLogIntegrationServiceMethodEntryEventId = 8323;
+        public const int RouteLogIntegrationServiceMethodExitEventId = 8324;
+
+        public const int PDFGeneratorControllerMethodEntryEventId = 8403;
+        public const int PDFGeneratorControllerMethodExitEventId = 8404;
+        public const int PDFGeneratorBusinessServiceMethodEntryEventId = 8413;
+        public const int PDFGeneratorBusinessServiceMethodExitEventId = 8414;
+
+        public const int DeliveryPointControllerMethodEntryEventId = 9003;
+        public const int DeliveryPointControllerMethodExitEventId = 9004;
+        public const int DeliveryPointBusinessServiceMethodEntryEventId = 9013;
+        public const int DeliveryPointBusinessServiceMethodExitEventId = 9014;
+        public const int DeliveryPointDataServiceMethodEntryEventId = 9023;
+        public const int DeliveryPointDataServiceMethodExitEventId = 9024;
+        public const int DeliveryPointIntegrationServiceMethodEntryEventId = 9033;
+        public const int DeliveryPointIntegrationServiceMethodExitEventId = 9034;
+
+        public const int AccessLinkBusinessMethodEntryEventId = 9103;
+        public const int AccessLinkBusinessMethodExitEventId = 9104;
+        public const int AccessLinkDataServiceMethodEntryEventId = 9113;
+        public const int AccessLinkDataServiceMethodExitEventId = 9114;
+        public const int AccessLinkIntegrationMethodEntryEventId = 9123;
+        public const int AccessLinkIntegrationMethodExitEventId = 9124;
+
+        public const int DeliveryRouteControllerMethodEntryEventId = 9203;
+        public const int DeliveryRouteControllerMethodExitEventId = 9204;
+        public const int DeliveryRouteBusinessServiceMethodEntryEventId = 9213;
+        public const int DeliveryRouteBusinessServiceMethodExitEventId = 9214;
+        public const int DeliveryRouteDataServiceMethodEntryEventId = 9223;
+        public const int DeliveryRouteDataServiceMethodExitEventId = 9224;
+
+        public const int PostalAddressControllerMethodEntryEventId = 9303;
+        public const int PostalAddressControllerMethodExitEventId = 9304;
+        public const int PostalAddressBusinessServiceMethodEntryEventId = 9313;
+        public const int PostalAddressBusinessServiceMethodExitEventId = 9314;
+        public const int PostalAddressDataServiceMethodEntryEventId = 9323;
+        public const int PostalAddressDataServiceMethodExitEventId = 9324;
+        public const int PostalAddressIntegrationServiceMethodEntryEventId = 9333;
+        public const int PostalAddressIntegrationServiceMethodExitEventId = 9334;
+        public const int FileProcessingLogPriorityDataServiceMethodEntryEventId = 9343;
+        public const int FileProcessingLogPriorityDataServiceMethodExitEventId = 9344;
+
+        public const int ThirdPartyAddressLocationControllerMethodEntryEventId = 9403;
+        public const int ThirdPartyAddressLocationControllerMethodExitEventId = 9404;
+        public const int ThirdPartyAddressLocationBusinessServiceMethodEntryEventId = 9413;
+        public const int ThirdPartyAddressLocationBusinessServiceMethodExitEventId = 9414;
+        public const int ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId = 9423;
+        public const int ThirdPartyAddressLocationIntegrationServiceMethodExitEventId = 9424;
+        public const int ThirdPartyAddressLocationDataServiceMethodEntryEventId = 9433;
+        public const int ThirdPartyAddressLocationDataServiceMethodExitEventId = 9434;
+
+        public const int NotificationControllerMethodEntryEventId = 9503;
+        public const int NotificationControllerMethodExitEventId = 9504;
+        public const int NotificationBusinessServiceMethodEntryEventId = 9513;
+        public const int NotificationBusinessServiceMethodExitEventId = 9514;
+        public const int NotificationDataServiceMethodEntryEventId = 9523;
+        public const int NotificationDataServiceMethodExitEventId = 9524;
+
+        public const int NYBLoaderMethodEntryEventId = 9603;
+        public const int NYBLoaderMethodExitEventId = 9604;
+
+        public const int PAFLoaderMethodEntryEventId = 9703;
+        public const int PAFLoaderMethodExitEventId = 9704;
+        public const int PAFReceiverMethodEntryEventId = 9713;
+        public const int PAFReceiverMethodExitEventId = 9714;
+
+        public const int ThirdPartyLoaderMethodEntryEventId = 9803;
+        public const int ThirdPartyLoaderMethodExitEventId = 9804;
 
         public const int UpdateDeliveryPointAPIMethodEntryEventId = 9103;
         public const int UpdateDeliveryPointAPIMethodExitEventId = 9104;
+        public const int UpdateDeliveryPointLocationOnUDPRNAPIMethodEntryEventId = 9105;
+        public const int UpdateDeliveryPointLocationOnUDPRNAPIMethodExitEventId = 9106;
+        public const int UpdateDeliveryPointLocationOnIDAPIMethodEntryEventId = 9107;
+        public const int UpdateDeliveryPointLocationOnIDAPIMethodExitEventId = 9108;
+        public const int InsertDeliveryPointAPIMethodEntryEventId = 9109;
+        public const int InsertDeliveryPointAPIMethodExitEventId = 9110;
+        public const int UpdateDeliveryPointAccessLinkCreationStatusAPIMethodEntryEventId = 9111;
+        public const int UpdateDeliveryPointAccessLinkCreationStatusAPIMethodExitEventId = 9112;
         public const int UpdateDeliveryPoinBusinessMethodEntryEventId = 9113;
         public const int UpdateDeliveryPoinBusinessMethodExitEventId = 9114;
 

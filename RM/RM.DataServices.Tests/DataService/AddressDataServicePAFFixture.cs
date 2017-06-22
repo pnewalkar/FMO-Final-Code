@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -35,9 +37,9 @@ namespace RM.DataServices.Tests.DataService
                 UDPRN = 14856
             };
             var result = testCandidate.InsertAddress(testObject, "PAFTestFile.csv");
-            mockRMDBContext.Verify(n => n.SaveChanges(), Times.Once);
+            mockRMDBContext.Verify(n => n.SaveChangesAsync(), Times.Once);
             Assert.IsNotNull(result);
-            // Assert.IsTrue(result);
+            Assert.IsTrue(result.Result);
         }
 
         [Test]
@@ -49,13 +51,15 @@ namespace RM.DataServices.Tests.DataService
                 UDPRN = 14856
             };
             var result = testCandidate.GetPostalAddress(testObject.UDPRN);
-            Assert.IsNull(result);
+            Assert.IsNull(result.Result);
         }
 
         #endregion Test Methods For PAF
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             List<PostalAddress> lstPostalAddress = new List<PostalAddress>()
                         {
                             new PostalAddress
@@ -65,15 +69,20 @@ namespace RM.DataServices.Tests.DataService
                                 Postcode = "123"
                         }
                     };
+            var mockPostalAddressEnumerable = new DbAsyncEnumerable<PostalAddress>(lstPostalAddress);
             var mockPostalAddressDBSet = MockDbSet(lstPostalAddress);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
+
+            mockPostalAddressDBSet.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockPostalAddressEnumerable.AsQueryable().Provider);
+            mockPostalAddressDBSet.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockPostalAddressEnumerable.AsQueryable().Expression);
+            mockPostalAddressDBSet.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockPostalAddressEnumerable.AsQueryable().ElementType);
+            mockPostalAddressDBSet.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<PostalAddress>)mockPostalAddressEnumerable).GetAsyncEnumerator());
 
             mockRMDBContext = CreateMock<RMDBContext>();
             mockRMDBContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockRMDBContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
             mockReferenceDataCategoryDataService = CreateMock<IReferenceDataCategoryDataService>();
             mockloggingHelper = CreateMock<ILoggingHelper>();
-            //  mockloggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             mockfileProcessingLogDataService = CreateMock<IFileProcessingLogDataService>();
 
@@ -82,6 +91,10 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockloggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             testCandidate = new PostalAddressDataService(mockDatabaseFactory.Object, mockloggingHelper.Object, mockfileProcessingLogDataService.Object);
         }

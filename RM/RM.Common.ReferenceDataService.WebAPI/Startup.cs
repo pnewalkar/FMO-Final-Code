@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.Common.ReferenceData.WebAPI.BusinessService;
 using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
@@ -22,7 +23,7 @@ namespace RM.Common.ReferenceData.WebAPI
 {
     public partial class Startup
     {
-        private IHostingEnvironment _hostingEnvironment;
+        private IHostingEnvironment hostingEnvironment;
 
         public Startup(IHostingEnvironment env)
         {
@@ -37,7 +38,7 @@ namespace RM.Common.ReferenceData.WebAPI
 #else
  SqlServerTypes.Utilities.LoadNativeAssemblies( env.ContentRootPath);
 #endif
-            _hostingEnvironment = env;
+            hostingEnvironment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -67,22 +68,31 @@ namespace RM.Common.ReferenceData.WebAPI
                           new CamelCasePropertyNamesContractResolver();
             });
 
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
             //---Adding scope for all classes
-            services.AddSingleton<ILoggingHelper, LoggingHelper>();
-            services.AddSingleton<IExceptionHelper, ExceptionHelper>();
+            services.AddSingleton<ILoggingHelper, LoggingHelper>(serviceProvider =>
+            {
+                return new LoggingHelper(logWriter);
+            });
+
+            services.AddSingleton<IExceptionHelper, ExceptionHelper>(serviceProvider =>
+            {
+                return new ExceptionHelper(logWriter);
+            });
 
             // Infrastructure
             services.AddTransient<IDatabaseFactory<ReferenceDataDBContext>, DatabaseFactory<ReferenceDataDBContext>>();
 
             //---Adding scope for all classes
-            services.AddSingleton<IExceptionHelper, ExceptionHelper>();
-            services.AddSingleton<ILoggingHelper, LoggingHelper>();
             services.AddScoped<IReferenceDataBusinessService, ReferenceDataBusinessService>();
             services.AddScoped<DataService.Interface.IReferenceDataDataService, DataService.ReferenceDataDataService>();
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
             services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
-            var physicalProvider = _hostingEnvironment.ContentRootFileProvider;
+            var physicalProvider = hostingEnvironment.ContentRootFileProvider;
             var embeddedProvider = new EmbeddedFileProvider(Assembly.GetEntryAssembly());
             services.AddSingleton<IFileProvider>(embeddedProvider);
         }

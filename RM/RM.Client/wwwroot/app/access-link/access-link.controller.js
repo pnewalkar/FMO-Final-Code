@@ -16,6 +16,7 @@
         'guidService',
         '$stateParams',
         '$rootScope',
+        'CommonConstants',
          AccessLinkController])
 function AccessLinkController(
     accessLinkAPIService,
@@ -31,7 +32,8 @@ function AccessLinkController(
     GlobalSettings,
     guidService,
     $stateParams,
-    $rootScope
+    $rootScope ,
+    CommonConstants
 ) {
     vm = this;
     var contextTitle = vm.contextTitle;
@@ -43,6 +45,7 @@ function AccessLinkController(
     vm.enableSave = false;
     vm.enableBack = true;
     vm.clearAccessLink = clearAccessLink;
+    $rootScope.state = true;
     vm.accessLinkFeature = $stateParams.accessLinkFeature;
     initialize();
     function initialize() {
@@ -69,9 +72,13 @@ function AccessLinkController(
                 vm.enableSave = false;
                 vm.pathLength = '';
                 coordinatesService.setCordinates('');
+                $rootScope.state = true;
                 mapService.refreshLayers();
                 $rootScope.$broadcast('redirectTo', {
-                    contextTitle: GlobalSettings.deliveryPointLayerName
+                    contextTitle: CommonConstants.DeliveryPointActionName
+                });
+                $rootScope.$broadcast('disablePrintMap', {
+                    disable: false
                 });
             }
         });

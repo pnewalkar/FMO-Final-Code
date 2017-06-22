@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "EnterpriseLibrary.Logging": "6.0.1304",
     "EntityFramework": "6.1.3",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.1",
@@ -22,13 +23,14 @@
     "Microsoft.Extensions.Options": "1.1.1",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.1",
     "Microsoft.IdentityModel.Tokens": "5.1.3",
-    "Newtonsoft.Json": "10.0.2",
-    "System.IdentityModel.Tokens.Jwt": "5.1.3",
-    "System.Net.Http": "4.3.0",
-    "Microsoft.SqlServer.Types": "14.0.314.76",
     "Microsoft.Practices.EnterpriseLibrary.Common.dll": "3.1.0",
-    "EnterpriseLibrary.Logging": "6.0.1304",
-    "StyleCop.Analyzers": "1.0.0"
+    "Microsoft.SqlServer.Types": "14.0.314.76",
+    "Newtonsoft.Json": "10.0.2",
+    "RM.CommonLibrary.Authentication": "1.0.0-*",
+    "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
+    "StyleCop.Analyzers": "1.0.0",
+    "System.IdentityModel.Tokens.Jwt": "5.1.3",
+    "System.Net.Http": "4.0.0"
   },
 
   "tools": {
@@ -46,6 +48,7 @@
         }
       },
       "frameworkAssemblies": {
+        "System.Data": "4.0.0.0",
         "System.Web.Extensions": "4.0.0.0"
       }
     }

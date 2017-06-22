@@ -6,27 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
-using RM.DataManagement.NetworkManager.WebAPI.Authentication;
+using RM.CommonLibrary.Authentication;
 
 namespace RM.DataManagement.NetworkManager.WebAPI
 {
     public partial class Startup
     {
         // The secret key every token will be signed with. Keep this safe on the server!
-        private static readonly string secretKey = "mysupersecret_secretkey!123";
+        private static readonly string SecretKey = "mysupersecret_secretkey!123";
 
-        private static readonly string issuer = "RMG";
-        private static readonly string audience = "RMG_AD_Clients";
+        private static readonly string Issuer = "RMG";
+        private static readonly string Audience = "RMG_AD_Clients";
 
         private void ConfigureAuth(IApplicationBuilder app)
         {
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
 
             app.UseSimpleTokenProvider(new TokenProviderOptions
             {
                 Path = "/api/token",
-                Audience = audience,
-                Issuer = issuer,
+                Audience = Audience,
+                Issuer = Issuer,
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
                 IdentityResolver = GetIdentity
             });
@@ -39,11 +39,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI
 
                 // Validate the JWT Issuer (iss) claim
                 ValidateIssuer = true,
-                ValidIssuer = issuer,
+                ValidIssuer = Issuer,
 
                 // Validate the JWT Audience (aud) claim
                 ValidateAudience = true,
-                ValidAudience = audience,
+                ValidAudience = Audience,
 
                 // Validate the token expiry
                 ValidateLifetime = true,
@@ -74,7 +74,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI
         private Task<ClaimsIdentity> GetIdentity(string username, string password)
         {
             // Don't do this in production, obviously!
-            //if (username == "TEST" && password == "TEST123")
+            // if (username == "TEST" && password == "TEST123")
             List<string> userList = new List<string> { "manageruser1", "collectionuser1", "bhavin.shah", "shobharam.katiya" };
             if (userList.Contains(username))
             {

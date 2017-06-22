@@ -18,6 +18,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class PostCodeDataService : DataServiceBase<Postcode, RMDBContext>, IPostCodeDataService
     {
+        private const string SearchResultCount = "SearchResultCount";
+
         public PostCodeDataService(IDatabaseFactory<RMDBContext> databaseFactory)
             : base(databaseFactory)
         {
@@ -33,29 +35,22 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid unitGuid)
         {
-            try
-            {
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
-                searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
-                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
-                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
-                                                where p.PostcodeUnit.StartsWith(searchText)
-                                                 && u.Unit_GUID == unitGuid
-                                                select new PostCodeDTO
-                                                {
-                                                    PostcodeUnit = p.PostcodeUnit,
-                                                    InwardCode = p.InwardCode,
-                                                    OutwardCode = p.OutwardCode,
-                                                    Sector = p.Sector
-                                                }).Take(takeCount).ToListAsync();
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
+            searchText = searchText ?? string.Empty;
+            var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                            join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                            join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
+                                            where p.PostcodeUnit.StartsWith(searchText)
+                                             && u.Unit_GUID == unitGuid
+                                            select new PostCodeDTO
+                                            {
+                                                PostcodeUnit = p.PostcodeUnit,
+                                                InwardCode = p.InwardCode,
+                                                OutwardCode = p.OutwardCode,
+                                                Sector = p.Sector
+                                            }).Take(takeCount).ToListAsync();
 
-                return postCodeDetailsDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return postCodeDetailsDto;
         }
 
         /// <summary>
@@ -68,21 +63,14 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </returns>
         public async Task<int> GetPostCodeUnitCount(string searchText, Guid unitGuid)
         {
-            try
-            {
-                searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
-                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
-                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
-                                                where p.PostcodeUnit.StartsWith(searchText)
-                                                 && u.Unit_GUID == unitGuid
-                                                select p).CountAsync();
-                return postCodeDetailsDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            searchText = searchText ?? string.Empty;
+            var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                            join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                            join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
+                                            where p.PostcodeUnit.StartsWith(searchText)
+                                             && u.Unit_GUID == unitGuid
+                                            select p).CountAsync();
+            return postCodeDetailsDto;
         }
 
         /// <summary>
@@ -93,28 +81,21 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List<PostCodeDTO></returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid unitGuid)
         {
-            try
-            {
-                searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
-                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
-                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
-                                                where p.PostcodeUnit.StartsWith(searchText)
-                                                 && u.Unit_GUID == unitGuid
-                                                select new PostCodeDTO
-                                                {
-                                                    PostcodeUnit = p.PostcodeUnit,
-                                                    InwardCode = p.InwardCode,
-                                                    OutwardCode = p.OutwardCode,
-                                                    Sector = p.Sector
-                                                }).ToListAsync();
+            searchText = searchText ?? string.Empty;
+            var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                            join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                            join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
+                                            where p.PostcodeUnit.StartsWith(searchText)
+                                             && u.Unit_GUID == unitGuid
+                                            select new PostCodeDTO
+                                            {
+                                                PostcodeUnit = p.PostcodeUnit,
+                                                InwardCode = p.InwardCode,
+                                                OutwardCode = p.OutwardCode,
+                                                Sector = p.Sector
+                                            }).ToListAsync();
 
-                return postCodeDetailsDto;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return postCodeDetailsDto;
         }
 
         /// <summary>

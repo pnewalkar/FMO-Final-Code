@@ -6,13 +6,13 @@ unitSelectorService.$inject = ['$q',
                                '$filter',
                                'manageAccessService',
                                'mapFactory',
-                               'unitSelectorAPIService'];
+                               'unitSelectorAPIService','licensingInfoService'];
 function unitSelectorService($q,
                              GlobalSettings,
                              $filter,
                              manageAccessService,
                              mapFactory,
-                             unitSelectorAPIService) {
+                             unitSelectorAPIService, licensingInfoService) {
     var deliveryRouteUnit = [];
     var isDeliveryUnitDisabled = false;
     var result = [];
@@ -22,9 +22,10 @@ function unitSelectorService($q,
         BindData: BindData
     };
 
-    function DeliveryUnit(selectedDeliveryUnit) {
+    function DeliveryUnit(selectedDeliveryUnit) {      
         manageAccessService.activate(selectedDeliveryUnit.ID);
         updateMapAfterUnitChange(selectedDeliveryUnit);
+       
     }
     function BindData(deliveryRouteUnit) {
         if (deliveryRouteUnit.length === 0) {
@@ -36,14 +37,17 @@ function unitSelectorService($q,
                     if (response) {
                         //deliveryRouteUnit = response;
                         angular.forEach(response, function (value, key) {
-                            deliveryRouteUnit.push({ displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery" })
+                            deliveryRouteUnit.push({ displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery" ,area: value.area,
+                            boundingBox: value.boundingBox,
+                            boundingBoxCenter: value.boundingBoxCenter,
+                            unitBoundaryGeoJSONData: value.unitBoundaryGeoJSONData })
                         });
 
                         var newTemp = $filter("filter")(deliveryRouteUnit, { ID: authData.unitGuid });
                         selectedUser = newTemp[0];
                         selectedDeliveryUnit = response[0];
                         result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled });
-                        updateMapAfterUnitChange(selectedDeliveryUnit);
+                        updateMapAfterUnitChange(selectedUser);
                         deferred.resolve(result);
                     }
                 });
@@ -58,12 +62,15 @@ function unitSelectorService($q,
                         }
                       //  deliveryRouteUnit = response;
                         angular.forEach(response, function (value, key) {
-                            deliveryRouteUnit.push({ displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery" })
+                            deliveryRouteUnit.push({ displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery" ,area: value.area,
+                            boundingBox: value.boundingBox,
+                            boundingBoxCenter: value.boundingBoxCenter,
+                            unitBoundaryGeoJSONData: value.unitBoundaryGeoJSONData })
                         });
                         selectedUser = deliveryRouteUnit[0];
                         selectedDeliveryUnit = response[0];
-
-                        result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled });
+                        
+                        result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled});
                         updateMapAfterUnitChange(selectedDeliveryUnit);
                         deferred.resolve(result);
                     }

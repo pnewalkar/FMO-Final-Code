@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
@@ -16,6 +20,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         private IScenarioDataService scenarioDataService;
         private IDeliveryRouteIntegrationService deliveryRouteIntegrationService;
         private IBlockSequenceDataService blockSequenceDataService;
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         // private IHttpHandler httpHandler;
         // private string ReferenceDataWebapiUri = string.Empty;
@@ -26,13 +31,14 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <param name="deliveryRouteDataService">IDeliveryRouteRepository reference</param>
         /// <param name="scenarioDataService">IScenarioRepository reference</param>
         /// <param name="referenceDataBusinessService">The reference data business service.</param>
-        public DeliveryRouteBusinessService(IDeliveryRouteDataService deliveryRouteDataService, IScenarioDataService scenarioDataService, IDeliveryRouteIntegrationService deliveryRouteIntegrationService, IBlockSequenceDataService blockSequenceDataService)
+        public DeliveryRouteBusinessService(IDeliveryRouteDataService deliveryRouteDataService, IScenarioDataService scenarioDataService, IDeliveryRouteIntegrationService deliveryRouteIntegrationService, IBlockSequenceDataService blockSequenceDataService, ILoggingHelper loggingHelper)
         {
             // this.httpHandler = httpHandler;
             this.deliveryRouteDataService = deliveryRouteDataService;
             this.scenarioDataService = scenarioDataService;
             this.deliveryRouteIntegrationService = deliveryRouteIntegrationService;
             this.blockSequenceDataService = blockSequenceDataService;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -140,17 +146,24 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <returns>bool</returns>
         public async Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
         {
-            bool isBlockSequencInserted = false;
-            List<string> categoryNames = new List<string> { ReferenceDataCategoryNames.OperationalObjectType };
-            var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
-            Guid operationalObjectTypeForDp = referenceDataCategoryList
-              .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
-              .SelectMany(x => x.ReferenceDatas)
-              .Where(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).Select(x => x.ID)
-              .SingleOrDefault();
-            BlockSequenceDTO blockSequenceDTO = new BlockSequenceDTO { ID = Guid.NewGuid(), OperationalObjectType_GUID = operationalObjectTypeForDp, OperationalObject_GUID = deliveryPointId };
-            isBlockSequencInserted = await blockSequenceDataService.AddBlockSequence(blockSequenceDTO, deliveryRouteId);
-            return isBlockSequencInserted;
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CreateBlockSequenceForDeliveryPoint"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                bool isBlockSequencInserted = false;
+                List<string> categoryNames = new List<string> { ReferenceDataCategoryNames.OperationalObjectType };
+                var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
+                Guid operationalObjectTypeForDp = referenceDataCategoryList
+                  .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
+                  .SelectMany(x => x.ReferenceDatas)
+                  .Where(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).Select(x => x.ID)
+                  .SingleOrDefault();
+                BlockSequenceDTO blockSequenceDTO = new BlockSequenceDTO { ID = Guid.NewGuid(), OperationalObjectType_GUID = operationalObjectTypeForDp, OperationalObject_GUID = deliveryPointId };
+                isBlockSequencInserted = await blockSequenceDataService.AddBlockSequence(blockSequenceDTO, deliveryRouteId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return isBlockSequencInserted;
+            }
         }
     }
 }

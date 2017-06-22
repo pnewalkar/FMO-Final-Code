@@ -134,9 +134,11 @@
     <Compile Include="DTO\NetworkLinkDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\OsRoadLinkDTO.cs" />
+    <Compile Include="DTO\PdfFileDTO.cs" />
     <Compile Include="DTO\PostalAddressDTO.cs" />
     <Compile Include="DTO\PostCodeDTO.cs" />
     <Compile Include="DTO\PostCodeSectorDTO.cs" />
+    <Compile Include="DTO\PrintMapDTO.cs" />
     <Compile Include="DTO\Properties.cs" />
     <Compile Include="DTO\ReferenceDataCategoryDTO.cs" />
     <Compile Include="DTO\ReferenceDataDTO.cs" />
@@ -218,6 +220,7 @@
     <Compile Include="Entities\UserRoleUnit.cs" />
     <Compile Include="Entities\Views\AccessFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\DTOConstants.cs" />
     <Compile Include="Utilities\ReferenceData\ReferenceDataHelper.cs" />
   </ItemGroup>
   <ItemGroup>

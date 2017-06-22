@@ -4,13 +4,13 @@
     using System.Collections.Generic;
     using System.Data.Entity.Infrastructure;
     using System.Linq;
+    using Moq;
+    using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.Entities;
     using RM.CommonLibrary.HelperMiddleware;
-    using Moq;
-    using NUnit.Framework;
 
     public class ScenarioDataServiceFixture : RepositoryFixtureBase
     {
@@ -29,6 +29,8 @@
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             var deliveryScenario = new List<Scenario>()
             {
                 new Scenario() { ScenarioName = "Worthing Delivery Office - Baseline weekday",  Unit_GUID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"), OperationalState_GUID = System.Guid.Parse("9C1E56D7-5397-4984-9CF0-CD9EE7093C88") },

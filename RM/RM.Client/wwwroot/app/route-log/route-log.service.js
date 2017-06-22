@@ -22,7 +22,8 @@ referenceDataConstants) {
         loadScenario: loadScenario,
         loadDeliveryRoute: loadDeliveryRoute,
         deliveryRouteChange: deliveryRouteChange,
-        generateRouteLogSummary: generateRouteLogSummary
+        generateRouteLogSummary: generateRouteLogSummary,
+        generatePdf: generatePdf
     };
     function closeWindow() {
         $mdDialog.cancel();
@@ -46,7 +47,7 @@ referenceDataConstants) {
     }
     function loadRouteLogStatus() {
         var deferred = $q.defer();
-        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.OperationalStatus.AppCategoryName).then(function (response) {
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.SenarioOperationState.AppCategoryName).then(function (response) {
             deferred.resolve(response.listItems);
         });
         return deferred.promise;
@@ -73,19 +74,19 @@ referenceDataConstants) {
         });
         return deferred.promise;
     }
-    function loadDeliveryRoute(operationStateID, deliveryScenarioID,selectionType) {
+    function loadDeliveryRoute(operationStateID, deliveryScenarioID, selectionType) {
         var deferred = $q.defer();
         routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID, selectionType).then(function (response) {
             var deliveryRouteResult = [];
             if (selectionType === CommonConstants.RouteLogSelectionType.Single) {
                 deliveryRoute = response;
-                multiSelectiondeliveryRoute = null;               
+                multiSelectiondeliveryRoute = null;
                 deliveryRouteResult.push({ "deliveryRoute": response, "multiSelectiondeliveryRoute": null });
                 deferred.resolve(deliveryRouteResult);
             } else {
                 multiSelectiondeliveryRoute = response;
-                deliveryRoute = null;               
-                deliveryRouteResult.push({ "deliveryRoute": null, "multiSelectiondeliveryRoute": response });
+                deliveryRoute = null;
+                deliveryRouteResult.push({ "deliveryRoute": [], "multiSelectiondeliveryRoute": response });
                 deferred.resolve(deliveryRouteResult);
             }
         });
@@ -101,6 +102,13 @@ referenceDataConstants) {
     function generateRouteLogSummary(deliveryRoute) {
         var deferred = $q.defer();
         routeLogAPIService.generateRouteLogSummary(deliveryRoute).then(function (response) {
+            deferred.resolve(response);
+        });
+        return deferred.promise;
+    };
+    function generatePdf(pdfFilename) {
+        var deferred = $q.defer();
+        routeLogAPIService.generatePdf(pdfFilename).then(function (response) {
             deferred.resolve(response);
         });
         return deferred.promise;

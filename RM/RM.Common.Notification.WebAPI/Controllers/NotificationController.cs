@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.Common.Notification.WebAPI.BusinessService;
 using RM.CommonLibrary.EntityFramework.DTO;
-using System;
-using System.Diagnostics;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.Common.Notification.WebAPI.Controllers
 {
@@ -14,10 +16,10 @@ namespace RM.Common.Notification.WebAPI.Controllers
         private INotificationBusinessService notificationBusinessService = default(INotificationBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public NotificationController(INotificationBusinessService notificationBusinessService, ILoggingHelper _loggingHelper)
+        public NotificationController(INotificationBusinessService notificationBusinessService, ILoggingHelper loggingHelper)
         {
             this.notificationBusinessService = notificationBusinessService;
-            this.loggingHelper = _loggingHelper;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -31,8 +33,15 @@ namespace RM.Common.Notification.WebAPI.Controllers
         {
             try
             {
-                int status = await notificationBusinessService.AddNewNotification(notificationDTO);
-                return Ok(status);
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.AddNewNotification"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    int status = await notificationBusinessService.AddNewNotification(notificationDTO);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(status);
+                }
             }
             catch (AggregateException ae)
             {
@@ -85,8 +94,15 @@ namespace RM.Common.Notification.WebAPI.Controllers
         {
             try
             {
-                int status = await notificationBusinessService.DeleteNotificationbyUDPRNAndAction(udprn, actionname);
-                return Ok(status);
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteNotificationbyUDPRNAndAction"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    int status = await notificationBusinessService.DeleteNotificationbyUDPRNAndAction(udprn, actionname);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(status);
+                }
             }
             catch (AggregateException ae)
             {

@@ -5,15 +5,13 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -22,6 +20,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class DeliveryRouteDataService : DataServiceBase<DeliveryRoute, RMDBContext>, IDeliveryRouteDataService
     {
+        private const string SearchResultCount = "SearchResultCount";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteRepository"/> class.
         /// </summary>
@@ -75,7 +75,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>The result set of delivery route.</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
             searchText = searchText ?? string.Empty;
             var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
                 .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
@@ -110,13 +110,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -245,13 +245,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -277,13 +277,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -311,13 +311,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -346,13 +346,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -398,7 +398,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             if (routeResults != null && routeResults.Count > 0)
             {
-                pairedRoute = string.Join(",", routeResults);
+                foreach (var item in routeResults)
+                {
+                    pairedRoute = pairedRoute + "," + item.RouteNumber;
+                }
                 pairedRoute = Regex.Replace(pairedRoute, ",+", ",").Trim(',');
             }
 
@@ -446,7 +449,6 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             return deliveryRoutes;
         }
-
 
         #endregion Private Methods
 

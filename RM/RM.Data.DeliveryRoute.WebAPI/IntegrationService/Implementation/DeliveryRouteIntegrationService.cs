@@ -16,6 +16,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
 {
     public class DeliveryRouteIntegrationService : IDeliveryRouteIntegrationService
     {
+        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
+        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
+
         #region Property Declarations
 
         private string deliveryRouteWebAPIName = string.Empty;
@@ -29,8 +32,8 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
         public DeliveryRouteIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
             this.httpHandler = httpHandler;
-            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
@@ -46,7 +49,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", categoryNames);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }
@@ -68,7 +70,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
             HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + categoryName);
             if (!result.IsSuccessStatusCode)
             {
-                // LOG ERROR WITH Statuscode
                 var responseContent = result.ReasonPhrase;
                 throw new ServiceException(responseContent);
             }

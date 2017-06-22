@@ -7,7 +7,9 @@ namespace RM.DataServices.Tests.DataService
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.EntityFramework.DataService;
     using CommonLibrary.EntityFramework.DataService.Interfaces;
+    using CommonLibrary.EntityFramework.DTO;
     using CommonLibrary.EntityFramework.Entities;
+    using CommonLibrary.LoggingMiddleware;
     using Moq;
     using NUnit.Framework;
     using RM.CommonLibrary.HelperMiddleware;
@@ -17,12 +19,14 @@ namespace RM.DataServices.Tests.DataService
         private Mock<RMDBContext> mockFmoDbContext;
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IAccessLinkDataService testCandidate;
+        private Mock<ILoggingHelper> mockLoggingHelper;
         private string coordinates;
         private Guid unit1Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid unit2Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid unit3Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid user1Id;
         private Guid user2Id;
+        private AccessLinkDTO accessLinkDto;
 
         [Test]
         public void Test_GetAccessLinks()
@@ -32,8 +36,29 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(actualResult);
         }
 
+        [Test]
+        public void Test_CreateAccessLink()
+        {
+            var actualResult = testCandidate.CreateAccessLink(accessLinkDto);
+            Assert.IsNotNull(actualResult);
+        }
+
+        [Test]
+        public void Test_GetAccessLinksCrossingOperationalObject()
+        {
+            string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
+            DbGeometry accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
+            var actualResult = testCandidate.GetAccessLinksCrossingOperationalObject(coordinates, accessLinkLine);
+            Assert.IsNotNull(actualResult);
+            Assert.AreEqual(actualResult.Count, 0);
+        }
+
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();
@@ -58,6 +83,17 @@ namespace RM.DataServices.Tests.DataService
                       }
             };
 
+            accessLinkDto = new AccessLinkDTO()
+            {
+                OperationalObjectPoint = DbGeometry.PointFromText("POINT (488938 197021)", 27700),
+                NetworkIntersectionPoint = null,
+                AccessLinkLine = null,
+                ActualLengthMeter = 3,
+                WorkloadLengthMeter = 5,
+                Approved = true,
+                OperationalObject_GUID = Guid.NewGuid()
+            };
+
             var mockAsynEnumerable = new DbAsyncEnumerable<AccessLink>(accessLink);
             var mockAccessLinkDataService = MockDbSet(accessLink);
             mockFmoDbContext = CreateMock<RMDBContext>();
@@ -73,7 +109,12 @@ namespace RM.DataServices.Tests.DataService
             mockAccessLinkDataService2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockAccessLinkDataService2.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockFmoDbContext.Object);
-            testCandidate = new AccessLinkDataService(mockDatabaseFactory.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new AccessLinkDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

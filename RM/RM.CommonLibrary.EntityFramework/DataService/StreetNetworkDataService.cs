@@ -13,7 +13,6 @@ using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -22,6 +21,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class StreetNetworkDataService : DataServiceBase<StreetName, RMDBContext>, IStreetNetworkDataService
     {
+        private const int BNGCOORDINATESYSTEM = 27700;
+        private const string SearchResultCount = "SearchResultCount";
+
         public StreetNetworkDataService(IDatabaseFactory<RMDBContext> databaseFactory)
             : base(databaseFactory)
         {
@@ -63,7 +65,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>The result set of street name.</returns>
         public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid unitGuid)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
+            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
             searchText = searchText ?? string.Empty;
 
             DbGeometry polygon =
@@ -114,13 +116,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
 
@@ -287,19 +289,23 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             return networkLinkDTO;
         }
 
-        /// <summary> Get the Network Links crossing access link </summary> <param
-        /// name="boundingBoxCoordinates">bbox coordinates</param> <param name="accessLink">access
-        /// link coordinate array</param> <returns>List<NetworkLinkDTO></returns>
+        /// <summary> Get the Network Links crossing the operational Object for a given extent</summary>
+        /// <param name="boundingBoxCoordinates">bbox coordinates</param>
+        /// <param name="accessLink">accesslink coordinate array</param>
+        /// <returns>List<NetworkLinkDTO></returns>
         public List<NetworkLinkDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
         {
             List<NetworkLinkDTO> networkLinkDTOs = new List<NetworkLinkDTO>();
-            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+
             List<NetworkLink> crossingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Crosses(accessLink)).ToList();
             List<NetworkLinkDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(crossingNetworkLinks);
             networkLinkDTOs.AddRange(crossingNetworkLinkDTOs);
+
             List<NetworkLink> overLappingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Overlaps(accessLink)).ToList();
             List<NetworkLinkDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(overLappingNetworkLinks);
             networkLinkDTOs.AddRange(overLappingNetworkLinkDTOs);
+
             return networkLinkDTOs;
         }
     }

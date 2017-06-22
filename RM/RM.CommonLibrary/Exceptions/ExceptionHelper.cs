@@ -8,26 +8,12 @@ namespace RM.CommonLibrary.ExceptionMiddleware
 {
     public class ExceptionHelper : IExceptionHelper
     {
-        #region Member Variables
-
-        private static bool isInitialized = false;
-
-        #endregion Member Variables
-
         #region Public Methods
 
-        public ExceptionHelper()
+        public ExceptionHelper(LogWriter logWriter)
         {
-            if (!isInitialized)
-            {
-                IConfigurationSource source = ConfigurationSourceFactory.Create();
-                LogWriterFactory log = new LogWriterFactory(source);
-                LogWriter logWriter = log.Create();
-                Logger.SetLogWriter(logWriter, false);
-                ExceptionManager exceptionManager = ExceptionHandlingConfiguration.BuildExceptionHandlingConfiguration(logWriter);
-                ExceptionPolicy.SetExceptionManager(exceptionManager);
-                isInitialized = true;
-            }
+            ExceptionManager exceptionManager = ExceptionHandlingConfiguration.BuildExceptionHandlingConfiguration(logWriter);
+            ExceptionPolicy.SetExceptionManager(exceptionManager);
         }
 
         /// <summary>

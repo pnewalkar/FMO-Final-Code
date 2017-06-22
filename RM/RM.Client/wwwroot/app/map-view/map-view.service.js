@@ -16,7 +16,9 @@ mapService.$inject = ['$http',
                      '$state',
                      '$stateParams',
                      '$rootScope',
-                     'layersAPIService'];
+                     'layersAPIService',
+                     'CommonConstants'
+];
 
 function mapService($http,
                     mapFactory,
@@ -33,9 +35,12 @@ function mapService($http,
                     $state,
                     $stateParams,
                     $rootScope,
-                    layersAPIService) {
+                    layersAPIService,
+                    CommonConstants
+                   ) {
     var vm = this;
     vm.map = null;
+    $rootScope.state = true;
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
@@ -44,10 +49,12 @@ function mapService($http,
     };
     vm.layersForContext = [];
     vm.activeSelection = null;
-    vm.secondarySelections =[];
+    vm.secondarySelections = [];
     vm.routeName = "";
-    vm.selectionListeners =[];
+    vm.selectionListeners = [];
     vm.features = null;
+    vm.selectedDP = null;
+    vm.selectedLayer = null;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -98,8 +105,19 @@ function mapService($http,
         setSelectedObjectsVisibility: setSelectedObjectsVisibility,
         removeInteraction: removeInteraction,
         deleteAccessLinkFeature: deleteAccessLinkFeature,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        showDeliveryPointDetails: showDeliveryPointDetails,
+        clearDrawingLayer: clearDrawingLayer,
+        setSize: setSize,
+        composeMap: composeMap,
+        getResolution: getResolution,
+        setOriginalSize: setOriginalSize,
+        LicenceInfo: LicenceInfo
     }
+
+    function LicenceInfo(displayText) {
+        return mapFactory.LicenceInfo(displayText);
+    }
+
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
        '+x_0=400000 +y_0=-100000 +ellps=airy ' +
@@ -111,6 +129,7 @@ function mapService($http,
 
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
+        vm.originalSize = vm.map.getSize();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
@@ -440,11 +459,21 @@ function mapService($http,
 
         switch (button.name) {
             case "accesslink":
+                var dpCoordinates = coordinatesService.getCordinates();
+
+                function drawCondition(e) {
+                    if (dpCoordinates === '') {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
                 draw = new ol.interaction.Draw({
                     source: vm.drawingLayer.layer.getSource(),
                     type: button.shape,
                     style: style,
-                    condition: ol.events.condition.primaryAction,
+                    condition: drawCondition,
                     geometryFunction: setAccessLinkCoordinates,
                     finishCondition: finishCondition
                 });
@@ -466,8 +495,8 @@ function mapService($http,
         }
 
         var dpCoordinates = coordinatesService.getCordinates();
-        if(dpCoordinates && dpCoordinates !== ''){
-         coordinates[0] = dpCoordinates;   
+        if (dpCoordinates && dpCoordinates !== '') {
+            coordinates[0] = dpCoordinates;
         }
         geometry.setCoordinates(coordinates);
         return geometry;
@@ -476,18 +505,24 @@ function mapService($http,
     function setupAccessLink() {
         var startLineCoordinate = [];
         var endLineCoordinate = [];
+        if (vm.selectedDP && vm.selectedLayer) {
+            setSelections({
+                featureID: vm.selectedDP.getId(), layer: vm.selectedLayer
+            }, []);
+        }
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    removeInteraction('select');
+			    //removeInteraction('select');
 			    clearDrawingLayer(true);
-			    setSelections(null, []);
+			    // setSelections(null, []);
 			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
 			    evt.feature.set("type", "accesslink");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    accessLinkCoordinatesService.setCordinates(coordinates);
+			    $rootScope.state = false;
 			    $stateParams.accessLinkFeature = evt.feature;
 			    var layer = mapFactory.getLayer('Drawing');
 			    vm.map.getInteractions().forEach(function (interaction) {
@@ -497,10 +532,10 @@ function mapService($http,
 			    });
 
 			    $rootScope.$broadcast('redirectTo', {
-			        
-			            feature: evt.feature,
-			            contextTitle: GlobalSettings.accessLinkLayerName
-			        
+
+			        feature: evt.feature,
+			        contextTitle: CommonConstants.AccessLinkActionName
+
 			    });
 			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
 			    //    reload: 'accessLink'
@@ -549,14 +584,20 @@ function mapService($http,
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
                 setSelections({
-                                     featureID: e.selected[0].getId(), layer: lastLayer
+                    featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
                 var deliveryPointDetails = e.selected[0].getProperties();
+                coordinatesService.setCordinates(deliveryPointDetails.geometry.flatCoordinates);
+                $rootScope.state = false;
+                guidService.setGuid(deliveryPointDetails.deliveryPointId);
                 showDeliveryPointDetails(deliveryPointDetails);
-                
-                             } else {
-                             setSelections(null, []);
-                             }
+                vm.selectedDP = e.selected[0];
+                vm.selectedLayer = lastLayer;
+            } else {
+                setSelections(null, []);
+                var deliveryPointDetails = null;
+                showDeliveryPointDetails(deliveryPointDetails);
+            }
 
         });
         persistSelection();
@@ -590,6 +631,7 @@ function mapService($http,
 			    evt.feature.set("type", "deliverypoint");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    coordinatesService.setCordinates(coordinates);
+			    $rootScope.state = false;
 
 			});
     }
@@ -701,27 +743,157 @@ function mapService($http,
             });
 
         }
-             }
+    }
 
     function showDeliveryPointDetails(deliveryPointDetails) {
-        deliveryPointDetails.routeName = null;
-        mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
-              .then(function (response) {
-                  if (response != null) {
-                      if (response[0].key == CommonConstants.RouteName) {
-                          deliveryPointDetails.routeName = [response[0].value];
-                          if (response[1].key == CommonConstants.DpUse) {
-                              deliveryPointDetails.dpUse = response[1].value;
+        if (deliveryPointDetails != null) {
+            deliveryPointDetails.routeName = null;
+            mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
+                  .then(function (response) {
+                      if (response != null) {
+                          if (response[0].key == CommonConstants.RouteName) {
+                              deliveryPointDetails.routeName = [response[0].value];
+                              if (response[1].key == CommonConstants.DpUse) {
+                                  deliveryPointDetails.dpUse = response[1].value;
+                              }
+                          }
+                          else if (response[0].key == CommonConstants.DpUse) {
+                              deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
-                      else if (response[0].key == CommonConstants.DpUse) {
-                          deliveryPointDetails.dpUse = response[0].value;
-                      }
-                  }
-                  $state.go('deliveryPointDetails', {
-                      selectedDeliveryPoint: deliveryPointDetails
-                  }, { reload: true });
-              });
+                      $state.go('deliveryPointDetails', {
+                          selectedDeliveryPoint: deliveryPointDetails
+                      }, { reload: true });
+                  });
+        }
+        else {
+            $state.go('deliveryPointDetails', {
+
+                selectedDeliveryPoint: deliveryPointDetails
+            }, { reload: true });
+        }
+    }
+
+    function setSize(width, height) {
+        vm.map.setSize([width, height]);
+    }
+
+    function setOriginalSize() {
+        vm.map.setSize(vm.originalSize);
+    }
+
+    function composeMap() {
+
+        vm.map.once('postcompose', function (event) {
+            writeScaletoCanvas(event);
+        });
+        vm.map.renderSync();
+    }
+
+    function writeScaletoCanvas(e) {
+        var ctx = e.context;
+        var canvas = e.context.canvas;
+        //get the Scaleline div container the style-width property
+        var olscale = document.getElementsByClassName('ol-scale-line-inner')[0];
+        //Scaleline thicknes
+        var line1 = 6;
+        //Offset from the left
+        var x_offset = 10;
+        //offset from the bottom
+        var y_offset = 30;
+        var fontsize1 = 15;
+        var font1 = fontsize1 + 'px Arial';
+        // how big should the scale be (original css-width multiplied)
+        var multiplier = 2;
+        var scalewidth = parseInt(olscale.style.width, 10) * multiplier;
+        var scale = olscale.innerHTML;
+        var scalenumber = parseInt(scale, 10);
+        var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
+
+        var calculatedScale = setScaleUnit(scalenumber, scaleunit);
+        //Scale Text
+        ctx.beginPath();
+        ctx.textAlign = "left";
+        ctx.strokeStyle = "#ffffff";
+        ctx.fillStyle = "#000000";
+        ctx.lineWidth = 5;
+        ctx.font = font1;
+        ctx.strokeText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+        ctx.fillText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+
+        //Scale Dimensions
+        var xzero = scalewidth + x_offset;
+        var yzero = canvas.height - y_offset;
+        var xfirst = x_offset + scalewidth * 1 / 4;
+        var xsecond = xfirst + scalewidth * 1 / 4;
+        var xthird = xsecond + scalewidth * 1 / 4;
+        var xfourth = xthird + scalewidth * 1 / 4;
+
+        // Stroke
+        ctx.beginPath();
+        ctx.lineWidth = line1 + 2;
+        ctx.strokeStyle = "#000000";
+        ctx.fillStyle = "#ffffff";
+        ctx.moveTo(x_offset, yzero);
+        ctx.lineTo(xzero + 1, yzero);
+        ctx.stroke();
+
+        //sections black/white
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#000000";
+        ctx.moveTo(x_offset, yzero);
+        ctx.lineTo(xfirst, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(xfirst, yzero);
+        ctx.lineTo(xsecond, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#000000";
+        ctx.moveTo(xsecond, yzero);
+        ctx.lineTo(xthird, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(xthird, yzero);
+        ctx.lineTo(xfourth, yzero);
+        ctx.stroke();
+
+        $rootScope.canvas = canvas;
+    }
+
+    function setScaleUnit(scalenumber, scaleunit) {
+        if (scaleunit == 'km') {
+            var scale = scalenumber * 0.621371;
+            if (scale < 1) {
+                scale = scalenumber * 1000
+                return Math.round(scale) + ' m';
+            }
+            else {
+                return Math.round(scale) + ' mi';
+            }
+        }
+        else if (scaleunit == 'm') {
+            var scale = scalenumber * 0.000621371;
+            if (scale < 1) {
+                return scalenumber + ' m';
+            }
+            else {
+                return Math.round(scale) + ' mi';
+            }
+        }
+    }
+
+    function getResolution() {
+        return vm.map.getView().getResolution();
     }
 
 }

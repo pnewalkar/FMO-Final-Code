@@ -28,15 +28,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List</returns>
         public List<DTO.ScenarioDTO> FetchScenario(Guid operationStateID, Guid deliveryUnitID)
         {
-            try
-            {
-                IEnumerable<Scenario> result = DataContext.Scenarios.AsNoTracking().ToList().Where(x => x.OperationalState_GUID == operationStateID && x.Unit_GUID == deliveryUnitID);
-                return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            IEnumerable<Scenario> result = DataContext.Scenarios.AsNoTracking().ToList().Where(x => x.OperationalState_GUID == operationStateID && x.Unit_GUID == deliveryUnitID);
+            return GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
         }
     }
 }

@@ -5,6 +5,9 @@ namespace RM.Common.ReferenceData.WebAPI.Entities
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
+    /// <summary>
+    /// Reference Data Category Database Entity
+    /// </summary>
     [Table("FMO.ReferenceDataCategory")]
     public partial class ReferenceDataCategory
     {

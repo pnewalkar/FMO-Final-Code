@@ -4,6 +4,7 @@
     {
         public const string EventID = "9002";
         public const string EventLogTitle = "RM Exception";
+        public const string UserFriendlyErrorMessage = "An application error occurred and has been logged. Please contact your administrator.";
         public const string GenralErrorMessage = "Application Error. Please contact your administrator.";
         public const string LogAndThrowErrorMessage = "An application error occurred and has been logged. Please contact your administrator.";
         public const string LogCategory = "General";

@@ -19,7 +19,7 @@ function simulationService(simulationAPIService,
 
     function loadRouteLogStatus(RouteStatusObj, selectedRouteStatusObj, selectedRouteStatusObj, selectedDeliveryUnitObj) {
         var deferred = $q.defer();
-        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.OperationalStatus.DBCategoryName).then(function (response) {
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.SenarioOperationState.DBCategoryName).then(function (response) {
             deferred.resolve(response.listItems);
         });
         return deferred.promise;
@@ -36,9 +36,9 @@ function simulationService(simulationAPIService,
     function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
         var deferred = $q.defer();
         simulationAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
-            if (response.length > 0) {
+          
                 deferred.resolve(response);
-            }
+
         });
         return deferred.promise;
     }

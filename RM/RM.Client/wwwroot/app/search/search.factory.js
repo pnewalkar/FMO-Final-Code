@@ -15,7 +15,7 @@ function searchService(
     return {
      basicSearch: basicSearch,
      advanceSearch: advanceSearch,
-     GetDeliveryPointByUDPRN:GetDeliveryPointByUDPRN
+     GetDeliveryPointByGuid: GetDeliveryPointByGuid
    }
 
     function basicSearch(searchText) {
@@ -39,11 +39,11 @@ function searchService(
         return deferred.promise;
     }
 
-    function GetDeliveryPointByUDPRN(udprn) {
+    function GetDeliveryPointByGuid(Guid) {
         var deferred = $q.defer();
-        var getDeliveryPointsUDPRNParams = stringFormatService.Stringformat(GlobalSettings.getDeliveryPointByUDPRN, udprn);
+        var getDeliveryPointsGuidParams = stringFormatService.Stringformat(GlobalSettings.getDeliveryPointById, Guid);
 
-        $http.get(GlobalSettings.deliveryPointApiUrl + getDeliveryPointsUDPRNParams).success(function (response) {
+        $http.get(GlobalSettings.deliveryPointApiUrl + getDeliveryPointsGuidParams).success(function (response) {
             deferred.resolve(response);
         }).error(function (err, status) {
             deferred.reject(err);

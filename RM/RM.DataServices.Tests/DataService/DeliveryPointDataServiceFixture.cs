@@ -4,15 +4,15 @@ namespace RM.DataServices.Tests.DataService
 {
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
+    using CommonLibrary.LoggingMiddleware;
+    using Moq;
+    using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.DTO;
     using RM.CommonLibrary.EntityFramework.Entities;
     using RM.CommonLibrary.HelperMiddleware;
-    using Moq;
-    using NUnit.Framework;
-    using CommonLibrary.LoggingMiddleware;
 
     [TestFixture]
     public class DeliveryPointDataServiceFixture : RepositoryFixtureBase
@@ -20,7 +20,7 @@ namespace RM.DataServices.Tests.DataService
         private Mock<RMDBContext> mockRMDBContext;
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IDeliveryPointsDataService testCandidate;
-        private string coordinates;
+     
         private Guid userId = System.Guid.NewGuid();
         private Guid unit1Guid;
         private Guid unit2Guid;
@@ -29,15 +29,7 @@ namespace RM.DataServices.Tests.DataService
         private Guid user2Id;
         private Mock<ILoggingHelper> mockLoggingHelper;
         private List<ReferenceDataCategoryDTO> referenceDataCategoryDTO;
-
-        [Test]
-        public void Test_GetDeliveryPoints()
-        {
-            OnSetup();
-            coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
-            var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
-            Assert.IsNotNull(actualResult);
-        }
+            
 
         [Test]
         public void Test_GetDeliveryPointRowVersion()
@@ -67,6 +59,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();
@@ -94,8 +88,6 @@ namespace RM.DataServices.Tests.DataService
                }
             };
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-            //mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
-
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();
@@ -103,6 +95,7 @@ namespace RM.DataServices.Tests.DataService
             mockRMDBContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointDataService.Object);
             mockRMDBContext.Setup(c => c.DeliveryPoints.AsNoTracking()).Returns(mockDeliveryPointDataService.Object);
             mockDeliveryPointDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointDataService.Object);
+
             var mockAsynEnumerable2 = new DbAsyncEnumerable<UnitLocation>(unitLocation);
             var mockDeliveryPointDataService2 = MockDbSet(unitLocation);
             mockRMDBContext.Setup(x => x.Set<UnitLocation>()).Returns(mockDeliveryPointDataService2.Object);
@@ -126,7 +119,7 @@ namespace RM.DataServices.Tests.DataService
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-          //  mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+            //  mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();
@@ -136,6 +129,11 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
 
@@ -146,7 +144,8 @@ namespace RM.DataServices.Tests.DataService
                new DeliveryPoint()
                {
                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
-                   Address_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
+                   Address_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12"),
+                   DeliveryPointUseIndicator_GUID = new Guid("019dbbbb-03fb-489c-8c8d-f1085e0d2a11")
                }
             };
 
@@ -190,7 +189,7 @@ namespace RM.DataServices.Tests.DataService
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-         //   mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+            //   mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();
@@ -237,6 +236,11 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }

@@ -23,7 +23,9 @@
     "EnterpriseLibrary.Logging": "6.0.1304",
     "Fonet": "1.0.0",
     "StyleCop.Analyzers": "1.0.0",
-    "Microsoft.Extensions.FileProviders.Embedded": "1.0.0"
+    "Microsoft.Extensions.FileProviders.Embedded": "1.0.0",
+    "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
+    "RM.CommonLibrary.Authentication": "1.0.0-*"
   },
 
   "tools": {
@@ -39,6 +41,9 @@
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
         }
+      },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0"
       }
     }
   },
@@ -47,7 +52,7 @@
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
     "embed": [
-      "XSLFOTemplates/FMO_PDFReport_DeliveryRouteLogSummary.xslt"
+      "XSLFOTemplates/FMO_PDFReport_Generic.xslt"
     ],
     "additionalArguments": [ "/ruleset:../RM.ruleset" ]
   },

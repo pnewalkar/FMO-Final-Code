@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 using RM.Operational.PDFGenerator.WebAPI.BusinessService;
-using System;
-using System.Diagnostics;
 
 namespace RM.Operational.PDFGenerator.WebAPI.Controllers
 {
@@ -11,28 +13,58 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
     public class PDFGeneratorController : RMBaseController
     {
         private IPDFGeneratorBusinessService pdfGeneratorBusinessService = default(IPDFGeneratorBusinessService);
-        private ILoggingHelper logginghelper = default(ILoggingHelper);
-        public PDFGeneratorController(IPDFGeneratorBusinessService pdfGeneratorBusinessService, ILoggingHelper logginghelper)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public PDFGeneratorController(IPDFGeneratorBusinessService pdfGeneratorBusinessService, ILoggingHelper loggingHelper)
         {
-            this.logginghelper = logginghelper;
+            this.loggingHelper = loggingHelper;
             this.pdfGeneratorBusinessService = pdfGeneratorBusinessService;
         }
 
         [Route("PDFReports/{fileName}")]
         [HttpPost]
-        public IActionResult GenerateRouteLogSummaryReport([FromBody]string xml, string fileName)
+        public IActionResult CreateReport([FromBody]string xml, string fileName)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.CreateReport"))
             {
-                var xslFo = pdfGeneratorBusinessService.GenerateRouteLogSummaryReport(xml, fileName);
-                return Ok(xslFo);
-            }
-            catch (Exception ex)
-            {
-                this.logginghelper.Log(ex, TraceEventType.Error);
-                throw;
-            }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
+                try
+                {
+                    var pdfFile = pdfGeneratorBusinessService.CreateReport(xml, fileName);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(pdfFile);
+                }
+                catch (Exception ex)
+                {
+                    this.loggingHelper.Log(ex, TraceEventType.Error);
+                    throw;
+                }
+            }
+        }
+
+        [Route("PDFReports/{pdfFileName}")]
+        [HttpGet]
+        public IActionResult GeneratePdfReport(string pdfFileName)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GeneratePdfReport"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                try
+                {
+                    var pdfData = pdfGeneratorBusinessService.GeneratePdfReport(pdfFileName);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PDFGeneratorAPIPriority, LoggerTraceConstants.PDFGeneratorControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(pdfData);
+                }
+                catch (Exception ex)
+                {
+                    this.loggingHelper.Log(ex, TraceEventType.Error);
+                    throw;
+                }
+            }
         }
     }
 }

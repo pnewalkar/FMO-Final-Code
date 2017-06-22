@@ -10,3 +10,18 @@ md-list-item, .version {
 
 .version {
   color: #ffffff; }
+
+.printInfo {
+  top: 36%;
+  position: absolute;
+  left: 30%;
+  margin: 0px 0px 0px 10px; }
+
+.versionBox {
+  position: absolute;
+  bottom: 0px;
+  min-height: 36px;
+  height: 36px; }
+
+.sideList .md-button {
+  min-height: 48px; }

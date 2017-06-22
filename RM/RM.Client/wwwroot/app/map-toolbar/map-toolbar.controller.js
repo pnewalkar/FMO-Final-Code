@@ -5,12 +5,16 @@ angular
 
 MapToolbarController.$inject = [
        'mapToolbarService',
-       '$scope'
+       '$scope',
+       '$rootScope'
+       
 ];
 
 function MapToolbarController(
     mapToolbarService,
-    $scope) {
+    $scope,
+    $rootScope
+    ) {
 
     var vm = this;
     vm.setSelectedButton = setSelectedButton;
@@ -18,6 +22,7 @@ function MapToolbarController(
     vm.selectedButton = null;
     vm.mapButtons = mapToolbarService.getMapButtons();
     vm.autoSelect = autoSelect();
+    vm.state = $rootScope.state;
 
     function setSelectedButton(button) {
         var shape = getShapeForButton(button);
