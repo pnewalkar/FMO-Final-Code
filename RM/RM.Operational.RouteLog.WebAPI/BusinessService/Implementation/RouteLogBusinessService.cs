@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,9 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.Enums;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
 using RM.Operational.RouteLog.WebAPI.Utils;
 
@@ -18,6 +21,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
     {
         private string xsltFilepath = string.Empty;
         private IRouteLogIntegrationService routeLogIntegrationService;
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
@@ -25,10 +29,11 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// <param name="deliveryRouteDataService">IDeliveryRouteRepository reference</param>
         /// <param name="scenarioDataService">IScenarioRepository reference</param>
         /// <param name="referenceDataBusinessService">The reference data business service.</param>
-        public RouteLogBusinessService(IRouteLogIntegrationService routeLogIntegrationService, IConfigurationHelper configurationHelper)
+        public RouteLogBusinessService(IRouteLogIntegrationService routeLogIntegrationService, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.routeLogIntegrationService = routeLogIntegrationService;
             this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(RouteLogConstants.XSLTFilePath).ToString() : string.Empty;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -38,15 +43,22 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// <returns>deliveryRouteDto</returns>
         public async Task<string> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
         {
-            string pdfFilename = string.Empty;
-            var routeLogSummaryModelDTO = await routeLogIntegrationService.GenerateRouteLog(deliveryRouteDto);
-            if (routeLogSummaryModelDTO != null)
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateRouteLog"))
             {
-                routeLogSummaryModelDTO.RouteLogSequencedPoints = GetRouteSummary(routeLogSummaryModelDTO.RouteLogSequencedPoints);
-                pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(RouteSummaryXMLSerialization(routeLogSummaryModelDTO), xsltFilepath);
-            }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return pdfFilename;
+                string pdfFilename = string.Empty;
+                var routeLogSummaryModelDTO = await routeLogIntegrationService.GenerateRouteLog(deliveryRouteDto);
+                if (routeLogSummaryModelDTO != null)
+                {
+                    routeLogSummaryModelDTO.RouteLogSequencedPoints = GetRouteSummary(routeLogSummaryModelDTO.RouteLogSequencedPoints);
+                    pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(RouteSummaryXMLSerialization(routeLogSummaryModelDTO), xsltFilepath);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return pdfFilename;
+            }
         }
 
         /// <summary>

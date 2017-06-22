@@ -1,9 +1,11 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.RouteLog.WebAPI.BusinessService;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
 
@@ -16,6 +18,7 @@ namespace RM.Operational.RouteLog.WebAPI.Test
         private Mock<IRouteLogIntegrationService> mockRouteLogIntegrationService;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
         private DeliveryRouteDTO deliveryRouteDto;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void Test_ValidPostalAddressData()
@@ -29,6 +32,7 @@ namespace RM.Operational.RouteLog.WebAPI.Test
             mockRouteLogIntegrationService = CreateMock<IRouteLogIntegrationService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
             deliveryRouteDto = new DeliveryRouteDTO() { };
+            loggingHelperMock = CreateMock<ILoggingHelper>();
             RouteLogSummaryModelDTO routeLogSummaryModelDTO = new RouteLogSummaryModelDTO() { };
 
             mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(It.IsAny<string>())).Returns("xsltFilepath");
@@ -36,7 +40,11 @@ namespace RM.Operational.RouteLog.WebAPI.Test
             mockRouteLogIntegrationService.Setup(x => x.GenerateRouteLog(It.IsAny<DeliveryRouteDTO>())).ReturnsAsync(routeLogSummaryModelDTO);
             mockRouteLogIntegrationService.Setup(x => x.GenerateRouteLogSummaryReport(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("<note><body>abc</body></note>");
 
-            testCandidate = new RouteLogBusinessService(mockRouteLogIntegrationService.Object, mockConfigurationHelper.Object);
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new RouteLogBusinessService(mockRouteLogIntegrationService.Object, mockConfigurationHelper.Object, loggingHelperMock.Object);
         }
     }
 }

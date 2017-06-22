@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -20,9 +21,14 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
             this.mapGeneratorBusinessService = mapGeneratorBusinessService;
         }
 
+        /// <summary>
+        /// Api to save captured map image in png format
+        /// </summary>
+        /// <param name="printMapDTO">printMapDTO</param>
+        /// <returns>Dto with saved image name</returns>
         [Route("MapImage")]
         [HttpPost]
-        public IActionResult GenerateReportWithMap([FromBody]PrintMapDTO printMapDTO)
+        public IActionResult SaveMapImage([FromBody]PrintMapDTO printMapDTO)
         {
             try
             {
@@ -36,18 +42,29 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Api to generate Print Map pdf using xsl fo
+        /// </summary>
+        /// <param name="printMapDTO">printMapDTO</param>
+        /// <returns>Pdf file name </returns>
         [Route("MapPDF")]
         [HttpPost]
-        public IActionResult GeneratePdf([FromBody]PrintMapDTO printMapDTO)
+        public async Task<IActionResult> GeneratePdf([FromBody]PrintMapDTO printMapDTO)
         {
             try
             {
-                return Ok("cf62faa5-619d-4244-be08-6c249bcde479.pdf");
+                var result = await mapGeneratorBusinessService.GenerateMapPdfReport(printMapDTO);
+                return Ok(result);
             }
-            catch (Exception ex)
+            catch (AggregateException ae)
             {
-                this.logginghelper.Log(ex, TraceEventType.Error);
-                throw;
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    logginghelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
     }

@@ -36,6 +36,9 @@ namespace RM.Operational.RouteLog.WebAPI.Utils
         internal const string Shade = "shade";
         internal const string Cell = "cell";
         internal const string Header = "header";
+        internal const string Source = "source";
+        internal const string Heading1CenterAligned = "heading1CenterAligned";
+        internal const string Image = "image";
         internal const string RouteSummaryAlias = "* All Alias, Hazards/Area Hazards and Special Instructions Information is shown on the detailed route log and hazard card.";
         internal const string RouteSummarySequencedPoints = "Sequenced Points";
         internal const string RouteSummaryHeader = "Route Log Summary";
@@ -48,7 +51,7 @@ namespace RM.Operational.RouteLog.WebAPI.Utils
         internal const string Aliases = "Aliases*";
         internal const string Block = "Blocks";
         internal const string Scenario = "Scenario";
-       
+
         internal const string CollectionPoint = "CPs";
         internal const string DeliveryPoint = "DPs";
         internal const string BusinessDeliveryPoint = "Business DPs";
@@ -56,7 +59,7 @@ namespace RM.Operational.RouteLog.WebAPI.Utils
         internal const string AccelerationIn = "Acceleration In";
         internal const string AccelerationOut = "Acceleration Out";
         internal const string PairedRoute = "Paired Route";
-        
+
         internal const string NoD2D = "No D2D";
         internal const string DPExemptions = "DP Exemptions";
         internal const string MultipleOccupancy = "Multiple Occupancy";
