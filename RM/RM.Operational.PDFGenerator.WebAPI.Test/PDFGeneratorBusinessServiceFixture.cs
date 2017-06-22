@@ -45,7 +45,11 @@ namespace RM.Operational.PDFGenerator.WebAPI.Test
         {
             mockFileProvider = CreateMock<IFileProvider>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
-            filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug\net452", string.Empty), @"TestData\");
+            #if DEBUG
+                filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug\net452", string.Empty), @"TestData\");
+            #else
+                filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Release\net452", string.Empty), @"TestData\");
+            #endif
             fileProvider = new PhysicalFileProvider(filepath);
             IFileInfo fileInfo = fileProvider.GetFileInfo(@".\FMO_PDFReport_DeliveryRouteLogSummary.xslt");
 
