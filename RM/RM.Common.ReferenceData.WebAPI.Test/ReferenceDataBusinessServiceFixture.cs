@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
 using Moq;
 using NUnit.Framework;
 using RM.Common.ReferenceData.WebAPI.BusinessService;
 using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
 using RM.Common.ReferenceData.WebAPI.DataService.Interface;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using System.IO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
-using System.Collections.Generic;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using System;
 
 namespace RM.Common.ReferenceData.WebAPI.Test
 {
@@ -24,15 +24,15 @@ namespace RM.Common.ReferenceData.WebAPI.Test
         private IReferenceDataBusinessService testCandidate;
         private Mock<ILoggingHelper> loggingHelperMock;
 
-        string filepath;
+        private string filepath;
 
         [Test]
         public void Test_GetReferenceDataByNameValuePairs()
         {
-              var result = testCandidate.GetReferenceDataByNameValuePairs("AccessLinkStatus", "AccessLinkParameters");
-              Assert.IsNotNull(result);
-              Assert.AreEqual(result.Name, "key");
-              Assert.AreEqual(result.Value, "value");
+            var result = testCandidate.GetReferenceDataByNameValuePairs("AccessLinkStatus", "AccessLinkParameters");
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Name, "key");
+            Assert.AreEqual(result.Value, "value");
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace RM.Common.ReferenceData.WebAPI.Test
         [Test]
         public void Test_GetSimpleListsReferenceDataList()
         {
-            var result = testCandidate.GetSimpleListsReferenceData(new List<string>() { "AccessLinkStatus"});
+            var result = testCandidate.GetSimpleListsReferenceData(new List<string>() { "AccessLinkStatus" });
             Assert.IsNotNull(result);
         }
 
@@ -55,11 +55,11 @@ namespace RM.Common.ReferenceData.WebAPI.Test
             mockReferenceDataDataService = CreateMock<IReferenceDataDataService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
             loggingHelperMock = CreateMock<ILoggingHelper>();
-            #if DEBUG
-                filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug\net452", string.Empty), @"TestData\");
-            #else
+#if DEBUG
+            filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug\net452", string.Empty), @"TestData\");
+#else
                 filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Release\net452", string.Empty), @"TestData\");
-            #endif
+#endif
             fileProvider = new PhysicalFileProvider(filepath);
             IFileInfo fileInfo = fileProvider.GetFileInfo(@".\ReferenceDataMapping.xml");
             NameValuePair collection = new NameValuePair();

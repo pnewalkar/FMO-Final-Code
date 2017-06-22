@@ -109,6 +109,8 @@
         public const int DeliveryRouteBusinessServiceMethodExitEventId = 9214;
         public const int DeliveryRouteDataServiceMethodEntryEventId = 9223;
         public const int DeliveryRouteDataServiceMethodExitEventId = 9224;
+        public const int DeliveryRouteIntegrationServiceMethodEntryEventId = 9233;
+        public const int DeliveryRouteIntegrationServiceMethodExitEventId = 9234;
 
         public const int PostalAddressControllerMethodEntryEventId = 9303;
         public const int PostalAddressControllerMethodExitEventId = 9304;
