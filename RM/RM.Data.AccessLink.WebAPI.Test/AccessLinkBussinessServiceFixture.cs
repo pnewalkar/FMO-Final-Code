@@ -43,7 +43,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             bool expectedResult = testCandidate.CreateAccessLink(operationalObjectId, operationObjectTypeId);
             Assert.True(expectedResult);
         }
-               
+
         [Test]
         public void Test_CheckManualAccessLinkIsValid()
         {

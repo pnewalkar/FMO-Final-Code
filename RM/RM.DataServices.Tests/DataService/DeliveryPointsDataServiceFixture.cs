@@ -68,16 +68,15 @@
             Assert.IsTrue(actualResultCount == 7);
         }
 
-        //[Test]
-        //public void TestGetDeliveryPointsCrossingOperationalObject()
-        //{
+        // [Test]
+        // public void TestGetDeliveryPointsCrossingOperationalObject()
+        // {
         //    string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
         //    DbGeometry operationalObject = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
 
-        //    var result = testCandidate.GetDeliveryPointsCrossingOperationalObject(coordinates, operationalObject);
-        //    Assert.IsNotNull(result);
-        //}
-
+        // var result = testCandidate.GetDeliveryPointsCrossingOperationalObject(coordinates, operationalObject);
+        //  Assert.IsNotNull(result);
+        // }
         protected override void OnSetup()
         {
             unit1Guid = Guid.NewGuid();

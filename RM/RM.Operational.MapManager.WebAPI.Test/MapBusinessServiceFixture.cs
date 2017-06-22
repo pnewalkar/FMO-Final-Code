@@ -1,12 +1,12 @@
-﻿using Moq;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.BusinessService;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace RM.Operational.MapManager.WebAPI.Test
 {

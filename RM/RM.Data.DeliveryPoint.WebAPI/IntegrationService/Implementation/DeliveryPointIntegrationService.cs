@@ -122,6 +122,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
+
                 var createAddressAndDeliveryPoint = JsonConvert.DeserializeObject<CreateDeliveryPointModelDTO>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return createAddressAndDeliveryPoint;
@@ -146,6 +147,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
+
                 var checkForDuplicateNybRecords = result.Content.ReadAsStringAsync().Result;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return checkForDuplicateNybRecords;
@@ -170,6 +172,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
+
                 var checkForDuplicateAddressWithDeliveryPoints = Convert.ToBoolean(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 

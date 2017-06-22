@@ -55,6 +55,7 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
+
                 var generateRouteLog = JsonConvert.DeserializeObject<RouteLogSummaryModelDTO>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return generateRouteLog;
@@ -80,6 +81,7 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
+
                 var generateRouteLogSummaryReport = result.Content.ReadAsStringAsync().Result;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return generateRouteLogSummaryReport;

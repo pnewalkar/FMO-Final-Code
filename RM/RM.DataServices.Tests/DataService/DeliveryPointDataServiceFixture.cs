@@ -20,7 +20,8 @@ namespace RM.DataServices.Tests.DataService
         private Mock<RMDBContext> mockRMDBContext;
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IDeliveryPointsDataService testCandidate;
-        private string coordinates;
+
+        // private string coordinates;
         private Guid userId = System.Guid.NewGuid();
         private Guid unit1Guid;
         private Guid unit2Guid;
@@ -30,13 +31,13 @@ namespace RM.DataServices.Tests.DataService
         private Mock<ILoggingHelper> mockLoggingHelper;
         private List<ReferenceDataCategoryDTO> referenceDataCategoryDTO;
 
-        //[Test]
-        //public void Test_GetDeliveryPoints()
-        //{           
+        // [Test]
+        // public void Test_GetDeliveryPoints()
+        // {
         //    coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
         //    var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
         //    Assert.IsNotNull(actualResult);
-        //}
+        // }
 
         [Test]
         public void Test_GetDeliveryPointRowVersion()
@@ -124,7 +125,8 @@ namespace RM.DataServices.Tests.DataService
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-            //  mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+            // mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();
@@ -189,8 +191,8 @@ namespace RM.DataServices.Tests.DataService
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
-            //   mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
 
+            // mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();
             mockRMDBContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointDataService.Object);

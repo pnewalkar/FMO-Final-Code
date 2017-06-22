@@ -22,23 +22,6 @@ namespace RM.Integration.PostalAddress.PAFLoader.Tests
         private Mock<ILoggingHelper> loggingHelperMock;
         private IPAFFileProcessUtility testCandidate;
 
-        protected override void OnSetup()
-        {
-            msgBrokerMock = CreateMock<IMessageBroker<PostalAddressDTO>>();
-            loggingHelperMock = CreateMock<ILoggingHelper>();
-            configurationHelperMock = CreateMock<IConfigurationHelper>();
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFProcessedFilePath")).Returns("d:/processedfile/");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFErrorFilePath")).Returns("d:/errorfile/");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.NoOfCharactersForPAF)).Returns("19");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.MaxCharactersForPAF)).Returns("534");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.CsvPAFValues)).Returns("20");
-            testCandidate = new PAFFileProcessUtility(msgBrokerMock.Object, configurationHelperMock.Object, loggingHelperMock.Object);
-
-            var rmTraceManagerMock = new Mock<IRMTraceManager>();
-            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
-            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
-        }
-
         [Test]
         public void Test_LoadPAF_Valid()
         {
@@ -84,9 +67,9 @@ namespace RM.Integration.PostalAddress.PAFLoader.Tests
             string strLine = "7 / 19 / 2016,8:37:00,B,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,,S, ,1A\r\n7 / 19 / 2016,8:37:00,C,2,YO23 1DQ,York,,,Bishopthorpe Road,, , The Residence,,,,,54162429,S, ,1A";
             string strFileName = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug", string.Empty), @"TestData\ValidFile\ValidPAF.csv");
             List<PostalAddressDTO> methodOutput = testCandidate.ProcessPAF(strLine, strFileName);
-            int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
+            int inValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsNotNull(methodOutput);
-            Assert.IsTrue(InValidReccount == 1);
+            Assert.IsTrue(inValidReccount == 1);
         }
 
         [Test]
@@ -119,6 +102,23 @@ namespace RM.Integration.PostalAddress.PAFLoader.Tests
             msgBrokerMock.Verify(m => m.SendMessage(It.IsAny<IMessage>()), Times.AtLeastOnce);
 
             Assert.IsFalse(flag);
+        }
+
+        protected override void OnSetup()
+        {
+            msgBrokerMock = CreateMock<IMessageBroker<PostalAddressDTO>>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+            configurationHelperMock = CreateMock<IConfigurationHelper>();
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFProcessedFilePath")).Returns("d:/processedfile/");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("PAFErrorFilePath")).Returns("d:/errorfile/");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.NoOfCharactersForPAF)).Returns("19");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.MaxCharactersForPAF)).Returns("534");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(PAFLoaderConstants.CsvPAFValues)).Returns("20");
+            testCandidate = new PAFFileProcessUtility(msgBrokerMock.Object, configurationHelperMock.Object, loggingHelperMock.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
         }
     }
 }

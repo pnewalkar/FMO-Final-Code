@@ -308,6 +308,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
                     var realExceptions = ae.Flatten().InnerException;
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
 
                 return Ok(deliveryPointDTo);
