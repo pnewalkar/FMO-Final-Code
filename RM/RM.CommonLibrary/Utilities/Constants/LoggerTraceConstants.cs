@@ -85,7 +85,11 @@
         public const int PDFGeneratorBusinessServiceMethodExitEventId = 8414;
 
         public const int MapManagerControllerMethodEntryEventId = 8503;
+        public const int MapManagerBusinessServiceMethodEntryEventId = 8496;
+        public const int MapManagerBusinessServiceMethodExitEventId = 8497;
         public const int MapManagerControllerMethodExitEventId = 8504;
+        public const int MapManagerIntegrationServiceMethodEntryEventId = 8486;
+        public const int MapManagerIntegrationServiceMethodExitEventId = 8487;
 
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;

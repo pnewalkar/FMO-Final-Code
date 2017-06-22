@@ -3,11 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Reflection;
+using System.Diagnostics;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
 using RM.Operational.MapManager.WebAPI.Utils;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
@@ -16,12 +19,14 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         private string xsltFilepath = string.Empty;
         private string imagePath = string.Empty;
         private IMapIntegrationService mapIntegrationService;
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public MapBusinessService(IMapIntegrationService mapIntegrationService, IConfigurationHelper configurationHelper)
+        public MapBusinessService(IMapIntegrationService mapIntegrationService, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.mapIntegrationService = mapIntegrationService;
             this.xsltFilepath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(MapManagerConstants.XSLTFilePath).ToString() : string.Empty;
             this.imagePath = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(MapManagerConstants.ImagePath).ToString() : string.Empty;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -31,13 +36,19 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <returns>deliveryRouteDto</returns>
         public PrintMapDTO SaveImage(PrintMapDTO printMapDTO)
         {
-            if (printMapDTO != null)
+            using (loggingHelper.RMTraceManager.StartTrace("Business.SaveImage"))
             {
-                printMapDTO.PrintTime = string.Format(MapManagerConstants.PrintMapDateTimeFormat, DateTime.Now);
-                SaveMapImage(printMapDTO);
-            }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return printMapDTO;
+                if (printMapDTO != null)
+                {
+                    printMapDTO.PrintTime = string.Format(MapManagerConstants.PrintMapDateTimeFormat, DateTime.Now);
+                    SaveMapImage(printMapDTO);
+                }
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return printMapDTO;
+            }
         }
 
         /// <summary>
@@ -47,14 +58,20 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <returns>Pdf file name </returns>
         public async Task<string> GenerateMapPdfReport(PrintMapDTO printMapDTO)
         {
-            string pdfFilename = string.Empty;
-            if (printMapDTO != null)
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateMapPdfReport"))
             {
-                string pdfXml = GenerateXml(printMapDTO);
-                pdfFilename = await mapIntegrationService.GenerateReportWithMap(pdfXml, xsltFilepath);
-            }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return pdfFilename;
+                string pdfFilename = string.Empty;
+                if (printMapDTO != null)
+                {
+                    string pdfXml = GenerateXml(printMapDTO);
+                    pdfFilename = await mapIntegrationService.GenerateReportWithMap(pdfXml, xsltFilepath);
+                }
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return pdfFilename;
+            }
         }
 
         /// <summary>
@@ -64,70 +81,78 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <returns>Xml as string</returns>
         private string GenerateXml(PrintMapDTO printMapDTO)
         {
-            XmlDocument doc = new XmlDocument();
-            XmlElement report = doc.CreateElement(MapManagerConstants.Report);
-            XmlElement pageHeader = doc.CreateElement(MapManagerConstants.PageHeader);
-            XmlElement pageFooter = doc.CreateElement(MapManagerConstants.PageFooter);
-            XmlElement content = doc.CreateElement(MapManagerConstants.Content);
-            XmlElement heading1 = doc.CreateElement(MapManagerConstants.Heading1);
-            XmlElement heading1CenterAligned = doc.CreateElement(MapManagerConstants.Heading1CenterAligned);
-            XmlElement image = doc.CreateElement(MapManagerConstants.Image);
-            XmlElement section = null;
-            XmlElement sectionColumn = null;
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateXml"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            report.SetAttribute(MapManagerConstants.PdfOutPut, printMapDTO.PdfSize + printMapDTO.PdfOrientation);
-            pageHeader.SetAttribute(MapManagerConstants.Caption, string.Empty);
-            pageFooter.SetAttribute(MapManagerConstants.Caption, string.Empty);
-            pageFooter.SetAttribute(MapManagerConstants.PageNumber, string.Empty);
-            report.AppendChild(pageHeader);
-            report.AppendChild(pageFooter);
-            report.AppendChild(content);
+                XmlDocument document = new XmlDocument();
+                XmlElement report = document.CreateElement(MapManagerConstants.Report);
+                XmlElement pageHeader = document.CreateElement(MapManagerConstants.PageHeader);
+                XmlElement pageFooter = document.CreateElement(MapManagerConstants.PageFooter);
+                XmlElement content = document.CreateElement(MapManagerConstants.Content);
+                XmlElement heading1 = document.CreateElement(MapManagerConstants.Heading1);
+                XmlElement heading1CenterAligned = document.CreateElement(MapManagerConstants.Heading1CenterAligned);
+                XmlElement image = document.CreateElement(MapManagerConstants.Image);
+                XmlElement section = null;
+                XmlElement sectionColumn = null;
 
-            // Section 1 Header
-            section = doc.CreateElement(MapManagerConstants.Section);
+                report.SetAttribute(MapManagerConstants.PdfOutPut, printMapDTO.PdfSize + printMapDTO.PdfOrientation);
+                pageHeader.SetAttribute(MapManagerConstants.Caption, string.Empty);
+                pageFooter.SetAttribute(MapManagerConstants.Caption, string.Empty);
+                pageFooter.SetAttribute(MapManagerConstants.PageNumber, string.Empty);
+                report.AppendChild(pageHeader);
+                report.AppendChild(pageFooter);
+                report.AppendChild(content);
 
-            // Section 1 Header 1
-            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
-            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-            heading1CenterAligned.InnerText = printMapDTO.MapTitle;
-            sectionColumn.AppendChild(heading1CenterAligned);
-            section.AppendChild(sectionColumn);
-            content.AppendChild(section);
+                // Section 1 Header
+                section = document.CreateElement(MapManagerConstants.Section);
 
-            // Section 2
-            section = doc.CreateElement(MapManagerConstants.Section);
+                // Section 1 Header 1
+                sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+                heading1CenterAligned.InnerText = printMapDTO.MapTitle;
+                sectionColumn.AppendChild(heading1CenterAligned);
+                section.AppendChild(sectionColumn);
+                content.AppendChild(section);
 
-            // Section 2 columns 1 i.e Table 1
-            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
-            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-            image.SetAttribute(MapManagerConstants.Source, printMapDTO.ImagePath);
-            sectionColumn.AppendChild(image);
-            section.AppendChild(sectionColumn);
-            content.AppendChild(section);
+                // Section 2
+                section = document.CreateElement(MapManagerConstants.Section);
 
-            // Section 3
-            section = doc.CreateElement(MapManagerConstants.Section);
-            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
-            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-            sectionColumn.InnerText = "Date : " + printMapDTO.PrintTime;
-            section.AppendChild(sectionColumn);
+                // Section 2 columns 1 i.e Table 1
+                sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+                image.SetAttribute(MapManagerConstants.Source, printMapDTO.ImagePath);
+                sectionColumn.AppendChild(image);
+                section.AppendChild(sectionColumn);
+                content.AppendChild(section);
 
-            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
-            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-            sectionColumn.InnerText = "Scale : " + printMapDTO.CurrentScale;
-            section.AppendChild(sectionColumn);
-            content.AppendChild(section);
+                // Section 3
+                section = document.CreateElement(MapManagerConstants.Section);
+                sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+                sectionColumn.InnerText = "Date : " + printMapDTO.PrintTime;
+                section.AppendChild(sectionColumn);
 
-            // Section 4
-            section = doc.CreateElement(MapManagerConstants.Section);
-            sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
-            sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-            sectionColumn.InnerText = printMapDTO.License;
-            section.AppendChild(sectionColumn);
-            content.AppendChild(section);
+                sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+                sectionColumn.InnerText = "Scale : " + printMapDTO.CurrentScale;
+                section.AppendChild(sectionColumn);
+                content.AppendChild(section);
 
-            doc.AppendChild(report);
-            return doc.InnerXml;
+                // Section 4
+                section = document.CreateElement(MapManagerConstants.Section);
+                sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+                sectionColumn.InnerText = printMapDTO.License;
+                section.AppendChild(sectionColumn);
+                content.AppendChild(section);
+
+                document.AppendChild(report);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return document.InnerXml;
+            }
         }
 
         /// <summary>
@@ -136,19 +161,27 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         /// <param name="printMapDTO">printMapDTO</param>
         private void SaveMapImage(PrintMapDTO printMapDTO)
         {
-            if (!string.IsNullOrEmpty(printMapDTO.EncodedString))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.SaveMapImage"))
             {
-                string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
-                string imageLocation = string.Empty;
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                if (encodedStringArray != null && encodedStringArray.Count() > 0)
+                if (!string.IsNullOrEmpty(printMapDTO.EncodedString))
                 {
-                    imageLocation = imagePath + Guid.NewGuid() + ".png";
-                    byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
-                    File.WriteAllBytes(imageLocation, imageBytes);
+                    string[] encodedStringArray = printMapDTO.EncodedString.Split(',');
+                    string imageLocation = string.Empty;
+
+                    if (encodedStringArray != null && encodedStringArray.Count() > 0)
+                    {
+                        imageLocation = imagePath + Guid.NewGuid() + ".png";
+                        byte[] imageBytes = Convert.FromBase64String(encodedStringArray[1]);
+                        File.WriteAllBytes(imageLocation, imageBytes);
+                    }
+
+                    printMapDTO.ImagePath = imageLocation;
                 }
 
-                printMapDTO.ImagePath = imageLocation;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
             }
         }
     }
