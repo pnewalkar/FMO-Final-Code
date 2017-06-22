@@ -21,6 +21,12 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
             this.pdfGeneratorBusinessService = pdfGeneratorBusinessService;
         }
 
+        /// <summary>
+        /// Create pdf file and store the pdf file in the File server
+        /// </summary>
+        /// <param name="xml">xsl fo as string</param>
+        /// <param name="fileName">XSLT filename</param>
+        /// <returns>Pdf file name</returns>
         [Route("PDFReports/{fileName}")]
         [HttpPost]
         public IActionResult CreateReport([FromBody]string xml, string fileName)
@@ -44,6 +50,11 @@ namespace RM.Operational.PDFGenerator.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Reads pdf file from the file server
+        /// </summary>
+        /// <param name="pdfFileName">pdf name </param>
+        /// <returns>pdf as byte array</returns>
         [Route("PDFReports/{pdfFileName}")]
         [HttpGet]
         public IActionResult GeneratePdfReport(string pdfFileName)
