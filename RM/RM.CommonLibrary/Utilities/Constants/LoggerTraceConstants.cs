@@ -34,6 +34,7 @@
         public const int ThirdPartyPriority = 8;
         public const int ReferenceDataAPIPriority = 8;
         public const int RouteLogAPIPriority = 8;
+        public const int PDFGeneratorAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -76,6 +77,11 @@
         public const int RouteLogBusinessServiceMethodExitEventId = 8314;
         public const int RouteLogIntegrationServiceMethodEntryEventId = 8323;
         public const int RouteLogIntegrationServiceMethodExitEventId = 8324;
+
+        public const int PDFGeneratorControllerMethodEntryEventId = 8403;
+        public const int PDFGeneratorControllerMethodExitEventId = 8404;
+        public const int PDFGeneratorBusinessServiceMethodEntryEventId = 8413;
+        public const int PDFGeneratorBusinessServiceMethodExitEventId = 8414;
 
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;

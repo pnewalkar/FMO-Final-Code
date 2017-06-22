@@ -86,6 +86,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();
