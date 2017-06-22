@@ -267,7 +267,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 
             for (int i = 0; i < columnsCount; i++)
             {
-                column = doc.CreateElement(RouteLogConstants.Columns);
+                column = doc.CreateElement(RouteLogConstants.Column);
                 column.SetAttribute(RouteLogConstants.Width, "1");
                 columns.AppendChild(column);
             }
