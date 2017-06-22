@@ -157,7 +157,7 @@ function deliveryPointService(
         vm.positionedDeliveryPointList = positionedDeliveryPointList;
         deliveryPointAPIService.UpdateDeliverypoint(positionedDeliveryPointList[0]).then(function (result) {
             mapFactory.setAccessLink();
-            mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
+            mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate);
             guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
         });
