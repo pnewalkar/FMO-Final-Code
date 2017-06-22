@@ -37,7 +37,16 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>boolean value</returns>
         public async Task<bool> AddressLocationExists(int udprn)
         {
-            return await DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).AnyAsync();
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.AddressLocationExists"))
+            {
+                string method = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                bool addressLocationExists = await DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).AnyAsync();
+
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return addressLocationExists;
+            }
         }
 
         /// <summary>
@@ -47,9 +56,16 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>AddressLocationDTO object</returns>
         public async Task<AddressLocationDTO> GetAddressLocationByUDPRN(int udprn)
         {
-            var objAddressLocation = await DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAddressLocationByUDPRN"))
+            {
+                string method = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
+                var objAddressLocation = await DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
+                var getAddressLocationByUDPRN = GenericMapper.Map<AddressLocation, AddressLocationDTO>(objAddressLocation);
+                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getAddressLocationByUDPRN;
+            }
         }
 
         /// <summary>
@@ -63,15 +79,16 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveNewAddressLocation"))
                 {
-                    string method = MethodHelper.GetRealMethodFromAsyncMethod(MethodBase.GetCurrentMethod()).Name;
+                    string method = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var addressLocationEntity = new AddressLocation();
 
                     GenericMapper.Map(addressLocationDTO, addressLocationEntity);
                     DataContext.AddressLocations.Add(addressLocationEntity);
+                    var saveNewAddressLocation = await DataContext.SaveChangesAsync();
                     loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                    return await DataContext.SaveChangesAsync();
+                    return saveNewAddressLocation;
                 }
             }
             catch (DbUpdateException dbUpdateException)

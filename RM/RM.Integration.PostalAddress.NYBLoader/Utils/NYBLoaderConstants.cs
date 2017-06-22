@@ -2,6 +2,9 @@
 {
     public static class NYBLoaderConstants
     {
+        public const string NoOfCharactersForNYB = "NoOfCharactersForNYB";
+        public const string MaxCharactersForNYB = "maxCharactersForNYB";
+        public const string CsvValuesForNYB = "csvValuesForNYB";
         internal const string ProcessedFilePath = "ProcessedFilePath";
         internal const string ErrorFilePath = "ErrorFilePath";
         internal const string DeliveryPointSuffix = "1A";
@@ -10,7 +13,6 @@
         internal const string NEWLINE = "\n";
         internal const string POSTALADDRESSDETAILS = "Postal Address Details : ";
         internal const string BatchServiceName = "ServiceName";
-
         internal const string LOADNYBDETAILSLOGMESSAGE = "Load NYB Error Message : Invalid NYB file, File Name : {0} : Log Time : {1}";
         internal const string LOADNYBINVALIDDETAILS = "Load NYB Error Message : NYB file contains invalid data, File Name : {0} : Log Time : {1}";
         internal const string FMOWebAPIName = "FMOWebAPIName";
@@ -31,11 +33,7 @@
         internal const int NYBPostcodeType = 13;
         internal const int NYBSmallUserOrganisationIndicator = 14;
         internal const int NYBDeliveryPointSuffix = 15;
-        public const string NoOfCharactersForNYB = "NoOfCharactersForNYB";
-        public const string MaxCharactersForNYB = "maxCharactersForNYB";
-        public const string CsvValuesForNYB = "csvValuesForNYB";
         internal const string PAFZIPFILENAME = "^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
-
         internal const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
     }
 }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RM.Operational.PDFGenerator.WebAPI.Utils
+﻿namespace RM.Operational.PDFGenerator.WebAPI.Utils
 {
     public static class PDFGeneratorConstants
     {
-        
+        internal const string XSLTFilePath = "XSLTFilePath";
+        internal const string PDFFileLoaction = "PDFFileLoaction";
     }
 }
