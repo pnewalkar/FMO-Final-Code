@@ -243,11 +243,11 @@
 
         protected override void OnSetup()
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
         }
 
         private void SetUpDataForDeliveryPoints()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             postalAddressesDTO = new List<PostalAddressDTO>()
             {
                 new PostalAddressDTO()
@@ -357,6 +357,7 @@
 
         private void SetUpDataForCreateAddressAndDeliveryPoint()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             postalAddressesDTO = new List<PostalAddressDTO>()
             {
                 new PostalAddressDTO()
@@ -489,7 +490,7 @@
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
-        
+
             testCandidate = new PostalAddressDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
         }
 

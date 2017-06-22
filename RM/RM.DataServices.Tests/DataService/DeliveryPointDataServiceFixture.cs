@@ -20,7 +20,7 @@ namespace RM.DataServices.Tests.DataService
         private Mock<RMDBContext> mockRMDBContext;
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IDeliveryPointsDataService testCandidate;
-        private string coordinates;
+     
         private Guid userId = System.Guid.NewGuid();
         private Guid unit1Guid;
         private Guid unit2Guid;
@@ -29,14 +29,7 @@ namespace RM.DataServices.Tests.DataService
         private Guid user2Id;
         private Mock<ILoggingHelper> mockLoggingHelper;
         private List<ReferenceDataCategoryDTO> referenceDataCategoryDTO;
-
-        [Test]
-        public void Test_GetDeliveryPoints()
-        {
-            coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
-            var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
-            Assert.IsNotNull(actualResult);
-        }
+            
 
         [Test]
         public void Test_GetDeliveryPointRowVersion()

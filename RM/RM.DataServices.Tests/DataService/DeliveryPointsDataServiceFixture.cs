@@ -23,6 +23,7 @@
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IDeliveryPointsDataService testCandidate;
         private Guid deliveryUnitID = System.Guid.NewGuid();
+        private string coordinates;
         private Guid unit1Guid;
         private Guid unit2Guid;
         private Guid unit3Guid;
@@ -68,15 +69,23 @@
             Assert.IsTrue(actualResultCount == 7);
         }
 
-        [Test]
-        public void TestGetDeliveryPointsCrossingOperationalObject()
-        {
-            string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
-            DbGeometry operationalObject = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
+        //[Test]
+        //public void TestGetDeliveryPointsCrossingOperationalObject()
+        //{
+        //    string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
+        //    DbGeometry operationalObject = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
 
-            var result = testCandidate.GetDeliveryPointsCrossingOperationalObject(coordinates, operationalObject);
-            Assert.IsNotNull(result);
-        }
+        //    var result = testCandidate.GetDeliveryPointsCrossingOperationalObject(coordinates, operationalObject);
+        //    Assert.IsNotNull(result);
+        //}
+
+        //[Test]
+        //public void Test_GetDeliveryPoints()
+        //{
+        //    coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
+        //    var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
+        //    Assert.IsNotNull(actualResult);
+        //}
 
         protected override void OnSetup()
         {
