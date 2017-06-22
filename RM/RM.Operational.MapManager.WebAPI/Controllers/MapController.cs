@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.MapManager.WebAPI.Controllers;
 using RM.Operational.MapManager.WebAPI.BusinessService;
 
@@ -13,11 +16,11 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
     public class MapController : RMBaseController
     {
         private IMapBusinessService mapGeneratorBusinessService = default(IMapBusinessService);
-        private ILoggingHelper logginghelper = default(ILoggingHelper);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public MapController(IMapBusinessService mapGeneratorBusinessService, ILoggingHelper logginghelper)
+        public MapController(IMapBusinessService mapGeneratorBusinessService, ILoggingHelper loggingHelper)
         {
-            this.logginghelper = logginghelper;
+            this.loggingHelper = loggingHelper;
             this.mapGeneratorBusinessService = mapGeneratorBusinessService;
         }
 
@@ -30,15 +33,22 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
         [HttpPost]
         public IActionResult SaveMapImage([FromBody]PrintMapDTO printMapDTO)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveMapImage"))
             {
-                var result = mapGeneratorBusinessService.SaveImage(printMapDTO);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                this.logginghelper.Log(ex, TraceEventType.Error);
-                throw;
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                try
+                {
+                    var result = mapGeneratorBusinessService.SaveImage(printMapDTO);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    this.loggingHelper.Log(ex, TraceEventType.Error);
+                    throw;
+                }
             }
         }
 
@@ -51,20 +61,27 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> GeneratePdf([FromBody]PrintMapDTO printMapDTO)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GeneratePdf"))
             {
-                var result = await mapGeneratorBusinessService.GenerateMapPdfReport(printMapDTO);
-                return Ok(result);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    logginghelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    var result = await mapGeneratorBusinessService.GenerateMapPdfReport(printMapDTO);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(result);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
     }

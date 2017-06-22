@@ -35,20 +35,27 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAddressLocationByUDPRNJson(int udprn)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAddressLocationByUDPRNJson"))
             {
-                object addressLocationJson = await this.thirdPartyAddressLocationBusinessService.GetAddressLocationByUDPRNJson(udprn);
-                return Ok(addressLocationJson);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    object addressLocationJson = await this.thirdPartyAddressLocationBusinessService.GetAddressLocationByUDPRNJson(udprn);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(addressLocationJson);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 
@@ -61,20 +68,27 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAddressLocationByUDPRN(int udprn)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAddressLocationByUDPRN"))
             {
-                AddressLocationDTO addressLocationDTO = await this.thirdPartyAddressLocationBusinessService.GetAddressLocationByUDPRN(udprn);
-                return Ok(addressLocationDTO);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    AddressLocationDTO addressLocationDTO = await this.thirdPartyAddressLocationBusinessService.GetAddressLocationByUDPRN(udprn);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(addressLocationDTO);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 
