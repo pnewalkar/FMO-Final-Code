@@ -2,8 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Moq": "4.7.1",
-    "NETStandard.Library": "1.6.0",
+    "Moq": "4.7.1",    
     "NUnit": "3.6.1",
     "NUnit3TestAdapter": "3.7.0",
     "RM.Common.Notification.WebAPI": "1.0.0-*"

@@ -66,6 +66,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E6A5C15-FF67-459C-811C-106950FAB265}"
 	ProjectSection(SolutionItems) = preProject
 		RMCodeAnalysisDictionary.xml = RMCodeAnalysisDictionary.xml
+		RMTestSettings.runsettings = RMTestSettings.runsettings
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{ADE174B3-D9C4-4527-ACAC-73209A11D5E0}"
