@@ -30,13 +30,13 @@ namespace RM.DataServices.Tests.DataService
         private Mock<ILoggingHelper> mockLoggingHelper;
         private List<ReferenceDataCategoryDTO> referenceDataCategoryDTO;
 
-        //[Test]
-        //public void Test_GetDeliveryPoints()
-        //{           
-        //    coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
-        //    var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
-        //    Assert.IsNotNull(actualResult);
-        //}
+        [Test]
+        public void Test_GetDeliveryPoints()
+        {
+            coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
+            var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
+            Assert.IsNotNull(actualResult);
+        }
 
         [Test]
         public void Test_GetDeliveryPointRowVersion()
@@ -66,6 +66,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();
