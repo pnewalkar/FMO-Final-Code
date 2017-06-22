@@ -55,7 +55,11 @@ namespace RM.Common.ReferenceData.WebAPI.Test
             mockReferenceDataDataService = CreateMock<IReferenceDataDataService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
             loggingHelperMock = CreateMock<ILoggingHelper>();
-            filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug\net452", string.Empty), @"TestData\");
+            #if DEBUG
+                filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Debug\net452", string.Empty), @"TestData\");
+            #else
+                filepath = Path.Combine(TestContext.CurrentContext.TestDirectory.Replace(@"bin\Release\net452", string.Empty), @"TestData\");
+            #endif
             fileProvider = new PhysicalFileProvider(filepath);
             IFileInfo fileInfo = fileProvider.GetFileInfo(@".\ReferenceDataMapping.xml");
             NameValuePair collection = new NameValuePair();

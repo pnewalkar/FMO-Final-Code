@@ -104,6 +104,8 @@ function DeliveryPointController(
 
     function closeWindow() {
         vm.hide = false;
+        vm.display = false;
+        vm.searchText = "";
         deliveryPointService.closeModalPopup();
     }
 
@@ -246,13 +248,15 @@ function DeliveryPointController(
                 guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
                 vm.closeWindow();
+                vm.hide = true;
                 $rootScope.$broadcast('disablePrintMap', {
                     disable: false
                 });
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
-            //    setDP();
+                //    setDP();
+                vm.hide = true;
                 vm.closeWindow();
 
             }

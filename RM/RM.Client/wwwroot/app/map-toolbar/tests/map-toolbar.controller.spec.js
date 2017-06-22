@@ -10,7 +10,7 @@ describe('MapToolbar: Controller', function() {
         autoSelect: function() {return []},
         getShapeForButton: function() { return []},
         setSelectedButton:  function() { return true }
-    };
+     };
 
     beforeEach(module('mapToolbar'));
 
@@ -31,80 +31,65 @@ describe('MapToolbar: Controller', function() {
         $scope.$emit.and.stub()
 
     }));
-    
-
-    describe('should be set byDefault variables ', function()
-    {
-        it('should have an selectedButton is select', function() {        
-            expect(ctrl.selectedButton).toBe('select');
-            expect(ctrl.selectedButton).not.toBeUndefined();  
-            expect(ctrl.selectedButton).toContain('select');
-            expect(ctrl.selectedButton.length).toEqual(6);      
-        });
+   
+    it('should have selectedButton is `select` when initialised', function() {        
+        expect(ctrl.selectedButton).toBeDefined();  
+        expect(ctrl.selectedButton).toBe('select');
+        expect(ctrl.selectedButton.length).toEqual(6);      
     });
 
-    describe('should be call method setSelectedButton', function()
-    {
-        it('should set $emit ture and a $emit emitter fired', function() {
+    it('should have an selected button of `line` after emit fired', function() {
 
-            spyOn(MockMapToolbarService, 'setSelectedButton').and.returnValue(true);
+        spyOn(MockMapToolbarService, 'setSelectedButton').and.returnValue(true);
+        spyOn(ctrl,'setSelectedButton').and.callThrough();
 
-            //Set to define our map toolbar object
-            var name = ['line'];
-            var shape = [];
-            var enabled = true;            
+        //Set to define our map toolbar object
+        var name = 'line';
+        var shape = [];
+        var enabled = true;            
 
-            var SetMapButtonObj = { name: name, shape: shape, enabled: enabled };
+        var SetMapButtonObj = { name: name, shape: shape, enabled: enabled };
 
-            //Call to ctrl method with mockService function
-            ctrl.setSelectedButton(name);
-            MockMapToolbarService.getShapeForButton(name);
+        //Call to ctrl method with mockService function
+        ctrl.setSelectedButton(name);
 
-            //emit fire with select maptoolchange
-            expect($scope.$emit).toHaveBeenCalled();
-            expect($scope.$emit).toHaveBeenCalledWith('mapToolChange', SetMapButtonObj);
+        //emit fire with select maptoolchange
+        expect(ctrl.selectedButton).toBe('line');
+        expect(ctrl.setSelectedButton).toHaveBeenCalledWith('line');
+        expect($scope.$emit).toHaveBeenCalled();
+        expect($scope.$emit).toHaveBeenCalledWith('mapToolChange', SetMapButtonObj);
 
-        });    
+    });    
 
-        it('should set the $emit is false and $emit emitter fired', function() {
+    it('should have an  selected button of `select` after emit fired', function() {
 
-            spyOn(MockMapToolbarService, 'setSelectedButton').and.returnValue(false);
+        spyOn(MockMapToolbarService, 'setSelectedButton').and.returnValue(false);
+        spyOn(ctrl,'setSelectedButton').and.callThrough();
 
-            //Set to define our map toolbar object
-            var name = 'select';
-            var shape = [];
-            var enabled = true;            
+        //Set to define our map toolbar object
+        var name = 'select';
+        var shape = [];
+        var enabled = true;            
 
-            var SetMapButtonObj = { name: name, shape: shape, enabled: enabled };
+        var SetMapButtonObj = { name: name, shape: shape, enabled: enabled };
 
-            //Call to ctrl method with mockService function
-            ctrl.setSelectedButton(name);
-            MockMapToolbarService.getShapeForButton(name);
+        //Call to ctrl method with mockService function
+        ctrl.setSelectedButton(name);
 
-            //emit fire with select maptoolchange
-            expect($scope.$emit).toHaveBeenCalled();
-            expect($scope.$emit).toHaveBeenCalledWith('mapToolChange', SetMapButtonObj);
+        //emit fire with select maptoolchange//emit fire with select maptoolchange
+        expect(ctrl.selectedButton).not.toBe('selectt');
+        expect(ctrl.setSelectedButton).toHaveBeenCalledWith('select');
+        expect($scope.$emit).toHaveBeenCalled();
+        expect($scope.$emit).toHaveBeenCalledWith('mapToolChange', SetMapButtonObj);
 
-        });       
-
-    });
+    });       
 
 
-    describe('should be call method showButton' ,  function() 
-    {
-        it('should be initialize the method', function(){            
-            spyOn(ctrl, 'showButton').and.callThrough();            
-            expect(ctrl).toBeDefined();
-            expect(ctrl.showButton.length).toBe(0);            
-        });
-    });
+    it('should have initialize showButton', function(){            
+        spyOn(ctrl, 'showButton'); 
+        ctrl.showButton('point');          
+        expect(ctrl.showButton).toHaveBeenCalledWith('point');
 
-    describe('should be call method autoSelect', function() 
-    {
-        it('should be initialize function', function(){            
-            expect(ctrl.autoSelect).toBeUndefined();
-        });
     });
     
 });
-

@@ -23,6 +23,7 @@
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IDeliveryPointsDataService testCandidate;
         private Guid deliveryUnitID = System.Guid.NewGuid();
+        private string coordinates;
         private Guid unit1Guid;
         private Guid unit2Guid;
         private Guid unit3Guid;
@@ -78,8 +79,18 @@
         //    Assert.IsNotNull(result);
         //}
 
+        //[Test]
+        //public void Test_GetDeliveryPoints()
+        //{
+        //    coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
+        //    var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
+        //    Assert.IsNotNull(actualResult);
+        //}
+
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();

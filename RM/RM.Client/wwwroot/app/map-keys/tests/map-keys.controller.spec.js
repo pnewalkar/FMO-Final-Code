@@ -1,59 +1,48 @@
-//describe('Testing Languages Service', function(){
-//    var mapKeyService;/*
-//    var mapStylesFactory;
-//    var mapService;*/
-//
-//  beforeEach(function(){
-//    module('mapKey');
-//    inject(function(_$injector_){
-//        mapKeyService = _$injector_.get('mapKeyService');/*
-//        mapStylesFactory = $injector.get('mapStylesFactory');
-//        mapService = $injector.get('mapService');*/
-//    });
-//  });
-//
-//  it('should return available languages', function() {
-//    var languages = mapKeyService.initialize();
-//    expect(languages[1].id).toContain('deliverypoint');/*
-//    expect(languages).toContain('es');
-//    expect(languages).toContain('fr');*/
-//    expect(languages.length).toEqual(1);
-//  });
-//});
+describe('mapKey: Controller', function() {
 
-describe('myFactory', function () {
-    
-    var mapKeyService;
-  // Load your module.
+  var ctrl;
+  var mapKeyService;
+  var $rootScope;
+
+  //MockSet
+  var MockMapKeyService = {
+        initialize: function() {return []},
+        showKey: function(id){
+           if (id == "") {
+            return true;
+            } else {
+              return id;
+            }
+        }
+     };
+
   beforeEach(module('mapKey'));
-    
-    
 
-  // Setup the mock service in an anonymous module.
-  beforeEach(module(function ($provide) {
-    $provide.value('mapStylesFactory', {
-        someVariable: 1
+  //load to our provider
+   beforeEach(function(){
+        module(function ($provide) {
+        $provide.value('mapKeyService', MockMapKeyService);
+        });
     });
-      $provide.value('mapService', {
-        someVariable: 1
+  beforeEach(inject(function (_$rootScope_,$controller,_mapKeyService_) {
+        ctrl = $controller('MapKeyController', {
+            mapKeyService: _mapKeyService_,
+            $rootScope : $rootScope
+        });
+
+    }));
+
+    it('should be return a value showKey method', function() {
+        spyOn(ctrl,'showKey');
+
+        ctrl.showKey(2);
+        expect(ctrl.showKey).toHaveBeenCalled();
+        expect(ctrl.showKey).toHaveBeenCalledWith(2);
+
+        //Call to MockObje
+        var KeyShowVal = MockMapKeyService.showKey(2);
+        expect(KeyShowVal).toBe(2);
+        
     });
-      
 
-
-    
-/*    inject(function($injector){
-       mapKeyService = $injector.get('mapKeyService');
-    });*/
-      
-        }));
-   /* mapKeyService = $injector.get('mapKeyService');*/
-
-  it('can get an instance of my-key service', inject(function(mapKeyService) {
-    expect(mapKeyService).toBeDefined();
-  }));
-    
-    it('should return available languages', inject(function(mapKeyService) {
-    var languages = mapKeyService.initialize();
-    expect(languages[1].id).toContain('deliverypoint');
-  }));
 });
