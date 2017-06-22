@@ -4,13 +4,12 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.Operational.MapManager.WebAPI.Utils;
 
 namespace RM.Operational.MapManager.WebAPI.IntegrationService
 {
     public class MapIntegrationService : IMapIntegrationService
     {
-        private const string PDFGeneratorWebAPIName = "PDFGeneratorWebAPIName";
-
         #region Property Declarations
 
         private string pdfGeneratorWebAPIName = string.Empty;
@@ -23,7 +22,7 @@ namespace RM.Operational.MapManager.WebAPI.IntegrationService
         public MapIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper)
         {
             this.httpHandler = httpHandler;
-            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PDFGeneratorWebAPIName).ToString() : string.Empty;
+            this.pdfGeneratorWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(MapManagerConstants.PDFGeneratorWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
