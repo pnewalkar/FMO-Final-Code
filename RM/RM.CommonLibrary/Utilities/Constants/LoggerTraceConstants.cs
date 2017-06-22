@@ -33,6 +33,7 @@
         public const int PAFPriority = 8;
         public const int ThirdPartyPriority = 8;
         public const int ReferenceDataAPIPriority = 8;
+        public const int RouteLogAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -68,6 +69,9 @@
         public const int ReferenceDataBusinessServiceMethodExitEventId = 8214;
         public const int ReferenceDataDataServiceMethodEntryEventId = 8223;
         public const int ReferenceDataDataServiceMethodExitEventId = 8224;
+
+        public const int RouteLogControllerMethodEntryEventId = 8303;
+        public const int RouteLogControllerMethodExitEventId = 8304;
 
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;

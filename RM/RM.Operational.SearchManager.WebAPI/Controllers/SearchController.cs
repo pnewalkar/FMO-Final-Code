@@ -34,7 +34,7 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         [HttpGet("basic/{searchText}")]
         public async Task<SearchResultDTO> BasicSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.BasicSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.BasicSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 try
@@ -69,7 +69,7 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         [HttpGet("advance/{searchText}")]
         public async Task<SearchResultDTO> AdvanceSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.AdvanceSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.AdvanceSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 try
