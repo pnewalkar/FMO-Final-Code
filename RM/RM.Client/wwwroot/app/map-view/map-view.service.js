@@ -18,7 +18,7 @@ mapService.$inject = ['$http',
                      '$rootScope',
                      'layersAPIService',
                      'CommonConstants'
-                    ];
+];
 
 function mapService($http,
                     mapFactory,
@@ -106,8 +106,18 @@ function mapService($http,
         removeInteraction: removeInteraction,
         deleteAccessLinkFeature: deleteAccessLinkFeature,
         showDeliveryPointDetails: showDeliveryPointDetails,
-        clearDrawingLayer: clearDrawingLayer
+        clearDrawingLayer: clearDrawingLayer,
+        setSize: setSize,
+        composeMap: composeMap,
+        getResolution: getResolution,
+        setOriginalSize: setOriginalSize,
+        LicenceInfo: LicenceInfo
     }
+
+    function LicenceInfo(displayText) {
+        return mapFactory.LicenceInfo(displayText);
+    }
+
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
        '+x_0=400000 +y_0=-100000 +ellps=airy ' +
@@ -119,6 +129,7 @@ function mapService($http,
 
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
+        vm.originalSize = vm.map.getSize();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
@@ -511,7 +522,7 @@ function mapService($http,
 			    evt.feature.set("type", "accesslink");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    accessLinkCoordinatesService.setCordinates(coordinates);
-			    $rootScope.state =false;
+			    $rootScope.state = false;
 			    $stateParams.accessLinkFeature = evt.feature;
 			    var layer = mapFactory.getLayer('Drawing');
 			    vm.map.getInteractions().forEach(function (interaction) {
@@ -761,6 +772,128 @@ function mapService($http,
                 selectedDeliveryPoint: deliveryPointDetails
             }, { reload: true });
         }
+    }
+
+    function setSize(width, height) {
+        vm.map.setSize([width, height]);
+    }
+
+    function setOriginalSize() {
+        vm.map.setSize(vm.originalSize);
+    }
+
+    function composeMap() {
+
+        vm.map.once('postcompose', function (event) {
+            writeScaletoCanvas(event);
+        });
+        vm.map.renderSync();
+    }
+
+    function writeScaletoCanvas(e) {
+        var ctx = e.context;
+        var canvas = e.context.canvas;
+        //get the Scaleline div container the style-width property
+        var olscale = document.getElementsByClassName('ol-scale-line-inner')[0];
+        //Scaleline thicknes
+        var line1 = 6;
+        //Offset from the left
+        var x_offset = 10;
+        //offset from the bottom
+        var y_offset = 30;
+        var fontsize1 = 15;
+        var font1 = fontsize1 + 'px Arial';
+        // how big should the scale be (original css-width multiplied)
+        var multiplier = 2;
+        var scalewidth = parseInt(olscale.style.width, 10) * multiplier;
+        var scale = olscale.innerHTML;
+        var scalenumber = parseInt(scale, 10);
+        var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
+
+        var calculatedScale = setScaleUnit(scalenumber, scaleunit);
+        //Scale Text
+        ctx.beginPath();
+        ctx.textAlign = "left";
+        ctx.strokeStyle = "#ffffff";
+        ctx.fillStyle = "#000000";
+        ctx.lineWidth = 5;
+        ctx.font = font1;
+        ctx.strokeText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+        ctx.fillText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+
+        //Scale Dimensions
+        var xzero = scalewidth + x_offset;
+        var yzero = canvas.height - y_offset;
+        var xfirst = x_offset + scalewidth * 1 / 4;
+        var xsecond = xfirst + scalewidth * 1 / 4;
+        var xthird = xsecond + scalewidth * 1 / 4;
+        var xfourth = xthird + scalewidth * 1 / 4;
+
+        // Stroke
+        ctx.beginPath();
+        ctx.lineWidth = line1 + 2;
+        ctx.strokeStyle = "#000000";
+        ctx.fillStyle = "#ffffff";
+        ctx.moveTo(x_offset, yzero);
+        ctx.lineTo(xzero + 1, yzero);
+        ctx.stroke();
+
+        //sections black/white
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#000000";
+        ctx.moveTo(x_offset, yzero);
+        ctx.lineTo(xfirst, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(xfirst, yzero);
+        ctx.lineTo(xsecond, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#000000";
+        ctx.moveTo(xsecond, yzero);
+        ctx.lineTo(xthird, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(xthird, yzero);
+        ctx.lineTo(xfourth, yzero);
+        ctx.stroke();
+
+        $rootScope.canvas = canvas;
+    }
+
+    function setScaleUnit(scalenumber, scaleunit) {
+        if (scaleunit == 'km') {
+            var scale = scalenumber * 0.621371;
+            if (scale < 1) {
+                scale = scalenumber * 1000
+                return Math.round(scale) + ' m';
+            }
+            else {
+                return Math.round(scale) + ' mi';
+            }
+        }
+        else if (scaleunit == 'm') {
+            var scale = scalenumber * 0.000621371;
+            if (scale < 1) {
+                return scalenumber + ' m';
+            }
+            else {
+                return Math.round(scale) + ' mi';
+            }
+        }
+    }
+
+    function getResolution() {
+        return vm.map.getView().getResolution();
     }
 
 }

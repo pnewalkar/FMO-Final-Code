@@ -10,7 +10,8 @@ MapFactory.$inject = ['$http',
     '$document',
     'layersAPIService',
     '$q',
-    'stringFormatService'];
+    'stringFormatService',
+'$timeout'];
 
 function MapFactory($http,
     mapStylesFactory,
@@ -19,7 +20,8 @@ function MapFactory($http,
     $document,
     layersAPIService,
     $q,
-    stringFormatService)
+    stringFormatService,
+        $timeout)
     {
     var map = null;
     var miniMap = null;
@@ -69,8 +71,20 @@ function MapFactory($http,
         setAccessLink : setAccessLink,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
-        GetRouteForDeliveryPoint: GetRouteForDeliveryPoint
+        GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
+        LicenceInfo: LicenceInfo
     };
+
+    function LicenceInfo(displayText) {
+     
+        var map = getMap();
+
+        var attribution = new ol.Attribution({
+            html: displayText
+        })
+        map.getLayers().getArray()[0].getSource().setAttributions(attribution);
+
+    }
 
     function initialiseMap() {
         availableResolutionForCurrentExtent = defaultResolutions;
@@ -92,8 +106,20 @@ function MapFactory($http,
             renderBuffer: 1000
         });
 
+     
         map = new ol.Map({
-            layers: layers.map(function (a) { return a.layer }),
+            //layers: layers.map(function (a) { return a.layer }),
+            layers: [
+          new ol.layer.Tile({
+              source: new ol.source.OSM({
+                  attributions: [
+                    new ol.Attribution({
+                     
+                    })
+                  ]
+              })
+          })
+            ],
             target: 'map',
             view: view,
             loadTilesWhileAnimating: true,
@@ -102,6 +128,10 @@ function MapFactory($http,
         });
 
         map.addControl(getCustomScaleLine());
+        map.addControl(new ol.control.Attribution());
+
+       // map.addControl(new ol.control.ScaleLine());
+      //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";
 
         var external_control = new ol.control.Zoom({
             target: $document[0].getElementById('zoom-control')
@@ -110,7 +140,10 @@ function MapFactory($http,
 
         units = map.getView().getProjection().getUnits();
         mpu = ol.proj.METERS_PER_UNIT[units];
+      
     }
+
+
 
     function initialiseMiniMap() {
         if (view == null)
@@ -366,8 +399,11 @@ function MapFactory($http,
                 else {
                     setZoomButtonStatus(zoomOutButtons, false);
                 }
-
-                $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                $timeout(function () {
+                    $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                });
+                //$rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                //$rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale });
             }
         };
 

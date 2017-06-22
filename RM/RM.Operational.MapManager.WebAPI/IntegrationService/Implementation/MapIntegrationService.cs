@@ -36,8 +36,7 @@ namespace RM.Operational.MapManager.WebAPI.IntegrationService
         /// <returns>byte array</returns>
         public async Task<string> GenerateReportWithMap(string xml, string fileName)
         {
-            pdfGeneratorWebAPIName = pdfGeneratorWebAPIName + "PDFReports/" + fileName;
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName, xml);
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName + "PDFReports/" + fileName, xml);
             if (!result.IsSuccessStatusCode)
             {
                 // LOG ERROR WITH Statuscode
