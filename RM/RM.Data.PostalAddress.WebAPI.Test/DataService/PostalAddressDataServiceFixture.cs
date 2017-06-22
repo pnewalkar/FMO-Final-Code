@@ -220,6 +220,33 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_GetPostcodeGuids()
+        {
+            SetupDataForSearch();
+            var result = testCandidate.GetPostcodeGuids("ThoroughFare");
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Result.Count, 2);
+        }
+
+        [Test]
+        public void Test_GetSelectedPostcode()
+        {
+            SetupDataForSearch();
+            var result = testCandidate.GetSelectedPostcode("ThoroughFare1,Postcode1");
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Result.Count, 1);
+        }
+
+        [Test]
+        public void Test_GetPostalAddresses()
+        {
+            SetUpdataWithDeliverypoints();
+            var result = testCandidate.GetPostalAddresses(new List<Guid>() { new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15") });
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Result.Count, 1);
+        }
+
         protected override void OnSetup()
         {
             lstPostCodeDTO = new List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>()

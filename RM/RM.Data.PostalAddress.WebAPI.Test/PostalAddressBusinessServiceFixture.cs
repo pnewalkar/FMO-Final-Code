@@ -172,6 +172,13 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
+        [Test]
+        public void Test_GetPostalAddresses()
+        {
+            var result = testCandidate.GetPostalAddresses(new List<Guid>() { Guid.NewGuid() });
+            Assert.IsNotNull(result);
+        }
+
         protected override void OnSetup()
         {
             referenceDataCategoryDTOList = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
@@ -259,6 +266,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             mockPostalAddressDataService.Setup(n => n.GetPostalAddressDetails(It.IsAny<Guid>())).Returns(new PostalAddressDBDTO() { });
             mockPostalAddressDataService.Setup(n => n.GetPostalAddressDetails(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>>())).Returns(Task.FromResult(lstPostalAddress));
             mockPostalAddressDataService.Setup(n => n.GetPostalAddressSearchDetails(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<Guid>>(), It.IsAny<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>>())).Returns(Task.FromResult(new List<string>() { "abc" }));
+            mockPostalAddressDataService.Setup(n => n.GetPostalAddresses(It.IsAny<List<Guid>>())).ReturnsAsync(new List<PostalAddressDBDTO>() { });
 
             testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockFileProcessingLogDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);
         }
