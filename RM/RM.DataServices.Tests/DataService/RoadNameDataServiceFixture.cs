@@ -84,7 +84,7 @@ namespace RM.DataServices.Tests.DataService
             {
                 new NetworkLink()
                 {
-                    LinkGeometry =  DbGeometry.LineFromText("LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)", 27700),
+                    LinkGeometry = DbGeometry.LineFromText("LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)", 27700),
                     NetworkLinkType_GUID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD")
                 }
             };

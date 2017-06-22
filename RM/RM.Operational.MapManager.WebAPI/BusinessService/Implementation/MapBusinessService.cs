@@ -77,16 +77,16 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
 
             report.SetAttribute(MapManagerConstants.PdfOutPut, printMapDTO.PdfSize + printMapDTO.PdfOrientation);
             pageHeader.SetAttribute(MapManagerConstants.Caption, string.Empty);
-            pageFooter.SetAttribute(MapManagerConstants.Caption, "");
+            pageFooter.SetAttribute(MapManagerConstants.Caption, string.Empty);
             pageFooter.SetAttribute(MapManagerConstants.PageNumber, string.Empty);
             report.AppendChild(pageHeader);
             report.AppendChild(pageFooter);
             report.AppendChild(content);
 
-            //Section 1 Header
+            // Section 1 Header
             section = doc.CreateElement(MapManagerConstants.Section);
 
-            //Section 1 Header 1
+            // Section 1 Header 1
             sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
             sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
             heading1CenterAligned.InnerText = printMapDTO.MapTitle;
@@ -94,10 +94,10 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 
-            //Section 2
+            // Section 2
             section = doc.CreateElement(MapManagerConstants.Section);
 
-            //Section 2 columns 1 i.e Table 1
+            // Section 2 columns 1 i.e Table 1
             sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
             sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
             image.SetAttribute(MapManagerConstants.Source, printMapDTO.ImagePath);
@@ -105,7 +105,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 
-            //Section 3
+            // Section 3
             section = doc.CreateElement(MapManagerConstants.Section);
             sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
             sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
@@ -118,7 +118,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 
-            //Section 4
+            // Section 4
             section = doc.CreateElement(MapManagerConstants.Section);
             sectionColumn = doc.CreateElement(MapManagerConstants.SectionColumn);
             sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
@@ -126,7 +126,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 
-            doc.AppendChild(report); ;
+            doc.AppendChild(report);
             return doc.InnerXml;
         }
 

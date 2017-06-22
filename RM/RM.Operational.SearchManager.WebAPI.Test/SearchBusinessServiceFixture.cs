@@ -49,7 +49,6 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             Assert.NotNull(output);
         }
 
-        
         [Test]
         public async Task AdvanceSearch_MoreThanOneResultFound()
         {
@@ -152,7 +151,6 @@ namespace RM.Operational.SearchManager.WebAPI.Test
                 new DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new PostalAddressDTO() },
                 new DeliveryPointDTO { UDPRN = 23456789, PostalAddress = new PostalAddressDTO() }
             }));
-
 
             var output = await testCandidate.FetchBasicSearchDetails("test");
 

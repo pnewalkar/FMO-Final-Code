@@ -155,6 +155,7 @@
                         simpleDtoList.Add(simpleListObject);
                     }
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return simpleDtoList;
