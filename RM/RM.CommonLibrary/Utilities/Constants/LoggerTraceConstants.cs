@@ -72,6 +72,10 @@
 
         public const int RouteLogControllerMethodEntryEventId = 8303;
         public const int RouteLogControllerMethodExitEventId = 8304;
+        public const int RouteLogBusinessServiceMethodEntryEventId = 8313;
+        public const int RouteLogBusinessServiceMethodExitEventId = 8314;
+        public const int RouteLogIntegrationServiceMethodEntryEventId = 8323;
+        public const int RouteLogIntegrationServiceMethodExitEventId = 8324;
 
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;
