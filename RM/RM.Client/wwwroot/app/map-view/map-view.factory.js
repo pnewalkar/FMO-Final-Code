@@ -68,6 +68,7 @@ function MapFactory($http,
         getScaleFromResolution: getScaleFromResolution,
         setUnitBoundaries: setUnitBoundaries,
         setDeliveryPoint: setDeliveryPoint,
+        setDeliveryPointOnLoad : setDeliveryPointOnLoad,
         setAccessLink : setAccessLink,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
@@ -492,6 +493,43 @@ function MapFactory($http,
                 selectedFeatures.push(featureToSelect);
         });      
     }
+
+    function setDeliveryPointOnLoad(long, lat) {
+        map.getView().setCenter([long, lat]);
+        map.getView().setResolution(0.5600011200022402);
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        deliveryPointsLayer.layer.getSource().clear();
+        deliveryPointsLayer.selected = true;
+        deliveryPointsLayer.layer.setVisible(true)
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+        var extent = map.getView().calculateExtent(map.getSize());
+        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
+            var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
+            deliveryPointsLayer.layer.getSource().addFeatures(features);
+
+            var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+
+            var select = new ol.interaction.Select({ style: style });
+
+            map.addInteraction(select);
+
+            //var selectedFeatures = select.getFeatures();
+
+            //var featureToSelect;
+            //angular.forEach(features, function (feature, index) {
+            //    var featureLatitude = feature.values_.geometry.getCoordinates()[1];
+            //    var featureLongitude = feature.values_.geometry.getCoordinates()[0];
+
+            //    if (featureLatitude === lat && featureLongitude === long) {
+            //        featureToSelect = feature;
+            //    }
+            //});
+
+            //if (featureToSelect)
+            //    selectedFeatures.push(featureToSelect);
+        });
+    }
+
 
     function locateDeliveryPoint(long, lat) {
         map.getView().setCenter([long, lat]);

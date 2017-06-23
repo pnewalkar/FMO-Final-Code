@@ -10,7 +10,7 @@
     </md-toolbar>
 
     <md-dialog-content layout-padding>
-        <md-subheader>Search</md-subheader>
+        <h1>Search</h1>
         <div layout="row">
             <md-input-container flex="15">
                 <label>{{  'ROUTE_LOG.SELECTION_TYPE' | translate  }}</label>
@@ -73,7 +73,7 @@
         </div>
 
         <md-list ng-hide="!vm.routeDetails">
-            <md-subheader>Route Details</md-subheader>
+            <h1>Route Details</h1>
             <div layout="row">
                 <div flex="35" class="routeDetailstable">
                     <table>
@@ -144,7 +144,7 @@
             </div>
         </md-list>
         <md-list ng-hide="!vm.routeDetails" class="routeLogList">
-            <md-subheader>Generate</md-subheader>
+            <h1>Generate</h1>
             <md-list-item>
                
                     <md-checkbox  ng-model="vm.generateSummaryReport"></md-checkbox>   
