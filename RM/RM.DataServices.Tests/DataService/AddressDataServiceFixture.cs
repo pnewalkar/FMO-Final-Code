@@ -214,32 +214,32 @@
             Assert.IsTrue(results == false);
         }
 
-        [Test]
-        public void Test_CreateAddressAndDeliveryPoint_SamePostcode()
-        {
-            SetUpDataForCreateAddressAndDeliveryPoint();
-            var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO2);
-            Assert.NotNull(results.ID);
-            Assert.IsTrue(results.ID != Guid.Empty);
-        }
+        //[Test]
+        //public void Test_CreateAddressAndDeliveryPoint_SamePostcode()
+        //{
+        //    SetUpDataForCreateAddressAndDeliveryPoint();
+        //    var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO2);
+        //    Assert.NotNull(results.ID);
+        //    Assert.IsTrue(results.ID != Guid.Empty);
+        //}
 
-        [Test]
-        public void Test_CreateAddressAndDeliveryPoint_DifferentPostcode()
-        {
-            SetUpDataForCreateAddressAndDeliveryPoint();
-            var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO1);
-            Assert.NotNull(results);
-            Assert.IsTrue(results.ID != Guid.Empty);
-        }
+        //[Test]
+        //public void Test_CreateAddressAndDeliveryPoint_DifferentPostcode()
+        //{
+        //    SetUpDataForCreateAddressAndDeliveryPoint();
+        //    var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO1);
+        //    Assert.NotNull(results);
+        //    Assert.IsTrue(results.ID != Guid.Empty);
+        //}
 
-        [Test]
-        public void Test_CreateAddressAndDeliveryPoint_Null()
-        {
-            SetUpDataForCreateAddressAndDeliveryPoint();
-            var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO3);
-            Assert.NotNull(results);
-            Assert.IsTrue(results.ID == Guid.Empty);
-        }
+        //[Test]
+        //public void Test_CreateAddressAndDeliveryPoint_Null()
+        //{
+        //    SetUpDataForCreateAddressAndDeliveryPoint();
+        //    var results = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO3);
+        //    Assert.NotNull(results);
+        //    Assert.IsTrue(results.ID == Guid.Empty);
+        //}
 
         protected override void OnSetup()
         {
