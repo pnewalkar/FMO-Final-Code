@@ -2,7 +2,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Builder;
 using RM.CommonLibrary.ExceptionMiddleware;
-using RM.Operational.MapManager.WebAPI.ExceptionHandling.ResponseExceptionHandler;
+using RM.CommonLibrary.ExceptionManagement.ExceptionHandling.ResponseExceptionHandler;
 
 namespace RM.Operational.MapManager.WebAPI
 {
