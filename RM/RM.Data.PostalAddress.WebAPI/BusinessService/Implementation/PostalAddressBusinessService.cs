@@ -518,6 +518,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
+        public async Task<PostalAddressDTO> GetPAFAddress(int udprn)
+        {
+            var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(Constants.PostalAddressType).Result;
+            Guid addressTypePAF = referenceDataCategoryList.ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(FileType.Paf.ToString(), StringComparison.OrdinalIgnoreCase)).Select(a => a.ID).FirstOrDefault();
+            return await addressDataService.GetPAFAddress(udprn, addressTypePAF);
+        }
+
         #endregion public methods
 
         #region private methods

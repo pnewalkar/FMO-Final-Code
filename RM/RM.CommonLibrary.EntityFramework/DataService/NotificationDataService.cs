@@ -120,5 +120,20 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 .AnyAsync(notific => notific.NotificationActionLink.Equals(notificationActionlink) &&
                                   notific.Notification_Heading.Trim().Equals(action));
         }
+
+        public async Task<bool> UpdateNotificationByUDPRN(int uDPRN, string oldAction, string newAction)
+        {
+            string notificationActionlink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN.ToString());
+            bool returnVal = false;
+
+            Notification notification = await DataContext.Notifications.Where(notific => notific.NotificationActionLink == notificationActionlink && notific.Notification_Heading.Equals(oldAction)).SingleOrDefaultAsync();
+            notification.Notification_Heading = newAction;
+            await DataContext.SaveChangesAsync();
+
+            returnVal = true;
+
+            return returnVal;
+        }
+
     }
 }

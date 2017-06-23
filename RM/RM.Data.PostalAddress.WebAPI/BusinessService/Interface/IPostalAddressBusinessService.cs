@@ -78,5 +78,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         Task<PostalAddressDBDTO> GetPostalAddress(int? uDPRN);
 
         Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids);
+
+        Task<PostalAddressDTO> GetPAFAddress(int udprn);
     }
 }

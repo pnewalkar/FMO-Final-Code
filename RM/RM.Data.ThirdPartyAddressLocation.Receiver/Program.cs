@@ -24,8 +24,12 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
             IConfigurationHelper configurationHelper = kernel.Get<IConfigurationHelper>();
             ILoggingHelper loggingHelper = kernel.Get<ILoggingHelper>();
 
-            ServiceBase[] servicesToRun = new ServiceBase[] { new ThirdPartyAddressLocationReceiver(msgUSR, configurationHelper, loggingHelper, httpHandler) };
-            ServiceBase.Run(servicesToRun);
+            ThirdPartyAddressLocationReceiver myService = new ThirdPartyAddressLocationReceiver(msgUSR, configurationHelper, loggingHelper, httpHandler);
+            myService.OnDebug();
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+
+            //ServiceBase[] servicesToRun = new ServiceBase[] { new ThirdPartyAddressLocationReceiver(msgUSR, configurationHelper, loggingHelper, httpHandler) };
+            //ServiceBase.Run(servicesToRun);
         }
     }
 }

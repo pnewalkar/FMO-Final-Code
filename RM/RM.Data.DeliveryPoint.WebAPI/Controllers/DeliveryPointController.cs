@@ -419,6 +419,31 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+        [Route("deliverypoint/location/addressId:{addressId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveryPointByPostalAddressWithLocation(Guid addressId)
+        {
+            try
+            {
+                //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByPostalAddress"))
+                //{
+                var deliveryPoint = await businessService.GetDeliveryPointByPostalAddressWithLocation(addressId);
+                return Ok(deliveryPoint);
+
+                // }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
         /// <summary>
         /// This method is used to insert delivery point for case of PAF Batch job.
         /// </summary>
@@ -532,6 +557,23 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var isDeliveryPointUpdated = businessService.UpdatePAFIndicator(addressGuid, pafIndicator);
+
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointUpdated;
+
+            }
+        }
+
+
+        [HttpDelete("deliverypoint/batch/delete/id:{id}")]
+        public Task<bool> DeleteDeliveryPoint(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPoint"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var isDeliveryPointUpdated = businessService.DeleteDeliveryPoint(id);
 
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return isDeliveryPointUpdated;

@@ -142,5 +142,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         Task<Guid> UpdateDeliveryPointLocationOnID(DeliveryPointDTO deliveryPointDto);
 
         Task<bool> UpdatePAFIndicator(Guid addressGuid, Guid pafIndicator);
+
+        Task<DeliveryPointDTO> GetDeliveryPointByPostalAddressWithLocation(Guid addressId);
+
+        Task<bool> DeleteDeliveryPoint(Guid id);
     }
 }

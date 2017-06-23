@@ -460,15 +460,25 @@
             return deliveryPointsDataService.UpdatePAFIndicator(addressGuid, pafIndicator);
         }
 
+        public Task<bool> DeleteDeliveryPoint(Guid id)
+        {
+            return deliveryPointsDataService.DeleteDeliveryPoint(id);
+        }
+
+        public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddressWithLocation(Guid addressId)
+        {
+            return await deliveryPointsDataService.GetDeliveryPointByPostalAddressWithLocation(addressId);
+        }
+
         #endregion Public Methods
 
-        #region Private Methods
+            #region Private Methods
 
-        /// <summary>
-        /// This method is used to fetch GeoJson data for Delivery Point.
-        /// </summary>
-        /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
-        /// <returns>lstDeliveryPointDTO</returns>
+            /// <summary>
+            /// This method is used to fetch GeoJson data for Delivery Point.
+            /// </summary>
+            /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
+            /// <returns>lstDeliveryPointDTO</returns>
         private static object GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
         {
             var deliveryPointGeoJson = new GeoJson

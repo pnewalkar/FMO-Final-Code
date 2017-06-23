@@ -670,6 +670,42 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             return deliveryPointDto;
         }
 
+        public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddressWithLocation(Guid addressId)
+        {
+            DeliveryPoint deliveryPoint = await (from dp in DataContext.DeliveryPoints
+                                          join nn in DataContext.NetworkNodes
+                                          on dp.ID equals nn.ID
+                                          join l in DataContext.Locations
+                                          on dp.ID equals l.ID
+                                          where dp.Address_GUID == addressId
+                                          select dp).SingleOrDefaultAsync();
+
+            if (deliveryPoint == null)
+            {
+                return null;
+            }
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDatabaseDTO>().MaxDepth(1);
+                cfg.CreateMap<NetworkNode, NetworkNodeDatabaseDTO>().MaxDepth(2);
+                cfg.CreateMap<Location, LocationDatabaseDTO>().MaxDepth(3);
+            });
+
+            Mapper.Configuration.CreateMapper();
+
+            DeliveryPointDatabaseDTO deliveryPointDatabaseDTO = Mapper.Map<DeliveryPoint, DeliveryPointDatabaseDTO>(deliveryPoint);
+
+            DeliveryPointDTO deliveryPointDto = new DeliveryPointDTO
+            {
+                Address_GUID = deliveryPointDatabaseDTO.Address_GUID,
+                ID = deliveryPointDatabaseDTO.ID,
+                LocationXY = deliveryPointDatabaseDTO.NetworkNode.Location.Shape
+            };
+
+            return deliveryPointDto;
+        }
+
 
 
         /// <summary>
@@ -716,6 +752,32 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
             return rowVersion;
         }
+
+        public async Task<bool> DeleteDeliveryPoint(Guid id)
+        {
+            try
+            {
+                Location location = await DataContext.Locations.Include(l => l.NetworkNode).Include(l => l.NetworkNode.DeliveryPoint).Include(l => l.NetworkNode.DeliveryPoint.DeliveryPointStatus).Where(l => l.ID == id).SingleOrDefaultAsync();
+
+                if (location != null)
+                {
+                    DataContext.DeliveryPointStatus.RemoveRange(location.NetworkNode.DeliveryPoint.DeliveryPointStatus);
+                    DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
+                    DataContext.NetworkNodes.Remove(location.NetworkNode);
+                    DataContext.Locations.Remove(location);
+                }
+
+                await DataContext.SaveChangesAsync();
+
+                return true;
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         public Task<DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn)
         {
@@ -775,6 +837,51 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         public Task<Guid> UpdateDeliveryPointLocationOnID(DeliveryPointDTO deliveryPointDto)
         {
             throw new NotImplementedException();
+        }
+
+
+        public async Task<LocationDatabaseDTO> GetLocationByAddressId(Guid addressId)
+        {
+            
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+            Location location = default(Location);
+            DeliveryPoint deliveryPoint = default(DeliveryPoint);
+            DbGeometry polygon = default(DbGeometry);
+            //if (!string.IsNullOrEmpty(boundingBoxCoordinates))
+            //{
+
+            //    deliveryPoint = await DataContext.DeliveryPoints.Include(dp => dp.NetworkNode.Location).Where(l => l.Address_GUID == addressId).SingleOrDefaultAsync();
+
+            //    polygon = unitLocation.UnitBoundryPolygon;
+
+
+            //    DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), Constants.BNGCOORDINATESYSTEM);
+
+            //    locations = DataContext.Locations.Include(loc => loc.NetworkNode.DeliveryPoint).Where(l => l.Shape.Intersects(extent) && l.Shape.Intersects(polygon)).ToList();
+
+            //    Mapper.Initialize(cfg =>
+            //    {
+            //        cfg.CreateMap<Location, LocationDatabaseDTO>().MaxDepth(3);
+            //        cfg.CreateMap<NetworkNode, NetworkNodeDatabaseDTO>().MaxDepth(2);
+            //        cfg.CreateMap<DeliveryPoint, DeliveryPointDatabaseDTO>().MaxDepth(1);
+            //    });
+
+            //    Mapper.Configuration.CreateMapper();
+
+            //    var locationDatabaseDto = Mapper.Map<List<Location>, List<LocationDatabaseDTO>>(locations);
+
+            //    /* POC data modal change comment
+            //    deliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.LocationXY.Intersects(extent) && dp.LocationXY.Intersects(polygon));
+
+            //    */
+            //    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+            //    return locationDatabaseDto;
+            //}
+
+            return null;
+
+            
         }
 
         /// <summary>
