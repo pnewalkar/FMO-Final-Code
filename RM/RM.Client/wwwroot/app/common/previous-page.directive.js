@@ -1,4 +1,4 @@
-﻿angular.module('RMApp')
+﻿/*angular.module('RMApp')
 
     .run(function ($rootScope) {
         var vm = this;
@@ -10,9 +10,9 @@
 
   .directive('previousPage', ['$state', '$rootScope', function ($state, $rootScope) {
       return {
-          replace: true,
+          replace: true,*/
           /*template: `<i class ="fa fa-arrow-left" aria-hidden="true" ng-click="go_back()"></i>`,*/
-          template: function (element, attrs) {
+/*          template: function (element, attrs) {
                     return element.html();
                   },
           link: function(scope, elem, attrs) {
@@ -27,12 +27,12 @@
                   };
                   $state.go(storedState.pop());
               }
-          }
+          }*/
 
           //link: function (scope, elem, attrs) {
           //    scope.go_back = function () {
           //        $state.go($rootScope.previousData);
           //    }
           //}
-      }
-  }]);
+/*      }
+  }]);*/
