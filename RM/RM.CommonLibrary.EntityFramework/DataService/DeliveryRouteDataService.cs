@@ -492,7 +492,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                         join dp in DataContext.DeliveryPoints.AsNoTracking() on bs.OperationalObject_GUID equals dp.ID
                                         join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
                                         join sc in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sc.ID
-                                        where bs.OperationalObjectType_GUID == operationalObjectTypeForDp && sc.Unit_GUID == userUnitIdGuid && dr.ID == deliveryRouteId
+                                        where bs.OperationalObjectType_GUID == operationalObjectTypeForDp && sc.Unit_GUID == userUnitIdGuid && dr.ID == deliveryRouteId && b.BlockType.Equals("L", StringComparison.OrdinalIgnoreCase)
                                         group new { pa, dp } by new { pa.Thoroughfare, pa.BuildingNumber } into grpAddress
                                         select new RouteLogSequencedPointsDTO
                                         {
