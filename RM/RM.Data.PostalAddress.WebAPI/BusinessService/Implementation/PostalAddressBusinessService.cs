@@ -287,6 +287,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         OperationalStatus_GUID = OperationalStatusGUIDLive,
                         NetworkNodeType_GUID = NetworkNodeTypeRMGServiceNode
                     };
+                    loggingHelper.Log(OperationalStatusGUIDLive.ToString(), TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SaveDeliveryPointProcessPriority, LoggerTraceConstants.SaveDeliveryPointProcessBusinessMethodExitEventId, LoggerTraceConstants.Title);
                     await postalAddressIntegrationService.InsertDeliveryPoint(newDeliveryPoint);
                 }
 

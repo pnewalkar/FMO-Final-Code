@@ -7,6 +7,7 @@ using System;
 using RM.CommonLibrary.ResourceFile;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using RM.CommonLibrary.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -35,8 +36,8 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-                throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
         }
     }

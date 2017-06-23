@@ -398,10 +398,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByPostalAddress"))
                 //{
                 var deliveryPoint = businessService.GetDeliveryPointByPostalAddress(addressId);
-                if (deliveryPoint == null)
-                {
-                    return NotFound();
-                }
+                //if (deliveryPoint == null)
+                //{
+                //    return NotFound();
+                //}
 
                 return Ok(deliveryPoint);
 
