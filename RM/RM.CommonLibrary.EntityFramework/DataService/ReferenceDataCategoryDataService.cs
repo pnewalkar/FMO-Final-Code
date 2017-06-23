@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
@@ -9,6 +11,7 @@ using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -17,36 +20,46 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class ReferenceDataCategoryDataService : DataServiceBase<ReferenceDataCategory, RMDBContext>, IReferenceDataCategoryDataService
     {
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
         #region Constructor
 
-        public ReferenceDataCategoryDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        public ReferenceDataCategoryDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         #endregion Constructor
 
         public Guid GetReferenceDataId(string strCategoryname, string strRefDataName)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetReferenceDataId"))
             {
-                Guid statusId = Guid.Empty;
-                var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
-                {
-                    var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataValue.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                    if (referenceData != null)
-                    {
-                        statusId = referenceData.ID;
-                    }
-                }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                return statusId;
-            }
-            catch (InvalidOperationException ex)
-            {
-                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                try
+                {
+                    Guid statusId = Guid.Empty;
+                    var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+                    {
+                        var referenceData = result.ReferenceDatas.Where(n => n.ReferenceDataValue.Trim().Equals(strRefDataName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                        if (referenceData != null)
+                        {
+                            statusId = referenceData.ID;
+                        }
+                    }
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return statusId;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                }
             }
         }
 
@@ -58,22 +71,29 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List<Guid></returns>
         public List<Guid> GetReferenceDataIds(string strCategoryname, List<string> lstRefDataName)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetReferenceDataIds"))
             {
-                List<Guid> statusIds = new List<Guid>();
-                var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
-                {
-                    var referenceData = result.ReferenceDatas.Where(n => lstRefDataName.Contains(n.DataDescription.Trim().ToUpper())).ToList();
-                    referenceData.ForEach(r => statusIds.Add(r.ID));
-                }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                return statusIds;
-            }
-            catch (InvalidOperationException ex)
-            {
-                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                try
+                {
+                    List<Guid> statusIds = new List<Guid>();
+                    var result = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(strCategoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    if (result?.ReferenceDatas != null && result.ReferenceDatas.Count > 0)
+                    {
+                        var referenceData = result.ReferenceDatas.Where(n => lstRefDataName.Contains(n.DataDescription.Trim().ToUpper())).ToList();
+                        referenceData.ForEach(r => statusIds.Add(r.ID));
+                    }
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return statusIds;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                }
             }
         }
 
@@ -83,22 +103,29 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List</returns>
         public List<ReferenceDataDTO> RouteLogStatus()
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.RouteLogStatus"))
             {
-                List<ReferenceDataDTO> lstReferenceDt = new List<ReferenceDataDTO>();
-                string categoryname = "Delivery Point Operational Status";
-                var query = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(categoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
-                if (query?.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
-                {
-                    lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
-                }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                return lstReferenceDt;
-            }
-            catch (InvalidOperationException ex)
-            {
-                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                try
+                {
+                    List<ReferenceDataDTO> lstReferenceDt = new List<ReferenceDataDTO>();
+                    string categoryname = "Delivery Point Operational Status";
+                    var query = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(n => n.CategoryName.Trim().Equals(categoryname, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+                    if (query?.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+                    {
+                        lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
+                    }
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return lstReferenceDt;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                }
             }
         }
 
@@ -108,17 +135,24 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List</returns>
         public List<ReferenceDataDTO> RouteLogSelectionType()
         {
-            List<ReferenceDataDTO> lstReferenceDt = null;
-            var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas)
-                .AsNoTracking().SingleOrDefault(n => n.CategoryName.Equals(
-                    "UI_RouteLogSearch_SelectionType",
-                    StringComparison.OrdinalIgnoreCase));
-            if (query?.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.RouteLogSelectionType"))
             {
-                lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
-            }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return lstReferenceDt;
+                List<ReferenceDataDTO> lstReferenceDt = null;
+                var query = DataContext.ReferenceDataCategories.Include(m => m.ReferenceDatas)
+                    .AsNoTracking().SingleOrDefault(n => n.CategoryName.Equals(
+                        "UI_RouteLogSearch_SelectionType",
+                        StringComparison.OrdinalIgnoreCase));
+                if (query?.ReferenceDatas != null && query.ReferenceDatas.Count > 0)
+                {
+                    lstReferenceDt = GenericMapper.MapList<ReferenceData, ReferenceDataDTO>(query.ReferenceDatas.ToList());
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return lstReferenceDt;
+            }
         }
 
         /// <summary>
@@ -127,17 +161,24 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List<ReferenceDataCategoryDTO></returns>
         public List<ReferenceDataCategoryDTO> GetAllReferenceCategoryList()
         {
-            Guid statusId = Guid.Empty;
-            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).ToList();
-            Mapper.Initialize(cfg =>
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAllReferenceCategoryList"))
             {
-                cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();
-                cfg.CreateMap<ReferenceData, ReferenceDataDTO>();
-            });
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            Mapper.Configuration.CreateMapper();
-            List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
-            return referenceDataCategoryListDto;
+                Guid statusId = Guid.Empty;
+                var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).ToList();
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();
+                    cfg.CreateMap<ReferenceData, ReferenceDataDTO>();
+                });
+
+                Mapper.Configuration.CreateMapper();
+                List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return referenceDataCategoryListDto;
+            }
         }
 
         /// <summary>
@@ -147,16 +188,23 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List ReferenceDataCategoryDTO</returns>
         public List<ReferenceDataCategoryDTO> GetReferenceDataCategoriesByCategoryNames(List<string> categoryNames)
         {
-            var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(m => categoryNames.Contains(m.CategoryName.Trim())).ToList();
-            Mapper.Initialize(cfg =>
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetReferenceDataCategoriesByCategoryNames"))
             {
-                cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();
-                cfg.CreateMap<ReferenceData, ReferenceDataDTO>();
-            });
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            Mapper.Configuration.CreateMapper();
-            List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
-            return referenceDataCategoryListDto;
+                var referenceDataCategories = DataContext.ReferenceDataCategories.AsNoTracking().Include(m => m.ReferenceDatas).Where(m => categoryNames.Contains(m.CategoryName.Trim())).ToList();
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<ReferenceDataCategory, ReferenceDataCategoryDTO>();
+                    cfg.CreateMap<ReferenceData, ReferenceDataDTO>();
+                });
+
+                Mapper.Configuration.CreateMapper();
+                List<ReferenceDataCategoryDTO> referenceDataCategoryListDto = Mapper.Map<List<ReferenceDataCategory>, List<ReferenceDataCategoryDTO>>(referenceDataCategories);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataCategoryDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return referenceDataCategoryListDto;
+            }
         }
     }
 }

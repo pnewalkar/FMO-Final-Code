@@ -407,7 +407,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                             // The address belongs to a new route summary group
                             //
                             // Create a summary row from the current route summary group
-                            RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy);
+                            RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy, group.SubBuildingName, group.BuildingName);
                             routeSummary.Add(row);
 
                             // Initialize a new route summary group from the current address
@@ -422,7 +422,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                     // Process the final route summary group
                     //
                     // Create a summary row from the current route summary group
-                    RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy);
+                    RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy, group.SubBuildingName, group.BuildingName);
                     routeSummary.Add(row);
                 }
             }
