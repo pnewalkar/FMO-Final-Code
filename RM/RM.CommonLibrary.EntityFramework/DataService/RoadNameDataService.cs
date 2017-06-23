@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
@@ -9,6 +11,7 @@ using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -18,9 +21,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     public class RoadNameDataService : DataServiceBase<RoadName, RMDBContext>, IRoadNameDataService
     {
         private const int BNGCOORDINATESYSTEM = 27700;
-        public RoadNameDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public RoadNameDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -31,9 +37,16 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List of NetworkLinkDTO</returns>
         public List<NetworkLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid unitGuid)
         {
-            List<NetworkLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, unitGuid).ToList();
-            var networkLink = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(result);
-            return networkLink;
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRoadRoutes"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.RoadNameDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                List<NetworkLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, unitGuid).ToList();
+                var networkLink = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(result);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.RoadNameDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return networkLink;
+            }
         }
 
         /// <summary>

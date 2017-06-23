@@ -9,6 +9,7 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
 using RM.Operational.MapManager.WebAPI.Utils;
 
@@ -61,7 +62,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateMapPdfReport"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 string pdfFilename = string.Empty;

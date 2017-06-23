@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity.Spatial;
+    using CommonLibrary.LoggingMiddleware;
     using Moq;
     using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
@@ -26,6 +27,7 @@
         private Guid sectorGuid;
         private Guid districtGuid;
         private Guid areaGuid;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void Test_FetchDeliveryUnitForUser1()
@@ -46,6 +48,7 @@
         protected override void OnSetup()
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            loggingHelperMock = CreateMock<ILoggingHelper>();
 
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
@@ -139,7 +142,11 @@
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
 
-            testCandidate = new UnitLocationDataService(mockDatabaseFactory.Object);
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new UnitLocationDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }
