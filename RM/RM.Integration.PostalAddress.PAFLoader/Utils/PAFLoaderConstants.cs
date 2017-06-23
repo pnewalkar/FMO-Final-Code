@@ -8,6 +8,9 @@ namespace RM.Integration.PostalAddress.PAFLoader.Utils
 {
     public static class PAFLoaderConstants
     {
+        public const string NoOfCharactersForPAF = "NoOfCharactersForPAF";
+        public const string MaxCharactersForPAF = "MaxCharactersForPAF";
+        public const string CsvPAFValues = "CsvPAFValues";
         internal const string DATETIMEFORMAT = "{0:-dd-MM-yyyy-HH-mm-ss}";
         internal const string QUEUEPATH = @".\Private$\";
         internal const string DeliveryPointSuffix = "1A";
@@ -15,13 +18,9 @@ namespace RM.Integration.PostalAddress.PAFLoader.Utils
         internal const string NEWLINE = "\n";
         internal const string POSTALADDRESSDETAILS = "Postal Address Details : ";
         internal const char CommaChar = ',';
-
         internal const string LOGMESSAGEFORPAFDATAVALIDATION = "Load PAF Error Message : PAF File Data is not valid, File Name : {0} : Log Time : {1} ";
         internal const string LOGMESSAGEFORPAFWRONGFORMAT = "Load PAF Error Message : PAF File is not valid due to wrong file format or empty records, File Name : {0} : Log Time : {1}";
         internal const string ERRORLOGMESSAGEFORPAFMSMQ = "Load PAF Error Message : Error occurred while processing it to messaging queue, File Name : {0} : Log Time : {1}";
-        public const string NoOfCharactersForPAF = "NoOfCharactersForPAF";
-        public const string MaxCharactersForPAF = "MaxCharactersForPAF";
-        public const string CsvPAFValues = "CsvPAFValues";
         internal const string PAFNOACTION = "B";
         internal const string PAFINSERT = "I";
         internal const string PAFUPDATE = "C";
@@ -31,7 +30,6 @@ namespace RM.Integration.PostalAddress.PAFLoader.Utils
         internal const string PAFErrorFilePath = "PAFErrorFilePath";
         internal const string PAFFLATFILENAME = "CSV PAF Changes Single";
         internal const string PAFZIPFILENAME = "^Y([0-9]{2})M(0[1-9]|1[012])D(0[1-9]|[12][0-9]|3[01])$";
-
         internal const int PAFDate = 0;
         internal const int PAFTime = 1;
         internal const int PAFAmendmentType = 2;

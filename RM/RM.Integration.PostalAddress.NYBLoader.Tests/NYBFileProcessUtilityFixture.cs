@@ -24,27 +24,6 @@ namespace RM.Integration.PostalAddress.NYBLoader.Tests
         private Mock<IExceptionHelper> mockExceptioHelper;
         private INYBFileProcessUtility testCandidate;
 
-        protected override void OnSetup()
-        {
-            httpHandlerMock = CreateMock<IHttpHandler>();
-            configurationHelperMock = CreateMock<IConfigurationHelper>();
-            mockLoggingHelper = CreateMock<ILoggingHelper>();
-            mockExceptioHelper = CreateMock<IExceptionHelper>();
-            mockExceptioHelper.Setup(n => n.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>())).Returns(true);
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ProcessedFilePath")).Returns("d:/processedfile/");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ErrorFilePath")).Returns("d:/errorfile/");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIURL")).Returns("http://dunnyURl.com/");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIName")).Returns("api/SaveDetails");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.NoOfCharactersForNYB)).Returns("15");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.CsvValuesForNYB)).Returns("16");
-            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.MaxCharactersForNYB)).Returns("507");
-            testCandidate = new NYBFileProcessUtility(httpHandlerMock.Object, configurationHelperMock.Object, mockLoggingHelper.Object, mockExceptioHelper.Object);
-
-            var rmTraceManagerMock = new Mock<IRMTraceManager>();
-            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
-            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
-        }
-
         [Test]
         public async Task Test_FailureHttpClientCall()
         {
@@ -88,9 +67,9 @@ namespace RM.Integration.PostalAddress.NYBLoader.Tests
         {
             string strLine = "AB10 1AB,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,G, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
             List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCsv(strLine);
-            int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
+            int inValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
             Assert.IsNotNull(methodOutput);
-            Assert.IsTrue(InValidReccount == 1);
+            Assert.IsTrue(inValidReccount == 1);
         }
 
         [Test]
@@ -98,8 +77,29 @@ namespace RM.Integration.PostalAddress.NYBLoader.Tests
         {
             string strLine = "1458 abc,London,,,Old Town Street, , ,2a,Flat 1,,,,53879041,l, ,1A\r\nAS10 1AS,Nahur,,,Old Town Street, , ,2a,Flat 2,,,,53879070,S, ,1B";
             List<PostalAddressDTO> methodOutput = testCandidate.LoadNybDetailsFromCsv(strLine);
-            int InValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
-            Assert.IsTrue(InValidReccount == 1);
+            int inValidReccount = methodOutput.Where(n => n.IsValidData == false).Count();
+            Assert.IsTrue(inValidReccount == 1);
+        }
+
+        protected override void OnSetup()
+        {
+            httpHandlerMock = CreateMock<IHttpHandler>();
+            configurationHelperMock = CreateMock<IConfigurationHelper>();
+            mockLoggingHelper = CreateMock<ILoggingHelper>();
+            mockExceptioHelper = CreateMock<IExceptionHelper>();
+            mockExceptioHelper.Setup(n => n.HandleException(It.IsAny<Exception>(), It.IsAny<ExceptionHandlingPolicy>())).Returns(true);
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ProcessedFilePath")).Returns("d:/processedfile/");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("ErrorFilePath")).Returns("d:/errorfile/");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIURL")).Returns("http://dunnyURl.com/");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("FMOWebAPIName")).Returns("api/SaveDetails");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.NoOfCharactersForNYB)).Returns("15");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.CsvValuesForNYB)).Returns("16");
+            configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues(NYBLoaderConstants.MaxCharactersForNYB)).Returns("507");
+            testCandidate = new NYBFileProcessUtility(httpHandlerMock.Object, configurationHelperMock.Object, mockLoggingHelper.Object, mockExceptioHelper.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
         }
     }
 }

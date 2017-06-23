@@ -35,6 +35,9 @@
         public const int ReferenceDataAPIPriority = 8;
         public const int RouteLogAPIPriority = 8;
         public const int PDFGeneratorAPIPriority = 8;
+        public const int MapManagerAPIPriority = 8;
+        public const int UnitManagerAPIPriority = 8;
+        public const int NetworkManagerAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -83,6 +86,25 @@
         public const int PDFGeneratorBusinessServiceMethodEntryEventId = 8413;
         public const int PDFGeneratorBusinessServiceMethodExitEventId = 8414;
 
+        public const int MapManagerControllerMethodEntryEventId = 8503;
+        public const int MapManagerBusinessServiceMethodEntryEventId = 8496;
+        public const int MapManagerBusinessServiceMethodExitEventId = 8497;
+        public const int MapManagerControllerMethodExitEventId = 8504;
+        public const int MapManagerIntegrationServiceMethodEntryEventId = 8486;
+        public const int MapManagerIntegrationServiceMethodExitEventId = 8487;
+
+        public const int UnitManagerControllerMethodEntryEventId = 8603;
+        public const int UnitManagerControllerMethodExitEventId = 8604;
+        public const int UnitManagerBusinessServiceMethodEntryEventId = 8613;
+        public const int UnitManagerBusinessServiceMethodExitEventId = 8614;
+
+        public const int NetworkManagerControllerMethodEntryEventId = 8703;
+        public const int NetworkManagerControllerMethodExitEventId = 8704;
+        public const int NetworkManagerBusinessServiceMethodEntryEventId = 8713;
+        public const int NetworkManagerBusinessServiceMethodExitEventId = 8714;
+        public const int NetworkManagerIntegrationServiceMethodEntryEventId = 8723;
+        public const int NetworkManagerIntegrationServiceMethodExitEventId = 8724;
+
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;
         public const int DeliveryPointBusinessServiceMethodEntryEventId = 9013;
@@ -105,6 +127,8 @@
         public const int DeliveryRouteBusinessServiceMethodExitEventId = 9214;
         public const int DeliveryRouteDataServiceMethodEntryEventId = 9223;
         public const int DeliveryRouteDataServiceMethodExitEventId = 9224;
+        public const int DeliveryRouteIntegrationServiceMethodEntryEventId = 9233;
+        public const int DeliveryRouteIntegrationServiceMethodExitEventId = 9234;
 
         public const int PostalAddressControllerMethodEntryEventId = 9303;
         public const int PostalAddressControllerMethodExitEventId = 9304;

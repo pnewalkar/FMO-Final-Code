@@ -81,7 +81,7 @@ referenceDataConstants) {
             if (selectionType === CommonConstants.RouteLogSelectionType.Single) {
                 deliveryRoute = response;
                 multiSelectiondeliveryRoute = null;
-                deliveryRouteResult.push({ "deliveryRoute": response, "multiSelectiondeliveryRoute": null });
+                deliveryRouteResult.push({ "deliveryRoute": response, "multiSelectiondeliveryRoute": [] });
                 deferred.resolve(deliveryRouteResult);
             } else {
                 multiSelectiondeliveryRoute = response;
