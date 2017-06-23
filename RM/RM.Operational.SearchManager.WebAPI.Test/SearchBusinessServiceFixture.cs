@@ -19,7 +19,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         private Mock<ILoggingHelper> loggingHelperMock;
         private string input = "road";
         private Guid unitGuid = System.Guid.NewGuid();
-        PostalAddressDTO postalAddressDTO;
+        private PostalAddressDTO postalAddressDTO;
 
         [Test]
         public void Test_Fetch_Advance_Search_Details()
@@ -91,8 +91,8 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             {
                 Assert.AreEqual(ex, expectedException);
                 Assert.IsTrue(output.SearchResultItems.Count == 0);
-             }
             }
+        }
 
         [Test]
         public async Task AdvanceSearch_ExactOneResultFound()

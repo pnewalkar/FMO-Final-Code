@@ -9,6 +9,7 @@ using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -18,6 +19,7 @@ namespace RM.DataServices.Tests.DataService
         private Mock<RMDBContext> mockRMDBContext;
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IOSRoadLinkDataService testCandidate;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void Test_GetOSRoadLink()
@@ -29,6 +31,7 @@ namespace RM.DataServices.Tests.DataService
         protected override void OnSetup()
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            loggingHelperMock = CreateMock<ILoggingHelper>();
 
             List<OSRoadLink> oSRoadLink = new List<OSRoadLink>() { new OSRoadLink() { TOID = "123", RouteHierarchy = "1" } };
             var mockOSRoadLinkEnumerable = new DbAsyncEnumerable<OSRoadLink>(oSRoadLink);
@@ -44,7 +47,12 @@ namespace RM.DataServices.Tests.DataService
             mockRMDBContext.Setup(x => x.OSRoadLinks).Returns(mockOSRoadLinkDataService.Object);
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new OSRoadLinkDataService(mockDatabaseFactory.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new OSRoadLinkDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }

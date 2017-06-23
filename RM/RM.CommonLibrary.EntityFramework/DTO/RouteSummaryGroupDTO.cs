@@ -28,6 +28,8 @@ namespace RM.CommonLibrary.EntityFramework.DTO
             // Initialize the multiple occupancy count
             this.MultipleOccupancy = address.MultipleOccupancy;
             this.StreetName = address.StreetName;
+            this.SubBuildingName = address.SubBuildingName;
+            this.BuildingName = address.BuildingName;
         }
 
         /// <summary>
@@ -145,10 +147,6 @@ namespace RM.CommonLibrary.EntityFramework.DTO
             {
                 description = description + number + delimiter;
             }
-            if (thoroughfare.Length > 0)
-            {
-                description = description + thoroughfare + delimiter;
-            }
 
             // Remove any surplus trailing delimiters
             while (description.EndsWith(", "))
@@ -194,5 +192,9 @@ namespace RM.CommonLibrary.EntityFramework.DTO
         public short? LastBuildingNumber { get; set; }
 
         public string StreetName { get; set; }
+
+        public string SubBuildingName { get; set; }
+
+        public string BuildingName { get; set; }
     }
 }

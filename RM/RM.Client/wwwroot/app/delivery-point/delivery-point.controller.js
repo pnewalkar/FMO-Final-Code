@@ -97,15 +97,14 @@ function DeliveryPointController(
     function deliveryPoint() {
         deliveryPointService.openModalPopup(popUpSettingService.deliveryPoint(vm));
         $scope.$emit("dialogOpen", "deliveryPoint");
-        $rootScope.$broadcast('disablePrintMap', {
-            disable: true
-        });
     }
 
     function closeWindow() {
         vm.hide = false;
         vm.display = false;
         vm.searchText = "";
+        vm.mailvol = "";
+        vm.multiocc = "";
         deliveryPointService.closeModalPopup();
     }
 
@@ -249,9 +248,6 @@ function DeliveryPointController(
                 mapFactory.setAccessLink();
                 vm.closeWindow();
                 vm.hide = true;
-                $rootScope.$broadcast('disablePrintMap', {
-                    disable: false
-                });
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
@@ -267,6 +263,9 @@ function DeliveryPointController(
                 vm.errorMessageTitle = "Duplicates found";
 
             }
+            $rootScope.$broadcast('disablePrintMap', {
+                disable: true
+            });
         });
     }
 

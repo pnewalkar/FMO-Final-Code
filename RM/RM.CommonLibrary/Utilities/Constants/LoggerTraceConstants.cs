@@ -36,6 +36,11 @@
         public const int RouteLogAPIPriority = 8;
         public const int PDFGeneratorAPIPriority = 8;
         public const int MapManagerAPIPriority = 8;
+        public const int UnitManagerAPIPriority = 8;
+        public const int NetworkManagerAPIPriority = 8;
+        public const int OSRoadLinkPriority = 8;
+        public const int PostCodePriority = 8;
+        public const int ActionManagerAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -55,8 +60,10 @@
 
         #region EventId
 
-        public const int AccessLinkControllerMethodEntryEventId = 8003;
-        public const int AccessLinkControllerMethodExitEventId = 8004;
+        public const int ActionManagerDataServiceMethodEntryEventId = 8003;
+        public const int ActionManagerDataServiceMethodExitEventId = 8004;
+        public const int UserRoleUnitDataServiceMethodEntryEventId = 8013;
+        public const int UserRoleUnitDataServiceMethodExitEventId = 8014;
 
         public const int SearchManagerControllerMethodEntryEventId = 8103;
         public const int SearchManagerControllerMethodExitEventId = 8104;
@@ -71,6 +78,8 @@
         public const int ReferenceDataBusinessServiceMethodExitEventId = 8214;
         public const int ReferenceDataDataServiceMethodEntryEventId = 8223;
         public const int ReferenceDataDataServiceMethodExitEventId = 8224;
+        public const int ReferenceDataCategoryDataServiceMethodEntryEventId = 8233;
+        public const int ReferenceDataCategoryDataServiceMethodExitEventId = 8234;
 
         public const int RouteLogControllerMethodEntryEventId = 8303;
         public const int RouteLogControllerMethodExitEventId = 8304;
@@ -91,6 +100,33 @@
         public const int MapManagerIntegrationServiceMethodEntryEventId = 8486;
         public const int MapManagerIntegrationServiceMethodExitEventId = 8487;
 
+        public const int UnitManagerControllerMethodEntryEventId = 8603;
+        public const int UnitManagerControllerMethodExitEventId = 8604;
+        public const int UnitManagerBusinessServiceMethodEntryEventId = 8613;
+        public const int UnitManagerBusinessServiceMethodExitEventId = 8614;
+        public const int ScenarioDataServiceMethodEntryEventId = 8623;
+        public const int ScenarioDataServiceMethodExitEventId = 8624;
+        public const int UnitLocationDataServiceMethodEntryEventId = 8633;
+        public const int UnitLocationDataServiceMethodExitEventId = 8634;
+
+        public const int NetworkManagerControllerMethodEntryEventId = 8703;
+        public const int NetworkManagerControllerMethodExitEventId = 8704;
+        public const int NetworkManagerBusinessServiceMethodEntryEventId = 8713;
+        public const int NetworkManagerBusinessServiceMethodExitEventId = 8714;
+        public const int NetworkManagerIntegrationServiceMethodEntryEventId = 8723;
+        public const int NetworkManagerIntegrationServiceMethodExitEventId = 8724;
+        public const int RoadNameDataServiceMethodEntryEventId = 8733;
+        public const int RoadNameDataServiceMethodExitEventId = 8734;
+        public const int StreetNetworkDataServiceMethodEntryEventId = 8743;
+        public const int StreetNetworkDataServiceMethodExitEventId = 8744;
+
+        public const int OSRoadLinkDataServiceMethodEntryEventId = 8803;
+        public const int OSRoadLinkDataServiceMethodExitEventId = 8804;
+        public const int PostCodeDataServiceMethodEntryEventId = 8813;
+        public const int PostCodeDataServiceMethodExitEventId = 8814;
+        public const int PostCodeSectorDataServiceMethodEntryEventId = 8823;
+        public const int PostCodeSectorDataServiceMethodExitEventId = 8824;
+
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;
         public const int DeliveryPointBusinessServiceMethodEntryEventId = 9013;
@@ -100,12 +136,14 @@
         public const int DeliveryPointIntegrationServiceMethodEntryEventId = 9033;
         public const int DeliveryPointIntegrationServiceMethodExitEventId = 9034;
 
-        public const int AccessLinkBusinessMethodEntryEventId = 9103;
-        public const int AccessLinkBusinessMethodExitEventId = 9104;
-        public const int AccessLinkDataServiceMethodEntryEventId = 9113;
-        public const int AccessLinkDataServiceMethodExitEventId = 9114;
-        public const int AccessLinkIntegrationMethodEntryEventId = 9123;
-        public const int AccessLinkIntegrationMethodExitEventId = 9124;
+        public const int AccessLinkControllerMethodEntryEventId = 9103;
+        public const int AccessLinkControllerMethodExitEventId = 9104;
+        public const int AccessLinkBusinessMethodEntryEventId = 9113;
+        public const int AccessLinkBusinessMethodExitEventId = 9114;
+        public const int AccessLinkDataServiceMethodEntryEventId = 9123;
+        public const int AccessLinkDataServiceMethodExitEventId = 9124;
+        public const int AccessLinkIntegrationMethodEntryEventId = 9133;
+        public const int AccessLinkIntegrationMethodExitEventId = 9134;
 
         public const int DeliveryRouteControllerMethodEntryEventId = 9203;
         public const int DeliveryRouteControllerMethodExitEventId = 9204;
@@ -113,6 +151,8 @@
         public const int DeliveryRouteBusinessServiceMethodExitEventId = 9214;
         public const int DeliveryRouteDataServiceMethodEntryEventId = 9223;
         public const int DeliveryRouteDataServiceMethodExitEventId = 9224;
+        public const int DeliveryRouteIntegrationServiceMethodEntryEventId = 9233;
+        public const int DeliveryRouteIntegrationServiceMethodExitEventId = 9234;
 
         public const int PostalAddressControllerMethodEntryEventId = 9303;
         public const int PostalAddressControllerMethodExitEventId = 9304;

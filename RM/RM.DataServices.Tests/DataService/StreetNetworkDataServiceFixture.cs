@@ -11,6 +11,7 @@ using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -27,6 +28,7 @@ namespace RM.DataServices.Tests.DataService
         private Guid user1Id;
         private Guid user2Id;
         private DbGeometry accessLinkLine;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public async Task TestFetchStreetNamesForBasicSearchValid()
@@ -87,6 +89,7 @@ namespace RM.DataServices.Tests.DataService
         protected override void OnSetup()
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            loggingHelperMock = CreateMock<ILoggingHelper>();
 
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
@@ -153,7 +156,12 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new StreetNetworkDataService(mockDatabaseFactory.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new StreetNetworkDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }
