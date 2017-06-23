@@ -23,6 +23,7 @@
     using System.Diagnostics;
     using AutoMapper;
     using CommonLibrary.Utilities.HelperMiddleware;
+    using System.Reflection;
 
     /// <summary>
     /// DataService to interact with postal address entity
@@ -214,17 +215,24 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDBDTO> GetPostalAddress(int? uDPRN)
         {
-            var postalAddress = await DataContext.PostalAddresses.Include(m => m.PostalAddressStatus).Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
-
-            Mapper.Initialize(cfg =>
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
             {
-                cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
-                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-            });
-            Mapper.Configuration.CreateMapper();
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-            return dtoPostalAddress;
+                var postalAddress = await DataContext.PostalAddresses.Include(m => m.PostalAddressStatus).Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
+                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
+                });
+                Mapper.Configuration.CreateMapper();
+
+                var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return dtoPostalAddress;
+            }
 
         }
 
@@ -235,7 +243,12 @@
         /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDBDTO> GetPostalAddress(PostalAddressDBDTO objPostalAddress)
         {
-            var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(l => l.PostalAddressStatus)//.Include(m => m.DeliveryPoints)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(l => l.PostalAddressStatus)//.Include(m => m.DeliveryPoints)
                 .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
                                      && ((n.BuildingName ==
                                           (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
@@ -303,15 +316,17 @@
                                               ? objPostalAddress.DependentThoroughfare
                                               : string.Empty))));
 
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
-                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-            });
-            Mapper.Configuration.CreateMapper();
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
+                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
+                });
+                Mapper.Configuration.CreateMapper();
 
-            var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-            return dtoPostalAddress;
+                var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
+                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return dtoPostalAddress;
+            }
         }
 
         /// <summary>

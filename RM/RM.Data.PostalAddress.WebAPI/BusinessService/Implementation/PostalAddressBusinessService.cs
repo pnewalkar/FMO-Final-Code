@@ -81,9 +81,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>returns true or false</returns>
         public async Task<bool> SavePostalAddressForNYB(List<PostalAddressDBDTO> lstPostalAddress, string strFileName)
         {
-            //using (loggingHelper.RMTraceManager.StartTrace("Business.SavePostalAddressForNYB"))
-            //{
-            string methodName = MethodBase.GetCurrentMethod().Name;
+            using (loggingHelper.RMTraceManager.StartTrace("Business.SavePostalAddressForNYB"))
+            {
+            string methodName = MethodHelper.GetActualAsyncMethodName();
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SavePostalAddressPriority, LoggerTraceConstants.SavePostalAddressBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
             bool isPostalAddressInserted = false;
@@ -137,7 +137,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
             return isPostalAddressInserted;
 
-            //}
+           }
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isPostalAddressProcessed = false;
-                string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
+                string postalAddressList = new JavaScriptSerializer() { MaxJsonLength = 50000000 }.Serialize(lstPostalAddress);
                 try
                 {
                     var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(Constants.PostalAddressType).Result;
@@ -164,6 +164,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                     foreach (var item in lstPostalAddress)
                     {
+                        loggingHelper.Log("record no " + lstPostalAddress.IndexOf(item)+" , Udprn :" + item.UDPRN, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
                         await SavePAFRecords(item, addressTypeUSR, addressTypeNYB, addressTypePAF, item.FileName);
                     }
 
@@ -303,7 +305,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         {
             //using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressSearchDetails"))
             //{
-            string methodName = MethodBase.GetCurrentMethod().Name;
+            string methodName = MethodHelper.GetActualAsyncMethodName();
             loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressSearchDetailsPriority, LoggerTraceConstants.GetPostalAddressSearchDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
 
             try
