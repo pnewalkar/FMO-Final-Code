@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 
 namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
@@ -23,6 +27,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         private IPostCodeSectorDataService postcodeSectorDataService = default(IPostCodeSectorDataService);
         private IPostCodeDataService postCodeDataService = default(IPostCodeDataService);
         private IScenarioDataService scenarioDataService = default(IScenarioDataService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitLocationBusinessService"/> class.
@@ -31,12 +36,13 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <param name="postcodeSectorDataService">post code sector data service</param>
         /// <param name="postCodeDataService">post code data service</param>
         /// <param name="scenarioDataService">scenario data service</param>
-        public UnitLocationBusinessService(IUnitLocationDataService unitLocationRespository, IPostCodeSectorDataService postcodeSectorDataService, IPostCodeDataService postCodeDataService, IScenarioDataService scenarioDataService)
+        public UnitLocationBusinessService(IUnitLocationDataService unitLocationRespository, IPostCodeSectorDataService postcodeSectorDataService, IPostCodeDataService postCodeDataService, IScenarioDataService scenarioDataService, ILoggingHelper loggingHelper)
         {
             this.unitLocationRespository = unitLocationRespository;
             this.postcodeSectorDataService = postcodeSectorDataService;
             this.postCodeDataService = postCodeDataService;
             this.scenarioDataService = scenarioDataService;
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -48,9 +54,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// </returns>
         public UnitLocationDTO FetchDeliveryUnit(Guid unitGuid)
         {
-            var unitLocationDTO = unitLocationRespository.FetchDeliveryUnit(unitGuid);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryUnit"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return unitLocationDTO;
+                var unitLocationDTO = unitLocationRespository.FetchDeliveryUnit(unitGuid);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return unitLocationDTO;
+            }
         }
 
         /// <summary>
@@ -62,21 +75,28 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// </returns>
         public List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId)
         {
-            var unitLocationDTOList = unitLocationRespository.FetchDeliveryUnitsForUser(userId);
-
-            foreach (var unitLocationDTO in unitLocationDTOList)
+            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryUnitsForUser"))
             {
-                // take the unit boundry plus 1 mile envelope
-                var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(unitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                unitLocationDTO.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
+                var unitLocationDTOList = unitLocationRespository.FetchDeliveryUnitsForUser(userId);
 
-                unitLocationDTO.BoundingBox = new List<double> { unitBoundary.STPointN(1).STX.Value, unitBoundary.STPointN(1).STY.Value, unitBoundary.STPointN(3).STX.Value, unitBoundary.STPointN(3).STY.Value };
+                foreach (var unitLocationDTO in unitLocationDTOList)
+                {
+                    // take the unit boundry plus 1 mile envelope
+                    var unitBoundary = SqlGeometry.STPolyFromWKB(new SqlBytes(unitLocationDTO.UnitBoundryPolygon.Envelope.Buffer(1609.34).Envelope.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
 
-                unitLocationDTO.UnitBoundaryGeoJSONData = GeUnitBoundaryJsonData(unitLocationDTO);
+                    unitLocationDTO.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
+
+                    unitLocationDTO.BoundingBox = new List<double> { unitBoundary.STPointN(1).STX.Value, unitBoundary.STPointN(1).STY.Value, unitBoundary.STPointN(3).STX.Value, unitBoundary.STPointN(3).STY.Value };
+
+                    unitLocationDTO.UnitBoundaryGeoJSONData = GeUnitBoundaryJsonData(unitLocationDTO);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return unitLocationDTOList;
             }
-
-            return unitLocationDTOList;
         }
 
         /// <summary>
@@ -86,7 +106,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>PostCodeSectorDTO object</returns>
         public async Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN)
         {
-            return await postcodeSectorDataService.GetPostCodeSectorByUDPRN(uDPRN);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeSectorByUDPRN"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                var getPostCodeSectorByUDPRN = await postcodeSectorDataService.GetPostCodeSectorByUDPRN(uDPRN);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getPostCodeSectorByUDPRN;
+            }
         }
 
         /// <summary>
@@ -99,7 +126,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// </returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid userUnit)
         {
-            return await postCodeDataService.FetchPostCodeUnitForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchPostCodeUnitForBasicSearch"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var fetchPostCodeUnitForBasicSearch = await postCodeDataService.FetchPostCodeUnitForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return fetchPostCodeUnitForBasicSearch;
+            }
         }
 
         /// <summary>
@@ -110,7 +146,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>The total count of post code</returns>
         public async Task<int> GetPostCodeUnitCount(string searchText, Guid userUnit)
         {
-            return await postCodeDataService.GetPostCodeUnitCount(searchText, userUnit).ConfigureAwait(false);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeUnitCount"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var getPostCodeUnitCount = await postCodeDataService.GetPostCodeUnitCount(searchText, userUnit).ConfigureAwait(false);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getPostCodeUnitCount;
+            }
         }
 
         /// <summary>
@@ -123,7 +168,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// </returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid userUnit)
         {
-            return await postCodeDataService.FetchPostCodeUnitForAdvanceSearch(searchText, userUnit).ConfigureAwait(false);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchPostCodeUnitForAdvanceSearch"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var fetchPostCodeUnitForAdvanceSearch = await postCodeDataService.FetchPostCodeUnitForAdvanceSearch(searchText, userUnit).ConfigureAwait(false);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return fetchPostCodeUnitForAdvanceSearch;
+            }
         }
 
         /// <summary>
@@ -133,7 +186,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>Post code ID</returns>
         public async Task<Guid> GetPostCodeID(string postCode)
         {
-            return await postCodeDataService.GetPostCodeID(postCode);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeID"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var getPostCodeID = await postCodeDataService.GetPostCodeID(postCode);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getPostCodeID;
+            }
         }
 
         /// <summary>
@@ -144,7 +206,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>List</returns>
         public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID)
         {
-            return scenarioDataService.FetchScenario(operationStateID, deliveryScenarioID);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryScenario"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var fetchScenario = scenarioDataService.FetchScenario(operationStateID, deliveryScenarioID);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return fetchScenario;
+            }
         }
 
         /// <summary>

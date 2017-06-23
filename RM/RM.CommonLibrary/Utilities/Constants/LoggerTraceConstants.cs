@@ -36,6 +36,8 @@
         public const int RouteLogAPIPriority = 8;
         public const int PDFGeneratorAPIPriority = 8;
         public const int MapManagerAPIPriority = 8;
+        public const int UnitManagerAPIPriority = 8;
+        public const int NetworkManagerAPIPriority = 8;
 
         public const int SavePostalAddressPriority = 8;
         public const int SavePAFDetailsPriority = 8;
@@ -90,6 +92,18 @@
         public const int MapManagerControllerMethodExitEventId = 8504;
         public const int MapManagerIntegrationServiceMethodEntryEventId = 8486;
         public const int MapManagerIntegrationServiceMethodExitEventId = 8487;
+
+        public const int UnitManagerControllerMethodEntryEventId = 8603;
+        public const int UnitManagerControllerMethodExitEventId = 8604;
+        public const int UnitManagerBusinessServiceMethodEntryEventId = 8613;
+        public const int UnitManagerBusinessServiceMethodExitEventId = 8614;
+
+        public const int NetworkManagerControllerMethodEntryEventId = 8703;
+        public const int NetworkManagerControllerMethodExitEventId = 8704;
+        public const int NetworkManagerBusinessServiceMethodEntryEventId = 8713;
+        public const int NetworkManagerBusinessServiceMethodExitEventId = 8714;
+        public const int NetworkManagerIntegrationServiceMethodEntryEventId = 8723;
+        public const int NetworkManagerIntegrationServiceMethodExitEventId = 8724;
 
         public const int DeliveryPointControllerMethodEntryEventId = 9003;
         public const int DeliveryPointControllerMethodExitEventId = 9004;
