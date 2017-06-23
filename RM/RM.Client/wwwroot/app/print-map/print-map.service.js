@@ -163,6 +163,11 @@ function printMapService(
         var imageHeightmm = getMapImageHeight(size, imageHeight);
         var mapWidth = getMapWidth(imageWidthmm, printMapDPI);
         var mapHeight = getMapHeight(imageHeightmm, printMapDPI);
+
+        $timeout(captureImage, 3000, true, printOptions, resolution, map, scaleline, mapWidth, mapHeight);
+    }
+
+    function captureImage(printOptions, resolution, map, scaleline, mapWidth, mapHeight) {
         var mapControl = document.getElementById('map');
         mapControl.style.height = mapHeight + "px";
         mapControl.style.width = mapWidth + "px";
@@ -177,7 +182,6 @@ function printMapService(
             "EncodedString": $rootScope.canvas.toDataURL('image/png'),
             "License": licensingInformationAccessorService.getLicensingInformation()[0].value
         };
-
         mapControl.removeAttribute('style');
         map.removeControl(scaleline);
         mapService.refreshLayers();
