@@ -8,6 +8,7 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.BusinessService;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
 using RM.CommonLibrary.LoggingMiddleware;
+using System;
 
 namespace RM.Operational.MapManager.WebAPI.Test
 {
@@ -90,6 +91,10 @@ namespace RM.Operational.MapManager.WebAPI.Test
 
             mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(It.IsAny<string>())).Returns(Path.GetTempPath());
             mockMapIntegrationService.Setup(x => x.GenerateReportWithMap(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(pdfFileName);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             testCandidate = new MapBusinessService(mockMapIntegrationService.Object, mockConfigurationHelper.Object, loggingHelperMock.Object);
         }
