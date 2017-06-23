@@ -1,7 +1,7 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Net.Http;
 using System.Reflection;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
