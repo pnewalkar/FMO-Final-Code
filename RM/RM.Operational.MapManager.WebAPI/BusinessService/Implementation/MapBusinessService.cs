@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Reflection;
-using System.Diagnostics;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
 using RM.Operational.MapManager.WebAPI.Utils;
-using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
@@ -46,6 +46,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                     printMapDTO.PrintTime = string.Format(MapManagerConstants.PrintMapDateTimeFormat, DateTime.Now);
                     SaveMapImage(printMapDTO);
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return printMapDTO;
             }
@@ -69,6 +70,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                     string pdfXml = GenerateXml(printMapDTO);
                     pdfFilename = await mapIntegrationService.GenerateReportWithMap(pdfXml, xsltFilepath);
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return pdfFilename;
             }

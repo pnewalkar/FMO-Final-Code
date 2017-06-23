@@ -69,7 +69,6 @@
             Assert.IsTrue(actualResultCount == 7);
         }
 
-        /*
         [Test]
         public void TestGetDeliveryPointsCrossingOperationalObject()
         {
@@ -87,7 +86,7 @@
             var actualResult = testCandidate.GetDeliveryPoints(coordinates, unit1Guid);
             Assert.IsNotNull(actualResult);
         }
-        */
+
         protected override void OnSetup()
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
@@ -178,8 +177,8 @@
             mockRMDBContext = CreateMock<RMDBContext>();
             mockRMDBContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointDataService.Object);
             mockRMDBContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointDataService.Object);
-            mockRMDBContext.Setup(c => c.DeliveryPoints.AsNoTracking()).Returns(mockDeliveryPointDataService.Object);
             mockDeliveryPointDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointDataService.Object);
+            mockDeliveryPointDataService.Setup(x => x.AsNoTracking()).Returns(mockDeliveryPointDataService.Object);
 
             var mockAsynEnumerable2 = new DbAsyncEnumerable<UnitLocation>(unitLocation);
             var mockDeliveryPointDataService2 = MockDbSet(unitLocation);
