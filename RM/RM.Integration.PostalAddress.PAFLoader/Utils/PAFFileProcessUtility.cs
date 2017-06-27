@@ -66,7 +66,7 @@
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PAFPriority, LoggerTraceConstants.PAFLoaderMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isPAFFileProcessed = false;
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                JavaScriptSerializer serializer = new JavaScriptSerializer() { MaxJsonLength = 5000000 };
 
                 if (CheckFileName(new FileInfo(fileName).Name, PAFLoaderConstants.PAFZIPFILENAME.ToString()))
                 {
