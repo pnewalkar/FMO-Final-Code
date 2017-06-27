@@ -127,12 +127,19 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>NotificationDTO object</returns>
         public async Task<NotificationDTO> GetNotificationByUDPRN(int uDPRN)
         {
-            string actionLink = string.Format(USRNOTIFICATIONLINK, uDPRN);
-            Notification notification = await DataContext.Notifications
-                .Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefaultAsync();
-            NotificationDTO notificationDTO = new NotificationDTO();
-            GenericMapper.Map(notification, notificationDTO);
-            return notificationDTO;
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNotificationByUDPRN"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                string actionLink = string.Format(USRNOTIFICATIONLINK, uDPRN);
+                Notification notification = await DataContext.Notifications
+                    .Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefaultAsync();
+                NotificationDTO notificationDTO = new NotificationDTO();
+                GenericMapper.Map(notification, notificationDTO);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return notificationDTO;
+            }
         }
 
         /// <summary>
@@ -143,10 +150,18 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>boolean value</returns>
         public async Task<bool> CheckIfNotificationExists(int uDPRN, string action)
         {
-            string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());
-            return await DataContext.Notifications.AsNoTracking()
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.CheckIfNotificationExists"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());
+                bool notificationExists = await DataContext.Notifications.AsNoTracking()
                 .AnyAsync(notific => notific.NotificationActionLink.Equals(notificationActionlink) &&
                                   notific.Notification_Heading.Trim().Equals(action));
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return notificationExists;
+            }
         }
     }
 }

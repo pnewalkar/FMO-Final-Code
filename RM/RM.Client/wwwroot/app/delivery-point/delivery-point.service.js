@@ -162,7 +162,7 @@ function deliveryPointService(
                 disable: false
             });
             mapFactory.setAccessLink();
-            mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
+            mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate);
             guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
 

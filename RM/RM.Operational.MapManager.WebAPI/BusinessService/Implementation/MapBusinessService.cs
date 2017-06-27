@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Reflection;
-using System.Diagnostics;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
 using RM.Operational.MapManager.WebAPI.Utils;
-using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Operational.MapManager.WebAPI.BusinessService
 {
@@ -46,6 +47,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                     printMapDTO.PrintTime = string.Format(MapManagerConstants.PrintMapDateTimeFormat, DateTime.Now);
                     SaveMapImage(printMapDTO);
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return printMapDTO;
             }
@@ -60,7 +62,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateMapPdfReport"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 string pdfFilename = string.Empty;
@@ -69,6 +71,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                     string pdfXml = GenerateXml(printMapDTO);
                     pdfFilename = await mapIntegrationService.GenerateReportWithMap(pdfXml, xsltFilepath);
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return pdfFilename;
             }
@@ -131,12 +134,12 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                 section = document.CreateElement(MapManagerConstants.Section);
                 sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
                 sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-                sectionColumn.InnerText = "Date : " + printMapDTO.PrintTime;
+                sectionColumn.InnerText = "Date: " + printMapDTO.PrintTime;
                 section.AppendChild(sectionColumn);
 
                 sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
                 sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-                sectionColumn.InnerText = "Scale : " + printMapDTO.CurrentScale;
+                sectionColumn.InnerText = "Scale: " + printMapDTO.CurrentScale;
                 section.AppendChild(sectionColumn);
                 content.AppendChild(section);
 

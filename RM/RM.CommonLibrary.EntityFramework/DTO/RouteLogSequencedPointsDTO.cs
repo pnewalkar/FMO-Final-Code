@@ -8,17 +8,18 @@ namespace RM.CommonLibrary.EntityFramework.DTO
 {
     public class RouteLogSequencedPointsDTO
     {
-        public RouteLogSequencedPointsDTO(string streetName, string description, int deliveryPointCount, int? multipleOccupancy)
+        public RouteLogSequencedPointsDTO(string streetName, string description, int deliveryPointCount, int? multipleOccupancy, string subbuildingname, string buildingname)
         {
             StreetName = streetName;
             Description = description;
             DeliveryPointCount = deliveryPointCount;
             MultipleOccupancy = null;
+            SubBuildingName = subbuildingname;
+            BuildingName = buildingname;
             if (multipleOccupancy > 0)
             {
                 MultipleOccupancy = multipleOccupancy;
             }
-
         }
 
         public RouteLogSequencedPointsDTO()

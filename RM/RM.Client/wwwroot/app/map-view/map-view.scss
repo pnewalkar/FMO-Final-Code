@@ -20,9 +20,8 @@
 #rightPanel {
     @include position(absolute);
     @include top(75px);
-    height: calc(100% - 85px);
+    height: calc(100% -135px);
     right: 15px;
-    pointer-events: none;
 }
 
 .zoom-control {

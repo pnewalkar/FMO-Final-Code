@@ -53,3 +53,8 @@ span.closeWindow {
     @include margin(-10px -7px 0px 0px);
     @include cursor(default);
 }
+
+.inputIcon .md-text {
+    color: black;
+    text-indent: 18px;
+}

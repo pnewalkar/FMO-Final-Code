@@ -35,7 +35,6 @@ function printMapService(
     };
 
     function initialize() {
-
         var deferred = $q.defer();
 
         var result = { "MapDpi": null, "ImageHeight": null, "ImageWidth": null, "pdfSize": null };
@@ -89,7 +88,6 @@ function printMapService(
             angular.forEach(response, function (value, key) {
                 pdfSizeResult.push({ "DisplayText": value.description, "Value": value.value });
                 deferred.resolve(pdfSizeResult);
-
             });
         });
         return deferred.promise;
@@ -102,7 +100,6 @@ function printMapService(
             angular.forEach(response, function (value, key) {
                 refdataResult.push({ "Name": value.name, "Value": value.value });
                 deferred.resolve(refdataResult);
-
             });
         });
         return deferred.promise;
@@ -166,26 +163,28 @@ function printMapService(
         var imageHeightmm = getMapImageHeight(size, imageHeight);
         var mapWidth = getMapWidth(imageWidthmm, printMapDPI);
         var mapHeight = getMapHeight(imageHeightmm, printMapDPI);
-        mapService.setSize(mapWidth, mapHeight);
-        //After setting the map size it takes around 6-7 secs to load all the map tiles.Image should be captured after all the map tiles are loaded 
-        $timeout(captureImage, 7000, true, printOptions, resolution,map,scaleline);
+
+        $timeout(captureImage, 3000, true, printOptions, resolution, map, scaleline, mapWidth, mapHeight);
     }
 
-    function captureImage(printOptions, resolution,map,scaleline) {
+    function captureImage(printOptions, resolution, map, scaleline, mapWidth, mapHeight) {
+        var mapControl = document.getElementById('map');
+        mapControl.style.height = mapHeight + "px";
+        mapControl.style.width = mapWidth + "px";
         mapService.composeMap();
 
         var printMapDto = {
             "MapTitle": printOptions.title,
-            "CurrentScale": '1 : ' + Math.round(mapFactory.getScaleFromResolution(resolution)),
+            "CurrentScale": '1:' + Math.round(mapFactory.getScaleFromResolution(resolution)),
             "PdfOrientation": printOptions.orientation,
             "PdfSize": printOptions.size,
             "MapScale": 25,
             "EncodedString": $rootScope.canvas.toDataURL('image/png'),
             "License": licensingInformationAccessorService.getLicensingInformation()[0].value
         };
+        mapControl.removeAttribute('style');
         map.removeControl(scaleline);
         mapService.refreshLayers();
-        mapService.setOriginalSize();
         printMap(printMapDto).then(function (response) {
             mapPdf(response).then(function (response) {
                 displayPdf(response);

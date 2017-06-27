@@ -1,12 +1,13 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Net.Http;
 using System.Reflection;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.MapManager.WebAPI.Utils;
 
 namespace RM.Operational.MapManager.WebAPI.IntegrationService
@@ -42,7 +43,7 @@ namespace RM.Operational.MapManager.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GenerateReportWithMap"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName + "PDFReports/" + fileName, xml);
