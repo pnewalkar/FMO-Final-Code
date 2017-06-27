@@ -17,6 +17,10 @@
     <script src="../node_modules/jasmine-core/lib/jasmine-core/boot.js"></script>
     <!--angular scripts-->
     <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="../bower_components/angular-material/angular-material.min.js"></script>
+    <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="../bower_components/angular-aria/angular-aria.min.js"></script>
     <script src="../bower_components/angular-route/angular-route.min.js"></script>
     <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
     <!--custom scripts-->
@@ -25,6 +29,9 @@
     <script src="./home/home.module.js"></script>
     <script src="./home/home.controller.js"></script>
     <script src="./home/home.component.js"></script>
+    <!--home spec--> 
+    <script src="home/tests/home.controller.spec.js"></script>
+
     <!--route log-->
     <script src="./route-log/route-log.module.js"></script>
     <script src="./route-log/route-log.service.js"></script>
@@ -35,6 +42,7 @@
     <script src="./route-log/tests/route-log.controller.spec.js"></script>
     <script src="./route-log/tests/route-log.factory.spec.js"></script>
     <script src="./route-log/tests/route-log.service.spec.js"></script>
+
     <!--side nav-->
     <script src="./side-nav/side-nav.module.js"></script>
     <script src="./side-nav/side-nav.filter.js"></script>
@@ -44,7 +52,7 @@
     <script src="./side-nav/side-nav.route.js"></script>
     <!--side nav spec-->
 
-    <!--<script src="../app/side-nav/tests/side-nav.controller.spec.js"></script>-->
+    <script src="../app/side-nav/tests/side-nav.controller.spec.js"></script>
 
     <!--unit selector-->
     <script src="./unit-selector/unit-selector.module.js"></script>
@@ -116,6 +124,11 @@
     <script src="./advance-search/advance-search.factory.js"></script>
     <script src="./advance-search/advance-search.service.js"></script>
     <script src="./advance-search/advance-search.controller.js"></script>
+
+    <!--advanced search spec-->
+
+    <script src="advance-search/test/advance-search.spec.js"></script>
+
     <!--delivery-point-->
     <script src="./delivery-point/delivery-point.module.js"></script>
     <script src="./delivery-point/coordinates.service.js"></script>
@@ -124,10 +137,10 @@
     <script src="./delivery-point/delivery-point.controller.js"></script>
     <script src="./delivery-point/delivery-point.component.js"></script>
     <!--delivery point spec-->
-    <!-- <script src="./delivery-point/tests/delivery-point.controller.spec.js"></script> -->
-    <!-- <script src="./delivery-point/tests/delivery-point.context.controller.spec.js"></script> -->
-    <!-- <script src="./delivery-point/tests/delivery-point.factory.spec.js"></script> -->
-    <!-- <script src="./delivery-point/tests/delivery-point.service.spec.js"></script> -->
+     <script src="./delivery-point/tests/delivery-point.controller.spec.js"></script> 
+     <script src="./delivery-point/tests/delivery-point.context.controller.spec.js"></script> 
+     <script src="./delivery-point/tests/delivery-point.factory.spec.js"></script> 
+     <script src="./delivery-point/tests/delivery-point.service.spec.js"></script> 
     <script src="./delivery-point/tests/coordinates.service.spec.js"></script>
     <!--access link-->
     <script src="./access-link/access-link.module.js"></script>
@@ -135,6 +148,12 @@
     <script src="./access-link/access-link.service.js"></script>
     <script src="./access-link/access-link.controller.js"></script>
     <script src="./access-link/access-link.component.js"></script>
+
+    <!--access link spec--> 
+    <script src="./access-link/tests/access-link.controller.spec.js"></script>
+    <script src="./access-link/tests/access-link.factory.spec.js"></script>
+    <script src="./access-link/tests/access-link.service.spec.js"></script>
+
     <!-- Licensing information-->
     <script src="./license-information/licensing-information.module.js"></script>
     <script src="./license-information/licensing-information.service.js"></script>
@@ -146,7 +165,7 @@
     <script src="./print-map/print-map.service.js"></script>
     <!--Print Map Spec-->
     <script src="print-map/tests/print-map.controller.spec.js"></script>
-    <!--<script src="print-map/tests/print-map.factory.spec.js"></script>-->
+    <script src="print-map/tests/print-map.factory.spec.js"></script>
     <script src="print-map/tests/print-map.service.spec.js"></script>
 </head>
 <body>
