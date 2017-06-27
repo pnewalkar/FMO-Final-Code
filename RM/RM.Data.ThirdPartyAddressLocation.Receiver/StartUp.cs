@@ -1,4 +1,5 @@
-﻿using Ninject.Modules;
+﻿using Microsoft.Practices.EnterpriseLibrary.Logging;
+using Ninject.Modules;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
 using RM.CommonLibrary.ExceptionMiddleware;
@@ -15,8 +16,12 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         {
             Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>();
             Bind<IHttpHandler>().To<HttpHandler>();
-            Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
-            Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope();
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
+            Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope().WithConstructorArgument<LogWriter>(logWriter);
+            Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope().WithConstructorArgument<LogWriter>(logWriter);
             Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
         }
     }

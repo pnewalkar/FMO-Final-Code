@@ -125,5 +125,26 @@ namespace RM.Common.Notification.WebAPI.Controllers
                 throw realExceptions;
             }
         }
+
+        [Route("notifications/location/{udprn}/{oldAction}")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateNotificationByUDPRN(int udprn, string oldAction, [FromBody]string newAction)
+        {
+            try
+            {
+                bool isUpdated = await notificationBusinessService.UpdateNotificationByUDPRN(udprn, oldAction, newAction);
+                return Ok(isUpdated);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
     }
 }

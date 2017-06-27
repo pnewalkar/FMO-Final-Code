@@ -314,6 +314,12 @@ namespace Fmo.API.Services.Controllers
             }
         }
 
+        [HttpGet("postaladdress/pafaddress/{udprn}")]
+        public async Task<PostalAddressDTO> GetPAFAddress(int udprn)
+        {
+            return await businessService.GetPAFAddress(udprn);
+        }
+
         #endregion Public Methods
     }
 }

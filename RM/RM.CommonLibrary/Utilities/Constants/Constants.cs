@@ -115,7 +115,7 @@
         public const int TOLERANCEDISTANCEINMETERS = 10;
         public const string USRNOTIFICATIONSOURCE = "SYSTEM";
         public const string USRACTION = "Check updated DP Location";
-        public const string USRBODY = "Please check the proposed new Location of the DP Latitude: {0}, Longitude: {1}, X: {2}, Y: {3}";
+        public const string USRBODY = "Please check the proposed new Location of the DP ";
         public const string USRGEOMETRYPOINT = "POINT({0} {1})";
         public const string USRCATEGORY = "Notification Type";
         public const string USRREFERENCEDATANAME = "Action required";
@@ -133,6 +133,7 @@
         public const string REQUESTLOG = "udprn: {0} xCoordinate: {1} yCoordinate:{2} latitude:{3} longitude:{4} changeType:{5}";
         public const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         public const string LOGMESSAGEFORUSRDATAVALIDATION = "Load USR Error Message : USR File Data is not valid, File Name : {0} : Log Time : {1} ";
+        public const string NOTIFICATIONCLOSED = "Closed";        
 
         #endregion USR
 
@@ -239,6 +240,12 @@
         public const string AddNewNotification = "AddNewNotification";
         public const string GetPostCodeSectorByUDPRN = "GetPostCodeSectorByUDPRN";
         public const string GetPostalAddress = "GetPostalAddress";
+        public const string GetPAFAddress = "GetPAFAddress";
+        public const string GetDeliveryPointByPostalAddress = "GetDeliveryPointByPostalAddress";
+        public const string DeleteDeliveryPoint = "DeleteDeliveryPoint";
+        public const string InsertDeliveryPoint = "InsertDeliveryPoint";
+        public const string ReferenceSimpleList = "ReferenceSimpleList";
+        public const string UpdateNotificationByUDPRN = "UpdateNotificationByUDPRN";
 
         #region Third Party Config params
 

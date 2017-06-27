@@ -108,5 +108,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         Task<List<Guid>> GetPostcodeGuids(string searchText);
 
         Task<List<Guid>> GetSelectedPostcode(string selectedItem);
+
+        Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
     }
 }

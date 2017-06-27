@@ -25,7 +25,7 @@ namespace RM.CommonLibrary.EntityFramework.DTO
         public ReferenceDataDTO ReferenceData { get; set; }
         // public List<DeliveryPointStatusDTO> DeliveryPointStatus { get; set; }
 
-
+        public Guid NetworkNodeType_GUID { get; set; }
         public string LocationProvider { get; set; }
 
         public string OperationalStatus { get; set; }

@@ -37,5 +37,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// <param name="action">action string</param>
         /// <returns>boolean value</returns>
         Task<bool> CheckIfNotificationExists(int uDPRN, string action);
+
+        Task<bool> UpdateNotificationByUDPRN(int uDPRN, string oldAction, string newAction);
     }
 }

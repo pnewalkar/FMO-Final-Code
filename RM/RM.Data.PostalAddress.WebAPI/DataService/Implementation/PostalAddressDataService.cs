@@ -954,6 +954,30 @@
             throw new NotImplementedException();
         }
 
+
+        public async Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid)
+        {
+            try
+            {
+                PostalAddress postalAddress = await DataContext.PostalAddresses.Where(pa => pa.UDPRN == udprn && pa.AddressType_GUID == pafGuid).SingleOrDefaultAsync();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddress, PostalAddressDBDTO>();
+                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
+                });
+                Mapper.Configuration.CreateMapper();
+
+                PostalAddressDBDTO postalAddressDBDTO = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
+
+                return GenericMapper.Map<PostalAddressDBDTO, PostalAddressDTO>(postalAddressDBDTO);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         //private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
         //{
         //    Guid deliveryPointID = Guid.NewGuid();
