@@ -4,7 +4,7 @@ licensingInfoService.$inject = ['$q', 'mapService', 'referencedataApiService', '
 function licensingInfoService($q, mapService, referencedataApiService, $rootScope, licensingInformationAccessorService) {
 
     return {
-        LicensingInfo:LicensingInfo,
+        LicensingInfo: LicensingInfo,
         getLicensingInfo: getLicensingInfo
     };
     function LicensingInfo() {
@@ -18,34 +18,36 @@ function licensingInfoService($q, mapService, referencedataApiService, $rootScop
             var result = null;
             var aValue = sessionStorage.getItem('selectedDeliveryUnit');
             var selectedUnitArea = angular.fromJson(aValue);
-            if (selectedUnitArea.area === GlobalSettings.BT) {
-                if (selectedLayer.layerName !== GlobalSettings.baseLayerName) {
+            if (selectedLayer != null) {
+                if (selectedUnitArea.area === GlobalSettings.BT) {
+                    if (selectedLayer.layerName !== GlobalSettings.baseLayerName) {
 
-                    result = response.filter(function (e) {
-                        return (e.name == GlobalSettings.OrdnanceSurvey_NI_Licensing);
-                    });
+                        result = response.filter(function (e) {
+                            return (e.name == GlobalSettings.OrdnanceSurvey_NI_Licensing);
+                        });
+
+                    } else {
+
+                        result = response.filter(function (e) {
+                            return (e.name == GlobalSettings.ThirdParty_NI_Licensing);
+                        });
+                    }
 
                 } else {
-
-                    result = response.filter(function (e) {
-                        return (e.name == GlobalSettings.ThirdParty_NI_Licensing);
-                    });
+                    if (selectedLayer.layerName !== GlobalSettings.baseLayerName) {
+                        var result = response.filter(function (e) {
+                            return (e.name == GlobalSettings.OrdnanceSurvey_GB_Licensing);
+                        });
+                    }
+                    else {
+                        result = response.filter(function (e) {
+                            return (e.name == GlobalSettings.ThirdParty_GB_Licensing);
+                        });
+                    }
                 }
-
-            } else {
-                if (selectedLayer.layerName !== GlobalSettings.baseLayerName) {
-                    var result = response.filter(function (e) {
-                        return (e.name == GlobalSettings.OrdnanceSurvey_GB_Licensing);
-                    });
-                }
-                else {
-                    result = response.filter(function (e) {
-                        return (e.name == GlobalSettings.ThirdParty_GB_Licensing);
-                    });
-                }
+                licensingInformationAccessorService.setLicensingInformation(result);
+                deferred.resolve(result);
             }
-            licensingInformationAccessorService.setLicensingInformation(result);
-            deferred.resolve(result);
         });
         return deferred.promise;
 
@@ -60,6 +62,6 @@ function licensingInfoService($q, mapService, referencedataApiService, $rootScop
             });
 
             $rootScope.$emit('LicensingInfoText', { displayText: result2 });
-        });       
+        });
     }
 };
