@@ -15,8 +15,9 @@
 #rightPanel {
   position: absolute;
   top: 75px;
-  height: calc(100% - 85px);
-  right: 15px; }
+  height: calc(100% - 1355px);
+  right: 15px;
+}
 
 .zoom-control {
   position: absolute;

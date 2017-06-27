@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
@@ -10,6 +11,8 @@ using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -18,9 +21,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class PostCodeDataService : DataServiceBase<Postcode, RMDBContext>, IPostCodeDataService
     {
-        public PostCodeDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        private const string SearchResultCount = "SearchResultCount";
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public PostCodeDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -33,22 +40,29 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid unitGuid)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
-            searchText = searchText ?? string.Empty;
-            var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
-                                            join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
-                                            join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
-                                            where p.PostcodeUnit.StartsWith(searchText)
-                                             && u.Unit_GUID == unitGuid
-                                            select new PostCodeDTO
-                                            {
-                                                PostcodeUnit = p.PostcodeUnit,
-                                                InwardCode = p.InwardCode,
-                                                OutwardCode = p.OutwardCode,
-                                                Sector = p.Sector
-                                            }).Take(takeCount).ToListAsync();
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchPostCodeUnitForBasicSearch"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return postCodeDetailsDto;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
+                searchText = searchText ?? string.Empty;
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
+                                                where p.PostcodeUnit.StartsWith(searchText)
+                                                 && u.Unit_GUID == unitGuid
+                                                select new PostCodeDTO
+                                                {
+                                                    PostcodeUnit = p.PostcodeUnit,
+                                                    InwardCode = p.InwardCode,
+                                                    OutwardCode = p.OutwardCode,
+                                                    Sector = p.Sector
+                                                }).Take(takeCount).ToListAsync();
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return postCodeDetailsDto;
+            }
         }
 
         /// <summary>
@@ -61,14 +75,21 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </returns>
         public async Task<int> GetPostCodeUnitCount(string searchText, Guid unitGuid)
         {
-            searchText = searchText ?? string.Empty;
-            var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
-                                            join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
-                                            join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
-                                            where p.PostcodeUnit.StartsWith(searchText)
-                                             && u.Unit_GUID == unitGuid
-                                            select p).CountAsync();
-            return postCodeDetailsDto;
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCodeUnitCount"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                searchText = searchText ?? string.Empty;
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
+                                                where p.PostcodeUnit.StartsWith(searchText)
+                                                 && u.Unit_GUID == unitGuid
+                                                select p).CountAsync();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return postCodeDetailsDto;
+            }
         }
 
         /// <summary>
@@ -79,21 +100,28 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List<PostCodeDTO></returns>
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid unitGuid)
         {
-            searchText = searchText ?? string.Empty;
-            var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
-                                            join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
-                                            join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
-                                            where p.PostcodeUnit.StartsWith(searchText)
-                                             && u.Unit_GUID == unitGuid
-                                            select new PostCodeDTO
-                                            {
-                                                PostcodeUnit = p.PostcodeUnit,
-                                                InwardCode = p.InwardCode,
-                                                OutwardCode = p.OutwardCode,
-                                                Sector = p.Sector
-                                            }).ToListAsync();
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchPostCodeUnitForAdvanceSearch"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return postCodeDetailsDto;
+                searchText = searchText ?? string.Empty;
+                var postCodeDetailsDto = await (from p in DataContext.Postcodes.AsNoTracking()
+                                                join s in DataContext.PostcodeSectors.AsNoTracking() on p.SectorGUID equals s.ID
+                                                join u in DataContext.UnitPostcodeSectors.AsNoTracking() on s.ID equals u.PostcodeSector_GUID
+                                                where p.PostcodeUnit.StartsWith(searchText)
+                                                 && u.Unit_GUID == unitGuid
+                                                select new PostCodeDTO
+                                                {
+                                                    PostcodeUnit = p.PostcodeUnit,
+                                                    InwardCode = p.InwardCode,
+                                                    OutwardCode = p.OutwardCode,
+                                                    Sector = p.Sector
+                                                }).ToListAsync();
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return postCodeDetailsDto;
+            }
         }
 
         /// <summary>
@@ -103,14 +131,22 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>Post code ID</returns>
         public async Task<Guid> GetPostCodeID(string postCode)
         {
-            var postCodeDetail = await DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefaultAsync();
-            if (postCodeDetail != null)
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCodeID"))
             {
-                return postCodeDetail.ID;
-            }
-            else
-            {
-                return Guid.Empty;
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var postCodeDetail = await DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefaultAsync();
+                if (postCodeDetail != null)
+                {
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return postCodeDetail.ID;
+                }
+                else
+                {
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostCodePriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return Guid.Empty;
+                }
             }
         }
     }

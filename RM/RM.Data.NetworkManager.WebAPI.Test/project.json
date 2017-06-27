@@ -2,7 +2,8 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Moq": "4.7.1",   
+    "Castle.Core": "4.0.0",
+    "Moq": "4.7.1",
     "NUnit": "3.6.1",
     "NUnit3TestAdapter": "3.7.0",
     "RM.Data.NetworkManager.WebAPI": "1.0.0-*",

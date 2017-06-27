@@ -2,7 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Net;
+    using System.Reflection;
+    using CommonLibrary.LoggingMiddleware;
     using Microsoft.AspNetCore.Mvc;
     using RM.Common.ReferenceData.WebAPI.BusinessService.Interface;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
@@ -12,17 +15,23 @@
     [Route("api/ReferenceDataManager")]
     public class ReferenceDataController : RMBaseController
     {
+        private const string NameValuePairs = "nameValuePairs";
+        private const string SimpleList = "simpleList";
+        private const string NameValuePair = "nameValuePair";
+
         #region Member Variables
 
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion Member Variables
 
         #region Constructor
 
-        public ReferenceDataController(IReferenceDataBusinessService referenceDataBusinessService)
+        public ReferenceDataController(IReferenceDataBusinessService referenceDataBusinessService, ILoggingHelper loggingHelper)
         {
             this.referenceDataBusinessService = referenceDataBusinessService;
+            this.loggingHelper = loggingHelper;
         }
 
         #endregion Constructor
@@ -39,21 +48,29 @@
         [HttpGet("nameValuePair")]
         public IActionResult GetNameValueReferenceData(string appGroupName, string appItemName)
         {
-            if (string.IsNullOrEmpty(appGroupName) || string.IsNullOrEmpty(appItemName))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNameValueReferenceData"))
             {
-                return BadRequest();
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (string.IsNullOrEmpty(appGroupName) || string.IsNullOrEmpty(appItemName))
+                {
+                    return BadRequest();
+                }
+
+                var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName, appItemName);
+
+                Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(NameValuePair, nameValuePairsObject);
+
+                if (nameValuePairsObject == null)
+                {
+                    throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                return Ok(nameValueSingleResource);
             }
-
-            var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName, appItemName);
-
-            Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(Constants.NameValuePair, nameValuePairsObject);
-
-            if (nameValuePairsObject == null)
-            {
-                throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
-            }
-
-            return Ok(nameValueSingleResource);
         }
 
         /// <summary>
@@ -66,20 +83,27 @@
         [HttpGet("nameValuePairs")]
         public IActionResult GetNameValueReferenceData(string appGroupName)
         {
-            if (string.IsNullOrEmpty(appGroupName))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNameValueReferenceData"))
             {
-                return BadRequest();
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (string.IsNullOrEmpty(appGroupName))
+                {
+                    return BadRequest();
+                }
+
+                var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName);
+                Tuple<string, List<NameValuePair>> nameValueList = new Tuple<string, List<NameValuePair>>(NameValuePairs, nameValuePairsObject);
+
+                if (nameValuePairsObject == null)
+                {
+                    throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(nameValueList);
             }
-
-            var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(appGroupName);
-            Tuple<string, List<NameValuePair>> nameValueList = new Tuple<string, List<NameValuePair>>(Constants.NameValuePairs, nameValuePairsObject);
-
-            if (nameValuePairsObject == null)
-            {
-                throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
-            }
-
-            return Ok(nameValueList);
         }
 
         /// <summary>
@@ -90,21 +114,28 @@
         [HttpGet("simpleLists")]
         public IActionResult GetSimpleListsReferenceData(string listName)
         {
-            if (string.IsNullOrEmpty(listName))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetSimpleListsReferenceData"))
             {
-                return BadRequest();
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (string.IsNullOrEmpty(listName))
+                {
+                    return BadRequest();
+                }
+
+                var simpleListObject = referenceDataBusinessService.GetSimpleListsReferenceData(listName);
+
+                Tuple<string, SimpleListDTO> nameValueSingleResource = new Tuple<string, SimpleListDTO>(SimpleList, simpleListObject);
+
+                if (simpleListObject == null)
+                {
+                    throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(nameValueSingleResource);
             }
-
-            var simpleListObject = referenceDataBusinessService.GetSimpleListsReferenceData(listName);
-
-            Tuple<string, SimpleListDTO> nameValueSingleResource = new Tuple<string, SimpleListDTO>(Constants.SimpleList, simpleListObject);
-
-            if (simpleListObject == null)
-            {
-                throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
-            }
-
-            return Ok(nameValueSingleResource);
         }
 
         /// <summary>
@@ -115,19 +146,26 @@
         [HttpPost("simpleLists")]
         public IActionResult GetSimpleListsReferenceData([FromBody]List<string> listNames)
         {
-            if (listNames == null)
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetSimpleListsReferenceData"))
             {
-                return BadRequest();
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                if (listNames == null)
+                {
+                    return BadRequest();
+                }
+
+                var simpleDtoList = referenceDataBusinessService.GetSimpleListsReferenceData(listNames);
+
+                if (simpleDtoList.Count == 0)
+                {
+                    throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(simpleDtoList);
             }
-
-            var simpleDtoList = referenceDataBusinessService.GetSimpleListsReferenceData(listNames);
-
-            if (simpleDtoList.Count == 0)
-            {
-                throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
-            }
-
-            return Ok(simpleDtoList);
         }
 
         #endregion Methods

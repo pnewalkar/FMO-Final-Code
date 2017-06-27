@@ -5,5 +5,7 @@ angular.module('home', [      'sideNav',
                               'mapView',
                               'reusableComponent',
                               'error',
-                             'printMap'
+                             'printMap',
+                             'licensingInfo',
+                             'backButton'
                              ]);

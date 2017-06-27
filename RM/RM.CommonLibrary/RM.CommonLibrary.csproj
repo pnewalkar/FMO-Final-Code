@@ -169,7 +169,6 @@
     <Compile Include="Interfaces\IExceptionHelper.cs" />
     <Compile Include="Interfaces\ILoggingHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\Constants\Constants.cs" />
     <Compile Include="Utilities\Constants\ReferenceDataCategoryNames.cs" />
     <Compile Include="Utilities\Constants\ReferenceDataValues.cs" />
     <Compile Include="Utilities\Constants\UserAccessFunctionsConstants.cs" />
@@ -195,8 +194,6 @@
     <Compile Include="Utilities\MessageBrokerMiddleware\MessageBroker.cs" />
     <Compile Include="Utilities\MessageBrokerMiddleware\MessageEventArgs.cs" />
     <Compile Include="Utilities\HelperMiddleware\SummarizedObject\CreateSummaryObject.cs" />
-    <Compile Include="Utilities\ResourceFile\ReferenceDataCategoryNames.Designer.cs" />
-    <Compile Include="Utilities\ResourceFile\ReferenceDataValues.Designer.cs" />
     <Compile Include="Utilities\Geometry\SqlGeometry.cs" />
     <Compile Include="Utilities\TestSupport\RepositoryFixtureBase.cs" />
     <Compile Include="Utilities\TestSupport\TestFixtureBase.cs" />
@@ -220,18 +217,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <Content Include="Utilities\ResourceFile\.keep" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <EmbeddedResource Include="Utilities\ResourceFile\ReferenceDataCategoryNames.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FmoReferenceDataCategoryNames.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\ResourceFile\ReferenceDataValues.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>FmoReferenceDataValues.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

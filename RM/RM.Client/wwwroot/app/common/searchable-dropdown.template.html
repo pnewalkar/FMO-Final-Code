@@ -1,5 +1,5 @@
 ﻿﻿<md-input-container class="md-block">
-    <label>{{ vm.headerText | translate}}</label>
+     <label>{{vm.headerText| translate}}</label>  
     <md-select ng-disabled="vm.disabled"
                ng-model="vm.selectedItem"
                md-on-open="vm.clearSearchTerm()"
@@ -9,8 +9,9 @@
         <md-select-header class="select-header">
             <input type="search"
                    ng-model="vm.searchTerm"
-                   placeholder="{{vm.searchPlaceholder | translate}}"
+                   placeholder="{{vm.items.length!==0?vm.searchPlaceholder:''| translate}}"
                    ng-keydown="$event.stopPropagation()"
+                   ng-if="vm.items.length!==0"
                    class="search-input md-text">
         </md-select-header>
         <md-option ng-value="item" ng-repeat="item in filteredItems = ( vm.items | filter:{displayText:vm.searchTerm } | orderBy: vm.orderBy)">
@@ -18,4 +19,5 @@
         </md-option>
         <md-option ng-value ng-if="filteredItems.length === 0"> {{ 'VALIDATION.NO_RESULT_FOUND' | translate }} </md-option>
     </md-select>
+     <div ng-if="vm.items.length===0" class="noResult">{{ 'VALIDATION.NO_RESULT_FOUND' | translate }}</div>
 </md-input-container>

@@ -8,6 +8,7 @@ using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -22,6 +23,7 @@ namespace RM.DataServices.Tests.DataService
         private Guid unit3Guid = new Guid("0A852795-03C1-432D-8DE6-70BB4820BD1A");
         private Guid user1Id;
         private Guid user2Id;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void Test_GetRoadRoutes()
@@ -33,6 +35,9 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();
@@ -57,22 +62,69 @@ namespace RM.DataServices.Tests.DataService
                       }
             };
 
-            var mockAsynEnumerable = new DbAsyncEnumerable<OSRoadLink>(roadName);
+            var referenceDatas = new List<ReferenceData>()
+                   {
+                        new ReferenceData()
+                        {
+                            ReferenceDataName = "PAF",
+                            DataDescription = "PAF",
+                            ReferenceDataCategory_GUID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ReferenceDataValue = "PAF"
+                        },
+
+                        new ReferenceData()
+                        {
+                            ReferenceDataName = "PAF",
+                            DataDescription = "PAF",
+                            ReferenceDataCategory_GUID = new Guid("4A6F8F73-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ID = new Guid("4A6F8F73-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ReferenceDataValue = "NYB"
+                        }
+                    };
+
+            var networkLinks = new List<NetworkLink>()
+            {
+                new NetworkLink()
+                {
+                    LinkGeometry = DbGeometry.LineFromText("LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)", 27700),
+                    NetworkLinkType_GUID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD")
+                }
+            };
+
             var mockRoadNameDataService = MockDbSet(roadName);
             mockRMDBContext = CreateMock<RMDBContext>();
             mockRMDBContext.Setup(x => x.Set<OSRoadLink>()).Returns(mockRoadNameDataService.Object);
             mockRMDBContext.Setup(x => x.OSRoadLinks).Returns(mockRoadNameDataService.Object);
             mockRMDBContext.Setup(c => c.OSRoadLinks.AsNoTracking()).Returns(mockRoadNameDataService.Object);
             mockRoadNameDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockRoadNameDataService.Object);
-            var mockAsynEnumerable2 = new DbAsyncEnumerable<UnitLocation>(unitLocation);
+
             var mockRoadNameDataService2 = MockDbSet(unitLocation);
             mockRMDBContext.Setup(x => x.Set<UnitLocation>()).Returns(mockRoadNameDataService2.Object);
             mockRMDBContext.Setup(x => x.UnitLocations).Returns(mockRoadNameDataService2.Object);
             mockRMDBContext.Setup(c => c.UnitLocations.AsNoTracking()).Returns(mockRoadNameDataService2.Object);
             mockRoadNameDataService2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockRoadNameDataService2.Object);
+
+            var mockReferenceData = MockDbSet(referenceDatas);
+            mockRMDBContext.Setup(x => x.Set<ReferenceData>()).Returns(mockReferenceData.Object);
+            mockRMDBContext.Setup(x => x.ReferenceDatas).Returns(mockReferenceData.Object);
+            mockRMDBContext.Setup(c => c.ReferenceDatas.AsNoTracking()).Returns(mockReferenceData.Object);
+            mockReferenceData.Setup(x => x.Include(It.IsAny<string>())).Returns(mockReferenceData.Object);
+
+            var mockNetworkLink = MockDbSet(networkLinks);
+            mockRMDBContext.Setup(x => x.Set<NetworkLink>()).Returns(mockNetworkLink.Object);
+            mockRMDBContext.Setup(x => x.NetworkLinks).Returns(mockNetworkLink.Object);
+            mockRMDBContext.Setup(c => c.NetworkLinks.AsNoTracking()).Returns(mockNetworkLink.Object);
+            mockNetworkLink.Setup(x => x.Include(It.IsAny<string>())).Returns(mockNetworkLink.Object);
+
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new RoadNameDataService(mockDatabaseFactory.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new RoadNameDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }

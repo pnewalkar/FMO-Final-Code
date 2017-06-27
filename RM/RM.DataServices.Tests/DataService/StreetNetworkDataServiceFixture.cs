@@ -11,6 +11,7 @@ using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -26,6 +27,8 @@ namespace RM.DataServices.Tests.DataService
         private Guid unit3Guid;
         private Guid user1Id;
         private Guid user2Id;
+        private DbGeometry accessLinkLine;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public async Task TestFetchStreetNamesForBasicSearchValid()
@@ -75,14 +78,26 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsTrue(actualResultCount == 7);
         }
 
+        [Test]
+        public void TestGetCrossingNetworkLink()
+        {
+            string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
+            var result = testCandidate.GetCrossingNetworkLink(coordinates, accessLinkLine);
+            Assert.IsNotNull(result);
+        }
+
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+
             unit1Guid = Guid.NewGuid();
             unit2Guid = Guid.NewGuid();
             unit3Guid = Guid.NewGuid();
             user1Id = System.Guid.NewGuid();
             user2Id = System.Guid.NewGuid();
             var unitBoundary = DbGeometry.PolygonFromText("POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))", 27700);
+            accessLinkLine = DbGeometry.LineFromText("LINESTRING (488938 197021, 488929.9088937093 197036.37310195228)", 27700);
 
             var streetNames = new List<StreetName>()
             {
@@ -100,6 +115,14 @@ namespace RM.DataServices.Tests.DataService
                 new UnitLocation() { UnitName = "unit1", ExternalId = "extunit1", ID = unit1Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit1Guid, User_GUID = user1Id } } },
                 new UnitLocation() { UnitName = "unit2", ExternalId = "extunit2", ID = unit2Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit2Guid, User_GUID = user1Id } } },
                 new UnitLocation() { UnitName = "unit3", ExternalId = "extunit2", ID = unit3Guid, UnitBoundryPolygon = unitBoundary, UserRoleUnits = new List<UserRoleUnit> { new UserRoleUnit { Unit_GUID = unit3Guid, User_GUID = user2Id } } }
+            };
+
+            var networkLink = new List<NetworkLink>()
+            {
+                new NetworkLink()
+                {
+                    LinkGeometry = accessLinkLine
+                }
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<StreetName>(streetNames);
@@ -121,9 +144,24 @@ namespace RM.DataServices.Tests.DataService
             mockRMDBContext.Setup(x => x.Set<UnitLocation>()).Returns(mockStreetNetworkDataService2.Object);
             mockRMDBContext.Setup(x => x.UnitLocations).Returns(mockStreetNetworkDataService2.Object);
 
+            var mockAsynEnumerable3 = new DbAsyncEnumerable<NetworkLink>(networkLink);
+            var mockNetworkLink = MockDbSet(networkLink);
+            mockNetworkLink.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable3.AsQueryable().Provider);
+            mockNetworkLink.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynEnumerable3.AsQueryable().Expression);
+            mockNetworkLink.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable3.AsQueryable().ElementType);
+            mockNetworkLink.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<NetworkLink>)mockAsynEnumerable3).GetAsyncEnumerator());
+            mockRMDBContext.Setup(x => x.Set<NetworkLink>()).Returns(mockNetworkLink.Object);
+            mockRMDBContext.Setup(x => x.NetworkLinks).Returns(mockNetworkLink.Object);
+            mockRMDBContext.Setup(x => x.NetworkLinks.AsNoTracking()).Returns(mockNetworkLink.Object);
+
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new StreetNetworkDataService(mockDatabaseFactory.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new StreetNetworkDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }

@@ -11,6 +11,7 @@ using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -21,6 +22,7 @@ namespace RM.DataServices.Tests.DataService
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IDeliveryRouteDataService testCandidate;
         private Mock<IReferenceDataCategoryDataService> mockReferenceDataCategoryDataService;
+        private Mock<ILoggingHelper> loggingHelperMock;
         private Guid deliveryUnitID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44");
         private Guid deliveryScenarioID = new Guid("D771E341-8FE8-4980-BE96-A339AE014B4E");
         private Guid operationalStateID = new Guid("1FC7DAB1-D4D7-45BD-BA2E-E8AE6737E1EB");
@@ -152,6 +154,8 @@ namespace RM.DataServices.Tests.DataService
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
             var deliveryRoute = new List<DeliveryRoute>()
             {
                 new DeliveryRoute() { ID = Guid.NewGuid(), OperationalStatus_GUID = Guid.NewGuid(), DeliveryScenario_GUID = Guid.NewGuid(), RouteName = "testsearch1jbcjkdsghfjks", RouteNumber = "testsearch1jbcjkdsghfjks", Scenario = new Scenario() { Unit_GUID = new Guid("7654810D-3EBF-420A-91FD-DABE05945A44") } },
@@ -164,6 +168,7 @@ namespace RM.DataServices.Tests.DataService
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryRoute>(deliveryRoute);
+            loggingHelperMock = CreateMock<ILoggingHelper>();
 
             var mockDeliveryRouteDBSet = MockDbSet(deliveryRoute);
             mockReferenceDataCategoryDataService = CreateMock<IReferenceDataCategoryDataService>();
@@ -178,9 +183,13 @@ namespace RM.DataServices.Tests.DataService
 
             mockRMDBContext.Setup(c => c.DeliveryRoutes.AsNoTracking()).Returns(mockDeliveryRouteDBSet.Object);
 
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
 
         protected void SetUp()
@@ -201,6 +210,12 @@ namespace RM.DataServices.Tests.DataService
                 }
             };
 
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
             var mockDeliveryRouteDBSet = MockDbSet(deliveryRoute);
             mockReferenceDataCategoryDataService = CreateMock<IReferenceDataCategoryDataService>();
             mockRMDBContext = CreateMock<RMDBContext>();
@@ -220,7 +235,7 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
 
         protected void SetUpNew()
@@ -234,6 +249,12 @@ namespace RM.DataServices.Tests.DataService
             var deliverypointalias = new List<DeliveryPointAlias>() { new DeliveryPointAlias() { DeliveryPoint_GUID = Guid.NewGuid() } };
             var postaladdress = new List<PostalAddress>() { new PostalAddress() { ID = Guid.NewGuid() } };
             var postcode = new List<Postcode>() { new Postcode() { ID = Guid.NewGuid() } };
+
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             var deliveryRoute = new List<DeliveryRoute>()
             {
@@ -357,7 +378,7 @@ namespace RM.DataServices.Tests.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object);
+            testCandidate = new DeliveryRouteDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }

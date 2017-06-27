@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.EntityFramework.Entities;
-using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.ResourceFile;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -22,13 +24,18 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// </summary>
     public class DeliveryRouteDataService : DataServiceBase<DeliveryRoute, RMDBContext>, IDeliveryRouteDataService
     {
+        private const string SearchResultCount = "SearchResultCount";
+
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteRepository"/> class.
         /// </summary>
         /// <param name="databaseFactory">IDatabaseFactory reference</param>
-        public DeliveryRouteDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        public DeliveryRouteDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -40,10 +47,20 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>List</returns>
         public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateId, Guid deliveryScenarioId, Guid userUnit)
         {
-            IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking()
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRoute"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking()
                 .Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioId &&
                             x.Scenario.OperationalState_GUID == operationStateId).ToList();
-            return GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+
+                var fetchDeliveryRoute = GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                return fetchDeliveryRoute;
+            }
         }
 
         /// <summary>
@@ -54,7 +71,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>Task</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit)
         {
-            var deliveryRoutes = await DataContext.DeliveryRoutes.AsNoTracking()
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRouteForAdvanceSearch"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var deliveryRoutes = await DataContext.DeliveryRoutes.AsNoTracking()
                 .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
                             (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                 .Select(l => new DeliveryRouteDTO
@@ -64,7 +86,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     RouteNumber = l.RouteNumber
                 }).ToListAsync();
 
-            return deliveryRoutes;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return deliveryRoutes;
+            }
         }
 
         /// <summary>
@@ -75,21 +99,28 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>The result set of delivery route.</returns>
         public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
         {
-            int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
-            searchText = searchText ?? string.Empty;
-            var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
-                .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
-                            (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
-                .Take(takeCount)
-                .Select(l => new DeliveryRouteDTO
-                {
-                    ID = l.ID,
-                    RouteName = l.RouteName,
-                    RouteNumber = l.RouteNumber
-                })
-                .ToListAsync();
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRouteForBasicSearch"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return deliveryRoutesDto;
+                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
+                searchText = searchText ?? string.Empty;
+                var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
+                                (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                    .Take(takeCount)
+                    .Select(l => new DeliveryRouteDTO
+                    {
+                        ID = l.ID,
+                        RouteName = l.RouteName,
+                        RouteNumber = l.RouteNumber
+                    })
+                    .ToListAsync();
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return deliveryRoutesDto;
+            }
         }
 
         /// <summary>
@@ -100,23 +131,32 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>The total count of delivery route</returns>
         public async Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryRouteCount"))
             {
-                searchText = searchText ?? string.Empty;
-                return await DataContext.DeliveryRoutes.AsNoTracking()
-                    .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
-                                (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
-                    .CountAsync();
-            }
-            catch (InvalidOperationException ex)
-            {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
-            }
-            catch (OverflowException overflow)
-            {
-                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                try
+                {
+                    searchText = searchText ?? string.Empty;
+                    var getDeliveryRouteCount = await DataContext.DeliveryRoutes.AsNoTracking()
+                        .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
+                                    (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                        .CountAsync();
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return getDeliveryRouteCount;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
+                }
+                catch (OverflowException overflow)
+                {
+                    overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
+                }
             }
         }
 
@@ -131,97 +171,112 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>DeliveryRouteDTO</returns>
         public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid userUnit)
         {
-            // No of DPs
-            Guid operationalObjectTypeForDp = referenceDataCategoryDtoList
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryRouteDetailsforPdfGeneration"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                // No of DPs
+                Guid operationalObjectTypeForDp = referenceDataCategoryDtoList
                 .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
                 .SelectMany(x => x.ReferenceDatas)
                 .Where(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).Select(x => x.ID)
                 .SingleOrDefault();
 
-            // No. Organisation DP
-            Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
-                .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-                .SelectMany(x => x.ReferenceDatas)
-                .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
-                .SingleOrDefault();
+                // No. Organisation DP
+                Guid operationalObjectTypeForDpOrganisation = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.Organisation).Select(x => x.ID)
+                    .SingleOrDefault();
 
-            // No. Residential DP
-            Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
-                .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
-                .SelectMany(x => x.ReferenceDatas)
-                .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
-                .SingleOrDefault();
+                // No. Residential DP
+                Guid operationalObjectTypeForDpResidential = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointUseIndicator)
+                    .SelectMany(x => x.ReferenceDatas)
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.Residential).Select(x => x.ID)
+                    .SingleOrDefault();
 
-            // Delivery Route Method Type
-            var referenceDataDeliveryMethodTypes = referenceDataCategoryDtoList
-                .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryRouteMethodType)
-                .SelectMany(x => x.ReferenceDatas).ToList();
+                // Delivery Route Method Type
+                var referenceDataDeliveryMethodTypes = referenceDataCategoryDtoList
+                    .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryRouteMethodType)
+                    .SelectMany(x => x.ReferenceDatas).ToList();
 
-            Guid sharedDeliveryRouteMethodTypeGuid = referenceDataDeliveryMethodTypes
-                .Where(x => x.ReferenceDataValue == ReferenceDataValues.DeliveryRouteMethodTypeRmVanShared)
-                .Select(x => x.ID).SingleOrDefault();
+                Guid sharedDeliveryRouteMethodTypeGuid = referenceDataDeliveryMethodTypes
+                    .Where(x => x.ReferenceDataValue == ReferenceDataValues.DeliveryRouteMethodTypeRmVanShared)
+                    .Select(x => x.ID).SingleOrDefault();
 
-            var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
-                                           join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
-                                           where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit
-                                           select new DeliveryRouteDTO
-                                           {
-                                               ID = dr.ID,
-                                               RouteName = dr.RouteName,
-                                               RouteNumber = dr.RouteNumber,
-                                               ScenarioName = sr.ScenarioName,
-                                               MethodReferenceGuid = dr.RouteMethodType_GUID,
-                                               Totaltime = Math.Abs(dr.TravelOutTimeMin.Value - dr.TravelInTimeMin.Value).ToString(),
-                                               TravelOutTransportType_GUID = dr.TravelOutTransportType_GUID,
-                                               TravelInTransportType_GUID = dr.TravelInTransportType_GUID
-                                           }).SingleOrDefaultAsync();
+                var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
+                                               join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
+                                               where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit
+                                               select new DeliveryRouteDTO
+                                               {
+                                                   ID = dr.ID,
+                                                   RouteName = dr.RouteName,
+                                                   RouteNumber = dr.RouteNumber,
+                                                   ScenarioName = sr.ScenarioName,
+                                                   MethodReferenceGuid = dr.RouteMethodType_GUID,
+                                                   Totaltime = Math.Abs(dr.TravelOutTimeMin.Value - dr.TravelInTimeMin.Value).ToString(),
+                                                   TravelOutTransportType_GUID = dr.TravelOutTransportType_GUID,
+                                                   TravelInTransportType_GUID = dr.TravelInTransportType_GUID
+                                               }).SingleOrDefaultAsync();
 
-            if (deliveryRoutesDto != null)
-            {
-                deliveryRoutesDto.Totaltime = ConvertToMinutes(Convert.ToDouble(deliveryRoutesDto.Totaltime));
-                var methodType = referenceDataDeliveryMethodTypes
-                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.MethodReferenceGuid);
-                if (methodType != null)
+                if (deliveryRoutesDto != null)
                 {
-                    deliveryRoutesDto.Method = methodType.ReferenceDataValue;
+                    deliveryRoutesDto.Totaltime = ConvertToMinutes(Convert.ToDouble(deliveryRoutesDto.Totaltime));
+                    var methodType = referenceDataDeliveryMethodTypes
+                        .SingleOrDefault(x => x.ID == deliveryRoutesDto.MethodReferenceGuid);
+                    if (methodType != null)
+                    {
+                        deliveryRoutesDto.Method = methodType.ReferenceDataValue;
+                    }
+
+                    var travelInType = referenceDataDeliveryMethodTypes
+                        .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelInTransportType_GUID);
+                    if (travelInType != null)
+                    {
+                        deliveryRoutesDto.AccelarationIn = travelInType.ReferenceDataValue;
+                    }
+
+                    var travelOutType = referenceDataDeliveryMethodTypes
+                        .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelOutTransportType_GUID);
+                    if (travelOutType != null)
+                    {
+                        deliveryRoutesDto.AccelarationOut = travelOutType.ReferenceDataValue;
+                    }
                 }
 
-                var travelInType = referenceDataDeliveryMethodTypes
-                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelInTransportType_GUID);
-                if (travelInType != null)
+                if (deliveryRoutesDto == null)
                 {
-                    deliveryRoutesDto.AccelarationIn = travelInType.ReferenceDataValue;
+                    deliveryRoutesDto = new DeliveryRouteDTO();
                 }
 
-                var travelOutType = referenceDataDeliveryMethodTypes
-                    .SingleOrDefault(x => x.ID == deliveryRoutesDto.TravelOutTransportType_GUID);
-                if (travelOutType != null)
-                {
-                    deliveryRoutesDto.AccelarationOut = travelOutType.ReferenceDataValue;
-                }
+                deliveryRoutesDto.Aliases = await GetAliases(deliveryRouteId, operationalObjectTypeForDp, userUnit);
+                deliveryRoutesDto.Blocks = await GetNumberOfBlocks(deliveryRouteId, userUnit);
+                deliveryRoutesDto.DPs = await GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp, userUnit);
+                deliveryRoutesDto.BusinessDPs = await GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation, userUnit);
+                deliveryRoutesDto.ResidentialDPs = await GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential, userUnit);
+                deliveryRoutesDto.PairedRoute = await GetPairedRoutesByRouteID(deliveryRouteId, sharedDeliveryRouteMethodTypeGuid, operationalObjectTypeForDp, userUnit);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return deliveryRoutesDto;
             }
-
-            if (deliveryRoutesDto == null)
-            {
-                deliveryRoutesDto = new DeliveryRouteDTO();
-            }
-
-            deliveryRoutesDto.Aliases = await GetAliases(deliveryRouteId, operationalObjectTypeForDp, userUnit);
-            deliveryRoutesDto.Blocks = await GetNumberOfBlocks(deliveryRouteId, userUnit);
-            deliveryRoutesDto.DPs = await GetNumberOfDPs(deliveryRouteId, operationalObjectTypeForDp, userUnit);
-            deliveryRoutesDto.BusinessDPs = await GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpOrganisation, userUnit);
-            deliveryRoutesDto.ResidentialDPs = await GetNumberOfCommercialResidentialDPs(deliveryRouteId, operationalObjectTypeForDpResidential, userUnit);
-            deliveryRoutesDto.PairedRoute = await GetPairedRoutesByRouteID(deliveryRouteId, sharedDeliveryRouteMethodTypeGuid, operationalObjectTypeForDp, userUnit);
-
-            return deliveryRoutesDto;
         }
 
         public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit, Guid operationalObjectTypeForDp)
         {
-            RouteLogSummaryModelDTO routeLogSummary = new RouteLogSummaryModelDTO();
-            routeLogSummary.RouteLogSequencedPoints = await GetDeliveryRouteSequencedPointsByRouteId(deliveryRouteDto.ID, userUnit, operationalObjectTypeForDp);
-            routeLogSummary.DeliveryRoute = deliveryRouteDto;
-            return routeLogSummary;
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GenerateRouteLog"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                RouteLogSummaryModelDTO routeLogSummary = new RouteLogSummaryModelDTO();
+                routeLogSummary.RouteLogSequencedPoints = await GetDeliveryRouteSequencedPointsByRouteId(deliveryRouteDto.ID, userUnit, operationalObjectTypeForDp);
+                routeLogSummary.DeliveryRoute = deliveryRouteDto;
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return routeLogSummary;
+            }
         }
 
         #region Private Methods
@@ -245,12 +300,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
@@ -277,12 +332,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
@@ -311,12 +366,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
@@ -346,12 +401,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
@@ -398,7 +453,10 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
             if (routeResults != null && routeResults.Count > 0)
             {
-                pairedRoute = string.Join(",", routeResults);
+                foreach (var item in routeResults)
+                {
+                    pairedRoute = pairedRoute + "," + item.RouteNumber;
+                }
                 pairedRoute = Regex.Replace(pairedRoute, ",+", ",").Trim(',');
             }
 
@@ -434,19 +492,20 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                         join dp in DataContext.DeliveryPoints.AsNoTracking() on bs.OperationalObject_GUID equals dp.ID
                                         join pa in DataContext.PostalAddresses.AsNoTracking() on dp.Address_GUID equals pa.ID
                                         join sc in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sc.ID
-                                        where bs.OperationalObjectType_GUID == operationalObjectTypeForDp && sc.Unit_GUID == userUnitIdGuid && dr.ID == deliveryRouteId
-                                        group new { pa, dp } by new { pa.Thoroughfare, pa.BuildingNumber } into grpAddress
+                                        where bs.OperationalObjectType_GUID == operationalObjectTypeForDp && sc.Unit_GUID == userUnitIdGuid && dr.ID == deliveryRouteId && b.BlockType.Equals("L", StringComparison.OrdinalIgnoreCase)
+                                        orderby bs.OrderIndex
                                         select new RouteLogSequencedPointsDTO
                                         {
-                                            StreetName = grpAddress.Key.Thoroughfare,
-                                            BuildingNumber = grpAddress.Key.BuildingNumber,
-                                            DeliveryPointCount = grpAddress.Select(n => n.dp.ID).Count(),
-                                            MultipleOccupancy = grpAddress.Sum(n => n.dp.MultipleOccupancyCount)
+                                            StreetName = pa.Thoroughfare,
+                                            BuildingNumber = pa.BuildingNumber,
+                                            DeliveryPointCount = 0,
+                                            MultipleOccupancy = dp.MultipleOccupancyCount,
+                                            SubBuildingName = pa.SubBuildingName,
+                                            BuildingName = pa.BuildingName
                                         }).ToListAsync();
 
             return deliveryRoutes;
         }
-
 
         #endregion Private Methods
 

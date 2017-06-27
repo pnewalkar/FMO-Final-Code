@@ -1,8 +1,9 @@
 <div layout="column">
     <div layout="row" layout-align="end start" ng-show="vm.selectedDeliveryPoint.type == 'deliverypoint'">
-        <md-button class="context-button" aria-label="Back" title="{{ 'GENERAL.BUTTONS.BACK' | translate }}">
-            <previous-page></previous-page>
-        </md-button>
+        <back-button></back-button>
+        <!-- <md-button class="context-button" aria-label="Back" title="{{ 'GENERAL.BUTTONS.BACK' | translate }}"><span previous-page ng-click="go_back()">
+        <i class ="fa fa-arrow-circle-left" aria-hidden="true"></i></span>
+        </md-button> -->
         <md-button class="context-button" aria-label="Links" title="{{ 'GENERAL.BUTTONS.LINKS' | translate }}">
             <i class="fa fa-link" aria-hidden="true"></i>
         </md-button>

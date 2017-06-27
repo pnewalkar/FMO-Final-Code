@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity.Infrastructure;
     using System.Linq;
+    using CommonLibrary.LoggingMiddleware;
     using Moq;
     using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
@@ -19,6 +20,7 @@
         private IScenarioDataService testCandidate;
         private Guid deliveryUnitID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
         private Guid operationalStateID = System.Guid.Parse("9C1E56D7-5397-4984-9CF0-CD9EE7093C88");
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void Test_FetchDeliveryScenario()
@@ -29,6 +31,9 @@
 
         protected override void OnSetup()
         {
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            loggingHelperMock = CreateMock<ILoggingHelper>();
+
             var deliveryScenario = new List<Scenario>()
             {
                 new Scenario() { ScenarioName = "Worthing Delivery Office - Baseline weekday",  Unit_GUID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"), OperationalState_GUID = System.Guid.Parse("9C1E56D7-5397-4984-9CF0-CD9EE7093C88") },
@@ -53,7 +58,12 @@
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new ScenarioDataService(mockDatabaseFactory.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new ScenarioDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }
