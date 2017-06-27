@@ -148,7 +148,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 bool isPostalAddressProcessed = false;
-                string postalAddressList = new JavaScriptSerializer().Serialize(lstPostalAddress);
+                string postalAddressList = new JavaScriptSerializer() { MaxJsonLength = 5000000 }.Serialize(lstPostalAddress);
                 try
                 {
                     var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(Constants.PostalAddressType).Result;
