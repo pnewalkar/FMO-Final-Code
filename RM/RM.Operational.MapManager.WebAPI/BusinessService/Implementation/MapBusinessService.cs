@@ -134,12 +134,12 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                 section = document.CreateElement(MapManagerConstants.Section);
                 sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
                 sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-                sectionColumn.InnerText = "Date : " + printMapDTO.PrintTime;
+                sectionColumn.InnerText = "Date: " + printMapDTO.PrintTime;
                 section.AppendChild(sectionColumn);
 
                 sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
                 sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-                sectionColumn.InnerText = "Scale : " + printMapDTO.CurrentScale;
+                sectionColumn.InnerText = "Scale: " + printMapDTO.CurrentScale;
                 section.AppendChild(sectionColumn);
                 content.AppendChild(section);
 

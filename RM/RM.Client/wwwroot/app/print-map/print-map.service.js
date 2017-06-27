@@ -175,7 +175,7 @@ function printMapService(
 
         var printMapDto = {
             "MapTitle": printOptions.title,
-            "CurrentScale": '1 : ' + Math.round(mapFactory.getScaleFromResolution(resolution)),
+            "CurrentScale": '1:' + Math.round(mapFactory.getScaleFromResolution(resolution)),
             "PdfOrientation": printOptions.orientation,
             "PdfSize": printOptions.size,
             "MapScale": 25,

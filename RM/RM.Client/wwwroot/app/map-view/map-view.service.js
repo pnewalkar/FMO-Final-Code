@@ -75,8 +75,6 @@ function mapService($http,
             vm.measureTooltipElement.innerHTML = output;
             vm.measureTooltip.setPosition(tooltipCoord);
         }
-
-
     };
     return {
         initialise: initialise,
@@ -224,7 +222,6 @@ function mapService($http,
             maxResolution: 3.9202878405756825
         });
 
-
         var unitBoundaryLayer = new ol.layer.Vector({
             source: new ol.source.Vector({})
         });
@@ -244,7 +241,6 @@ function mapService($http,
         drawingLayerSelector.selected = true;
         drawingLayerSelector.selectorVisible = false;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
-
 
         var deliveryPointsLayerSelector = new MapFactory.LayerSelector();
         deliveryPointsLayerSelector.layerName = GlobalSettings.deliveryPointLayerName;
@@ -293,8 +289,6 @@ function mapService($http,
         unitBoundaryLayerSelector.keys = ["unitBoundary"];
         mapFactory.addLayer(unitBoundaryLayerSelector);
 
-
-
         roadsLayer.selected = true;
         vm.map.on('pointermove', vm.pointerMoveHandler);
         refreshLayers();
@@ -310,7 +304,6 @@ function mapService($http,
     }
     function mapLayers() {
         return mapFactory.getAllLayers();
-
     }
     function getLayer(layerName) {
         var returnVal = null;
@@ -372,7 +365,6 @@ function mapService($http,
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
             layer.layer.changed();
-
         });
         vm.layerSummary = getLayerSummary();
     }
@@ -452,7 +444,6 @@ function mapService($http,
         else {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
-
     }
     function setDrawInteraction(button, style) {
         var draw = null;
@@ -500,7 +491,6 @@ function mapService($http,
         }
         geometry.setCoordinates(coordinates);
         return geometry;
-
     }
     function setupAccessLink() {
         var startLineCoordinate = [];
@@ -532,10 +522,8 @@ function mapService($http,
 			    });
 
 			    $rootScope.$broadcast('redirectTo', {
-
 			        feature: evt.feature,
 			        contextTitle: CommonConstants.AccessLinkActionName
-
 			    });
 			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
 			    //    reload: 'accessLink'
@@ -563,8 +551,6 @@ function mapService($http,
             source: vector.layer.getSource(),
             pixelTolerance: 20
         });
-
-
     }
     function setSelectButton() {
         var lastLayer;
@@ -598,7 +584,6 @@ function mapService($http,
                 var deliveryPointDetails = null;
                 showDeliveryPointDetails(deliveryPointDetails);
             }
-
         });
         persistSelection();
     }
@@ -632,7 +617,6 @@ function mapService($http,
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    coordinatesService.setCordinates(coordinates);
 			    $rootScope.state = false;
-
 			});
     }
     function clearDrawingLayer(keepCurrentInteraction) {
@@ -702,7 +686,6 @@ function mapService($http,
         }
     }
 
-
     function selectFeatures() {
         if (vm.interactions.select == null || angular.isUndefined(vm.interactions.select)) {
             vm.interactions.select = new ol.interaction.Select({
@@ -715,13 +698,11 @@ function mapService($http,
         vm.features.forEach(function (feature) {
             vm.interactions.select.getFeatures().push(feature);
         })
-
     }
 
     function getfeature(feature) {
         vm.features = feature;
     }
-
 
     function setSelectedObjectsVisibility(selectedLayer) {
         if (vm.interactions.select) {
@@ -739,9 +720,7 @@ function mapService($http,
                 if (vm.featuredType === selectedLayer) {
                     setSelections(null, []);
                 }
-
             });
-
         }
     }
 
@@ -768,7 +747,6 @@ function mapService($http,
         }
         else {
             $state.go('deliveryPointDetails', {
-
                 selectedDeliveryPoint: deliveryPointDetails
             }, { reload: true });
         }
@@ -783,7 +761,6 @@ function mapService($http,
     }
 
     function composeMap() {
-
         vm.map.once('postcompose', function (event) {
             writeScaletoCanvas(event);
         });
@@ -875,19 +852,19 @@ function mapService($http,
             var scale = scalenumber * 0.621371;
             if (scale < 1) {
                 scale = scalenumber * 1000
-                return Math.round(scale) + ' m';
+                return Math.round(scale) + ' Metre';
             }
             else {
-                return Math.round(scale) + ' mi';
+                return Math.round(scale) + ' Mile';
             }
         }
         else if (scaleunit == 'm') {
             var scale = scalenumber * 0.000621371;
             if (scale < 1) {
-                return scalenumber + ' m';
+                return scalenumber + ' Metre';
             }
             else {
-                return Math.round(scale) + ' mi';
+                return Math.round(scale) + ' Mile';
             }
         }
     }
@@ -895,5 +872,4 @@ function mapService($http,
     function getResolution() {
         return vm.map.getView().getResolution();
     }
-
 }
