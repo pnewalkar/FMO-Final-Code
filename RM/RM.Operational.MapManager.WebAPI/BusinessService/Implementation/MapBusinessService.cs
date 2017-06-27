@@ -95,7 +95,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                 XmlElement pageFooter = document.CreateElement(MapManagerConstants.PageFooter);
                 XmlElement content = document.CreateElement(MapManagerConstants.Content);
                 XmlElement heading1 = document.CreateElement(MapManagerConstants.Heading1);
-                XmlElement heading1CenterAligned = document.CreateElement(MapManagerConstants.Heading1CenterAligned);
+                XmlElement heading1CenterAligned = null;
                 XmlElement image = document.CreateElement(MapManagerConstants.Image);
                 XmlElement section = null;
                 XmlElement sectionColumn = null;
@@ -113,6 +113,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
 
                 // Section 1 Header 1
                 sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                heading1CenterAligned = document.CreateElement(MapManagerConstants.Heading1CenterAligned);
                 sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
                 heading1CenterAligned.InnerText = printMapDTO.MapTitle;
                 sectionColumn.AppendChild(heading1CenterAligned);
@@ -145,9 +146,19 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
 
                 // Section 4
                 section = document.CreateElement(MapManagerConstants.Section);
+                heading1CenterAligned = document.CreateElement(MapManagerConstants.Heading1CenterAligned);
                 sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
                 sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-                sectionColumn.InnerText = printMapDTO.License;
+                heading1CenterAligned.InnerText = printMapDTO.License;
+                sectionColumn.AppendChild(heading1CenterAligned);
+                section.AppendChild(sectionColumn);
+                content.AppendChild(section);
+
+                // Section 5
+                section = document.CreateElement(MapManagerConstants.Section);
+                sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+                sectionColumn.InnerText = MapManagerConstants.InternalUseStatement;
                 section.AppendChild(sectionColumn);
                 content.AppendChild(section);
 

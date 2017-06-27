@@ -38,17 +38,9 @@ namespace RM.Operational.MapManager.WebAPI.Controllers
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                try
-                {
-                    var result = mapGeneratorBusinessService.SaveImage(printMapDTO);
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
-                    return Ok(result);
-                }
-                catch (Exception ex)
-                {
-                    this.loggingHelper.Log(ex, TraceEventType.Error);
-                    throw;
-                }
+                var result = mapGeneratorBusinessService.SaveImage(printMapDTO);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(result);
             }
         }
 
