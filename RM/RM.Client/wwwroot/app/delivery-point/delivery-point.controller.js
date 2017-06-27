@@ -225,6 +225,7 @@ function DeliveryPointController(
     }
 
     function createDeliveryPoint() {
+        vm.isOnceClicked = true;
 
         var addDeliveryPointDTO =
             {
@@ -240,7 +241,7 @@ function DeliveryPointController(
                 "AddressLocationDTO": null
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-
+           
             if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
                 mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
@@ -266,6 +267,8 @@ function DeliveryPointController(
             $rootScope.$broadcast('disablePrintMap', {
                 disable: true
             });
+        }).finally(function () {
+            vm.isOnceClicked = false;
         });
     }
 
