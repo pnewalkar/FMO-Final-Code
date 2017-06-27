@@ -35,5 +35,6 @@
         internal const string Source = "source";
         internal const string Heading1CenterAligned = "heading1CenterAligned";
         internal const string Image = "image";
+        internal const string InternalUseStatement = "For non-commercial use by Royal Mail Group Limited only";
     }
 }
