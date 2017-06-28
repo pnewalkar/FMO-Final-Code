@@ -111,7 +111,7 @@
     <Compile Include="DataService\DeliveryPointsDataServiceFixture.cs" />
     <Compile Include="DataService\DeliveryRouteDataServiceFixture.cs" />
     <Compile Include="DataService\OSRoadLinkDataServiceFixture.cs" />
-    <Compile Include="DataService\UnitLocationRepositoryFixture.cs" />
+    <Compile Include="DataService\UnitLocationDataServiceFixture.cs" />
     <Compile Include="DataService\PostCodeDataServiceFixture.cs" />
     <Compile Include="DataService\ReferenceDataCategoryDataServiceFixture.cs" />
     <Compile Include="DataService\RoadNameDataServiceFixture.cs" />

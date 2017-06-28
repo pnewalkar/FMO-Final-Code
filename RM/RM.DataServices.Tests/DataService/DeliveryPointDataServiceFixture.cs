@@ -131,7 +131,6 @@ namespace RM.DataServices.Tests.DataService
             mockLoggingHelper = CreateMock<ILoggingHelper>();
 
             // mockLoggingHelper.Setup(n => n.LogInfo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
-
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockRMDBContext = CreateMock<RMDBContext>();
             mockRMDBContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointDataService.Object);

@@ -193,7 +193,7 @@
             SetUpDataForDeliveryPoints();
             string results = testCandidate.CheckForDuplicateNybRecords(postalAddressesDTO[1], new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
             Assert.NotNull(results);
-            Assert.IsTrue(results == string.Empty);
+            Assert.IsTrue(string.IsNullOrEmpty(results));
         }
 
         [Test]
