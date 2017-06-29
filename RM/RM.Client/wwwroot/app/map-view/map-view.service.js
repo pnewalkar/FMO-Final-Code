@@ -109,13 +109,14 @@ function mapService($http,
         composeMap: composeMap,
         getResolution: getResolution,
         setOriginalSize: setOriginalSize,
-        LicenceInfo: LicenceInfo
+        LicenceInfo: LicenceInfo,
+        baseLayerLicensing: baseLayerLicensing
+       
     }
 
     function LicenceInfo(displayText) {
         return mapFactory.LicenceInfo(displayText);
     }
-
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
        '+x_0=400000 +y_0=-100000 +ellps=airy ' +
@@ -146,10 +147,12 @@ function mapService($http,
             })
         });
 
-        var loadFeatures = function (layerSource, response) {
+
+        var loadFeatures = function (layerSource, response, layerName) {
             var features = new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
             }).readFeatures(response);
+            mapFactory.LicenceInfo("", layerName, layerSource);
             layerSource.addFeatures(features);
         };
 
@@ -161,7 +164,8 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
-                    loadFeatures(deliveryPointsVector, response);
+                    var layerName = GlobalSettings.deliveryPointLayerName;
+                    loadFeatures(deliveryPointsVector, response, layerName);
                 });
             }
         });
@@ -188,7 +192,8 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
-                    loadFeatures(accessLinkVector, response);
+                    var layerName = GlobalSettings.accessLinkLayerName;
+                    loadFeatures(accessLinkVector, response, layerName);
                 });
             }
         });
@@ -201,8 +206,21 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
-                    loadFeatures(roadLinkVector, response);
+                    var layerName = GlobalSettings.roadLinkLayerName;
+                    loadFeatures(roadLinkVector, response, layerName);
                 });
+            }
+        });
+
+
+        var unitBoundaryVector = new ol.source.Vector({
+            format: new ol.format.GeoJSON({
+                defaultDataProjection: 'EPSG:27700'
+
+            }),
+            loader: function (extent) {
+                var layerName = GlobalSettings.unitBoundaryLayerName;
+                mapFactory.LicenceInfo("", layerName, unitBoundaryVector);
             }
         });
 
@@ -223,7 +241,7 @@ function mapService($http,
         });
 
         var unitBoundaryLayer = new ol.layer.Vector({
-            source: new ol.source.Vector({})
+            source: unitBoundaryVector
         });
 
         var roadsSelector = new MapFactory.LayerSelector();
@@ -295,6 +313,10 @@ function mapService($http,
 
         vm.showRoadPanel = false;
     }
+
+    function baseLayerLicensing() {
+        mapFactory.LicenceInfo("Base Layers", "Base Layer", null);
+    }
     function initialiseMiniMap() {
         mapFactory.initialiseMiniMap();
         vm.miniMap = mapFactory.getMiniMap();
@@ -361,11 +383,11 @@ function mapService($http,
             callback(selectedFeatures);
         })
     }
-    function refreshLayers() {
+    function refreshLayers() { 
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
-            layer.layer.changed();
-        });
+            layer.layer.changed();          
+        });        
         vm.layerSummary = getLayerSummary();
     }
     function deleteAccessLinkFeature(feature) {
