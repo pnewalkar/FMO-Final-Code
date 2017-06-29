@@ -17,7 +17,8 @@
                    title="{{ 'PRINT_MAP.BUTTONS.DISABLE_ALERT' | translate }}"></i>
             </md-list-item> -->
           <md-list-item  ng-repeat="Item in vm.RolesActionResult | unique: 'ActionName'  track by $index" ng-click="vm.fetchActions(Item.ActionName, vm.selectedDeliveryUnit)" 
-                        title="{{Item.ActionName}}" ng-disabled="vm.isDisabledAction && Item.ActionName === 'Print Map'">
+                        title="{{Item.ActionName}}" ng-disabled="vm.isDisabledAction && Item.ActionName === 'Print Map'" 
+                        ng-class="(vm.isDisabledAction && Item.ActionName === 'Print Map') ? 'disableText': ''">
                 {{Item.ActionName}}
                 <i class="fa fa-info-circle printInfo" aria-label="Alert" ng-if="vm.isDisabledAction && Item.ActionName === 'Print Map'" title="{{ 'PRINT_MAP.BUTTONS.DISABLE_ALERT' | translate }}"></i>
           </md-list-item>
