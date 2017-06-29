@@ -17,12 +17,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
     /// Unit location controller.
     /// </summary>
     [Route("api/UnitManager")]
-    public class UnitLocationController : RMBaseController
+    public class UnitManagerController : RMBaseController
     {
         private readonly IUnitLocationBusinessService unitLocationBusinessService = default(IUnitLocationBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public UnitLocationController(IUnitLocationBusinessService unitLocationBusinessService, ILoggingHelper loggingHelper)
+        public UnitManagerController(IUnitLocationBusinessService unitLocationBusinessService, ILoggingHelper loggingHelper)
         {
             this.unitLocationBusinessService = unitLocationBusinessService;
             this.loggingHelper = loggingHelper;

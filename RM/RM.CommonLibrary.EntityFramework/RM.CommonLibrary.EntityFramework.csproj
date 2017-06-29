@@ -75,7 +75,7 @@
     <Compile Include="DataService\AccessManager\ActionManagerDataService.cs" />
     <Compile Include="DataService\AccessManager\UserRoleUnitDataService.cs" />
     <Compile Include="DataService\AddressLocationDataService.cs" />
-    <Compile Include="DataService\AddressDataService.cs" />
+    <Compile Include="DataService\PostalAddressDataService.cs" />
     <Compile Include="DataService\BlockSequenceDataService.cs" />
     <Compile Include="DataService\DeliveryPointsDataService.cs" />
     <Compile Include="DataService\DeliveryRouteDataService.cs" />

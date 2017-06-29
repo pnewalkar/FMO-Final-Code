@@ -47,7 +47,7 @@
             {
                 actualResult = await testCandidate.FetchDeliveryPointsForBasicSearch(null, unit1Guid);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Assert.IsNotNull(actualResult);
             }
