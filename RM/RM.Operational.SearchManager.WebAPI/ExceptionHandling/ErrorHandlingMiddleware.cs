@@ -114,7 +114,7 @@ namespace RM.Operational.SearchManager.WebAPI.ExceptionHandling
             }
             catch (Exception)
             {
-                loggingHelper.Log(ErrorMessageIds.Err_ExecutingErrorHandler, TraceEventType.Error, exception);
+                loggingHelper.Log(ErrorConstants.Err_ExecutingErrorHandler, TraceEventType.Error, exception);
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = exception.Message }));
             }

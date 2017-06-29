@@ -64,8 +64,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         ////    }
         ////    catch (InvalidOperationException ex)
         ////    {
-        ////        ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-        ////        throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForCountAsync, ex);
+        ////        ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+        ////        throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
         ////    }
         ////}
 
@@ -153,6 +153,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         newDeliveryPoint.ID = objDeliveryPoint.ID;
                         newDeliveryPoint.Address_GUID = objDeliveryPoint.Address_GUID;
                         newDeliveryPoint.DeliveryPointUseIndicator_GUID = objDeliveryPoint.DeliveryPointUseIndicator_GUID;
+                        newDeliveryPoint.DeliveryPointStatus = new List<DeliveryPointStatus>();
                         newDeliveryPoint.DeliveryPointStatus.Add(newDeliveryPointStatus);
                         newNetworkNode.ID = objDeliveryPoint.ID;
                         newNetworkNode.DataProviderGUID = objDeliveryPoint.LocationProvider_GUID;
@@ -174,7 +175,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         isDeliveryPointInserted = false;
                         DataContext.Entry(newDeliveryPoint).State = EntityState.Unchanged;
                         loggingHelper.Log(dbUpdateException, TraceEventType.Error);
-                        throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for addressId:", newDeliveryPoint.Address_GUID)));
+                        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for addressId:", newDeliveryPoint.Address_GUID)));
                     }
                 }
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
@@ -203,7 +204,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     isDeliveryPointUpdated = false;
                     DataContext.Entry(deliveryPoints).State = EntityState.Unchanged;
                     loggingHelper.Log(dbUpdateException, TraceEventType.Error);
-                    throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlAddException, string.Concat("Delivery Point for addressId:", addressGuid)));
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for addressId:", addressGuid)));
                 }
                 
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
@@ -258,7 +259,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         ////{
         ////    if (string.IsNullOrWhiteSpace(searchText) || Guid.Empty.Equals(unitGuid))
         ////    {
-        ////        throw new ArgumentNullException(searchText, string.Format(ErrorMessageIds.Err_ArgumentmentNullException, string.Concat(searchText, unitGuid)));
+        ////        throw new ArgumentNullException(searchText, string.Format(ErrorConstants.Err_ArgumentmentNullException, string.Concat(searchText, unitGuid)));
         ////    }
 
         ////    int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[Constants.SearchResultCount]);
@@ -324,13 +325,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         ////    }
         ////    catch (InvalidOperationException ex)
         ////    {
-        ////        ex.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-        ////        throw new SystemException(ErrorMessageIds.Err_InvalidOperationExceptionForSingleorDefault, ex);
+        ////        ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+        ////        throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
         ////    }
         ////    catch (OverflowException overflow)
         ////    {
-        ////        overflow.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-        ////        throw new SystemException(ErrorMessageIds.Err_OverflowException, overflow);
+        ////        overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+        ////        throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
         ////    }
         ////}
 
@@ -340,14 +341,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Dto</returns>
-        public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid, CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation)
+        public List<DeliveryPointDTO> GetDeliveryPoints(string boundingBoxCoordinates, Guid unitGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Data.GetDeliveryPoints"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                List<LocationDatabaseDTO> locations = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid, unitLocation).ToList();
+                List<LocationDatabaseDTO> locations = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
                 List<DeliveryPointDTO> deliveryPointDto = new List<DeliveryPointDTO>();
 
                 locations.ForEach(loc =>
@@ -520,21 +521,21 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         ////    }
         ////    catch (DbUpdateConcurrencyException)
         ////    {
-        ////        throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+        ////        throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
         ////    }
         ////    catch (DbUpdateException dbUpdateException)
         ////    {
-        ////        throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+        ////        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
         ////    }
         ////    catch (NotSupportedException notSupportedException)
         ////    {
-        ////        notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-        ////        throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+        ////        notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+        ////        throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
         ////    }
         ////    catch (ObjectDisposedException disposedException)
         ////    {
-        ////        disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-        ////        throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+        ////        disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+        ////        throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
         ////    }
         ////}
 
@@ -571,21 +572,21 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         ////    }
         ////    catch (DbUpdateConcurrencyException)
         ////    {
-        ////        throw new DbConcurrencyException(ErrorMessageIds.Err_Concurrency);
+        ////        throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
         ////    }
         ////    catch (DbUpdateException dbUpdateException)
         ////    {
-        ////        throw new DataAccessException(dbUpdateException, string.Format(ErrorMessageIds.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+        ////        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
         ////    }
         ////    catch (NotSupportedException notSupportedException)
         ////    {
-        ////        notSupportedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-        ////        throw new InfrastructureException(notSupportedException, ErrorMessageIds.Err_NotSupportedException);
+        ////        notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+        ////        throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
         ////    }
         ////    catch (ObjectDisposedException disposedException)
         ////    {
-        ////        disposedException.Data.Add("userFriendlyMessage", ErrorMessageIds.Err_Default);
-        ////        throw new ServiceException(disposedException, ErrorMessageIds.Err_ObjectDisposedException);
+        ////        disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+        ////        throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
         ////    }
         ////}
 
@@ -963,7 +964,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Delivery Point Entity</returns>
-        private List<LocationDatabaseDTO> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid, CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation)
+        private List<LocationDatabaseDTO> GetDeliveryPointsCoordinatesDatabyBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Data.GetDeliveryPointsCoordinatesDatabyBoundingBox"))
             {
