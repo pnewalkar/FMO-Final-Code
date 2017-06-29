@@ -356,6 +356,50 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
+        public async Task<bool> CheckIfNotificationExists(int uDPRN, string action)
+        {
+            HttpResponseMessage result = await httpHandler.GetAsync(string.Format(notificationManagerDataWebAPIName + "/Notifications/check/{0}/{1}", uDPRN.ToString(), action));
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            bool notificationExists = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+            return notificationExists;
+        }
+
+        public async Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction)
+        {
+            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(notificationManagerDataWebAPIName + "/notifications/location/{0}/{1}", udprn.ToString(), oldAction), newAction);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+            return isUpdated;
+        }
+
+        public async Task<bool> UpdateNotificationMessageByUDPRN(int udprn, string action, string message)
+        {
+            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(notificationManagerDataWebAPIName + "notifications/postaladdress/{0}/{1}", udprn.ToString(), action), message);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+            return isUpdated;
+        }
+
         #endregion public methods
     }
 }

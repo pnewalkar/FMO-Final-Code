@@ -135,5 +135,19 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             return returnVal;
         }
 
+        public async Task<bool> UpdateNotificationMessageByUDPRN(int uDPRN, string action, string message)
+        {
+            string notificationActionlink = string.Format(Constants.USRNOTIFICATIONLINK, uDPRN.ToString());
+            bool returnVal = false;
+
+            Notification notification = await DataContext.Notifications.Where(notific => notific.NotificationActionLink == notificationActionlink && notific.Notification_Heading.Equals(action)).SingleOrDefaultAsync();
+            notification.Notification_Message = message;
+            await DataContext.SaveChangesAsync();
+
+            returnVal = true;
+
+            return returnVal;
+        }
+
     }
 }

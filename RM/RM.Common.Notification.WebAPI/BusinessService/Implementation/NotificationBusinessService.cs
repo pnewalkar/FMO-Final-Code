@@ -59,5 +59,10 @@ namespace RM.Common.Notification.WebAPI.BusinessService
         {
             return await notificationDataService.UpdateNotificationByUDPRN(uDPRN, oldAction, newAction);
         }
+
+        public async Task<bool> UpdateNotificationMessageByUDPRN(int uDPRN, string action, string message)
+        {
+            return await notificationDataService.UpdateNotificationMessageByUDPRN(uDPRN, action, message);
+        }
     }
 }

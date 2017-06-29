@@ -72,5 +72,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids);
 
         Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid);
+
+        Task<bool> CheckIfNotificationExists(int uDPRN, string action);
+
+        Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction);
+
+        Task<bool> UpdateNotificationMessageByUDPRN(int udprn, string action, string message);
     }
 }

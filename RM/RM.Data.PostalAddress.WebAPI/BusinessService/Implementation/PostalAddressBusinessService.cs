@@ -631,7 +631,24 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         {
                             objPostalAddress.ID = objPostalAddressMatchedAddress.ID;
                             var objDeliveryPoint = await postalAddressIntegrationService.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
-                            if (objDeliveryPoint != null)
+                            //if (objDeliveryPoint != null)
+                            //{
+                            //    objPostalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
+
+                            //    deliveryPointUseIndicatorPAF = postalAddressIntegrationService.GetReferenceDataSimpleLists(Constants.DeliveryPointUseIndicator).Result
+                            //                .ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
+                            //                .Select(a => a.ID).FirstOrDefault();
+
+                            //    objPostalAddress.PostalAddressStatus = objPostalAddressMatchedUDPRN.PostalAddressStatus;
+
+                            //    // Update address and delivery point for USR records
+                            //    await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF);
+
+
+                            //    await postalAddressIntegrationService.InsertDeliveryPoint
+                            //    //await postalAddressIntegrationService.UpdateDeliveryPoint(objPostalAddress.ID, deliveryPointUseIndicatorPAF);
+                            //}
+                            if(objDeliveryPoint == null)
                             {
                                 objPostalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
 
@@ -644,23 +661,24 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                 // Update address and delivery point for USR records
                                 await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF);
 
-                                await postalAddressIntegrationService.UpdateDeliveryPoint(objPostalAddress.ID, deliveryPointUseIndicatorPAF);
-                            }
-                            else
-                            {
-                                objFileProcessingLog = new FileProcessingLogDTO
-                                {
-                                    FileID = Guid.NewGuid(),
-                                    UDPRN = objPostalAddress.UDPRN ?? default(int),
-                                    AmendmentType = objPostalAddressBatch.AmendmentType,
-                                    FileName = strFileName,
-                                    FileProcessing_TimeStamp = DateTime.UtcNow,
-                                    FileType = FileType.Paf.ToString(),
-                                    ErrorMessage = Constants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType,
-                                    SuccessFlag = false
-                                };
+                                
 
-                                fileProcessingLogDataService.LogFileException(objFileProcessingLog);
+                                
+                                //await postalAddressIntegrationService.UpdateDeliveryPoint(objPostalAddress.ID, deliveryPointUseIndicatorPAF);
+
+                                //objFileProcessingLog = new FileProcessingLogDTO
+                                //{
+                                //    FileID = Guid.NewGuid(),
+                                //    UDPRN = objPostalAddress.UDPRN ?? default(int),
+                                //    AmendmentType = objPostalAddressBatch.AmendmentType,
+                                //    FileName = strFileName,
+                                //    FileProcessing_TimeStamp = DateTime.UtcNow,
+                                //    FileType = FileType.Paf.ToString(),
+                                //    ErrorMessage = Constants.PAFErrorMessageForUnmatchedDeliveryPointForUSRType,
+                                //    SuccessFlag = false
+                                //};
+
+                                //fileProcessingLogDataService.LogFileException(objFileProcessingLog);
                             }
                         }
                         else
@@ -694,6 +712,92 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 catch (Exception ex)
                 {
                     this.loggingHelper.Log(ex, TraceEventType.Error);
+                }
+
+            }
+        }
+
+        private async Task SaveDeliveryPointProcess(PostalAddressDBDTO objPostalAddress, DeliveryPointDTO deliveryPoint)
+        {
+            List<string> categoryNamesSimpleLists = new List<string>
+                    {
+                        Constants.TASKNOTIFICATION,
+                        Constants.NETWORKLINKDATAPROVIDER,
+                        Constants.DeliveryPointUseIndicator,
+                        ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
+                        ReferenceDataCategoryNames.NetworkNodeType
+                    };
+            var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
+            string postCodeDistrict = objPostalAddress.Postcode.Substring(0, objPostalAddress.Postcode.Length - 4);
+            Guid tasktypeId = referenceDataCategoryList
+                            .Where(list => list.CategoryName.Equals(Constants.TASKNOTIFICATION, StringComparison.OrdinalIgnoreCase))
+                            .SelectMany(list => list.ReferenceDatas)
+                            .Where(item => item.ReferenceDataValue.Equals(Constants.TASKACTION, StringComparison.OrdinalIgnoreCase))
+                            .Select(s => s.ID).SingleOrDefault();
+            Guid locationProviderId = referenceDataCategoryList
+                            .Where(list => list.CategoryName.Equals(Constants.NETWORKLINKDATAPROVIDER, StringComparison.OrdinalIgnoreCase))
+                            .SelectMany(list => list.ReferenceDatas)
+                            .Where(item => item.ReferenceDataValue.Equals(Constants.EXTERNAL, StringComparison.OrdinalIgnoreCase))
+                            .Select(s => s.ID).SingleOrDefault();
+            Guid deliveryPointUseIndicator = referenceDataCategoryList
+                            .Where(list => list.CategoryName.Equals(Constants.DeliveryPointUseIndicator, StringComparison.OrdinalIgnoreCase))
+                            .SelectMany(list => list.ReferenceDatas)
+                            .Where(item => item.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
+                            .Select(s => s.ID).SingleOrDefault();
+            Guid OperationalStatusGUIDLive = referenceDataCategoryList
+                            .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointOperationalStatus)
+                            .SelectMany(list => list.ReferenceDatas)
+                            .Where(item => item.ReferenceDataValue.Equals(Constants.OperationalStatusGUIDLive, StringComparison.OrdinalIgnoreCase))
+                            .Select(s => s.ID).SingleOrDefault();
+            Guid NetworkNodeTypeRMGServiceNode = referenceDataCategoryList
+                            .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkNodeType)
+                            .SelectMany(list => list.ReferenceDatas)
+                            .Where(item => item.ReferenceDataValue.Equals(Constants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
+                            .Select(s => s.ID).SingleOrDefault();
+
+
+
+            AddressLocationDTO addressLocationDTO = await postalAddressIntegrationService.GetAddressLocationByUDPRN((int)objPostalAddress.UDPRN);
+
+
+
+            if (addressLocationDTO != null)
+            {
+                DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO
+                {
+                    ID = Guid.NewGuid(),
+                    Address_GUID = objPostalAddress.ID,
+                    DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
+                    LocationXY = addressLocationDTO.LocationXY,
+                };
+
+                await postalAddressIntegrationService.InsertDeliveryPoint(deliveryPointDTO);
+
+                if (await postalAddressIntegrationService.CheckIfNotificationExists((int)objPostalAddress.UDPRN, Constants.TASKPAFACTION))
+                {
+                    // update the notification if it exists.
+                    await postalAddressIntegrationService.UpdateNotificationByUDPRN((int)objPostalAddress.UDPRN, Constants.TASKPAFACTION, Constants.NOTIFICATIONCLOSED);
+                }
+            }
+            else
+            {
+                //var objTask = new NotificationDTO
+                //{
+                //    ID = Guid.NewGuid(),
+                //    NotificationType_GUID = tasktypeId,
+                //    NotificationPriority_GUID = null,
+                //    NotificationSource = Constants.TASKSOURCE,
+                //    Notification_Heading = Constants.TASKPAFACTION,
+                //    Notification_Message = AddressFields(objPostalAddress),
+                //    PostcodeDistrict = postCodeDistrict,
+                //    NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
+                //    NotificationActionLink = string.Format(Constants.PAFNOTIFICATIONLINK, objPostalAddress.UDPRN)
+                //};
+
+                if (await postalAddressIntegrationService.CheckIfNotificationExists((int)objPostalAddress.UDPRN, Constants.TASKPAFACTION))
+                {
+                    string message = AddressFields(objPostalAddress);
+                    await postalAddressIntegrationService.UpdateNotificationMessageByUDPRN((int)objPostalAddress.UDPRN, Constants.TASKPAFACTION, message);
                 }
 
             }
