@@ -506,6 +506,9 @@ function mapService($http,
 			    //removeInteraction('select');
 			    clearDrawingLayer(true);
 			    // setSelections(null, []);
+			    $rootScope.$broadcast('disablePrintMap', {
+			        disable: true
+			    });
 			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
