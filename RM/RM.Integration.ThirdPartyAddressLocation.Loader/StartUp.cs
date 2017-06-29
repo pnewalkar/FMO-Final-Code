@@ -8,6 +8,7 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.Integration.ThirdPartyAddressLocation.Loader.Utils;
 using RM.CommonLibrary.EntityFramework.DataService;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace RM.Integration.ThirdPartyAddressLocation.Loader
 {
@@ -17,8 +18,14 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
         {
             Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>();
             Bind<IThirdPartyFileProcessUtility>().To<ThirdPartyFileProcessUtility>();
-            Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
-            Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope();
+          
+            LogWriterFactory log = new LogWriterFactory();
+            LogWriter logWriter = log.Create();
+            Logger.SetLogWriter(logWriter, false);
+
+            Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope().WithConstructorArgument<LogWriter>(logWriter);
+            Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope().WithConstructorArgument<LogWriter>(logWriter);
+
             Bind<IConfigurationHelper>().To<ConfigurationHelper>().InSingletonScope();
             Bind<IFileProcessingLogDataService>().To<FileProcessingLogDataService>();
             Bind<IFileMover>().To<FileMover>();
