@@ -1,3 +1,4 @@
+
 angular
     .module('deliveryPoint')
     .controller("DeliveryPointController", DeliveryPointController)
@@ -219,8 +220,12 @@ function DeliveryPointController(
     }
 
     function savePositionedDeliveryPoint() {
+        vm.isOnceClicked = true;
         vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList
-        deliveryPointService.UpdateDeliverypoint(vm.positionedDeliveryPointList);
+        deliveryPointService.UpdateDeliverypoint(vm.positionedDeliveryPointList)
+        .finally(function () {
+            vm.isOnceClicked = false;
+        });
         vm.positionedDeliveryPointList = null;
     }
 
