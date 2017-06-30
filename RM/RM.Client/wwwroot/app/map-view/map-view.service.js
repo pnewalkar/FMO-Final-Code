@@ -44,7 +44,7 @@ function mapService($http,
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line", "accesslink"];
+    vm.mapButtons = ["select", "point", "line", "accesslink", "modify", "delete"];
     vm.interactions = {
     };
     vm.layersForContext = [];
@@ -109,7 +109,8 @@ function mapService($http,
         composeMap: composeMap,
         getResolution: getResolution,
         setOriginalSize: setOriginalSize,
-        LicenceInfo: LicenceInfo
+        LicenceInfo: LicenceInfo,
+        setModifyInteraction: setModifyInteraction
     }
 
     function LicenceInfo(displayText) {
@@ -874,5 +875,9 @@ function mapService($http,
 
     function getResolution() {
         return vm.map.getView().getResolution();
+    }
+
+    function setModifyInteraction(button) {
+
     }
 }

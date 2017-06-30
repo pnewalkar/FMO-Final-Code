@@ -29,8 +29,9 @@
     "ACCESS_LINK": "Access Link",
     "ROAD": "Road",
     "POINT": "Point",
-    "LINE": "Line"
-
+    "LINE": "Line",
+    "MODIFY": "Modify",
+    "DELETE": "Delete"
   },
   "VALIDATION": {
     "MINIMUM_CHARACTERS": "At least {{count}} characters are required",
