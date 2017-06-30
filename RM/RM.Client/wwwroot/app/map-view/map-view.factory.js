@@ -155,6 +155,7 @@ function MapFactory($http,
             layers: layers.map(function (a) { return a.layer }),
             target: 'map',
             view: view,
+            logo: false,
             loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
             controls: []
