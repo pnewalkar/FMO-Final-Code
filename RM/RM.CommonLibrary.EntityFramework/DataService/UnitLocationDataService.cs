@@ -67,5 +67,22 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 return result;
             }
         }
+
+        /// <summary>
+        /// Fetches Location type id for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        public Guid GetLocationTypeId(Guid unitId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetLocationTypeId"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var result = DataContext.UnitLocations.Where(n => n.ID == unitId).SingleOrDefault().LocationType_GUID;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return result.Value;
+            }
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task AdvanceSearch_NoResultFound()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "Route 1" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { PostcodeUnit = "001" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { LocationProvider = "Route 1", PostalAddress = postalAddressDTO } }));
@@ -52,7 +52,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task AdvanceSearch_MoreThanOneResultFound()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "dumyRouteName1" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "dumyRouteName1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>()
             {
                 new PostCodeDTO { InwardCode = "dummyInwardCode1" },
@@ -76,7 +76,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task AdvanceSearch_OneResultThrowsError()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "dumyRouteName" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "dumyRouteName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { InwardCode = "dummyInwardCode" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "dummyLocalName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new PostalAddressDTO() { BuildingName = "Bldg-001" } } }));
@@ -97,7 +97,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task AdvanceSearch_ExactOneResultFound()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "dumyRouteName" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "dumyRouteName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { InwardCode = "dummyInwardCode" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "dummyLocalName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new PostalAddressDTO() { BuildingName = "Bldg-001" } } }));
@@ -110,7 +110,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task BasicSearch_NoResultFound()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "Route 1" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { PostcodeUnit = "001" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { LocationProvider = "Route 1", PostalAddress = postalAddressDTO } }));
@@ -122,7 +122,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task BasicSearch_ExactOneResultFound()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "dumyRouteName" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "dumyRouteName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { InwardCode = "dummyInwardCode" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "dummyLocalName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new PostalAddressDTO() { BuildingName = "Bldg-001" } } }));
@@ -135,7 +135,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task BasicSearch_MoreThanOneResultFound()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "dumyRouteName1" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "dumyRouteName1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>()
             {
                 new PostCodeDTO { InwardCode = "dummyInwardCode1" },
@@ -160,7 +160,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         [Test]
         public async Task BasicSearch_OneResultThrowsError()
         {
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "Route 1" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { PostcodeUnit = "001" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { LocationProvider = "Route 1", PostalAddress = postalAddressDTO } }));
@@ -189,12 +189,12 @@ namespace RM.Operational.SearchManager.WebAPI.Test
                 BuildingName = "abc"
             };
 
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "Route 1" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { PostcodeUnit = "001" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { LocationProvider = "Route 1", PostalAddress = postalAddressDTO } }));
 
-            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryRouteDTO>() { new DeliveryRouteDTO { RouteName = "Route 1" } }));
+            searchIntegrationServiceMock.Setup(x => x.FetchDeliveryRouteForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<RouteDTO>() { new RouteDTO { RouteName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<PostCodeDTO>() { new PostCodeDTO { PostcodeUnit = "001" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { LocationProvider = "Route 1", PostalAddress = postalAddressDTO } }));

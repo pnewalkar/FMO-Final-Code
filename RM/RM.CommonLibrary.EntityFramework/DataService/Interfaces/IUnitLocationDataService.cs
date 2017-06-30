@@ -23,5 +23,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// The list of <see cref="UnitLocationDTO"/>.
         /// </returns>
         List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId);
+
+        /// <summary>
+        /// Fetches Location type id for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        Guid GetLocationTypeId(Guid unitId);
     }
 }

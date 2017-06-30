@@ -7,7 +7,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
     public interface ISearchIntegrationService
     {
         // Basic Search & Count
-        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText);
+        Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText);
 
         Task<int> GetDeliveryRouteCount(string searchText);
 
@@ -26,7 +26,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         // Advance Search
         Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText);
 
-        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText);
+        Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText);
 
         Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText);
 

@@ -21,11 +21,13 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
     {
         private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
         private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
+        private const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
 
         #region Property Declarations
 
         private string deliveryRouteWebAPIName = string.Empty;
         private string referenceDataWebAPIName = string.Empty;
+        private string unitManagerDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
@@ -38,6 +40,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
             this.httpHandler = httpHandler;
             this.deliveryRouteWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
         }
 
@@ -99,6 +102,26 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return referenceId;
+            }
+        }
+
+        public async Task<Guid> GetLocationTypeId(Guid unitId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetLocationTypeId"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                Guid loactionTypeId = Guid.Empty;
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "Unit/" + unitId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+                loactionTypeId = new Guid(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return loactionTypeId;
             }
         }
 

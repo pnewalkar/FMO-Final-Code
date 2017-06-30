@@ -59,7 +59,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         /// <param name="searchText">The search text.</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns></returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryRouteForBasicSearch"))
             {
@@ -74,7 +74,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                List<DeliveryRouteDTO> networkLinks = JsonConvert.DeserializeObject<List<DeliveryRouteDTO>>(result.Content.ReadAsStringAsync().Result);
+                List<RouteDTO> networkLinks = JsonConvert.DeserializeObject<List<RouteDTO>>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return networkLinks;
@@ -308,7 +308,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         /// <param name="searchText">The search text.</param>
         /// <returns></returns>
         /// <exception cref="ServiceException"></exception>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryRouteForAdvanceSearch"))
             {
@@ -323,7 +323,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                List<DeliveryRouteDTO> deliveryRoutes = JsonConvert.DeserializeObject<List<DeliveryRouteDTO>>(result.Content.ReadAsStringAsync().Result);
+                List<RouteDTO> deliveryRoutes = JsonConvert.DeserializeObject<List<RouteDTO>>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return deliveryRoutes;

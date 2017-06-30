@@ -50,17 +50,32 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <returns>
         /// List
         /// </returns>
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit)
+        public List<RouteDTO> FetchRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryRoute"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var deliveryRoutes = deliveryRouteDataService.FetchDeliveryRoute(operationStateID, deliveryScenarioID, userUnit);
+                List<RouteDTO> routeDetails = null;
+                List<string> categoryNames = new List<string>
+            {
+                ReferenceDataCategoryNames.UnitLocationType
+            };
+
+                var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
+
+                var locationtypeId = deliveryRouteIntegrationService.GetLocationTypeId(userUnit).Result;
+
+                if (referenceDataCategoryList != null && referenceDataCategoryList.Count > 0)
+                {
+                    var referenceData = referenceDataCategoryList.SingleOrDefault().ReferenceDatas;
+                    string unitName = referenceData.Where(n => n.ID == locationtypeId).SingleOrDefault().ReferenceDataValue;
+                    routeDetails = deliveryRouteDataService.FetchRoute(operationStateID, deliveryScenarioID, userUnit, unitName);
+                }
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return deliveryRoutes;
+                return routeDetails;
             }
         }
 
@@ -91,7 +106,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <returns>
         /// Task
         /// </returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryRouteForBasicSearch"))
             {
@@ -129,9 +144,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <param name="searchText">Text to search</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>
-        /// List of <see cref="DeliveryRouteDTO"/>.
+        /// List of <see cref="RouteDTO"/>.
         /// </returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryRouteForAdvanceSearch"))
             {
@@ -151,7 +166,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <param name="deliveryRouteId">The delivery route identifier.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>DeliveryRouteDTO</returns>
-        public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid)
+        public async Task<RouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryRouteDetailsforPdfGeneration"))
             {
@@ -181,7 +196,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <param name="deliveryRouteDto">The delivery route dto.</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>byte[]</returns>
-        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit)
+        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateRouteLog"))
             {

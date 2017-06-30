@@ -70,7 +70,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void TestFetchDeliveryRoute()
         {
-            var actualResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryScenarioID, deliveryUnitID);
+            var actualResult = testCandidate.FetchRoute(operationalStateID, deliveryScenarioID, deliveryUnitID, "Collection Unit");
             Assert.IsNotNull(actualResult);
         }
 

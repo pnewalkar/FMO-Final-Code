@@ -39,27 +39,38 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         }
 
         /// <summary>
-        /// Fetch the Delivery Route.
+        /// Fetch the  Route.
         /// </summary>
         /// <param name="operationStateId">Guid operationStateID</param>
         /// <param name="deliveryScenarioId">Guid deliveryScenarioID</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>List</returns>
-        public List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateId, Guid deliveryScenarioId, Guid userUnit)
+        public List<RouteDTO> FetchRoute(Guid operationStateId, Guid deliveryScenarioId, Guid userUnit, string UnitName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRoute"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                List<RouteDTO> routedetails = null;
 
-                IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking()
-                .Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioId &&
-                            x.Scenario.OperationalState_GUID == operationStateId).ToList();
+                if (string.Equals("Collection Unit", UnitName.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    IEnumerable<CollectionRoute> result = DataContext.CollectionRoutes.AsNoTracking()
+                                 .Where(x => x.Scenario.Unit_GUID == userUnit && x.CollectionScenario_GUID == deliveryScenarioId &&
+                                             x.Scenario.OperationalState_GUID == operationStateId).ToList();
+                    routedetails = GenericMapper.MapList<CollectionRoute, RouteDTO>(result.ToList());
+                }
+                else
+                {
+                    IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking()
+              .Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioId &&
+                          x.Scenario.OperationalState_GUID == operationStateId).ToList();
+                    routedetails = GenericMapper.MapList<DeliveryRoute, RouteDTO>(result.ToList());
+                }
 
-                var fetchDeliveryRoute = GenericMapper.MapList<DeliveryRoute, DeliveryRouteDTO>(result.ToList());
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
-                return fetchDeliveryRoute;
+                return routedetails;
             }
         }
 
@@ -69,7 +80,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid userUnit</param>
         /// <returns>Task</returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRouteForAdvanceSearch"))
             {
@@ -79,7 +90,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 var deliveryRoutes = await DataContext.DeliveryRoutes.AsNoTracking()
                 .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
                             (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
-                .Select(l => new DeliveryRouteDTO
+                .Select(l => new RouteDTO
                 {
                     ID = l.ID,
                     RouteName = l.RouteName,
@@ -97,7 +108,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="searchText">The text to be searched</param>
         /// <param name="userUnit">Guid userUnit</param>
         /// <returns>The result set of delivery route.</returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRouteForBasicSearch"))
             {
@@ -110,7 +121,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
                                 (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                     .Take(takeCount)
-                    .Select(l => new DeliveryRouteDTO
+                    .Select(l => new RouteDTO
                     {
                         ID = l.ID,
                         RouteName = l.RouteName,
@@ -169,7 +180,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="referenceDataCategoryDtoList">The reference data category dto list.</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>DeliveryRouteDTO</returns>
-        public async Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid userUnit)
+        public async Task<RouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryRouteDetailsforPdfGeneration"))
             {
@@ -209,7 +220,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 var deliveryRoutesDto = await (from dr in DataContext.DeliveryRoutes.AsNoTracking()
                                                join sr in DataContext.Scenarios.AsNoTracking() on dr.DeliveryScenario_GUID equals sr.ID
                                                where dr.ID == deliveryRouteId && sr.Unit_GUID == userUnit
-                                               select new DeliveryRouteDTO
+                                               select new RouteDTO
                                                {
                                                    ID = dr.ID,
                                                    RouteName = dr.RouteName,
@@ -248,7 +259,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                 if (deliveryRoutesDto == null)
                 {
-                    deliveryRoutesDto = new DeliveryRouteDTO();
+                    deliveryRoutesDto = new RouteDTO();
                 }
 
                 deliveryRoutesDto.Aliases = await GetAliases(deliveryRouteId, operationalObjectTypeForDp, userUnit);
@@ -263,7 +274,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             }
         }
 
-        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit, Guid operationalObjectTypeForDp)
+        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto, Guid userUnit, Guid operationalObjectTypeForDp)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GenerateRouteLog"))
             {

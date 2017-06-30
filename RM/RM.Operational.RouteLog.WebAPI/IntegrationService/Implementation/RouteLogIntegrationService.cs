@@ -42,7 +42,7 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         /// </summary>
         /// <param name="deliveryRouteDto">deliveryRouteDto</param>
         /// <returns>deliveryRouteDto</returns>
-        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GenerateRouteLog"))
             {

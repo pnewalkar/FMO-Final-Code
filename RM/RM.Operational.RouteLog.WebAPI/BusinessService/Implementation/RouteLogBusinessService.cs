@@ -41,7 +41,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="deliveryRouteDto">deliveryRouteDto</param>
         /// <returns>deliveryRouteDto</returns>
-        public async Task<string> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        public async Task<string> GenerateRouteLog(RouteDTO deliveryRouteDto)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateRouteLog"))
             {

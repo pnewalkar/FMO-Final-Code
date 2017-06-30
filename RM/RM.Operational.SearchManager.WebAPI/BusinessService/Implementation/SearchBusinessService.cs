@@ -96,7 +96,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <param name="streetNames">The list of street names</param>
         /// <param name="streetNetworkCount">The count of street names</param>
         /// <returns>The result set</returns>
-        private static SearchResultDTO MapSearchResults(List<DeliveryRouteDTO> deliveryRoutes, int? deliveryRouteCount, List<PostCodeDTO> postcodes, int? postCodeCount, List<DeliveryPointDTO> deliveryPoints, int? deliveryPointsCount, List<StreetNameDTO> streetNames, int? streetNetworkCount)
+        private static SearchResultDTO MapSearchResults(List<RouteDTO> deliveryRoutes, int? deliveryRouteCount, List<PostCodeDTO> postcodes, int? postCodeCount, List<DeliveryPointDTO> deliveryPoints, int? deliveryPointsCount, List<StreetNameDTO> streetNames, int? streetNetworkCount)
         {
             var searchResultDTO = new SearchResultDTO();
 
