@@ -55,6 +55,7 @@ function mapService($http,
     vm.features = null;
     vm.selectedDP = null;
     vm.selectedLayer = null;
+    var feature_id = 1;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -434,6 +435,8 @@ function mapService($http,
         if (name == "point") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "deliverypoint");
+                evt.feature.setId(feature_id + 1)
+                feature_id = feature_id + 1;
             })
         }
 
@@ -442,6 +445,15 @@ function mapService($http,
                 evt.feature.set("type", "accesslink");
             })
         }
+        else if (name == "line") {
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.set("type", "linestring");
+                evt.feature.setId(feature_id + 1)
+                feature_id = feature_id + 1;
+            })
+        }
+
         else {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
@@ -591,6 +603,22 @@ function mapService($http,
         });
         persistSelection();
     }
+    function setModifyButton() {
+        vm.interactions.select = new ol.interaction.Select({
+            condition: ol.events.condition.never
+        });
+        var collection = new ol.Collection();
+        collection.push(getActiveFeature());
+        vm.interactions.modify = new ol.interaction.Modify({
+            features: collection
+        });
+
+        vm.interactions.modify.on('modifyend', vm.onModify);
+
+        persistSelection();
+    }
+
+
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
             var features = vm.interactions.select.getFeatures();
@@ -682,6 +710,9 @@ function mapService($http,
             switch (button.name) {
                 case "select":
                     setSelectButton();
+                    break;
+                case "modify":
+                    setModifyButton();
                     break;
                 default:
                     setDrawButton(button);
