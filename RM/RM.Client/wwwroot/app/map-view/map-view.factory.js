@@ -162,6 +162,9 @@ function MapFactory($http,
 
         map.addControl(getCustomScaleLine());
         map.addControl(new ol.control.Attribution());
+        var test = document.getElementsByClassName("ol-attribution");
+        var button = test[0].getElementsByTagName('button');
+        button[0].title = " ";
 
         // map.addControl(new ol.control.ScaleLine());
         //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";
