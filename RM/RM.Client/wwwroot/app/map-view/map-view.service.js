@@ -55,7 +55,6 @@ function mapService($http,
     vm.features = null;
     vm.selectedDP = null;
     vm.selectedLayer = null;
-    var feature_id = 1;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -435,8 +434,7 @@ function mapService($http,
         if (name == "point") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "deliverypoint");
-                evt.feature.setId(feature_id + 1)
-                feature_id = feature_id + 1;
+                evt.feature.setId(createGuid())
             })
         }
 
@@ -445,12 +443,13 @@ function mapService($http,
                 evt.feature.set("type", "accesslink");
             })
         }
+
         else if (name == "line") {
+            
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "linestring");
-                evt.feature.setId(feature_id + 1)
-                feature_id = feature_id + 1;
+                evt.feature.setId(createGuid())
             })
         }
 
@@ -617,8 +616,6 @@ function mapService($http,
 
         persistSelection();
     }
-
-
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
             var features = vm.interactions.select.getFeatures();
@@ -907,8 +904,10 @@ function mapService($http,
     function getResolution() {
         return vm.map.getView().getResolution();
     }
-
-    function setModifyInteraction(button) {
-
+    function createGuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 }
