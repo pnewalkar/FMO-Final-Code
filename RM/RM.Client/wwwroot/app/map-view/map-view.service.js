@@ -109,8 +109,7 @@ function mapService($http,
         composeMap: composeMap,
         getResolution: getResolution,
         setOriginalSize: setOriginalSize,
-        LicenceInfo: LicenceInfo,
-        setModifyInteraction: setModifyInteraction
+        LicenceInfo: LicenceInfo
     }
 
     function LicenceInfo(displayText) {
@@ -387,22 +386,14 @@ function mapService($http,
         return summary;
     }
     function deleteSelectedFeature() {
-        if (vm.interactions.select) {
-            vm.interactions.select.getFeatures().forEach(function (feature) {
-                if (feature.get("type") == "measure") {
-                    if (vm.measureTooltipElement) {
-                        vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
-                        vm.measureTooltipElement = null;
-                    }
-                    vm.lastMeasureFeature = null;
-                }
-                if (vm.drawingLayer.layer.getSource().getFeatures().indexOf(feature) != -1)
-                    vm.drawingLayer.layer.getSource().removeFeature(feature);
-                vm.onDeleteButton(feature.getId(), feature.layer);
-            });
-            vm.interactions.select.getFeatures().clear();
-            setSelections(null, []);
-        }
+        var collection = new ol.Collection();
+        collection.push(getActiveFeature());
+        collection.forEach(function (feature) {
+            if (vm.drawingLayer.layer.getSource().getFeatures().indexOf(feature) != -1)
+                vm.drawingLayer.layer.getSource().removeFeature(feature);
+            vm.onDeleteButton(feature.getId(), feature.layer);
+        });
+        setSelections(null, []);
     }
     function addInteractions() {
         for (var key in vm.interactions) {
@@ -722,6 +713,9 @@ function mapService($http,
                 case "modify":
                     setModifyButton();
                     break;
+                case "delete":
+                    deleteSelectedFeature();
+                    break;
                 default:
                     setDrawButton(button);
             }
@@ -915,5 +909,10 @@ function mapService($http,
     function getResolution() {
         return vm.map.getView().getResolution();
     }
-   
+    function createGuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
 }
