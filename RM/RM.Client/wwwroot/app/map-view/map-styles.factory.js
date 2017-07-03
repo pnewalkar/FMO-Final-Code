@@ -208,6 +208,8 @@ angular.module('mapView')
                 return selectedLinkStyle;
             case "roadlink":
                 return roadLinkStyle;
+            case "linestring":
+                return selectedLinkStyle;
             default:
                 return defaultStyle;
         }

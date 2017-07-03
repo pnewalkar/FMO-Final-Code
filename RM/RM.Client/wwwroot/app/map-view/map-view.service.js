@@ -44,7 +44,7 @@ function mapService($http,
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line", "accesslink","area"];
+    vm.mapButtons = ["select", "point", "line", "accesslink", "area", "modify"];
     vm.interactions = {
     };
     vm.layersForContext = [];
@@ -436,6 +436,7 @@ function mapService($http,
         if (name == "point") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "deliverypoint");
+                evt.feature.setId(createGuid())
             })
         }
 
@@ -444,6 +445,16 @@ function mapService($http,
                 evt.feature.set("type", "accesslink");
             })
         }
+
+        else if (name == "line") {
+            
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.set("type", "linestring");
+                evt.feature.setId(createGuid())
+            })
+        }
+
         else if (name == "area") {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
             vm.interactions.draw.on('drawend', function (evt) {
@@ -455,14 +466,6 @@ function mapService($http,
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
     }
-
-    function createGuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
-
 
     function setDrawInteraction(button, style) {
         var draw = null;
@@ -609,6 +612,20 @@ function mapService($http,
         });
         persistSelection();
     }
+    function setModifyButton() {
+        vm.interactions.select = new ol.interaction.Select({
+            condition: ol.events.condition.never
+        });
+        var collection = new ol.Collection();
+        collection.push(getActiveFeature());
+        vm.interactions.modify = new ol.interaction.Modify({
+            features: collection
+        });
+
+        vm.interactions.modify.on('modifyend', vm.onModify);
+
+        persistSelection();
+    }
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
             var features = vm.interactions.select.getFeatures();
@@ -700,6 +717,9 @@ function mapService($http,
             switch (button.name) {
                 case "select":
                     setSelectButton();
+                    break;
+                case "modify":
+                    setModifyButton();
                     break;
                 default:
                     setDrawButton(button);
@@ -894,4 +914,5 @@ function mapService($http,
     function getResolution() {
         return vm.map.getView().getResolution();
     }
+   
 }
