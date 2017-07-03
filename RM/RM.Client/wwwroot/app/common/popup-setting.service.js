@@ -24,7 +24,7 @@ function PopUpSettingService() {
     function routeLog(selectedUnit) {
         return {
             templateUrl: './route-log/route-log.template.html',
-            clickOutsideToClose: true,
+            clickOutsideToClose: false,
             locals: {
                 items: selectedUnit
             },
@@ -47,7 +47,7 @@ function PopUpSettingService() {
     function printMap() {
         return {
             templateUrl: './print-map/print-map.template.html',
-            clickOutsideToClose: true,
+            clickOutsideToClose: false,
             controller: 'PrintMapController as vm'
         };
     }
