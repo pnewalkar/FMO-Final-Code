@@ -44,7 +44,7 @@ function mapService($http,
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line", "accesslink"];
+    vm.mapButtons = ["select", "point", "line", "accesslink","area"];
     vm.interactions = {
     };
     vm.layersForContext = [];
@@ -417,6 +417,9 @@ function mapService($http,
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
+        if (button.name == "area") {
+            style.opacity = 0.4;
+        }
         vm.interactions.draw = setDrawInteraction(button, style);
         switch (button.name) {
             case "deliverypoint":
@@ -441,10 +444,26 @@ function mapService($http,
                 evt.feature.set("type", "accesslink");
             })
         }
+        else if (name == "area") {
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.setId(createGuid());
+                evt.feature.set("type", "polygon");
+            })
+        }
         else {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
     }
+
+    function createGuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+
     function setDrawInteraction(button, style) {
         var draw = null;
 

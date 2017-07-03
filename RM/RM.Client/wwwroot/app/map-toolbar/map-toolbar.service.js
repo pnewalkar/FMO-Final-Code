@@ -76,6 +76,8 @@ function mapToolbarService(
                 return CommonConstants.GeometryType.LineString;
             case CommonConstants.ButtonShapeType.accesslink:
                 return CommonConstants.GeometryType.LineString;
+            case CommonConstants.ButtonShapeType.area:
+                return CommonConstants.GeometryType.Polygon;
             default:
                 return undefined;
 

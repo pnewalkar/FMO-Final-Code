@@ -29,7 +29,8 @@
     "ACCESS_LINK": "Access Link",
     "ROAD": "Road",
     "POINT": "Point",
-    "LINE": "Line"
+    "LINE": "Line",
+    "AREA" :  "Area"
 
   },
   "VALIDATION": {
