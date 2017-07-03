@@ -30,6 +30,8 @@
     "ROAD": "Road",
     "POINT": "Point",
     "LINE": "Line",
+    "MODIFY": "Modify",
+    "DELETE": "Delete"
     "AREA" :  "Area"
 
   },

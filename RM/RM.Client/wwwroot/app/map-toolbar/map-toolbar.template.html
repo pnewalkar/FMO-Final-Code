@@ -6,6 +6,9 @@
         <i class="fa fa-map-marker pad-icon" ng-if="button === 'point'" title="{{ 'GENERAL.POINT' | translate }}"></i>
         <md-icon class="material-icons pad-icon" ng-if="button === 'line'" title="{{ 'GENERAL.LINE' | translate }}">timeline</md-icon>
         <i class="fa fa-arrows-h pad-icon" ng-if="button === 'accesslink'" title="{{ 'GENERAL.ACCESS_LINK' | translate }}"></i>
+        <i class="fa fa-pencil pad-icon" ng-if="button === 'modify'" title="{{ 'GENERAL.MODIFY' | translate }}"></i>
+        <i class="fa fa-trash pad-icon" ng-if="button === 'delete'" title="{{ 'GENERAL.DELETE' | translate }}"></i>
+        <span flex></span><span class="maptoolBarText" ng-hide="button === 'delete'">{{button}}</span>
         <i class="fa fa-square pad-icon" ng-if="button === 'area'" title="{{ 'GENERAL.AREA' | translate }}"></i>
         <span flex></span><span class=maptoolBarText>{{button}}</span>
     </md-button>
