@@ -619,6 +619,13 @@ function mapService($http,
         vm.interactions.modify = new ol.interaction.Modify({
             features: collection
         });
+        vm.interactions.modify.on('modifystart', function (feature) {
+            vm.map.getView().setCenter([feature.mapBrowserEvent.coordinate[0], feature.mapBrowserEvent.coordinate[1]]);
+        });
+
+        vm.map.on('singleclick', function (evt) {
+            getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
+        });
 
         vm.interactions.modify.on('modifyend', vm.onModify);
 
