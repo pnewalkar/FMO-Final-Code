@@ -127,7 +127,7 @@ angular.module('mapView')
             color: 'rgba(255, 255, 255, 0.5)'
         }),
         stroke: new ol.style.Stroke({
-            color: '#62a531',
+            color: '#ffcc33',
             width: 2
         }),
         image: new ol.style.Circle({
@@ -211,7 +211,7 @@ angular.module('mapView')
             case "linestring":
                 return selectedLinkStyle;
             case "polygon":
-                return selectedPolygonStyle;
+                return selectedLinkStyle;
             default:
                 return defaultStyle;
         }
