@@ -48,6 +48,25 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Fetches unit Location type  for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        [Authorize]
+        [HttpGet("Unit/{unitId}")]
+        public Guid GetUnitLocationTypeId(Guid unitId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetUnitLocationTypeId"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var unitLocationTypeId = unitLocationBusinessService.GetUnitLocationTypeId(unitId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return unitLocationTypeId;
+            }
+        }
+
+        /// <summary>
         /// Fetches Postcode sector
         /// </summary>
         /// <returns>List</returns>
