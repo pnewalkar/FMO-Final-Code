@@ -30,12 +30,13 @@
     "ROAD": "Road",
     "POINT": "Point",
     "LINE": "Line"
-
+  },
+  "UNIT_SELECTOR": {
+    "SEARCH_PLACEHOLDER":  "Filter Unit"
   },
   "VALIDATION": {
     "MINIMUM_CHARACTERS": "At least {{count}} characters are required",
     "NO_RESULT_FOUND": "No Results Found"
-
   },
   "ACCESS_LINK": {
     "TITTLE": "Access Link",
