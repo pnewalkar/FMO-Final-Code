@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Linq;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -33,10 +36,12 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <param name="searchText">The text to be searched from the entities.</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>The result set after filtering the values.</returns>
-        public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText)
+        public async Task<SearchResultDTO> FetchBasicSearchDetails(string searchText, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchBasicSearchDetails"))
             {
+                SearchResultDTO searchResultDTO = null;
+                string unitName = GetUnitNameByUnitId(userUnit);
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
@@ -52,8 +57,14 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                 var streetNames = await searchIntegrationService.FetchStreetNamesForBasicSearch(searchText);
                 var streetNetworkCount = await searchIntegrationService.GetStreetNameCount(searchText);
 
-                var searchResultDTO = MapSearchResults(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
-
+                if (string.Equals(UserUnit.CollectionUnit.GetDescription(), unitName.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    searchResultDTO = MapSearchResultsForCollectionUnit(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
+                }
+                else
+                {
+                    searchResultDTO = MapSearchResultsForDeliveryUnit(deliveryRoutes, deliveryRouteCount, postcodes, postCodeCount, deliveryPoints, deliveryPointsCount, streetNames, streetNetworkCount);
+                }
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return searchResultDTO;
             }
@@ -65,10 +76,12 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <param name="searchText">searchText as string</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>search Result Dto</returns>
-        public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText)
+        public async Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText, Guid userUnit)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchAdvanceSearchDetails"))
             {
+                SearchResultDTO searchResultDTO = null;
+                string unitName = GetUnitNameByUnitId(userUnit);
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
@@ -77,7 +90,15 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
                 var streetNames = await searchIntegrationService.FetchStreetNamesForAdvanceSearch(searchText);
                 var deliveryPoints = await searchIntegrationService.FetchDeliveryPointsForAdvanceSearch(searchText);
 
-                var searchResultDTO = MapSearchResultsForDeliveryUnit(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
+                if (string.Equals(UserUnit.CollectionUnit.GetDescription(), unitName.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    searchResultDTO = MapSearchResultsForCollectionUnit(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
+                }
+                else
+                {
+                    searchResultDTO = MapSearchResultsForDeliveryUnit(deliveryRoutes, deliveryRoutes.Count, postcodes, postcodes.Count, deliveryPoints, deliveryPoints.Count, streetNames, streetNames.Count);
+                }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return searchResultDTO;
@@ -96,7 +117,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <param name="streetNames">The list of street names</param>
         /// <param name="streetNetworkCount">The count of street names</param>
         /// <returns>The result set</returns>
-        private static SearchResultDTO MapSearchResultsForDeliveryUnit(List<DeliveryRouteDTO> deliveryRoutes, int? deliveryRouteCount, List<PostCodeDTO> postcodes, int? postCodeCount, List<DeliveryPointDTO> deliveryPoints, int? deliveryPointsCount, List<StreetNameDTO> streetNames, int? streetNetworkCount)
+        private static SearchResultDTO MapSearchResultsForDeliveryUnit(List<RouteDTO> deliveryRoutes, int? deliveryRouteCount, List<PostCodeDTO> postcodes, int? postCodeCount, List<DeliveryPointDTO> deliveryPoints, int? deliveryPointsCount, List<StreetNameDTO> streetNames, int? streetNetworkCount)
         {
             var searchResultDTO = new SearchResultDTO();
 
@@ -180,7 +201,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <param name="streetNames">The list of street names</param>
         /// <param name="streetNetworkCount">The count of street names</param>
         /// <returns>The result set</returns>
-        private static SearchResultDTO MapSearchResultsForCollectionUnit(List<DeliveryRouteDTO> deliveryRoutes, int? deliveryRouteCount, List<PostCodeDTO> postcodes, int? postCodeCount, List<DeliveryPointDTO> deliveryPoints, int? deliveryPointsCount, List<StreetNameDTO> streetNames, int? streetNetworkCount)
+        private static SearchResultDTO MapSearchResultsForCollectionUnit(List<RouteDTO> deliveryRoutes, int? deliveryRouteCount, List<PostCodeDTO> postcodes, int? postCodeCount, List<DeliveryPointDTO> deliveryPoints, int? deliveryPointsCount, List<StreetNameDTO> streetNames, int? streetNetworkCount)
         {
             var searchResultDTO = new SearchResultDTO();
 
@@ -250,6 +271,35 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
             });
 
             return searchResultDTO;
+        }
+
+        /// <summary>
+        /// Get current users Unit by passing unit ID
+        /// </summary>
+        /// <param name="userUnit"></param>
+        /// <returns></returns>
+        private string GetUnitNameByUnitId(Guid userUnit)
+        {
+            string unitName = string.Empty;
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetUnitNameByUnitId"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                List<string> categoryNames = new List<string> { ReferenceDataCategoryNames.UnitLocationType };
+
+                var referenceDataCategoryList = searchIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
+
+                var locationtypeId = searchIntegrationService.GetUnitLocationTypeId(userUnit).Result;
+
+                if (referenceDataCategoryList != null && referenceDataCategoryList.Count > 0)
+                {
+                    var referenceData = referenceDataCategoryList.SingleOrDefault().ReferenceDatas;
+                    unitName = referenceData.Where(n => n.ID == locationtypeId).SingleOrDefault().ReferenceDataValue;
+                }
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return unitName;
+            }
         }
     }
 }

@@ -45,26 +45,26 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="deliveryScenarioId">Guid deliveryScenarioID</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>List</returns>
-        public List<RouteDTO> FetchRoute(Guid operationStateId, Guid deliveryScenarioId, Guid userUnit, string UnitName)
+        public List<RouteDTO> FetchRoutes(Guid operationStateId, Guid deliveryScenarioId, Guid userUnit, string UnitName)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRoute"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchRoutes"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 List<RouteDTO> routedetails = null;
 
-                if (string.Equals("Collection Unit", UnitName.Trim(), StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(UserUnit.CollectionUnit.GetDescription(), UnitName.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
                     IEnumerable<CollectionRoute> result = DataContext.CollectionRoutes.AsNoTracking()
-                                 .Where(x => x.Scenario.Unit_GUID == userUnit && x.CollectionScenario_GUID == deliveryScenarioId &&
-                                             x.Scenario.OperationalState_GUID == operationStateId).ToList();
+                                                          .Where(x => x.Scenario.Unit_GUID == userUnit && x.CollectionScenario_GUID == deliveryScenarioId &&
+                                                           x.Scenario.OperationalState_GUID == operationStateId).ToList();
                     routedetails = GenericMapper.MapList<CollectionRoute, RouteDTO>(result.ToList());
                 }
                 else
                 {
                     IEnumerable<DeliveryRoute> result = DataContext.DeliveryRoutes.AsNoTracking()
-              .Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioId &&
-                          x.Scenario.OperationalState_GUID == operationStateId).ToList();
+                                                        .Where(x => x.Scenario.Unit_GUID == userUnit && x.DeliveryScenario_GUID == deliveryScenarioId &&
+                                                        x.Scenario.OperationalState_GUID == operationStateId).ToList();
                     routedetails = GenericMapper.MapList<DeliveryRoute, RouteDTO>(result.ToList());
                 }
 
@@ -79,26 +79,43 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid userUnit</param>
+        /// <param name="UnitName">UnitName </param>
         /// <returns>Task</returns>
-        public async Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit, string UnitName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRouteForAdvanceSearch"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                List<RouteDTO> routedetails = null;
 
-                var deliveryRoutes = await DataContext.DeliveryRoutes.AsNoTracking()
-                .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
-                            (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
-                .Select(l => new RouteDTO
+                if (string.Equals(UserUnit.CollectionUnit.GetDescription(), UnitName.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
-                    ID = l.ID,
-                    RouteName = l.RouteName,
-                    RouteNumber = l.RouteNumber
-                }).ToListAsync();
+                    routedetails = await DataContext.CollectionRoutes.AsNoTracking()
+                                  .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
+                                              (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                                  .Select(l => new RouteDTO
+                                  {
+                                      ID = l.ID,
+                                      RouteName = l.RouteName,
+                                      RouteNumber = l.RouteNumber
+                                  }).ToListAsync();
+                }
+                else
+                {
+                    routedetails = await DataContext.DeliveryRoutes.AsNoTracking()
+                                   .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
+                                               (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                                   .Select(l => new RouteDTO
+                                   {
+                                       ID = l.ID,
+                                       RouteName = l.RouteName,
+                                       RouteNumber = l.RouteNumber
+                                   }).ToListAsync();
+                }
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return deliveryRoutes;
+                return routedetails;
             }
         }
 
@@ -107,8 +124,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="userUnit">Guid userUnit</param>
+        ///  <param name="UnitName">UnitName </param>
         /// <returns>The result set of delivery route.</returns>
-        public async Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit, string UnitName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryRouteForBasicSearch"))
             {
@@ -117,7 +135,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                 int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
                 searchText = searchText ?? string.Empty;
-                var deliveryRoutesDto = await DataContext.DeliveryRoutes.AsNoTracking()
+                List<RouteDTO> routedetails = null;
+
+                if (string.Equals(UserUnit.CollectionUnit.GetDescription(), UnitName.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    routedetails = await DataContext.CollectionRoutes.AsNoTracking()
                     .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
                                 (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                     .Take(takeCount)
@@ -128,9 +150,24 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         RouteNumber = l.RouteNumber
                     })
                     .ToListAsync();
+                }
+                else
+                {
+                    routedetails = await DataContext.DeliveryRoutes.AsNoTracking()
+                    .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
+                                (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                    .Take(takeCount)
+                    .Select(l => new RouteDTO
+                    {
+                        ID = l.ID,
+                        RouteName = l.RouteName,
+                        RouteNumber = l.RouteNumber
+                    })
+                    .ToListAsync();
+                }
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return deliveryRoutesDto;
+                return routedetails;
             }
         }
 
@@ -139,8 +176,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="userUnit">Guid userUnit</param>
+        /// <param name="UnitName">UnitName </param>
         /// <returns>The total count of delivery route</returns>
-        public async Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit)
+        public async Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit, string UnitName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryRouteCount"))
             {
@@ -150,10 +188,22 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 try
                 {
                     searchText = searchText ?? string.Empty;
-                    var getDeliveryRouteCount = await DataContext.DeliveryRoutes.AsNoTracking()
+                    int getDeliveryRouteCount = 0; ;
+
+                    if (string.Equals(UserUnit.CollectionUnit.GetDescription(), UnitName.Trim(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        getDeliveryRouteCount = await DataContext.CollectionRoutes.AsNoTracking()
                         .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
                                     (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
                         .CountAsync();
+                    }
+                    else
+                    {
+                        getDeliveryRouteCount = await DataContext.DeliveryRoutes.AsNoTracking()
+                        .Where(l => (l.Scenario.Unit_GUID == userUnit) &&
+                                    (l.RouteName.StartsWith(searchText) || l.RouteNumber.StartsWith(searchText)))
+                        .CountAsync();
+                    }
 
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                     return getDeliveryRouteCount;

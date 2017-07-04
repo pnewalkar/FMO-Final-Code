@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO;
 
@@ -31,5 +32,15 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText);
 
         Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText);
+
+        /// <summary> Gets the name of the reference data categories by category. </summary> <param
+        /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
+        Task<List<ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> categoryNames);
+
+        /// <summary>
+        /// Fetches unit Location type id for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        Task<Guid> GetUnitLocationTypeId(Guid unitId);
     }
 }

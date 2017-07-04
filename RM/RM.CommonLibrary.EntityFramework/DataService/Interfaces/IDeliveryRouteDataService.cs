@@ -16,29 +16,33 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// </summary>
         /// <param name="operationStateID">operationStateID as Guid</param>
         /// <param name="deliveryScenarioID">deliveryScenarioID as Guid</param>
+        ///  <param name="UnitName">UnitName </param>
         /// <returns>DeliveryRoute DTO</returns>
-        List<RouteDTO> FetchRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit, string UnitName);
+        List<RouteDTO> FetchRoutes(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Fetch Delivery Route for Advance Search
         /// </summary>
         /// <param name="searchText">searchText as string </param>
+        ///  <param name="UnitName">UnitName </param>
         /// <returns>DeliveryRoute DTO</returns>
-        Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit);
+        Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Fetch Delivery route for Basic Search
         /// </summary>
         /// <param name="searchText">searchText as string </param>
+        ///  <param name="UnitName">UnitName </param>
         /// <returns>DeliveryRoute DTO</returns>
-        Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit);
+        Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Get the count of delivery route
         /// </summary>
         /// <param name="searchText">searchText as string </param>
+        /// <param name="UnitName">UnitName </param>
         /// <returns>The total count of delivery route</returns>
-        Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit);
+        Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Gets the delivery route details for Pdf Generation.

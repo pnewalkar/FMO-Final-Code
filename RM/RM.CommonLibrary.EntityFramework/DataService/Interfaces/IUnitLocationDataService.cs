@@ -28,6 +28,6 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// Fetches Location type id for current user
         /// </summary>
         /// <returns>Guid</returns>
-        Guid GetLocationTypeId(Guid unitId);
+        Guid GetUnitLocationTypeId(Guid unitId);
     }
 }

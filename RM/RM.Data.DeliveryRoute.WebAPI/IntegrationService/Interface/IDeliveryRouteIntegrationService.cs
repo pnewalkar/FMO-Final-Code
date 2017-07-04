@@ -20,9 +20,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
         Task<Guid> GetReferenceDataGuId(string categoryName, string itemName);
 
         /// <summary>
-        /// Fetches Location type id for current user
+        /// Fetches unit Location type id for current user
         /// </summary>
         /// <returns>Guid</returns>
-        Task<Guid> GetLocationTypeId(Guid unitId);
+        Task<Guid> GetUnitLocationTypeId(Guid unitId);
     }
 }

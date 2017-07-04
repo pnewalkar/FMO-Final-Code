@@ -9,13 +9,13 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
     public interface IDeliveryRouteBusinessService
     {
         /// <summary>
-        /// Fetch the Delivery Route by passing operationStateID and deliveryScenarioID.
+        /// Fetch the Route by passing operationStateID and deliveryScenarioID.
         /// </summary>
         /// <param name="operationStateID">Guid operationStateID</param>
         /// <param name="deliveryScenarioID">Guid deliveryScenarioID</param>
         /// <param name="userUnit">Guid</param>
         /// <returns>List</returns>
-        List<RouteDTO> FetchRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit);
+        List<RouteDTO> FetchRoutes(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit);
 
         /// <summary>
         /// Fetch the Delivery Scenario by passing the operationStateID and deliveryScenarioID.

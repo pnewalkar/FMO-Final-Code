@@ -17,7 +17,7 @@ namespace RM.CommonLibrary.EntityFramework.Entities
 
         public Guid ID { get; set; }
 
-        public Nullable<Guid> CollectionScenario_GUID { get; set; }
+        public Guid? CollectionScenario_GUID { get; set; }
 
         public virtual Scenario Scenario { get; set; }
     }

@@ -29,5 +29,6 @@
         public const string DeliveryRouteMethodTypeRmVanShared = "RM Van (Shared)";
 
         public const string UserDefined = "User Defined";
+        public const string DeliveryUnit = "Delivery Unit";
     }
 }

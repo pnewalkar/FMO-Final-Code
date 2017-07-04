@@ -69,12 +69,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         }
 
         /// <summary>
-        /// Fetches Location type id for current user
+        /// Fetches unit Location type id for current user
         /// </summary>
         /// <returns>Guid</returns>
-        public Guid GetLocationTypeId(Guid unitId)
+        public Guid GetUnitLocationTypeId(Guid unitId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetLocationTypeId"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUnitLocationTypeId"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);

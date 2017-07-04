@@ -105,21 +105,20 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService
             }
         }
 
-        public async Task<Guid> GetLocationTypeId(Guid unitId)
+        public async Task<Guid> GetUnitLocationTypeId(Guid unitId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetLocationTypeId"))
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetUnitLocationTypeId"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                Guid loactionTypeId = Guid.Empty;
                 HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "Unit/" + unitId);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
-                loactionTypeId = new Guid(result.Content.ReadAsStringAsync().Result);
+                Guid loactionTypeId = JsonConvert.DeserializeObject<Guid>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return loactionTypeId;
             }
