@@ -1,5 +1,5 @@
 angular.module('unitSelector')
-.controller('UnitSelectorController',  UnitSelectorController);
+.controller('UnitSelectorController', UnitSelectorController);
 
 UnitSelectorController.$inject = [
     'unitSelectorService',
@@ -24,18 +24,26 @@ function UnitSelectorController(unitSelectorService, $scope, licensingInfoServic
     //});
 
     function DeliveryUnit(selectedUser) {
-       // vm.selectedDeliveryUnit = vm.selectedUser;
+        // vm.selectedDeliveryUnit = vm.selectedUser;
         unitSelectorService.DeliveryUnit(selectedUser);
     }
     function BindData() {
         unitSelectorService.BindData(vm.deliveryRouteUnit).then(function (response) {
-          
+
             vm.deliveryRouteUnit = response[0].deliveryRouteUnit;
             vm.selectedUser = response[0].selectedUser;
             vm.selectedDeliveryUnit = vm.selectedUser;
             vm.isDeliveryUnitDisabled = response[0].isDeliveryUnitDisabled;
-            sessionStorage.setItem("selectedDeliveryUnit", angular.toJson((vm.selectedDeliveryUnit)))           
-            licensingInfoService.getLicensingInfo();                   
+
+            var selectdUnitDetails = {
+                "displayText": vm.selectedDeliveryUnit.displayText,
+                "ID": vm.selectedDeliveryUnit.ID,
+                "icon": vm.selectedDeliveryUnit.icon,
+                "area": vm.selectedDeliveryUnit.area,
+                "unitName": vm.selectedDeliveryUnit.unitName
+            };
+            sessionStorage.setItem("selectedDeliveryUnit", angular.toJson((selectdUnitDetails)));
+            licensingInfoService.getLicensingInfo();
         });
     }
 }
