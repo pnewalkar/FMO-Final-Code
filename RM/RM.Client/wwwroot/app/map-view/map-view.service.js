@@ -56,6 +56,7 @@ function mapService($http,
     vm.selectedDP = null;
     vm.selectedLayer = null;
     vm.isSelected = false;
+    vm.layerName = "";
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -588,11 +589,12 @@ function mapService($http,
         vm.interactions.select.on('select', function (e) {
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
-                vm.isSelected = true;
+                vm.isSelected = true;               
                     $rootScope.$emit('selectedObjectChange', { "isSelected": vm.isSelected });
                 setSelections({
                     featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
+                vm.layerName = lastLayer.getProperties().name;
                 var deliveryPointDetails = e.selected[0].getProperties();
                 coordinatesService.setCordinates(deliveryPointDetails.geometry.flatCoordinates);
                 $rootScope.state = false;
@@ -602,6 +604,7 @@ function mapService($http,
                 vm.selectedLayer = lastLayer;
             } else {
                 vm.isSelected = false;
+                vm.layerName = "";
                 $rootScope.$emit('selectedObjectChange', { "isSelected": vm.isSelected });
                 setSelections(null, []);
                 var deliveryPointDetails = null;
@@ -610,26 +613,28 @@ function mapService($http,
         });
         persistSelection();
     }
-    function setModifyButton() {
-        vm.interactions.select = new ol.interaction.Select({
-            condition: ol.events.condition.never
-        });
-        var collection = new ol.Collection();
-        collection.push(getActiveFeature());
-        vm.interactions.modify = new ol.interaction.Modify({
-            features: collection
-        });
-        vm.interactions.modify.on('modifystart', function (feature) {
-            vm.map.getView().setCenter([feature.mapBrowserEvent.coordinate[0], feature.mapBrowserEvent.coordinate[1]]);
-        });
+    function setModifyButton() {       
+            vm.interactions.select = new ol.interaction.Select({
+                condition: ol.events.condition.never
+            });
+            var collection = new ol.Collection();
+            collection.push(getActiveFeature());
+            if (vm.layerName == "Drawing") {
+            vm.interactions.modify = new ol.interaction.Modify({
+                features: collection
+            });
+            vm.interactions.modify.on('modifystart', function (feature) {
+                vm.map.getView().setCenter([feature.mapBrowserEvent.coordinate[0], feature.mapBrowserEvent.coordinate[1]]);
+            });
 
-        vm.map.on('singleclick', function (evt) {
-            getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
-        });
+            vm.map.on('singleclick', function (evt) {
+                getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
+            });
 
-        vm.interactions.modify.on('modifyend', vm.onModify);
+            vm.interactions.modify.on('modifyend', vm.onModify);
 
-        persistSelection();
+            persistSelection();
+        }
     }
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
