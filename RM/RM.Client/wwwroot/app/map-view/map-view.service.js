@@ -637,7 +637,9 @@ function mapService($http,
             
 
             vm.map.on('singleclick', function (evt) {
-                getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
+                if (vm.activeTool === "modify") {
+                    getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
+                }
             });
 
             vm.interactions.modify.on('modifyend', vm.onModify);
