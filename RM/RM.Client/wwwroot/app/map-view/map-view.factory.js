@@ -9,6 +9,7 @@ MapFactory.$inject = ['$http',
     'GlobalSettings',
     '$document',
     'layersAPIService',
+    'referencedataApiService',
     '$q',
     'stringFormatService',
 '$timeout'];
@@ -19,6 +20,7 @@ function MapFactory($http,
     GlobalSettings,
     $document,
     layersAPIService,
+    referencedataApiService,
     $q,
     stringFormatService,
         $timeout)
@@ -73,6 +75,7 @@ function MapFactory($http,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
         GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
+        GetPolygonTransparency : GetPolygonTransparency,
         LicenceInfo: LicenceInfo
     };
 
@@ -588,6 +591,14 @@ function MapFactory($http,
             deferred.reject(err);
         });
 
+        return deferred.promise;
+    }
+
+    function GetPolygonTransparency() {
+        var deferred = $q.defer();
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.Transparency.DBCategoryName).then(function (response) {
+            deferred.resolve(response.listItems);
+        });
         return deferred.promise;
     }
 }
