@@ -9,7 +9,7 @@ describe('MapToolbar: Controller', function() {
         showButton: function() {return []},
         autoSelect: function() {return []},
         getShapeForButton: function() { return []},
-        setSelectedButton:  function() { return true }
+        setSelectedButton: function () { return true }
      };
 
     beforeEach(module('mapToolbar'));
@@ -90,6 +90,12 @@ describe('MapToolbar: Controller', function() {
         ctrl.showButton('point');          
         expect(ctrl.showButton).toHaveBeenCalledWith('point');
 
+    });
+
+    it('should return toolbar buttons', function () {
+        spyOn(MockMapToolbarService, 'getMapButtons');
+        ctrl.getMapButtons();
+        expect(ctrl.mapButtons).toBeDefined();
     });
     
 });

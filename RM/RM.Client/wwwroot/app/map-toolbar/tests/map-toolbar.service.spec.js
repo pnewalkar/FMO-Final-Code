@@ -8,7 +8,7 @@ describe('MapToolbar: Service', function() {
 
     //Mock MockMapViewService properties define
     var MockMapViewService = {
-        getMapButtons: function() { return ["select", "point", "line", "accesslink"]; }
+        getMapButtons: function() { return ["select", "point", "line", "accesslink","accesslink","modify","delete"]; }
     };
 
     //Mock CommonConstants value define
@@ -43,10 +43,21 @@ describe('MapToolbar: Service', function() {
     it('should have initialize mapButtons', function(){
 
         spyOn(mapToolbarService,'getMapButtons');
-        mapToolbarService.getMapButtons();
+        mapToolbarService.getMapButtons(true);
 
         expect(mapToolbarService.getMapButtons).toHaveBeenCalled();
         expect(mapToolbarService.getMapButtons).toBeDefined();            
+
+    });
+
+    it('should have initialize mapButtons except delete', function () {
+
+        spyOn(mapToolbarService, 'getMapButtons');
+        var mapButtons =  mapToolbarService.getMapButtons(false);
+
+        expect(mapToolbarService.getMapButtons).toHaveBeenCalled();
+        expect(mapToolbarService.getMapButtons).toBeDefined();
+        expect(mapButtons).toBeArrayOfSize(6);
 
     });
 
@@ -57,8 +68,8 @@ describe('MapToolbar: Service', function() {
         expect(mapButtons).toContain('point');
         expect(mapButtons).toContain('line');
         expect(mapButtons).toContain('accesslink');
-        expect(mapButtons).toEqual(['select','point','line','accesslink']);
-        expect(mapButtons.length).toEqual(4);
+        expect(mapButtons).toEqual(["select", "point", "line", "accesslink", "accesslink", "modify", "delete"]);
+        expect(mapButtons.length).toEqual(7);
 
     });
 
