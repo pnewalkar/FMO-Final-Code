@@ -7,7 +7,7 @@ MapToolbarController.$inject = [
        'mapToolbarService',
        '$scope',
        '$rootScope'
-       
+
 ];
 
 function MapToolbarController(
@@ -20,9 +20,17 @@ function MapToolbarController(
     vm.setSelectedButton = setSelectedButton;
     vm.showButton = showButton();
     vm.selectedButton = null;
-    vm.mapButtons = mapToolbarService.getMapButtons();
+    vm.isSelected = false;
+    vm.getMapButtons = getMapButtons();
     vm.autoSelect = autoSelect();
     vm.state = $rootScope.state;
+   
+
+    $rootScope.$on('selectedObjectChange', function (event, args) {
+        vm.isSelected = args.isSelected;
+        vm.mapButtons = mapToolbarService.getMapButtons(vm.isSelected);
+        autoSelect();
+    });
 
     function setSelectedButton(button) {
         var shape = getShapeForButton(button);
@@ -52,5 +60,8 @@ function MapToolbarController(
         var shape = 'undefined';
         vm.selectedButton = 'select';
         $scope.$emit('mapToolChange', { "name": "select", "shape": shape, "enabled": true });
-    }          
+    }
+    function getMapButtons() {
+        vm.mapButtons = mapToolbarService.getMapButtons(vm.isSelected);
+    }
 }

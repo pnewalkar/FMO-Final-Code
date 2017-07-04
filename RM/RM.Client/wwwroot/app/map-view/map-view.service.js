@@ -56,6 +56,7 @@ function mapService($http,
     vm.features = null;
     vm.selectedDP = null;
     vm.selectedLayer = null;
+    vm.isSelected = false;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -402,6 +403,7 @@ function mapService($http,
             vm.onDeleteButton(feature.getId(), feature.layer);
         });
         setSelections(null, []);
+        $rootScope.$emit('selectedObjectChange', { "isSelected": false });
     }
     function addInteractions() {
         for (var key in vm.interactions) {
@@ -595,6 +597,8 @@ function mapService($http,
         vm.interactions.select.on('select', function (e) {
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
+                vm.isSelected = true;
+                    $rootScope.$emit('selectedObjectChange', { "isSelected": vm.isSelected });
                 setSelections({
                     featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
@@ -606,6 +610,8 @@ function mapService($http,
                 vm.selectedDP = e.selected[0];
                 vm.selectedLayer = lastLayer;
             } else {
+                vm.isSelected = false;
+                $rootScope.$emit('selectedObjectChange', { "isSelected": vm.isSelected });
                 setSelections(null, []);
                 var deliveryPointDetails = null;
                 showDeliveryPointDetails(deliveryPointDetails);
@@ -621,6 +627,13 @@ function mapService($http,
         collection.push(getActiveFeature());
         vm.interactions.modify = new ol.interaction.Modify({
             features: collection
+        });
+        vm.interactions.modify.on('modifystart', function (feature) {
+            vm.map.getView().setCenter([feature.mapBrowserEvent.coordinate[0], feature.mapBrowserEvent.coordinate[1]]);
+        });
+
+        vm.map.on('singleclick', function (evt) {
+            getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
         });
 
         vm.interactions.modify.on('modifyend', vm.onModify);
