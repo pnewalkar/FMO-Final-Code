@@ -324,4 +324,8 @@
     <AppCategoryName>DeliveryPointOperationalStatus</AppCategoryName>
     <DBCategoryName>Delivery Point Operational Status</DBCategoryName>
   </CategoryName>
+  <CategoryName>
+    <AppCategoryName>ObjectTransparency</AppCategoryName>
+    <DBCategoryName>Object Transparency</DBCategoryName>
+  </CategoryName>
 </ReferenceDataMapping>

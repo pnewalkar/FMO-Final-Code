@@ -51,6 +51,7 @@ function mapService($http,
     vm.activeSelection = null;
     vm.secondarySelections = [];
     vm.routeName = "";
+    vm.opacity = null;
     vm.selectionListeners = [];
     vm.features = null;
     vm.selectedDP = null;
@@ -118,6 +119,12 @@ function mapService($http,
         return mapFactory.LicenceInfo(displayText);
     }
 
+    function GetPolygonTransparency() {
+        mapFactory.GetPolygonTransparency().then(function (response) {
+            vm.opacity = parseFloat(response[0].value);
+        });
+    }
+
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
        '+x_0=400000 +y_0=-100000 +ellps=airy ' +
@@ -130,6 +137,7 @@ function mapService($http,
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
         vm.originalSize = vm.map.getSize();
+        GetPolygonTransparency();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
@@ -413,7 +421,8 @@ function mapService($http,
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
         if (button.name == "area") {
-            style.opacity = 0.4;
+            //style.opacity = 0.4;
+            style.opacity = vm.opacity;
         }
         vm.interactions.draw = setDrawInteraction(button, style);
         switch (button.name) {
@@ -623,9 +632,7 @@ function mapService($http,
             vm.interactions.modify = new ol.interaction.Modify({
                 features: collection
             });
-            vm.interactions.modify.on('modifystart', function (feature) {
-                vm.map.getView().setCenter([feature.mapBrowserEvent.coordinate[0], feature.mapBrowserEvent.coordinate[1]]);
-            });
+            
 
             vm.map.on('singleclick', function (evt) {
                 getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
