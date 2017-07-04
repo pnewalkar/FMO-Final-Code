@@ -8,7 +8,7 @@ describe('MapToolbar: Service', function() {
 
     //Mock MockMapViewService properties define
     var MockMapViewService = {
-        getMapButtons: function() { return ["select", "point", "line", "accesslink","accesslink","modify","delete"]; }
+        getMapButtons: function() { return ["select", "point", "line", "accesslink","area","modify","delete"]; }
     };
 
     //Mock CommonConstants value define
@@ -68,7 +68,7 @@ describe('MapToolbar: Service', function() {
         expect(mapButtons).toContain('point');
         expect(mapButtons).toContain('line');
         expect(mapButtons).toContain('accesslink');
-        expect(mapButtons).toEqual(["select", "point", "line", "accesslink", "accesslink", "modify", "delete"]);
+        expect(mapButtons).toEqual(["select", "point", "line", "accesslink", "area", "modify", "delete"]);
         expect(mapButtons.length).toEqual(7);
 
     });
