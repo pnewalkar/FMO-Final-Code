@@ -396,15 +396,17 @@ function mapService($http,
         return summary;
     }
     function deleteSelectedFeature() {
-        var collection = new ol.Collection();
-        collection.push(getActiveFeature());
-        collection.forEach(function (feature) {
-            if (vm.drawingLayer.layer.getSource().getFeatures().indexOf(feature) != -1)
-                vm.drawingLayer.layer.getSource().removeFeature(feature);
-            vm.onDeleteButton(feature.getId(), feature.layer);
-        });
-        setSelections(null, []);
-        $rootScope.$emit('selectedObjectChange', { "isSelected": false });
+        if (vm.layerName == "Drawing") {
+            var collection = new ol.Collection();
+            collection.push(getActiveFeature());
+            collection.forEach(function (feature) {
+                if (vm.drawingLayer.layer.getSource().getFeatures().indexOf(feature) != -1)
+                    vm.drawingLayer.layer.getSource().removeFeature(feature);
+                vm.onDeleteButton(feature.getId(), feature.layer);
+            });
+            setSelections(null, []);
+            $rootScope.$emit('selectedObjectChange', { "isSelected": false });
+        }
     }
     function addInteractions() {
         for (var key in vm.interactions) {
