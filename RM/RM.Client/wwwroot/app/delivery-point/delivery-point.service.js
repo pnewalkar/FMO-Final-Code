@@ -156,6 +156,7 @@ function deliveryPointService(
     }
 
     function UpdateDeliverypoint(positionedDeliveryPointList) {
+        var deferred = $q.defer();
         vm.positionedDeliveryPointList = positionedDeliveryPointList;
         deliveryPointAPIService.UpdateDeliverypoint(positionedDeliveryPointList[0]).then(function (result) {
             $rootScope.$broadcast('disablePrintMap', {
@@ -167,5 +168,6 @@ function deliveryPointService(
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
 
         });
+        return deferred.promise;
     }
 }

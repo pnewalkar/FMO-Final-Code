@@ -17,7 +17,7 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <returns>
         /// SearchResult DTO
         /// </returns>
-        Task<SearchResultDTO> FetchBasicSearchDetails(string searchText);
+        Task<SearchResultDTO> FetchBasicSearchDetails(string searchText, Guid userUnit);
 
         /// <summary>
         /// This method fetches data for advance search
@@ -27,6 +27,6 @@ namespace RM.Operational.SearchManager.WebAPI.BusinessService
         /// <returns>
         /// SearchResult DTO
         /// </returns>
-        Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText);
+        Task<SearchResultDTO> FetchAdvanceSearchDetails(string searchText, Guid userUnit);
     }
 }

@@ -12,33 +12,37 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
     public interface IDeliveryRouteDataService
     {
         /// <summary>
-        /// Fetch the Delivery Route.
+        /// Fetch the  Route.
         /// </summary>
         /// <param name="operationStateID">operationStateID as Guid</param>
         /// <param name="deliveryScenarioID">deliveryScenarioID as Guid</param>
+        ///  <param name="UnitName">UnitName </param>
         /// <returns>DeliveryRoute DTO</returns>
-        List<DeliveryRouteDTO> FetchDeliveryRoute(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit);
+        List<RouteDTO> FetchRoutes(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Fetch Delivery Route for Advance Search
         /// </summary>
         /// <param name="searchText">searchText as string </param>
+        ///  <param name="UnitName">UnitName </param>
         /// <returns>DeliveryRoute DTO</returns>
-        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit);
+        Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Fetch Delivery route for Basic Search
         /// </summary>
         /// <param name="searchText">searchText as string </param>
+        ///  <param name="UnitName">UnitName </param>
         /// <returns>DeliveryRoute DTO</returns>
-        Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit);
+        Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Get the count of delivery route
         /// </summary>
         /// <param name="searchText">searchText as string </param>
+        /// <param name="UnitName">UnitName </param>
         /// <returns>The total count of delivery route</returns>
-        Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit);
+        Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit, string UnitName);
 
         /// <summary>
         /// Gets the delivery route details for Pdf Generation.
@@ -49,7 +53,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// <returns>
         /// DeliveryRouteDTO
         /// </returns>
-        Task<DeliveryRouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid userUnit);
+        Task<RouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList, Guid userUnit);
 
         /// <summary>
         /// Generates the route log.
@@ -57,6 +61,6 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// <param name="deliveryRouteDto">The delivery route dto.</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>RouteLogSummaryModelDTO</returns>
-        Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto, Guid userUnit, Guid operationalObjectTypeForDp);
+        Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto, Guid userUnit, Guid operationalObjectTypeForDp);
     }
 }

@@ -63,11 +63,10 @@ function layersService(mapService,
                 changedLayer.selected = true;
         }
         refreshLayer(changedLayer.layerName);
-
     }
 
     function showUngrouped() {
-        var showGrouped = false;
+        var showGrouped = false;      
         vm.ungrouped.forEach(function (layer) {
             showGrouped = layer.selectorVisible;
         })
@@ -76,7 +75,7 @@ function layersService(mapService,
   
     function setSelectedObjectsVisibility(selectedLayer) {
         mapService.setSelectedObjectsVisibility(selectedLayer);
-        licensingInfoService.getLicensingInfo();
+        licensingInfoService.getLicensingText(selectedLayer);
     }
 
 }

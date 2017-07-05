@@ -17,7 +17,7 @@ namespace RM.Operational.RouteLog.WebAPI.Test
         private IRouteLogBusinessService testCandidate;
         private Mock<IRouteLogIntegrationService> mockRouteLogIntegrationService;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
-        private DeliveryRouteDTO deliveryRouteDto;
+        private RouteDTO deliveryRouteDto;
         private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
@@ -31,13 +31,13 @@ namespace RM.Operational.RouteLog.WebAPI.Test
         {
             mockRouteLogIntegrationService = CreateMock<IRouteLogIntegrationService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
-            deliveryRouteDto = new DeliveryRouteDTO() { };
+            deliveryRouteDto = new RouteDTO() { };
             loggingHelperMock = CreateMock<ILoggingHelper>();
             RouteLogSummaryModelDTO routeLogSummaryModelDTO = new RouteLogSummaryModelDTO() { };
 
             mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(It.IsAny<string>())).Returns("xsltFilepath");
 
-            mockRouteLogIntegrationService.Setup(x => x.GenerateRouteLog(It.IsAny<DeliveryRouteDTO>())).ReturnsAsync(routeLogSummaryModelDTO);
+            mockRouteLogIntegrationService.Setup(x => x.GenerateRouteLog(It.IsAny<RouteDTO>())).ReturnsAsync(routeLogSummaryModelDTO);
             mockRouteLogIntegrationService.Setup(x => x.GenerateRouteLogSummaryReport(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("<note><body>abc</body></note>");
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
