@@ -18,19 +18,25 @@ function MapToolbarController(
 
     var vm = this;
     vm.setSelectedButton = setSelectedButton;
-    vm.showButton = showButton();
+    vm.showButton = showButton;
     vm.selectedButton = null;
     vm.isSelected = false;
-    vm.getMapButtons = getMapButtons();
-    vm.autoSelect = autoSelect();
+    vm.getMapButtons = getMapButtons;
+    vm.autoSelect = autoSelect;
     vm.state = $rootScope.state;
-   
+    vm.initialize = initialize;
 
     $rootScope.$on('selectedObjectChange', function (event, args) {
         vm.isSelected = args.isSelected;
         vm.mapButtons = mapToolbarService.getMapButtons(vm.isSelected);
-        autoSelect();
+        vm.autoSelect();
     });
+
+    function initialize() {
+        vm.showButton();
+        vm.getMapButtons();
+        vm.autoSelect();
+    } 
 
     function setSelectedButton(button) {
         var shape = getShapeForButton(button);

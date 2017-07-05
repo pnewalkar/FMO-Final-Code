@@ -93,9 +93,13 @@ describe('MapToolbar: Controller', function() {
     });
 
     it('should return toolbar buttons', function () {
-        spyOn(MockMapToolbarService, 'getMapButtons');
+        spyOn(MockMapToolbarService, 'getMapButtons').and.callFake(function () {
+            return ["select", "point", "line", "accesslink", "area", "modify", "delete"];
+        });
         ctrl.getMapButtons();
         expect(ctrl.mapButtons).toBeDefined();
+        expect(ctrl.mapButtons).toEqual(["select", "point", "line", "accesslink", "area", "modify", "delete"]);
+        expect(ctrl.mapButtons.length).toEqual(7);
     });
     
 });
