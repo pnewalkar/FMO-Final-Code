@@ -44,7 +44,5 @@ span.closeWindow {
   cursor: default; }
 
 .inputIcon .md-text {
-    color: black;
-    text-indent: 18px;
-}
-
+  color: black;
+  text-indent: 18px; }

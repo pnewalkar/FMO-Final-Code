@@ -1,5 +1,8 @@
 {
   "GENERAL": {
+    "ERRORS": {
+      "UNKNOWN": "There was an unknown error processing your request"
+    },
     "BUTTONS": {
       "OK": "OK",
       "CANCEL": "Cancel",
@@ -30,6 +33,9 @@
     "ROAD": "Road",
     "POINT": "Point",
     "LINE": "Line"
+  },
+  "ERROR_DIALOG": {
+    "TITLE": "Unable to process request"
   },
   "UNIT_SELECTOR": {
     "SEARCH_PLACEHOLDER":  "Filter Unit"

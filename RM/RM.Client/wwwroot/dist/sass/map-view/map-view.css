@@ -15,9 +15,8 @@
 #rightPanel {
   position: absolute;
   top: 75px;
-  height: calc(100% - 1355px);
-  right: 15px;
-}
+  height: calc(100% -135px);
+  right: 15px; }
 
 .zoom-control {
   position: absolute;
@@ -25,8 +24,8 @@
   left: -50px; }
 
 .levelDanger {
-  color: red;
-  border: 1px solid red; }
+  color: #da202a;
+  border: 1px solid #da202a; }
 
 .zoom-scale {
   position: absolute;
