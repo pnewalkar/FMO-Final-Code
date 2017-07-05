@@ -45,7 +45,6 @@ map-panel {
 
 .map-panel .map-panel-content{
     @include height(calc(100% - 50px));
-    /*overflow: auto;*/
     pointer-events: auto;
 }
 
