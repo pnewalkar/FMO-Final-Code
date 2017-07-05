@@ -1,0 +1,12 @@
+@import './app/variables';
+
+.error-dialog {
+    .md-title {
+        color: $red;
+    }
+    md-dialog-content > h2::before {
+        font-family: FontAwesome;
+        content: '\f071'; 
+        margin-right: 10px;
+    }
+}
