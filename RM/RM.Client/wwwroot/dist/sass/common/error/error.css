@@ -1,0 +1,7 @@
+.error-dialog .md-title {
+  color: #da202a; }
+
+.error-dialog md-dialog-content > h2::before {
+  font-family: FontAwesome;
+  content: '\f071';
+  margin-right: 10px; }
