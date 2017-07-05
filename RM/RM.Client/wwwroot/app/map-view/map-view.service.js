@@ -148,11 +148,10 @@ function mapService($http,
         });
 
 
-        var loadFeatures = function (layerSource, response, layerName) {
+        var loadFeatures = function (layerSource, response) {
             var features = new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
             }).readFeatures(response);
-            mapFactory.LicenceInfo("", layerName, layerSource);
             layerSource.addFeatures(features);
         };
 
@@ -165,7 +164,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.deliveryPointLayerName;
-                    loadFeatures(deliveryPointsVector, response, layerName);
+                    mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
                 });
             }
         });
@@ -193,7 +192,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.accessLinkLayerName;
-                    loadFeatures(accessLinkVector, response, layerName);
+                    mapFactory.LicenceInfo("", layerName, accessLinkVector);
                 });
             }
         });
@@ -207,7 +206,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.roadLinkLayerName;
-                    loadFeatures(roadLinkVector, response, layerName);
+                    mapFactory.LicenceInfo("", layerName, roadLinkVector);
                 });
             }
         });

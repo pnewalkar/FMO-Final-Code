@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
+using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
@@ -24,6 +26,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
         private const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
         private const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
+        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
 
         #region Property Declarations
 
@@ -31,6 +34,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         private string unitManagerDataWebAPIName = string.Empty;
         private string deliveryRouteManagerDataWebAPIName = string.Empty;
         private string networkManagerDataWebAPIName = string.Empty;
+        private string referenceDataWebAPIName = string.Empty;
 
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
@@ -48,6 +52,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
             this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName).ToString() : string.Empty;
             this.deliveryRouteManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
             this.networkManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(NetworkManagerDataWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
         }
 
@@ -59,7 +64,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         /// <param name="searchText">The search text.</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns></returns>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryRouteForBasicSearch"))
             {
@@ -74,7 +79,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                List<DeliveryRouteDTO> networkLinks = JsonConvert.DeserializeObject<List<DeliveryRouteDTO>>(result.Content.ReadAsStringAsync().Result);
+                List<RouteDTO> networkLinks = JsonConvert.DeserializeObject<List<RouteDTO>>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return networkLinks;
@@ -308,7 +313,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         /// <param name="searchText">The search text.</param>
         /// <returns></returns>
         /// <exception cref="ServiceException"></exception>
-        public async Task<List<DeliveryRouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        public async Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.FetchDeliveryRouteForAdvanceSearch"))
             {
@@ -323,7 +328,7 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                List<DeliveryRouteDTO> deliveryRoutes = JsonConvert.DeserializeObject<List<DeliveryRouteDTO>>(result.Content.ReadAsStringAsync().Result);
+                List<RouteDTO> deliveryRoutes = JsonConvert.DeserializeObject<List<RouteDTO>>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return deliveryRoutes;
@@ -387,5 +392,49 @@ namespace RM.Operational.SearchManager.WebAPI.Integration
         }
 
         #endregion Advance Search
+
+        /// <summary> Gets the name of the reference data categories by category. </summary> <param
+        /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
+        public async Task<List<ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> categoryNames)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataSimpleLists"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", categoryNames);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
+                listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return listReferenceCategories;
+            }
+        }
+
+        public async Task<Guid> GetUnitLocationTypeId(Guid unitId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetUnitLocationTypeId"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "Unit/" + unitId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+                Guid loactionTypeId = JsonConvert.DeserializeObject<Guid>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return loactionTypeId;
+            }
+        }
     }
 }

@@ -75,16 +75,7 @@ function licensingInfoService($q, mapService, referencedataApiService, $rootScop
         LicensingInfo().then(function (response) {
 
             if (response!=null){
-            var result = response[0].value.split('©');
-            var result2 = '';
-            angular.forEach(result, function (value, key) {
-                if (value != "")
-                    result2 = result2 + '<p> ©' + value + '</p>';
-            });
-            if (selectedLayer === GlobalSettings.baseLayerName)
-                {
-                mapService.baseLayerLicensing();
-            }
+                mapService.baseLayerLicensing();        
             }
         });
     }

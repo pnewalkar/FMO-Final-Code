@@ -24,7 +24,7 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
         }
 
         [HttpPost("routelogs")]
-        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]DeliveryRouteDTO deliveryRouteDto)
+        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]RouteDTO deliveryRouteDto)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GenerateRouteLogSummaryReport"))
             {

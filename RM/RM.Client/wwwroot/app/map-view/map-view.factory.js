@@ -75,57 +75,40 @@ function MapFactory($http,
         locateDeliveryPoint: locateDeliveryPoint,
         GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
         LicenceInfo: LicenceInfo
-      
-    };
 
-   
+    };
 
     function LicenceInfo(displayText, layerName, layerSource) {
         var map = getMap();
-
-     
+        var layer = map.getLayers();
         if (layerName !== undefined && layerName !== GlobalSettings.baseLayerName) {
-
-            var attribution = new ol.Attribution({
-                html: ""
-            })
-            map.getLayers().getArray()[0].getSource().setAttributions(attribution);
-
-            layerSource.setAttributions(new ol.Attribution({
-                html: ""
-            }));
-
-            if (layerName === GlobalSettings.accessLinkLayerName || layerName === GlobalSettings.unitBoundaryLayerName)
-            {
-                layerSource.setAttributions(new ol.Attribution({
+            layer.forEach(function (layer) {
+                var attribution = new ol.Attribution({
                     html: ""
-                }));
-
+                });
+                layer.getSource().setAttributions(attribution);
+            });
+            if (layerName === GlobalSettings.accessLinkLayerName || layerName === GlobalSettings.unitBoundaryLayerName) {
+                layerSource.setAttributions(attribution);
             }
             else {
                 layerSource.setAttributions(new ol.Attribution({
                     html: licensingInformationAccessorService.getLicensingInformation()[0].value
                 }));
             }
-                
-            
         }
-        else {
-
-
-            if (map.getLayers().getArray()[0] !== undefined) {
-                var attribution = new ol.Attribution({
-                    html: ""
-                })
-                map.getLayers().getArray()[0].getSource().setAttributions(attribution);
-
-
+        else {           
+            if (map.getLayers().getArray()[0] !== undefined) {             
+                layer.forEach(function (layer) {
+                    var attribution = new ol.Attribution({
+                        html: ""
+                    });
+                    layer.getSource().setAttributions(attribution);
+                });
                 var attribution = new ol.Attribution({
                     html: licensingInformationAccessorService.getLicensingInformation()[0].value
                 })
                 map.getLayers().getArray()[0].getSource().setAttributions(attribution);
-
-
             }
         }
     }
@@ -163,6 +146,9 @@ function MapFactory($http,
 
         map.addControl(getCustomScaleLine());
         map.addControl(new ol.control.Attribution());
+        var licenseIcon = document.getElementsByClassName("ol-attribution");
+        var licenseButton = licenseIcon[0].getElementsByTagName('button');
+        licenseButton[0].title = '';
 
         // map.addControl(new ol.control.ScaleLine());
         //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";

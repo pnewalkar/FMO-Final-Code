@@ -215,5 +215,23 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 return fetchScenario;
             }
         }
+
+        /// <summary>
+        /// Fetches Location type id for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        public Guid GetUnitLocationTypeId(Guid unitId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetUnitLocationTypeId"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var unitLocationTypeId = unitLocationRespository.GetUnitLocationTypeId(unitId);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return unitLocationTypeId;
+            }
+        }
     }
 }
