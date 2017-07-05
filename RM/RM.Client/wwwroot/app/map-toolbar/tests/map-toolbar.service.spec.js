@@ -15,8 +15,8 @@ describe('MapToolbar: Service', function() {
     var MockCommonConstants = {
         GetSessionStorageItemType:"roleAccessData",
         EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Route: "Route", Postcode: "Postcode" },
-        ButtonShapeType: { point: "point", line: "line", accesslink: "accesslink", select: "select" },
-        GeometryType: { Point: "Point", LineString: "LineString" } ,
+        ButtonShapeType: { point: "point", line: "line", accesslink: "accesslink", select: "select", area: "area", del: "delete"},
+        GeometryType: { Point: "Point", LineString: "LineString", Polygon: "Polygon" },
         pointTypes: { DeliveryPoint: { text: "Delivery Point", value: 'deliverypoint', style: "deliverypoint" }, AcessLink: { text: "Access Link", value: 'accesslink', style: "accesslink" }, Road: { text: "Road", value: 'roadlink', style: "roadlink" }, Selected: { text: "Selected", value: '', style: "deliverypoint" } },
     };
 
@@ -52,12 +52,12 @@ describe('MapToolbar: Service', function() {
 
     it('should have initialize mapButtons except delete', function () {
 
-        spyOn(mapToolbarService, 'getMapButtons');
+        spyOn(mapToolbarService, 'getMapButtons').and.callThrough();
         var mapButtons =  mapToolbarService.getMapButtons(false);
 
         expect(mapToolbarService.getMapButtons).toHaveBeenCalled();
         expect(mapToolbarService.getMapButtons).toBeDefined();
-        expect(mapButtons).toBeArrayOfSize(6);
+        expect(mapButtons.length).toEqual(6);
 
     });
 
