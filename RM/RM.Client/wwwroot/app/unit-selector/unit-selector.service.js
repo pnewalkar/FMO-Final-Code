@@ -41,7 +41,7 @@ function unitSelectorService($q,
                                 boundingBox: value.boundingBox,
                                 unitName: value.unitName,
                                 boundingBoxCenter: value.boundingBoxCenter,
-                                unitBoundaryGeoJSONData: value.unitBoundaryGeoJSONData
+                                unitBoundryPolygon: value.unitBoundryPolygon
                             })
                         });
 
@@ -68,7 +68,7 @@ function unitSelectorService($q,
                                 boundingBox: value.boundingBox,
                                 unitName: value.unitName,
                                 boundingBoxCenter: value.boundingBoxCenter,
-                                unitBoundaryGeoJSONData: value.unitBoundaryGeoJSONData
+                                unitBoundryPolygon: value.unitBoundryPolygon
                             })
                         });
                         selectedUser = deliveryRouteUnit[0];
@@ -85,6 +85,6 @@ function unitSelectorService($q,
         }
     }
     function updateMapAfterUnitChange(selectedUnit) {
-        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter, selectedUnit.unitBoundaryGeoJSONData);
+        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter, selectedUnit.unitBoundryPolygon);
     }
 }
