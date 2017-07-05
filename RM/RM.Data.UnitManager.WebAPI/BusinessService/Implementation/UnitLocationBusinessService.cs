@@ -90,8 +90,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                     unitLocationDTO.BoundingBoxCenter = new List<double> { unitBoundary.STCentroid().STPointN(1).STX.Value, unitBoundary.STCentroid().STPointN(1).STY.Value };
 
                     unitLocationDTO.BoundingBox = new List<double> { unitBoundary.STPointN(1).STX.Value, unitBoundary.STPointN(1).STY.Value, unitBoundary.STPointN(3).STX.Value, unitBoundary.STPointN(3).STY.Value };
-
-                    unitLocationDTO.UnitBoundaryGeoJSONData = GeUnitBoundaryJsonData(unitLocationDTO);
                 }
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
@@ -219,83 +217,21 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
-        /// Gets the boundary for an unit.
+        /// Fetches Location type id for current user
         /// </summary>
-        /// <param name="unitLocationDTO">The <see cref="UnitLocationDTO"/>.</param>
-        /// <returns>Json object containing boundary.</returns>
-        private string GeUnitBoundaryJsonData(UnitLocationDTO unitLocationDTO)
+        /// <returns>Guid</returns>
+        public Guid GetUnitLocationTypeId(Guid unitId)
         {
-            string jsonData = string.Empty;
-            if (unitLocationDTO != null)
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetUnitLocationTypeId"))
             {
-                var geoJson = new GeoJson
-                {
-                    features = new List<Feature>()
-                };
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                SqlGeometry sqlGeo = null;
+                var unitLocationTypeId = unitLocationRespository.GetUnitLocationTypeId(unitId);
 
-                Geometry geometry = new Geometry();
-
-                var resultCoordinates = unitLocationDTO.UnitBoundryPolygon;
-
-                geometry.coordinates = new object();
-
-                if (unitLocationDTO.UnitBoundryPolygon.SpatialTypeName == OpenGisGeometryType.Polygon.ToString())
-                {
-                    geometry.type = OpenGisGeometryType.Polygon.ToString();
-
-                    sqlGeo = SqlGeometry.STPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
-                    List<List<double[]>> listCords = new List<List<double[]>>();
-                    List<double[]> cords = new List<double[]>();
-
-                    for (int pt = 1; pt <= sqlGeo.STNumPoints().Value; pt++)
-                    {
-                        double[] coordinates = new double[] { sqlGeo.STPointN(pt).STX.Value, sqlGeo.STPointN(pt).STY.Value };
-                        cords.Add(coordinates);
-                    }
-
-                    listCords.Add(cords);
-
-                    geometry.coordinates = listCords;
-                }
-                else if (unitLocationDTO.UnitBoundryPolygon.SpatialTypeName == OpenGisGeometryType.MultiPolygon.ToString())
-                {
-                    geometry.type = OpenGisGeometryType.MultiPolygon.ToString();
-
-                    sqlGeo = SqlGeometry.STMPolyFromWKB(new SqlBytes(resultCoordinates.AsBinary()), BNGCOORDINATESYSTEM).MakeValid();
-                    List<List<List<double[]>>> listCords = new List<List<List<double[]>>>();
-
-                    List<List<double[]>> cords = new List<List<double[]>>();
-                    for (int i = 1; i <= sqlGeo.STNumGeometries(); i++)
-                    {
-                        List<double[]> cordsPolygon = new List<double[]>();
-                        for (int pt = 1; pt <= sqlGeo.STGeometryN(i).STNumPoints().Value; pt++)
-                        {
-                            double[] coordinates = new double[] { sqlGeo.STGeometryN(i).STPointN(pt).STX.Value, sqlGeo.STGeometryN(i).STPointN(pt).STY.Value };
-                            cordsPolygon.Add(coordinates);
-                        }
-
-                        cords.Add(cordsPolygon);
-                    }
-
-                    listCords.Add(cords);
-
-                    geometry.coordinates = listCords;
-                }
-
-                var feature = new Feature
-                {
-                    id = unitLocationDTO.ID.ToString(),
-                    geometry = geometry
-                };
-
-                geoJson.features.Add(feature);
-
-                jsonData = JsonConvert.SerializeObject(geoJson);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return unitLocationTypeId;
             }
-
-            return jsonData;
         }
     }
 }

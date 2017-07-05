@@ -26,5 +26,5 @@ md-list-item, .version {
 .sideList .md-button {
   min-height: 48px; }
 
-.disableText  {
-  color : grey;}
+.disableText .md-list-item {
+  color: grey; }

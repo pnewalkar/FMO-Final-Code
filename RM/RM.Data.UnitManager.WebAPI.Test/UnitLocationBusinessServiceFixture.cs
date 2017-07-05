@@ -33,7 +33,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.NotNull(expectedDeliveryUnitListResult);
             Assert.NotNull(expectedDeliveryUnitListResult[0].BoundingBox);
             Assert.NotNull(expectedDeliveryUnitListResult[0].BoundingBoxCenter);
-            Assert.NotNull(expectedDeliveryUnitListResult[0].UnitBoundaryGeoJSONData);
+            Assert.NotNull(expectedDeliveryUnitListResult[0].UnitBoundryPolygon);
             Assert.AreEqual(expectedDeliveryUnitListResult, actualDeliveryUnitListForUserResult);
         }
 

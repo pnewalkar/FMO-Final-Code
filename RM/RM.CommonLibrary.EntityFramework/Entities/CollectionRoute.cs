@@ -16,5 +16,9 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         public string RouteNumber { get; set; }
 
         public Guid ID { get; set; }
+
+        public Guid? CollectionScenario_GUID { get; set; }
+
+        public virtual Scenario Scenario { get; set; }
     }
 }

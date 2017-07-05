@@ -11,7 +11,7 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         /// </summary>
         /// <param name="deliveryRouteDto">deliveryRouteDto</param>
         /// <returns>deliveryRouteDto</returns>
-        Task<RouteLogSummaryModelDTO> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto);
+        Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto);
 
         /// <summary>
         /// Method to generate pdf
