@@ -81,6 +81,7 @@ namespace RM.DataServices.Tests.DataService
             mockRMDBContext = CreateMock<RMDBContext>();
             mockRMDBContext.Setup(x => x.Set<PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockRMDBContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
+            mockRMDBContext.Setup(c => c.PostalAddresses.AsNoTracking()).Returns(mockPostalAddressDBSet.Object);
             mockReferenceDataCategoryDataService = CreateMock<IReferenceDataCategoryDataService>();
             mockloggingHelper = CreateMock<ILoggingHelper>();
 
