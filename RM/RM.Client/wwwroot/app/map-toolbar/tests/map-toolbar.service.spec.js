@@ -51,12 +51,12 @@ describe('MapToolbar: Service', function() {
     });
 
     it('should have initialize mapButtons except delete', function () {
-
-        spyOn(mapToolbarService, 'getMapButtons').and.callThrough();
+        spyOn(mapService, 'getMapButtons').and.callFake(function () {
+            return ["select", "point", "line", "accesslink", "area", "modify","delete"]});
         var mapButtons =  mapToolbarService.getMapButtons(false);
 
-        expect(mapToolbarService.getMapButtons).toHaveBeenCalled();
-        expect(mapToolbarService.getMapButtons).toBeDefined();
+        expect(mapService.getMapButtons).toHaveBeenCalled();
+        expect(mapButtons).toBeDefined();
         expect(mapButtons.length).toEqual(6);
 
     });

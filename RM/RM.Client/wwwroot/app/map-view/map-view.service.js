@@ -139,7 +139,7 @@ function mapService($http,
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
         vm.originalSize = vm.map.getSize();
-        vm.GetPolygonTransparency();
+        GetPolygonTransparency();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
