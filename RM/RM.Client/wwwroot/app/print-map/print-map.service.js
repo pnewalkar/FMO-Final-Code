@@ -156,21 +156,67 @@ function printMapService(
     }
 
     function generateMapPDF(printMapDPI, size, imageWidth, imageHeight, resolution, printOptions) {
-        var map = mapFactory.getMap();
+        var counter = 0;
+        var mapSize = calculateMapSize(size, imageWidth, imageHeight, printMapDPI);
+        var imageExported = false;
         var scaleline = new ol.control.ScaleLine();
+        var map = mapFactory.getMap();
+
+        var baseLayer = mapFactory.getLayer(GlobalSettings.baseLayerName);
+        var baseLayerSource = baseLayer.layer.getSource();
         map.addControl(scaleline);
+
+        baseLayerSource.on('tileloadstart', function () {
+            counter++;
+        });
+
+        baseLayerSource.on('tileloadend', function () {
+            counter--;
+            if (counter === 0) {
+                $timeout(function () {
+                    if (counter === 0 && !imageExported) {
+                        imageExported = true;
+                        captureImage(printOptions, resolution, map, scaleline);
+                    }
+                }, 1000);
+            }
+        });
+
+        map.setSize(mapSize);
+
+        if (counter === 0) {
+            $timeout(function () {
+                if (counter === 0 && !imageExported) {
+                    imageExported = true;
+                    captureImage(printOptions, resolution, map, scaleline);
+                }
+            }, 1000);
+        }
+    }
+
+    function calculateMapSize(size, imageWidth, imageHeight, printMapDPI) {
         var imageWidthmm = getMapImageWidth(size, imageWidth);
         var imageHeightmm = getMapImageHeight(size, imageHeight);
         var mapWidth = getMapWidth(imageWidthmm, printMapDPI);
         var mapHeight = getMapHeight(imageHeightmm, printMapDPI);
+        var mapCanvas = document.getElementsByTagName('canvas')[0];
+        var mapSize = [];
 
-        $timeout(captureImage, 3000, true, printOptions, resolution, map, scaleline, mapWidth, mapHeight);
+        var pageSizeAspectRatio = parseFloat(mapWidth / mapHeight).toFixed(2);
+        var mapAspectRatio = parseFloat(mapCanvas.width / mapCanvas.height).toFixed(2);
+
+        if (pageSizeAspectRatio > mapAspectRatio) {
+            mapSize.push(Math.round(mapCanvas.height * pageSizeAspectRatio));
+            mapSize.push(mapCanvas.height);
+        }
+        else {
+            mapSize.push(mapCanvas.width);
+            mapSize.push(Math.round(mapCanvas.width / pageSizeAspectRatio));
+        }
+        return mapSize;
     }
 
-    function captureImage(printOptions, resolution, map, scaleline, mapWidth, mapHeight) {
-        var mapControl = document.getElementById('map');
-        mapControl.style.height = mapHeight + "px";
-        mapControl.style.width = mapWidth + "px";
+    function captureImage(printOptions, resolution, map, scaleline) {
         mapService.composeMap();
 
         var printMapDto = {
@@ -182,7 +228,7 @@ function printMapService(
             "EncodedString": $rootScope.canvas.toDataURL('image/png'),
             "License": licensingInformationAccessorService.getLicensingInformation()[0].value
         };
-        mapControl.removeAttribute('style');
+        mapService.setOriginalSize();
         map.removeControl(scaleline);
         mapService.refreshLayers();
         printMap(printMapDto).then(function (response) {
