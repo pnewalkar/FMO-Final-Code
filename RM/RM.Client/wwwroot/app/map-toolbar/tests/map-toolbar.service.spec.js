@@ -107,8 +107,23 @@ describe('MapToolbar: Service', function() {
         expect(shape).toBe('LineString');
     });
 
+    it('should return Polygon for area button', function () {
+        var shape = mapToolbarService.getShapeForButton('area');
+        expect(shape).toBe('Polygon');
+    });
+
     it('Should be showButton return true', function(){
         var myVal = mapToolbarService.showButton('select');
+        expect(myVal).toBe(true);
+    });
+
+    it('showButton should return true for modify', function () {
+        var myVal = mapToolbarService.showButton('modify');
+        expect(myVal).toBe(true);
+    });
+
+    it('showButton should return true for delete', function () {
+        var myVal = mapToolbarService.showButton('delete');
         expect(myVal).toBe(true);
     });
 });
