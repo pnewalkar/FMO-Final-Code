@@ -112,7 +112,8 @@ function mapService($http,
         composeMap: composeMap,
         getResolution: getResolution,
         setOriginalSize: setOriginalSize,
-        LicenceInfo: LicenceInfo
+        LicenceInfo: LicenceInfo,
+        GetPolygonTransparency: GetPolygonTransparency
     }
 
     function LicenceInfo(displayText) {
@@ -137,7 +138,7 @@ function mapService($http,
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
         vm.originalSize = vm.map.getSize();
-        GetPolygonTransparency();
+        vm.GetPolygonTransparency();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
