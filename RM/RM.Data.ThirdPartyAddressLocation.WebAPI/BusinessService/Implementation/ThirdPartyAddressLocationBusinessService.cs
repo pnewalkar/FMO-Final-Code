@@ -134,10 +134,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
 
                                 // Check if a notification exists for the UDPRN.
-                                if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION))
+                                if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
                                 {
                                     // Delete the notification if it exists.
-                                    await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION);
+                                    await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION);
                                 }
                             }
                             else
@@ -167,10 +167,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                     await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
 
                                     // Check if the notification exists for the given UDPRN.
-                                    if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION))
+                                    if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
                                     {
                                         // Delete the notification if it exists.
-                                        await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, ThirdPartyAddressLocationConstants.USRACTION);
+                                        await thirdPartyAddressLocationIntegrationService.DeleteNotificationbyUDPRNAndAction(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION);
                                     }
                                 }
                                 else
@@ -284,7 +284,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// <returns>returns concatenated value of address field</returns>
         private string AddressFields(PostalAddressDTO objPostalAddress)
         {
-            return ThirdPartyAddressLocationConstants.PAFTaskBodyPreText +
+            return ThirdPartyAddressLocationConstants.USRNOTIFICATIONBODYPREFIX +
                         objPostalAddress.OrganisationName + ThirdPartyAddressLocationConstants.Comma +
                         objPostalAddress.DepartmentName + ThirdPartyAddressLocationConstants.Comma +
                         objPostalAddress.BuildingName + ThirdPartyAddressLocationConstants.Comma +

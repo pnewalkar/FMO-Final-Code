@@ -101,7 +101,7 @@
         {
             SetUpdataWithDeliverypoints();
             List<int> lstUDPRNS = new List<int>() { 158623, 85963 };
-            var result = testCandidate.UpdateAddress(dtoPostalAddresses, "abc", new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
+            var result = testCandidate.UpdateAddress(dtoPostalAddresses, "abc", new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"), true);
             mockFmoDbContext.Verify(n => n.SaveChangesAsync(), Times.Once);
             Assert.NotNull(result);
             Assert.IsTrue(result.Result);
