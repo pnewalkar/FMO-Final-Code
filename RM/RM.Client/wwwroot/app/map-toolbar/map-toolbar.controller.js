@@ -25,7 +25,7 @@ function MapToolbarController(
     vm.autoSelect = autoSelect;
     vm.state = $rootScope.state;
     vm.initialize = initialize;
-
+    vm.initialize();
     $rootScope.$on('selectedObjectChange', function (event, args) {
         vm.isSelected = args.isSelected;
         vm.mapButtons = mapToolbarService.getMapButtons(vm.isSelected);
