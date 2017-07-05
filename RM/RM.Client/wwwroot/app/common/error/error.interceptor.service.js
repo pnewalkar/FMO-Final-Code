@@ -10,7 +10,7 @@ function errorInterceptorService($rootScope, $q, $translate) {
     }
 
     function error(rejection) {
-        var message = $translate.instant('GENERAL.ERROR.UNKNOWN');
+        var message = $translate.instant('GENERAL.ERRORS.UNKNOWN');
         
         if (rejection.data && rejection.data.message) {
             message = rejection.data.message;
