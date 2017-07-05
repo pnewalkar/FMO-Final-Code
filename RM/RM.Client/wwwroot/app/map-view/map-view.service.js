@@ -659,7 +659,7 @@ function mapService($http,
             
 
             vm.map.on('singleclick', function (evt) {
-                if (vm.activeTool === "modify") {
+                if (vm.activeTool === "modify" && getActiveFeature().getProperties().type === "deliverypoint") {
                     getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
                 }
             });
