@@ -70,14 +70,14 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void TestFetchDeliveryRoute()
         {
-            var actualResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryScenarioID, deliveryUnitID);
+            var actualResult = testCandidate.FetchRoutes(operationalStateID, deliveryScenarioID, deliveryUnitID, "Delivery Unit");
             Assert.IsNotNull(actualResult);
         }
 
         [Test]
         public async Task TestFetchDeliveryRouteForBasicSearchValid()
         {
-            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("test", deliveryUnitID);
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("test", deliveryUnitID, "Delivery Unit");
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -85,7 +85,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public async Task TestFetchDeliveryRouteForBasicSearchInvalid()
         {
-            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("invalid_testsearch", invalidId);
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch("invalid_testsearch", invalidId, "Delivery Unit");
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 0);
         }
@@ -93,7 +93,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public async Task TestFetchDeliveryRouteForBasicSearchNull()
         {
-            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch(null, deliveryUnitID);
+            var actualResult = await testCandidate.FetchDeliveryRouteForBasicSearch(null, deliveryUnitID, "Delivery Unit");
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult.Count == 5);
         }
@@ -101,7 +101,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public async Task TestGetDeliveryRouteCountValid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryRouteCount("testsearch", deliveryUnitID);
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount("testsearch", deliveryUnitID, "Delivery Unit");
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }
@@ -109,7 +109,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public async Task TestGetDeliveryRouteCountInvalid()
         {
-            var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch", invalidId);
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount("invalid_testsearch", invalidId, "Delivery Unit");
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 0);
         }
@@ -117,7 +117,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public async Task TestGetDeliveryRouteCountNull()
         {
-            var actualResultCount = await testCandidate.GetDeliveryRouteCount(null, deliveryUnitID);
+            var actualResultCount = await testCandidate.GetDeliveryRouteCount(null, deliveryUnitID, "Delivery Unit");
             Assert.IsNotNull(actualResultCount);
             Assert.IsTrue(actualResultCount == 7);
         }

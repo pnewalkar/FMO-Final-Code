@@ -113,6 +113,7 @@ function mapService($http,
         getResolution: getResolution,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
+        baseLayerLicensing: baseLayerLicensing,
         GetPolygonTransparency: GetPolygonTransparency
     }
 
@@ -157,6 +158,7 @@ function mapService($http,
             })
         });
 
+
         var loadFeatures = function (layerSource, response) {
             var features = new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
@@ -172,7 +174,8 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
-                    loadFeatures(deliveryPointsVector, response);
+                    var layerName = GlobalSettings.deliveryPointLayerName;
+                    mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
                 });
             }
         });
@@ -199,7 +202,8 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
-                    loadFeatures(accessLinkVector, response);
+                    var layerName = GlobalSettings.accessLinkLayerName;
+                    mapFactory.LicenceInfo("", layerName, accessLinkVector);
                 });
             }
         });
@@ -212,8 +216,21 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
-                    loadFeatures(roadLinkVector, response);
+                    var layerName = GlobalSettings.roadLinkLayerName;
+                    mapFactory.LicenceInfo("", layerName, roadLinkVector);
                 });
+            }
+        });
+
+
+        var unitBoundaryVector = new ol.source.Vector({
+            format: new ol.format.GeoJSON({
+                defaultDataProjection: 'EPSG:27700'
+
+            }),
+            loader: function (extent) {
+                var layerName = GlobalSettings.unitBoundaryLayerName;
+                mapFactory.LicenceInfo("", layerName, unitBoundaryVector);
             }
         });
 
@@ -234,7 +251,7 @@ function mapService($http,
         });
 
         var unitBoundaryLayer = new ol.layer.Vector({
-            source: new ol.source.Vector({})
+            source: unitBoundaryVector
         });
 
         var roadsSelector = new MapFactory.LayerSelector();
@@ -306,6 +323,10 @@ function mapService($http,
 
         vm.showRoadPanel = false;
     }
+
+    function baseLayerLicensing() {
+        mapFactory.LicenceInfo("Base Layers", "Base Layer", null);
+    }
     function initialiseMiniMap() {
         mapFactory.initialiseMiniMap();
         vm.miniMap = mapFactory.getMiniMap();
@@ -372,11 +393,11 @@ function mapService($http,
             callback(selectedFeatures);
         })
     }
-    function refreshLayers() {
+    function refreshLayers() { 
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
-            layer.layer.changed();
-        });
+            layer.layer.changed();          
+        });        
         vm.layerSummary = getLayerSummary();
     }
     function deleteAccessLinkFeature(feature) {

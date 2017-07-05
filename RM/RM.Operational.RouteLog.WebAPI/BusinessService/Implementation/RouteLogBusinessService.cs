@@ -41,7 +41,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="deliveryRouteDto">deliveryRouteDto</param>
         /// <returns>deliveryRouteDto</returns>
-        public async Task<string> GenerateRouteLog(DeliveryRouteDTO deliveryRouteDto)
+        public async Task<string> GenerateRouteLog(RouteDTO deliveryRouteDto)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateRouteLog"))
             {
@@ -186,7 +186,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             data = GetSectionColumnData(2, routeLogSummaryModelDTO);
-            table = CreateTableWithFixedRowsColumns(2, data, doc);
+            table = CreateTableWithFixedRowsColumns(2, data, doc, true);
             sectionColumn.AppendChild(table);
             section.AppendChild(sectionColumn);
 
@@ -196,7 +196,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             paragraph.InnerText = RouteLogConstants.RouteSummaryAlias;
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             data = GetSectionColumnData(3, routeLogSummaryModelDTO);
-            table = CreateTableWithFixedRowsColumns(2, data, doc);
+            table = CreateTableWithFixedRowsColumns(2, data, doc, true);
             sectionColumn.AppendChild(table);
             sectionColumn.AppendChild(paragraph);
             section.AppendChild(sectionColumn);
@@ -297,7 +297,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 var item = data.ElementAt(i);
                 row = doc.CreateElement(RouteLogConstants.Row);
 
-                if (i % 2 == 0)
+                if (i % 2 != 0)
                 {
                     row.SetAttribute(RouteLogConstants.Shade, "true");
                 }

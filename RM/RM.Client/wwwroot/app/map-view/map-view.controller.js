@@ -26,7 +26,8 @@ function MapController($scope,
     vm.onEnterKeypress = onEnterKeypress;
 
     $rootScope.$on('LicensingInfoText', function (event, args) {
-        mapService.LicenceInfo(args.displayText);
+        //mapService.LicenceInfo(args.displayText);
+        mapService.baseLayerLicensing();
     });
 
     $scope.$on('refreshLayers', mapService.refreshLayers);
@@ -59,7 +60,7 @@ function MapController($scope,
     mapService.addSelectionListener(selectFeatures);
 
     function initialise() {
-        mapService.initialise();
+        mapService.initialise();   
     }
     function initialiseMiniMap() {
         mapService.initialiseMiniMap();

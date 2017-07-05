@@ -43,7 +43,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="bbox">bbox as string</param>
         /// <returns>Json Result of Delivery Points</returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
         [Route("deliverypoints")]
         [HttpGet]
         public JsonResult GetDeliveryPoints(string bbox)

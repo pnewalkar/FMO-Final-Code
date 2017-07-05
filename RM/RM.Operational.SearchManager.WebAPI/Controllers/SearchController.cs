@@ -42,7 +42,7 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var unitGuid = this.CurrentUserUnit;
-                    return await searchBussinessService.FetchBasicSearchDetails(searchText);
+                    return await searchBussinessService.FetchBasicSearchDetails(searchText, this.CurrentUserUnit);
                 }
                 catch (AggregateException ae)
                 {
@@ -77,7 +77,7 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var unitGuid = this.CurrentUserUnit;
-                    return await searchBussinessService.FetchAdvanceSearchDetails(searchText);
+                    return await searchBussinessService.FetchAdvanceSearchDetails(searchText, this.CurrentUserUnit);
                 }
                 catch (AggregateException ae)
                 {

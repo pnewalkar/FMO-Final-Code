@@ -22,15 +22,16 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         private IDeliveryRouteBusinessService testCandidate;
         private Mock<IDeliveryRouteIntegrationService> mockDeliveryRouteIntegrationService;
         private Mock<IBlockSequenceDataService> mockBlockSequenceDataService;
-        private List<DeliveryRouteDTO> actualDeliveryRouteResult = null;
+        private List<RouteDTO> actualDeliveryRouteResult = null;
         private List<ReferenceDataDTO> actualReferenceDataCategoryResult = null;
         private List<ScenarioDTO> actualScenarioResult = null;
         private Mock<ILoggingHelper> mockLoggingHelper;
 
         private Guid deliveryUnitID = System.Guid.NewGuid();
+        private Guid unitLocationTypeId = new Guid("97FE320A-AFEE-4E68-980D-3A70F418E46D");
         private Guid operationalStateID = System.Guid.NewGuid();
         private Guid deliveryScenarioID = System.Guid.NewGuid();
-        private DeliveryRouteDTO deliveryRouteDto;
+        private RouteDTO deliveryRouteDto;
         private List<ReferenceDataCategoryDTO> referenceDataCategoryDTOList;
 
         [Test]
@@ -45,7 +46,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public void Test_FetchDeliveryRoute()
         {
-            List<DeliveryRouteDTO> expectedDeliveryRouteResult = testCandidate.FetchDeliveryRoute(operationalStateID, deliveryScenarioID, deliveryUnitID);
+            List<RouteDTO> expectedDeliveryRouteResult = testCandidate.FetchRoutes(operationalStateID, deliveryScenarioID, deliveryUnitID);
             Assert.NotNull(expectedDeliveryRouteResult);
             Assert.NotNull(actualDeliveryRouteResult);
             Assert.AreEqual(expectedDeliveryRouteResult, actualDeliveryRouteResult);
@@ -63,7 +64,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public void Test_FetchDeliveryRouteForBasicSearch()
         {
-            mockDeliveryRouteDataService.Setup(n => n.FetchDeliveryRouteForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<DeliveryRouteDTO>() { });
+            mockDeliveryRouteDataService.Setup(n => n.FetchDeliveryRouteForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Unit")).ReturnsAsync(new List<RouteDTO>() { });
             var expectedDeliveryRouteResult = testCandidate.FetchDeliveryRouteForBasicSearch("abc", Guid.NewGuid());
             Assert.NotNull(expectedDeliveryRouteResult);
         }
@@ -71,7 +72,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public void Test_GetDeliveryRouteCount()
         {
-            mockDeliveryRouteDataService.Setup(n => n.GetDeliveryRouteCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
+            mockDeliveryRouteDataService.Setup(n => n.GetDeliveryRouteCount(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Unit")).ReturnsAsync(5);
             var actualResult = testCandidate.GetDeliveryRouteCount("abc", Guid.NewGuid());
             Assert.NotNull(actualResult);
             Assert.AreEqual(actualResult.Result, 5);
@@ -80,7 +81,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public void Test_FetchDeliveryRouteForAdvanceSearch()
         {
-            mockDeliveryRouteDataService.Setup(n => n.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<DeliveryRouteDTO>() { });
+            mockDeliveryRouteDataService.Setup(n => n.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Unit")).ReturnsAsync(new List<RouteDTO>() { });
             var actualResult = testCandidate.FetchDeliveryRouteForAdvanceSearch("abc", Guid.NewGuid());
             Assert.NotNull(actualResult);
         }
@@ -89,7 +90,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         public void Test_GenerateRouteLog()
         {
             mockDeliveryRouteIntegrationService.Setup(n => n.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid());
-            mockDeliveryRouteDataService.Setup(n => n.GenerateRouteLog(It.IsAny<DeliveryRouteDTO>(), It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(new RouteLogSummaryModelDTO() { });
+            mockDeliveryRouteDataService.Setup(n => n.GenerateRouteLog(It.IsAny<RouteDTO>(), It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(new RouteLogSummaryModelDTO() { });
             var expectedDeliveryRouteResult = testCandidate.GenerateRouteLog(deliveryRouteDto, Guid.NewGuid());
             Assert.NotNull(actualDeliveryRouteResult);
         }
@@ -107,7 +108,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public void TestGenerateRouteLog()
         {
-            DeliveryRouteDTO deliveryRouteDTO = new DeliveryRouteDTO() { DeliveryRouteBarcode = "D0001234", ID = Guid.NewGuid(), DeliveryScenario_Id = 1, ExternalId = 1, OperationalStatus_Id = 1, RouteMethodType_Id = 1, RouteName = "RouteOneTwothree", RouteNumber = "R004341566" };
+            RouteDTO deliveryRouteDTO = new RouteDTO() { DeliveryRouteBarcode = "D0001234", ID = Guid.NewGuid(), DeliveryScenario_Id = 1, ExternalId = 1, OperationalStatus_Id = 1, RouteMethodType_Id = 1, RouteName = "RouteOneTwothree", RouteNumber = "R004341566" };
             var unitGuid = Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
             var expectedDeliveryRouteResult = testCandidate.GenerateRouteLog(deliveryRouteDTO, unitGuid);
             Assert.NotNull(expectedDeliveryRouteResult);
@@ -140,24 +141,31 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
                             ReferenceDataName = null,
                             ReferenceDataValue = ReferenceDataValues.OperationalObjectTypeDP,
                             ID = Guid.Parse("4DBA7B39-D23E-493A-9B8F-B94D181A082F")
+                        },
+                         new ReferenceDataDTO()
+                        {
+                            ReferenceDataName = null,
+                            ReferenceDataValue = ReferenceDataValues.DeliveryUnit,
+                            ID = unitLocationTypeId
                         }
                     }
                 }
             };
 
-            deliveryRouteDto = new DeliveryRouteDTO() { };
+            deliveryRouteDto = new RouteDTO() { };
 
-            actualDeliveryRouteResult = new List<DeliveryRouteDTO>() { new DeliveryRouteDTO() { DeliveryRouteBarcode = "D0001", ID = Guid.NewGuid(), DeliveryScenario_Id = 1, ExternalId = 1, OperationalStatus_Id = 1, RouteMethodType_Id = 1, RouteName = "RouteOne", RouteNumber = "R004341" } };
+            actualDeliveryRouteResult = new List<RouteDTO>() { new RouteDTO() { DeliveryRouteBarcode = "D0001", ID = Guid.NewGuid(), DeliveryScenario_Id = 1, ExternalId = 1, OperationalStatus_Id = 1, RouteMethodType_Id = 1, RouteName = "RouteOne", RouteNumber = "R004341" } };
             actualReferenceDataCategoryResult = new List<ReferenceDataDTO>() { new ReferenceDataDTO() { DataDescription = "Live", DisplayText = "Live", ReferenceDataName = "Live" } };
             actualScenarioResult = new List<ScenarioDTO>() { new ScenarioDTO() { ScenarioName = "ScenarioOne", DeliveryScenario_Id = 1, DeliveryUnit_Id = 1, OperationalState_Id = 1 } };
 
-            mockDeliveryRouteDataService.Setup(n => n.FetchDeliveryRoute(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(actualDeliveryRouteResult);
-            mockDeliveryRouteDataService.Setup(n => n.GetDeliveryRouteDetailsforPdfGeneration(It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>(), It.IsAny<Guid>())).Returns(Task.FromResult(new DeliveryRouteDTO() { }));
-            mockDeliveryRouteDataService.Setup(n => n.GetDeliveryRouteDetailsforPdfGeneration(It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>(), It.IsAny<Guid>())).ReturnsAsync(new DeliveryRouteDTO() { });
+            mockDeliveryRouteDataService.Setup(n => n.FetchRoutes(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>())).Returns(actualDeliveryRouteResult);
+            mockDeliveryRouteDataService.Setup(n => n.GetDeliveryRouteDetailsforPdfGeneration(It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>(), It.IsAny<Guid>())).Returns(Task.FromResult(new RouteDTO() { }));
+            mockDeliveryRouteDataService.Setup(n => n.GetDeliveryRouteDetailsforPdfGeneration(It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>(), It.IsAny<Guid>())).ReturnsAsync(new RouteDTO() { });
 
             mockScenarioDataService.Setup(n => n.FetchScenario(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(actualScenarioResult);
 
             mockDeliveryRouteIntegrationService.Setup(n => n.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).Returns(Task.FromResult(referenceDataCategoryDTOList));
+            mockDeliveryRouteIntegrationService.Setup(n => n.GetUnitLocationTypeId(It.IsAny<Guid>())).Returns(Task.FromResult(unitLocationTypeId));
 
             testCandidate = new DeliveryRouteBusinessService(mockDeliveryRouteDataService.Object, mockScenarioDataService.Object, mockDeliveryRouteIntegrationService.Object, mockBlockSequenceDataService.Object, mockLoggingHelper.Object);
         }

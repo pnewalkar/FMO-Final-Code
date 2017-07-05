@@ -12,6 +12,7 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Scenario()
         {
+            CollectionRoutes = new HashSet<CollectionRoute>();
             DeliveryRoutes = new HashSet<DeliveryRoute>();
         }
 
@@ -23,6 +24,9 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         public Guid? OperationalState_GUID { get; set; }
 
         public Guid? Unit_GUID { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CollectionRoute> CollectionRoutes { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryRoute> DeliveryRoutes { get; set; }

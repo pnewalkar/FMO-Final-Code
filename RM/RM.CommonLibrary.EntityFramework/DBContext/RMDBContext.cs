@@ -1311,8 +1311,13 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Scenario>()
-                .Property(e => e.ScenarioName)
-                .IsUnicode(false);
+               .Property(e => e.ScenarioName)
+               .IsUnicode(false);
+
+            modelBuilder.Entity<Scenario>()
+                .HasMany(e => e.CollectionRoutes)
+                .WithOptional(e => e.Scenario)
+                .HasForeignKey(e => e.CollectionScenario_GUID);
 
             modelBuilder.Entity<Scenario>()
                 .HasMany(e => e.DeliveryRoutes)
