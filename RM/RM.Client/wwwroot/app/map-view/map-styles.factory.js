@@ -3,14 +3,18 @@
 angular.module('mapView')
     .factory('mapStylesFactory', MapStylesFactory)
 
-    MapStylesFactory.$inject = ['GlobalSettings'];
+MapStylesFactory.$inject = ['$q', 'referencedataApiService', 'referenceDataConstants'];
 
-    function MapStylesFactory(GlobalSettings) {
+function MapStylesFactory($q, referencedataApiService, referenceDataConstants) {
     var ACTIVESTYLE = 0;
     var INACTIVESTYLE = 1;
     var SELECTEDSTYLE = 2;
     var pointStyles = [];
-    var colors = GlobalSettings.dpColor;
+    var colors = [];
+    loadDeliveryPointColour().then(function (response) {
+        colors = response;
+    });
+
 
     var whiteFill = new ol.style.Fill({
         color: 'rgba(255,255,255,0.4)'
@@ -40,6 +44,19 @@ angular.module('mapView')
             width: 2
         })
     });
+
+    function loadDeliveryPointColour() {
+        var deferred = $q.defer();
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.DeliveryPointColor.AppCategoryName).then(function (response) {
+            var dpColors = [];
+            angular.forEach(response.listItems, function (value, key) {
+                dpColors.push(value.value);
+                deferred.resolve(dpColors);
+
+            });
+        });
+        return deferred.promise;
+    }
 
   function deliveryPointStyle(feature){
     if(typeof feature=='object'){
