@@ -3,9 +3,16 @@
 angular.module('mapView')
     .factory('mapStylesFactory', MapStylesFactory)
 
-MapStylesFactory.$inject = ['$q', 'referencedataApiService', 'referenceDataConstants'];
+MapStylesFactory.$inject = [
+'$q',
+'referencedataApiService',
+'referenceDataConstants'];
 
-function MapStylesFactory($q, referencedataApiService, referenceDataConstants) {
+function MapStylesFactory(
+$q,
+referencedataApiService,
+referenceDataConstants) {
+
     var ACTIVESTYLE = 0;
     var INACTIVESTYLE = 1;
     var SELECTEDSTYLE = 2;
@@ -49,8 +56,8 @@ function MapStylesFactory($q, referencedataApiService, referenceDataConstants) {
         var deferred = $q.defer();
         referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.DeliveryPointColor.AppCategoryName).then(function (response) {
             var dpColors = [];
-            angular.forEach(response.listItems, function (value, key) {
-                dpColors.push(value.value);
+            angular.forEach(response.listItems, function (colors, key) {
+                dpColors.push(colors.value);
                 deferred.resolve(dpColors);
 
             });
