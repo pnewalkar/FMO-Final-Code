@@ -158,7 +158,6 @@ function mapService($http,
             })
         });
 
-
         var loadFeatures = function (layerSource, response) {
             var features = new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
@@ -225,11 +224,9 @@ function mapService($http,
             }
         });
 
-
         var unitBoundaryVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
-
             }),
             loader: function (extent) {
                 var layerName = GlobalSettings.unitBoundaryLayerName;
@@ -396,11 +393,11 @@ function mapService($http,
             callback(selectedFeatures);
         })
     }
-    function refreshLayers() { 
+    function refreshLayers() {
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
-            layer.layer.changed();          
-        });        
+            layer.layer.changed();
+        });
         vm.layerSummary = getLayerSummary();
     }
     function deleteAccessLinkFeature(feature) {
