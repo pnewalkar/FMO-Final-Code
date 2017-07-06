@@ -255,7 +255,7 @@ function mapService($http,
         });
 
         var roadsSelector = new MapFactory.LayerSelector();
-        roadsSelector.layerName = "Base Layer";
+        roadsSelector.layerName = GlobalSettings.baseLayerName;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -263,7 +263,7 @@ function mapService($http,
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "Drawing";
+        drawingLayerSelector.layerName = GlobalSettings.drawingLayerName;
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
@@ -418,7 +418,15 @@ function mapService($http,
         return summary;
     }
     function deleteSelectedFeature() {
-        if (vm.layerName == "Drawing") {
+        var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+        vm.interactions.select = new ol.interaction.Select({
+            condition: ol.events.condition.never,
+            style: style
+        });
+        setSelections({
+            featureID: getActiveFeature().getId(), layer: vm.selectedLayer
+        }, []);
+        if (vm.layerName == GlobalSettings.drawingLayerName) {
             var collection = new ol.Collection();
             collection.push(getActiveFeature());
             collection.forEach(function (feature) {
@@ -652,7 +660,7 @@ function mapService($http,
             });
             var collection = new ol.Collection();
             collection.push(getActiveFeature());
-            if (vm.layerName == "Drawing") {
+            if (vm.layerName == GlobalSettings.drawingLayerName) {
             vm.interactions.modify = new ol.interaction.Modify({
                 features: collection
             });
