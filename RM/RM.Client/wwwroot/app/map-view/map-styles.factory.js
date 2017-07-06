@@ -1,12 +1,11 @@
 'use strict'
 
 angular.module('mapView')
-    .factory('mapStylesFactory', MapStylesFactory)
-
-MapStylesFactory.$inject = [
+    .factory('mapStylesFactory',  [
 '$q',
 'referencedataApiService',
-'referenceDataConstants'];
+'referenceDataConstants', MapStylesFactory])
+
 
 function MapStylesFactory(
 $q,
