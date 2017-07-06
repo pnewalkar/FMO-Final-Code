@@ -76,7 +76,7 @@ function MapFactory($http,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
         GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
-        GetPolygonTransparency : GetPolygonTransparency,
+        getPolygonTransparency : getPolygonTransparency,
         LicenceInfo: LicenceInfo
 
     };
@@ -624,7 +624,7 @@ function MapFactory($http,
         return deferred.promise;
     }
 
-    function GetPolygonTransparency() {
+    function getPolygonTransparency() {
         var deferred = $q.defer();
         referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.Transparency.DBCategoryName).then(function (response) {
             deferred.resolve(response.listItems);

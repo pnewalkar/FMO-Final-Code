@@ -23,14 +23,15 @@ function mapToolbarService(
            selectDP: selectDP
        };
 
-    function getMapButtons(isSelected)
+    function getMapButtons(isObjectSelected)
     {
         vm.mapButtons = mapService.getMapButtons();
-        if (isSelected == false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
-            vm.mapButtons.splice(vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del), 1)
+        if (isObjectSelected == false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
+            vm.mapButtons =  mapService.splice(vm.mapButtons, CommonConstants.ButtonShapeType.del);
+            //vm.mapButtons.splice(vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del), 1)
         }
-        else if (isSelected == true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) == -1) {
-            vm.mapButtons.push(CommonConstants.ButtonShapeType.del);
+        else if (isObjectSelected == true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) == -1) {
+            vm.mapButtons = mapService.push(vm.mapButtons, CommonConstants.ButtonShapeType.del);
         }
         return vm.mapButtons;
     }

@@ -29,13 +29,13 @@
         //Inejct with mockdata mapFactory with attached all function
         module(function ($provide) {
             $provide.factory('mapFactory', function ($q) {
-                function GetPolygonTransparency() {
+                function getPolygonTransparency() {
                     deferred = $q.defer();
                     deferred.resolve();
                     return deferred.promise;
                 }
                 return {
-                    GetPolygonTransparency: GetPolygonTransparency,
+                    getPolygonTransparency: getPolygonTransparency,
                 };
             });
 
@@ -133,14 +133,14 @@
     });
 
     it('Polygon Transparency method should have been called and return the opacity', function () {
-        spyOn(mapFactory, 'GetPolygonTransparency').and.callFake(function () {
+        spyOn(mapFactory, 'getPolygonTransparency').and.callFake(function () {
             var deferred = $q.defer(); 
             deferred.resolve([{value: 10}]);
             return deferred.promise;
         });
-        mapService.GetPolygonTransparency();
+        mapService.getPolygonTransparency();
         scope.$apply();
-        expect(mapFactory.GetPolygonTransparency).toHaveBeenCalled();
-        expect(mapFactory.GetPolygonTransparency).toHaveBeenCalledTimes(1);
+        expect(mapFactory.getPolygonTransparency).toHaveBeenCalled();
+        expect(mapFactory.getPolygonTransparency).toHaveBeenCalledTimes(1);
     });
 });

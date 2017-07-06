@@ -56,18 +56,14 @@ describe('MapToolbar: Service', function() {
         var mapButtons =  mapToolbarService.getMapButtons(false);
 
         expect(mapService.getMapButtons).toHaveBeenCalled();
-        expect(mapButtons).toBeDefined();
+        expect(mapButtons).toEqual(["select", "point", "line", "accesslink", "area", "modify"]);
         expect(mapButtons.length).toEqual(6);
 
     });
 
     it('should be return list of mapButton value', function(){
 
-        var mapButtons = MockMapViewService.getMapButtons();
-        expect(mapButtons).toContain('select');
-        expect(mapButtons).toContain('point');
-        expect(mapButtons).toContain('line');
-        expect(mapButtons).toContain('accesslink');
+        var mapButtons = MockMapViewService.getMapButtons();       
         expect(mapButtons).toEqual(["select", "point", "line", "accesslink", "area", "modify", "delete"]);
         expect(mapButtons.length).toEqual(7);
 
@@ -113,17 +109,17 @@ describe('MapToolbar: Service', function() {
     });
 
     it('Should be showButton return true', function(){
-        var myVal = mapToolbarService.showButton('select');
-        expect(myVal).toBe(true);
+        var isButtonExists = mapToolbarService.showButton('select');
+        expect(isButtonExists).toBe(true);
     });
 
     it('showButton should return true for modify', function () {
-        var myVal = mapToolbarService.showButton('modify');
-        expect(myVal).toBe(true);
+        var isButtonExists = mapToolbarService.showButton('modify');
+        expect(isButtonExists).toBe(true);
     });
 
     it('showButton should return true for delete', function () {
-        var myVal = mapToolbarService.showButton('delete');
-        expect(myVal).toBe(true);
+        var isButtonExists = mapToolbarService.showButton('delete');
+        expect(isButtonExists).toBe(true);
     });
 });

@@ -51,13 +51,13 @@ function mapService($http,
     vm.activeSelection = null;
     vm.secondarySelections = [];
     vm.routeName = "";
-    vm.opacity = null;
+    vm.opacity = undefined;
     vm.selectionListeners = [];
     vm.features = null;
     vm.selectedDP = null;
     vm.selectedLayer = null;
-    vm.isSelected = false;
-    vm.layerName = "";
+    vm.isObjectSelected = false;
+    vm.layerName = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -114,16 +114,20 @@ function mapService($http,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing,
-        GetPolygonTransparency: GetPolygonTransparency
+        getPolygonTransparency: getPolygonTransparency,
+        splice: splice,
+        push: push
     }
 
     function LicenceInfo(displayText) {
         return mapFactory.LicenceInfo(displayText);
     }
 
-    function GetPolygonTransparency() {
-        mapFactory.GetPolygonTransparency().then(function (response) {
+    function getPolygonTransparency() {
+        mapFactory.getPolygonTransparency().then(function (response) {
+            if (response[0]) {
             vm.opacity = parseFloat(response[0].value);
+        }
         });
     }
 
@@ -139,7 +143,7 @@ function mapService($http,
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
         vm.originalSize = vm.map.getSize();
-        GetPolygonTransparency();
+        getPolygonTransparency();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
@@ -435,7 +439,7 @@ function mapService($http,
                 vm.onDeleteButton(feature.getId(), feature.layer);
             });
             setSelections(null, []);
-            $rootScope.$emit('selectedObjectChange', { "isSelected": false });
+            $rootScope.$emit('selectedObjectChange', { "isObjectSelected": false });
         }
     }
     function addInteractions() {
@@ -630,8 +634,8 @@ function mapService($http,
         vm.interactions.select.on('select', function (e) {
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
-                vm.isSelected = true;               
-                    $rootScope.$emit('selectedObjectChange', { "isSelected": vm.isSelected });
+                vm.isObjectSelected = true;
+                $rootScope.$emit('selectedObjectChange', { "isObjectSelected": vm.isObjectSelected });
                 setSelections({
                     featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
@@ -644,9 +648,9 @@ function mapService($http,
                 vm.selectedDP = e.selected[0];
                 vm.selectedLayer = lastLayer;
             } else {
-                vm.isSelected = false;
+                vm.isObjectSelected = false;
                 vm.layerName = "";
-                $rootScope.$emit('selectedObjectChange', { "isSelected": vm.isSelected });
+                $rootScope.$emit('selectedObjectChange', { "isObjectSelected": vm.isObjectSelected });
                 setSelections(null, []);
                 var deliveryPointDetails = null;
                 showDeliveryPointDetails(deliveryPointDetails);
@@ -968,10 +972,19 @@ function mapService($http,
     function getResolution() {
         return vm.map.getView().getResolution();
     }
+    // This function generates random unique identifier
     function createGuid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
+    }
+    function splice(object, element) {
+        object.splice(object.indexOf(element), 1);
+        return object
+    }
+    function push(object, element) {
+        object.push(element);
+        return object
     }
 }

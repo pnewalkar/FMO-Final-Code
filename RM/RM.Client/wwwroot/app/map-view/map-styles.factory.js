@@ -205,13 +205,11 @@ angular.module('mapView')
             case "deliverypoint":
                 return selectedPointStyle;
             case "accesslink":
+            case "linestring":
+            case "polygon": 
                 return selectedLinkStyle;
             case "roadlink":
-                return roadLinkStyle;
-            case "linestring":
-                return selectedLinkStyle;
-            case "polygon":
-                return selectedLinkStyle;
+                return roadLinkStyle;          
             default:
                 return defaultStyle;
         }
