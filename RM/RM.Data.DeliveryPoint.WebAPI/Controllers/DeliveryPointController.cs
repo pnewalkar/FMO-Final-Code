@@ -43,6 +43,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="bbox">bbox as string</param>
         /// <returns>Json Result of Delivery Points</returns>
+        [Authorize]
         [Route("deliverypoints")]
         [HttpGet]
         public JsonResult GetDeliveryPoints(string bbox)
@@ -65,7 +66,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="Guid">The Guid </param>
         /// <returns>The coordinates of the delivery point</returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
+        [Authorize]
         [Route("deliverypoint/Guid/{id}")]
         [HttpGet]
         public IActionResult GetDeliveryPointByGuId(Guid id, [FromQuery]string fields)
@@ -213,7 +214,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
+        [Authorize]
         [Route("deliverypoints/basic/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> FetchDeliveryPointsForBasicSearch(string searchText)
@@ -248,7 +249,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <returns>The total count of delivery point</returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
+        [Authorize]
         [Route("deliverypoints/count/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> GetDeliveryPointsCount(string searchText)
@@ -282,7 +283,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <returns></returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
+        [Authorize]
         [Route("deliverypoints/advance/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> FetchDeliveryPointsForAdvancedSearch(string searchText)
