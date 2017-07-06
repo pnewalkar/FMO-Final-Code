@@ -69,16 +69,13 @@ md-list-item .md-list-item-inner > md-checkbox, md-list-item > md-checkbox {
 button.md-raised.md-primary.md-button.md-ink-ripple {
   color: #ffffff; }
 
-  md-select-menu._md {
-    margin-left: 3%;
-    width: 89%;
-}
+md-select-menu._md {
+  margin-left: 3%;
+  width: 89%; }
 
 .noResult.ng-binding.ng-scope {
-    
-    margin-left: 3%;
-    width: 89%;
-}
+  margin-left: 3%;
+  width: 89%; }
 
 /*fonts*/
 /*Chevin Light Font*/

@@ -60,7 +60,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 {
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    var objDeliveryPoint = await DataContext.DeliveryPoints.Include(dp => dp.PostalAddress).AsNoTracking().Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
+                    var objDeliveryPoint = await DataContext.DeliveryPoints.AsNoTracking().Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
 
                     Mapper.Initialize(cfg =>
                     {

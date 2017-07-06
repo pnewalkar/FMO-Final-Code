@@ -54,15 +54,24 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var result = (from a in DataContext.UnitLocations.AsNoTracking()
-                              join b in DataContext.PostalAddresses.AsNoTracking() on a.UnitAddressUDPRN equals b.UDPRN
-                              join c in DataContext.Postcodes.AsNoTracking() on b.PostCodeGUID equals c.ID
-                              join d in DataContext.PostcodeSectors.AsNoTracking() on c.SectorGUID equals d.ID
-                              join e in DataContext.PostcodeDistricts.AsNoTracking() on d.DistrictGUID equals e.ID
-                              join f in DataContext.PostcodeAreas.AsNoTracking() on e.AreaGUID equals f.ID
-                              join g in DataContext.UserRoleUnits.AsNoTracking() on a.ID equals g.Unit_GUID
-                              where g.User_GUID == userId && a.UnitBoundryPolygon != null
-                              select new UnitLocationDTO { ID = a.ID, UnitName = a.UnitName, Area = f.Area, UnitAddressUDPRN = a.UnitAddressUDPRN, UnitBoundryPolygon = a.UnitBoundryPolygon, ExternalId = a.ExternalId }).ToList();
+                var result = (from unitLocation in DataContext.UnitLocations.AsNoTracking()
+                              join userRoleUnit in DataContext.UserRoleUnits.AsNoTracking() on unitLocation.ID equals userRoleUnit.Unit_GUID
+                              where userRoleUnit.User_GUID == userId && unitLocation.UnitBoundryPolygon != null
+                              select new UnitLocationDTO
+                              {
+                                  ID = unitLocation.ID,
+                                  UnitName = unitLocation.UnitName,
+                                  Area = (
+                                          from postcodeDistrict in DataContext.PostcodeDistricts
+                                          join postcodeSector in DataContext.PostcodeSectors on postcodeDistrict.ID equals postcodeSector.DistrictGUID
+                                          join unitPostcodeSector in DataContext.UnitPostcodeSectors on postcodeSector.ID equals unitPostcodeSector.PostcodeSector_GUID
+                                          where unitPostcodeSector.Unit_GUID == unitLocation.ID
+                                          select postcodeDistrict.Area).FirstOrDefault() ?? "",
+                                  UnitAddressUDPRN = unitLocation.UnitAddressUDPRN,
+                                  UnitBoundryPolygon = unitLocation.UnitBoundryPolygon,
+                                  ExternalId = unitLocation.ExternalId
+                              }).ToList();
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return result;
             }

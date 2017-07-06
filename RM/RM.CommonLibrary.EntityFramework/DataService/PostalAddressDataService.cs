@@ -231,7 +231,7 @@
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
+                var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
 
                 return GenericMapper.Map<PostalAddress, PostalAddressDTO>(postalAddress);
@@ -250,7 +250,7 @@
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
+                var postalAddress = await DataContext.PostalAddresses.AsNoTracking()
                 .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
                                      && ((n.BuildingName ==
                                           (!string.IsNullOrEmpty(objPostalAddress.BuildingName)
@@ -484,8 +484,9 @@
         /// </summary>
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
+        /// <param name="isNyb">Updating whose address type is NYB </param>
         /// <returns>true or false</returns>
-        public async Task<bool> UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName, Guid deliveryPointUseIndicatorPAF)
+        public async Task<bool> UpdateAddress(PostalAddressDTO objPostalAddress, string strFileName, Guid deliveryPointUseIndicatorPAF, bool isNyb)
         {
             bool isPostalAddressUpdated = false;
             PostalAddress objAddress = new PostalAddress();
@@ -498,7 +499,14 @@
 
                     if (objPostalAddress != null)
                     {
-                        objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                        if (isNyb)
+                        {
+                            objAddress = DataContext.PostalAddresses.Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                        }
+                        else
+                        {
+                            objAddress = DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => n.ID == objPostalAddress.ID).SingleOrDefault();
+                        }
 
                         if (objAddress != null)
                         {
@@ -521,7 +529,7 @@
                             objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
                             objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
 
-                            if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+                            if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0 && !isNyb)
                             {
                                 foreach (var objDelPoint in objAddress.DeliveryPoints)
                                 {

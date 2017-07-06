@@ -479,6 +479,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 FileProcessingLogDTO objFileProcessingLog = null;
                 Guid deliveryPointUseIndicatorPAF = Guid.Empty;
                 Guid postCodeGuid = Guid.Empty;
+                bool isNyb = false;
 
                 try
                 {
@@ -502,9 +503,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                             .ReferenceDatas.Where(a => a.ReferenceDataValue.Equals(DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                                             .Select(a => a.ID).FirstOrDefault();
 
+                            isNyb = true;
                             objPostalAddress.ID = objPostalAddressMatchedUDPRN.ID;
                             objPostalAddress.PostCodeGUID = await postalAddressIntegrationService.GetPostCodeID(objPostalAddress.Postcode);
-                            if (await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF))
+                            if (await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF, isNyb))
                             {
                                 // calling delivery point web api
                                 var objDeliveryPoint = await postalAddressIntegrationService.GetDeliveryPointByUDPRN(objPostalAddress.UDPRN ?? default(int));
@@ -546,7 +548,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                                             .Select(a => a.ID).FirstOrDefault();
 
                                 // Update address and delivery point for USR records
-                                await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF);
+                                await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF, isNyb);
                             }
                             else
                             {
