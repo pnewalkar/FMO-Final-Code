@@ -176,6 +176,7 @@ function mapService($http,
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.deliveryPointLayerName;
                     mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
+                    loadFeatures(deliveryPointsVector, response);
                 });
             }
         });
@@ -204,6 +205,7 @@ function mapService($http,
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.accessLinkLayerName;
                     mapFactory.LicenceInfo("", layerName, accessLinkVector);
+                    loadFeatures(accessLinkVector, response);
                 });
             }
         });
@@ -218,6 +220,7 @@ function mapService($http,
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.roadLinkLayerName;
                     mapFactory.LicenceInfo("", layerName, roadLinkVector);
+                    loadFeatures(roadLinkVector, response);
                 });
             }
         });
