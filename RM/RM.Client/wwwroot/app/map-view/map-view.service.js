@@ -111,7 +111,6 @@ function mapService($http,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing
-       
     }
 
     function LicenceInfo(displayText) {
@@ -147,7 +146,6 @@ function mapService($http,
             })
         });
 
-
         var loadFeatures = function (layerSource, response) {
             var features = new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
@@ -165,6 +163,7 @@ function mapService($http,
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.deliveryPointLayerName;
                     mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
+                    loadFeatures(deliveryPointsVector, response, layerName);
                 });
             }
         });
@@ -193,6 +192,7 @@ function mapService($http,
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.accessLinkLayerName;
                     mapFactory.LicenceInfo("", layerName, accessLinkVector);
+                    loadFeatures(accessLinkVector, response, layerName);
                 });
             }
         });
@@ -207,15 +207,14 @@ function mapService($http,
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.roadLinkLayerName;
                     mapFactory.LicenceInfo("", layerName, roadLinkVector);
+                    loadFeatures(roadLinkVector, response, layerName);
                 });
             }
         });
 
-
         var unitBoundaryVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
-
             }),
             loader: function (extent) {
                 var layerName = GlobalSettings.unitBoundaryLayerName;
@@ -382,11 +381,11 @@ function mapService($http,
             callback(selectedFeatures);
         })
     }
-    function refreshLayers() { 
+    function refreshLayers() {
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
-            layer.layer.changed();          
-        });        
+            layer.layer.changed();
+        });
         vm.layerSummary = getLayerSummary();
     }
     function deleteAccessLinkFeature(feature) {
