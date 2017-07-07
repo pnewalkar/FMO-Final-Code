@@ -114,7 +114,7 @@ function mapService($http,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing,
-        getPolygonTransparency: getPolygonTransparency,
+        setPolygonTransparency: setPolygonTransparency,
         splice: splice,
         push: push
     }
@@ -123,7 +123,7 @@ function mapService($http,
         return mapFactory.LicenceInfo(displayText);
     }
 
-    function getPolygonTransparency() {
+    function setPolygonTransparency() {
         mapFactory.getPolygonTransparency().then(function (response) {
             if (response[0]) {
             vm.opacity = parseFloat(response[0].value);
@@ -143,7 +143,7 @@ function mapService($http,
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
         vm.originalSize = vm.map.getSize();
-        getPolygonTransparency();
+        setPolygonTransparency();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',

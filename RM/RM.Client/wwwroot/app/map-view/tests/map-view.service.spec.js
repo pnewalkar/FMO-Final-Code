@@ -138,7 +138,7 @@
             deferred.resolve([{value: 10}]);
             return deferred.promise;
         });
-        mapService.getPolygonTransparency();
+        mapService.SetPolygonTransparency();
         scope.$apply();
         expect(mapFactory.getPolygonTransparency).toHaveBeenCalled();
         expect(mapFactory.getPolygonTransparency).toHaveBeenCalledTimes(1);
