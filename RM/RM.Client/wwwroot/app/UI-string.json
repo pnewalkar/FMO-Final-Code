@@ -32,13 +32,17 @@
     "ACCESS_LINK": "Access Link",
     "ROAD": "Road",
     "POINT": "Point",
-    "LINE": "Line"
+    "LINE": "Line",
+    "MODIFY": "Modify",
+    "DELETE": "Delete",
+    "AREA": "Area"
+
   },
   "ERROR_DIALOG": {
     "TITLE": "Unable to process request"
   },
   "UNIT_SELECTOR": {
-    "SEARCH_PLACEHOLDER":  "Filter Unit"
+    "SEARCH_PLACEHOLDER": "Filter Unit"
   },
   "VALIDATION": {
     "MINIMUM_CHARACTERS": "At least {{count}} characters are required",

@@ -9,6 +9,7 @@ MapFactory.$inject = ['$http',
     'GlobalSettings',
     '$document',
     'layersAPIService',
+    'referencedataApiService',
     '$q',
     'stringFormatService',
     'licensingInformationAccessorService',
@@ -20,6 +21,7 @@ function MapFactory($http,
     GlobalSettings,
     $document,
     layersAPIService,
+    referencedataApiService,
     $q,
     stringFormatService,
     licensingInformationAccessorService,
@@ -74,6 +76,7 @@ function MapFactory($http,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
         GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
+        getPolygonTransparency : getPolygonTransparency,
         LicenceInfo: LicenceInfo
 
     };
@@ -150,9 +153,6 @@ function MapFactory($http,
         var licenseButton = licenseIcon[0].getElementsByTagName('button');
         licenseButton[0].title = '';
 
-        // map.addControl(new ol.control.ScaleLine());
-        //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";
-
         var external_control = new ol.control.Zoom({
             target: $document[0].getElementById('zoom-control')
         });
@@ -166,7 +166,7 @@ function MapFactory($http,
 
 
     function initialiseMiniMap() {
-        if (view == null)
+        if (view === null)
             initialiseMap();
 
         viewMiniMap = new ol.View({
@@ -333,7 +333,7 @@ function MapFactory($http,
         layerObj.disabled = layerObj.disabled ? true : false;
         layerObj.onMiniMap = layerObj.onMiniMap ? true : false;
         layerObj.keys = layerObj.keys ? layerObj.keys : [];
-        layerObj.selectorVisible = layerObj.selectorVisible == angular.isUndefined(undefined) ? true : layerObj.selectorVisible;
+        layerObj.selectorVisible = layerObj.selectorVisible === angular.isUndefined(undefined) ? true : layerObj.selectorVisible;
 
         layerObj.layer.set('name', layerObj.layerName);
         if (angular.isDefined(layerObj.layer.setZIndex))
@@ -402,7 +402,7 @@ function MapFactory($http,
                 var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
                 var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
 
-                if (index == definedScales.length - 1) {
+                if (index === definedScales.length - 1) {
                     setZoomButtonStatus(zoomInButtons, true);
 
                     zoomLimitReached = true;
@@ -411,7 +411,7 @@ function MapFactory($http,
                     setZoomButtonStatus(zoomInButtons, false);
                 }
 
-                if (index == 0 || index == maxScaleIndex) {
+                if (index === 0 || index === maxScaleIndex) {
                     setZoomButtonStatus(zoomOutButtons, true);
 
                     zoomLimitReached = true;
@@ -422,8 +422,6 @@ function MapFactory($http,
                 $timeout(function () {
                     $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
                 });
-                //$rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
-                //$rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale });
             }
         };
 
@@ -542,21 +540,6 @@ function MapFactory($http,
             var select = new ol.interaction.Select({ style: style });
 
             map.addInteraction(select);
-
-            //var selectedFeatures = select.getFeatures();
-
-            //var featureToSelect;
-            //angular.forEach(features, function (feature, index) {
-            //    var featureLatitude = feature.values_.geometry.getCoordinates()[1];
-            //    var featureLongitude = feature.values_.geometry.getCoordinates()[0];
-
-            //    if (featureLatitude === lat && featureLongitude === long) {
-            //        featureToSelect = feature;
-            //    }
-            //});
-
-            //if (featureToSelect)
-            //    selectedFeatures.push(featureToSelect);
         });
     }
 
@@ -618,6 +601,14 @@ function MapFactory($http,
             deferred.reject(err);
         });
 
+        return deferred.promise;
+    }
+
+    function getPolygonTransparency() {
+        var deferred = $q.defer();
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.Transparency.DBCategoryName).then(function (response) {
+            deferred.resolve(response.listItems);
+        });
         return deferred.promise;
     }
 }
