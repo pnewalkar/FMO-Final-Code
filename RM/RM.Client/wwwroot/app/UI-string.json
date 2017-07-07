@@ -88,7 +88,13 @@
     "STATUS": "Status",
     "SCENARIO": "Scenario",
     "ROUTE": "Route",
-    "NO_RESULT_FOUND": "No Result Found"
+    "SEARCH_ROUTE": "Search Route",
+    "NO_RESULT_FOUND": "No Result Found",
+    "ROUTE_DETAILS": "Route Details",
+    "GENERATE": "Generate",
+    "ROUTE_LOG_SUMMARY": "Route Log Summary",
+    "DETAILED_ROUTE_LOG": "Detailed Route Log",
+    ">HAZARD_CARD": ">Hazard Card"
   },
   "ROUTE_SIMULATION": {
     "TITTLE": "Route Simulation",

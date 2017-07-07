@@ -1,7 +1,7 @@
 <md-dialog aria-label="Route Log" class="mdDialog">
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2>Route Log</h2>
+            <h2>{{  'ROUTE_LOG.TITTLE' | translate  }}</h2>
             <span flex></span>
             <md-button class="md-icon-button" ng-click="vm.closeWindow()" title="{{ 'GENERAL.BUTTONS.CLOSE_WINDOW' | translate }}">
                 <i class="fa fa-times" aria-hidden="true"></i>
@@ -10,7 +10,7 @@
     </md-toolbar>
 
     <md-dialog-content layout-padding>
-        <h1>Search</h1>
+        <h1>{{ 'GENERAL.SEARCH' | translate }}</h1>
         <div layout="row">
             <md-input-container flex="15">
                 <label>{{  'ROUTE_LOG.SELECTION_TYPE' | translate  }}</label>
@@ -40,7 +40,7 @@
                 <div ng-show="!filterScenario.length && vm.isSelectionType" class="noResult">No Result Found</div>
             </md-input-container>
 
-            <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" search-placeholder="ROUTE_SIMULATION.NO_ROUTE_SELECTED" header-text="ROUTE_LOG.ROUTE" order-by="displayText" 
+            <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" search-placeholder="ROUTE_LOG.SEARCH_ROUTE" header-text="ROUTE_LOG.ROUTE" order-by="displayText" 
                                         items="vm.deliveryRoute" selected-item="vm.selectedRoute" on-selected-item="vm.deliveryRouteChange" class="routeSelectSearch" flex/>
         </div>
 
@@ -66,8 +66,8 @@
             </div>
         </div>
 
+        <h1 ng-hide="!vm.routeDetails">{{ 'ROUTE_LOG.ROUTE_DETAILS' | translate }}</h1>
         <md-list ng-hide="!vm.routeDetails">
-            <h1>Route Details</h1>
             <div layout="row">
                 <div flex="35" class="routeDetailstable">
                     <table>
@@ -137,22 +137,22 @@
                 <div flex="20" class="md-text"><sub>*</sub>All Alias information is shown on detailed route log </div>
             </div>
         </md-list>
+
+        <h1 ng-hide="!vm.routeDetails">{{ 'ROUTE_LOG.GENERATE' | translate }}</h1>
         <md-list ng-hide="!vm.routeDetails" class="routeLogList">
-            <h1>Generate</h1>
             <md-list-item>
-               
-                    <md-checkbox  ng-model="vm.generateSummaryReport"></md-checkbox>   
-                <p>Route Log Summary</p>
+                <md-checkbox  ng-model="vm.generateSummaryReport"></md-checkbox>   
+                <p>{{ 'ROUTE_LOG.ROUTE_LOG_SUMMARY' | translate }}</p>
             </md-list-item>
             <md-list-item>
                 <md-checkbox ng-model="vm.generateDetailedRouteLogReport"></md-checkbox>
-                <p>Detailed Route Log</p>
+                <p>{{ 'ROUTE_LOG.DETAILED_ROUTE_LOG' | translate }}</p>
             </md-list-item>
             <md-list-item>
                 <md-checkbox ng-model="vm.generateHazardCardReport"></md-checkbox>
-                <p>Hazard Card</p>
+                <p>{{ 'ROUTE_LOG.HAZARD_CARD' | translate }}</p>
             </md-list-item>
-            <md-button class="md-raised routeGenerate" ng-disabled="(!vm.generateSummaryReport&&!vm.generateDetailedRouteLogReport&&!vm.generateHazardCardReport)" md-whiteframe="3dp" ng-click="vm.generateRouteLogSummary()">Generate</md-button>
+            <md-button class="md-raised routeGenerate" ng-disabled="(!vm.generateSummaryReport&&!vm.generateDetailedRouteLogReport&&!vm.generateHazardCardReport)" md-whiteframe="3dp" ng-click="vm.generateRouteLogSummary()">{{ 'GENERAL.BUTTONS.GENERATE' | translate }}</md-button>
         </md-list>
     </md-dialog-content>
 </md-dialog>    
