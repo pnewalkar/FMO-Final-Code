@@ -335,6 +335,11 @@
       "AppCategoryName": "DeliveryPointOperationalStatus",
       "DBCategoryName": "Delivery Point Operational Status",
       "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "DeliveryPointColor",
+      "DBCategoryName": "Delivery Point Color",
+      "ReferenceDataNames": []
     }
   ]
 }
