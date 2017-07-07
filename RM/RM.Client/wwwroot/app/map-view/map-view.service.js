@@ -17,7 +17,8 @@ mapService.$inject = ['$http',
                      '$stateParams',
                      '$rootScope',
                      'layersAPIService',
-                     'CommonConstants'
+                     'CommonConstants',
+                     'mapToolbarService'
 ];
 
 function mapService($http,
@@ -36,7 +37,8 @@ function mapService($http,
                     $stateParams,
                     $rootScope,
                     layersAPIService,
-                    CommonConstants
+                    CommonConstants,
+                    mapToolbarService
                    ) {
     var vm = this;
     vm.map = null;
@@ -44,7 +46,6 @@ function mapService($http,
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line", "accesslink", "area", "modify", "delete"];
     vm.interactions = {
     };
     vm.layersForContext = [];
@@ -114,9 +115,7 @@ function mapService($http,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing,
-        getPolygonTransparency: getPolygonTransparency,
-        splice: splice,
-        push: push
+        getPolygonTransparency: getPolygonTransparency
     }
 
     function LicenceInfo(displayText) {
@@ -336,7 +335,7 @@ function mapService($http,
         vm.miniMap = mapFactory.getMiniMap();
     }
     function getMapButtons() {
-        return vm.mapButtons;
+        return mapToolbarService.getMapButtonsList();
     }
     function mapLayers() {
         return mapFactory.getAllLayers();
@@ -982,12 +981,5 @@ function mapService($http,
             return uuid.toString(16);
         });
     }
-    function splice(object, element) {
-        object.splice(object.indexOf(element), 1);
-        return object
-    }
-    function push(object, element) {
-        object.push(element);
-        return object
-    }
+
 }

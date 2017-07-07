@@ -2,15 +2,8 @@
 
 describe('MapToolbar: Service', function() {
     var mapToolbarService;
-    var mapService;
     var CommonConstants;
     
-
-    //Mock MockMapViewService properties define
-    var MockMapViewService = {
-        getMapButtons: function() { return ["select", "point", "line", "accesslink","area","modify","delete"]; }
-    };
-
     //Mock CommonConstants value define
     var MockCommonConstants = {
         GetSessionStorageItemType:"roleAccessData",
@@ -25,16 +18,14 @@ describe('MapToolbar: Service', function() {
    
     beforeEach(function(){
         module(function ($provide) {
-        $provide.value('mapService', MockMapViewService);
         $provide.value('CommonConstants', MockCommonConstants);
 
         });
     });
 
     beforeEach(function() {
-        inject(function(_mapToolbarService_,_mapService_,_CommonConstants_) {
+        inject(function(_mapToolbarService_,_CommonConstants_) {
             mapToolbarService = _mapToolbarService_;
-            mapService = _mapService_;
             CommonConstants = _CommonConstants_;               
         });
     });
@@ -51,19 +42,16 @@ describe('MapToolbar: Service', function() {
     });
 
     it('should have initialize mapButtons except delete', function () {
-        spyOn(mapService, 'getMapButtons').and.callFake(function () {
-            return ["select", "point", "line", "accesslink", "area", "modify","delete"]});
         var mapButtons =  mapToolbarService.getMapButtons(false);
 
-        expect(mapService.getMapButtons).toHaveBeenCalled();
         expect(mapButtons).toEqual(["select", "point", "line", "accesslink", "area", "modify"]);
         expect(mapButtons.length).toEqual(6);
 
     });
 
-    it('should be return list of mapButton value', function(){
+    it('should return the entire list of toolbar buttons', function () {
 
-        var mapButtons = MockMapViewService.getMapButtons();       
+        var mapButtons = mapToolbarService.getMapButtonsList();
         expect(mapButtons).toEqual(["select", "point", "line", "accesslink", "area", "modify", "delete"]);
         expect(mapButtons.length).toEqual(7);
 
