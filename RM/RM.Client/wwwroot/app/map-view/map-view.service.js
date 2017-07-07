@@ -51,7 +51,7 @@ function mapService($http,
     vm.activeSelection = null;
     vm.secondarySelections = [];
     vm.routeName = "";
-    vm.opacity = undefined;
+    vm.polygonOpacity = undefined;
     vm.selectionListeners = [];
     vm.features = null;
     vm.selectedDP = null;
@@ -126,8 +126,8 @@ function mapService($http,
     function setPolygonTransparency() {
         mapFactory.getPolygonTransparency().then(function (response) {
             if (response[0]) {
-            vm.opacity = parseFloat(response[0].value);
-        }
+                vm.polygonOpacity = parseFloat(response[0].value);
+            }
         });
     }
 
@@ -974,9 +974,12 @@ function mapService($http,
     }
     // This function generates random unique identifier
     function createGuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
+        // Iterate over the guid template and replace all the 'xy' characters encountered except for '-' and '4'
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (character) {
+            // Generate random number with base 16
+            var randomNumber = Math.random() * 16 | 0, uuid = character === 'x' ? randomNumber : (randomNumber & 0x3 | 0x8);
+            // Return the randomly generated UUID string
+            return uuid.toString(16);
         });
     }
     function splice(object, element) {
