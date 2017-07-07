@@ -24,8 +24,6 @@
                 </md-select>
             </md-input-container>
 
-            <span flex="5"></span>
-
             <md-input-container flex="15">
                 <label >{{ 'ROUTE_LOG.STATUS' | translate }}</label>
                 <md-select name="type" ng-model="vm.selectedRouteStatusObj" ng-change="vm.selectedRouteStatus()">
@@ -34,17 +32,13 @@
                 </md-select>
             </md-input-container>
 
-            <span flex="5"></span>
-
-            <md-input-container flex="15">
+            <md-input-container flex="25">
                 <label>{{ 'ROUTE_LOG.SCENARIO' | translate }}</label>
                 <md-select ng-model="vm.selectedRouteScenario" ng-disabled="vm.isRouteScenarioDisabled || (!filterScenario.length && vm.isSelectionType)" ng-change="vm.scenarioChange()" placeholer="Select a scenario">
                     <md-option ng-repeat="scenario in  filterScenario =(vm.RouteScenario)" ng-value="scenario">{{scenario.scenarioName}}</md-option>
                 </md-select>
                 <div ng-show="!filterScenario.length && vm.isSelectionType" class="noResult">No Result Found</div>
             </md-input-container>
-
-            <span flex="5"></span>
 
             <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" search-placeholder="ROUTE_SIMULATION.NO_ROUTE_SELECTED" header-text="ROUTE_LOG.ROUTE" order-by="displayText" 
                                         items="vm.deliveryRoute" selected-item="vm.selectedRoute" on-selected-item="vm.deliveryRouteChange" class="routeSelectSearch" flex/>
