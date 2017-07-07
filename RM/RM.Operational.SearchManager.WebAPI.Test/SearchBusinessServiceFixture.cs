@@ -19,7 +19,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         private Mock<ILoggingHelper> loggingHelperMock;
         private string input = "road";
         private Guid unitGuid = System.Guid.NewGuid();
-        PostalAddressDTO postalAddressDTO;
+        private PostalAddressDTO postalAddressDTO;
 
         [Test]
         public void Test_Fetch_Advance_Search_Details()
@@ -49,7 +49,6 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             Assert.NotNull(output);
         }
 
-        
         [Test]
         public async Task AdvanceSearch_MoreThanOneResultFound()
         {
@@ -92,8 +91,8 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             {
                 Assert.AreEqual(ex, expectedException);
                 Assert.IsTrue(output.SearchResultItems.Count == 0);
-             }
             }
+        }
 
         [Test]
         public async Task AdvanceSearch_ExactOneResultFound()
@@ -152,7 +151,6 @@ namespace RM.Operational.SearchManager.WebAPI.Test
                 new DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new PostalAddressDTO() },
                 new DeliveryPointDTO { UDPRN = 23456789, PostalAddress = new PostalAddressDTO() }
             }));
-
 
             var output = await testCandidate.FetchBasicSearchDetails("test");
 

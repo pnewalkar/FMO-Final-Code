@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('mapView')
-.factory('mapFactory',MapFactory);
+.factory('mapFactory', MapFactory);
 
 MapFactory.$inject = ['$http',
     'mapStylesFactory',
@@ -11,6 +11,7 @@ MapFactory.$inject = ['$http',
     'layersAPIService',
     '$q',
     'stringFormatService',
+    'licensingInformationAccessorService',
 '$timeout'];
 
 function MapFactory($http,
@@ -21,8 +22,8 @@ function MapFactory($http,
     layersAPIService,
     $q,
     stringFormatService,
-        $timeout)
-    {
+    licensingInformationAccessorService,
+        $timeout) {
     var map = null;
     var miniMap = null;
     var view = null;
@@ -68,22 +69,48 @@ function MapFactory($http,
         getScaleFromResolution: getScaleFromResolution,
         setUnitBoundaries: setUnitBoundaries,
         setDeliveryPoint: setDeliveryPoint,
-        setAccessLink : setAccessLink,
+        setDeliveryPointOnLoad: setDeliveryPointOnLoad,
+        setAccessLink: setAccessLink,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
         GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
         LicenceInfo: LicenceInfo
+
     };
 
-    function LicenceInfo(displayText) {
-     
+    function LicenceInfo(displayText, layerName, layerSource) {
         var map = getMap();
-
-        var attribution = new ol.Attribution({
-            html: displayText
-        })
-        map.getLayers().getArray()[0].getSource().setAttributions(attribution);
-
+        var layer = map.getLayers();
+        if (layerName !== undefined && layerName !== GlobalSettings.baseLayerName) {
+            layer.forEach(function (layer) {
+                var attribution = new ol.Attribution({
+                    html: ""
+                });
+                layer.getSource().setAttributions(attribution);
+            });
+            if (layerName === GlobalSettings.accessLinkLayerName || layerName === GlobalSettings.unitBoundaryLayerName) {
+                layerSource.setAttributions(attribution);
+            }
+            else {
+                layerSource.setAttributions(new ol.Attribution({
+                    html: licensingInformationAccessorService.getLicensingInformation()[0].value
+                }));
+            }
+        }
+        else {           
+            if (map.getLayers().getArray()[0] !== undefined) {             
+                layer.forEach(function (layer) {
+                    var attribution = new ol.Attribution({
+                        html: ""
+                    });
+                    layer.getSource().setAttributions(attribution);
+                });
+                var attribution = new ol.Attribution({
+                    html: licensingInformationAccessorService.getLicensingInformation()[0].value
+                })
+                map.getLayers().getArray()[0].getSource().setAttributions(attribution);
+            }
+        }
     }
 
     function initialiseMap() {
@@ -106,22 +133,12 @@ function MapFactory($http,
             renderBuffer: 1000
         });
 
-     
+
         map = new ol.Map({
-            //layers: layers.map(function (a) { return a.layer }),
-            layers: [
-          new ol.layer.Tile({
-              source: new ol.source.OSM({
-                  attributions: [
-                    new ol.Attribution({
-                     
-                    })
-                  ]
-              })
-          })
-            ],
+            layers: layers.map(function (a) { return a.layer }),
             target: 'map',
             view: view,
+            logo: false,
             loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
             controls: []
@@ -129,9 +146,12 @@ function MapFactory($http,
 
         map.addControl(getCustomScaleLine());
         map.addControl(new ol.control.Attribution());
+        var licenseIcon = document.getElementsByClassName("ol-attribution");
+        var licenseButton = licenseIcon[0].getElementsByTagName('button');
+        licenseButton[0].title = '';
 
-       // map.addControl(new ol.control.ScaleLine());
-      //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";
+        // map.addControl(new ol.control.ScaleLine());
+        //  document.getElementsByClassName('ol-overlaycontainer-stopevent')[1].style.visibility = "hidden";
 
         var external_control = new ol.control.Zoom({
             target: $document[0].getElementById('zoom-control')
@@ -140,7 +160,7 @@ function MapFactory($http,
 
         units = map.getView().getProjection().getUnits();
         mpu = ol.proj.METERS_PER_UNIT[units];
-      
+
     }
 
 
@@ -313,7 +333,7 @@ function MapFactory($http,
         layerObj.disabled = layerObj.disabled ? true : false;
         layerObj.onMiniMap = layerObj.onMiniMap ? true : false;
         layerObj.keys = layerObj.keys ? layerObj.keys : [];
-        layerObj.selectorVisible = layerObj.selectorVisible == angular.isUndefined(undefined)  ? true : layerObj.selectorVisible;
+        layerObj.selectorVisible = layerObj.selectorVisible == angular.isUndefined(undefined) ? true : layerObj.selectorVisible;
 
         layerObj.layer.set('name', layerObj.layerName);
         if (angular.isDefined(layerObj.layer.setZIndex))
@@ -359,7 +379,7 @@ function MapFactory($http,
     function getCustomScaleLine() {
         customScaleLine = function (opt_options) {
             var options = opt_options ? opt_options : {};
-            var className = options.className !== angular.isUndefined(undefined)  ? options.className : 'ol-scale-line';
+            var className = options.className !== angular.isUndefined(undefined) ? options.className : 'ol-scale-line';
             this.element_ = $document[0].createElement('DIV');
             this.renderedVisible_ = false;
             this.viewState_ = null;
@@ -501,8 +521,45 @@ function MapFactory($http,
 
             if (featureToSelect)
                 selectedFeatures.push(featureToSelect);
-        });      
+        });
     }
+
+    function setDeliveryPointOnLoad(long, lat) {
+        map.getView().setCenter([long, lat]);
+        map.getView().setResolution(0.5600011200022402);
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        deliveryPointsLayer.layer.getSource().clear();
+        deliveryPointsLayer.selected = true;
+        deliveryPointsLayer.layer.setVisible(true)
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+        var extent = map.getView().calculateExtent(map.getSize());
+        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
+            var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
+            deliveryPointsLayer.layer.getSource().addFeatures(features);
+
+            var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+
+            var select = new ol.interaction.Select({ style: style });
+
+            map.addInteraction(select);
+
+            //var selectedFeatures = select.getFeatures();
+
+            //var featureToSelect;
+            //angular.forEach(features, function (feature, index) {
+            //    var featureLatitude = feature.values_.geometry.getCoordinates()[1];
+            //    var featureLongitude = feature.values_.geometry.getCoordinates()[0];
+
+            //    if (featureLatitude === lat && featureLongitude === long) {
+            //        featureToSelect = feature;
+            //    }
+            //});
+
+            //if (featureToSelect)
+            //    selectedFeatures.push(featureToSelect);
+        });
+    }
+
 
     function locateDeliveryPoint(long, lat) {
         map.getView().setCenter([long, lat]);

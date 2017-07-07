@@ -74,9 +74,9 @@
       <HintPath>..\packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Types, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Microsoft.SqlServer.Types.dll</HintPath>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Types.14.0.314.76\lib\net40\Microsoft.SqlServer.Types.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Moq, Version=4.7.1.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.7.1\lib\net45\Moq.dll</HintPath>
@@ -111,7 +111,7 @@
     <Compile Include="DataService\DeliveryPointsDataServiceFixture.cs" />
     <Compile Include="DataService\DeliveryRouteDataServiceFixture.cs" />
     <Compile Include="DataService\OSRoadLinkDataServiceFixture.cs" />
-    <Compile Include="DataService\UnitLocationRepositoryFixture.cs" />
+    <Compile Include="DataService\UnitLocationDataServiceFixture.cs" />
     <Compile Include="DataService\PostCodeDataServiceFixture.cs" />
     <Compile Include="DataService\ReferenceDataCategoryDataServiceFixture.cs" />
     <Compile Include="DataService\RoadNameDataServiceFixture.cs" />

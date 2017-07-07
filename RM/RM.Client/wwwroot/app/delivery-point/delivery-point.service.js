@@ -10,7 +10,8 @@ deliveryPointService.$inject = [
     '$mdDialog',
     '$state',
     'mapFactory',
-    'referenceDataConstants'
+    'referenceDataConstants',
+    '$rootScope'
 ];
 
 function deliveryPointService(
@@ -22,7 +23,8 @@ function deliveryPointService(
     $mdDialog,
     $state,
     mapFactory,
-    referenceDataConstants) {
+    referenceDataConstants,
+    $rootScope) {
     vm = this;
     vm.positionedDeliveryPointList = [];
 
@@ -154,12 +156,18 @@ function deliveryPointService(
     }
 
     function UpdateDeliverypoint(positionedDeliveryPointList) {
+        var deferred = $q.defer();
         vm.positionedDeliveryPointList = positionedDeliveryPointList;
         deliveryPointAPIService.UpdateDeliverypoint(positionedDeliveryPointList[0]).then(function (result) {
+            $rootScope.$broadcast('disablePrintMap', {
+                disable: false
+            });
             mapFactory.setAccessLink();
-            mapFactory.setDeliveryPoint(result.xCoordinate, result.yCoordinate);
+            mapFactory.setDeliveryPointOnLoad(result.xCoordinate, result.yCoordinate);
             guidService.setGuid(result.id);
             $state.go('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });
+
         });
+        return deferred.promise;
     }
 }

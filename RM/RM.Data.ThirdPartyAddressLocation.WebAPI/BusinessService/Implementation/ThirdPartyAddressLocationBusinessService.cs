@@ -40,8 +40,16 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// <returns>Address Location DTO</returns>
         public async Task<object> GetAddressLocationByUDPRNJson(int uDPRN)
         {
-            AddressLocationDTO addressLocationDto = await this.addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
-            return GetAddressLocationJsonData(addressLocationDto);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetAddressLocationByUDPRNJson"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                AddressLocationDTO addressLocationDto = await this.addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
+                var getAddressLocationJsonData = GetAddressLocationJsonData(addressLocationDto);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getAddressLocationJsonData;
+            }
         }
 
         /// <summary>
@@ -51,7 +59,15 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// <returns>AddressLocationDTO object</returns>
         public async Task<AddressLocationDTO> GetAddressLocationByUDPRN(int uDPRN)
         {
-            return await addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetAddressLocationByUDPRN"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var getAddressLocationByUDPRN = await addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getAddressLocationByUDPRN;
+            }
         }
 
         #region Save USR Details to Database
@@ -64,7 +80,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveUSRDetails"))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.SaveUSRDetails"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);

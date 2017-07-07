@@ -113,6 +113,7 @@
                         maintainable = referenceDataCategories.Maintainable
                     }));
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return nameValuePairList;
             }

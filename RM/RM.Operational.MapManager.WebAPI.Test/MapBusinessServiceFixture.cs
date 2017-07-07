@@ -1,12 +1,14 @@
-﻿using Moq;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.MapManager.WebAPI.BusinessService;
 using RM.Operational.MapManager.WebAPI.IntegrationService;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace RM.Operational.MapManager.WebAPI.Test
 {
@@ -16,6 +18,7 @@ namespace RM.Operational.MapManager.WebAPI.Test
         private IMapBusinessService testCandidate;
         private Mock<IMapIntegrationService> mockMapIntegrationService;
         private Mock<IConfigurationHelper> mockConfigurationHelper;
+        private Mock<ILoggingHelper> loggingHelperMock;
         private string pdfFileName = "BCAEE1E2-5EFE-4B3C-8D75-0ACF749118D4.png";
 
         [Test]
@@ -84,11 +87,16 @@ namespace RM.Operational.MapManager.WebAPI.Test
         {
             mockMapIntegrationService = CreateMock<IMapIntegrationService>();
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
 
             mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(It.IsAny<string>())).Returns(Path.GetTempPath());
             mockMapIntegrationService.Setup(x => x.GenerateReportWithMap(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(pdfFileName);
 
-            testCandidate = new MapBusinessService(mockMapIntegrationService.Object, mockConfigurationHelper.Object);
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new MapBusinessService(mockMapIntegrationService.Object, mockConfigurationHelper.Object, loggingHelperMock.Object);
         }
     }
 }

@@ -160,10 +160,10 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             report.AppendChild(pageFooter);
             report.AppendChild(content);
 
-            //Section 1 Header
+            // Section 1 Header
             section = doc.CreateElement(RouteLogConstants.Section);
 
-            //Section 1 Header 1
+            // Section 1 Header 1
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             heading1.InnerText = RouteLogConstants.RouteSummaryHeader;
@@ -171,10 +171,10 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 
-            //Section 2
+            // Section 2
             section = doc.CreateElement(RouteLogConstants.Section);
 
-            //Section 2 columns 1 i.e Table 1
+            // Section 2 columns 1 i.e Table 1
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             data = GetSectionColumnData(1, routeLogSummaryModelDTO);
@@ -182,30 +182,30 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             sectionColumn.AppendChild(table);
             section.AppendChild(sectionColumn);
 
-            //Section 2 columns 2 i.e Table 2
+            // Section 2 columns 2 i.e Table 2
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             data = GetSectionColumnData(2, routeLogSummaryModelDTO);
-            table = CreateTableWithFixedRowsColumns(2, data, doc);
+            table = CreateTableWithFixedRowsColumns(2, data, doc, true);
             sectionColumn.AppendChild(table);
             section.AppendChild(sectionColumn);
 
-            //Section 2 columns 3 i.e Table 3
+            // Section 2 columns 3 i.e Table 3
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             paragraph = doc.CreateElement(RouteLogConstants.Paragraph);
             paragraph.InnerText = RouteLogConstants.RouteSummaryAlias;
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             data = GetSectionColumnData(3, routeLogSummaryModelDTO);
-            table = CreateTableWithFixedRowsColumns(2, data, doc);
+            table = CreateTableWithFixedRowsColumns(2, data, doc, true);
             sectionColumn.AppendChild(table);
             sectionColumn.AppendChild(paragraph);
             section.AppendChild(sectionColumn);
             content.AppendChild(section);
 
-            //Section 3
+            // Section 3
             section = doc.CreateElement(RouteLogConstants.Section);
 
-            //Section 1 Header 1
+            // Section 1 Header 1
             sectionColumn = doc.CreateElement(RouteLogConstants.SectionColumn);
             sectionColumn.SetAttribute(RouteLogConstants.Width, "1");
             heading2.InnerText = RouteLogConstants.RouteSummarySequencedPoints;
@@ -216,7 +216,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 
             content.AppendChild(section);
             doc.AppendChild(report);
-            return doc.InnerXml; ;
+            return doc.InnerXml;
         }
 
         private Dictionary<string, string> GetSectionColumnData(int sectionNumber, RouteLogSummaryModelDTO routeLogSummaryModelDTO)
@@ -247,6 +247,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 data.Add(RouteLogConstants.NoD2D, "0");
                 data.Add(RouteLogConstants.DPExemptions, "0");
             }
+
             return data;
         }
 
@@ -256,9 +257,13 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             data.Add(new List<string> { RouteLogConstants.Street, RouteLogConstants.Number, RouteLogConstants.DeliveryPoint, RouteLogConstants.MultipleOccupancy, RouteLogConstants.SpecialInstructions, RouteLogConstants.AreaHazards });
             foreach (var routeLogSequencedPointsDTO in routeLogSequencedPointsDTOs)
             {
-                data.Add(new List<string> { routeLogSequencedPointsDTO.StreetName, routeLogSequencedPointsDTO.Description,routeLogSequencedPointsDTO.DeliveryPointCount.ToString(),
-                    routeLogSequencedPointsDTO.MultipleOccupancy!=null ?routeLogSequencedPointsDTO.MultipleOccupancy.ToString(): "0", string.Empty,string.Empty});
+                data.Add(new List<string>
+                            {
+                                routeLogSequencedPointsDTO.StreetName, routeLogSequencedPointsDTO.Description, routeLogSequencedPointsDTO.DeliveryPointCount.ToString(),
+                                routeLogSequencedPointsDTO.MultipleOccupancy != null ? routeLogSequencedPointsDTO.MultipleOccupancy.ToString() : "0", string.Empty, string.Empty
+                            });
             }
+
             return data;
         }
 
@@ -274,6 +279,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             {
                 table.SetAttribute(RouteLogConstants.Width, "100%");
             }
+
             table.SetAttribute(RouteLogConstants.Borders, "false");
             table.SetAttribute(RouteLogConstants.UseShading, "true");
 
@@ -291,7 +297,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 var item = data.ElementAt(i);
                 row = doc.CreateElement(RouteLogConstants.Row);
 
-                if (i % 2 == 0)
+                if (i % 2 != 0)
                 {
                     row.SetAttribute(RouteLogConstants.Shade, "true");
                 }
@@ -326,6 +332,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 column.SetAttribute(RouteLogConstants.Width, "1");
                 columns.AppendChild(column);
             }
+
             table.AppendChild(columns);
 
             for (int i = 0; i < data.Count; i++)
@@ -340,6 +347,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 {
                     row = doc.CreateElement(RouteLogConstants.Row);
                 }
+
                 if (i != 0 && i % 2 == 0)
                 {
                     row.SetAttribute(RouteLogConstants.Shade, "true");
@@ -349,7 +357,10 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 {
                     cell = doc.CreateElement(RouteLogConstants.Cell);
                     if (i != 0)
+                    {
                         cell.SetAttribute("align", "center");
+                    }
+
                     cell.InnerText = item[j];
                     row.AppendChild(cell);
                 }
@@ -396,7 +407,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                             // The address belongs to a new route summary group
                             //
                             // Create a summary row from the current route summary group
-                            RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy);
+                            RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy, group.SubBuildingName, group.BuildingName);
                             routeSummary.Add(row);
 
                             // Initialize a new route summary group from the current address
@@ -411,7 +422,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                     // Process the final route summary group
                     //
                     // Create a summary row from the current route summary group
-                    RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy);
+                    RouteLogSequencedPointsDTO row = new RouteLogSequencedPointsDTO(group.StreetName, group.Description, group.DeliveryPointCount, group.MultipleOccupancy, group.SubBuildingName, group.BuildingName);
                     routeSummary.Add(row);
                 }
             }

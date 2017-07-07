@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
-using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.AccessLink.WebAPI.Utils;
@@ -23,8 +22,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
     /// </summary>
     public class AccessLinkBusinessService : Interface.IAccessLinkBusinessService
     {
-        
-
         #region Member Variables
 
         private IAccessLinkDataService accessLinkDataService = default(IAccessLinkDataService);

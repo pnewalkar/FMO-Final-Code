@@ -6,6 +6,7 @@ using NUnit.Framework;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 
@@ -23,6 +24,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
         private Guid deliveryUnitID = System.Guid.NewGuid();
         private Guid userID = System.Guid.NewGuid();
         private IUnitLocationBusinessService testCandidate;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void Test_FetchDeliveryUnitForUser()
@@ -85,6 +87,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             mockPostCodeSectorDataService = CreateMock<IPostCodeSectorDataService>();
             mockPostCodeDataService = CreateMock<IPostCodeDataService>();
             mockScenarioDataService = CreateMock<IScenarioDataService>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
 
             userID = System.Guid.Parse("A867065B-B91E-E711-9F8C-28D244AEF9ED");
             deliveryUnitID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
@@ -105,7 +108,11 @@ namespace RM.Data.UnitManager.WebAPI.Test
 
             mockScenarioDataService.Setup(x => x.FetchScenario(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(new List<ScenarioDTO>());
 
-            testCandidate = new UnitLocationBusinessService(mockUnitLocationDataService.Object, mockPostCodeSectorDataService.Object, mockPostCodeDataService.Object, mockScenarioDataService.Object);
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new UnitLocationBusinessService(mockUnitLocationDataService.Object, mockPostCodeSectorDataService.Object, mockPostCodeDataService.Object, mockScenarioDataService.Object, loggingHelperMock.Object);
 
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
         }

@@ -55,6 +55,7 @@ function AccessLinkController(
 
     function createAccessLink() {
         var accessLink = null;
+        vm.isOnceClicked = true;
 
         var accessLinkDTO = {
             "OperationalObjectPoint": JSON.stringify(coordinatesService.getCordinates()),
@@ -81,6 +82,9 @@ function AccessLinkController(
                     disable: false
                 });
             }
+        })
+        .finally(function () {
+            vm.isOnceClicked = false;
         });
     }
 

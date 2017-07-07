@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.DataMiddleware;
+using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.Entities;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -18,9 +19,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
     /// <seealso cref="RM.CommonLibrary.EntityFramework.DataService.Interfaces.IUserRoleUnitDataService"/>
     public class UserRoleUnitDataService : DataServiceBase<UserRoleUnit, RMDBContext>, IUserRoleUnitDataService
     {
-        public UserRoleUnitDataService(IDatabaseFactory<RMDBContext> databaseFactory)
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
+
+        public UserRoleUnitDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
@@ -30,12 +34,19 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <returns>Guid</returns>
         public async Task<Guid> GetUserUnitInfo(string userName)
         {
-            var userUnit = await (from r in DataContext.UserRoleUnits.AsNoTracking()
-                                  join u in DataContext.Users on r.User_GUID equals u.ID
-                                  where u.UserName == userName
-                                  select r.Unit_GUID).FirstOrDefaultAsync();
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUserUnitInfo"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ActionManagerAPIPriority, LoggerTraceConstants.UserRoleUnitDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return userUnit;
+                var userUnit = await (from r in DataContext.UserRoleUnits.AsNoTracking()
+                                      join u in DataContext.Users on r.User_GUID equals u.ID
+                                      where u.UserName == userName
+                                      select r.Unit_GUID).FirstOrDefaultAsync();
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ActionManagerAPIPriority, LoggerTraceConstants.UserRoleUnitDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return userUnit;
+            }
         }
     }
 }

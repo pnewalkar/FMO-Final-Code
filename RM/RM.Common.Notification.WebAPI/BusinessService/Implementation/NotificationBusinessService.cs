@@ -51,7 +51,14 @@ namespace RM.Common.Notification.WebAPI.BusinessService
         /// <returns>boolean value</returns>
         public async Task<bool> CheckIfNotificationExists(int uDPRN, string action)
         {
-            return await notificationDataService.CheckIfNotificationExists(uDPRN, action);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.CheckIfNotificationExists"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                var checkIfNotificationExists = await notificationDataService.CheckIfNotificationExists(uDPRN, action);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return checkIfNotificationExists;
+            }
         }
 
         /// <summary>
@@ -85,7 +92,14 @@ namespace RM.Common.Notification.WebAPI.BusinessService
         /// <returns>NotificationDTO object</returns>
         public async Task<NotificationDTO> GetNotificationByUDPRN(int uDPRN)
         {
-            return await notificationDataService.GetNotificationByUDPRN(uDPRN);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetNotificationByUDPRN"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                var getNotificationByUDPRN = await notificationDataService.GetNotificationByUDPRN(uDPRN);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return getNotificationByUDPRN;
+            }
         }
     }
 }

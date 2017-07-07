@@ -24,7 +24,6 @@
     /// </summary>
     public class NYBFileProcessUtility : INYBFileProcessUtility
     {
-
         #region private member declaration
 
         private static string dateTimeFormat = NYBLoaderConstants.DATETIMEFORMAT;

@@ -1,3 +1,4 @@
+
 angular
     .module('deliveryPoint')
     .controller("DeliveryPointController", DeliveryPointController)
@@ -97,13 +98,14 @@ function DeliveryPointController(
     function deliveryPoint() {
         deliveryPointService.openModalPopup(popUpSettingService.deliveryPoint(vm));
         $scope.$emit("dialogOpen", "deliveryPoint");
-        $rootScope.$broadcast('disablePrintMap', {
-            disable: true
-        });
     }
 
     function closeWindow() {
         vm.hide = false;
+        vm.display = false;
+        vm.searchText = "";
+        vm.mailvol = "";
+        vm.multiocc = "";
         deliveryPointService.closeModalPopup();
     }
 
@@ -218,12 +220,17 @@ function DeliveryPointController(
     }
 
     function savePositionedDeliveryPoint() {
+        vm.isOnceClicked = true;
         vm.positionedDeliveryPointList = $stateParams.positionedDeliveryPointList
-        deliveryPointService.UpdateDeliverypoint(vm.positionedDeliveryPointList);
+        deliveryPointService.UpdateDeliverypoint(vm.positionedDeliveryPointList)
+        .finally(function () {
+            vm.isOnceClicked = false;
+        });
         vm.positionedDeliveryPointList = null;
     }
 
     function createDeliveryPoint() {
+        vm.isOnceClicked = true;
 
         var addDeliveryPointDTO =
             {
@@ -239,20 +246,19 @@ function DeliveryPointController(
                 "AddressLocationDTO": null
             };
         deliveryPointAPIService.CreateDeliveryPoint(addDeliveryPointDTO).then(function (response) {
-
+           
             if (response.message && (response.message == "Delivery Point created successfully" || response.message == "Delivery Point created successfully without access link")) {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, true);
                 mapFactory.setDeliveryPoint(response.xCoordinate, response.yCoordinate);
                 guidService.setGuid(response.id);
                 mapFactory.setAccessLink();
                 vm.closeWindow();
-                $rootScope.$broadcast('disablePrintMap', {
-                    disable: false
-                });
+                vm.hide = true;
             }
             else if (response.message && response.message == "Delivery Point created successfully without location") {
                 setDeliveryPoint(response.id, response.rowVersion, vm.addressDetails, false);
-            //    setDP();
+                //    setDP();
+                vm.hide = true;
                 vm.closeWindow();
 
             }
@@ -263,6 +269,11 @@ function DeliveryPointController(
                 vm.errorMessageTitle = "Duplicates found";
 
             }
+            $rootScope.$broadcast('disablePrintMap', {
+                disable: true
+            });
+        }).finally(function () {
+            vm.isOnceClicked = false;
         });
     }
 
