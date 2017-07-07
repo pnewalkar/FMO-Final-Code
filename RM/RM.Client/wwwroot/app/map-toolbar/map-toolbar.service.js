@@ -28,10 +28,10 @@ function mapToolbarService(
     }
 
     function getMapButtons(isObjectSelected) {
-        if (isObjectSelected == false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
+        if (isObjectSelected === false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
             vm.mapButtons = deleteButton(vm.mapButtons, CommonConstants.ButtonShapeType.del);
         }
-        else if (isObjectSelected == true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) == -1) {
+        else if (isObjectSelected === true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) === -1) {
             vm.mapButtons = addButton(vm.mapButtons, CommonConstants.ButtonShapeType.del);
         }
         return vm.mapButtons;
@@ -40,11 +40,11 @@ function mapToolbarService(
     function setSelectedButton(button, selectedButton) {
         var shape = getShapeForButton(button);
 
-        if (button == vm.selectedButton && vm.mapButtons.length != 1) {
+        if (button === vm.selectedButton && vm.mapButtons.length !== 1) {
             deselectButton(button);
             return false;
         }
-        else if (button != vm.selectedButton) {
+        else if (button !== vm.selectedButton) {
             vm.selectedButton = button;
             return true;
         }
@@ -54,7 +54,7 @@ function mapToolbarService(
 
     function deselectButton(button) {
         var emitSelect = false;
-        if (button == vm.selectedButton) {
+        if (button === vm.selectedButton) {
             if (vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.select) >= 0) {
                 vm.selectedButton = CommonConstants.ButtonShapeType.select;
                 emitSelect = true;

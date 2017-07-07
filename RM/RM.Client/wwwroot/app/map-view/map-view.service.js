@@ -339,7 +339,7 @@ function mapService($http,
     function getLayer(layerName) {
         var returnVal = null;
         mapLayers().forEach(function (layer) {
-            if (layer.layerName == layerName)
+            if (layer.layerName === layerName)
                 returnVal = layer;
         })
         return returnVal;
@@ -348,7 +348,7 @@ function mapService($http,
         return vm.activeSelection;
     }
     function getActiveFeature() {
-        if (vm.activeSelection == null)
+        if (vm.activeSelection === null)
             return null;
         return vm.activeSelection.layer.getSource().getFeatureById(vm.activeSelection.featureID);
     }
@@ -409,7 +409,7 @@ function mapService($http,
             if (layer.selected && layer.selectorVisible)
                 summary += layer.layerName + ", ";
         });
-        if (summary.lastIndexOf(", ") == summary.length - 2)
+        if (summary.lastIndexOf(", ") === summary.length - 2)
             summary = summary.substring(0, summary.length - 2);
         else
             summary = "No layers selected";
@@ -425,7 +425,7 @@ function mapService($http,
         setSelections({
             featureID: getActiveFeature().getId(), layer: vm.selectedLayer
         }, []);
-        if (vm.layerName == GlobalSettings.drawingLayerName) {
+        if (vm.layerName === GlobalSettings.drawingLayerName) {
             var collection = new ol.Collection();
             collection.push(getActiveFeature());
             collection.forEach(function (feature) {
@@ -451,7 +451,7 @@ function mapService($http,
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
-        if (button.name == "area") {
+        if (button.name === "area") {
             style.opacity = vm.polygonOpacity;
         }
         vm.interactions.draw = setDrawInteraction(button, style);
@@ -467,20 +467,20 @@ function mapService($http,
                 break;
         }
         var name = button.name;
-        if (name == "point") {
+        if (name === "point") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "deliverypoint");
                 evt.feature.setId(createGuid())
             })
         }
 
-        else if (name == "accesslink") {
+        else if (name === "accesslink") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "accesslink");
             })
         }
 
-        else if (name == "line") {
+        else if (name === "line") {
             
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
             vm.interactions.draw.on('drawend', function (evt) {
@@ -489,7 +489,7 @@ function mapService($http,
             })
         }
 
-        else if (name == "area") {
+        else if (name === "area") {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.setId(createGuid());
@@ -559,9 +559,7 @@ function mapService($http,
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    //removeInteraction('select');
 			    clearDrawingLayer(true);
-			    // setSelections(null, []);
 			    $rootScope.$broadcast('disablePrintMap', {
 			        disable: true
 			    });
@@ -584,9 +582,6 @@ function mapService($http,
 			        feature: evt.feature,
 			        contextTitle: CommonConstants.AccessLinkActionName
 			    });
-			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
-			    //    reload: 'accessLink'
-			    //});
 			});
     }
     function finishCondition(e) {
@@ -658,7 +653,7 @@ function mapService($http,
             });
             var collection = new ol.Collection();
             collection.push(getActiveFeature());
-            if (vm.layerName == GlobalSettings.drawingLayerName) {
+            if (vm.layerName === GlobalSettings.drawingLayerName) {
             vm.interactions.modify = new ol.interaction.Modify({
                 features: collection
             });
@@ -781,7 +776,7 @@ function mapService($http,
     }
 
     function selectFeatures() {
-        if (vm.interactions.select == null || angular.isUndefined(vm.interactions.select)) {
+        if (vm.interactions.select === null || angular.isUndefined(vm.interactions.select)) {
             vm.interactions.select = new ol.interaction.Select({
                 condition: ol.events.condition.never,
                 style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)
@@ -824,13 +819,13 @@ function mapService($http,
             mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
                   .then(function (response) {
                       if (response != null) {
-                          if (response[0].key == CommonConstants.RouteName) {
+                          if (response[0].key === CommonConstants.RouteName) {
                               deliveryPointDetails.routeName = [response[0].value];
-                              if (response[1].key == CommonConstants.DpUse) {
+                              if (response[1].key === CommonConstants.DpUse) {
                                   deliveryPointDetails.dpUse = response[1].value;
                               }
                           }
-                          else if (response[0].key == CommonConstants.DpUse) {
+                          else if (response[0].key === CommonConstants.DpUse) {
                               deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
@@ -942,7 +937,7 @@ function mapService($http,
     }
 
     function setScaleUnit(scalenumber, scaleunit) {
-        if (scaleunit == 'km') {
+        if (scaleunit === 'km') {
             var scale = scalenumber * 0.621371;
             if (scale < 1) {
                 scale = scalenumber * 1000
@@ -952,7 +947,7 @@ function mapService($http,
                 return Math.round(scale) + ' Mile';
             }
         }
-        else if (scaleunit == 'm') {
+        else if (scaleunit === 'm') {
             var scale = scalenumber * 0.000621371;
             if (scale < 1) {
                 return scalenumber + ' Metre';
