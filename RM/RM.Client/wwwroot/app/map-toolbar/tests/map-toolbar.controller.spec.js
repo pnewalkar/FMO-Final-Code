@@ -9,7 +9,7 @@ describe('MapToolbar: Controller', function() {
         showButton: function() {return []},
         autoSelect: function() {return []},
         getShapeForButton: function() { return []},
-        setSelectedButton: function () { return true }
+        setSelectedButton: function () { return; }
      };
 
     beforeEach(module('mapToolbar'));
