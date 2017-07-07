@@ -84,7 +84,8 @@
           }
         ]
     },
-    SenarioOperationState: { AppCategoryName: "SenarioOperationState", DBCategoryName: "Senario Operation State", ReferenceDataNames: [] }
+    SenarioOperationState: { AppCategoryName: "SenarioOperationState", DBCategoryName: "Senario Operation State", ReferenceDataNames: [] },
+    DeliveryPointColor: { DBCategoryName: "Delivery Point Color", AppCategoryName: "DeliveryPointColor", ReferenceDataNames: [] }
 };
 
 angular.module('RMApp')
