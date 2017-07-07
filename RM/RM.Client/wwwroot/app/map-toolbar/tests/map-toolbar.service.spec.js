@@ -1,37 +1,24 @@
 'use strict';
-
 describe('MapToolbar: Service', function() {
     var mapToolbarService;
     var mapService;
     var CommonConstants;
     
-
-    //Mock MockMapViewService properties define
-    var MockMapViewService = {
-        getMapButtons: function() { return ["select", "point", "line", "accesslink"]; }
-    };
-
-    //Mock CommonConstants value define
     var MockCommonConstants = {
-        GetSessionStorageItemType:"roleAccessData",
-        EntityType: { DeliveryPoint: "DeliveryPoint", StreetNetwork: "StreetNetwork", Route: "Route", Postcode: "Postcode" },
         ButtonShapeType: { point: "point", line: "line", accesslink: "accesslink", select: "select" },
         GeometryType: { Point: "Point", LineString: "LineString" } ,
         pointTypes: { DeliveryPoint: { text: "Delivery Point", value: 'deliverypoint', style: "deliverypoint" }, AcessLink: { text: "Access Link", value: 'accesslink', style: "accesslink" }, Road: { text: "Road", value: 'roadlink', style: "roadlink" }, Selected: { text: "Selected", value: '', style: "deliverypoint" } },
     };
-
-    //Load Module
-    beforeEach(module('mapToolbar'));
    
     beforeEach(function(){
+        module('mapToolbar');
         module(function ($provide) {
-        $provide.value('mapService', MockMapViewService);
-        $provide.value('CommonConstants', MockCommonConstants);
-
+            $provide.value('mapService', {
+                getMapButtons: function() { return ["select", "point", "line", "accesslink"]; }
+            });
+            $provide.value('CommonConstants', MockCommonConstants);
         });
-    });
 
-    beforeEach(function() {
         inject(function(_mapToolbarService_,_mapService_,_CommonConstants_) {
             mapToolbarService = _mapToolbarService_;
             mapService = _mapService_;
@@ -39,48 +26,14 @@ describe('MapToolbar: Service', function() {
         });
     });
 
-
-    it('should have initialize mapButtons', function(){
-
-        spyOn(mapToolbarService,'getMapButtons');
-        mapToolbarService.getMapButtons();
-
-        expect(mapToolbarService.getMapButtons).toHaveBeenCalled();
-        expect(mapToolbarService.getMapButtons).toBeDefined();            
-
+    it('should call mapService of getMapButtons when getMapButtons method is called', function(){
+        spyOn(mapService,'getMapButtons');
+        var mapButtons = mapToolbarService.getMapButtons();
+        expect(mapService.getMapButtons).toHaveBeenCalled();
     });
 
-    it('should be return list of mapButton value', function(){
-
-        var mapButtons = MockMapViewService.getMapButtons();
-        expect(mapButtons).toContain('select');
-        expect(mapButtons).toContain('point');
-        expect(mapButtons).toContain('line');
-        expect(mapButtons).toContain('accesslink');
-        expect(mapButtons).toEqual(['select','point','line','accesslink']);
-        expect(mapButtons.length).toEqual(4);
-
-    });
-
-    it('should be initialize autoSelect button', function(){
-        
-        spyOn(mapToolbarService,'autoSelect').and.callThrough();
-        mapToolbarService.autoSelect();
-
-        expect(mapToolbarService.autoSelect).toHaveBeenCalled();
-    });
-
-        
-    it('should be return false if seleccted Button already select ', function(){
-
-        spyOn(mapToolbarService,'setSelectedButton').and.callThrough();
-        
-        mapToolbarService.selectedButton = 'select';
-        mapToolbarService.setSelectedButton('select','select');
-
-        //expect false
-        expect(mapToolbarService.setSelectedButton).toHaveBeenCalled();
-        expect(mapToolbarService.setSelectedButton('select','select')).toBe(false);
+    it('should return true if selected Button not selected ', function(){
+        expect(mapToolbarService.setSelectedButton('select','point')).toBe(true);
     });
 
     it('should return undefined for a non-shape button', function() {
@@ -94,10 +47,17 @@ describe('MapToolbar: Service', function() {
 
         var shape = mapToolbarService.getShapeForButton('accesslink');
         expect(shape).toBe('LineString');
+    });   
+
+    it('should call mapService of getMapButtons and return array when showButton method called ', function() {
+        expect(mapToolbarService.showButton('select')).toBe(true);                    
     });
 
-    it('Should be showButton return true', function(){
-        var myVal = mapToolbarService.showButton('select');
-        expect(myVal).toBe(true);
+    it('should call setSelectedButton and return `true` when autoSelect method called', function() {
+        expect(mapToolbarService.showButton('select')).toBe(true);        
+    });
+
+    it('should retun a value when selectDp mehod called', function() {
+        expect(mapToolbarService.selectDP('select')).toEqual('select');
     });
 });
