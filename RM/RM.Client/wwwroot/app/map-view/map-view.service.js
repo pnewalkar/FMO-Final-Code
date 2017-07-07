@@ -17,8 +17,7 @@ mapService.$inject = ['$http',
                      '$stateParams',
                      '$rootScope',
                      'layersAPIService',
-                     'CommonConstants',
-                     'mapToolbarService'
+                     'CommonConstants'
 ];
 
 function mapService($http,
@@ -37,8 +36,7 @@ function mapService($http,
                     $stateParams,
                     $rootScope,
                     layersAPIService,
-                    CommonConstants,
-                    mapToolbarService
+                    CommonConstants
                    ) {
     var vm = this;
     vm.map = null;
@@ -83,7 +81,6 @@ function mapService($http,
     return {
         initialise: initialise,
         initialiseMiniMap: initialiseMiniMap,
-        getMapButtons: getMapButtons,
         mapLayers: mapLayers,
         getDotStyle: getDotStyle,
         deleteSelectedFeature: deleteSelectedFeature,
@@ -335,9 +332,7 @@ function mapService($http,
         mapFactory.initialiseMiniMap();
         vm.miniMap = mapFactory.getMiniMap();
     }
-    function getMapButtons() {
-        return mapToolbarService.getMapButtonsList();
-    }
+ 
     function mapLayers() {
         return mapFactory.getAllLayers();
     }
@@ -457,8 +452,7 @@ function mapService($http,
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
         if (button.name == "area") {
-            //style.opacity = 0.4;
-            style.opacity = vm.opacity;
+            style.opacity = vm.polygonOpacity;
         }
         vm.interactions.draw = setDrawInteraction(button, style);
         switch (button.name) {
