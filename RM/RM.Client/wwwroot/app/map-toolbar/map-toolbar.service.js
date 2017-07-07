@@ -29,10 +29,10 @@ function mapToolbarService(
 
     function getMapButtons(isObjectSelected) {
         if (isObjectSelected === false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
-            vm.mapButtons = deleteButton(vm.mapButtons, CommonConstants.ButtonShapeType.del);
+            deleteButton(CommonConstants.ButtonShapeType.del);
         }
         else if (isObjectSelected === true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) === -1) {
-            vm.mapButtons = addButton(vm.mapButtons, CommonConstants.ButtonShapeType.del);
+            addButton(CommonConstants.ButtonShapeType.del);
         }
         return vm.mapButtons;
     }
@@ -96,13 +96,11 @@ function mapToolbarService(
         return isSelected;
     }
 
-    function deleteButton(object, element) {
-        object.splice(object.indexOf(element), 1);
-        return object
+    function deleteButton(element) {
+        vm.mapButtons.splice(vm.mapButtons.indexOf(element), 1);
     }
 
-    function addButton(object, element) {
-        object.push(element);
-        return object
+    function addButton(element) {
+        vm.mapButtons.push(element);
     }
 }
