@@ -55,3 +55,32 @@ input[name="zoom-scale"] {
 .context-panel{
     height:calc(100% - 30px);
 }
+
+/*.ol-custom-overviewmap,
+.ol-custom-overviewmap.ol-uncollapsible {
+bottom: auto;
+left: auto;
+right: 0;
+top: 0;
+}
+
+.ol-custom-overviewmap:not(.ol-collapsed)  {
+border: 1px solid black;
+}
+
+.ol-custom-overviewmap .ol-overviewmap-map {
+border: none;
+width: 300px;
+}
+
+.ol-custom-overviewmap:not(.ol-collapsed) button{
+bottom: auto;
+left: auto;
+right: 1px;
+top: 1px;
+}
+
+.ol-rotate {
+top: 170px;
+right: 0;
+}*/

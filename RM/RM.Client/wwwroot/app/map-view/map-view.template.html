@@ -23,8 +23,9 @@
     </div>
 
 
-    <div id="zoom-control" class="zoom-control">
-    </div>
+    <div id="zoom-control" class="zoom-control"></div>
+
+    <div id="external_control" ng-class="{vm.oncollapse = 'true' ? hideMiniMap : default"></div>
 
         <map-panel class="show-panel"
                    paneltitle="MiniMap"
@@ -33,7 +34,7 @@
                    collapsedtext=""
                    oncreate="vm.initialiseMiniMap"
                    oncollapse="vm.oncollapse">
-            <div id="mini-map"></div>
+            <div id="external_control1"></div>
         </map-panel>
 
         <map-panel class="show-panel"
