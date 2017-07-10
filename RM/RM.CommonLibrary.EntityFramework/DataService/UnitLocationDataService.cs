@@ -107,5 +107,22 @@ namespace RM.CommonLibrary.EntityFramework.DataService
             return GenericMapper.Map<Postcode, PostCodeDTO>(result);
 
         }
+
+        public UnitLocationDTO FetchUnitDetails(Guid unitGuid)
+        {
+            UnitLocation location = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).SingleOrDefault();
+            return GenericMapper.Map<UnitLocation, UnitLocationDTO>(location);
+        }
+
+        public async Task<List<PostCodeDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid unitGuid)
+        {
+            var result = await (from pc in DataContext.Postcodes.AsNoTracking()
+                                join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                where postcodeGuids.Contains(pc.ID) && ul.Unit_GUID == unitGuid
+                                select pc).ToListAsync();
+
+            return GenericMapper.MapList<Postcode, PostCodeDTO>(result);
+
+        }
     }
 }

@@ -46,6 +46,9 @@
         public const int GetPostalAddressSearchDetailsPriority = 8;
         public const int GetPostalAddressDetailsPriority = 8;
         public const int GetPostalAddressDetailsByIdPriority = 8;
+        public const int GetDPUsePriority = 8;
+        public const int SavePAFDetailsPriority = 8;
+        public const int SaveDeliveryPointProcessPriority = 8;
 
         #endregion Priority
 
@@ -144,6 +147,7 @@
         public const int DeliveryRouteDataServiceMethodExitEventId = 9224;
         public const int DeliveryRouteIntegrationServiceMethodEntryEventId = 9233;
         public const int DeliveryRouteIntegrationServiceMethodExitEventId = 9234;
+      
 
         public const int PostalAddressControllerMethodEntryEventId = 9303;
         public const int PostalAddressControllerMethodExitEventId = 9304;
@@ -182,14 +186,25 @@
 
         public const int ThirdPartyLoaderMethodEntryEventId = 9803;
         public const int ThirdPartyLoaderMethodExitEventId = 9804;
-
-        public const int SavePostalAddressBusinessMethodExitEventId = 9118;
+             
         public const int GetPostalAddressSearchDetailsBusinessMethodEntryEventId = 9129;
         public const int GetPostalAddressSearchDetailsBusinessMethodExitEventId = 9130;
         public const int GetPostalAddressDetailsBusinessMethodEntryEventId = 9131;
         public const int GetPostalAddressDetailsBusinessMethodExitEventId = 9132;
         public const int GetPostalAddressDetailsByIdBusinessMethodEntryEventId = 9133;
         public const int GetPostalAddressDetailsByIdBusinessMethodExitEventId = 9134;
+
+        public const int GetDPUseBusinessMethodEntryEventId = 9321;
+        public const int GetDPUseBusinessMethodExitEventId = 9322;
+        public const int GetDPUseDataMethodEntryEventId = 9323;
+        public const int GetDPUseDataMethodExitEventId = 9324;
+
+        public const int SavePostalAddressBusinessMethodEntryEventId = 9117;
+        public const int SavePostalAddressBusinessMethodExitEventId = 9118;
+        public const int SavePAFDetailsBusinessMethodEntryEventId = 9121;
+        public const int SavePAFDetailsBusinessMethodExitEventId = 9122;
+        public const int SaveDeliveryPointProcessBusinessMethodEntryEventId = 9125;
+        public const int SaveDeliveryPointProcessBusinessMethodExitEventId = 9126;    
 
         #endregion EventId
 

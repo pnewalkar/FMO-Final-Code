@@ -17,15 +17,13 @@ using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using System.Diagnostics;
+using System.Collections.Generic;
+using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
     public class DeliveryPointIntegrationService : IDeliveryPointIntegrationService
     {
-        private const string AccessLinkWebAPIName = "AccessLinkWebAPIName";
-        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
-        private const string PostalAddressManagerWebAPIName = "PostalAddressManagerWebAPIName";
-
         #region Property Declarations
 
         private string referenceDataWebAPIName = string.Empty;
@@ -45,11 +43,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         {
             this.httpHandler = httpHandler;
             this.loggingHelper = loggingHelper;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.AccessLinkWebAPIName).ToString() : string.Empty;
-            this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.PostalAddressManagerWebAPIName).ToString() : string.Empty;
-            this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
-            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(Constants.UnitManagerDataWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.AccessLinkWebAPIName).ToString() : string.Empty;
+            this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.PostalAddressManagerWebAPIName).ToString() : string.Empty;
+            this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.UnitManagerDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
@@ -225,7 +223,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostalAddress"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/postaladdresses/", addressGuids);
                 if (!result.IsSuccessStatusCode)
                 {
@@ -233,7 +231,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return JsonConvert.DeserializeObject<List<PostalAddressDBDTO>>(result.Content.ReadAsStringAsync().Result);
             }
         }

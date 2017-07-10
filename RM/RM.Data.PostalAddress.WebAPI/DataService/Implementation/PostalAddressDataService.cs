@@ -3,33 +3,31 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
-    using System.Data.SqlTypes;
+    using System.Data.Entity.Infrastructure;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
-    using DTO.Model;
-    using DTO.UIDropdowns;
-    using Microsoft.SqlServer.Types;
-    using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
-    using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation.MappingConfiguration;
-
-    using RM.DataManagement.PostalAddress.WebAPI.DTO;
-    using RM.DataManagement.PostalAddress.WebAPI.Entities;
-    using RM.CommonLibrary.DataMiddleware;
-    using RM.CommonLibrary.HelperMiddleware;
-    using RM.CommonLibrary.LoggingMiddleware;
-    using System.Data.Entity.Infrastructure;
-    using RM.CommonLibrary.ResourceFile;
-    using RM.CommonLibrary.ExceptionMiddleware;
-    using System.Diagnostics;
     using AutoMapper;
     using CommonLibrary.Utilities.HelperMiddleware;
-    using System.Reflection;
+    using DTO.Model;
+    using RM.CommonLibrary.DataMiddleware;
+    using RM.CommonLibrary.ExceptionMiddleware;
+    using RM.CommonLibrary.HelperMiddleware;
+    using RM.CommonLibrary.LoggingMiddleware;
+    using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation.MappingConfiguration;
+    using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
+    using RM.DataManagement.PostalAddress.WebAPI.DTO;
+    using RM.DataManagement.PostalAddress.WebAPI.Entities;
 
     /// <summary>
     /// DataService to interact with postal address entity
     /// </summary>
     public class PostalAddressDataService : DataServiceBase<PostalAddress, PostalAddressDBContext>, IPostalAddressDataService
     {
+        private const string INSERT = "I";
+        private const string UPDATE = "U";
+        private const string DELETE = "D";
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogDataService fileProcessingLog = default(IFileProcessingLogDataService);
 
@@ -164,7 +162,7 @@
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.InsertAddress"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (objPostalAddress != null)
                     {
@@ -181,7 +179,7 @@
                         await DataContext.SaveChangesAsync();
                         isPostalAddressInserted = true;
                     }
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (DbUpdateException dbUpdateException)
@@ -218,7 +216,7 @@
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var postalAddress = await DataContext.PostalAddresses.Include(m => m.PostalAddressStatus).Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
 
@@ -230,10 +228,9 @@
                 Mapper.Configuration.CreateMapper();
 
                 var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return dtoPostalAddress;
             }
-
         }
 
         /// <summary>
@@ -246,7 +243,7 @@
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 var postalAddress = await DataContext.PostalAddresses.AsNoTracking().Include(l => l.PostalAddressStatus)//.Include(m => m.DeliveryPoints)
                 .FirstOrDefaultAsync(n => n.Postcode == objPostalAddress.Postcode
@@ -324,7 +321,7 @@
                 Mapper.Configuration.CreateMapper();
 
                 var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDBDTO>(postalAddress);
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return dtoPostalAddress;
             }
         }
@@ -486,7 +483,7 @@
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.UpdateAddress"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (objPostalAddress != null)
                     {
@@ -516,7 +513,6 @@
 
                             //if (objAddress.PostalAddressStatus != null && objAddress.PostalAddressStatus.Count > 0)
                             //{
-
                             //}
 
                             //if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
@@ -535,7 +531,7 @@
 
                         await DataContext.SaveChangesAsync();
                         isPostalAddressUpdated = true;
-                        loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                     }
                 }
             }
@@ -590,8 +586,8 @@
                 postCodeDTOs.ForEach(pc => postCodeGuids.Add(pc.ID));
 
                 var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                           //join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
-                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                               //join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
+                                               //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
                                            where postCodeGuids.Contains(pa.PostCodeGUID) && addresstypeIDs.Contains(pa.AddressType_GUID)
                                            select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
@@ -603,7 +599,6 @@
                 throw;
             }
         }
-
 
         public async Task<List<Guid>> GetPostcodeGuids(string searchText)
         {
@@ -675,8 +670,7 @@
             });
             Mapper.Configuration.CreateMapper();
 
-            return Mapper.Map<List<PostalAddress>, List<PostalAddressDBDTO>> (postalAddress);
-
+            return Mapper.Map<List<PostalAddress>, List<PostalAddressDBDTO>>(postalAddress);
 
             //postalAddress.ForEach(p => p.Postcode1.DeliveryRoutePostcodes.ToList().ForEach(d =>
             //{
@@ -726,7 +720,6 @@
             //    });
             //    PostalAddressDBDTO[0].RouteDetails = new List<BindingEntity>(routeDetails.Distinct().OrderBy(n => n.DisplayText));
             //}
-
         }
 
         public async Task<List<Guid>> GetSelectedPostcode(string selectedItem)
@@ -751,11 +744,11 @@
             {
                 postCode = selectedItems[0].Trim();
                 postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
-                                       //join pc in DataContext.Postcodes.AsNoTracking()
-                                       //on pa.PostCodeGUID equals pc.ID
-                                       //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                           //join pc in DataContext.Postcodes.AsNoTracking()
+                                           //on pa.PostCodeGUID equals pc.ID
+                                           //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
                                        where pa.Postcode == postCode
-                                      select pa.PostCodeGUID).ToListAsync();
+                                       select pa.PostCodeGUID).ToListAsync();
             }
 
             return postcodeGuids;
@@ -790,7 +783,7 @@
             try
             {
                 bool isAddressLocationAvailable = false;
-                Guid returnGuid = new Guid(Constants.DEFAULTGUID);
+                Guid returnGuid = Guid.Empty;
                 double? addLocationXCoOrdinate = 0;
                 double? addLocationYCoOrdinate = 0;
                 if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
@@ -819,7 +812,6 @@
                     //    addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
                     //}
 
-
                     if (objPostalAddress != null)
                     {
                         objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
@@ -847,9 +839,8 @@
                             StartDateTime = DateTime.UtcNow,
                             RowCreateDateTime = DateTime.UtcNow,
                             OperationalStatusGUID = OperationalStatus
-
                         });
-                        
+
                         Mapper.Initialize(cfg =>
                         {
                             cfg.CreateMap<PostalAddressDBDTO, PostalAddress>();
@@ -865,7 +856,6 @@
 
                     returnGuid = objPostalAddress.ID;
                     DataContext.SaveChanges();
-                    
                 }
 
                 return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
@@ -880,7 +870,7 @@
         {
             try
             {
-                var addressDetails = await DataContext.PostalAddresses.Include( pa => pa.PostalAddressStatus).Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
+                var addressDetails = await DataContext.PostalAddresses.Include(pa => pa.PostalAddressStatus).Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
 
                 Mapper.Initialize(cfg =>
                 {
@@ -919,7 +909,7 @@
             {
                 FileID = Guid.NewGuid(),
                 UDPRN = uDPRN,
-                AmendmentType = Constants.INSERT,
+                AmendmentType = INSERT,
                 FileName = strFileName,
                 FileProcessing_TimeStamp = DateTime.UtcNow,
                 FileType = fileType,
@@ -953,7 +943,6 @@
         {
             throw new NotImplementedException();
         }
-
 
         public async Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid)
         {

@@ -1,24 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
+using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
-using System.Diagnostics;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
-using System.Collections.Generic;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 {
@@ -299,13 +296,12 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return postalAddressDTO;
             }
-        }      
-
+        }
 
         public async Task<PostalAddressDTO> GetPAFAddress(int uDPRN)
         {
-            string methodName = Constants.GetPAFAddress;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PostalAddressManagerWebAPIName);
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressManagerWebAPIName);
             string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
             HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
             if (!result.IsSuccessStatusCode)
@@ -319,13 +315,12 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             return postalAddressDTO;
         }
 
-
         public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId)
         {
             try
             {
-                string methodName = Constants.GetDeliveryPointByPostalAddress;
-                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
                 string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
                 HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, addressId));
                 if (!result.IsSuccessStatusCode)
@@ -340,15 +335,14 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
 
         public async Task<bool> DeleteDeliveryPoint(Guid id)
         {
-            string methodName = Constants.DeleteDeliveryPoint;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName);
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
             string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
             HttpResponseMessage result = await httpHandler.DeleteAsync(string.Format(serviceUrl + route, id));
             if (!result.IsSuccessStatusCode)
@@ -364,9 +358,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 
         public async Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
-
-            string methodName = Constants.InsertDeliveryPoint;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.DeliveryPointManagerDataWebAPIName);
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
             string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
 
             // method logic here
@@ -389,8 +382,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
 
-            string methodName = Constants.ReferenceSimpleList;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ReferenceDataWebAPIName);
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName);
             string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
 
             HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, listNames);
@@ -407,11 +400,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             return listReferenceCategories;
         }
 
-
         public async Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction)
         {
-            string methodName = Constants.UpdateNotificationByUDPRN;
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(Constants.NotificationManagerWebAPIName);
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
             string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
 
             HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(serviceUrl + route, udprn.ToString(), oldAction), newAction);
@@ -426,6 +418,5 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 
             return isUpdated;
         }
-
     }
 }

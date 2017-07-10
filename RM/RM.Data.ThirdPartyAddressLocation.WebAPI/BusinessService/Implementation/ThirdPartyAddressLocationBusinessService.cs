@@ -119,38 +119,38 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                         List<string> categoryNamesSimpleLists = new List<string>
                             {
-                                Constants.TASKNOTIFICATION,
-                                Constants.NETWORKLINKDATAPROVIDER,
-                                Constants.DeliveryPointUseIndicator,
+                                ThirdPartyAddressLocationConstants.TASKNOTIFICATION,
+                                ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER,
+                                ThirdPartyAddressLocationConstants.DeliveryPointUseIndicator,
                                 ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
                                 ReferenceDataCategoryNames.NetworkNodeType
                             };
 
                         var referenceDataCategoryList = thirdPartyAddressLocationIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
                         Guid tasktypeId = referenceDataCategoryList
-                                        .Where(list => list.CategoryName.Equals(Constants.TASKNOTIFICATION, StringComparison.OrdinalIgnoreCase))
+                                        .Where(list => list.CategoryName.Equals(ThirdPartyAddressLocationConstants.TASKNOTIFICATION, StringComparison.OrdinalIgnoreCase))
                                         .SelectMany(list => list.ReferenceDatas)
-                                        .Where(item => item.ReferenceDataValue.Equals(Constants.TASKACTION, StringComparison.OrdinalIgnoreCase))
+                                        .Where(item => item.ReferenceDataValue.Equals(ThirdPartyAddressLocationConstants.TASKACTION, StringComparison.OrdinalIgnoreCase))
                                         .Select(s => s.ID).SingleOrDefault();
                         Guid locationProviderId = referenceDataCategoryList
-                                .Where(list => list.CategoryName.Equals(Constants.NETWORKLINKDATAPROVIDER, StringComparison.OrdinalIgnoreCase))
+                                .Where(list => list.CategoryName.Equals(ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER, StringComparison.OrdinalIgnoreCase))
                                 .SelectMany(list => list.ReferenceDatas)
-                                .Where(item => item.ReferenceDataValue.Equals(Constants.EXTERNAL, StringComparison.OrdinalIgnoreCase))
+                                .Where(item => item.ReferenceDataValue.Equals(ThirdPartyAddressLocationConstants.EXTERNAL, StringComparison.OrdinalIgnoreCase))
                                 .Select(s => s.ID).SingleOrDefault();
                         Guid deliveryPointUseIndicator = referenceDataCategoryList
-                                        .Where(list => list.CategoryName.Equals(Constants.DeliveryPointUseIndicator, StringComparison.OrdinalIgnoreCase))
+                                        .Where(list => list.CategoryName.Equals(ThirdPartyAddressLocationConstants.DeliveryPointUseIndicator, StringComparison.OrdinalIgnoreCase))
                                         .SelectMany(list => list.ReferenceDatas)
-                                        .Where(item => item.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
+                                        .Where(item => item.ReferenceDataValue.Equals(ThirdPartyAddressLocationConstants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                                         .Select(s => s.ID).SingleOrDefault();
                         Guid OperationalStatusGUIDLive = referenceDataCategoryList
                                         .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointOperationalStatus)
                                         .SelectMany(list => list.ReferenceDatas)
-                                        .Where(item => item.ReferenceDataValue.Equals(Constants.OperationalStatusGUIDLive, StringComparison.OrdinalIgnoreCase))
+                                        .Where(item => item.ReferenceDataValue.Equals(ThirdPartyAddressLocationConstants.OperationalStatusGUIDLive, StringComparison.OrdinalIgnoreCase))
                                         .Select(s => s.ID).SingleOrDefault();
                         Guid NetworkNodeTypeRMGServiceNode = referenceDataCategoryList
                                         .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkNodeType)
                                         .SelectMany(list => list.ReferenceDatas)
-                                        .Where(item => item.ReferenceDataValue.Equals(Constants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
+                                        .Where(item => item.ReferenceDataValue.Equals(ThirdPartyAddressLocationConstants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
                                         .Select(s => s.ID).SingleOrDefault();
 
                         // Check if the existing delivery point has a location.
@@ -179,10 +179,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             await thirdPartyAddressLocationIntegrationService.InsertDeliveryPoint(newDeliveryPoint);
 
                             // Check if a notification exists for the UDPRN.
-                            if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, Constants.TASKPAFACTION))
+                            if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
                             {
                                 // update the notification if it exists.
-                                await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, Constants.TASKPAFACTION, Constants.NOTIFICATIONCLOSED);
+                                await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION, ThirdPartyAddressLocationConstants.NOTIFICATIONCLOSED);
                             }
                         }
                         else
@@ -192,7 +192,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             var straightLineDistance = GetDeliveryPointDistance(deliveryPointDTO, spatialLocationXY);
 
                             // Check if the new point is within the tolerance limit
-                            if (straightLineDistance < Constants.TOLERANCEDISTANCEINMETERS)
+                            if (straightLineDistance < ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
                             {
                                 //Guid locationProviderId = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(
                                 //    Constants.NETWORKLINKDATAPROVIDER,
@@ -223,10 +223,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 //await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
 
                                 // Check if the notification exists for the given UDPRN.
-                                if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, Constants.TASKPAFACTION))
+                                if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
                                 {
                                     // update the notification if it exists.
-                                    await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, Constants.TASKPAFACTION, Constants.NOTIFICATIONCLOSED);
+                                    await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION, ThirdPartyAddressLocationConstants.NOTIFICATIONCLOSED);
                                 }
                             }
                             else
@@ -340,17 +340,17 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// <returns>returns concatenated value of address field</returns>
         private string AddressFields(PostalAddressDTO objPostalAddress)
         {
-            return Constants.USRBODY +
-                        objPostalAddress.OrganisationName + Constants.Comma +
-                        objPostalAddress.DepartmentName + Constants.Comma +
-                        objPostalAddress.BuildingName + Constants.Comma +
-                        objPostalAddress.BuildingNumber + Constants.Comma +
-                        objPostalAddress.SubBuildingName + Constants.Comma +
-                        objPostalAddress.Thoroughfare + Constants.Comma +
-                        objPostalAddress.DependentThoroughfare + Constants.Comma +
-                        objPostalAddress.DependentLocality + Constants.Comma +
-                        objPostalAddress.DoubleDependentLocality + Constants.Comma +
-                        objPostalAddress.PostTown + Constants.Comma +
+            return ThirdPartyAddressLocationConstants.USRNOTIFICATIONBODYPREFIX +
+                        objPostalAddress.OrganisationName + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.DepartmentName + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.BuildingName + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.BuildingNumber + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.SubBuildingName + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.Thoroughfare + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.DependentThoroughfare + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.DependentLocality + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.DoubleDependentLocality + ThirdPartyAddressLocationConstants.Comma +
+                        objPostalAddress.PostTown + ThirdPartyAddressLocationConstants.Comma +
                         objPostalAddress.Postcode;
         }
 

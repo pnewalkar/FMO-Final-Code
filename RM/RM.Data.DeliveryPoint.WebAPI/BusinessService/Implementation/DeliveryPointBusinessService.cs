@@ -75,12 +75,12 @@
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryPoints"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
                     //CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocationDTO = deliveryPointIntegrationService.GetUnitLocationDetails(unitGuid).Result;
-                    var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(Constants.Comma[0]));
+                    var coordinates = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundaryBox.Split(DeliveryPointConstants.Comma[0]));
                     List<DeliveryPointDTO> deliveryPointDtos = deliveryPointsDataService.GetDeliveryPoints(coordinates, unitGuid);
                     List<Guid> addressGuids = new List<Guid>();
                     deliveryPointDtos.ForEach(dp => addressGuids.Add(dp.Address_GUID));
@@ -94,12 +94,12 @@
                     List<PostalAddressDTO> postalAddressDtos = Mapper.Map<List<PostalAddressDBDTO>, List<PostalAddressDTO>>(postAddressDBs);
                     deliveryPointDtos.ForEach(dp => dp.PostalAddress = postalAddressDtos.Find(pa => pa.ID == dp.Address_GUID));
 
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                     return GetDeliveryPointsJsonData(deliveryPointDtos);
                 }
                 else
                 {
-                    loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                     return null;
                 }
             }
@@ -117,7 +117,7 @@
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var getDeliveryPointsJsonData = GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPointListByGuid(id));
+                var getDeliveryPointsJsonData = new object();//GetDeliveryPointsJsonData(deliveryPointsDataService.GetDeliveryPointListByGuid(id));
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 return getDeliveryPointsJsonData;
             }
@@ -225,7 +225,7 @@
             using (loggingHelper.RMTraceManager.StartTrace("Business.AddDeliveryPoint"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 string addDeliveryDtoLogDetails = new JavaScriptSerializer().Serialize(addDeliveryPointDTO);
                 string message = string.Empty;
@@ -270,17 +270,17 @@
                                 createDeliveryPointModelDTO.ID,
                                 deliveryOperationObjectTypeId);
                         message = isAccessLinkCreated
-                            ? Constants.DELIVERYPOINTCREATED
-                            : Constants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
+                            ? DeliveryPointConstants.DELIVERYPOINTCREATED
+                            : DeliveryPointConstants.DELIVERYPOINTCREATEDWITHOUTACCESSLINK;
                     }
                     else
                     {
-                        message = Constants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
+                        message = DeliveryPointConstants.DELIVERYPOINTCREATEDWITHOUTLOCATION;
                     }
                 //}
             }
 
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
             return new CreateDeliveryPointModelDTO { ID = returnGuid, Message = message, RowVersion = rowVersion, XCoordinate = returnXCoordinate, YCoordinate = returnYCoordinate };
 
             }
@@ -295,9 +295,9 @@
         {
             List<string> categoryNamesSimpleLists = new List<string>
                     {
-                        Constants.TASKNOTIFICATION,
-                        Constants.NETWORKLINKDATAPROVIDER,
-                        Constants.DeliveryPointUseIndicator,
+                        DeliveryPointConstants.TASKNOTIFICATION,
+                        DeliveryPointConstants.NETWORKLINKDATAPROVIDER,
+                        DeliveryPointConstants.DeliveryPointUseIndicator,
                         ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
                         ReferenceDataCategoryNames.NetworkNodeType
                     };
@@ -306,34 +306,34 @@
             Guid OperationalStatusGUIDLive = referenceDataCategoryList
                             .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.DeliveryPointOperationalStatus)
                             .SelectMany(list => list.ReferenceDatas)
-                            .Where(item => item.ReferenceDataValue.Equals(Constants.OperationalStatusGUIDLive, StringComparison.OrdinalIgnoreCase))
+                            .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.OperationalStatusGUIDLive, StringComparison.OrdinalIgnoreCase))
                             .Select(s => s.ID).SingleOrDefault();
 
             Guid NetworkNodeTypeRMGServiceNode = referenceDataCategoryList
                             .Where(list => list.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkNodeType)
                             .SelectMany(list => list.ReferenceDatas)
-                            .Where(item => item.ReferenceDataValue.Equals(Constants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
+                            .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.NetworkNodeTypeRMGServiceNode, StringComparison.OrdinalIgnoreCase))
                             .Select(s => s.ID).SingleOrDefault();
 
 
             Guid deliveryPointUseIndicator = referenceDataCategoryList
-                                .Where(list => list.CategoryName.Equals(Constants.DeliveryPointUseIndicator, StringComparison.OrdinalIgnoreCase))
+                                .Where(list => list.CategoryName.Equals(DeliveryPointConstants.DeliveryPointUseIndicator, StringComparison.OrdinalIgnoreCase))
                                 .SelectMany(list => list.ReferenceDatas)
-                                .Where(item => item.ReferenceDataValue.Equals(Constants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
+                                .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.DeliveryPointUseIndicatorPAF, StringComparison.OrdinalIgnoreCase))
                                 .Select(s => s.ID).SingleOrDefault();
 
             Guid locationProviderId = referenceDataCategoryList
-                                    .Where(list => list.CategoryName.Equals(Constants.NETWORKLINKDATAPROVIDER, StringComparison.OrdinalIgnoreCase))
+                                    .Where(list => list.CategoryName.Equals(DeliveryPointConstants.NETWORKLINKDATAPROVIDER, StringComparison.OrdinalIgnoreCase))
                                     .SelectMany(list => list.ReferenceDatas)
-                                    .Where(item => item.ReferenceDataValue.Equals(Constants.EXTERNAL, StringComparison.OrdinalIgnoreCase))
+                                    .Where(item => item.ReferenceDataValue.Equals(DeliveryPointConstants.EXTERNAL, StringComparison.OrdinalIgnoreCase))
                                     .Select(s => s.ID).SingleOrDefault();
 
             string sbLocationXY = string.Format(
-                                                    Constants.USRGEOMETRYPOINT,
+                                                    DeliveryPointConstants.USRGEOMETRYPOINT,
                                                     Convert.ToString(deliveryPointModelDTO.XCoordinate),
                                                     Convert.ToString(deliveryPointModelDTO.YCoordinate));
 
-            DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), Constants.BNGCOORDINATESYSTEM);
+            DbGeometry spatialLocationXY = DbGeometry.FromText(sbLocationXY.ToString(), DeliveryPointConstants.BNGCOORDINATESYSTEM);
 
 
             DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO

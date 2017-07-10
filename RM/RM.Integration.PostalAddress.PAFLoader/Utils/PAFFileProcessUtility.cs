@@ -63,13 +63,13 @@
             bool isPAFFileProcessed = false;
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
 
             while (true)
             {
                 try
                 {
-                    if (CheckFileName(new FileInfo(fileName).Name, Constants.PAFZIPFILENAME.ToString()))
+                    if (CheckFileName(new FileInfo(fileName).Name, PAFLoaderConstants.PAFZIPFILENAME.ToString()))
                     {
                         using (ZipArchive zip = ZipFile.OpenRead(fileName))
                         {
@@ -83,11 +83,11 @@
                                     strLine = reader.ReadToEnd();
                                     strfileName = entry.Name;
 
-                                    if (CheckFileName(new FileInfo(strfileName).Name, Constants.PAFFLATFILENAME))
+                                    if (CheckFileName(new FileInfo(strfileName).Name, PAFLoaderConstants.PAFFLATFILENAME))
                                     {
                                         List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
                                         string postaLAddress = serializer.Serialize(lstPAFDetails);
-                                        LogMethodInfoBlock(methodName, Constants.POSTALADDRESSDETAILS + postaLAddress, Constants.COLON);
+                                        LogMethodInfoBlock(methodName, PAFLoaderConstants.POSTALADDRESSDETAILS + postaLAddress, LoggerTraceConstants.COLON);
 
                                         if (lstPAFDetails != null && lstPAFDetails.Count > 0)
                                         {
@@ -96,7 +96,7 @@
                                             if (invalidRecordsCount > 0)
                                             {
                                                 File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                                this.loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                                this.loggingHelper.Log(string.Format(PAFLoaderConstants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
                                             }
                                             else
                                             {
@@ -108,14 +108,14 @@
                                                 else
                                                 {
                                                     File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                                    this.loggingHelper.Log(string.Format(Constants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                                    this.loggingHelper.Log(string.Format(PAFLoaderConstants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
                                                 }
                                             }
                                         }
                                         else
                                         {
                                             File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
-                                            this.loggingHelper.Log(string.Format(Constants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                            this.loggingHelper.Log(string.Format(PAFLoaderConstants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
                                         }
                                     }
                                 }
