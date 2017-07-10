@@ -5,12 +5,15 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
+using System.Diagnostics;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -20,14 +23,24 @@ namespace Fmo.API.Services.Controllers
     [Route("api/postaladdressmanager")]
     public class PostalAddressController : RMBaseController
     {
+        #region Member Variables
+
         private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public PostalAddressController(IPostalAddressBusinessService businessService, ILoggingHelper loggingHelper)
+        #endregion Member Variables
+
+        #region Constructors
+
+        public PostalAddressController(IPostalAddressBusinessService _businessService, ILoggingHelper _loggingHelper)
         {
             this.businessService = businessService;
             this.loggingHelper = loggingHelper;
         }
+
+        #endregion Constructors
+
+        #region Public Methods
 
         /// <summary>
         /// Api to save NYB details in DB.
@@ -37,7 +50,7 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         // [HttpPost("SaveAddressdetails/{strFileName}")]
         [HttpPost("nybaddresses/{strFileName}")]
-        public async Task<IActionResult> SaveAddressdetails(string strFileName, [FromBody] List<PostalAddressDTO> lstAddressDetails)
+        public async Task<IActionResult> SaveAddressdetails(string strFileName, [FromBody] List<PostalAddressDBDTO> lstAddressDetails)
         {
             try
             {
@@ -168,7 +181,7 @@ namespace Fmo.API.Services.Controllers
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+                    PostalAddressDBDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
 
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
 
@@ -202,7 +215,7 @@ namespace Fmo.API.Services.Controllers
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                PostalAddressDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
+                PostalAddressDBDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
 
@@ -227,7 +240,7 @@ namespace Fmo.API.Services.Controllers
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    PostalAddressDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
+                    PostalAddressDBDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
 
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
 
@@ -254,7 +267,7 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateNybRecords")]
         [HttpPost("postaladdress/nybduplicate/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public IActionResult CheckForDuplicateNybRecords([FromBody] PostalAddressDTO objPostalAddress)
+        public async Task<IActionResult> CheckForDuplicateNybRecords([FromBody] PostalAddressDBDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateNybRecords"))
             {
@@ -277,7 +290,7 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateAddressWithDeliveryPoints")]
         [HttpPost("postaladdress/duplicatedeliverypoint/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public IActionResult CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDTO objPostalAddress)
+        public async Task<IActionResult> CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDBDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateAddressWithDeliveryPoints"))
             {
@@ -301,15 +314,57 @@ namespace Fmo.API.Services.Controllers
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         public IActionResult CreateAddressAndDeliveryPoint([FromBody] AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressAndDeliveryPoint"))
+            try
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressAndDeliveryPoint"))
+                {
+                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
-                return Ok(deliveryPointAddressDetails);
+                    var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return Ok(deliveryPointAddressDetails);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
+
+
+        [HttpPost("postaladdress/postaladdresses/")]
+        public async Task<IActionResult> GetPostalAddresses([FromBody] List<Guid> addressGuids)
+        {
+            try
+            {
+                var addressDetails = await businessService.GetPostalAddresses(addressGuids);
+                return Ok(addressDetails);
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        [HttpGet("postaladdress/pafaddress/{udprn}")]
+        public async Task<PostalAddressDTO> GetPAFAddress(int udprn)
+        {
+            return await businessService.GetPAFAddress(udprn);
+        }
+
+        #endregion Public Methods
     }
 }

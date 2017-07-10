@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics;
     using System.Reflection;
     using System.ServiceProcess;
@@ -38,6 +39,7 @@
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int count = 0;
 
         #endregion private member declaration
 

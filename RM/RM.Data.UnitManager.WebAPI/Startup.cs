@@ -70,8 +70,6 @@ namespace RM.DataManagement.UnitManager.WebAPI
                           new CamelCasePropertyNamesContractResolver();
             });
 
-            //---Adding scope for all classes
-            //---Adding scope for all classes
             LogWriterFactory log = new LogWriterFactory();
             LogWriter logWriter = log.Create();
             Logger.SetLogWriter(logWriter, false);

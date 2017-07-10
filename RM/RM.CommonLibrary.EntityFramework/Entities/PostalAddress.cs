@@ -12,11 +12,12 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PostalAddress()
         {
-            AMUChangeRequests = new HashSet<AMUChangeRequest>();
-            AMUChangeRequests1 = new HashSet<AMUChangeRequest>();
             DeliveryPoints = new HashSet<DeliveryPoint>();
-            POBoxes = new HashSet<POBox>();
+            PostalAddressLocations = new HashSet<PostalAddressLocation>();
+            PostalAddressStatus = new HashSet<PostalAddressStatus>();
         }
+
+        public Guid ID { get; set; }
 
         [Required]
         [StringLength(1)]
@@ -69,30 +70,24 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         [StringLength(6)]
         public string POBoxNumber { get; set; }
 
-        public Guid ID { get; set; }
-
         public Guid PostCodeGUID { get; set; }
 
         public Guid AddressType_GUID { get; set; }
 
-        public Guid? AddressStatus_GUID { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AMUChangeRequest> AMUChangeRequests { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<AMUChangeRequest> AMUChangeRequests1 { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime RowCreateDateTime { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryPoint> DeliveryPoints { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<POBox> POBoxes { get; set; }
 
         public virtual Postcode Postcode1 { get; set; }
 
         public virtual ReferenceData ReferenceData { get; set; }
 
-        public virtual ReferenceData ReferenceData1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostalAddressLocation> PostalAddressLocations { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostalAddressStatus> PostalAddressStatus { get; set; }
     }
 }

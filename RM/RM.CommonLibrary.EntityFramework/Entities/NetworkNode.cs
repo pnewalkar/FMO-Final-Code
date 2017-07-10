@@ -9,42 +9,24 @@ namespace RM.CommonLibrary.EntityFramework.Entities
     [Table("FMO.NetworkNode")]
     public partial class NetworkNode
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public NetworkNode()
-        {
-            NetworkLinks = new HashSet<NetworkLink>();
-            NetworkLinks1 = new HashSet<NetworkLink>();
-            NetworkReferences = new HashSet<NetworkReference>();
-        }
-
-        [StringLength(1)]
-        public string DataProvider { get; set; }
-
-        [Required]
-        public DbGeometry NodeGeometry { get; set; }
-
-        [StringLength(20)]
-        public string TOID { get; set; }
-
         public Guid ID { get; set; }
 
         public Guid NetworkNodeType_GUID { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NetworkLink> NetworkLinks { get; set; }
+        [StringLength(20)]
+        public string TOID { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NetworkLink> NetworkLinks1 { get; set; }
+        [Column(TypeName = "datetime2")]
+        public DateTime RowCreateDateTime { get; set; }
+
+        public Guid? DataProviderGUID { get; set; }
+
+        public virtual DeliveryPoint DeliveryPoint { get; set; }
+
+        public virtual Location Location { get; set; }
 
         public virtual ReferenceData ReferenceData { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NetworkReference> NetworkReferences { get; set; }
-
-        public virtual OSConnectingNode OSConnectingNode { get; set; }
-
-        public virtual OSPathNode OSPathNode { get; set; }
-
-        public virtual OSRoadNode OSRoadNode { get; set; }
+        public virtual ReferenceData ReferenceData1 { get; set; }
     }
 }

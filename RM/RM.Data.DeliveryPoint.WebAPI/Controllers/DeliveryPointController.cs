@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DTO;
+//using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
+using Newtonsoft.Json.Linq;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 {
@@ -449,6 +452,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
+
+
         /// <summary>
         /// This method is used to fetch delivery points by the Postal Address Guid
         /// </summary>
@@ -460,20 +465,42 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         {
             try
             {
-                using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByPostalAddress"))
+                //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByPostalAddress"))
+                //{
+                var deliveryPoint = businessService.GetDeliveryPointByPostalAddress(addressId);
+                //if (deliveryPoint == null)
+                //{
+                //    return NotFound();
+                //}
+
+                return Ok(deliveryPoint);
+
+                // }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
                 {
-                    string methodName = MethodBase.GetCurrentMethod().Name;
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
-
-                    var deliveryPoint = businessService.GetDeliveryPointByPostalAddress(addressId);
-                    if (deliveryPoint == null)
-                    {
-                        return NotFound();
-                    }
-
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
-                    return Ok(deliveryPoint);
+                    loggingHelper.Log(exception, TraceEventType.Error);
                 }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        [Route("deliverypoint/location/addressId:{addressId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveryPointByPostalAddressWithLocation(Guid addressId)
+        {
+            try
+            {
+                //using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByPostalAddress"))
+                //{
+                var deliveryPoint = await businessService.GetDeliveryPointByPostalAddressWithLocation(addressId);
+                return Ok(deliveryPoint);
+
+                // }
             }
             catch (AggregateException ae)
             {
@@ -592,7 +619,42 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                     deliveryPoint = (DeliveryPointDTO)createSummary.SummariseProperties(deliveryPoint, fields);
                 }
 
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(deliveryPoint);
+            }
+        }
+
+
+        [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
+        public Task<bool> UpdatePAFIndicator(Guid addressGuid, [FromBody] Guid pafIndicator)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdatePAFIndicator"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var isDeliveryPointUpdated = businessService.UpdatePAFIndicator(addressGuid, pafIndicator);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointUpdated;
+
+            }
+        }
+
+
+        [HttpDelete("deliverypoint/batch/delete/id:{id}")]
+        public Task<bool> DeleteDeliveryPoint(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.DeleteDeliveryPoint"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var isDeliveryPointUpdated = businessService.DeleteDeliveryPoint(id);
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return isDeliveryPointUpdated;
+
             }
         }
 

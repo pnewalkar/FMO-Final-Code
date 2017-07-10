@@ -8,6 +8,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Text.RegularExpressions;
+    using System.Threading;
     using System.Web.Script.Serialization;
     using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.EntityFramework.DTO;
@@ -52,6 +53,92 @@
         #endregion constructor
 
         #region public methods
+
+        /// <summary>
+        /// Waits until a file can be opened with write permission
+        /// <param name="fileName">file to be processed</param>
+        /// </summary>
+        public void WaitReady(string fileName)
+        {
+            bool isPAFFileProcessed = false;
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
+
+            while (true)
+            {
+                try
+                {
+                    if (CheckFileName(new FileInfo(fileName).Name, PAFLoaderConstants.PAFZIPFILENAME.ToString()))
+                    {
+                        using (ZipArchive zip = ZipFile.OpenRead(fileName))
+                        {
+                            foreach (ZipArchiveEntry entry in zip.Entries)
+                            {
+                                string strLine = string.Empty;
+                                string strfileName = string.Empty;
+                                using (Stream stream = entry.Open())
+                                {
+                                    var reader = new StreamReader(stream);
+                                    strLine = reader.ReadToEnd();
+                                    strfileName = entry.Name;
+
+                                    if (CheckFileName(new FileInfo(strfileName).Name, PAFLoaderConstants.PAFFLATFILENAME))
+                                    {
+                                        List<PostalAddressDTO> lstPAFDetails = ProcessPAF(strLine.Trim(), strfileName);
+                                        string postaLAddress = serializer.Serialize(lstPAFDetails);
+                                        LogMethodInfoBlock(methodName, PAFLoaderConstants.POSTALADDRESSDETAILS + postaLAddress, LoggerTraceConstants.COLON);
+
+                                        if (lstPAFDetails != null && lstPAFDetails.Count > 0)
+                                        {
+                                            var invalidRecordsCount = lstPAFDetails.Where(n => n.IsValidData == false).ToList().Count;
+
+                                            if (invalidRecordsCount > 0)
+                                            {
+                                                File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                                this.loggingHelper.Log(string.Format(PAFLoaderConstants.LOGMESSAGEFORPAFDATAVALIDATION, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                            }
+                                            else
+                                            {
+                                                if (SavePAFDetails(lstPAFDetails))
+                                                {
+                                                    File.WriteAllText(Path.Combine(strPAFProcessedFilePath, AppendTimeStamp(strfileName)), strLine);
+                                                    isPAFFileProcessed = true;
+                                                }
+                                                else
+                                                {
+                                                    File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                                    this.loggingHelper.Log(string.Format(PAFLoaderConstants.ERRORLOGMESSAGEFORPAFMSMQ, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            File.WriteAllText(Path.Combine(strPAFErrorFilePath, AppendTimeStamp(strfileName)), strLine);
+                                            this.loggingHelper.Log(string.Format(PAFLoaderConstants.LOGMESSAGEFORPAFWRONGFORMAT, strfileName, DateTime.UtcNow.ToString()), TraceEventType.Information, null);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (FileNotFoundException ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message));
+                }
+                catch (IOException ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message));
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("Output file {0} not yet ready ({1})", fileName, ex.Message));
+                }
+
+                Thread.Sleep(500);
+            }
+        }
 
         /// <summary>
         /// Read files from zip file and validate and save records
@@ -129,7 +216,7 @@
         }
 
         /// <summary>
-        /// Reads data from CSV file and maps to postalAddressDTO object
+        /// Reads data from CSV file and maps to PostalAddressDTO object
         /// </summary>
         /// <param name="line">Line read from CSV File</param>
         /// <param name="strFileName">FileName required to track the error in db against each records</param>
@@ -279,7 +366,7 @@
         }
 
         /// <summary>
-        /// Mapping comma separated value to postalAddressDTO object
+        /// Mapping comma separated value to PostalAddressDTO object
         /// </summary>
         /// <param name="csvLine">Line read from CSV File</param>
         /// <param name="fileName">File Name</param>
@@ -322,7 +409,7 @@
         }
 
         /// <summary>
-        /// Perform business validation on postalAddressDTO object
+        /// Perform business validation on PostalAddressDTO object
         /// </summary>
         /// <param name="lstAddress">List of mapped address dto to validate each records</param>
         private void ValidatePAFDetails(List<PostalAddressDTO> lstAddress)

@@ -35,7 +35,6 @@ namespace RM.Data.PostalAddress.PAFReceiver
             ServiceBase[] servicesToRun = new ServiceBase[] { new PAFReceiver(msgPAF, httpHandler, configurationHelper, loggingHelper) };
             ServiceBase.Run(servicesToRun);
 #endif
-
         }
     }
 }

@@ -75,17 +75,13 @@
     <Compile Include="DataService\AccessManager\ActionManagerDataService.cs" />
     <Compile Include="DataService\AccessManager\UserRoleUnitDataService.cs" />
     <Compile Include="DataService\AddressLocationDataService.cs" />
-    <Compile Include="DataService\PostalAddressDataService.cs" />
     <Compile Include="DataService\BlockSequenceDataService.cs" />
-    <Compile Include="DataService\DeliveryPointsDataService.cs" />
     <Compile Include="DataService\DeliveryRouteDataService.cs" />
     <Compile Include="DataService\FileProcessingLogDataService.cs" />
     <Compile Include="DataService\Interfaces\IAccessLinkDataService.cs" />
     <Compile Include="DataService\Interfaces\IActionManagerDataService.cs" />
     <Compile Include="DataService\Interfaces\IAddressLocationDataService.cs" />
-    <Compile Include="DataService\Interfaces\IAddressDataService.cs" />
     <Compile Include="DataService\Interfaces\IBlockSequenceDataService.cs" />
-    <Compile Include="DataService\Interfaces\IDeliveryPointsDataService.cs" />
     <Compile Include="DataService\Interfaces\IDeliveryRouteDataService.cs" />
     <Compile Include="DataService\Interfaces\IFileProcessingLogDataService.cs" />
     <Compile Include="DataService\Interfaces\INotificationDataService.cs" />
@@ -122,6 +118,7 @@
     <Compile Include="DTO\BlockSequenceDTO.cs" />
     <Compile Include="DTO\DeliveryPointAliasDTO.cs" />
     <Compile Include="DTO\DeliveryPointDTO.cs" />
+    <Compile Include="DTO\DeliveryPointStatusDTO.cs" />
     <Compile Include="DTO\DeliveryRouteDTO.cs" />
     <Compile Include="DTO\FileProcessingLogDTO.cs" />
     <Compile Include="DTO\FileProcessing\AddressLocationUSRDTO.cs" />
@@ -132,10 +129,13 @@
     <Compile Include="DTO\Model\RouteLogSummaryModelDTO.cs" />
     <Compile Include="DTO\Model\UpdateDeliveryPointModelDTO.cs" />
     <Compile Include="DTO\NetworkLinkDTO.cs" />
+    <Compile Include="DTO\NetworkNodeDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\OsRoadLinkDTO.cs" />
+    <Compile Include="DTO\PostalAddressBatchDTO.cs" />
     <Compile Include="DTO\PdfFileDTO.cs" />
     <Compile Include="DTO\PostalAddressDTO.cs" />
+    <Compile Include="DTO\PostalAddressStatus.cs" />
     <Compile Include="DTO\PostCodeDTO.cs" />
     <Compile Include="DTO\PostCodeSectorDTO.cs" />
     <Compile Include="DTO\PrintMapDTO.cs" />
@@ -169,6 +169,8 @@
     <Compile Include="Entities\DeliveryGroup.cs" />
     <Compile Include="Entities\DeliveryPoint.cs" />
     <Compile Include="Entities\DeliveryPointAlias.cs" />
+    <Compile Include="Entities\DeliveryPointStatus.cs" />
+    <Compile Include="Entities\DeliveryPoint_OLD.cs" />
     <Compile Include="Entities\DeliveryRoute.cs" />
     <Compile Include="Entities\DeliveryRouteActivity.cs" />
     <Compile Include="Entities\DeliveryRouteBlock.cs" />
@@ -177,6 +179,7 @@
     <Compile Include="Entities\FileProcessingLog.cs" />
     <Compile Include="Entities\Function.cs" />
     <Compile Include="Entities\GroupHazard.cs" />
+    <Compile Include="Entities\Location.cs" />
     <Compile Include="Entities\NetworkLink.cs" />
     <Compile Include="Entities\NetworkLinkReference.cs" />
     <Compile Include="Entities\NetworkNode.cs" />
@@ -196,6 +199,9 @@
     <Compile Include="Entities\Polygon.cs" />
     <Compile Include="Entities\PolygonObject.cs" />
     <Compile Include="Entities\PostalAddress.cs" />
+    <Compile Include="Entities\PostalAddressLocation.cs" />
+    <Compile Include="Entities\PostalAddressStatus.cs" />
+    <Compile Include="Entities\PostalAddress_OLD.cs" />
     <Compile Include="Entities\Postcode.cs" />
     <Compile Include="Entities\PostcodeArea.cs" />
     <Compile Include="Entities\PostcodeDistrict.cs" />

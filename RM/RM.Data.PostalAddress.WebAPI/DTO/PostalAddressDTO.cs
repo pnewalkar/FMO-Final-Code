@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using RM.DataManagement.PostalAddress.WebAPI.DTO.UIDropdowns;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
@@ -66,9 +63,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public string AmendmentDesc { get; set; }
 
         public string FileName { get; set; }
-
-        public List<BindingEntity> NybAddressDetails { get; set; }
-
-        public List<BindingEntity> RouteDetails { get; set; }
     }
 }

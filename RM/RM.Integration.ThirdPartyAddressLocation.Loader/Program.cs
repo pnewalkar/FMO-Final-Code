@@ -21,8 +21,12 @@ namespace RM.Integration.ThirdPartyAddressLocation.Loader
             ILoggingHelper loggingHelper = kernel.Get<ILoggingHelper>();
             IConfigurationHelper configurationHelper = kernel.Get<IConfigurationHelper>();
 
-            ServiceBase[] servicesToRun = new ServiceBase[] { new ThirdPartyImport(usrLoader, loggingHelper, configurationHelper) };
-            ServiceBase.Run(servicesToRun);
+            ThirdPartyImport myService = new ThirdPartyImport(usrLoader, loggingHelper, configurationHelper);
+            myService.OnDebug();
+            System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+
+            //ServiceBase[] servicesToRun = new ServiceBase[] { new ThirdPartyImport(usrLoader, loggingHelper, configurationHelper) };
+            //ServiceBase.Run(servicesToRun);
         }
     }
 }
