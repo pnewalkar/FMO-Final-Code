@@ -1,5 +1,5 @@
 ﻿﻿<md-input-container class="md-block">
-    <label>{{ vm.headerText | translate}}</label>
+     <label>{{vm.headerText| translate}}</label>  
     <md-select ng-disabled="vm.disabled"
                ng-model="vm.selectedItem"
                md-on-open="vm.clearSearchTerm()"
@@ -11,6 +11,7 @@
                    ng-model="vm.searchTerm"
                    placeholder="{{vm.searchPlaceholder | translate}}"
                    ng-keydown="$event.stopPropagation()"
+                   ng-if="vm.items.length!==0"
                    class="search-input md-text">
         </md-select-header>
         <md-option ng-value="item" ng-repeat="item in filteredItems = ( vm.items | filter:{displayText:vm.searchTerm } | orderBy: vm.orderBy)">

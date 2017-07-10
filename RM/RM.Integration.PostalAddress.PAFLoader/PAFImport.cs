@@ -19,6 +19,11 @@
     /// </summary>
     public partial class PAFImport : ServiceBase
     {
+        private const string PAFProcessedFilePath = "PAFProcessedFilePath";
+        private const string PAFErrorFilePath = "PAFErrorFilePath";
+        private const string XMLFileFolderSettings = "XMLFileFolderSettings";
+        private const string BatchServiceName = "ServiceName";
+
         #region Property Declarations
 
         private string processed = string.Empty;
@@ -39,9 +44,9 @@
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
 
-            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(Constants.ServiceName);
-            this.processed = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFProcessedFilePath);
-            this.error = configurationHelper.ReadAppSettingsConfigurationValues(Constants.PAFErrorFilePath);
+            this.ServiceName = configurationHelper.ReadAppSettingsConfigurationValues(BatchServiceName);
+            this.processed = configurationHelper.ReadAppSettingsConfigurationValues(PAFProcessedFilePath);
+            this.error = configurationHelper.ReadAppSettingsConfigurationValues(PAFErrorFilePath);
         }
 
         #endregion Constructor
@@ -119,7 +124,7 @@
         private void PopulateListFileSystemWatchers()
         {
             // Get the XML file name from the App.config file
-            string fileNameXML = ConfigurationManager.AppSettings[Constants.XMLFileFolderSettings];
+            string fileNameXML = ConfigurationManager.AppSettings[XMLFileFolderSettings];
 
             // Create an instance of XMLSerializer
             XmlSerializer deserializer = new XmlSerializer(typeof(List<CustomFolderSettings>));
@@ -176,16 +181,6 @@
 
                     // Add the systemWatcher to the list
                     listFileSystemWatcher.Add(fileSWatch);
-
-                    while (true)
-                    {
-                        fileSWatch.WaitForChanged(WatcherChangeTypes.Created);
-                    }
-
-                    // Record a log entry into Windows Event Log
-
-                    // CustomLogEvent(String.Format( "Starting to monitor files with extension ({0})
-                    // in the folder ({1})", fileSWatch.Filter, fileSWatch.Path));
                 }
             }
         }
@@ -221,7 +216,7 @@
         private void FileSWatch_Created(object sender, FileSystemEventArgs e)
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            LogMethodInfoBlock(methodName, Constants.MethodExecutionStarted, Constants.COLON);
+            LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
             string fileName = e.FullPath;
             try
             {
@@ -233,7 +228,7 @@
             }
             finally
             {
-                LogMethodInfoBlock(methodName, Constants.MethodExecutionCompleted, Constants.COLON);
+                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
             }
         }
 
@@ -264,7 +259,7 @@
         /// <param name="separator">separator</param>
         private void LogMethodInfoBlock(string methodName, string logMessage, string separator)
         {
-            loggingHelper.Log(methodName + Constants.COLON + Constants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
         }
     }
 }

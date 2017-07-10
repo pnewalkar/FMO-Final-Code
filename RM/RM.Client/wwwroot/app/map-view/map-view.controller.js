@@ -5,12 +5,14 @@ angular.module('mapView')
                                   'mapService',
                                   'mapFactory',
                                   'CommonConstants',
+                                  '$rootScope',
                                   MapController])
 function MapController($scope,
                        $state,
                        mapService,
                        mapFactory,
-                       CommonConstants) {
+                       CommonConstants,
+                       $rootScope) {
     var vm = this;
     var contextTitle = vm.contextTitle;
     vm.initialise = initialise();
@@ -23,6 +25,9 @@ function MapController($scope,
     vm.selectFeatures = selectFeatures
     vm.onEnterKeypress = onEnterKeypress;
 
+    $rootScope.$on('LicensingInfoText', function (event, args) {
+        mapService.baseLayerLicensing();
+    });
 
     $scope.$on('refreshLayers', mapService.refreshLayers);
     $scope.$on("mapToolChange", function (event, button) {
@@ -40,7 +45,7 @@ function MapController($scope,
         }
     });
     $scope.$on('showDeliveryPointDetails', function (event, data) {
-        if (data.featureType == 'deliverypoint') {
+        if (data.featureType === 'deliverypoint') {
             vm.contextTitle = data.contextTitle;
         }
         else
@@ -54,7 +59,7 @@ function MapController($scope,
     mapService.addSelectionListener(selectFeatures);
 
     function initialise() {
-        mapService.initialise();
+        mapService.initialise();   
     }
     function initialiseMiniMap() {
         mapService.initialiseMiniMap();
@@ -83,7 +88,7 @@ function MapController($scope,
     });
 
     function onEnterKeypress(currentScale) {
-        if (currentScale != '' && (currentScale % 100 == 0 && vm.maximumScale >= currentScale)) {
+        if (currentScale != '' && (currentScale % 100 === 0 && vm.maximumScale >= currentScale)) {
             mapFactory.setMapScale(currentScale)
         }
     }

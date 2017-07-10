@@ -16,7 +16,9 @@ mapService.$inject = ['$http',
                      '$state',
                      '$stateParams',
                      '$rootScope',
-                     'layersAPIService'];
+                     'layersAPIService',
+                     'CommonConstants'
+];
 
 function mapService($http,
                     mapFactory,
@@ -33,21 +35,28 @@ function mapService($http,
                     $state,
                     $stateParams,
                     $rootScope,
-                    layersAPIService) {
+                    layersAPIService,
+                    CommonConstants
+                   ) {
     var vm = this;
     vm.map = null;
+    $rootScope.state = true;
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line", "accesslink"];
     vm.interactions = {
     };
     vm.layersForContext = [];
     vm.activeSelection = null;
-    vm.secondarySelections =[];
+    vm.secondarySelections = [];
     vm.routeName = "";
-    vm.selectionListeners =[];
+    vm.polygonOpacity = undefined;
+    vm.selectionListeners = [];
     vm.features = null;
+    vm.selectedDP = null;
+    vm.selectedLayer = null;
+    vm.isObjectSelected = false;
+    vm.layerName = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -68,13 +77,10 @@ function mapService($http,
             vm.measureTooltipElement.innerHTML = output;
             vm.measureTooltip.setPosition(tooltipCoord);
         }
-
-
     };
     return {
         initialise: initialise,
         initialiseMiniMap: initialiseMiniMap,
-        getMapButtons: getMapButtons,
         mapLayers: mapLayers,
         getDotStyle: getDotStyle,
         deleteSelectedFeature: deleteSelectedFeature,
@@ -98,8 +104,30 @@ function mapService($http,
         setSelectedObjectsVisibility: setSelectedObjectsVisibility,
         removeInteraction: removeInteraction,
         deleteAccessLinkFeature: deleteAccessLinkFeature,
-        showDeliveryPointDetails: showDeliveryPointDetails
+        showDeliveryPointDetails: showDeliveryPointDetails,
+        clearDrawingLayer: clearDrawingLayer,
+        setSize: setSize,
+        composeMap: composeMap,
+        getResolution: getResolution,
+        setOriginalSize: setOriginalSize,
+        LicenceInfo: LicenceInfo,
+        baseLayerLicensing: baseLayerLicensing,
+        setPolygonTransparency: setPolygonTransparency
+      
     }
+
+    function LicenceInfo(displayText) {
+        return mapFactory.LicenceInfo(displayText);
+    }
+
+    function setPolygonTransparency() {
+        mapFactory.getPolygonTransparency().then(function (response) {
+            if (response[0]) {
+                vm.polygonOpacity = parseFloat(response[0].value);
+            }
+        });
+    }
+
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
        '+x_0=400000 +y_0=-100000 +ellps=airy ' +
@@ -111,6 +139,8 @@ function mapService($http,
 
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
+        vm.originalSize = vm.map.getSize();
+        setPolygonTransparency();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
@@ -144,6 +174,8 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
+                    var layerName = GlobalSettings.deliveryPointLayerName;
+                    mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
                     loadFeatures(deliveryPointsVector, response);
                 });
             }
@@ -171,6 +203,8 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
+                    var layerName = GlobalSettings.accessLinkLayerName;
+                    mapFactory.LicenceInfo("", layerName, accessLinkVector);
                     loadFeatures(accessLinkVector, response);
                 });
             }
@@ -184,8 +218,20 @@ function mapService($http,
             loader: function (extent) {
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
+                    var layerName = GlobalSettings.roadLinkLayerName;
+                    mapFactory.LicenceInfo("", layerName, roadLinkVector);
                     loadFeatures(roadLinkVector, response);
                 });
+            }
+        });
+
+        var unitBoundaryVector = new ol.source.Vector({
+            format: new ol.format.GeoJSON({
+                defaultDataProjection: 'EPSG:27700'
+            }),
+            loader: function (extent) {
+                var layerName = GlobalSettings.unitBoundaryLayerName;
+                mapFactory.LicenceInfo("", layerName, unitBoundaryVector);
             }
         });
 
@@ -205,13 +251,12 @@ function mapService($http,
             maxResolution: 3.9202878405756825
         });
 
-
         var unitBoundaryLayer = new ol.layer.Vector({
-            source: new ol.source.Vector({})
+            source: unitBoundaryVector
         });
 
         var roadsSelector = new MapFactory.LayerSelector();
-        roadsSelector.layerName = "Base Layer";
+        roadsSelector.layerName = GlobalSettings.baseLayerName;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -219,13 +264,12 @@ function mapService($http,
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "Drawing";
+        drawingLayerSelector.layerName = GlobalSettings.drawingLayerName;
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
         drawingLayerSelector.selectorVisible = false;
         vm.drawingLayer = mapFactory.addLayer(drawingLayerSelector);
-
 
         var deliveryPointsLayerSelector = new MapFactory.LayerSelector();
         deliveryPointsLayerSelector.layerName = GlobalSettings.deliveryPointLayerName;
@@ -274,29 +318,28 @@ function mapService($http,
         unitBoundaryLayerSelector.keys = ["unitBoundary"];
         mapFactory.addLayer(unitBoundaryLayerSelector);
 
-
-
         roadsLayer.selected = true;
         vm.map.on('pointermove', vm.pointerMoveHandler);
         refreshLayers();
 
         vm.showRoadPanel = false;
     }
+
+    function baseLayerLicensing() {
+        mapFactory.LicenceInfo("Base Layers", "Base Layer", null);
+    }
     function initialiseMiniMap() {
         mapFactory.initialiseMiniMap();
         vm.miniMap = mapFactory.getMiniMap();
     }
-    function getMapButtons() {
-        return vm.mapButtons;
-    }
+ 
     function mapLayers() {
         return mapFactory.getAllLayers();
-
     }
     function getLayer(layerName) {
         var returnVal = null;
         mapLayers().forEach(function (layer) {
-            if (layer.layerName == layerName)
+            if (layer.layerName === layerName)
                 returnVal = layer;
         })
         return returnVal;
@@ -305,7 +348,7 @@ function mapService($http,
         return vm.activeSelection;
     }
     function getActiveFeature() {
-        if (vm.activeSelection == null)
+        if (vm.activeSelection === null)
             return null;
         return vm.activeSelection.layer.getSource().getFeatureById(vm.activeSelection.featureID);
     }
@@ -353,7 +396,6 @@ function mapService($http,
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
             layer.layer.changed();
-
         });
         vm.layerSummary = getLayerSummary();
     }
@@ -367,7 +409,7 @@ function mapService($http,
             if (layer.selected && layer.selectorVisible)
                 summary += layer.layerName + ", ";
         });
-        if (summary.lastIndexOf(", ") == summary.length - 2)
+        if (summary.lastIndexOf(", ") === summary.length - 2)
             summary = summary.substring(0, summary.length - 2);
         else
             summary = "No layers selected";
@@ -375,21 +417,24 @@ function mapService($http,
         return summary;
     }
     function deleteSelectedFeature() {
-        if (vm.interactions.select) {
-            vm.interactions.select.getFeatures().forEach(function (feature) {
-                if (feature.get("type") == "measure") {
-                    if (vm.measureTooltipElement) {
-                        vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
-                        vm.measureTooltipElement = null;
-                    }
-                    vm.lastMeasureFeature = null;
-                }
+        var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+        vm.interactions.select = new ol.interaction.Select({
+            condition: ol.events.condition.never,
+            style: style
+        });
+        setSelections({
+            featureID: getActiveFeature().getId(), layer: vm.selectedLayer
+        }, []);
+        if (vm.layerName === GlobalSettings.drawingLayerName) {
+            var collection = new ol.Collection();
+            collection.push(getActiveFeature());
+            collection.forEach(function (feature) {
                 if (vm.drawingLayer.layer.getSource().getFeatures().indexOf(feature) != -1)
                     vm.drawingLayer.layer.getSource().removeFeature(feature);
                 vm.onDeleteButton(feature.getId(), feature.layer);
             });
-            vm.interactions.select.getFeatures().clear();
             setSelections(null, []);
+            $rootScope.$emit('selectedObjectChange', { "isObjectSelected": false });
         }
     }
     function addInteractions() {
@@ -406,6 +451,9 @@ function mapService($http,
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
+        if (button.name === "area") {
+            style.opacity = vm.polygonOpacity;
+        }
         vm.interactions.draw = setDrawInteraction(button, style);
         switch (button.name) {
             case "deliverypoint":
@@ -419,32 +467,60 @@ function mapService($http,
                 break;
         }
         var name = button.name;
-        if (name == "point") {
+        if (name === "point") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "deliverypoint");
+                evt.feature.setId(createGuid())
             })
         }
 
-        else if (name == "accesslink") {
+        else if (name === "accesslink") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "accesslink");
+            })
+        }
+
+        else if (name === "line") {
+            
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.set("type", "linestring");
+                evt.feature.setId(createGuid())
+            })
+        }
+
+        else if (name === "area") {
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.setId(createGuid());
+                evt.feature.set("type", "polygon");
             })
         }
         else {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
-
     }
+
     function setDrawInteraction(button, style) {
         var draw = null;
 
         switch (button.name) {
             case "accesslink":
+                var dpCoordinates = coordinatesService.getCordinates();
+
+                function drawCondition(e) {
+                    if (dpCoordinates === '') {
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
                 draw = new ol.interaction.Draw({
                     source: vm.drawingLayer.layer.getSource(),
                     type: button.shape,
                     style: style,
-                    condition: ol.events.condition.primaryAction,
+                    condition: drawCondition,
                     geometryFunction: setAccessLinkCoordinates,
                     finishCondition: finishCondition
                 });
@@ -466,28 +542,34 @@ function mapService($http,
         }
 
         var dpCoordinates = coordinatesService.getCordinates();
-        if(dpCoordinates && dpCoordinates !== ''){
-         coordinates[0] = dpCoordinates;   
+        if (dpCoordinates && dpCoordinates !== '') {
+            coordinates[0] = dpCoordinates;
         }
         geometry.setCoordinates(coordinates);
         return geometry;
-
     }
     function setupAccessLink() {
         var startLineCoordinate = [];
         var endLineCoordinate = [];
+        if (vm.selectedDP && vm.selectedLayer) {
+            setSelections({
+                featureID: vm.selectedDP.getId(), layer: vm.selectedLayer
+            }, []);
+        }
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    removeInteraction('select');
 			    clearDrawingLayer(true);
-			    setSelections(null, []);
+			    $rootScope.$broadcast('disablePrintMap', {
+			        disable: true
+			    });
 			});
         vm.interactions.draw.on('drawend',
 			function (evt) {
 			    evt.feature.set("type", "accesslink");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    accessLinkCoordinatesService.setCordinates(coordinates);
+			    $rootScope.state = false;
 			    $stateParams.accessLinkFeature = evt.feature;
 			    var layer = mapFactory.getLayer('Drawing');
 			    vm.map.getInteractions().forEach(function (interaction) {
@@ -497,14 +579,9 @@ function mapService($http,
 			    });
 
 			    $rootScope.$broadcast('redirectTo', {
-			        
-			            feature: evt.feature,
-			            contextTitle: GlobalSettings.accessLinkLayerName
-			        
+			        feature: evt.feature,
+			        contextTitle: CommonConstants.AccessLinkActionName
 			    });
-			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
-			    //    reload: 'accessLink'
-			    //});
 			});
     }
     function finishCondition(e) {
@@ -528,8 +605,6 @@ function mapService($http,
             source: vector.layer.getSource(),
             pixelTolerance: 20
         });
-
-
     }
     function setSelectButton() {
         var lastLayer;
@@ -548,18 +623,52 @@ function mapService($http,
         vm.interactions.select.on('select', function (e) {
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
+                vm.isObjectSelected = true;
+                $rootScope.$emit('selectedObjectChange', { "isObjectSelected": vm.isObjectSelected });
                 setSelections({
-                                     featureID: e.selected[0].getId(), layer: lastLayer
+                    featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
+                vm.layerName = lastLayer.getProperties().name;
                 var deliveryPointDetails = e.selected[0].getProperties();
+                coordinatesService.setCordinates(deliveryPointDetails.geometry.flatCoordinates);
+                $rootScope.state = false;
+                guidService.setGuid(deliveryPointDetails.deliveryPointId);
                 showDeliveryPointDetails(deliveryPointDetails);
-                
-                             } else {
-                             setSelections(null, []);
-                             }
-
+                vm.selectedDP = e.selected[0];
+                vm.selectedLayer = lastLayer;
+            } else {
+                vm.isObjectSelected = false;
+                vm.layerName = "";
+                $rootScope.$emit('selectedObjectChange', { "isObjectSelected": vm.isObjectSelected });
+                setSelections(null, []);
+                var deliveryPointDetails = null;
+                showDeliveryPointDetails(deliveryPointDetails);
+            }
         });
         persistSelection();
+    }
+    function setModifyButton() {       
+            vm.interactions.select = new ol.interaction.Select({
+                condition: ol.events.condition.never
+            });
+            var collection = new ol.Collection();
+            collection.push(getActiveFeature());
+            if (vm.layerName === GlobalSettings.drawingLayerName) {
+            vm.interactions.modify = new ol.interaction.Modify({
+                features: collection
+            });
+            
+
+            vm.map.on('singleclick', function (evt) {
+                if (vm.activeTool === "modify" && getActiveFeature().getProperties().type === "deliverypoint") {
+                    getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
+                }
+            });
+
+            vm.interactions.modify.on('modifyend', vm.onModify);
+
+            persistSelection();
+        }
     }
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
@@ -590,7 +699,7 @@ function mapService($http,
 			    evt.feature.set("type", "deliverypoint");
 			    var coordinates = evt.feature.getGeometry().getCoordinates();
 			    coordinatesService.setCordinates(coordinates);
-
+			    $rootScope.state = false;
 			});
     }
     function clearDrawingLayer(keepCurrentInteraction) {
@@ -653,6 +762,12 @@ function mapService($http,
                 case "select":
                     setSelectButton();
                     break;
+                case "modify":
+                    setModifyButton();
+                    break;
+                case "delete":
+                    deleteSelectedFeature();
+                    break;
                 default:
                     setDrawButton(button);
             }
@@ -660,9 +775,8 @@ function mapService($http,
         }
     }
 
-
     function selectFeatures() {
-        if (vm.interactions.select == null || angular.isUndefined(vm.interactions.select)) {
+        if (vm.interactions.select === null || angular.isUndefined(vm.interactions.select)) {
             vm.interactions.select = new ol.interaction.Select({
                 condition: ol.events.condition.never,
                 style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)
@@ -673,13 +787,11 @@ function mapService($http,
         vm.features.forEach(function (feature) {
             vm.interactions.select.getFeatures().push(feature);
         })
-
     }
 
     function getfeature(feature) {
         vm.features = feature;
     }
-
 
     function setSelectedObjectsVisibility(selectedLayer) {
         if (vm.interactions.select) {
@@ -697,31 +809,167 @@ function mapService($http,
                 if (vm.featuredType === selectedLayer) {
                     setSelections(null, []);
                 }
-
             });
-
         }
-             }
+    }
 
     function showDeliveryPointDetails(deliveryPointDetails) {
-        deliveryPointDetails.routeName = null;
-        mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
-              .then(function (response) {
-                  if (response != null) {
-                      if (response[0].key == CommonConstants.RouteName) {
-                          deliveryPointDetails.routeName = [response[0].value];
-                          if (response[1].key == CommonConstants.DpUse) {
-                              deliveryPointDetails.dpUse = response[1].value;
+        if (deliveryPointDetails != null) {
+            deliveryPointDetails.routeName = null;
+            mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
+                  .then(function (response) {
+                      if (response != null) {
+                          if (response[0].key === CommonConstants.RouteName) {
+                              deliveryPointDetails.routeName = [response[0].value];
+                              if (response[1].key === CommonConstants.DpUse) {
+                                  deliveryPointDetails.dpUse = response[1].value;
+                              }
+                          }
+                          else if (response[0].key === CommonConstants.DpUse) {
+                              deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
-                      else if (response[0].key == CommonConstants.DpUse) {
-                          deliveryPointDetails.dpUse = response[0].value;
-                      }
-                  }
-                  $state.go('deliveryPointDetails', {
-                      selectedDeliveryPoint: deliveryPointDetails
-                  }, { reload: true });
-              });
+                      $state.go('deliveryPointDetails', {
+                          selectedDeliveryPoint: deliveryPointDetails
+                      }, { reload: true });
+                  });
+        }
+        else {
+            $state.go('deliveryPointDetails', {
+                selectedDeliveryPoint: deliveryPointDetails
+            }, { reload: true });
+        }
+    }
+
+    function setSize(width, height) {
+        vm.map.setSize([width, height]);
+    }
+
+    function setOriginalSize() {
+        vm.map.setSize(vm.originalSize);
+    }
+
+    function composeMap() {
+        vm.map.once('postcompose', function (event) {
+            writeScaletoCanvas(event);
+        });
+        vm.map.renderSync();
+    }
+
+    function writeScaletoCanvas(e) {
+        var ctx = e.context;
+        var canvas = e.context.canvas;
+        //get the Scaleline div container the style-width property
+        var olscale = document.getElementsByClassName('ol-scale-line-inner')[0];
+        //Scaleline thicknes
+        var line1 = 6;
+        //Offset from the left
+        var x_offset = 10;
+        //offset from the bottom
+        var y_offset = 30;
+        var fontsize1 = 15;
+        var font1 = fontsize1 + 'px Arial';
+        // how big should the scale be (original css-width multiplied)
+        var multiplier = 2;
+        var scalewidth = parseInt(olscale.style.width, 10) * multiplier;
+        var scale = olscale.innerHTML;
+        var scalenumber = parseInt(scale, 10);
+        var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
+
+        var calculatedScale = setScaleUnit(scalenumber, scaleunit);
+        //Scale Text
+        ctx.beginPath();
+        ctx.textAlign = "left";
+        ctx.strokeStyle = "#ffffff";
+        ctx.fillStyle = "#000000";
+        ctx.lineWidth = 5;
+        ctx.font = font1;
+        ctx.strokeText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+        ctx.fillText([calculatedScale], x_offset + fontsize1 / 2, canvas.height - y_offset - fontsize1 / 2);
+
+        //Scale Dimensions
+        var xzero = scalewidth + x_offset;
+        var yzero = canvas.height - y_offset;
+        var xfirst = x_offset + scalewidth * 1 / 4;
+        var xsecond = xfirst + scalewidth * 1 / 4;
+        var xthird = xsecond + scalewidth * 1 / 4;
+        var xfourth = xthird + scalewidth * 1 / 4;
+
+        // Stroke
+        ctx.beginPath();
+        ctx.lineWidth = line1 + 2;
+        ctx.strokeStyle = "#000000";
+        ctx.fillStyle = "#ffffff";
+        ctx.moveTo(x_offset, yzero);
+        ctx.lineTo(xzero + 1, yzero);
+        ctx.stroke();
+
+        //sections black/white
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#000000";
+        ctx.moveTo(x_offset, yzero);
+        ctx.lineTo(xfirst, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(xfirst, yzero);
+        ctx.lineTo(xsecond, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#000000";
+        ctx.moveTo(xsecond, yzero);
+        ctx.lineTo(xthird, yzero);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = line1;
+        ctx.strokeStyle = "#FFFFFF";
+        ctx.moveTo(xthird, yzero);
+        ctx.lineTo(xfourth, yzero);
+        ctx.stroke();
+
+        $rootScope.canvas = canvas;
+    }
+
+    function setScaleUnit(scalenumber, scaleunit) {
+        if (scaleunit === 'km') {
+            var scale = scalenumber * 0.621371;
+            if (scale < 1) {
+                scale = scalenumber * 1000
+                return Math.round(scale) + ' Metre';
+            }
+            else {
+                return Math.round(scale) + ' Mile';
+            }
+        }
+        else if (scaleunit === 'm') {
+            var scale = scalenumber * 0.000621371;
+            if (scale < 1) {
+                return scalenumber + ' Metre';
+            }
+            else {
+                return Math.round(scale) + ' Mile';
+            }
+        }
+    }
+
+    function getResolution() {
+        return vm.map.getView().getResolution();
+    }
+    // This function generates random unique identifier
+    function createGuid() {
+        // Iterate over the guid template and replace all the 'xy' characters encountered except for '-' and '4'
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (character) {
+            // Generate random number with base 16
+            var randomNumber = Math.random() * 16 | 0, uuid = character === 'x' ? randomNumber : (randomNumber & 0x3 | 0x8);
+            // Return the randomly generated UUID string
+            return uuid.toString(16);
+        });
     }
 
 }

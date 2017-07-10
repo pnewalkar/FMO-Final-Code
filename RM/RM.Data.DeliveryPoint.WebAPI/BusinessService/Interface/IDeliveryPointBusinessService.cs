@@ -22,11 +22,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         object GetDeliveryPoints(string boundaryBox, Guid unitGuid);
 
         /// <summary>
-        /// This method is used to fetch delivery points data on the basis of udprn.
+        /// This method is used to fetch delivery points data on the basis of Guid.
         /// </summary>
-        /// <param name="udprn">udprn as string</param>
+        /// <param name="Guid">Guid as unique Identifier</param>
         /// <returns>delivery points data as object</returns>
-        object GetDeliveryPointByUDPRN(int udprn);
+        object GetDeliveryPointByGuid(Guid id);
 
         /// <summary>
         /// This method is used to fetch ..........

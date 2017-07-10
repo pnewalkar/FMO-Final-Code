@@ -70,5 +70,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         Task<PostCodeDTO> GetSelectedPostCode(Guid unitGuid, Guid postcodeGuid);
 
         UnitLocationDTO FetchUnitDetails(Guid unitGuid);
+
+        /// <summary>
+        /// Fetches Location type id for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        Guid GetUnitLocationTypeId(Guid unitId);
     }
 }

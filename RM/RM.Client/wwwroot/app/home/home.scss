@@ -25,7 +25,7 @@ h1{
 }
 
 .mdDialog {
-    width: width-percent(1);
+    width: 800px;
     height: height-percent(1);
 }
 
@@ -78,6 +78,23 @@ md-list-item .md-list-item-inner>md-checkbox, md-list-item>md-checkbox {
 .errorDialog{
     @include width(425px);
     @include height(216px);
+}
+
+button.md-raised.md-primary.md-button.md-ink-ripple {
+    @extend %body-content;
+    @include font-color($white);
+}
+
+
+md-select-menu._md {
+    margin-left: 3%;
+    width: 89%;
+}
+
+.noResult.ng-binding.ng-scope {
+    
+    margin-left: 3%;
+    width: 89%;
 }
 /*fonts*/
 

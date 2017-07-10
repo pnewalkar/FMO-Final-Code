@@ -6,7 +6,8 @@ function PopUpSettingService() {
         advanceSearch: advanceSearch,
         routeLog: routeLog,
         deliveryPoint: deliveryPoint,
-        openAlert: openAlert
+        openAlert: openAlert,
+        printMap: printMap
     };
 
     function advanceSearch(query) {
@@ -23,7 +24,7 @@ function PopUpSettingService() {
     function routeLog(selectedUnit) {
         return {
             templateUrl: './route-log/route-log.template.html',
-            clickOutsideToClose: true,
+            clickOutsideToClose: false,
             locals: {
                 items: selectedUnit
             },
@@ -40,6 +41,14 @@ function PopUpSettingService() {
             clickOutsideToClose: false,
             controllerAs: "vm",
             preserveScope: true
+        };
+    }
+
+    function printMap() {
+        return {
+            templateUrl: './print-map/print-map.template.html',
+            clickOutsideToClose: false,
+            controller: 'PrintMapController as vm'
         };
     }
 

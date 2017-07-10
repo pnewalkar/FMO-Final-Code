@@ -2,11 +2,12 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "Castle.Core": "4.0.0",
     "Moq": "4.7.1",
-    "NETStandard.Library": "1.6.0",
     "NUnit": "3.6.1",
     "NUnit3TestAdapter": "3.7.0",
-    "RM.Operational.RouteLog.WebAPI": "1.0.0-*"
+    "RM.Operational.RouteLog.WebAPI": "1.0.0-*",
+    "StyleCop.Analyzers": "1.0.0"
   },
 
   "frameworks": {
@@ -20,5 +21,8 @@
         }
       }
     }
+  },
+  "buildOptions": {
+    "additionalArguments": [ "/ruleset:../RM.ruleset" ]
   }
 }

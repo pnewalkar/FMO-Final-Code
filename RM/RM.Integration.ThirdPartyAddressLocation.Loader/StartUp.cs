@@ -8,6 +8,8 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.MessageBrokerMiddleware;
 using RM.Integration.ThirdPartyAddressLocation.Loader.Utils;
+using RM.CommonLibrary.EntityFramework.DataService;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 using RM.Integration.ThirdPartyAddressLocation.Loader.Utils.Interfaces;
 
 namespace RM.Integration.ThirdPartyAddressLocation.Loader

@@ -21,21 +21,23 @@
     <link rel="stylesheet" href="../bower_components/components-font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="../bower_components/material-design-icons-iconfont/dist/material-design-icons.css" />
     <!--custom styles-->
-    <link rel="stylesheet" href="../build/sass/variables.css"/>
-    <link rel="stylesheet" href="../build/sass/home/home.css" />
-    <link rel="stylesheet" href="../build/sass/map-view/map-view.css" />
-    <link rel="stylesheet" href="../build/sass/map-panel/map-panel.css" />
-    <link rel="stylesheet" href="../build/sass/search/search.css" />
-    <link rel="stylesheet" href="../build/sass/side-nav/side-nav.css" />
-    <link rel="stylesheet" href="../build/sass/map-toolbar/map-toolbar.css" />
-    <link rel="stylesheet" href="../build/sass/layers/layers.css" />
-    <link rel="stylesheet" href="../build/sass/route-log/route-log.css" />
-    <link rel="stylesheet" href="../build/sass/map-keys/map-keys.css" />
-    <link rel="stylesheet" href="../build/sass/advance-search/advance-search.css" />
-    <link rel="stylesheet" href="../build/sass/unit-selector/unit-selector.css" />
-    <link rel="stylesheet" href="../build/sass/delivery-point/delivery-point.css" />
-    <link rel="stylesheet" href="../build/sass/access-link/access-link.css" />
-    <link rel="stylesheet" href="../build/sass/common/searchable-dropdown.css" />
+    <link rel="stylesheet" href="../dist/sass/variables.css"/>
+    <link rel="stylesheet" href="../dist/sass/common/error/error.css" />
+    <link rel="stylesheet" href="../dist/sass/home/home.css" />
+    <link rel="stylesheet" href="../dist/sass/map-view/map-view.css" />
+    <link rel="stylesheet" href="../dist/sass/map-panel/map-panel.css" />
+    <link rel="stylesheet" href="../dist/sass/search/search.css" />
+    <link rel="stylesheet" href="../dist/sass/side-nav/side-nav.css" />
+    <link rel="stylesheet" href="../dist/sass/map-toolbar/map-toolbar.css" />
+    <link rel="stylesheet" href="../dist/sass/layers/layers.css" />
+    <link rel="stylesheet" href="../dist/sass/route-log/route-log.css" />
+    <link rel="stylesheet" href="../dist/sass/map-keys/map-keys.css" />
+    <link rel="stylesheet" href="../dist/sass/advance-search/advance-search.css" />
+    <link rel="stylesheet" href="../dist/sass/unit-selector/unit-selector.css" />
+    <link rel="stylesheet" href="../dist/sass/delivery-point/delivery-point.css" />
+    <link rel="stylesheet" href="../dist/sass/access-link/access-link.css" />
+    <link rel="stylesheet" href="../dist/sass/common/searchable-dropdown.css" />
+    <link rel="stylesheet" href="../dist/sass/print-map/print-map.css">
     <!--angular material scripts-->
     <script src="../bower_components/angular/angular.min.js"></script>
     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
@@ -63,7 +65,8 @@
     <!--common scripts-->
     <script src="./common/popup-setting.service.js"></script>
     <script src="./common/common.constants.js"></script>
-    <script src="common/string-format.service.js"></script>
+    <script src="./common/string-format.service.js"></script>
+    <script src="./common/previous-page.directive.js"></script>
     <!--Manage Access-->
     <script src="./manage-access/manage-access.module.js"></script>
     <script src="./manage-access/manage-access.service.js"></script>
@@ -74,10 +77,8 @@
 
     <!-- Reusable Component -->
     <script src="./common/dropdown.module.js"></script>
- 
     <script src="./common/searchable-dropdown.controller.js"></script>
     <script src="./common/searchable-dropdown.component.js"></script>
-
 
     <!--home-->
     <script src="./home/home.module.js"></script>
@@ -117,10 +118,9 @@
     <!--Error-->
     <script src="common/error/error.module.js"></script>
     <script src="common/error/error.service.js"></script>
-    <script src="common/error/error.controller.js"></script>
     <script src="common/error/error.interceptor.service.js"></script>
-    <!--Error-->
 
+    <!-- Task -->
     <script src="./task/task.module.js"></script>
     <script src="./task/task.controller.js"></script>
     <script src="./task/task.component.js"></script>
@@ -174,21 +174,32 @@
     <script src="./delivery-point/delivery-point.controller.js"></script>
     <script src="./delivery-point/delivery-point.component.js"></script>
     <script src="./delivery-point/delivery-point-context.controller.js"></script>
-
     <!--reference Data-->
     <script src="./reference-data/reference-data.module.js"></script>
     <script src="./reference-data/reference-data.constant.js"></script>
     <script src="./reference-data/reference-data.factory.js"></script>
     <script src="./reference-data/reference-data.controller.js"></script>
     <script src="./reference-data/reference-data.component.js"></script>
-
-
     <!--access link-->
     <script src="./access-link/access-link.module.js"></script>
     <script src="./access-link/access-link.factory.js"></script>
     <script src="./access-link/access-link.service.js"></script>
     <script src="./access-link/access-link.controller.js"></script>
     <script src="./access-link/access-link.component.js"></script>
+    <!--back button-->
+    <script src="./back-button/back-button.module.js"></script>
+    <script src="./back-button/back-button.config.js"></script>
+    <script src="./back-button/back-button.controller.js"></script>
+    <script src="./back-button/back-button.component.js"></script>
+    <!--Print Map-->
+    <script src="./print-map/print-map.module.js"></script>
+    <script src="./print-map/print-map.controller.js"></script>
+    <script src="./print-map/print-map.factory.js"></script>
+    <script src="./print-map/print-map.service.js"></script>
+    <!-- Licensing information-->
+    <script src="./license-information/licensing-information.module.js"></script>
+    <script src="./license-information/licensing-information-accessors.service.js"></script>
+    <script src="./license-information/licensing-information.service.js"></script>
 
 </head>
 <body>

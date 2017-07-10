@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for route-log\route-log.controller.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">route-log/</a> route-log.controller.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">59.22% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>61/103</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">5% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>1/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">59.09% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>13/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">59.22% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>61/103</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">angular
+    .module('routeLog')
+    .controller('RouteLogController',
+                 RouteLogController);
+RouteLogController.$inject = ['routeLogService',
+                            'items', '$scope'];
+&nbsp;
+function RouteLogController(routeLogService,
+                            items, $scope) {
+    var vm = this;
+    vm.initialize = initialize;
+    vm.loadSelectionType = loadSelectionType;
+    vm.loadRouteLogStatus = loadRouteLogStatus;
+    vm.loadScenario = loadScenario;
+    vm.scenarioChange = scenarioChange;
+    vm.selectedRouteStatus = selectedRouteStatus;
+    vm.selectionTypeChange = selectionTypeChange;
+    vm.deliveryRouteChange = deliveryRouteChange;
+    vm.clearSearchTerm = clearSearchTerm;
+    vm.selectedDeliveryUnitObj = items;
+    vm.closeWindow = closeWindow;
+    vm.selectClass = "routeSearch md-text";
+    vm.generateRouteLogSummary = generateRouteLogSummary;
+    vm.generateSummaryReport = false;   
+    vm.initialize();
+    function initialize() {
+        vm.loadSelectionType();
+        vm.loadRouteLogStatus();
+    }
+&nbsp;
+    function closeWindow() {
+        routeLogService.closeWindow();
+    }
+    function selectionTypeChange() {
+        vm.selectedRouteStatusObj = null;
+        vm.selectedRouteScenario = null;
+        vm.selectedRoute = null;
+        vm.isSelectionType = false;
+        vm.isRouteScenarioDisabled = true;
+        vm.isDeliveryRouteDisabled = true;
+        vm.isShowMultiSelectionRoute = false;
+        clearDeliveryRoute();
+    }
+    function loadSelectionType() {
+        routeLogService.loadSelectionType().then(function (response) {
+            vm.RouteselectionTypeObj = response[0].RouteselectionTypeObj;
+            vm.selectedRouteSelectionObj = response[0].selectedRouteSelectionObj;
+        })
+    }
+    function selectedRouteStatus() {
+        loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.ID);
+        vm.isRouteScenarioDisabled = false;
+        clearDeliveryRoute();
+    }
+    function loadRouteLogStatus() {
+        routeLogService.loadRouteLogStatus().then(function (response) {
+            vm.RouteStatusObj = response;
+            vm.selectedRouteStatusObj = vm.RouteStatusObj[0];
+            loadScenario(vm.selectedRouteStatusObj.id, vm.selectedDeliveryUnitObj.ID);
+        });
+    }
+<span class="fstat-no" title="function not covered" >    function scenarioChange() {</span>
+<span class="cstat-no" title="statement not covered" >        var result = routeLogService.scenarioChange(vm.selectedRouteSelectionObj.value);   </span>
+<span class="cstat-no" title="statement not covered" >        vm.isDeliveryRouteDisabled = result.isDeliveryRouteDisabled;</span>
+<span class="cstat-no" title="statement not covered" >        loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);</span>
+<span class="cstat-no" title="statement not covered" >        clearDeliveryRoute();</span>
+    }
+    function loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj) {
+        routeLogService.loadScenario(selectedRouteStatusObj, selectedDeliveryUnitObj).then(function (response) {
+            <span class="missing-if-branch" title="else path not taken" >E</span>if (response.length &gt; 0) {
+                vm.RouteScenario = response;
+            } else {
+<span class="cstat-no" title="statement not covered" >                vm.RouteScenario = undefined;</span>
+<span class="cstat-no" title="statement not covered" >                vm.selectedRouteScenario = null;</span>
+<span class="cstat-no" title="statement not covered" >                vm.isSelectionType = true;</span>
+<span class="cstat-no" title="statement not covered" >                vm.selectedRoute = null;</span>
+<span class="cstat-no" title="statement not covered" >                vm.isDeliveryRouteDisabled = true;</span>
+<span class="cstat-no" title="statement not covered" >                vm.isShowMultiSelectionRoute = false;</span>
+            }
+        });
+    }
+<span class="fstat-no" title="function not covered" >    function loadDeliveryRoute(operationStateID, deliveryScenarioID) {</span>
+<span class="cstat-no" title="statement not covered" >        routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, vm.selectedRouteSelectionObj.value).then(<span class="fstat-no" title="function not covered" >function (response) {</span></span>
+<span class="cstat-no" title="statement not covered" >            vm.multiSelectiondeliveryRoute = response[0].multiSelectiondeliveryRoute;</span>
+<span class="cstat-no" title="statement not covered" >            vm.deliveryRoute = response[0].deliveryRoute;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (vm.multiSelectiondeliveryRoute.length === 0 &amp;&amp; vm.deliveryRoute.length===0)</span>
+            {
+<span class="cstat-no" title="statement not covered" >                vm.isShowMultiSelectionRoute = false;</span>
+<span class="cstat-no" title="statement not covered" >                vm.isDeliveryRouteDisabled = true;</span>
+                
+               
+            }
+            else <span class="cstat-no" title="statement not covered" >if(vm.multiSelectiondeliveryRoute.length&gt; 0 &amp;&amp; vm.deliveryRoute.length===0)</span>
+            {
+<span class="cstat-no" title="statement not covered" >                vm.isDeliveryRouteDisabled = true;</span>
+<span class="cstat-no" title="statement not covered" >                vm.isShowMultiSelectionRoute = true;</span>
+<span class="cstat-no" title="statement not covered" >                vm.deliveryRoute = null;</span>
+            }
+            else <span class="cstat-no" title="statement not covered" >if(vm.deliveryRoute.length===0)</span>
+            {
+<span class="cstat-no" title="statement not covered" >                vm.isDeliveryRouteDisabled = true;</span>
+            }
+          
+        });
+    }
+    function clearSearchTerm() {
+        vm.searchTerm = '';
+    }
+<span class="fstat-no" title="function not covered" >    function deliveryRouteChange(selectedRouteValue) {</span>
+<span class="cstat-no" title="statement not covered" >        routeLogService.deliveryRouteChange(selectedRouteValue.id).then(<span class="fstat-no" title="function not covered" >function (response) {</span></span>
+<span class="cstat-no" title="statement not covered" >            vm.routeDetails = response;</span>
+<span class="cstat-no" title="statement not covered" >            vm.generateSummaryReport = false;</span>
+        });
+    }
+    function clearDeliveryRoute() {
+        vm.deliveryRoute = null;
+        vm.routeDetails = false;
+        vm.generateSummaryReport = false;
+    }
+<span class="fstat-no" title="function not covered" >    function generateRouteLogSummary() {</span>
+<span class="cstat-no" title="statement not covered" >        if (vm.generateSummaryReport) {</span>
+<span class="cstat-no" title="statement not covered" >            var deliveryRouteDTO = { "DeliveryRouteDTO": vm.routeDetails };</span>
+<span class="cstat-no" title="statement not covered" >            routeLogService.generateRouteLogSummary(vm.routeDetails).then(<span class="fstat-no" title="function not covered" >function (response) {</span></span>
+<span class="cstat-no" title="statement not covered" >                displayRouteLogPdfReport(response);</span>
+            });
+        }
+    }
+<span class="fstat-no" title="function not covered" >    function displayRouteLogPdfReport(pdfFileName) {</span>
+<span class="cstat-no" title="statement not covered" >        if (pdfFileName) {</span>
+<span class="cstat-no" title="statement not covered" >            routeLogService.generatePdf(pdfFileName).then(<span class="fstat-no" title="function not covered" >function (response) {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (window.navigator &amp;&amp; window.navigator.msSaveOrOpenBlob) {</span>
+<span class="cstat-no" title="statement not covered" >                    var byteCharacters = atob(response.data);</span>
+<span class="cstat-no" title="statement not covered" >                    var byteNumbers = new Array(byteCharacters.length);</span>
+<span class="cstat-no" title="statement not covered" >                    for (var i = 0; i &lt; byteCharacters.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >                        byteNumbers[i] = byteCharacters.charCodeAt(i);</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    var byteArray = new Uint8Array(byteNumbers);</span>
+<span class="cstat-no" title="statement not covered" >                    var blob = new Blob([byteArray], {</span>
+                        type: 'application/pdf'
+                    });
+<span class="cstat-no" title="statement not covered" >                    window.navigator.msSaveOrOpenBlob(blob, response.fileName);</span>
+                } else {
+<span class="cstat-no" title="statement not covered" >                    var base64EncodedPDF = response.data;</span>
+<span class="cstat-no" title="statement not covered" >                    var dataURI = "data:application/pdf;base64," + base64EncodedPDF;</span>
+<span class="cstat-no" title="statement not covered" >                    window.open(dataURI, "_blank");</span>
+                }
+            });
+        }
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jun 23 2017 12:36:21 GMT+0100 (GMT Daylight Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

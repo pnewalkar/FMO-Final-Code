@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<ReferenceDataMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CategoryName>
+    <AppCategoryName>AccessLinkStatus</AppCategoryName>
+    <DBCategoryName>Access Link Status</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>NotificationPriority</AppCategoryName>
+    <DBCategoryName>Notification Priority</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>NetworkLinkType</AppCategoryName>
+    <DBCategoryName>Network Link Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DataProvider</AppCategoryName>
+    <DBCategoryName>Data Provider</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>NotificationType</AppCategoryName>
+    <DBCategoryName>Notification Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryPointUseIndicator</AppCategoryName>
+    <DBCategoryName>DeliveryPoint Use Indicator</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>UI_RouteLogSearch_SelectionType</AppCategoryName>
+    <DBCategoryName>UI_RouteLogSearch_SelectionType</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>UI_RouteLog_Status</AppCategoryName>
+    <DBCategoryName>UI_RouteLog_Status</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>UI_DeliveryPoint_Type</AppCategoryName>
+    <DBCategoryName>UI_DeliveryPoint_Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>UI_SearchRules</AppCategoryName>
+    <DBCategoryName>UI_SearchRules</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>UI_MinNumSearchCharacters</AppReferenceDataName>
+      <DBReferenceDataName>UI_MinNumSearchCharacters</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>AccessLinkParameters</AppCategoryName>
+    <DBCategoryName>Access Link Parameters</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>AccessLinkSameRoadMaxDistance</AppReferenceDataName>
+      <DBReferenceDataName>Access Link Same Road Max Distance</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>AccessLinkDiffRoadMaxDistance</AppReferenceDataName>
+      <DBReferenceDataName>Access Link Diff Road Max Distance</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>Residential-RoadWidthMultiplicationFactor
+</AppReferenceDataName>
+      <DBReferenceDataName>Residential - Road Width Multiplication Factor
+</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>Residential-PavementWidthMultiplicationFactor
+</AppReferenceDataName>
+      <DBReferenceDataName>Residential - Pavement Width Multiplication Factor
+</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>Residential-HouseDepthMultiplicationFactor
+</AppReferenceDataName>
+      <DBReferenceDataName>Residential - House Depth Multiplication Factor
+</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>Business-RoadWidthMultiplicationFactor
+</AppReferenceDataName>
+      <DBReferenceDataName>Business - Road Width Multiplication Factor
+</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>Business-PavementWidthMultiplicationFactor
+</AppReferenceDataName>
+      <DBReferenceDataName>Business - Pavement Width Multiplication Factor
+</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>AccesLinkMinimumLength
+</AppReferenceDataName>
+      <DBReferenceDataName>Acces Link Minimum Length
+</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>Motorway</AppReferenceDataName>
+      <DBReferenceDataName>Motorway</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>ARoadPrimary</AppReferenceDataName>
+      <DBReferenceDataName>A Road Primary</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>ARoad</AppReferenceDataName>
+      <DBReferenceDataName>A Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>BRoadPrimary</AppReferenceDataName>
+      <DBReferenceDataName>B Road Primary</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>BRoad</AppReferenceDataName>
+      <DBReferenceDataName>B Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>MinorRoad</AppReferenceDataName>
+      <DBReferenceDataName>Minor Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>LocalRoad</AppReferenceDataName>
+      <DBReferenceDataName>Local Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>LocalAccessRoad</AppReferenceDataName>
+      <DBReferenceDataName>Local Access Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>RestrictedLocalAccessRoad</AppReferenceDataName>
+      <DBReferenceDataName>Restricted Local Access Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>SecondaryAccessRoad</AppReferenceDataName>
+      <DBReferenceDataName>Secondary Access Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>RestrictedSecondaryAccessRoad</AppReferenceDataName>
+      <DBReferenceDataName>Restricted Secondary Access Road</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PathLink</AppReferenceDataName>
+      <DBReferenceDataName>PathLink</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>RMGRoad</AppReferenceDataName>
+      <DBReferenceDataName>RMGRoad</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PavementWidth</AppReferenceDataName>
+      <DBReferenceDataName>Pavement Width</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>PropertyDepth</AppReferenceDataName>
+      <DBReferenceDataName>Property Depth</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>RMGPath</AppReferenceDataName>
+      <DBReferenceDataName>RMGPath</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryRouteOperationalStatus</AppCategoryName>
+    <DBCategoryName>Delivery Route Operational Status</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryRouteMethodType</AppCategoryName>
+    <DBCategoryName>Delivery Route Method Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>TransportType</AppCategoryName>
+    <DBCategoryName>Transport Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>UnitLocationType</AppCategoryName>
+    <DBCategoryName>Unit Location Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PostalAddressType</AppCategoryName>
+    <DBCategoryName>Postal Address Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>NetworkNodeType</AppCategoryName>
+    <DBCategoryName>Network Node Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>OperationalObjectType</AppCategoryName>
+    <DBCategoryName>Operational Object Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PostalAddressStatus</AppCategoryName>
+    <DBCategoryName>Postal Address Status</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>AccessLinkType</AppCategoryName>
+    <DBCategoryName>Access Link Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryUnitStatus</AppCategoryName>
+    <DBCategoryName>Delivery Unit Status</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>AccessLinkDirection</AppCategoryName>
+    <DBCategoryName>Access Link Direction</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>OperationalStatus</AppCategoryName>
+    <DBCategoryName>Operational Status</DBCategoryName>
+  </CategoryName>
+</ReferenceDataMapping>

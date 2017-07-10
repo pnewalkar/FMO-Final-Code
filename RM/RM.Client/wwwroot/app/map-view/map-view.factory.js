@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('mapView')
-.factory('mapFactory',MapFactory);
+.factory('mapFactory', MapFactory);
 
 MapFactory.$inject = ['$http',
     'mapStylesFactory',
@@ -9,8 +9,11 @@ MapFactory.$inject = ['$http',
     'GlobalSettings',
     '$document',
     'layersAPIService',
+    'referencedataApiService',
     '$q',
-    'stringFormatService'];
+    'stringFormatService',
+    'licensingInformationAccessorService',
+'$timeout'];
 
 function MapFactory($http,
     mapStylesFactory,
@@ -18,9 +21,11 @@ function MapFactory($http,
     GlobalSettings,
     $document,
     layersAPIService,
+    referencedataApiService,
     $q,
-    stringFormatService)
-    {
+    stringFormatService,
+    licensingInformationAccessorService,
+        $timeout) {
     var map = null;
     var miniMap = null;
     var view = null;
@@ -66,11 +71,50 @@ function MapFactory($http,
         getScaleFromResolution: getScaleFromResolution,
         setUnitBoundaries: setUnitBoundaries,
         setDeliveryPoint: setDeliveryPoint,
-        setAccessLink : setAccessLink,
+        setDeliveryPointOnLoad: setDeliveryPointOnLoad,
+        setAccessLink: setAccessLink,
         setMapScale: setMapScale,
         locateDeliveryPoint: locateDeliveryPoint,
-        GetRouteForDeliveryPoint: GetRouteForDeliveryPoint
+        GetRouteForDeliveryPoint: GetRouteForDeliveryPoint,
+        getPolygonTransparency : getPolygonTransparency,
+        LicenceInfo: LicenceInfo
+
     };
+
+    function LicenceInfo(displayText, layerName, layerSource) {
+        var map = getMap();
+        var layer = map.getLayers();
+        if (layerName !== undefined && layerName !== GlobalSettings.baseLayerName) {
+            layer.forEach(function (layer) {
+                var attribution = new ol.Attribution({
+                    html: ""
+                });
+                layer.getSource().setAttributions(attribution);
+            });
+            if (layerName === GlobalSettings.accessLinkLayerName || layerName === GlobalSettings.unitBoundaryLayerName) {
+                layerSource.setAttributions(attribution);
+            }
+            else {
+                layerSource.setAttributions(new ol.Attribution({
+                    html: licensingInformationAccessorService.getLicensingInformation()[0].value
+                }));
+            }
+        }
+        else {           
+            if (map.getLayers().getArray()[0] !== undefined) {             
+                layer.forEach(function (layer) {
+                    var attribution = new ol.Attribution({
+                        html: ""
+                    });
+                    layer.getSource().setAttributions(attribution);
+                });
+                var attribution = new ol.Attribution({
+                    html: licensingInformationAccessorService.getLicensingInformation()[0].value
+                })
+                map.getLayers().getArray()[0].getSource().setAttributions(attribution);
+            }
+        }
+    }
 
     function initialiseMap() {
         availableResolutionForCurrentExtent = defaultResolutions;
@@ -92,16 +136,22 @@ function MapFactory($http,
             renderBuffer: 1000
         });
 
+
         map = new ol.Map({
             layers: layers.map(function (a) { return a.layer }),
             target: 'map',
             view: view,
+            logo: false,
             loadTilesWhileAnimating: true,
             loadTilesWhileInteracting: true,
             controls: []
         });
 
         map.addControl(getCustomScaleLine());
+        map.addControl(new ol.control.Attribution());
+        var licenseIcon = document.getElementsByClassName("ol-attribution");
+        var licenseButton = licenseIcon[0].getElementsByTagName('button');
+        licenseButton[0].title = '';
 
         var external_control = new ol.control.Zoom({
             target: $document[0].getElementById('zoom-control')
@@ -110,10 +160,13 @@ function MapFactory($http,
 
         units = map.getView().getProjection().getUnits();
         mpu = ol.proj.METERS_PER_UNIT[units];
+
     }
 
+
+
     function initialiseMiniMap() {
-        if (view == null)
+        if (view === null)
             initialiseMap();
 
         viewMiniMap = new ol.View({
@@ -280,7 +333,7 @@ function MapFactory($http,
         layerObj.disabled = layerObj.disabled ? true : false;
         layerObj.onMiniMap = layerObj.onMiniMap ? true : false;
         layerObj.keys = layerObj.keys ? layerObj.keys : [];
-        layerObj.selectorVisible = layerObj.selectorVisible == angular.isUndefined(undefined)  ? true : layerObj.selectorVisible;
+        layerObj.selectorVisible = layerObj.selectorVisible === angular.isUndefined(undefined) ? true : layerObj.selectorVisible;
 
         layerObj.layer.set('name', layerObj.layerName);
         if (angular.isDefined(layerObj.layer.setZIndex))
@@ -326,7 +379,7 @@ function MapFactory($http,
     function getCustomScaleLine() {
         customScaleLine = function (opt_options) {
             var options = opt_options ? opt_options : {};
-            var className = options.className !== angular.isUndefined(undefined)  ? options.className : 'ol-scale-line';
+            var className = options.className !== angular.isUndefined(undefined) ? options.className : 'ol-scale-line';
             this.element_ = $document[0].createElement('DIV');
             this.renderedVisible_ = false;
             this.viewState_ = null;
@@ -349,7 +402,7 @@ function MapFactory($http,
                 var zoomInButtons = $document[0].getElementsByClassName("ol-zoom-in");
                 var zoomOutButtons = $document[0].getElementsByClassName("ol-zoom-out");
 
-                if (index == definedScales.length - 1) {
+                if (index === definedScales.length - 1) {
                     setZoomButtonStatus(zoomInButtons, true);
 
                     zoomLimitReached = true;
@@ -358,7 +411,7 @@ function MapFactory($http,
                     setZoomButtonStatus(zoomInButtons, false);
                 }
 
-                if (index == 0 || index == maxScaleIndex) {
+                if (index === 0 || index === maxScaleIndex) {
                     setZoomButtonStatus(zoomOutButtons, true);
 
                     zoomLimitReached = true;
@@ -366,8 +419,9 @@ function MapFactory($http,
                 else {
                     setZoomButtonStatus(zoomOutButtons, false);
                 }
-
-                $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                $timeout(function () {
+                    $rootScope.$apply($rootScope.$broadcast('zommLevelchanged', { zoomLimitReached: zoomLimitReached, currentScale: scale, maximumScale: maxScale }));
+                });
             }
         };
 
@@ -465,8 +519,30 @@ function MapFactory($http,
 
             if (featureToSelect)
                 selectedFeatures.push(featureToSelect);
-        });      
+        });
     }
+
+    function setDeliveryPointOnLoad(long, lat) {
+        map.getView().setCenter([long, lat]);
+        map.getView().setResolution(0.5600011200022402);
+        var deliveryPointsLayer = getLayer(GlobalSettings.deliveryPointLayerName);
+        deliveryPointsLayer.layer.getSource().clear();
+        deliveryPointsLayer.selected = true;
+        deliveryPointsLayer.layer.setVisible(true)
+        var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
+        var extent = map.getView().calculateExtent(map.getSize());
+        layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
+            var features = new ol.format.GeoJSON({ defaultDataProjection: BNGProjection }).readFeatures(response);
+            deliveryPointsLayer.layer.getSource().addFeatures(features);
+
+            var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+
+            var select = new ol.interaction.Select({ style: style });
+
+            map.addInteraction(select);
+        });
+    }
+
 
     function locateDeliveryPoint(long, lat) {
         map.getView().setCenter([long, lat]);
@@ -525,6 +601,14 @@ function MapFactory($http,
             deferred.reject(err);
         });
 
+        return deferred.promise;
+    }
+
+    function getPolygonTransparency() {
+        var deferred = $q.defer();
+        referencedataApiService.getSimpleListsReferenceData(referenceDataConstants.Transparency.DBCategoryName).then(function (response) {
+            deferred.resolve(response.listItems);
+        });
         return deferred.promise;
     }
 }

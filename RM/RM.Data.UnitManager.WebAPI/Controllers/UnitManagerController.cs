@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
-using System.Diagnostics;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 
 namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 {
@@ -15,12 +17,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
     /// Unit location controller.
     /// </summary>
     [Route("api/UnitManager")]
-    public class UnitLocationController : RMBaseController
+    public class UnitManagerController : RMBaseController
     {
         private readonly IUnitLocationBusinessService unitLocationBusinessService = default(IUnitLocationBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public UnitLocationController(IUnitLocationBusinessService unitLocationBusinessService, ILoggingHelper loggingHelper)
+        public UnitManagerController(IUnitLocationBusinessService unitLocationBusinessService, ILoggingHelper loggingHelper)
         {
             this.unitLocationBusinessService = unitLocationBusinessService;
             this.loggingHelper = loggingHelper;
@@ -34,7 +36,34 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpGet("Unit")]
         public List<UnitLocationDTO> GetUnitLocations()
         {
-            return unitLocationBusinessService.FetchDeliveryUnitsForUser(UserId);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetUnitLocations"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var getUnitLocations = unitLocationBusinessService.FetchDeliveryUnitsForUser(UserId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return getUnitLocations;
+            }
+        }
+
+        /// <summary>
+        /// Fetches unit Location type  for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        [Authorize]
+        [HttpGet("Unit/{unitId}")]
+        public Guid GetUnitLocationTypeId(Guid unitId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetUnitLocationTypeId"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var unitLocationTypeId = unitLocationBusinessService.GetUnitLocationTypeId(unitId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return unitLocationTypeId;
+            }
         }
 
         /// <summary>
@@ -58,19 +87,27 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpGet("postcodesector/udprn: {udprn}")]
         public async Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeSectorByUDPRN"))
             {
-                return await unitLocationBusinessService.GetPostCodeSectorByUDPRN(uDPRN);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    var getPostCodeSectorByUDPRN = await unitLocationBusinessService.GetPostCodeSectorByUDPRN(uDPRN);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return getPostCodeSectorByUDPRN;
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 
@@ -84,19 +121,27 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpGet("postcodes/basic/{searchText}")]
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.FetchPostCodeUnitForBasicSearch"))
             {
-                return await unitLocationBusinessService.FetchPostCodeUnitForBasicSearch(searchText, CurrentUserUnit);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    var fetchPostCodeUnitForBasicSearch = await unitLocationBusinessService.FetchPostCodeUnitForBasicSearch(searchText, CurrentUserUnit);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return fetchPostCodeUnitForBasicSearch;
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 
@@ -110,19 +155,27 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpGet("postcodes/count/{searchText}")]
         public async Task<int> GetPostCodeUnitCount(string searchText)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeUnitCount"))
             {
-                return await unitLocationBusinessService.GetPostCodeUnitCount(searchText, CurrentUserUnit);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    var getPostCodeUnitCount = await unitLocationBusinessService.GetPostCodeUnitCount(searchText, CurrentUserUnit);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return getPostCodeUnitCount;
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 
@@ -136,19 +189,27 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpGet("postcodes/advance/{searchText}")]
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.FetchPostCodeUnitForAdvanceSearch"))
             {
-                return await unitLocationBusinessService.FetchPostCodeUnitForAdvanceSearch(searchText, CurrentUserUnit);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    var fetchPostCodeUnitForAdvanceSearch = await unitLocationBusinessService.FetchPostCodeUnitForAdvanceSearch(searchText, CurrentUserUnit);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return fetchPostCodeUnitForAdvanceSearch;
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 
@@ -162,19 +223,27 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpGet("postcode/guid/{searchText}")]
         public async Task<Guid> GetPostCodeID(string searchText)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeID"))
             {
-                return await unitLocationBusinessService.GetPostCodeID(searchText);
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, TraceEventType.Error);
-                }
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
+                try
+                {
+                    var getPostCodeID = await unitLocationBusinessService.GetPostCodeID(searchText);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    return getPostCodeID;
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
             }
         }
 
@@ -189,16 +258,23 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpGet("scenario/{operationStateID}/{deliveryUnitID}/{fields}")]
         public IActionResult FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID, string fields)
         {
-            List<object> deliveryScenerioList = null;
-            List<ScenarioDTO> deliveryScenerio = unitLocationBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
-            CreateSummaryObject<ScenarioDTO> createSummary = new CreateSummaryObject<ScenarioDTO>();
-
-            if (!string.IsNullOrEmpty(fields))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.FetchDeliveryScenario"))
             {
-                deliveryScenerioList = createSummary.SummarisePropertiesForList(deliveryScenerio, fields);
-            }
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-            return Ok(deliveryScenerioList);
+                List<object> deliveryScenerioList = null;
+                List<ScenarioDTO> deliveryScenerio = unitLocationBusinessService.FetchDeliveryScenario(operationStateID, deliveryUnitID);
+                CreateSummaryObject<ScenarioDTO> createSummary = new CreateSummaryObject<ScenarioDTO>();
+
+                if (!string.IsNullOrEmpty(fields))
+                {
+                    deliveryScenerioList = createSummary.SummarisePropertiesForList(deliveryScenerio, fields);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(deliveryScenerioList);
+            }
         }
 
 

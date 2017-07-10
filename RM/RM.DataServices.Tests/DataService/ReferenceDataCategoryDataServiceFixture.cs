@@ -4,13 +4,14 @@
     using System.Collections.Generic;
     using System.Data.Entity.Infrastructure;
     using System.Linq;
+    using CommonLibrary.LoggingMiddleware;
+    using Moq;
+    using NUnit.Framework;
     using RM.CommonLibrary.DataMiddleware;
     using RM.CommonLibrary.EntityFramework.DataService;
     using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
     using RM.CommonLibrary.EntityFramework.Entities;
     using RM.CommonLibrary.HelperMiddleware;
-    using Moq;
-    using NUnit.Framework;
 
     [TestFixture]
     public class ReferenceDataCategoryDataServiceFixture : RepositoryFixtureBase
@@ -18,6 +19,7 @@
         private Mock<RMDBContext> mockRMDBContext;
         private Mock<IDatabaseFactory<RMDBContext>> mockDatabaseFactory;
         private IReferenceDataCategoryDataService testCandidate;
+        private Mock<ILoggingHelper> loggingHelperMock;
 
         [Test]
         public void Test_RouteLogStatus()
@@ -44,6 +46,7 @@
 
         protected override void OnSetup()
         {
+            loggingHelperMock = CreateMock<ILoggingHelper>();
             var referenceDataCategory = new List<ReferenceDataCategory>()
             {
                 new ReferenceDataCategory()
@@ -57,10 +60,20 @@
                             ReferenceDataName = "PAF",
                             DataDescription = "PAF",
                             ReferenceDataCategory_GUID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD"),
-                            ID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD")
+                            ID = new Guid("4A6F8F72-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ReferenceDataValue = "PAF"
+                        },
+
+                        new ReferenceData()
+                        {
+                            ReferenceDataName = "PAF",
+                            DataDescription = "PAF",
+                            ReferenceDataCategory_GUID = new Guid("4A6F8F73-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ID = new Guid("4A6F8F73-AE47-4EC4-8FCB-EFCFEB900ADD"),
+                            ReferenceDataValue = "NYB"
                         }
                     }
-                                    }
+                }
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<ReferenceDataCategory>(referenceDataCategory);
@@ -79,7 +92,12 @@
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<RMDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new ReferenceDataCategoryDataService(mockDatabaseFactory.Object);
+
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            testCandidate = new ReferenceDataCategoryDataService(mockDatabaseFactory.Object, loggingHelperMock.Object);
         }
     }
 }

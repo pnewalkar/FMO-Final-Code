@@ -7,7 +7,8 @@ function referencedataApiService($http, $q, GlobalSettings) {
     return {
         getReferenceData: getReferenceData,
         readJson: readJson,
-        getSimpleListsReferenceData: getSimpleListsReferenceData
+        getSimpleListsReferenceData: getSimpleListsReferenceData,
+        getNameValueReferenceData: getNameValueReferenceData
     };
 
     function getReferenceData() {
@@ -32,6 +33,18 @@ function referencedataApiService($http, $q, GlobalSettings) {
         var deferred = $q.defer();
        
         $http.get(GlobalSettings.referenceDataApiUrl + '/ReferenceDataManager/simpleLists?listName=' + listName).success(function (response) {
+            deferred.resolve(response.item2);
+
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    }
+    function getNameValueReferenceData(appGroupName) {
+        var deferred = $q.defer();
+
+        $http.get(GlobalSettings.referenceDataApiUrl + '/ReferenceDataManager/nameValuePairs?appGroupName=' + appGroupName).success(function (response) {
             deferred.resolve(response.item2);
 
         }).error(function (err, status) {

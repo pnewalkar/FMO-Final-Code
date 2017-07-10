@@ -17,7 +17,8 @@ function routeLogAPIService($http,
         getScenario: getScenario,
         getRoutes: getRoutes,
         getRouteDetailsByGUID: getRouteDetailsByGUID,
-        generateRouteLogSummary: generateRouteLogSummary
+        generateRouteLogSummary: generateRouteLogSummary,
+        generatePdf: generatePdf
     }
 
     function getSelectionType() {
@@ -99,6 +100,17 @@ function routeLogAPIService($http,
 
         return deferred.promise;
     };
-   
+    function generatePdf(pdfFilename) {
+        var deferred = $q.defer();
+
+        $http.get(GlobalSettings.pdfGeneratorApiUrl + GlobalSettings.getPdfreport + pdfFilename).success(function (response) {
+            deferred.resolve(response);
+
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
 }
 

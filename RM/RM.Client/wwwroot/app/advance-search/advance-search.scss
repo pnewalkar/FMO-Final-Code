@@ -5,6 +5,16 @@
     margin-top: 15px;
 }
 
+.inputIcon label{
+    margin-left: 15px
+}
+
+.inputIcon i.fa.fa-search{
+    position: absolute;
+    top: 10px;
+    color:rgba(0,0,0,0.38);
+}
+
 .searchbox{
     width: width-percent(1);
     @include height(25px);
@@ -42,4 +52,9 @@
 span.closeWindow {
     @include margin(-10px -7px 0px 0px);
     @include cursor(default);
+}
+
+.inputIcon .md-text {
+    color: black;
+    text-indent: 18px;
 }

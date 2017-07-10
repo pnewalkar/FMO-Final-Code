@@ -154,7 +154,7 @@
                         <div layout="row">
                             <md-input-container flex="45">
                                 <label> {{ 'DELIVERY_POINTS.SUB_BUILDING_NAME' | translate }}</label>
-                                <input ng-model="vm.addressDetails.subBuildingName" type="text" ng-maxlength="50"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="subBuildingName" ng-model="vm.addressDetails.subBuildingName" type="text" ng-maxlength="50"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.subBuildingName.$error"
                                      ng-show="vm.deliveryPointForm.subBuildingName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 50</div>
@@ -165,7 +165,7 @@
 
                             <md-input-container flex="50">
                                 <label>{{ 'DELIVERY_POINTS.ORGANISATION' |  translate }}</label>
-                                <input ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input  name="organisationName" ng-model="vm.addressDetails.organisationName" type="text" ng-maxlength="60" ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.organisationName.$error"
                                      ng-show="vm.deliveryPointForm.organisationName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
@@ -175,7 +175,7 @@
                         <div layout="row">
                             <md-input-container flex="45">
                                 <label> {{ 'DELIVERY_POINTS.DEPARTMENT_NAME' | translate }}</label>
-                                <input ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
+                                <input name="departmentName" ng-model="vm.addressDetails.departmentName" type="text" ng-maxlength="60"  ng-blur="vm.setOrganisation()" ng-required="!(vm.addressDetails.buildingNumber.length || vm.addressDetails.buildingName.length || vm.addressDetails.departmentName.length || vm.addressDetails.organisationName.length)"  ng-disabled="vm.notyetBuilt !== vm.defaultNYBValue ? true : false">
                                 <div ng-messages="vm.deliveryPointForm.departmentName.$error"
                                      ng-show="vm.deliveryPointForm.departmentName.$touched" role="alert">
                                     <div ng-message="maxlength">Value entered is longer than 60</div>
@@ -236,11 +236,11 @@
 
                 <md-input-container>
                     <label> {{ 'DELIVERY_POINTS.MAIL_VOL' | translate }} </label>
-                    <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="4" required>
+                    <input name="mailvol" ng-model="vm.mailvol" type="text" ng-pattern="/^[0-9]*$/" ng-maxlength="6" required>
                     <div ng-messages="vm.deliveryPointForm.mailvol.$error"
                          ng-show="vm.deliveryPointForm.mailvol.$touched" role="alert">
                         <div ng-message="required">This field is required*</div>
-                        <div ng-message="maxlength">Value entered is longer than 4</div>
+                        <div ng-message="maxlength">Value entered is longer than 6</div>
                         <div ng-message="pattern">Value entered is not valid</div>
                     </div>
                 </md-input-container>
@@ -253,7 +253,7 @@
                 {{ 'GENERAL.BUTTONS.CANCEL' | translate }}
             </md-button>
             <span flex></span>
-            <md-button ng-disabled="(!vm.deliveryPointForm.$valid)" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
+            <md-button ng-disabled="(!vm.deliveryPointForm.$valid) || vm.isOnceClicked" ng-click="vm.createDeliveryPoint()"  class="md-raised md-primary" flex="40" title="{{ 'GENERAL.BUTTONS.SAVE' | translate }}">
                 {{ 'GENERAL.BUTTONS.SAVE' | translate }}
             </md-button>
         </md-dialog-actions>

@@ -44,7 +44,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public void Test_GetDeliveryPointByUDPRN()
         {
-            int udprn = 10875813;
+            Guid id = Guid.NewGuid();
             List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
             DeliveryPointDTO objdeliverypointDTO = new DeliveryPointDTO();
             objdeliverypointDTO.ID = Guid.NewGuid();
@@ -195,6 +195,115 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var result = testCandidate.UpdatePAFIndicator(Guid.NewGuid(), Guid.NewGuid());
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Result);
+        }
+
+        [Test]
+        public void Test_GetDetailDeliveryPointByUDPRN()
+        {
+            var result = testCandidate.GetDetailDeliveryPointByUDPRN(12345);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_FetchDeliveryPointsForBasicSearch()
+        {
+            var result = testCandidate.FetchDeliveryPointsForBasicSearch("abc", Guid.NewGuid());
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointsCount()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
+            var result = testCandidate.GetDeliveryPointsCount("abc", Guid.NewGuid());
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result == 5);
+        }
+
+        [Test]
+        public void Test_FetchDeliveryPointsForAdvanceSearch()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
+            var result = testCandidate.FetchDeliveryPointsForAdvanceSearch("abc", Guid.NewGuid());
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_InsertDeliveryPoint()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).ReturnsAsync(true);
+            var result = testCandidate.InsertDeliveryPoint(deliveryPointDTO);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        [Test]
+        public void Test_DeliveryPointExists()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).ReturnsAsync(true);
+            var result = testCandidate.DeliveryPointExists(12345);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointByUDPRNforBatch()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).ReturnsAsync(new DeliveryPointDTO() { });
+            var result = testCandidate.GetDeliveryPointByUDPRNforBatch(12345);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_UpdateDeliveryPointLocationOnUDPRN()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).ReturnsAsync(5);
+            var result = testCandidate.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Result == 5);
+        }
+
+        [Test]
+        public void Test_UpdateDeliveryPointLocationOnID()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnID(It.IsAny<DeliveryPointDTO>())).ReturnsAsync(Guid.NewGuid());
+            var result = testCandidate.UpdateDeliveryPointLocationOnID(deliveryPointDTO);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointByPostalAddress()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(new DeliveryPointDTO() { });
+            var result = testCandidate.GetDeliveryPointByPostalAddress(Guid.NewGuid());
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPoint()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).Returns(new DeliveryPointDTO() { });
+            var result = testCandidate.GetDeliveryPoint(Guid.NewGuid());
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_UpdateDeliveryPointAccessLinkCreationStatus()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointAccessLinkCreationStatus(It.IsAny<DeliveryPointDTO>())).Returns(true);
+            var result = testCandidate.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDTO);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointsCrossingOperationalObject()
+        {
+            mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<DeliveryPointDTO>() { });
+            var coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
+            var unitBoundary = DbGeometry.PolygonFromText("POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))", 27700);
+            var result = testCandidate.GetDeliveryPointsCrossingOperationalObject(coordinates, unitBoundary);
+            Assert.IsNotNull(result);
         }
 
         protected override void OnSetup()

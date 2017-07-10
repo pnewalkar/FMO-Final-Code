@@ -6,13 +6,13 @@ unitSelectorService.$inject = ['$q',
                                '$filter',
                                'manageAccessService',
                                'mapFactory',
-                               'unitSelectorAPIService'];
+                               'unitSelectorAPIService', 'licensingInfoService'];
 function unitSelectorService($q,
                              GlobalSettings,
                              $filter,
                              manageAccessService,
                              mapFactory,
-                             unitSelectorAPIService) {
+                             unitSelectorAPIService, licensingInfoService) {
     var deliveryRouteUnit = [];
     var isDeliveryUnitDisabled = false;
     var result = [];
@@ -36,19 +36,24 @@ function unitSelectorService($q,
                     if (response) {
                         //deliveryRouteUnit = response;
                         angular.forEach(response, function (value, key) {
-                            deliveryRouteUnit.push({ displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery" })
+                            deliveryRouteUnit.push({
+                                displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery", area: value.area,
+                                boundingBox: value.boundingBox,
+                                unitName: value.unitName,
+                                boundingBoxCenter: value.boundingBoxCenter,
+                                unitBoundryPolygon: value.unitBoundryPolygon
+                            })
                         });
 
                         var newTemp = $filter("filter")(deliveryRouteUnit, { ID: authData.unitGuid });
                         selectedUser = newTemp[0];
                         selectedDeliveryUnit = response[0];
                         result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled });
-                        updateMapAfterUnitChange(selectedDeliveryUnit);
+                        updateMapAfterUnitChange(selectedUser);
                         deferred.resolve(result);
                     }
                 });
                 return deferred.promise;
-
             } else {
                 var deferred = $q.defer();
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
@@ -56,9 +61,15 @@ function unitSelectorService($q,
                         if (response.length === 1) {
                             isDeliveryUnitDisabled = true;
                         }
-                      //  deliveryRouteUnit = response;
+                        //  deliveryRouteUnit = response;
                         angular.forEach(response, function (value, key) {
-                            deliveryRouteUnit.push({ displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery" })
+                            deliveryRouteUnit.push({
+                                displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery", area: value.area,
+                                boundingBox: value.boundingBox,
+                                unitName: value.unitName,
+                                boundingBoxCenter: value.boundingBoxCenter,
+                                unitBoundryPolygon: value.unitBoundryPolygon
+                            })
                         });
                         selectedUser = deliveryRouteUnit[0];
                         selectedDeliveryUnit = response[0];
@@ -74,6 +85,6 @@ function unitSelectorService($q,
         }
     }
     function updateMapAfterUnitChange(selectedUnit) {
-        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter, selectedUnit.unitBoundaryGeoJSONData);
+        mapFactory.setUnitBoundaries(selectedUnit.boundingBox, selectedUnit.boundingBoxCenter, selectedUnit.unitBoundryPolygon);
     }
 }

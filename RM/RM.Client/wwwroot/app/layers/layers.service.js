@@ -3,11 +3,11 @@
 layersService.$inject = [
  'mapService',
  'mapStylesFactory',
-'layersAPIService'];
+'layersAPIService','licensingInfoService'];
 
 function layersService(mapService,
                        mapStylesFactory,
-                       layersAPIService) {
+                       layersAPIService,licensingInfoService) {
     var vm = this;
 
     return {
@@ -63,11 +63,10 @@ function layersService(mapService,
                 changedLayer.selected = true;
         }
         refreshLayer(changedLayer.layerName);
-
     }
 
     function showUngrouped() {
-        var showGrouped = false;
+        var showGrouped = false;      
         vm.ungrouped.forEach(function (layer) {
             showGrouped = layer.selectorVisible;
         })
@@ -76,6 +75,7 @@ function layersService(mapService,
   
     function setSelectedObjectsVisibility(selectedLayer) {
         mapService.setSelectedObjectsVisibility(selectedLayer);
+        licensingInfoService.getLicensingText(selectedLayer);
     }
 
 }

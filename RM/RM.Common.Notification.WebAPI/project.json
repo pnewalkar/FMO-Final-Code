@@ -23,6 +23,8 @@
     "Microsoft.Extensions.Options": "1.1.1",
     "Microsoft.Practices.EnterpriseLibrary.Common.dll": "3.1.0",
     "Newtonsoft.Json": "10.0.2",
+    "RM.CommonLibrary.Authentication": "1.0.0-*",
+    "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
     "StyleCop.Analyzers": "1.0.0"
   },
 
@@ -39,6 +41,9 @@
         "RM.CommonLibrary.EntityFramework": {
           "target": "project"
         }
+      },
+      "frameworkAssemblies": {
+        "System.Data": "4.0.0.0"
       }
     }
   },

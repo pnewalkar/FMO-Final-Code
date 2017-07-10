@@ -21,7 +21,6 @@ function RouteLogController(routeLogService,
     vm.closeWindow = closeWindow;
     vm.selectClass = "routeSearch md-text";
     vm.generateRouteLogSummary = generateRouteLogSummary;
-    vm.emptyID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
     vm.generateSummaryReport = false;
     vm.initialize();
     function initialize() {
@@ -63,7 +62,6 @@ function RouteLogController(routeLogService,
     function scenarioChange() {
         var result = routeLogService.scenarioChange(vm.selectedRouteSelectionObj.value);
         vm.isDeliveryRouteDisabled = result.isDeliveryRouteDisabled;
-        vm.isShowMultiSelectionRoute = result.isShowMultiSelectionRoute;
         loadDeliveryRoute(vm.selectedRouteStatusObj.id, vm.selectedRouteScenario.id);
         clearDeliveryRoute();
     }
@@ -85,6 +83,22 @@ function RouteLogController(routeLogService,
         routeLogService.loadDeliveryRoute(operationStateID, deliveryScenarioID, vm.selectedRouteSelectionObj.value).then(function (response) {
             vm.multiSelectiondeliveryRoute = response[0].multiSelectiondeliveryRoute;
             vm.deliveryRoute = response[0].deliveryRoute;
+
+            if (vm.multiSelectiondeliveryRoute.length === 0 && vm.deliveryRoute.length === 0) {
+                vm.isShowMultiSelectionRoute = false;
+                vm.isDeliveryRouteDisabled = true;
+
+
+            }
+            else if (vm.multiSelectiondeliveryRoute.length > 0 && vm.deliveryRoute.length === 0) {
+                vm.isDeliveryRouteDisabled = true;
+                vm.isShowMultiSelectionRoute = true;
+                vm.deliveryRoute = null;
+            }
+            else if (vm.deliveryRoute.length === 0) {
+                vm.isDeliveryRouteDisabled = true;
+            }
+
         });
     }
     function clearSearchTerm() {
@@ -92,7 +106,12 @@ function RouteLogController(routeLogService,
     }
     function deliveryRouteChange(selectedRouteValue) {
         routeLogService.deliveryRouteChange(selectedRouteValue.id).then(function (response) {
+            var selectedUnit = sessionStorage.getItem('selectedDeliveryUnit');
+            var selectUnitData = JSON.parse(selectedUnit);
             vm.routeDetails = response;
+            if (selectUnitData) {
+                vm.routeDetails.deliveryOffice = selectUnitData.unitName;
+            }
             vm.generateSummaryReport = false;
         });
     }
@@ -109,31 +128,26 @@ function RouteLogController(routeLogService,
             });
         }
     }
-    function displayRouteLogPdfReport(data) {
-        if (data) {
-            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                var fileName = generateGuid() + ".pdf";
-                var byteCharacters = atob(data);
-                var byteNumbers = new Array(byteCharacters.length);
-                for (var i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+    function displayRouteLogPdfReport(pdfFileName) {
+        if (pdfFileName) {
+            routeLogService.generatePdf(pdfFileName).then(function (response) {
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    var byteCharacters = atob(response.data);
+                    var byteNumbers = new Array(byteCharacters.length);
+                    for (var i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    var byteArray = new Uint8Array(byteNumbers);
+                    var blob = new Blob([byteArray], {
+                        type: 'application/pdf'
+                    });
+                    window.navigator.msSaveOrOpenBlob(blob, response.fileName);
+                } else {
+                    var base64EncodedPDF = response.data;
+                    var dataURI = "data:application/pdf;base64," + base64EncodedPDF;
+                    window.open(dataURI, "_blank");
                 }
-                var byteArray = new Uint8Array(byteNumbers);
-                var blob = new Blob([byteArray], {
-                    type: 'application/pdf'
-                });
-                window.navigator.msSaveOrOpenBlob(blob, fileName);
-            } else {
-                var base64EncodedPDF = data;
-                var dataURI = "data:application/pdf;base64," + base64EncodedPDF;
-                window.open(dataURI, "_blank");
-            }
+            });
         }
-    }
-    function generateGuid() {
-        return vm.emptyID.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
     }
 }

@@ -1,0 +1,30 @@
+h2, .md-toolbar-tools > h2 {
+  color: #ffffff;
+  font-family: Chevin;
+  font-size: 18px; }
+
+md-list-item, .version {
+  color: #2a2a2d;
+  font-family: PF_DIN;
+  font-size: 16px; }
+
+.version {
+  color: #ffffff; }
+
+.printInfo {
+  top: 36%;
+  position: absolute;
+  left: 30%;
+  margin: 0px 0px 0px 10px; }
+
+.versionBox {
+  position: absolute;
+  bottom: 0px;
+  min-height: 36px;
+  height: 36px; }
+
+.sideList .md-button {
+  min-height: 48px; }
+
+.disableText .md-list-item {
+  color: grey; }

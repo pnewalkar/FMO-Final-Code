@@ -79,7 +79,7 @@ angular.module('RMApp')
 
     $mdThemingProvider.theme('default')
             .primaryPalette('royalMailPrimary')
-            .accentPalette('royalMailAccent');
+            .accentPalette('royalMailAccent', {'default': '200'});
 })
 
 .run(['localization', '$translate', '$window', 'referencedataApiService', function (localization, $translate, $window, referencedataApiService) {

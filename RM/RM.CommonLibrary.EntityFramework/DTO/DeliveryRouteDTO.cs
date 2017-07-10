@@ -2,7 +2,7 @@
 
 namespace RM.CommonLibrary.EntityFramework.DTO
 {
-    public class DeliveryRouteDTO
+    public class RouteDTO
     {
         public Guid ID { get; set; }
 
@@ -36,7 +36,7 @@ namespace RM.CommonLibrary.EntityFramework.DTO
             {
                 if (!string.IsNullOrEmpty(RouteNumber) && !string.IsNullOrEmpty(RouteName))
                 {
-                    return "(" + RouteNumber.Trim() + ")" + RouteName;
+                    return RouteName + "(" + RouteNumber.Trim() + ")";
                 }
                 else
                 {
@@ -46,19 +46,33 @@ namespace RM.CommonLibrary.EntityFramework.DTO
         }
 
         public Guid MethodReferenceGuid { get; set; }
+
         public string Method { get; set; }
+
         public string DeliveryOffice { get; set; }
+
         public int Aliases { get; set; }
+
         public int Blocks { get; set; }
+
         public string ScenarioName { get; set; }
+
         public int DPs { get; set; }
+
         public int BusinessDPs { get; set; }
+
         public int ResidentialDPs { get; set; }
+
         public Guid? TravelOutTransportType_GUID { get; set; }
+
         public Guid? TravelInTransportType_GUID { get; set; }
+
         public string AccelarationIn { get; set; }
+
         public string AccelarationOut { get; set; }
+
         public string PairedRoute { get; set; }
+
         public string Totaltime { get; set; }
     }
 }

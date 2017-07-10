@@ -74,6 +74,5 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns></returns>
         Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
-
     }
 }

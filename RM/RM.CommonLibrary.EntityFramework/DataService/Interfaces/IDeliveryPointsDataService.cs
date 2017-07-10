@@ -70,11 +70,11 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         List<DeliveryPointDTO> GetDeliveryPoints(string boundingBox, Guid unitGuid);
 
         /// <summary>
-        /// Get the list of delivery points by the UDPRN id
+        /// Get the list of delivery points by the Guid 
         /// </summary>
-        /// <param name="udprn">UDPRN id</param>
+        /// <param name="Guid">Guid </param>
         /// <returns>DeliveryPointDTO object</returns>
-        List<DeliveryPointDTO> GetDeliveryPointListByUDPRN(int udprn);
+        List<DeliveryPointDTO> GetDeliveryPointListByGuid(Guid id);
 
         /// <summary>
         /// Get the list of delivery points by the UDPRN id

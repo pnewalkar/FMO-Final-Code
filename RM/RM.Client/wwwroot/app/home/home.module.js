@@ -4,6 +4,8 @@ angular.module('home', [      'sideNav',
                               'task',
                               'mapView',
                               'reusableComponent',
-                              'error'
-                             
+                              'error',
+                             'printMap',
+                             'licensingInfo',
+                             'backButton'
                              ]);
