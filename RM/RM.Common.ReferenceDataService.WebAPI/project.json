@@ -36,7 +36,7 @@
     "Microsoft.Extensions.FileProviders.Embedded": "1.0.0",
     "StyleCop.Analyzers": "1.0.0",  
     "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",
-    "RM.CommonLibrary.Authentication": "1.0.0-*"
+    "RM.CommonLibrary.Authentication": "1.0.0-*",
     "System.Net.Http": "4.3.0"
   },
   "tools": {
