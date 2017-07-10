@@ -1,5 +1,5 @@
+'use strict';
 describe('Delivery Point: Controller', function () {
-
     var mapToolbarService;
     var $scope;
     var $mdDialog;
@@ -15,11 +15,12 @@ describe('Delivery Point: Controller', function () {
     var vm;
     var $q;
     var deferred;
-    //var promise;
     var $controller;
     var stateMockData;
     var stateParamsMockingData;
     var mapService;
+    var MockMdHide;
+    var $rootScope;
 
     stateMockData = {"selectedUnit":{"displayText":"BN    Worthing  Office","ID":"b51aa229-c984-4ca6-9c12-510187b81050","icon":"fa-map-marker delivery","$$mdSelectId":1,"$$hashKey":"object:114"}};
     stateParamsMockingData = {
@@ -40,39 +41,25 @@ describe('Delivery Point: Controller', function () {
           $provide.factory('$mdDialog', function() {
             return {hide:MockMdHide};
           });
-        });
 
-        module(function ($provide) {
             $provide.factory('mapToolbarService', function ($q) {
-              function getShapeForButton(button) {
-                    return [];
-                }
+              function getShapeForButton(button) {}
                 return {
                   getShapeForButton: getShapeForButton
                 }
             });
 
             $provide.factory('mapService', function () {
-                function clearDrawingLayer(param){ return true; }
+                function clearDrawingLayer(param){}
                 return {
                     clearDrawingLayer : clearDrawingLayer 
                 }
             });
 
-            $provide.factory('referencedataApiService', function(){              
-                return {}                
-            });
-
             $provide.factory('deliveryPointService', function($q){
-                function initialize() {
-                    deferred = $q.defer();
-                    return deferred.promise;
-                }
-                function resultSet(query) {
-                    deferred = $q.defer();
-                    return deferred.promise;
-                }
-                function openModalPopup(popupSetting) {}              
+                function initialize() {}                
+                function resultSet() {}                    
+                function openModalPopup() {}              
                 function closeModalPopup() {}
                 function getPostalAddress(postcode) {
                   var getPostalAddressMockData = {display:true,selectedValue:true,postalAddressData:{nybAddressDetails:'testDetails',routeDetails:''}};
@@ -101,7 +88,8 @@ describe('Delivery Point: Controller', function () {
                 }
 
                 function UpdateDeliverypoint(argument) {
-                    return;
+                    var deferred = $q.defer(); 
+                    return deferred.promise;
                 }
                 
                 return {
@@ -170,9 +158,12 @@ describe('Delivery Point: Controller', function () {
                 $stateParams : $stateParams,
                 deliveryPointService : deliveryPointService,
                 mapService: _mapService_
-            })
-        });
+            });
 
+            spyOn($scope, '$emit').and.callThrough();
+            spyOn($scope, '$on').and.callThrough();
+            $scope.$emit.and.stub();
+        });
     });
     
     it('should be set positionedThirdPartyDeliveryPoint `array`', function() {
@@ -252,18 +243,15 @@ describe('Delivery Point: Controller', function () {
     });
 
     it('should be open popup model', function() {
-        vm.deliveryPoint();
-        
-        //Cal to both fun
         spyOn(deliveryPointService,'openModalPopup');
-        deliveryPointService.openModalPopup(true);
-
         spyOn(popUpSettingService,'deliveryPoint');
-        popUpSettingService.deliveryPoint();
+        vm.deliveryPoint();        
 
         expect(deliveryPointService.openModalPopup).toHaveBeenCalled();
-        expect(deliveryPointService.openModalPopup).toHaveBeenCalledWith(true);
         expect(popUpSettingService.deliveryPoint).toHaveBeenCalled();
+        expect($scope.$emit).toHaveBeenCalled();
+        expect($scope.$emit).toHaveBeenCalledWith('dialogOpen','deliveryPoint');
+
     });
 
     it('should be close window', function() {
@@ -300,13 +288,11 @@ describe('Delivery Point: Controller', function () {
 
         vm.OnChangeItem(selectedItem);
 
-        //check if selectedItem defined
         expect(vm.routeId).toBe("");
         expect(vm.notyetBuilt).toBe("");
         expect(vm.searchText).toBe(selectedItem);
         expect(vm.results).toEqual({});
 
-        //Promise resolved
         deferred.resolve(response);
         $scope.$digest();
 
@@ -371,10 +357,11 @@ describe('Delivery Point: Controller', function () {
     });    
 
     it('should be call update UpdateDeliverypoint once savePositionedDeliveryPoint method called ', function() {
-        spyOn(deliveryPointService,'UpdateDeliverypoint');
+        spyOn(deliveryPointService,'UpdateDeliverypoint').and.callThrough();
 
         vm.savePositionedDeliveryPoint();
 
+        expect(vm.isOnceClicked).toBe(true);        
         expect(vm.positionedDeliveryPointList).toBe(null);
         expect(deliveryPointService.UpdateDeliverypoint).toHaveBeenCalled();
         expect(deliveryPointService.UpdateDeliverypoint).toHaveBeenCalledWith('firstPointList');

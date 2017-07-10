@@ -1,6 +1,5 @@
 ﻿'use strict';
 describe('Delivery Point: Service', function () {
-
     var referencedataApiService;
     var $filter;
     var $q;
@@ -59,12 +58,12 @@ describe('Delivery Point: Service', function () {
             function initialiseMap() {}               
             function getMap() { return map; }           
             function setAccessLink() { }              
-            function setDeliveryPoint(xCoordinate,yCoordinate) { }
+            function setDeliveryPointOnLoad() { }
             return {
               initialiseMap: initialiseMap,
                 getMap: getMap,             
                 setAccessLink : setAccessLink,
-                setDeliveryPoint: setDeliveryPoint          
+                setDeliveryPointOnLoad: setDeliveryPointOnLoad          
               }
           });
 
@@ -85,7 +84,7 @@ describe('Delivery Point: Service', function () {
 
         inject(function (_$rootScope_,_deliveryPointService_,_deliveryPointAPIService_,_referencedataApiService_,_$filter_,_$q_,_$mdDialog_,_$state_,_mapFactory_,_guidService_) {
             $rootScope = _$rootScope_;
-            scope = _$rootScope_.$new(); //Generate new scope
+            scope = _$rootScope_.$new();
             deliveryPointService = _deliveryPointService_;
             deliveryPointAPIService = _deliveryPointAPIService_;
             referencedataApiService = _referencedataApiService_;
@@ -96,11 +95,9 @@ describe('Delivery Point: Service', function () {
             mapFactory = _mapFactory_;
             guidService = _guidService_;
         });
-
     });    
     
     it('should return promise response success when resultSet method query argument length is `greater then 3`', function() {
-
         var deferredSuccess = $q.defer();
         var query = [{"value":"null","displayText":"Not Shown"},{"value":"null","displayText":"Not Shown"},{"value":"null","displayText":"Not Shown"}];
 
@@ -117,7 +114,6 @@ describe('Delivery Point: Service', function () {
     });
 
     it('should return promise response success when resultSet method query argument length is `less then 3`', function() {
-
         var deferredSuccess = $q.defer();
         var query = [];
 
@@ -162,13 +158,11 @@ describe('Delivery Point: Service', function () {
         expect(result).toEqual({"postalAddressData": null, "selectedValue": null, "display": null });
     });
 
-    it('should promise to return a success response once bindAddressDetails method is called', function() {
-        
+    it('should promise to return a success response once bindAddressDetails method is called', function() {        
         var deferred = $q.defer();
         var response = {AddressDetails:'Abbey Road,BN11 3RW saffron hills'};
         var notyetBuilt = "Abbey Road,BN11 3RW";
 
-        //Call to api service
         spyOn(deliveryPointAPIService, 'GetPostalAddressByGuid').and.returnValue(deferred.promise);
 
         deliveryPointService.bindAddressDetails(notyetBuilt);
@@ -182,8 +176,6 @@ describe('Delivery Point: Service', function () {
     });
 
     it('should return promise filter Organisation', function() {
-
-        //Set of defer for promise object
         var deferred = $q.defer();
         var result = { "dpUse": null, "selectedDPUse": null };
 
@@ -191,7 +183,6 @@ describe('Delivery Point: Service', function () {
           return $filter('filter')(dpUseType.referenceDatas, {
                 referenceDataValue: "Organisation"
             });
-            
         }
 
         var addressDetails = {postcodeType: "S", organisationName: undefined, departmentName: undefined, buildingName: undefined, buildingNumber: undefined};
@@ -208,13 +199,9 @@ describe('Delivery Point: Service', function () {
 
         expect(result).toBeDefined();
         expect(result).toEqual({"dpUse":[{"id":"990b86a2-9431-e711-83ec-28d244aef9ed","name":null,"referenceDataValue":"Organisation","displayText":null,"description":"Organisation"}],"selectedDPUse":{"id":"990b86a2-9431-e711-83ec-28d244aef9ed","name":null,"referenceDataValue":"Organisation","displayText":null,"description":"Organisation"}});
-
-
     });
 
     it('should return promise filter Residential', function() {
-
-        //Set of defer for promise object
         var deferred = $q.defer();
         var result = { "dpUse": null, "selectedDPUse": null };
 
@@ -222,14 +209,12 @@ describe('Delivery Point: Service', function () {
           return $filter('filter')(dpUseType.referenceDatas, {
                 referenceDataValue: "Residential"
             });
-            
         }
 
         var addressDetails = {postcodeType: "S", departmentName: undefined, buildingName: undefined, buildingNumber: undefined};
         var dpUseType = [{"id":"990b86a2-9431-e711-83ec-28d244aef9ed","name":null,"referenceDataValue":"Residential","displayText":null,"description":"Organisation"},{"id":"178edcad-9431-e711-83ec-28d244aef9ed","name":null,"value":"Residential","displayText":null,"description":"Residential"}];
         dpUseType.referenceDatas = dpUseType;
         
-        //call to our fun
         deliveryPointService.setOrganisation(addressDetails,dpUseType);
         
         result.dpUse = filter(addressDetails,dpUseType);
@@ -239,7 +224,6 @@ describe('Delivery Point: Service', function () {
 
         expect(result).toBeDefined();
         expect(result).toEqual({"dpUse":[{"id":"990b86a2-9431-e711-83ec-28d244aef9ed","name":null,"referenceDataValue":"Residential","displayText":null,"description":"Organisation"}],"selectedDPUse":{"id":"990b86a2-9431-e711-83ec-28d244aef9ed","name":null,"referenceDataValue":"Residential","displayText":null,"description":"Organisation"}});
-
     });
 
     it('should be return object when isUndefinedOrNull method called and passed argument object', function() {        
@@ -251,14 +235,11 @@ describe('Delivery Point: Service', function () {
     });
 
     it('should promise to return a success response once UpdateDeliverypoint method is called', function() {
-        //Set defer 
         var deferredSuccess = $q.defer();
-
-        //After promise resolved then we have check all methods need to be called
         var positionedDeliveryPointList = [{"udprn":"","locality":"45 test001    Abbotts Close BN11 1JB","addressGuid":"00000000-0000-0000-0000-000000000000","id":"4124f93d-e679-498e-b454-c82768a4732e","xCoordinate":512073.18010136025,"yCoordinate":107209.5124445403,"latitude":50.853553614182566,"longitude":-0.40920540821937557,"rowversion":"AAAAAAAFCSk=","$$hashKey":"object:309"}];
         spyOn(deliveryPointAPIService, 'UpdateDeliverypoint').and.returnValue(deferredSuccess.promise);        
         spyOn(mapFactory,'setAccessLink');
-        spyOn(mapFactory,'setDeliveryPoint');
+        spyOn(mapFactory,'setDeliveryPointOnLoad');
         spyOn(guidService,'setGuid');
         spyOn($state,'go');
 
@@ -269,11 +250,10 @@ describe('Delivery Point: Service', function () {
 
         expect(deliveryPointAPIService.UpdateDeliverypoint).toHaveBeenCalled();
         expect(mapFactory.setAccessLink).toHaveBeenCalled();
-        expect(mapFactory.setDeliveryPoint).toHaveBeenCalled();
+        expect(mapFactory.setDeliveryPointOnLoad).toHaveBeenCalled();
         expect(guidService.setGuid).toHaveBeenCalled();
         expect($state.go).toHaveBeenCalled();
         expect($state.go).toHaveBeenCalledWith('deliveryPoint', { positionedDeliveryPointList: vm.positionedDeliveryPointList });        
     });
-
 });
 

@@ -230,10 +230,9 @@ describe('Route-Log: Controller', function () {
         controller.selectedRouteStatusObj = { id:'b51aa229-c984-4ca6-9c12-510187b81050'};
         controller.selectedRouteScenario = { id:'9c1e56d7-5397-4984-9cf0-cd9ee7093c88'};
 
-        spyOn(routeLogService,'loadScenario');
+        spyOn(routeLogService,'loadScenario').and.returnValue(false);
         controller.scenarioChange();
             
-        expect(controller.isDeliveryRouteDisabled).toBe(false);
         expect(controller.multiSelectiondeliveryRoute).toBeUndefined();        
         expect(controller.deliveryRoute).toBe(null);
         expect(controller.routeDetails).toBe(false);
