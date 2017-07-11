@@ -86,6 +86,13 @@ namespace RM.CommonLibrary.LoggingMiddleware
             Logger.Write(errorMessage, category, priority, eventId, severity, title);
         }
 
+
+        /// <summary>
+        /// General Log for method entry.
+        /// </summary>
+        /// <param name="methodName">MethodName</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
         public void LogMethodEntry(string methodName, int priority, int eventId)
         {
             string method = methodName;
@@ -94,6 +101,12 @@ namespace RM.CommonLibrary.LoggingMiddleware
             Log(message, TraceEventType.Verbose, null, LoggerTraceConstants.Category, priority, eventId, LoggerTraceConstants.Title);
         }
 
+        /// <summary>
+        /// General Log for method exit.
+        /// </summary>
+        /// <param name="methodName">Method Name</param>
+        /// <param name="priority">Priority</param>
+        /// <param name="eventId">Event ID</param>
         public void LogMethodExit(string methodName, int priority, int eventId)
         {
             string method = methodName;
