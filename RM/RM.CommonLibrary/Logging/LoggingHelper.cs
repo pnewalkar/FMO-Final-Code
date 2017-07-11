@@ -86,6 +86,22 @@ namespace RM.CommonLibrary.LoggingMiddleware
             Logger.Write(errorMessage, category, priority, eventId, severity, title);
         }
 
+        public void LogMethodEntry(string methodName, int priority, int eventId)
+        {
+            string method = methodName;
+            string message = methodName + " : Method Execution Started";
+
+            Log(message, TraceEventType.Verbose, null, LoggerTraceConstants.Category, priority, eventId, LoggerTraceConstants.Title);
+        }
+
+        public void LogMethodExit(string methodName, int priority, int eventId)
+        {
+            string method = methodName;
+            string message = methodName + " : Method Execution Completed";
+
+            Log(message, TraceEventType.Verbose, null, LoggerTraceConstants.Category, priority, eventId, LoggerTraceConstants.Title);
+        }
+
         /// <summary>
         /// Starts trace.
         /// </summary>

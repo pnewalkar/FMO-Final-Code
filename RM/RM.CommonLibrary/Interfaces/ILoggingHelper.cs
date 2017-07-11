@@ -34,6 +34,10 @@ namespace RM.CommonLibrary.LoggingMiddleware
         /// <param name="title">Title</param>
         void Log(string message, TraceEventType severity, Exception exception = null, string category = LoggerTraceConstants.DefaultLoggingCategory, int priority = LoggerTraceConstants.DefaultLoggingPriority, int eventId = LoggerTraceConstants.DefaultLoggingEventId, string title = LoggerTraceConstants.DefaultLoggingTitle);
 
+        void LogMethodEntry(string methodName, int priority, int eventId);
+
+        void LogMethodExit(string methodName, int priority, int eventId);
+
         /// <summary>
         /// Logs an entry.
         /// </summary>
