@@ -12,6 +12,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PostalAddress()
         {
+            DeliveryPoints = new HashSet<DeliveryPoint>();
             PostalAddressStatus = new HashSet<PostalAddressStatus>();
         }
 
@@ -68,12 +69,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
         [StringLength(6)]
         public string POBoxNumber { get; set; }
 
-        public Guid PostCodeGUID { get; set; }
-
         public Guid AddressType_GUID { get; set; }
 
-        [Column(TypeName = "datetime2")]
         public DateTime RowCreateDateTime { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryPoint> DeliveryPoints { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PostalAddressStatus> PostalAddressStatus { get; set; }
