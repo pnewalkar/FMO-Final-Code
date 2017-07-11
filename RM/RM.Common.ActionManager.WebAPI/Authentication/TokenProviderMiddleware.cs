@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Common.ActionManager.WebAPI.DTO;
+using RM.Common.ActionManager.WebAPI.Interfaces;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 
@@ -32,14 +32,12 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         private readonly JsonSerializerSettings serializerSettings;
         private ILoggingHelper loggingHelper;
         private IActionManagerDataService actionManagerService = default(IActionManagerDataService);
-        private IUserRoleUnitDataService userRoleUnitService = default(IUserRoleUnitDataService);
 
         public TokenProviderMiddleware(
             RequestDelegate next,
             IOptions<TokenProviderOptions> options,
             ILoggingHelper loggingHelper,
-            IActionManagerDataService actionManagerService,
-            IUserRoleUnitDataService userRoleUnitService)
+            IActionManagerDataService actionManagerService)
         {
             this.next = next;
             this.loggingHelper = loggingHelper;
@@ -53,7 +51,6 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             };
 
             this.actionManagerService = actionManagerService;
-            this.userRoleUnitService = userRoleUnitService;
         }
 
         /// <summary>
@@ -142,16 +139,16 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
 
                 if (unitGuid == Guid.Empty)
                 {
-                    unitGuid = await userRoleUnitService.GetUserUnitInfo(username);
+                    unitGuid = await actionManagerService.GetUserUnitInfo(username);
                 }
 
-                UserUnitInfoDTO userUnitInfoDto = new UserUnitInfoDTO
+                UserUnitInfoDataDTO userUnitInfoDto = new UserUnitInfoDataDTO
                 {
                     UserName = username,
-                    UnitGuid = unitGuid
+                    LocationId = unitGuid
                 };
 
-                var roleAccessDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+                var roleAccessDataDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
 
                 var now = DateTime.UtcNow;
 
@@ -162,12 +159,12 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.UserData, roleAccessDto.FirstOrDefault().Unit_GUID.ToString()),
+                new Claim(ClaimTypes.UserData, roleAccessDataDto.FirstOrDefault().Unit_GUID.ToString()),
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.PrimarySid, roleAccessDto.FirstOrDefault().UserId.ToString())
+                new Claim(ClaimTypes.PrimarySid, roleAccessDataDto.FirstOrDefault().UserId.ToString())
             };
 
-                roleAccessDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
+                roleAccessDataDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
 
                 // Create the JWT and write it to a string
                 var jwt = new JwtSecurityToken(
@@ -179,11 +176,26 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     signingCredentials: options.SigningCredentials);
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
+                /* ToDo code to return DTO instead of anonymous type
+               
+                ResponseDTO responseDTO = new ResponseDTO
+                {
+                    Access_Token = encodedJwt,
+                    Expires_In = (int)options.Expiration.TotalSeconds,
+                    RoleActions = roleAccessDataDto,
+                    UserName = username
+                };
+
+                // Serialize and return the response
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(responseDTO, serializerSettings));
+                */
+
                 var response = new
                 {
                     access_token = encodedJwt,
                     expires_in = (int)options.Expiration.TotalSeconds,
-                    roleActions = roleAccessDto,
+                    roleActions = roleAccessDataDto,
                     username = username
                 };
 
