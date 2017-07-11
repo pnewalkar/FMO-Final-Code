@@ -25,8 +25,10 @@ namespace RM.CommonLibrary.EntityFramework.Entities
             DeliveryGroups = new HashSet<DeliveryGroup>();
             DeliveryGroups1 = new HashSet<DeliveryGroup>();
             DeliveryPoints = new HashSet<DeliveryPoint>();
-            DeliveryPoints1 = new HashSet<DeliveryPoint>();
-            DeliveryPoints2 = new HashSet<DeliveryPoint>();
+            DeliveryPoint_OLD = new HashSet<DeliveryPoint_OLD>();
+            DeliveryPoint_OLD1 = new HashSet<DeliveryPoint_OLD>();
+            DeliveryPoint_OLD2 = new HashSet<DeliveryPoint_OLD>();
+            DeliveryPointStatus = new HashSet<DeliveryPointStatus>();
             DeliveryRoutes = new HashSet<DeliveryRoute>();
             DeliveryRoutes1 = new HashSet<DeliveryRoute>();
             DeliveryRoutes2 = new HashSet<DeliveryRoute>();
@@ -38,6 +40,7 @@ namespace RM.CommonLibrary.EntityFramework.Entities
             NetworkLinks = new HashSet<NetworkLink>();
             NetworkLinks1 = new HashSet<NetworkLink>();
             NetworkNodes = new HashSet<NetworkNode>();
+            NetworkNodes1 = new HashSet<NetworkNode>();
             Notifications = new HashSet<Notification>();
             Notifications1 = new HashSet<Notification>();
             POBoxes = new HashSet<POBox>();
@@ -47,7 +50,9 @@ namespace RM.CommonLibrary.EntityFramework.Entities
             Polygons = new HashSet<Polygon>();
             PolygonObjects = new HashSet<PolygonObject>();
             PostalAddresses = new HashSet<PostalAddress>();
-            PostalAddresses1 = new HashSet<PostalAddress>();
+            PostalAddress_OLD = new HashSet<PostalAddress_OLD>();
+            PostalAddress_OLD1 = new HashSet<PostalAddress_OLD>();
+            PostalAddressStatus = new HashSet<PostalAddressStatus>();
             ReferenceData1 = new HashSet<ReferenceData>();
             Scenarios = new HashSet<Scenario>();
             SpecialInstructions = new HashSet<SpecialInstruction>();
@@ -118,10 +123,16 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         public virtual ICollection<DeliveryPoint> DeliveryPoints { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryPoint> DeliveryPoints1 { get; set; }
+        public virtual ICollection<DeliveryPoint_OLD> DeliveryPoint_OLD { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryPoint> DeliveryPoints2 { get; set; }
+        public virtual ICollection<DeliveryPoint_OLD> DeliveryPoint_OLD1 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryPoint_OLD> DeliveryPoint_OLD2 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryPointStatus> DeliveryPointStatus { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryRoute> DeliveryRoutes { get; set; }
@@ -157,6 +168,11 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         public virtual ICollection<NetworkNode> NetworkNodes { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NetworkNode> NetworkNodes1 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Notification> Notifications { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -184,7 +200,13 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         public virtual ICollection<PostalAddress> PostalAddresses { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PostalAddress> PostalAddresses1 { get; set; }
+        public virtual ICollection<PostalAddress_OLD> PostalAddress_OLD { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostalAddress_OLD> PostalAddress_OLD1 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PostalAddressStatus> PostalAddressStatus { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReferenceData> ReferenceData1 { get; set; }

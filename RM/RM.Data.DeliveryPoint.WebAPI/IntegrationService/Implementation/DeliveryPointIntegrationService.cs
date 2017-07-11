@@ -6,31 +6,33 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
+//using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
+using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using System.Diagnostics;
+using System.Collections.Generic;
 using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
     public class DeliveryPointIntegrationService : IDeliveryPointIntegrationService
     {
-        private const string AccessLinkWebAPIName = "AccessLinkWebAPIName";
-        private const string DeliveryRouteManagerWebAPIName = "DeliveryRouteManagerWebAPIName";
-        private const string PostalAddressManagerWebAPIName = "PostalAddressManagerWebAPIName";
-
         #region Property Declarations
 
         private string referenceDataWebAPIName = string.Empty;
         private string postalAddressManagerWebAPIName = string.Empty;
         private string accessLinkWebAPIName = string.Empty;
         private string blockSequenceWebAPIName = string.Empty;
+        private string unitManagerDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
+        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         #endregion Property Declarations
@@ -42,9 +44,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             this.httpHandler = httpHandler;
             this.loggingHelper = loggingHelper;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(AccessLinkWebAPIName).ToString() : string.Empty;
-            this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressManagerWebAPIName).ToString() : string.Empty;
-            this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.AccessLinkWebAPIName).ToString() : string.Empty;
+            this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.PostalAddressManagerWebAPIName).ToString() : string.Empty;
+            this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.UnitManagerDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
@@ -134,7 +137,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
         /// <returns>string</returns>
-        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateNybRecords"))
             {
@@ -159,7 +162,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateAddressWithDeliveryPoints"))
             {
@@ -209,6 +212,65 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             }
         }
 
+
+        /// <summary>
+        /// Method to get postal address data
+        /// </summary>
+        /// <param name="addressGuids">addressGuids</param>
+        /// <returns>Task<List<PostalAddressDBDTO>></returns>
+        public async Task<List<PostalAddressDBDTO>> GetPostalAddress(List<Guid> addressGuids)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostalAddress"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/postaladdresses/", addressGuids);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return JsonConvert.DeserializeObject<List<PostalAddressDBDTO>>(result.Content.ReadAsStringAsync().Result);
+            }
+        }
+
+
+        public async Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
+        {
+            List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
+
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "/simpleLists", listNames);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
+
+            listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
+            return listReferenceCategories;
+        }
+
+        public async Task<CommonLibrary.EntityFramework.DTO.UnitLocationDTO> GetUnitLocationDetails(Guid unitGuid)
+        {
+            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocationDTO = new CommonLibrary.EntityFramework.DTO.UnitLocationDTO();
+
+            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "unit/info/" + unitGuid);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>(result.Content.ReadAsStringAsync().Result);
+
+            return unitLocation;
+        }
         #endregion public methods
     }
 }

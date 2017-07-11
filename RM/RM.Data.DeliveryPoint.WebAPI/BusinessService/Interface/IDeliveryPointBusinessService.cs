@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
+//using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
 {
@@ -139,5 +140,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
         Task<Guid> UpdateDeliveryPointLocationOnID(DeliveryPointDTO deliveryPointDto);
+
+        Task<bool> UpdatePAFIndicator(Guid addressGuid, Guid pafIndicator);
+
+        Task<DeliveryPointDTO> GetDeliveryPointByPostalAddressWithLocation(Guid addressId);
+
+        Task<bool> DeleteDeliveryPoint(Guid id);
     }
 }

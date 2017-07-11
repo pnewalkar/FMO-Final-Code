@@ -16,8 +16,6 @@
         {
             this.Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             this.Bind<IPAFFileProcessUtility>().To<PAFFileProcessUtility>();
-
-            //---Adding scope for all classes
             LogWriterFactory log = new LogWriterFactory();
             LogWriter logWriter = log.Create();
             Logger.SetLogWriter(logWriter, false);

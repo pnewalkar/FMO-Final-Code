@@ -32,6 +32,7 @@
             ServiceBase[] servicesToRun = new ServiceBase[] { new PAFImport(pafLoader, loggingHelper, configurationHelper) };
             ServiceBase.Run(servicesToRun);
 #endif
+
         }
     }
 }

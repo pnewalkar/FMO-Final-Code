@@ -25,8 +25,9 @@ namespace RM.CommonLibrary.EntityFramework.DataService.Interfaces
         /// <param name="objPostalAddress">PostalAddressDTO</param>
         /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
         /// <param name="deliveryPointUseIndicatorPAF">Guid of DeliveryPointUseIndicatorPAF from reference data</param>
+        /// <param name="isNyb">Updating whose address type is NYB </param>
         /// <returns>return status as bool</returns>
-        Task<bool> UpdateAddress(PostalAddressDTO objPostalAddress, string fileName, Guid deliveryPointUseIndicatorPAF);
+        Task<bool> UpdateAddress(PostalAddressDTO objPostalAddress, string fileName, Guid deliveryPointUseIndicatorPAF, bool isNyb);
 
         /// <summary>
         /// Get the existing postal address details based on the UDPRN

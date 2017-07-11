@@ -19,6 +19,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string EXTERNAL = "External";
         internal const int BNGCOORDINATESYSTEM = 27700;
         internal const string Comma = ", ";
+        internal const string TASKPAFACTION = "Position new DP";
+        internal const string USRNOTIFICATIONBODYPREFIX = "Please check the proposed new Location of the DP ";
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
         internal const string GetDeliveryPointByUDPRNForThirdParty = "GetDeliveryPointByUDPRNForThirdParty";
@@ -35,5 +37,13 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string Longitude = "longitude";
 
         internal const int NOTIFICATIONDUE = 24;
+        internal const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
+        internal const string OperationalStatusGUIDLive = "Live";
+        internal const string NetworkNodeTypeRMGServiceNode = "RMG Service Node";
+        internal const string TASKNOTIFICATION = "Notification Type";
+        internal const string TASKACTION = "Action required";
+        internal const string TASKSOURCE = "SYSTEM";
+        internal const string DeliveryPointUseIndicatorPAF = "Organisation";
+        internal const string NOTIFICATIONCLOSED = "Closed";
     }
 }

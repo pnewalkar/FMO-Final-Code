@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.DataManagement.PostalAddress.WebAPI.DTO;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
 {
@@ -21,18 +20,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param
         /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
-        Task<ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listNames);
+        Task<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listNames);
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param
         /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
-        Task<List<ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
-
-        /// <summary>
-        /// Get the delivery points by the UDPRN id
-        /// </summary>
-        /// <param name="udprn">UDPRN id</param>
-        /// <returns>DeliveryPointDTO object</returns>
-        Task<DeliveryPointDTO> GetDeliveryPointByUDPRN(int udprn);
+        Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
 
         /// <summary>
         /// Get the delivery points by the Postal Address Guid
@@ -47,6 +39,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <param name="objDeliveryPoint">DeliveryPointDTO object</param>
         /// <returns>boolean value</returns>
         Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
+
+        /// <summary>
+        /// This method will call Delivery point web api which is used to 
+        /// update delivery point for resp PostalAddress which has type <USR>.
+        /// </summary>
+        /// <param name="objDeliveryPoint">Delivery point dto as object</param>
+        /// <returns>bool</returns>
+        Task<bool> UpdateDeliveryPoint(Guid addressId, Guid deliveryPointUseIndicatorPAF);
 
         /// <summary>
         /// Add new notification to the database
@@ -68,5 +68,15 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <param name="postCode"> Post Code</param>
         /// <returns>Post code ID</returns>
         Task<Guid> GetPostCodeID(string postCode);
+
+        Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids);
+
+        Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid);
+
+        Task<bool> CheckIfNotificationExists(int uDPRN, string action);
+
+        Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction);
+
+        Task<bool> UpdateNotificationMessageByUDPRN(int udprn, string action, string message);
     }
 }

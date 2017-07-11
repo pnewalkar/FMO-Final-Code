@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
+using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
@@ -295,6 +296,127 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return postalAddressDTO;
             }
+        }
+
+        public async Task<PostalAddressDTO> GetPAFAddress(int uDPRN)
+        {
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressManagerWebAPIName);
+            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+            HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            PostalAddressDTO postalAddressDTO = JsonConvert.DeserializeObject<PostalAddressDTO>(result.Content.ReadAsStringAsync().Result);
+            return postalAddressDTO;
+        }
+
+        public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId)
+        {
+            try
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
+                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+                HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, addressId));
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                DeliveryPointDTO deliveryPointDTO = JsonConvert.DeserializeObject<DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+                return deliveryPointDTO;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> DeleteDeliveryPoint(Guid id)
+        {
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
+            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+            HttpResponseMessage result = await httpHandler.DeleteAsync(string.Format(serviceUrl + route, id));
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            bool status = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+            return status;
+        }
+
+        public async Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
+        {
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
+            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+
+            // method logic here
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            }));
+            if (!result.IsSuccessStatusCode)
+            {
+                // Log error with statuscode
+                var responseContent = result.ReasonPhrase;
+                return false;
+            }
+
+            bool isDeliveryPointCreated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+            return Convert.ToBoolean(isDeliveryPointCreated);
+        }
+
+        public async Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
+        {
+            List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
+
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName);
+            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, listNames);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
+
+            listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
+            return listReferenceCategories;
+        }
+
+        public async Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction)
+        {
+            string methodName = MethodHelper.GetActualAsyncMethodName();
+            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
+            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+
+            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(serviceUrl + route, udprn.ToString(), oldAction), newAction);
+            if (!result.IsSuccessStatusCode)
+            {
+                // LOG ERROR WITH Statuscode
+                var responseContent = result.ReasonPhrase;
+                throw new ServiceException(responseContent);
+            }
+
+            bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+            return isUpdated;
         }
     }
 }

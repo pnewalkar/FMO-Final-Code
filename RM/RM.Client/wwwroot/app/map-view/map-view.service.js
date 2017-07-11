@@ -44,17 +44,19 @@ function mapService($http,
     vm.miniMap = null;
     vm.activeTool = "";
     vm.focusedLayers = [];
-    vm.mapButtons = ["select", "point", "line", "accesslink"];
     vm.interactions = {
     };
     vm.layersForContext = [];
     vm.activeSelection = null;
     vm.secondarySelections = [];
     vm.routeName = "";
+    vm.polygonOpacity = undefined;
     vm.selectionListeners = [];
     vm.features = null;
     vm.selectedDP = null;
     vm.selectedLayer = null;
+    vm.isObjectSelected = false;
+    vm.layerName = undefined;
     vm.onDeleteButton = function (featureId, layer) { };
     vm.onModify = function (feature) { };
     vm.onDrawEnd = function (buttonName, feature) { };
@@ -79,7 +81,6 @@ function mapService($http,
     return {
         initialise: initialise,
         initialiseMiniMap: initialiseMiniMap,
-        getMapButtons: getMapButtons,
         mapLayers: mapLayers,
         getDotStyle: getDotStyle,
         deleteSelectedFeature: deleteSelectedFeature,
@@ -110,13 +111,23 @@ function mapService($http,
         getResolution: getResolution,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
-        baseLayerLicensing: baseLayerLicensing
-       
+        baseLayerLicensing: baseLayerLicensing,
+        setPolygonTransparency: setPolygonTransparency
+      
     }
 
     function LicenceInfo(displayText) {
         return mapFactory.LicenceInfo(displayText);
     }
+
+    function setPolygonTransparency() {
+        mapFactory.getPolygonTransparency().then(function (response) {
+            if (response[0]) {
+                vm.polygonOpacity = parseFloat(response[0].value);
+            }
+        });
+    }
+
     function initialise() {
         proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
        '+x_0=400000 +y_0=-100000 +ellps=airy ' +
@@ -129,6 +140,7 @@ function mapService($http,
         mapFactory.initialiseMap();
         vm.map = mapFactory.getMap();
         vm.originalSize = vm.map.getSize();
+        setPolygonTransparency();
 
         var digitalGlobeTiles = new ol.layer.Tile({
             title: 'DigitalGlobe Maps API: Recent Imagery',
@@ -147,7 +159,6 @@ function mapService($http,
             })
         });
 
-
         var loadFeatures = function (layerSource, response) {
             var features = new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
@@ -165,6 +176,7 @@ function mapService($http,
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.deliveryPointLayerName;
                     mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
+                    loadFeatures(deliveryPointsVector, response);
                 });
             }
         });
@@ -193,6 +205,7 @@ function mapService($http,
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.accessLinkLayerName;
                     mapFactory.LicenceInfo("", layerName, accessLinkVector);
+                    loadFeatures(accessLinkVector, response);
                 });
             }
         });
@@ -207,15 +220,14 @@ function mapService($http,
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.roadLinkLayerName;
                     mapFactory.LicenceInfo("", layerName, roadLinkVector);
+                    loadFeatures(roadLinkVector, response);
                 });
             }
         });
 
-
         var unitBoundaryVector = new ol.source.Vector({
             format: new ol.format.GeoJSON({
                 defaultDataProjection: 'EPSG:27700'
-
             }),
             loader: function (extent) {
                 var layerName = GlobalSettings.unitBoundaryLayerName;
@@ -244,7 +256,7 @@ function mapService($http,
         });
 
         var roadsSelector = new MapFactory.LayerSelector();
-        roadsSelector.layerName = "Base Layer";
+        roadsSelector.layerName = GlobalSettings.baseLayerName;
         roadsSelector.layer = bingMapsRoadTiles;
         roadsSelector.group = "Base Map";
         roadsSelector.selected = true;
@@ -252,7 +264,7 @@ function mapService($http,
         var roadsLayer = mapFactory.addLayer(roadsSelector);
 
         var drawingLayerSelector = new MapFactory.LayerSelector();
-        drawingLayerSelector.layerName = "Drawing";
+        drawingLayerSelector.layerName = GlobalSettings.drawingLayerName;
         drawingLayerSelector.layer = mapFactory.getVectorLayer();
         drawingLayerSelector.group = "";
         drawingLayerSelector.selected = true;
@@ -320,16 +332,14 @@ function mapService($http,
         mapFactory.initialiseMiniMap();
         vm.miniMap = mapFactory.getMiniMap();
     }
-    function getMapButtons() {
-        return vm.mapButtons;
-    }
+ 
     function mapLayers() {
         return mapFactory.getAllLayers();
     }
     function getLayer(layerName) {
         var returnVal = null;
         mapLayers().forEach(function (layer) {
-            if (layer.layerName == layerName)
+            if (layer.layerName === layerName)
                 returnVal = layer;
         })
         return returnVal;
@@ -338,7 +348,7 @@ function mapService($http,
         return vm.activeSelection;
     }
     function getActiveFeature() {
-        if (vm.activeSelection == null)
+        if (vm.activeSelection === null)
             return null;
         return vm.activeSelection.layer.getSource().getFeatureById(vm.activeSelection.featureID);
     }
@@ -382,11 +392,11 @@ function mapService($http,
             callback(selectedFeatures);
         })
     }
-    function refreshLayers() { 
+    function refreshLayers() {
         mapLayers().forEach(function (layer) {
             layer.layer.setVisible(layer.selected);
-            layer.layer.changed();          
-        });        
+            layer.layer.changed();
+        });
         vm.layerSummary = getLayerSummary();
     }
     function deleteAccessLinkFeature(feature) {
@@ -399,7 +409,7 @@ function mapService($http,
             if (layer.selected && layer.selectorVisible)
                 summary += layer.layerName + ", ";
         });
-        if (summary.lastIndexOf(", ") == summary.length - 2)
+        if (summary.lastIndexOf(", ") === summary.length - 2)
             summary = summary.substring(0, summary.length - 2);
         else
             summary = "No layers selected";
@@ -407,21 +417,24 @@ function mapService($http,
         return summary;
     }
     function deleteSelectedFeature() {
-        if (vm.interactions.select) {
-            vm.interactions.select.getFeatures().forEach(function (feature) {
-                if (feature.get("type") == "measure") {
-                    if (vm.measureTooltipElement) {
-                        vm.measureTooltipElement.parentNode.removeChild(vm.measureTooltipElement);
-                        vm.measureTooltipElement = null;
-                    }
-                    vm.lastMeasureFeature = null;
-                }
+        var style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE);
+        vm.interactions.select = new ol.interaction.Select({
+            condition: ol.events.condition.never,
+            style: style
+        });
+        setSelections({
+            featureID: getActiveFeature().getId(), layer: vm.selectedLayer
+        }, []);
+        if (vm.layerName === GlobalSettings.drawingLayerName) {
+            var collection = new ol.Collection();
+            collection.push(getActiveFeature());
+            collection.forEach(function (feature) {
                 if (vm.drawingLayer.layer.getSource().getFeatures().indexOf(feature) != -1)
                     vm.drawingLayer.layer.getSource().removeFeature(feature);
                 vm.onDeleteButton(feature.getId(), feature.layer);
             });
-            vm.interactions.select.getFeatures().clear();
             setSelections(null, []);
+            $rootScope.$emit('selectedObjectChange', { "isObjectSelected": false });
         }
     }
     function addInteractions() {
@@ -438,6 +451,9 @@ function mapService($http,
     function setDrawButton(button) {
         var style = null;
         style = mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE)(button.name);
+        if (button.name === "area") {
+            style.opacity = vm.polygonOpacity;
+        }
         vm.interactions.draw = setDrawInteraction(button, style);
         switch (button.name) {
             case "deliverypoint":
@@ -451,21 +467,40 @@ function mapService($http,
                 break;
         }
         var name = button.name;
-        if (name == "point") {
+        if (name === "point") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "deliverypoint");
+                evt.feature.setId(createGuid())
             })
         }
 
-        else if (name == "accesslink") {
+        else if (name === "accesslink") {
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "accesslink");
+            })
+        }
+
+        else if (name === "line") {
+            
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.set("type", "linestring");
+                evt.feature.setId(createGuid())
+            })
+        }
+
+        else if (name === "area") {
+            vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
+            vm.interactions.draw.on('drawend', function (evt) {
+                evt.feature.setId(createGuid());
+                evt.feature.set("type", "polygon");
             })
         }
         else {
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
         }
     }
+
     function setDrawInteraction(button, style) {
         var draw = null;
 
@@ -524,9 +559,7 @@ function mapService($http,
 
         vm.interactions.draw.on('drawstart',
 			function (evt) {
-			    //removeInteraction('select');
 			    clearDrawingLayer(true);
-			    // setSelections(null, []);
 			    $rootScope.$broadcast('disablePrintMap', {
 			        disable: true
 			    });
@@ -549,9 +582,6 @@ function mapService($http,
 			        feature: evt.feature,
 			        contextTitle: CommonConstants.AccessLinkActionName
 			    });
-			    //$state.go("accessLink", { accessLinkFeature: evt.feature }, {
-			    //    reload: 'accessLink'
-			    //});
 			});
     }
     function finishCondition(e) {
@@ -593,9 +623,12 @@ function mapService($http,
         vm.interactions.select.on('select', function (e) {
             vm.interactions.select.getFeatures().clear();
             if (e.selected.length > 0) {
+                vm.isObjectSelected = true;
+                $rootScope.$emit('selectedObjectChange', { "isObjectSelected": vm.isObjectSelected });
                 setSelections({
                     featureID: e.selected[0].getId(), layer: lastLayer
                 }, []);
+                vm.layerName = lastLayer.getProperties().name;
                 var deliveryPointDetails = e.selected[0].getProperties();
                 coordinatesService.setCordinates(deliveryPointDetails.geometry.flatCoordinates);
                 $rootScope.state = false;
@@ -604,12 +637,38 @@ function mapService($http,
                 vm.selectedDP = e.selected[0];
                 vm.selectedLayer = lastLayer;
             } else {
+                vm.isObjectSelected = false;
+                vm.layerName = "";
+                $rootScope.$emit('selectedObjectChange', { "isObjectSelected": vm.isObjectSelected });
                 setSelections(null, []);
                 var deliveryPointDetails = null;
                 showDeliveryPointDetails(deliveryPointDetails);
             }
         });
         persistSelection();
+    }
+    function setModifyButton() {       
+            vm.interactions.select = new ol.interaction.Select({
+                condition: ol.events.condition.never
+            });
+            var collection = new ol.Collection();
+            collection.push(getActiveFeature());
+            if (vm.layerName === GlobalSettings.drawingLayerName) {
+            vm.interactions.modify = new ol.interaction.Modify({
+                features: collection
+            });
+            
+
+            vm.map.on('singleclick', function (evt) {
+                if (vm.activeTool === "modify" && getActiveFeature().getProperties().type === "deliverypoint") {
+                    getActiveFeature().getGeometry().setCoordinates(evt.coordinate);
+                }
+            });
+
+            vm.interactions.modify.on('modifyend', vm.onModify);
+
+            persistSelection();
+        }
     }
     function persistSelection() {
         if (getActiveFeature() != null && vm.interactions.select != null && angular.isDefined(vm.interactions.select)) {
@@ -703,6 +762,12 @@ function mapService($http,
                 case "select":
                     setSelectButton();
                     break;
+                case "modify":
+                    setModifyButton();
+                    break;
+                case "delete":
+                    deleteSelectedFeature();
+                    break;
                 default:
                     setDrawButton(button);
             }
@@ -711,7 +776,7 @@ function mapService($http,
     }
 
     function selectFeatures() {
-        if (vm.interactions.select == null || angular.isUndefined(vm.interactions.select)) {
+        if (vm.interactions.select === null || angular.isUndefined(vm.interactions.select)) {
             vm.interactions.select = new ol.interaction.Select({
                 condition: ol.events.condition.never,
                 style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.SELECTEDSTYLE)
@@ -754,13 +819,13 @@ function mapService($http,
             mapFactory.GetRouteForDeliveryPoint(deliveryPointDetails.deliveryPointId)
                   .then(function (response) {
                       if (response != null) {
-                          if (response[0].key == CommonConstants.RouteName) {
+                          if (response[0].key === CommonConstants.RouteName) {
                               deliveryPointDetails.routeName = [response[0].value];
-                              if (response[1].key == CommonConstants.DpUse) {
+                              if (response[1].key === CommonConstants.DpUse) {
                                   deliveryPointDetails.dpUse = response[1].value;
                               }
                           }
-                          else if (response[0].key == CommonConstants.DpUse) {
+                          else if (response[0].key === CommonConstants.DpUse) {
                               deliveryPointDetails.dpUse = response[0].value;
                           }
                       }
@@ -872,7 +937,7 @@ function mapService($http,
     }
 
     function setScaleUnit(scalenumber, scaleunit) {
-        if (scaleunit == 'km') {
+        if (scaleunit === 'km') {
             var scale = scalenumber * 0.621371;
             if (scale < 1) {
                 scale = scalenumber * 1000
@@ -882,7 +947,7 @@ function mapService($http,
                 return Math.round(scale) + ' Mile';
             }
         }
-        else if (scaleunit == 'm') {
+        else if (scaleunit === 'm') {
             var scale = scalenumber * 0.000621371;
             if (scale < 1) {
                 return scalenumber + ' Metre';
@@ -896,4 +961,15 @@ function mapService($http,
     function getResolution() {
         return vm.map.getView().getResolution();
     }
+    // This function generates random unique identifier
+    function createGuid() {
+        // Iterate over the guid template and replace all the 'xy' characters encountered except for '-' and '4'
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (character) {
+            // Generate random number with base 16
+            var randomNumber = Math.random() * 16 | 0, uuid = character === 'x' ? randomNumber : (randomNumber & 0x3 | 0x8);
+            // Return the randomly generated UUID string
+            return uuid.toString(16);
+        });
+    }
+
 }

@@ -1,34 +1,23 @@
 ﻿'use strict';
 angular.module('RMApp')
-.factory('errorInterceptorService', ['$rootScope', '$q', errorInterceptorService]);
+.factory('errorInterceptorService', ['$rootScope', '$q', '$translate', errorInterceptorService]);
 
 
-function errorInterceptorService($rootScope, $q) {
-
-    var errorInterceptorServiceFactory = {};
-
-
-
-    var _responseError = function (rejection) {
-
-
-        if (rejection.status === 401 || rejection.status === 404 || rejection.status === 500) {
-
-            var message = "There was an error processing your request";
-            $rootScope.$broadcast("showError", message);
-
-        }
-        else {
-            if (rejection.data && rejection.data.message) {
-                message = rejection.data.message;
-                $rootScope.$broadcast("showError", message);
-            }
-         
-        }
-        return $q.reject(rejection);
+function errorInterceptorService($rootScope, $q, $translate) {
+    return {
+        responseError: error,
+        requestError: error
     }
 
-    errorInterceptorServiceFactory.responseError = _responseError;
+    function error(rejection) {
+        var message = $translate.instant('GENERAL.ERRORS.UNKNOWN');
+        
+        if (rejection.data && rejection.data.message) {
+            message = rejection.data.message;
+        };
 
-    return errorInterceptorServiceFactory;
-}
+        $rootScope.$broadcast("showError", message);
+
+        return $q.reject(rejection);
+    };
+};

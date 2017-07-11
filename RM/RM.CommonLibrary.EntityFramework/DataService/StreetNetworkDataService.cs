@@ -225,13 +225,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
 
                             if (intersectionCountForRoadOrPath == 0)
                             {
-                                var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
-                               .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
+                               // var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
+                               //.Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
 
-                                if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.AsNoTracking().Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
-                                {
-                                    networkIntersectionPoint = accessLinkLine.STEndPoint();
-                                }
+                               // if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.AsNoTracking().Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
+                               // {
+                               //     networkIntersectionPoint = accessLinkLine.STEndPoint();
+                               // }
                             }
                         }
                     }
@@ -295,16 +295,16 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     {
                         DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
 
-                        var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
-                                .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
+                        //var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
+                        //        .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
 
-                        if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
-                        {
-                            networkLinkRoad = item;
-                            networkIntersectionPoint = accessLinkLine.STEndPoint();
+                        //if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
+                        //{
+                        //    networkLinkRoad = item;
+                        //    networkIntersectionPoint = accessLinkLine.STEndPoint();
 
-                            break;
-                        }
+                        //    break;
+                        //}
                     }
                 }
 

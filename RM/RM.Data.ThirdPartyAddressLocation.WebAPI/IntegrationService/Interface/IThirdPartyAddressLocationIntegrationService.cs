@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO;
+using System.Collections.Generic;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 {
@@ -71,5 +72,17 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>returns PostalAddress object</returns>
         Task<PostalAddressDTO> GetPostalAddress(int uDPRN);
+
+        Task<PostalAddressDTO> GetPAFAddress(int uDPRN);
+
+        Task<DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId);
+
+        Task<bool> DeleteDeliveryPoint(Guid id);
+
+        Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
+
+        Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
+
+        Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction);
     }
 }

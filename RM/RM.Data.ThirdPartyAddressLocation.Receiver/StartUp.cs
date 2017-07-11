@@ -16,9 +16,6 @@ namespace RM.Data.ThirdPartyAddressLocation.Receiver
         {
             Bind<IMessageBroker<AddressLocationUSRDTO>>().To<MessageBroker<AddressLocationUSRDTO>>();
             Bind<IHttpHandler>().To<HttpHandler>();
-            //Bind<ILoggingHelper>().To<LoggingHelper>().InSingletonScope();
-            //Bind<IExceptionHelper>().To<ExceptionHelper>().InSingletonScope();
-            //---Adding scope for all classes
             LogWriterFactory log = new LogWriterFactory();
             LogWriter logWriter = log.Create();
             Logger.SetLogWriter(logWriter, false);

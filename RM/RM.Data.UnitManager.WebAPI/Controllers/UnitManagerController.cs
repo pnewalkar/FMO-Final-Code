@@ -48,6 +48,36 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Fetches unit Location type  for current user
+        /// </summary>
+        /// <returns>Guid</returns>
+        [Authorize]
+        [HttpGet("Unit/{unitId}")]
+        public Guid GetUnitLocationTypeId(Guid unitId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetUnitLocationTypeId"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var unitLocationTypeId = unitLocationBusinessService.GetUnitLocationTypeId(unitId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return unitLocationTypeId;
+            }
+        }
+
+        /// <summary>
+        /// Fetches Delivery Unit info
+        /// </summary>
+        /// <returns>List</returns>
+        [Authorize]
+        [HttpGet("unit/info/{unitGuid}")]
+        public UnitLocationDTO GetUnitLocation(Guid unitGuid)
+        {
+            return unitLocationBusinessService.FetchUnitDetails(unitGuid);
+        }
+
+        /// <summary>
         /// Fetches Postcode sector
         /// </summary>
         /// <returns>List</returns>
@@ -245,6 +275,21 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(deliveryScenerioList);
             }
+        }
+
+
+        [HttpPost("postcode/search/{unitGuid}")]
+        public async Task<IActionResult> GetPostCodes(Guid unitGuid, [FromBody] List<Guid> postcodeGuids)
+        {
+            List<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostCodes(unitGuid, postcodeGuids);        
+            return Ok(postCodes);
+        }
+
+        [HttpGet("postcode/select/{postcodeGuid}/{unitGuid}")]
+        public async Task<IActionResult> GetSelectedPostCode(Guid postcodeGuid, Guid unitGuid)
+        {
+            PostCodeDTO postCode = await unitLocationBusinessService.GetSelectedPostCode(unitGuid, postcodeGuid);
+            return Ok(postCode);
         }
     }
 }

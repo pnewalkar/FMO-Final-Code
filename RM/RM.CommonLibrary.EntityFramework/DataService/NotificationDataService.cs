@@ -163,5 +163,34 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 return notificationExists;
             }
         }
+
+        public async Task<bool> UpdateNotificationByUDPRN(int uDPRN, string oldAction, string newAction)
+        {
+            string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());
+            bool returnVal = false;
+
+            Notification notification = await DataContext.Notifications.Where(notific => notific.NotificationActionLink == notificationActionlink && notific.Notification_Heading.Equals(oldAction)).SingleOrDefaultAsync();
+            notification.Notification_Heading = newAction;
+            await DataContext.SaveChangesAsync();
+
+            returnVal = true;
+
+            return returnVal;
+        }
+
+        public async Task<bool> UpdateNotificationMessageByUDPRN(int uDPRN, string action, string message)
+        {
+            string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());
+            bool returnVal = false;
+
+            Notification notification = await DataContext.Notifications.Where(notific => notific.NotificationActionLink == notificationActionlink && notific.Notification_Heading.Equals(action)).SingleOrDefaultAsync();
+            notification.Notification_Message = message;
+            await DataContext.SaveChangesAsync();
+
+            returnVal = true;
+
+            return returnVal;
+        }
+
     }
 }

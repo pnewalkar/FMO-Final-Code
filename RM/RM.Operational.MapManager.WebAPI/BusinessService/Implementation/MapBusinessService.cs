@@ -166,9 +166,11 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
 
                 // Section 5
                 section = document.CreateElement(MapManagerConstants.Section);
+                heading1CenterAligned = document.CreateElement(MapManagerConstants.Heading1CenterAligned);
                 sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
                 sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
-                sectionColumn.InnerText = MapManagerConstants.InternalUseStatement;
+                heading1CenterAligned.InnerText = MapManagerConstants.InternalUseStatement;
+                sectionColumn.AppendChild(heading1CenterAligned);
                 section.AppendChild(sectionColumn);
                 content.AppendChild(section);
 

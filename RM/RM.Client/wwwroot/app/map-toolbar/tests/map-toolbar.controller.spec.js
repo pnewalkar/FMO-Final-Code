@@ -9,7 +9,7 @@ describe('MapToolbar: Controller', function() {
         showButton: function() {return []},
         autoSelect: function() {return []},
         getShapeForButton: function() { return []},
-        setSelectedButton:  function() { return true }
+        setSelectedButton: function () { return; }
      };
 
      beforeEach(function () {
@@ -62,5 +62,16 @@ describe('MapToolbar: Controller', function() {
         expect($scope.$emit).toHaveBeenCalled();
         expect($scope.$emit).toHaveBeenCalledWith('mapToolChange', { name: 'select', shape: [ ], enabled: true });
 
-    });       
+    });
+
+    it('should return toolbar buttons', function () {
+        spyOn(MockMapToolbarService, 'getMapButtons').and.callFake(function () {
+            return ["select", "point", "line", "accesslink", "area", "modify", "delete"];
+        });
+        ctrl.getMapButtons();
+        expect(ctrl.mapButtons).toBeDefined();
+        expect(ctrl.mapButtons).toEqual(["select", "point", "line", "accesslink", "area", "modify", "delete"]);
+        expect(ctrl.mapButtons.length).toEqual(7);
+    });
+    
 });
