@@ -46,13 +46,11 @@ function MapFactory($http,
     var availableResolutionForCurrentExtent = [];
     var maxScale = null;
     var BNGProjection = 'EPSG:27700';
-    //var overviewMapControl = null;
-    var miniMapControl = null;
+    var overviewMapContainer = null;
 
     return {
         initialiseMap: initialiseMap,
         getMap: getMap,
-        initialiseMiniMap: initialiseMiniMap,
         getShapeAsync: getShapeAsync,
         getMiniMap: getMiniMap,
         getVectorLayer: getVectorLayer,
@@ -133,21 +131,7 @@ function MapFactory($http,
             source: vectorSource,
             style: mapStylesFactory.getStyle(mapStylesFactory.styleTypes.ACTIVESTYLE),
             renderBuffer: 1000
-        });
-
-        //overviewMapControl = new ol.control.OverviewMap({
-        //    // see in overviewmap-custom.html to see the custom CSS used
-        //    className: 'ol-overviewmap ol-custom-overviewmap',
-        //    collapseLabel: '\u00BB',
-        //        label: '\u00AB',
-        //    collapsed: false,
-        //view: new ol.View({
-        //projection: BNGProjection
-        //})
-
-        //});
-
-      
+        });      
 
 
         map = new ol.Map({
@@ -175,68 +159,21 @@ function MapFactory($http,
         });
         map.addControl(external_control);
 
-        var test_div2 = document.querySelector('#external_control1');
-        var test_controle2 = new ol.control.OverviewMap({
-            view: new ol.View({
+        setTimeout(function() {
+            var overviewMapContainer = document.querySelector('#overviewMap');
+            var overviewMapControl =new ol.control.OverviewMap({
+                view: new ol.View({
                    projection: BNGProjection
                 }),
-            target: test_div2
-        });
-        map.addControl(test_controle2);
-
-        var test_div1 = document.querySelector('#external_control');
-        var test_controle1 = new ol.control.OverviewMap({
-            view: new ol.View({
-                projection: BNGProjection
-            }),
-            collapsed : false,
-            target: test_div1
-        });
-        map.addControl(test_controle1);
-        //miniMapControl = new ol.control.OverviewMap({
-
-        //    view: new ol.View({
-        //        projection: BNGProjection
-        //    }),
-        //    target: $document[0].getElementById('mini-map')
-        //});
-        //map.addControl(miniMapControl);
+                collapsed : false,
+                target: overviewMapContainer
+            });
+            map.addControl(overviewMapControl);
+        }, 1000);
 
         units = map.getView().getProjection().getUnits();
         mpu = ol.proj.METERS_PER_UNIT[units];
 
-    }
-
-    
-
-
-
-    function initialiseMiniMap() {
-        if (view == null)
-            initialiseMap();
-
-        //var miniMapContainer = document.querySelector('#mini-map');
-
-        viewMiniMap = new ol.View({
-            projection: BNGProjection,
-            center: view.getCenter(),
-            zoom: view.getZoom() - 2
-        });
-
-        //miniMap = new ol.Map({
-        //    layers: layers.filter(function (l) { return l.onMiniMap; }).map(function (a) { return a.layer }),
-        //    interactions: [],
-        //    controls: [],
-        //    loadTilesWhileAnimating: true,
-        //    loadTilesWhileInteracting: true,
-        //    target: 'mini-map',
-        //    view: viewMiniMap
-        //});
-
-        //overviewMapControl.setTarget('mini-map');
-       // miniMapControl.target_ = miniMapContainer;
-        view.on('change:resolution', updateMiniMap);
-        view.on('change:center', updateMiniMap);
     }
 
     function updateMiniMap() {

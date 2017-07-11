@@ -43,64 +43,25 @@ input[name="zoom-scale"] {
 
 .context-panel {
   height: calc(100% - 30px); }
-/*.ol-custom-overviewmap,
-.ol-custom-overviewmap.ol-uncollapsible {
-bottom: auto;
-left: auto;
-right: 0;
-top: 0;
-}
 
-.ol-custom-overviewmap:not(.ol-collapsed)  {
-border: 1px solid black;
-}
-
-.ol-custom-overviewmap .ol-overviewmap-map {
-border: none;
-width: 300px;
-}
-
-.ol-custom-overviewmap:not(.ol-collapsed) button{
-bottom: auto;
-left: auto;
-right: 1px;
-top: 1px;
-}
-
-.ol-rotate {
-    top: 170px;
-    right: 0;
-}*/
-
-#external_control {
-    left: 1%;
-    top: 8%;
-    position: absolute;
-    width: 97%;
-    height: 151px;
-    background-color: lightcyan;
-    z-index: 10;
-}
-
-#external_control .ol-overviewmap:not(.ol-collapsed) button {
-    display: none;
-}
-
-#external_control .ol-overviewmap .ol-overviewmap-map {
-    left: -11px;
-    top: -143px;
-    position: absolute;
-    width: 245px;
-    height: 155px;
-    border: none;
-}
-
-#external_control1 {
+.mini-map{
     height: 150px;
-    background-color: red;
-    z-index: 8;
 }
 
-.hideMiniMap{
+.ol-overviewmap:not(.ol-collapsed) button {
     display: none;
+}
+
+.ol-overviewmap.ol-unselectable.ol-control{
+    top: 33px;
+    width: 248px;
+    left: -4px;
+    background: none;
+    height: 148px;
+}
+
+.ol-overviewmap .ol-overviewmap-map{
+    width: 250px;
+    height: 150px;
+    border: none;
 }

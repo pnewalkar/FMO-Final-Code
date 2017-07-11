@@ -56,31 +56,24 @@ input[name="zoom-scale"] {
     height:calc(100% - 30px);
 }
 
-/*.ol-custom-overviewmap,
-.ol-custom-overviewmap.ol-uncollapsible {
-bottom: auto;
-left: auto;
-right: 0;
-top: 0;
+.mini-map{
+    height: 150px;
 }
 
-.ol-custom-overviewmap:not(.ol-collapsed)  {
-border: 1px solid black;
+.ol-overviewmap:not(.ol-collapsed) button {
+    display: none;
 }
 
-.ol-custom-overviewmap .ol-overviewmap-map {
-border: none;
-width: 300px;
+.ol-overviewmap.ol-unselectable.ol-control{
+    top: 33px;
+    width: 248px;
+    left: -4px;
+    background: none;
+    height: 148px;
 }
 
-.ol-custom-overviewmap:not(.ol-collapsed) button{
-bottom: auto;
-left: auto;
-right: 1px;
-top: 1px;
+.ol-overviewmap .ol-overviewmap-map{
+    width: 250px;
+    height: 150px;
+    border: none;
 }
-
-.ol-rotate {
-top: 170px;
-right: 0;
-}*/

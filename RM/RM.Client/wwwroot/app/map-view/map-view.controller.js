@@ -16,7 +16,6 @@ function MapController($scope,
     var vm = this;
     var contextTitle = vm.contextTitle;
     vm.initialise = initialise();
-    vm.initialiseMiniMap = initialiseMiniMap;
     vm.toggleActions = toggleActions;
     vm.oncollapse = oncollapse;
     vm.dotStyle = getDotStyle();
@@ -61,9 +60,6 @@ function MapController($scope,
 
     function initialise() {
         mapService.initialise();   
-    }
-    function initialiseMiniMap() {
-        mapService.initialiseMiniMap();
     }
     function oncollapse(collapse) {
         mapService.oncollapse(collapse);
