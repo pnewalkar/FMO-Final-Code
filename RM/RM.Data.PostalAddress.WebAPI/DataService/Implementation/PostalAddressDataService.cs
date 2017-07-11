@@ -22,7 +22,7 @@
     /// <summary>
     /// DataService to interact with postal address entity
     /// </summary>
-    public class PostalAddressDataService : DataServiceBase<PostalAddress, PostalAddressDBContext>, IPostalAddressDataService
+    public class PostalAddressDataService : DataServiceBase<PostalAddress, PostalAddressDBContext> //, IPostalAddressDataService
     {
         private const string INSERT = "I";
         private const string UPDATE = "U";
@@ -86,40 +86,41 @@
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        public async Task<bool> SaveAddress(PostalAddressDBDTO objPostalAddress, string strFileName)
+        public async Task<bool> SaveAddress(PostalAddressDBDTO objPostalAddressDTO, string strFileName)
         {
             bool isPostalAddressInserted = false;
-            PostalAddress objAddress = default(PostalAddress);
+            PostalAddress objPostalAddress = default(PostalAddress);
             PostalAddress entity = new PostalAddress();
             if (objPostalAddress != null)
             {
                 try
                 {
-                    objAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddress.UDPRN).SingleOrDefaultAsync();
-                    if (objAddress != null)
+                    objPostalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == objPostalAddressDTO.UDPRN).SingleOrDefaultAsync();
+
+                    if (objPostalAddress != null)
                     {
-                        objAddress.Postcode = objPostalAddress.Postcode;
-                        objAddress.PostTown = objPostalAddress.PostTown;
-                        objAddress.DependentLocality = objPostalAddress.DependentLocality;
-                        objAddress.DoubleDependentLocality = objPostalAddress.DoubleDependentLocality;
-                        objAddress.Thoroughfare = objPostalAddress.Thoroughfare;
-                        objAddress.DependentThoroughfare = objPostalAddress.DependentThoroughfare;
-                        objAddress.BuildingNumber = objPostalAddress.BuildingNumber;
-                        objAddress.BuildingName = objPostalAddress.BuildingName;
-                        objAddress.SubBuildingName = objPostalAddress.SubBuildingName;
-                        objAddress.POBoxNumber = objPostalAddress.POBoxNumber;
-                        objAddress.DepartmentName = objPostalAddress.DepartmentName;
-                        objAddress.OrganisationName = objPostalAddress.OrganisationName;
-                        objAddress.UDPRN = objPostalAddress.UDPRN;
-                        objAddress.PostcodeType = objPostalAddress.PostcodeType;
-                        objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
-                        objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                        objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
+                        objPostalAddress.Postcode = objPostalAddressDTO.Postcode;
+                        objPostalAddress.PostTown = objPostalAddressDTO.PostTown;
+                        objPostalAddress.DependentLocality = objPostalAddressDTO.DependentLocality;
+                        objPostalAddress.DoubleDependentLocality = objPostalAddressDTO.DoubleDependentLocality;
+                        objPostalAddress.Thoroughfare = objPostalAddressDTO.Thoroughfare;
+                        objPostalAddress.DependentThoroughfare = objPostalAddressDTO.DependentThoroughfare;
+                        objPostalAddress.BuildingNumber = objPostalAddressDTO.BuildingNumber;
+                        objPostalAddress.BuildingName = objPostalAddressDTO.BuildingName;
+                        objPostalAddress.SubBuildingName = objPostalAddressDTO.SubBuildingName;
+                        objPostalAddress.POBoxNumber = objPostalAddressDTO.POBoxNumber;
+                        objPostalAddress.DepartmentName = objPostalAddressDTO.DepartmentName;
+                        objPostalAddress.OrganisationName = objPostalAddressDTO.OrganisationName;
+                        objPostalAddress.UDPRN = objPostalAddressDTO.UDPRN;
+                        objPostalAddress.PostcodeType = objPostalAddressDTO.PostcodeType;
+                        objPostalAddress.SmallUserOrganisationIndicator = objPostalAddressDTO.SmallUserOrganisationIndicator;
+                        objPostalAddress.DeliveryPointSuffix = objPostalAddressDTO.DeliveryPointSuffix;
+                        objPostalAddress.Postcode = objPostalAddressDTO.Postcode;
                     }
                     else
                     {
                         objPostalAddress.ID = Guid.NewGuid();
-                        entity = GenericMapper.Map<PostalAddressDBDTO, PostalAddress>(objPostalAddress);
+                        entity = GenericMapper.Map<PostalAddressDBDTO, PostalAddress>(objPostalAddressDTO);
                         DataContext.PostalAddresses.Add(entity);
                     }
 
@@ -128,18 +129,18 @@
                 }
                 catch (Exception ex)
                 {
-                    if (objAddress != null)
+                    if (objPostalAddress != null)
                     {
-                        DataContext.Entry(objAddress).State = EntityState.Unchanged;
+                        DataContext.Entry(objPostalAddress).State = EntityState.Unchanged;
                     }
                     else
                     {
                         DataContext.Entry(entity).State = EntityState.Unchanged;
                     }
 
-                    if (objPostalAddress.UDPRN != null)
+                    if (objPostalAddressDTO.UDPRN != null)
                     {
-                        LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
+                        LogFileException(objPostalAddressDTO.UDPRN.Value, strFileName, FileType.Nyb.ToString(), ex.ToString());
                     }
                 }
             }
@@ -508,7 +509,7 @@
                             objAddress.PostcodeType = objPostalAddress.PostcodeType;
                             objAddress.SmallUserOrganisationIndicator = objPostalAddress.SmallUserOrganisationIndicator;
                             objAddress.DeliveryPointSuffix = objPostalAddress.DeliveryPointSuffix;
-                            objAddress.PostCodeGUID = objPostalAddress.PostCodeGUID;
+                            objAddress.Postcode = objPostalAddress.Postcode;
                             objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
 
                             //if (objAddress.PostalAddressStatus != null && objAddress.PostalAddressStatus.Count > 0)
@@ -588,6 +589,7 @@
                 var searchresults = await (from pa in DataContext.PostalAddresses.AsNoTracking()
                                                //join pc in DataContext.Postcodes.AsNoTracking() on pa.PostCodeGUID equals pc.ID
                                                //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                            // TODO: Fix the entity field
                                            where postCodeGuids.Contains(pa.PostCodeGUID) && addresstypeIDs.Contains(pa.AddressType_GUID)
                                            select new { SearchResult = string.IsNullOrEmpty(pa.Thoroughfare) ? pa.Postcode : pa.Thoroughfare + "," + pa.Postcode }).Distinct().OrderBy(x => x.SearchResult).ToListAsync();
 
@@ -606,6 +608,7 @@
             {
                 var postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
                                            where (pa.Thoroughfare.Contains(searchText) || pa.Postcode.Contains(searchText))
+                                           // TODO: Fix the entity field
                                            select pa.PostCodeGUID).ToListAsync();
 
                 return postcodeGuids;
@@ -637,6 +640,7 @@
             postcodeDTOs.ForEach(pc => postcodeGuids.Add(pc.ID));
 
             postalAddress = await (from pa in DataContext.PostalAddresses.AsNoTracking()
+                                       // TODO: Fix the entity field
                                    where postcodeGuids.Contains(pa.PostCodeGUID)
                                    select pa).ToListAsync();
 
@@ -738,6 +742,7 @@
                                            //on pa.PostCodeGUID equals pc.ID
                                            //join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
                                        where pa.Postcode == postCode && pa.Thoroughfare == streetName
+                                       // TODO: Fix the entity field
                                        select pa.PostCodeGUID).ToListAsync();
             }
             else
@@ -824,6 +829,7 @@
                         objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDTO.PostcodeType;
                         objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
                         objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
+                        // TODO: Fix the entity field
                         objPostalAddress.PostCodeGUID = addDeliveryPointDTO.PostalAddressDTO.PostCodeGUID;
                         objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
                         //objPostalAddress.AddressStatus_GUID = addDeliveryPointDTO.PostalAddressDBDTO.AddressStatus_GUID;
