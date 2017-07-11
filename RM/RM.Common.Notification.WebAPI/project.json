@@ -21,6 +21,7 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options": "1.1.1",
+    "Microsoft.Practices.EnterpriseLibrary.Common.dll": "3.1.0",
     "Newtonsoft.Json": "10.0.2",
     "RM.CommonLibrary.Authentication": "1.0.0-*",
     "RM.CommonLibrary.ExceptionManagement": "1.0.0-*",

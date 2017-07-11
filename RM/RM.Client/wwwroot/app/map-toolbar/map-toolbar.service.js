@@ -3,43 +3,48 @@
     .factory('mapToolbarService', mapToolbarService);
 
 mapToolbarService.$inject = [
-    'mapService',
     'CommonConstants'];
 
 function mapToolbarService(
-    mapService,
     CommonConstants) {
 
     var vm = this;
-       vm.selectedButton = null;
-       vm.dpSelected = false;
-       return {
-           setSelectedButton: setSelectedButton,
-           deselectButton: deselectButton,
-           getShapeForButton: getShapeForButton,
-           showButton: showButton,
-           autoSelect: autoSelect,
-           getMapButtons: getMapButtons,
-           selectDP: selectDP
-       };
+    vm.selectedButton = null;
+    vm.dpSelected = false;
+    vm.mapButtons = ["select", "point", "line", "accesslink", "area", "modify", "delete"];
+    return {
+        setSelectedButton: setSelectedButton,
+        deselectButton: deselectButton,
+        getShapeForButton: getShapeForButton,
+        showButton: showButton,
+        autoSelect: autoSelect,
+        getMapButtons: getMapButtons,
+        selectDP: selectDP,
+        getMapButtonsList: getMapButtonsList
+    };
 
-    function getMapButtons()
-    {
-        vm.mapButtons = mapService.getMapButtons();
+    function getMapButtonsList() {
         return vm.mapButtons;
     }
 
-    function setSelectedButton(button,selectedButton)
-    {
+    function getMapButtons(isObjectSelected) {
+        if (isObjectSelected === false && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) > -1) {
+            deleteButton(CommonConstants.ButtonShapeType.del);
+        }
+        else if (isObjectSelected === true && vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.del) === -1) {
+            addButton(CommonConstants.ButtonShapeType.del);
+        }
+        return vm.mapButtons;
+    }
+
+    function setSelectedButton(button, selectedButton) {
         var shape = getShapeForButton(button);
 
-        if (button == vm.selectedButton && mapService.getMapButtons().length != 1)
-        {
+        if (button === vm.selectedButton && vm.mapButtons.length !== 1) {
             deselectButton(button);
             return false;
         }
-        else if (button != vm.selectedButton)
-        {
+        else if (button !== vm.selectedButton) {
             vm.selectedButton = button;
             return true;
         }
@@ -47,19 +52,15 @@ function mapToolbarService(
 
     }
 
-    function deselectButton(button)
-    {
+    function deselectButton(button) {
         var emitSelect = false;
-        if (button == vm.selectedButton)
-        {
-            if (mapService.getMapButtons().indexOf(CommonConstants.ButtonShapeType.select) >= 0)
-            {
+        if (button === vm.selectedButton) {
+            if (vm.mapButtons.indexOf(CommonConstants.ButtonShapeType.select) >= 0) {
                 vm.selectedButton = CommonConstants.ButtonShapeType.select;
                 emitSelect = true;
                 return emitSelect;
             }
-            else
-            {
+            else {
                 vm.selectedButton = null;
                 emitSelect = false;
                 return emitSelect;
@@ -67,8 +68,7 @@ function mapToolbarService(
         }
     }
 
-    function getShapeForButton(button)
-    {
+    function getShapeForButton(button) {
         switch (button) {
             case CommonConstants.ButtonShapeType.point:
                 return CommonConstants.GeometryType.Point;
@@ -76,24 +76,31 @@ function mapToolbarService(
                 return CommonConstants.GeometryType.LineString;
             case CommonConstants.ButtonShapeType.accesslink:
                 return CommonConstants.GeometryType.LineString;
+            case CommonConstants.ButtonShapeType.area:
+                return CommonConstants.GeometryType.Polygon;
             default:
                 return undefined;
 
         }
     }
 
-    function showButton(button)
-    {
-        return mapService.getMapButtons().indexOf(button) != -1;
+    function showButton(button) {
+        return vm.mapButtons.indexOf(button) != -1;
     }
 
-    function autoSelect()
-    {      
-        setSelectedButton(mapService.getMapButtons()[0], CommonConstants.ButtonShapeType.select);
+    function autoSelect() {
+        setSelectedButton(vm.mapButtons[0], CommonConstants.ButtonShapeType.select);
     }
 
     function selectDP(isSelected) {
-        debugger;
-      return isSelected;                             
+        return isSelected;
+    }
+
+    function deleteButton(element) {
+        vm.mapButtons.splice(vm.mapButtons.indexOf(element), 1);
+    }
+
+    function addButton(element) {
+        vm.mapButtons.push(element);
     }
 }

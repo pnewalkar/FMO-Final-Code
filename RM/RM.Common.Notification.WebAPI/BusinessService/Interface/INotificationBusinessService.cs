@@ -37,5 +37,9 @@ namespace RM.Common.Notification.WebAPI.BusinessService
         /// <param name="action">action string</param>
         /// <returns>boolean value</returns>
         Task<bool> CheckIfNotificationExists(int uDPRN, string action);
+
+        Task<bool> UpdateNotificationByUDPRN(int uDPRN, string oldAction, string newAction);
+
+        Task<bool> UpdateNotificationMessageByUDPRN(int uDPRN, string action, string message);
     }
 }

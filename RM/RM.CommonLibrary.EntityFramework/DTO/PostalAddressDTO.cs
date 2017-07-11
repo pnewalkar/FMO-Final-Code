@@ -78,9 +78,5 @@ namespace RM.CommonLibrary.EntityFramework.DTO
         public string AmendmentDesc { get; set; }
 
         public string FileName { get; set; }
-
-        public List<BindingEntity> NybAddressDetails { get; set; }
-
-        public List<BindingEntity> RouteDetails { get; set; }
     }
 }

@@ -65,6 +65,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <returns>Post code ID</returns>
         Task<Guid> GetPostCodeID(string postCode);
 
+        Task<List<PostCodeDTO>> GetPostCodes(Guid unitGuid, List<Guid> postcodeGuids);
+
+        Task<PostCodeDTO> GetSelectedPostCode(Guid unitGuid, Guid postcodeGuid);
+
+        UnitLocationDTO FetchUnitDetails(Guid unitGuid);
+
         /// <summary>
         /// Fetches Location type id for current user
         /// </summary>

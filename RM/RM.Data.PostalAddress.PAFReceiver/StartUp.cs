@@ -16,8 +16,6 @@ namespace RM.Data.PostalAddress.PAFReceiver
         {
             Bind<IMessageBroker<PostalAddressDTO>>().To<MessageBroker<PostalAddressDTO>>();
             Bind<IHttpHandler>().To<HttpHandler>();
-
-            //---Adding scope for all classes
             LogWriterFactory log = new LogWriterFactory();
             LogWriter logWriter = log.Create();
             Logger.SetLogWriter(logWriter, false);

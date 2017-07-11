@@ -69,7 +69,6 @@ namespace RM.Common.ActionManager.WebAPI
                     new CamelCasePropertyNamesContractResolver();
             });
 
-            //---Adding scope for all classes
             LogWriterFactory log = new LogWriterFactory();
             LogWriter logWriter = log.Create();
             Logger.SetLogWriter(logWriter, false);

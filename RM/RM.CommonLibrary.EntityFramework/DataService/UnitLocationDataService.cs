@@ -10,6 +10,9 @@ using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.DataMiddleware;
+using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace RM.CommonLibrary.EntityFramework.DataService
 {
@@ -92,6 +95,34 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return result.Value;
             }
+        }
+
+        public async Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid)
+        {
+            var result = await (from pc in DataContext.Postcodes.AsNoTracking()
+                                join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                where pc.ID == postcodeGuid && ul.Unit_GUID == unitGuid
+                                select pc).SingleOrDefaultAsync();
+
+            return GenericMapper.Map<Postcode, PostCodeDTO>(result);
+
+        }
+
+        public UnitLocationDTO FetchUnitDetails(Guid unitGuid)
+        {
+            UnitLocation location = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).SingleOrDefault();
+            return GenericMapper.Map<UnitLocation, UnitLocationDTO>(location);
+        }
+
+        public async Task<List<PostCodeDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid unitGuid)
+        {
+            var result = await (from pc in DataContext.Postcodes.AsNoTracking()
+                                join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+                                where postcodeGuids.Contains(pc.ID) && ul.Unit_GUID == unitGuid
+                                select pc).ToListAsync();
+
+            return GenericMapper.MapList<Postcode, PostCodeDTO>(result);
+
         }
     }
 }

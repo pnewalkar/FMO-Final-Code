@@ -25,7 +25,6 @@ function MapController($scope,
     vm.onEnterKeypress = onEnterKeypress;
 
     $rootScope.$on('LicensingInfoText', function (event, args) {
-        //mapService.LicenceInfo(args.displayText);
         mapService.baseLayerLicensing();
     });
 
@@ -45,7 +44,7 @@ function MapController($scope,
         }
     });
     $scope.$on('showDeliveryPointDetails', function (event, data) {
-        if (data.featureType == 'deliverypoint') {
+        if (data.featureType === 'deliverypoint') {
             vm.contextTitle = data.contextTitle;
         }
         else
@@ -85,7 +84,7 @@ function MapController($scope,
     });
 
     function onEnterKeypress(currentScale) {
-        if (currentScale != '' && (currentScale % 100 == 0 && vm.maximumScale >= currentScale)) {
+        if (currentScale != '' && (currentScale % 100 === 0 && vm.maximumScale >= currentScale)) {
             mapFactory.setMapScale(currentScale)
         }
     }

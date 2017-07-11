@@ -13,123 +13,70 @@ namespace RM.CommonLibrary.EntityFramework.Entities
         }
 
         public virtual DbSet<AccessLink> AccessLinks { get; set; }
-
         public virtual DbSet<Action> Actions { get; set; }
-
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
-
         public virtual DbSet<AMUChangeRequest> AMUChangeRequests { get; set; }
-
         public virtual DbSet<AreaHazard> AreaHazards { get; set; }
-
         public virtual DbSet<Block> Blocks { get; set; }
-
         public virtual DbSet<BlockSequence> BlockSequences { get; set; }
-
         public virtual DbSet<CollectionRoute> CollectionRoutes { get; set; }
-
         public virtual DbSet<DeliveryGroup> DeliveryGroups { get; set; }
-
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
-
+        public virtual DbSet<DeliveryPoint_OLD> DeliveryPoint_OLD { get; set; }
         public virtual DbSet<DeliveryPointAlias> DeliveryPointAlias { get; set; }
-
+        public virtual DbSet<DeliveryPointStatus> DeliveryPointStatus { get; set; }
         public virtual DbSet<DeliveryRoute> DeliveryRoutes { get; set; }
-
         public virtual DbSet<DeliveryRouteActivity> DeliveryRouteActivities { get; set; }
-
         public virtual DbSet<DeliveryRouteBlock> DeliveryRouteBlocks { get; set; }
-
         public virtual DbSet<DeliveryRouteNetworkLink> DeliveryRouteNetworkLinks { get; set; }
-
         public virtual DbSet<DeliveryRoutePostcode> DeliveryRoutePostcodes { get; set; }
-
         public virtual DbSet<Function> Functions { get; set; }
-
         public virtual DbSet<GroupHazard> GroupHazards { get; set; }
-
+        public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<NetworkLink> NetworkLinks { get; set; }
-
         public virtual DbSet<NetworkLinkReference> NetworkLinkReferences { get; set; }
-
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
-
         public virtual DbSet<NetworkReference> NetworkReferences { get; set; }
-
         public virtual DbSet<Notification> Notifications { get; set; }
-
         public virtual DbSet<OSAccessRestriction> OSAccessRestrictions { get; set; }
-
         public virtual DbSet<OSConnectingLink> OSConnectingLinks { get; set; }
-
         public virtual DbSet<OSConnectingNode> OSConnectingNodes { get; set; }
-
         public virtual DbSet<OSPathLink> OSPathLinks { get; set; }
-
         public virtual DbSet<OSPathNode> OSPathNodes { get; set; }
-
         public virtual DbSet<OSRestrictionForVehicle> OSRestrictionForVehicles { get; set; }
-
         public virtual DbSet<OSRoadLink> OSRoadLinks { get; set; }
-
         public virtual DbSet<OSRoadNode> OSRoadNodes { get; set; }
-
         public virtual DbSet<OSTurnRestriction> OSTurnRestrictions { get; set; }
-
         public virtual DbSet<POBox> POBoxes { get; set; }
-
         public virtual DbSet<PointHazard> PointHazards { get; set; }
-
         public virtual DbSet<Polygon> Polygons { get; set; }
-
         public virtual DbSet<PolygonObject> PolygonObjects { get; set; }
-
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
-
+        public virtual DbSet<PostalAddress_OLD> PostalAddress_OLD { get; set; }
+        public virtual DbSet<PostalAddressLocation> PostalAddressLocations { get; set; }
+        public virtual DbSet<PostalAddressStatus> PostalAddressStatus { get; set; }
         public virtual DbSet<Postcode> Postcodes { get; set; }
-
         public virtual DbSet<PostcodeArea> PostcodeAreas { get; set; }
-
         public virtual DbSet<PostcodeDistrict> PostcodeDistricts { get; set; }
-
         public virtual DbSet<PostcodeSector> PostcodeSectors { get; set; }
-
         public virtual DbSet<ReferenceData> ReferenceDatas { get; set; }
-
         public virtual DbSet<ReferenceDataCategory> ReferenceDataCategories { get; set; }
-
         public virtual DbSet<RMGDeliveryPoint> RMGDeliveryPoints { get; set; }
-
         public virtual DbSet<RMGLink> RMGLinks { get; set; }
-
         public virtual DbSet<RMGNode> RMGNodes { get; set; }
-
         public virtual DbSet<RoadName> RoadNames { get; set; }
-
         public virtual DbSet<Role> Roles { get; set; }
-
         public virtual DbSet<RoleFunction> RoleFunctions { get; set; }
-
         public virtual DbSet<Scenario> Scenarios { get; set; }
-
         public virtual DbSet<SpecialInstruction> SpecialInstructions { get; set; }
-
         public virtual DbSet<StreetName> StreetNames { get; set; }
-
         public virtual DbSet<StreetNameNetworkLink> StreetNameNetworkLinks { get; set; }
-
         public virtual DbSet<UnitLocation> UnitLocations { get; set; }
-
         public virtual DbSet<UnitLocationPostcode> UnitLocationPostcodes { get; set; }
-
         public virtual DbSet<UnitPostcodeSector> UnitPostcodeSectors { get; set; }
-
         public virtual DbSet<User> Users { get; set; }
-
         public virtual DbSet<UserRoleUnit> UserRoleUnits { get; set; }
-
         public virtual DbSet<AccessFunction> AccessFunctions { get; set; }
-
         public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -247,11 +194,6 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .HasForeignKey(e => e.DeliveryGroup_GUID);
 
             modelBuilder.Entity<DeliveryGroup>()
-                .HasMany(e => e.DeliveryPoints)
-                .WithOptional(e => e.DeliveryGroup)
-                .HasForeignKey(e => e.DeliveryGroup_GUID);
-
-            modelBuilder.Entity<DeliveryGroup>()
                 .HasMany(e => e.DeliveryRouteActivities)
                 .WithOptional(e => e.DeliveryGroup)
                 .HasForeignKey(e => e.DeliveryGroup_GUID);
@@ -263,33 +205,26 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<DeliveryPoint>()
-                .Property(e => e.Latitude)
-                .HasPrecision(38, 8);
-
-            modelBuilder.Entity<DeliveryPoint>()
-                .Property(e => e.Longitude)
-                .HasPrecision(38, 8);
-
-            modelBuilder.Entity<DeliveryPoint>()
                 .Property(e => e.RowVersion)
                 .IsFixedLength();
 
             modelBuilder.Entity<DeliveryPoint>()
-                .HasMany(e => e.AccessLinks)
-                .WithOptional(e => e.DeliveryPoint)
-                .HasForeignKey(e => e.OperationalObject_GUID);
-
-            modelBuilder.Entity<DeliveryPoint>()
-                .HasMany(e => e.DeliveryPointAlias)
+                .HasMany(e => e.DeliveryPointStatus)
                 .WithRequired(e => e.DeliveryPoint)
-                .HasForeignKey(e => e.DeliveryPoint_GUID)
+                .HasForeignKey(e => e.LocationGUID)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<DeliveryPoint>()
-                .HasMany(e => e.RMGDeliveryPoints)
-                .WithRequired(e => e.DeliveryPoint)
-                .HasForeignKey(e => e.DeliveryPoint_GUID)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<DeliveryPoint_OLD>()
+                .Property(e => e.Latitude)
+                .HasPrecision(38, 8);
+
+            modelBuilder.Entity<DeliveryPoint_OLD>()
+                .Property(e => e.Longitude)
+                .HasPrecision(38, 8);
+
+            modelBuilder.Entity<DeliveryPoint_OLD>()
+                .Property(e => e.RowVersion)
+                .IsFixedLength();
 
             modelBuilder.Entity<DeliveryPointAlias>()
                 .Property(e => e.DPAlias)
@@ -370,6 +305,15 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .Property(e => e.Description)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<Location>()
+                .HasOptional(e => e.NetworkNode)
+                .WithRequired(e => e.Location);
+
+            modelBuilder.Entity<Location>()
+                .HasMany(e => e.PostalAddressLocations)
+                .WithOptional(e => e.Location)
+                .HasForeignKey(e => e.LocationGUID);
+
             modelBuilder.Entity<NetworkLink>()
                 .Property(e => e.TOID)
                 .IsFixedLength()
@@ -411,40 +355,12 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<NetworkNode>()
-                .Property(e => e.DataProvider)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<NetworkNode>()
                 .Property(e => e.TOID)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<NetworkNode>()
-                .HasMany(e => e.NetworkLinks)
-                .WithOptional(e => e.NetworkNode)
-                .HasForeignKey(e => e.StartNode_GUID);
-
-            modelBuilder.Entity<NetworkNode>()
-                .HasMany(e => e.NetworkLinks1)
-                .WithOptional(e => e.NetworkNode1)
-                .HasForeignKey(e => e.EndNode_GUID);
-
-            modelBuilder.Entity<NetworkNode>()
-                .HasMany(e => e.NetworkReferences)
-                .WithOptional(e => e.NetworkNode)
-                .HasForeignKey(e => e.NetworkNode_GUID);
-
-            modelBuilder.Entity<NetworkNode>()
-                .HasOptional(e => e.OSConnectingNode)
-                .WithRequired(e => e.NetworkNode);
-
-            modelBuilder.Entity<NetworkNode>()
-                .HasOptional(e => e.OSPathNode)
-                .WithRequired(e => e.NetworkNode);
-
-            modelBuilder.Entity<NetworkNode>()
-                .HasOptional(e => e.OSRoadNode)
+                .HasOptional(e => e.DeliveryPoint)
                 .WithRequired(e => e.NetworkNode);
 
             modelBuilder.Entity<NetworkReference>()
@@ -858,25 +774,83 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<PostalAddress>()
-                .HasMany(e => e.AMUChangeRequests)
-                .WithOptional(e => e.PostalAddress)
-                .HasForeignKey(e => e.CurrentAddress_GUID);
-
-            modelBuilder.Entity<PostalAddress>()
-                .HasMany(e => e.AMUChangeRequests1)
-                .WithOptional(e => e.PostalAddress1)
-                .HasForeignKey(e => e.NewAddress_GUID);
-
-            modelBuilder.Entity<PostalAddress>()
                 .HasMany(e => e.DeliveryPoints)
                 .WithRequired(e => e.PostalAddress)
                 .HasForeignKey(e => e.Address_GUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PostalAddress>()
-                .HasMany(e => e.POBoxes)
-                .WithOptional(e => e.PostalAddress)
-                .HasForeignKey(e => e.POBoxLinkedAddress_GUID);
+                .HasMany(e => e.PostalAddressLocations)
+                .WithRequired(e => e.PostalAddress)
+                .HasForeignKey(e => e.PostalAddressGUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .HasMany(e => e.PostalAddressStatus)
+                .WithRequired(e => e.PostalAddress)
+                .HasForeignKey(e => e.PostalAddressGUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.PostcodeType)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.OrganisationName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.DepartmentName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.BuildingName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.SubBuildingName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.Thoroughfare)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.DependentThoroughfare)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.DependentLocality)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.DoubleDependentLocality)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.PostTown)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.Postcode)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.DeliveryPointSuffix)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.SmallUserOrganisationIndicator)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress_OLD>()
+                .Property(e => e.POBoxNumber)
+                .IsFixedLength()
+                .IsUnicode(false);
 
             modelBuilder.Entity<Postcode>()
                 .Property(e => e.PostcodeUnit)
@@ -1051,18 +1025,30 @@ namespace RM.CommonLibrary.EntityFramework.Entities
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.DeliveryPoints)
-                .WithOptional(e => e.ReferenceData)
-                .HasForeignKey(e => e.LocationProvider_GUID);
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.DeliveryPointUseIndicator_GUID)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
-                .HasMany(e => e.DeliveryPoints1)
-                .WithOptional(e => e.ReferenceData1)
+                .HasMany(e => e.DeliveryPoint_OLD)
+                .WithOptional(e => e.ReferenceData)
                 .HasForeignKey(e => e.OperationalStatus_GUID);
 
             modelBuilder.Entity<ReferenceData>()
-                .HasMany(e => e.DeliveryPoints2)
-                .WithRequired(e => e.ReferenceData2)
+                .HasMany(e => e.DeliveryPoint_OLD1)
+                .WithRequired(e => e.ReferenceData1)
                 .HasForeignKey(e => e.DeliveryPointUseIndicator_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.DeliveryPoint_OLD2)
+                .WithOptional(e => e.ReferenceData2)
+                .HasForeignKey(e => e.LocationProvider_GUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.DeliveryPointStatus)
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.OperationalStatusGUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
@@ -1126,6 +1112,11 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.NetworkNodes1)
+                .WithOptional(e => e.ReferenceData1)
+                .HasForeignKey(e => e.DataProviderGUID);
+
+            modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.Notifications)
                 .WithOptional(e => e.ReferenceData)
                 .HasForeignKey(e => e.NotificationType_GUID);
@@ -1172,13 +1163,25 @@ namespace RM.CommonLibrary.EntityFramework.Entities
 
             modelBuilder.Entity<ReferenceData>()
                 .HasMany(e => e.PostalAddresses)
-                .WithOptional(e => e.ReferenceData)
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.AddressType_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.PostalAddress_OLD)
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.AddressType_GUID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.PostalAddress_OLD1)
+                .WithOptional(e => e.ReferenceData1)
                 .HasForeignKey(e => e.AddressStatus_GUID);
 
             modelBuilder.Entity<ReferenceData>()
-                .HasMany(e => e.PostalAddresses1)
-                .WithRequired(e => e.ReferenceData1)
-                .HasForeignKey(e => e.AddressType_GUID)
+                .HasMany(e => e.PostalAddressStatus)
+                .WithRequired(e => e.ReferenceData)
+                .HasForeignKey(e => e.OperationalStatusGUID)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<ReferenceData>()
@@ -1457,22 +1460,6 @@ namespace RM.CommonLibrary.EntityFramework.Entities
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.User_GUID)
                 .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<AccessFunction>()
-                .Property(e => e.RoleName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<AccessFunction>()
-                .Property(e => e.UserName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<AccessFunction>()
-                .Property(e => e.FunctionName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<AccessFunction>()
-                .Property(e => e.ActionName)
-                .IsUnicode(false);
         }
     }
 }

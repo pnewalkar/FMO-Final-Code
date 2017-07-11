@@ -97,6 +97,13 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             }
         }
 
+
+        public UnitLocationDTO FetchUnitDetails(Guid unitGuid)
+        {
+            return unitLocationRespository.FetchUnitDetails(unitGuid);
+
+        }
+
         /// <summary>
         /// Get the postcode sector by the UDPRN id
         /// </summary>
@@ -232,6 +239,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return unitLocationTypeId;
             }
+        }
+
+        public async Task<List<PostCodeDTO>> GetPostCodes(Guid unitGuid, List<Guid> postcodeGuids)
+        {
+            return await unitLocationRespository.GetPostCodes(postcodeGuids, unitGuid);
+        }
+
+        public async Task<PostCodeDTO> GetSelectedPostCode(Guid unitGuid, Guid postcodeGuid)
+        {
+            return await unitLocationRespository.GetSelectedPostcode(postcodeGuid, unitGuid);
         }
     }
 }

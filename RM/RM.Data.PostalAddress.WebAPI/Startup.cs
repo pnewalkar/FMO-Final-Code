@@ -16,10 +16,14 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.PostalAddress.WebAPI.Entities;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
+using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation;
+using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
+using Microsoft.Practices.EnterpriseLibrary.Logging;
 
 namespace RM.DataManagement.PostalAddress.WebAPI
 {
@@ -91,15 +95,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI
             });
 
             // Infrastructure
+            services.AddScoped<IDatabaseFactory<PostalAddressDBContext>, DatabaseFactory<PostalAddressDBContext>>();
             services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
 
             // DataServices
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
             services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
-            services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
-            services.AddScoped<IFileProcessingLogDataService, FileProcessingLogDataService>();
-            services.AddScoped<IPostCodeDataService, PostCodeDataService>();
-            services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
+            services.AddScoped<DataService.Interfaces.IPostalAddressDataService, DataService.Implementation.PostalAddressDataService>();
+            services.AddScoped<DataService.Interfaces.IFileProcessingLogDataService, DataService.Implementation.FileProcessingLogDataService>();
+            //services.AddScoped<IPostCodeDataService, PostCodeDataService>();
+            //services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
 
             // Integration Services
             services.AddScoped<IPostalAddressIntegrationService, PostalAddressIntegrationService>();
