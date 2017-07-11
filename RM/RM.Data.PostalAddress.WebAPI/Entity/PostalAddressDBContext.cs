@@ -5,7 +5,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
 
-    public partial class PostalAddressDBContext : DbContext
+    public partial class PostalAddressDBContext : AuditContext
     {
         public PostalAddressDBContext()
             : base("name=PostalAddressDBContext")
