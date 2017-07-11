@@ -28,6 +28,10 @@ namespace Fmo.API.Services.Controllers
         private IPostalAddressBusinessService businessService = default(IPostalAddressBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        private int priority = LoggerTraceConstants.PostalAddressAPIPriority;
+        private int entryEventId = LoggerTraceConstants.PostalAddressControllerMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.PostalAddressControllerMethodExitEventId;
+
         #endregion Member Variables
 
         #region Constructors
@@ -141,14 +145,14 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
+                string methodName = typeof(PostalAddressController) + "." + nameof(SearchAddressdetails);
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.SearchAddressdetails"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     List<string> postalAddressList = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
 
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                     return Ok(postalAddressList);
                 }
