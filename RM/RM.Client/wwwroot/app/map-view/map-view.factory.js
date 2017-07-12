@@ -159,7 +159,7 @@ function MapFactory($http,
         });
         map.addControl(external_control);
 
-        setTimeout(function() {
+        $timeout(function() {
             var overviewMapContainer = document.querySelector('#overviewMap');
             var overviewMapControl =new ol.control.OverviewMap({
                 view: new ol.View({
@@ -176,10 +176,6 @@ function MapFactory($http,
 
     }
 
-    function updateMiniMap() {
-        viewMiniMap.setCenter(view.getCenter());
-        viewMiniMap.setZoom(view.getZoom() - 2);
-    }
 
     function getVectorLayer() {
         return vectorLayer;
@@ -461,8 +457,6 @@ function MapFactory($http,
             resolution: getResolutionFromScale(defaultZoomScale)
         });
 
-        view.on('change:resolution', updateMiniMap);
-        view.on('change:center', updateMiniMap);
 
         map.setView(view);
 
