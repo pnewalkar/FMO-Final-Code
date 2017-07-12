@@ -176,8 +176,6 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     signingCredentials: options.SigningCredentials);
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-                /* ToDo code to return DTO instead of anonymous type
-               
                 ResponseDTO responseDTO = new ResponseDTO
                 {
                     Access_Token = encodedJwt,
@@ -189,19 +187,6 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 // Serialize and return the response
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(responseDTO, serializerSettings));
-                */
-
-                var response = new
-                {
-                    access_token = encodedJwt,
-                    expires_in = (int)options.Expiration.TotalSeconds,
-                    roleActions = roleAccessDataDto,
-                    username = username
-                };
-
-                // Serialize and return the response
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(response, serializerSettings));
             }
             catch (Exception ex)
             {

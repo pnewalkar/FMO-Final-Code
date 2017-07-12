@@ -24,6 +24,11 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             this.loggingHelper = loggingHelper;
         }
 
+        /// <summary>
+        /// This method fetches role based function for the current user
+        /// </summary>
+        /// <param name="userUnitInfo"></param>
+        /// <returns></returns>
         public async Task<List<RoleAccessDataDTO>> GetRoleBasedAccessFunctions(UserUnitInfoDataDTO userUnitInfo)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRoleBasedAccessFunctions"))
@@ -48,6 +53,11 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             }
         }
 
+        /// <summary>
+        /// This method fetches units for which user has access
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public async Task<Guid> GetUserUnitInfo(string userName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUserUnitInfo"))

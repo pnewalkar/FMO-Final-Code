@@ -48,14 +48,14 @@ function manageAccessService(
         }
 
         manageAccessAPIService.getToken(vm.userdata).then(function (response) {
-            var accessData = response.data;
-            if (response.access_token) {
+            var accessData = response;
+            if (response.Access_Token) {
                 sessionStorage.clear();
-                sessionStorage.setItem("authorizationData", angular.toJson({ token: response.access_token, userName: response.username[0], unitGuid: unitGuid }));
-                sessionStorage.setItem("roleAccessData", angular.toJson((response.roleActions)));
+                sessionStorage.setItem("authorizationData", angular.toJson({ token: response.Access_Token, userName: response.UserName[0], unitGuid: unitGuid }));
+                sessionStorage.setItem("roleAccessData", angular.toJson((response.RoleActions)));
                 if (unitGuid) {
                     $window.location.href = GlobalSettings.indexUrl;
-                } else if (response.access_token || angular.isDefined(response.access_token)) {
+                } else if (response.Access_Token || angular.isDefined(response.Access_Token)) {
                     $window.location.href = GlobalSettings.indexUrl;
                 }
             }
