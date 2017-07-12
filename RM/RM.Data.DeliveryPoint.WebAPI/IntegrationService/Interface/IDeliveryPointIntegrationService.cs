@@ -37,14 +37,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
         /// <returns>string</returns>
-        Task<string> CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress);
+        Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
 
         /// <summary>
         /// This method is used to check for Duplicate Address with Delivery Points.
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress);
+        Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
 
         /// <summary>
         /// Method to create block sequence for delivery point
@@ -59,7 +59,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="addressGuids">addressGuids</param>
         /// <returns>Task<List<PostalAddressDBDTO>></returns>
-        Task<List<PostalAddressDBDTO>> GetPostalAddress(List<Guid> addressGuids);
+        Task<List<PostalAddressDTO>> GetPostalAddress(List<Guid> addressGuids);
 
         Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
 

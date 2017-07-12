@@ -137,7 +137,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
         /// <returns>string</returns>
-        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress)
+        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateNybRecords"))
             {
@@ -162,7 +162,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress)
+        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CheckForDuplicateAddressWithDeliveryPoints"))
             {
@@ -218,7 +218,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// </summary>
         /// <param name="addressGuids">addressGuids</param>
         /// <returns>Task<List<PostalAddressDBDTO>></returns>
-        public async Task<List<PostalAddressDBDTO>> GetPostalAddress(List<Guid> addressGuids)
+        public async Task<List<PostalAddressDTO>> GetPostalAddress(List<Guid> addressGuids)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostalAddress"))
             {
@@ -232,7 +232,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 }
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return JsonConvert.DeserializeObject<List<PostalAddressDBDTO>>(result.Content.ReadAsStringAsync().Result);
+                return JsonConvert.DeserializeObject<List<PostalAddressDTO>>(result.Content.ReadAsStringAsync().Result);
             }
         }
 

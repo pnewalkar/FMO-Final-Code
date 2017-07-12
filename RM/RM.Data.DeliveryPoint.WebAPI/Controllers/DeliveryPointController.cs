@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-//using RM.CommonLibrary.EntityFramework.DTO;
-using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
-using Newtonsoft.Json.Linq;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 {
@@ -452,8 +449,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-
-
         /// <summary>
         /// This method is used to fetch delivery points by the Postal Address Guid
         /// </summary>
@@ -548,25 +543,25 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// This method updates delivery point access link status
-        /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
-        /// <returns>updated delivery point</returns>
-        [Route("deliverypoint/accesslinkstatus")]
-        [HttpPut]
-        public IActionResult UpdateDeliveryPointAccessLinkCreationStatus([FromBody]string deliveryPointDTOJson)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPointAccessLinkCreationStatus"))
-            {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
+        ///// <summary>
+        ///// This method updates delivery point access link status
+        ///// </summary>
+        ///// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
+        ///// <returns>updated delivery point</returns>
+        //[Route("deliverypoint/accesslinkstatus")]
+        //[HttpPut]
+        //public IActionResult UpdateDeliveryPointAccessLinkCreationStatus([FromBody]string deliveryPointDTOJson)
+        //{
+        //    using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPointAccessLinkCreationStatus"))
+        //    {
+        //        string methodName = MethodBase.GetCurrentMethod().Name;
+        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                bool success = businessService.UpdateDeliveryPointAccessLinkCreationStatus(JsonConvert.DeserializeObject<DeliveryPointDTO>(deliveryPointDTOJson));
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
-                return Ok(success);
-            }
-        }
+        //        bool success = businessService.UpdateDeliveryPointAccessLinkCreationStatus(JsonConvert.DeserializeObject<DeliveryPointDTO>(deliveryPointDTOJson));
+        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
+        //        return Ok(success);
+        //    }
+        //}
 
         /// <summary> This method is used to get the delivery points crossing the operational object.
         /// </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param
@@ -624,7 +619,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-
         [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
         public Task<bool> UpdatePAFIndicator(Guid addressGuid, [FromBody] Guid pafIndicator)
         {
@@ -637,10 +631,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return isDeliveryPointUpdated;
-
             }
         }
-
 
         [HttpDelete("deliverypoint/batch/delete/id:{id}")]
         public Task<bool> DeleteDeliveryPoint(Guid id)
@@ -654,7 +646,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return isDeliveryPointUpdated;
-
             }
         }
 

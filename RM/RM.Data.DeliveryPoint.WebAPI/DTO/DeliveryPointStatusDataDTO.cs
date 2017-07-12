@@ -14,7 +14,5 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
         public DateTime? EndDateTime { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
-        public DeliveryPointDataDTO DeliveryPoint { get; set; }
     }
 }

@@ -115,12 +115,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// <returns>boolean value</returns>
         Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
-        /// <summary>
-        /// This method updates delivery point access link status
-        /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
-        /// <returns>success</returns>
-        bool UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
+        ///// <summary>
+        ///// This method updates delivery point access link status
+        ///// </summary>
+        ///// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
+        ///// <returns>success</returns>
+        //bool UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
 
         /// <summary> This method is used to get the delivery points crossing the operational object.
         /// </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param

@@ -7,15 +7,15 @@ using RM.Data.DeliveryPoint.WebAPI.DTO.UIDropdowns;
 
 namespace RM.Data.DeliveryPoint.WebAPI.DTO
 {
-    public class PostalAddressDBDTO
+    /// <summary>
+    /// This class represents data transfer object for PostalAddress entity
+    /// </summary>
+    public class PostalAddressDataDTO
     {
-        public PostalAddressDBDTO()
+        public PostalAddressDataDTO()
         {
             this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
-        }
-        /// <summary>
-        /// This class represents data transfer object for PostalAddress entity
-        /// </summary>
+        }       
 
         public Guid ID { get; set; }
 

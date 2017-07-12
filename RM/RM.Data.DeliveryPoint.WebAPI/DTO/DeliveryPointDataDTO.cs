@@ -2,30 +2,38 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
 {
     using System;
     using System.Collections.Generic;
-    
-    public class DeliveryPointDatabaseDTO
+
+    public class DeliveryPointDataDTO
     {
+        public DeliveryPointDataDTO()
+        {
+            this.DeliveryPointStatus = new List<DeliveryPointStatusDataDTO>();
+            this.PostalAddress = new PostalAddressDataDTO();
+            this.NetworkNode = new NetworkNodeDataDTO();
+            this.SupportingDeliveryPoint = new SupportingDeliveryPointDataDTO();
+        }
 
         public Guid ID { get; set; }
 
-        public bool AccessLinkPresent { get; set; }
+        public Guid PostalAddressID { get; set; }
 
         public short? MultipleOccupancyCount { get; set; }
 
         public int? MailVolume { get; set; }
 
-        public bool IsUnit { get; set; }
-
-        public Guid Address_GUID { get; set; }
-
-        public Guid DeliveryPointUseIndicator_GUID { get; set; }
+        public Guid DeliveryPointUseIndicatorGUID { get; set; }
 
         public byte[] RowVersion { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
 
-        public NetworkNodeDatabaseDTO NetworkNode { get; set; }     
-           
-        //public List<DeliveryPointStatusDatabaseDTO> DeliveryPointStatus { get; set; }
+        public virtual NetworkNodeDataDTO NetworkNode { get; set; }
+
+        public virtual PostalAddressDataDTO PostalAddress { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DeliveryPointStatusDataDTO> DeliveryPointStatus { get; set; }
+
+        public virtual SupportingDeliveryPointDataDTO SupportingDeliveryPoint { get; set; }
     }
 }

@@ -16,10 +16,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
         [StringLength(20)]
         public string TOID { get; set; }
 
-        [Column(TypeName = "datetime2")]
-        public DateTime RowCreateDateTime { get; set; }
-
         public Guid? DataProviderGUID { get; set; }
+
+        public DateTime RowCreateDateTime { get; set; }
 
         public virtual DeliveryPoint DeliveryPoint { get; set; }
 
