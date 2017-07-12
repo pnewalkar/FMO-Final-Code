@@ -49,6 +49,7 @@
         public const int GetDPUsePriority = 8;
         public const int SavePAFDetailsPriority = 8;
         public const int SaveDeliveryPointProcessPriority = 8;
+        public const int UpdateDeliveryPointPriority = 8;
 
         #endregion Priority
 
@@ -204,7 +205,7 @@
         public const int SavePAFDetailsBusinessMethodEntryEventId = 9121;
         public const int SavePAFDetailsBusinessMethodExitEventId = 9122;
         public const int SaveDeliveryPointProcessBusinessMethodEntryEventId = 9125;
-        public const int SaveDeliveryPointProcessBusinessMethodExitEventId = 9126;    
+        public const int SaveDeliveryPointProcessBusinessMethodExitEventId = 9126;
 
         #endregion EventId
 
