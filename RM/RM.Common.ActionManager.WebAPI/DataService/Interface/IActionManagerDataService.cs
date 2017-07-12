@@ -11,5 +11,7 @@ namespace RM.Common.ActionManager.WebAPI.Interfaces
         Task<List<RoleAccessDataDTO>> GetRoleBasedAccessFunctions(UserUnitInfoDataDTO userUnitInfo);
 
         Task<Guid> GetUserUnitInfo(string userName);
+
+        Task<UserUnitInfoDataDTO> GetUserUnitFromReferenceData(string userName);
     }
 }

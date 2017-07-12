@@ -140,6 +140,11 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 if (unitGuid == Guid.Empty)
                 {
                     unitGuid = await actionManagerService.GetUserUnitInfo(username);
+                    if (unitGuid == Guid.Empty)
+                    {
+                        UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitFromReferenceData(username);
+                        unitGuid = userUnitDetails.UnitId;
+                    }
                 }
 
                 UserUnitInfoDataDTO userUnitInfoDto = new UserUnitInfoDataDTO

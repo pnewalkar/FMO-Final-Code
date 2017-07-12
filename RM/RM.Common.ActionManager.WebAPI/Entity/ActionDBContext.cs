@@ -10,11 +10,23 @@ namespace RM.Common.ActionManager.WebAPI.Entity
         }
 
         public virtual DbSet<Action> Actions { get; set; }
+
         public virtual DbSet<Function> Functions { get; set; }
+
+        public virtual DbSet<LocationReferenceData> LocationReferenceDatas { get; set; }
+
+        public virtual DbSet<PostalAddressIdentifier> PostalAddressIdentifiers { get; set; }
+
+        public virtual DbSet<ReferenceData> ReferenceDatas { get; set; }
+
         public virtual DbSet<Role> Roles { get; set; }
+
         public virtual DbSet<RoleFunction> RoleFunctions { get; set; }
+
         public virtual DbSet<User> Users { get; set; }
+
         public virtual DbSet<UserRoleLocation> UserRoleLocations { get; set; }
+
         public virtual DbSet<AccessFunction> AccessFunctions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -48,6 +60,45 @@ namespace RM.Common.ActionManager.WebAPI.Entity
                 .HasMany(e => e.RoleFunctions)
                 .WithRequired(e => e.Function)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PostalAddressIdentifier>()
+                .Property(e => e.ExternalID)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddressIdentifier>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .Property(e => e.ReferenceDataName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .Property(e => e.ReferenceDataValue)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .Property(e => e.DataDescription)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .Property(e => e.DisplayText)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.LocationReferenceDatas)
+                .WithRequired(e => e.ReferenceData)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.PostalAddressIdentifiers)
+                .WithOptional(e => e.ReferenceData)
+                .HasForeignKey(e => e.IdentifierTypeGUID);
+
+            modelBuilder.Entity<ReferenceData>()
+                .HasMany(e => e.ReferenceData1)
+                .WithOptional(e => e.ReferenceData2)
+                .HasForeignKey(e => e.ParentReferenceDataID);
 
             modelBuilder.Entity<Role>()
                 .Property(e => e.RoleName)

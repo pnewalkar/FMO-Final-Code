@@ -67,11 +67,35 @@ namespace RM.Common.ActionManager.WebAPI.DataService
 
                 var userUnit = await (from r in DataContext.UserRoleLocations.AsNoTracking()
                                       join u in DataContext.Users on r.UserID equals u.ID
+                                      join p in DataContext.PostalAddressIdentifiers on r.LocationID equals p.ID
                                       where u.UserName == userName
                                       select r.LocationID).FirstOrDefaultAsync();
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ActionManagerAPIPriority, LoggerTraceConstants.UserRoleUnitDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return userUnit;
+            }
+        }
+
+        public async Task<UserUnitInfoDataDTO> GetUserUnitFromReferenceData(string userName)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetReferenceDataIdForUserUnit"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ActionManagerAPIPriority, LoggerTraceConstants.UserRoleUnitDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
+                                             join u in DataContext.Users on r.UserID equals u.ID
+                                             join l in DataContext.LocationReferenceDatas on r.LocationID equals l.LocationID
+                                             join rd in DataContext.ReferenceDatas on l.ReferenceDataID equals rd.ID
+                                             where u.UserName == userName
+                                             select new UserUnitInfoDataDTO
+                                             {
+                                                 UnitId = rd.ID,
+                                                 UnitName = rd.DisplayText
+                                             }).FirstOrDefaultAsync();
+
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ActionManagerAPIPriority, LoggerTraceConstants.UserRoleUnitDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return userUnitDetails;
             }
         }
     }
