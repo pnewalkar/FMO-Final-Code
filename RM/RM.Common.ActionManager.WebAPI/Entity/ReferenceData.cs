@@ -17,37 +17,37 @@ namespace RM.Common.ActionManager.WebAPI.Entity
             ReferenceData1 = new HashSet<ReferenceData>();
         }
 
-        public Guid ID { get; set; }
+        public Guid ID { get; private set; }
 
         [StringLength(1000)]
-        public string ReferenceDataName { get; set; }
+        public string ReferenceDataName { get; private set; }
 
         [StringLength(1000)]
-        public string ReferenceDataValue { get; set; }
+        public string ReferenceDataValue { get; private set; }
 
         [StringLength(1000)]
-        public string DataDescription { get; set; }
+        public string DataDescription { get; private set; }
 
         [StringLength(1000)]
-        public string DisplayText { get; set; }
+        public string DisplayText { get; private set; }
 
-        public Guid ReferenceDataCategoryID { get; set; }
+        public Guid ReferenceDataCategoryID { get; private set; }
 
-        public Guid? ParentReferenceDataID { get; set; }
+        public Guid? ParentReferenceDataID { get; private set; }
 
-        public int? OrderingIndex { get; set; }
+        public int? OrderingIndex { get; private set; }
 
-        public bool? Default { get; set; }
+        public bool? Default { get; private set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LocationReferenceData> LocationReferenceDatas { get; set; }
+        public virtual ICollection<LocationReferenceData> LocationReferenceDatas { get; private set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PostalAddressIdentifier> PostalAddressIdentifiers { get; set; }
+        public virtual ICollection<PostalAddressIdentifier> PostalAddressIdentifiers { get; private set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ReferenceData> ReferenceData1 { get; set; }
+        public virtual ICollection<ReferenceData> ReferenceData1 { get; private set; }
 
-        public virtual ReferenceData ReferenceData2 { get; set; }
+        public virtual ReferenceData ReferenceData2 { get; private set; }
     }
 }

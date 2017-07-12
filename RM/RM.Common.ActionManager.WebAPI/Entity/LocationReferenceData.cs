@@ -9,14 +9,14 @@ namespace RM.Common.ActionManager.WebAPI.Entity
     [Table("FMO.LocationReferenceData")]
     public partial class LocationReferenceData
     {
-        public Guid ID { get; set; }
+        public Guid ID { get; private set; }
 
-        public Guid LocationID { get; set; }
+        public Guid LocationID { get; private set; }
 
-        public Guid ReferenceDataID { get; set; }
+        public Guid ReferenceDataID { get; private set; }
 
-        public DateTime RowCreateDateTime { get; set; }
+        public DateTime RowCreateDateTime { get; private set; }
 
-        public virtual ReferenceData ReferenceData { get; set; }
+        public virtual ReferenceData ReferenceData { get; private set; }
     }
 }

@@ -11,5 +11,7 @@ namespace RM.Common.ActionManager.WebAPI.DTO
         public string UnitName { get; set; }
 
         public Guid UnitId { get; set; }
+
+        public string UnitType { get; set; }
     }
 }

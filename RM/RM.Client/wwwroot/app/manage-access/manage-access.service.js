@@ -49,13 +49,13 @@ function manageAccessService(
 
         manageAccessAPIService.getToken(vm.userdata).then(function (response) {
             var accessData = response;
-            if (response.Access_Token) {
+            if (response.AccessToken) {
                 sessionStorage.clear();
-                sessionStorage.setItem("authorizationData", angular.toJson({ token: response.Access_Token, userName: response.UserName[0], unitGuid: unitGuid }));
+                sessionStorage.setItem("authorizationData", angular.toJson({ token: response.AccessToken, userName: response.UserName[0], unitGuid: unitGuid }));
                 sessionStorage.setItem("roleAccessData", angular.toJson((response.RoleActions)));
                 if (unitGuid) {
                     $window.location.href = GlobalSettings.indexUrl;
-                } else if (response.Access_Token || angular.isDefined(response.Access_Token)) {
+                } else if (response.AccessToken || angular.isDefined(response.AccessToken)) {
                     $window.location.href = GlobalSettings.indexUrl;
                 }
             }

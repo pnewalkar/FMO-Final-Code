@@ -4,9 +4,9 @@ namespace RM.Common.ActionManager.WebAPI.DTO
 {
     public class ResponseDTO
     {
-        public string Access_Token { get; set; }
+        public string AccessToken { get; set; }
 
-        public int Expires_In { get; set; }
+        public int ExpiresIn { get; set; }
 
         public List<RoleAccessDataDTO> RoleActions { get; set; }
 

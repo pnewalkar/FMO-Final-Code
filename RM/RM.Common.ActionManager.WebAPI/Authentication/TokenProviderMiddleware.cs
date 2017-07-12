@@ -139,18 +139,18 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
 
                 if (unitGuid == Guid.Empty)
                 {
-                    unitGuid = await actionManagerService.GetUserUnitInfo(username);
+                    UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitInfo(username);
                     if (unitGuid == Guid.Empty)
                     {
-                        UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitFromReferenceData(username);
-                        unitGuid = userUnitDetails.UnitId;
+                        userUnitDetails = await actionManagerService.GetUserUnitInfoFromReferenceData(username);
                     }
+                    unitGuid = userUnitDetails.LocationId;
                 }
 
                 UserUnitInfoDataDTO userUnitInfoDto = new UserUnitInfoDataDTO
                 {
                     UserName = username,
-                    LocationId = unitGuid
+                    UnitId = unitGuid
                 };
 
                 var roleAccessDataDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
@@ -183,8 +183,8 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
 
                 ResponseDTO responseDTO = new ResponseDTO
                 {
-                    Access_Token = encodedJwt,
-                    Expires_In = (int)options.Expiration.TotalSeconds,
+                    AccessToken = encodedJwt,
+                    ExpiresIn = (int)options.Expiration.TotalSeconds,
                     RoleActions = roleAccessDataDto,
                     UserName = username
                 };
