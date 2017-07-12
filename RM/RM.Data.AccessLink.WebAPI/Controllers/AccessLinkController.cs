@@ -19,6 +19,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         private IAccessLinkBusinessService accessLinkBusinessService;
 
         private ILoggingHelper loggingHelper;
+        private int priority = LoggerTraceConstants.AccessLinkAPIPriority;
+        private int entryEventId = LoggerTraceConstants.AccessLinkControllerMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.AccessLinkControllerMethodExitEventId;
 
         #endregion Member Variables
 
@@ -109,12 +112,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAccessLinks"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkController) + "." + nameof(GetAccessLinks);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, CurrentUserUnit);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(accessLink);
             }
         }
