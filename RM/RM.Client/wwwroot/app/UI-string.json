@@ -98,7 +98,7 @@
     "GENERATE": "Generate",
     "ROUTE_LOG_SUMMARY": "Route Log Summary",
     "DETAILED_ROUTE_LOG": "Detailed Route Log",
-    ">HAZARD_CARD": ">Hazard Card"
+    "HAZARD_CARD": "Hazard Card"
   },
   "ROUTE_SIMULATION": {
     "TITTLE": "Route Simulation",

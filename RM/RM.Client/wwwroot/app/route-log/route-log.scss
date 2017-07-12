@@ -62,12 +62,6 @@ md-dialog h2{
     @include margin(10px 0px 20px 0px);
 }
 
-
-.routeLogDialog {
-    width: width-percent(1.7);
-    height: height-percent(1);
-}
-
 .routeSelectSearch {
     width: width-percent(2.44);
     @include padding(0px 0px 0px 0px);
@@ -139,14 +133,20 @@ span.closeRouteWindow {
     min-height: 28px;
 }
 
-.mdDialog h1{
-    padding-left: 0px;
+
+.routeLogDialog{
+  width: width-percent(1.7);
+  height: height-percent(1);
+
+  h1{
+    margin-bottom: 5px;
   }
 
-.mdDialog md-input-container {
+   md-input-container {
     margin-right: 12px;
-}
+  }
 
-.mdDialog md-input-container.md-block.md-input-has-placeholder {
+  md-input-container.md-block.md-input-has-placeholder {
     margin-right: 0px;
+  }
 }

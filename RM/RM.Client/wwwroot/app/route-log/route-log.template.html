@@ -1,4 +1,4 @@
-<md-dialog aria-label="Route Log" class="mdDialog">
+<md-dialog aria-label="Route Log" class="mdDialog routeLogDialog">
     <md-toolbar>
         <div class="md-toolbar-tools">
             <h2>{{  'ROUTE_LOG.TITTLE' | translate  }}</h2>
@@ -10,6 +10,7 @@
     </md-toolbar>
 
     <md-dialog-content layout-padding>
+    <div>
         <h1>{{ 'GENERAL.SEARCH' | translate }}</h1>
         <div layout="row">
             <md-input-container flex="15">
@@ -43,6 +44,7 @@
             <custom-searchable-dropdown disabled="vm.isDeliveryRouteDisabled" search-placeholder="ROUTE_LOG.SEARCH_ROUTE" header-text="ROUTE_LOG.ROUTE" order-by="displayText" 
                                         items="vm.deliveryRoute" selected-item="vm.selectedRoute" on-selected-item="vm.deliveryRouteChange" class="routeSelectSearch" flex/>
         </div>
+    </div>
 
         <div ng-show="vm.isShowMultiSelectionRoute" flex>
             <h2>Selected Routes</h2>
@@ -66,8 +68,9 @@
             </div>
         </div>
 
-        <h1 ng-hide="!vm.routeDetails">{{ 'ROUTE_LOG.ROUTE_DETAILS' | translate }}</h1>
-        <md-list ng-hide="!vm.routeDetails">
+    <div ng-hide="!vm.routeDetails">
+        <h1 >{{ 'ROUTE_LOG.ROUTE_DETAILS' | translate }}</h1>
+        <md-list>
             <div layout="row">
                 <div flex="35" class="routeDetailstable">
                     <table>
@@ -137,9 +140,11 @@
                 <div flex="20" class="md-text"><sub>*</sub>All Alias information is shown on detailed route log </div>
             </div>
         </md-list>
+    </div>
 
-        <h1 ng-hide="!vm.routeDetails">{{ 'ROUTE_LOG.GENERATE' | translate }}</h1>
-        <md-list ng-hide="!vm.routeDetails" class="routeLogList">
+    <div ng-hide="!vm.routeDetails">
+        <h1>{{ 'ROUTE_LOG.GENERATE' | translate }}</h1>
+        <md-list class="routeLogList">
             <md-list-item>
                 <md-checkbox  ng-model="vm.generateSummaryReport"></md-checkbox>   
                 <p>{{ 'ROUTE_LOG.ROUTE_LOG_SUMMARY' | translate }}</p>
@@ -154,5 +159,6 @@
             </md-list-item>
             <md-button class="md-raised routeGenerate" ng-disabled="(!vm.generateSummaryReport&&!vm.generateDetailedRouteLogReport&&!vm.generateHazardCardReport)" md-whiteframe="3dp" ng-click="vm.generateRouteLogSummary()">{{ 'GENERAL.BUTTONS.GENERATE' | translate }}</md-button>
         </md-list>
+    </div>
     </md-dialog-content>
 </md-dialog>    

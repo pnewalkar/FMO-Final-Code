@@ -127,14 +127,14 @@ span.closeRouteWindow {
   height: 28px;
   min-height: 28px; }
 
-.mdDialog h1{
-    padding-left: 0px;
+.routeLogDialog h1{
+    margin-bottom: 5px;
   }
 
-.mdDialog md-input-container {
+.routeLogDialog md-input-container {
     margin-right: 12px;
 }
 
-.mdDialog md-input-container.md-block.md-input-has-placeholder {
+.routeLogDialog md-input-container.md-block.md-input-has-placeholder {
     margin-right: 0px;
 }
