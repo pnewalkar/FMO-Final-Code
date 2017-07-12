@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
-    public class PostalAddressStatusDTO
+    public class PostalAddressStatusDBDTO
     {
         /// <summary>
         /// This class represents data transfer object for PostalAddress entity

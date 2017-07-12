@@ -109,7 +109,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI
 
             // Integration Services
             services.AddScoped<IPostalAddressIntegrationService, PostalAddressIntegrationService>();
-            services.AddScoped<IPostalAddressBusinessService, PostalAddressBusinessService>();
+            //services.AddScoped<IPostalAddressBusinessService, PostalAddressBusinessService>();
 
             // Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();

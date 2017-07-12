@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RM.DataManagement.PostalAddress.WebAPI.DTO.UIDropdowns;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 {
@@ -11,10 +7,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
     {
         public PostalAddressDBDTO()
         {
-            this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
+            this.PostalAddressStatus = new List<PostalAddressStatusDBDTO>();
         }
         /// <summary>
-        /// This class represents data transfer object for PostalAddress entity
+        /// This class represents DB data transfer object for PostalAddress entity
         /// </summary>
 
         public Guid ID { get; set; }
@@ -44,7 +40,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public string Postcode { get; set; }
 
         public string DeliveryPointSuffix { get; set; }
-
         public string SmallUserOrganisationIndicator { get; set; }
 
         public int? UDPRN { get; set; }
@@ -53,14 +48,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 
         public string POBoxNumber { get; set; }
 
-        public Guid PostCodeGUID { get; set; }
-
         public Guid AddressType_GUID { get; set; }
 
-        public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
+        public DateTime RowCreateDateTime { get; set; }
 
-        public List<BindingEntity> NybAddressDetails { get; set; }
+        public virtual ICollection<DeliveryPointDBDTO> DeliveryPoints { get; set; }
 
-        public List<BindingEntity> RouteDetails { get; set; }
+        public virtual ICollection<PostalAddressStatusDBDTO> PostalAddressStatus { get; set; }
+
     }
 }

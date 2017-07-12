@@ -58,21 +58,25 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <returns>true or false</returns>
         Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
 
+        /*
+        To be moved to Unit manager 
         /// <summary>
         /// Filter PostalAddress based on the search text
         /// </summary>
         /// <param name="searchText">searchText</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postcodes</returns>
-        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs);
+        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs);*/
 
+        /* 
+         To be moved to Unit manager
         /// <summary>
         /// Get Postal Address based on postcode
         /// </summary>
         /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodeDTOs);
+        Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodeDTOs);*/
 
         /// <summary>
         /// Get Postal Address based on postal address id.
@@ -105,9 +109,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
 
         Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
-        Task<List<Guid>> GetPostcodeGuids(string searchText);
+        /*Task<List<Guid>> GetPostcodeGuids(string searchText);
 
-        Task<List<Guid>> GetSelectedPostcode(string selectedItem);
+        Task<List<Guid>> GetSelectedPostcode(string selectedItem);*/
 
         Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
     }
