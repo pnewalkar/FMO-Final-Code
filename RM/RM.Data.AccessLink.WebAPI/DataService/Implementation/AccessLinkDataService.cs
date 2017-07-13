@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
     using System.Diagnostics;
@@ -15,6 +16,7 @@
     using CommonLibrary.HelperMiddleware;
     using Interfaces;
     using MappingConfiguration;
+    using Data.AccessLink.WebAPI.Utils;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -67,10 +69,39 @@
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     bool accessLinkCreationSuccess = false;
+                    Guid locationGuid = Guid.NewGuid();
+                    Guid accessLinkGuid = Guid.NewGuid();
 
+                    // need to save Location for Access link with shape as NetworkIntersectionPoint i.e. roadlink and access link intersection
+                    Location location = new Location
+                    {
+                        ID = locationGuid,
+                        Shape = accessLinkDto.NetworkIntersectionPoint,
+                        RowCreateDateTime = DateTime.UtcNow
+                    };
+                    NetworkNode networkNode = new NetworkNode
+                    {
+                        ID = locationGuid,
+                        DataProviderGUID = Guid.Empty,// AccessLinkConstants.Internal,
+                        RowCreateDateTime = DateTime.UtcNow,
+                        NetworkNodeType_GUID = Guid.Empty,// AccessLinkConstants.AccessLinkDataProviderGUID,
+                    };
+                    location.NetworkNode = networkNode;
+
+                    NetworkLink networkLink = new NetworkLink
+                    {
+                        ID = accessLinkGuid,
+                        DataProviderGUID = Guid.Empty,// AccessLinkConstants.Internal,
+                        NetworkLinkTypeGUID = Guid.Empty,// (AccessLink)
+                        StartNodeID = accessLinkDto.OperationalObject_GUID,
+                        EndNodeID = locationGuid,
+                        LinkLength = accessLinkDto.ActualLengthMeter,
+                        LinkGeometry = accessLinkDto.AccessLinkLine,
+                        RowCreateDateTime = DateTime.Now
+                    };
                     AccessLink accessLink = new AccessLink
                     {
-                        ID = Guid.NewGuid(),
+                        ID = accessLinkGuid,
                         //OperationalObjectPoint = accessLinkDto.OperationalObjectPoint,
                         //NetworkIntersectionPoint = accessLinkDto.NetworkIntersectionPoint,
                         //AccessLinkLine = accessLinkDto.AccessLinkLine,
@@ -78,12 +109,21 @@
                         WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
                         Approved = accessLinkDto.Approved,
                         //OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
-                        //NetworkLink_GUID = accessLinkDto.NetworkLink_GUID,
-                        //AccessLinkType_GUID = accessLinkDto.AccessLinkType_GUID,
+                        ConnectedNetworkLinkID = accessLinkDto.NetworkLink_GUID,
+                        AccessLinkTypeGUID = accessLinkDto.AccessLinkType_GUID,
                         //LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
-                        //LinkDirection_GUID = accessLinkDto.LinkDirection_GUID,
+                        LinkDirectionGUID = accessLinkDto.LinkDirection_GUID,
                         //OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
                     };
+                    AccessLinkStatus accessLinkStatus = new AccessLinkStatus
+                    {
+                        ID = Guid.Empty,
+                        NetworkLinkID = accessLinkGuid,
+                        AccessLinkStatusGUID = Guid.Empty,
+                        StartDateTime = DateTime.UtcNow,
+                        RowCreateDateTime = DateTime.UtcNow
+                    };
+
 
                     DataContext.AccessLinks.Add(accessLink);
 
@@ -134,15 +174,15 @@
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>Link of Access Link Entity</returns>
-        private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid unitGuid)
+        private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
         {
             // to do (UnitLocations is not available)
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
-                //DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();
 
-                //DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
-                //return DataContext.AccessLinks.AsNoTracking().Where(x => x.AccessLinkLine.Intersects(extent) && x.AccessLinkLine.Intersects(polygon)).ToList();
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+                return DataContext.AccessLinks.Include(m => m.NetworkLink).AsNoTracking().Where(x => x.NetworkLink.LinkGeometry.Intersects(extent) && x.NetworkLink.LinkGeometry.Intersects(polygon)).ToList();
             }
 
             return null;

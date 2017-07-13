@@ -45,6 +45,7 @@
         }
       },
       "frameworkAssemblies": {
+        "System.Data.Entity": "4.0.0.0",
         "System.Net.Http": "4.0.0.0"
       }
     }
