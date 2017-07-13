@@ -1,4 +1,4 @@
-﻿namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
+﻿namespace RM.Common.ActionManager.WebAPI.DataService
 {
     using System.Data.Entity;
 

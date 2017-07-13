@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RM.Common.ActionManager.WebAPI.DataDTO;
 using RM.Common.ActionManager.WebAPI.DTO;
-using RM.Common.ActionManager.WebAPI.Interfaces;
+using RM.Common.ActionManager.WebAPI.BusinessService.Interface;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 
@@ -32,13 +32,13 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         private readonly TokenProviderOptions options;
         private readonly JsonSerializerSettings serializerSettings;
         private ILoggingHelper loggingHelper;
-        private IActionManagerDataService actionManagerService = default(IActionManagerDataService);
+        private IActionManagerBusinessService actionManagerBusinessService = default(IActionManagerBusinessService);
 
         public TokenProviderMiddleware(
            RequestDelegate next,
            IOptions<TokenProviderOptions> options,
            ILoggingHelper loggingHelper,
-           IActionManagerDataService actionManagerService)
+           IActionManagerBusinessService actionManagerBusinessService)
         {
             this.next = next;
             this.loggingHelper = loggingHelper;
@@ -51,7 +51,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 Formatting = Formatting.Indented
             };
 
-            this.actionManagerService = actionManagerService;
+            this.actionManagerBusinessService = actionManagerBusinessService;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         /// </summary>
         /// <param name="date">The date to convert.</param>
         /// <returns>Seconds since Unix epoch.</returns>
-        internal static long ToUnixEpochDate(DateTime date)
+        public static long ToUnixEpochDate(DateTime date)
         {
             var timeSpan = new DateTimeOffset(date).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0);
             return (long)timeSpan.TotalSeconds;
@@ -70,7 +70,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         /// </summary>
         /// <param name="context">http context</param>
         /// <returns>Generated token</returns>
-        internal Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
             if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
@@ -151,12 +151,12 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 }
 
                 //Get the Unit dtails for current user. Details would be empty for the user who has access to units above mail center
-                UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitInfo(username, unitGuid);
+                UserUnitInfoDataDTO userUnitDetails = await actionManagerBusinessService.GetUserUnitInfo(username, unitGuid);
 
                 if (userUnitDetails == null)
                 {
                     //Get the Unit details from reference data if current user has access to the units above mail center
-                    userUnitDetails = await actionManagerService.GetUserUnitInfoFromReferenceData(username, unitGuid);
+                    userUnitDetails = await actionManagerBusinessService.GetUserUnitInfoFromReferenceData(username, unitGuid);
                 }
 
                 //unitGuid would be empty while loading the application for first time for the current session for the current user
@@ -173,7 +173,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     UnitName = userUnitDetails.UnitName
                 };
 
-                var roleAccessDataDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+                var roleAccessDataDto = await actionManagerBusinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
 
                 var now = DateTime.UtcNow;
 

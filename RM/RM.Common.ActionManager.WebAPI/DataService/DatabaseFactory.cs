@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 
-namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
+namespace RM.Common.ActionManager.WebAPI.DataService
 {
     public class DatabaseFactory<TContext> : IDatabaseFactory<TContext>
         where TContext : DbContext

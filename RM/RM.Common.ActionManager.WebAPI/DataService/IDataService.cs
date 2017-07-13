@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
+namespace RM.Common.ActionManager.WebAPI.DataService
 {
     public interface IDataService<T>
         where T : class
