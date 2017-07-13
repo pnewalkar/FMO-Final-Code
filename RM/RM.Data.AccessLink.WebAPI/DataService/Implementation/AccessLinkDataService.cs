@@ -17,6 +17,7 @@
     using Interfaces;
     using MappingConfiguration;
     using Data.AccessLink.WebAPI.Utils;
+    using Data.AccessLink.WebAPI.DTO;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -39,7 +40,7 @@
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Access Link Dto</returns>
-        public List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
+        public List<AccessLinkDataDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAccessLinks"))
             {
@@ -47,7 +48,7 @@
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 List<AccessLink> result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
-                var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDTO>(result);
+                var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDataDTO>(result);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return accessLink;
             }
@@ -169,7 +170,7 @@
         }
 
         /// <summary>
-        /// This Method is used to Access Link data for defined coordinates.
+        /// This Method is used to Access Link data for defined coordinates. ------Refactored this method 13-07-2017.
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>

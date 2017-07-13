@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RM.Data.AccessLink.WebAPI.DTO
+namespace RM.DataManagement.AccessLink.WebAPI.DTO
 {
     public class AccessLinkDataDTO
     {

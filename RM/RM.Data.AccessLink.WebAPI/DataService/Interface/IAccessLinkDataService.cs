@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using RM.DataManagement.AccessLink.WebAPI.DTO;
+using RM.Data.AccessLink.WebAPI.DTO;
 
 namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
 {
@@ -17,7 +18,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Access Link dto</returns>
-        List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid);
+        List<AccessLinkDataDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid);
 
         /// <summary>
         /// Creates access link.
