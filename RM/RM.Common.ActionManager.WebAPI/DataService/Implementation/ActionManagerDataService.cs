@@ -92,7 +92,7 @@ namespace RM.Common.ActionManager.WebAPI.DataService
 
         //TODO: Nunits to be fixed after method completion
         /// <summary>
-        /// This information fetches information for units above mail center for the current user
+        /// This method fetches information for units above mail center for the current user
         /// </summary>
         /// <param name="userName">username</param>
         /// <param name="locationId">unit id</param>
