@@ -8,7 +8,7 @@ using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 
 using RM.DataManagement.UnitManager.WebAPI.Entity;
-using RM.DataManagement.UnitManager.WebAPI.DTO;
+using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using System.Data.Entity;
@@ -93,7 +93,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                   Area = (
                                           from postcodeHierarchy in DataContext.PostcodeHierarchies
                                           where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID // TODO: Add to reference data xml for- 50DBBC48-ABA4-44FE-942A-68CF769B3878 - PostcodeArea
-                                          select postcodeHierarchy.Postcode).FirstOrDefault() ?? "",
+                                          select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
                               }).ToList();
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
@@ -101,6 +101,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             }
         }
 
+        //public async Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid)
+        //{
+        //    var result = await (from pc in DataContext.Postcodes.AsNoTracking()
+        //                        join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
+        //                        where pc.ID == postcodeGuid && ul.Unit_GUID == unitGuid
+        //                        select pc).SingleOrDefaultAsync();
+
+        //    return GenericMapper.Map<Postcode, PostCodeDTO>(result);
+
+        //}
 
         // TODO: Uncomment below methods later -- commented for Data model change.
 
@@ -121,16 +131,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         //    }
         //}
 
-        //public async Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid)
-        //{
-        //    var result = await (from pc in DataContext.Postcodes.AsNoTracking()
-        //                        join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-        //                        where pc.ID == postcodeGuid && ul.Unit_GUID == unitGuid
-        //                        select pc).SingleOrDefaultAsync();
-
-        //    return GenericMapper.Map<Postcode, PostCodeDTO>(result);
-
-        //}
 
         //public UnitLocationDTO FetchUnitDetails(Guid unitGuid)
         //{

@@ -5,7 +5,7 @@ using System.Data.Entity.Spatial;
 using Newtonsoft.Json;
 using RM.CommonLibrary.Utilities.Geometry;
 
-namespace RM.DataManagement.UnitManager.WebAPI.DTO
+namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
 {
     internal class UnitLocationDataDTO
     {
