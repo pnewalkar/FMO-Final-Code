@@ -63,7 +63,11 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             var timeSpan = new DateTimeOffset(date).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0);
             return (long)timeSpan.TotalSeconds;
         }
-
+        /// <summary>
+        /// Generate token
+        /// </summary>
+        /// <param name="context">context</param>
+        /// <returns>Generated token</returns>
         public Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
@@ -121,6 +125,11 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             }
         }
 
+        /// <summary>
+        /// This method generates token depending on the user and selected unit
+        /// </summary>
+        /// <param name="context">context</param>
+        /// <returns>Token</returns>
         private async Task GenerateToken(HttpContext context)
         {
             try
