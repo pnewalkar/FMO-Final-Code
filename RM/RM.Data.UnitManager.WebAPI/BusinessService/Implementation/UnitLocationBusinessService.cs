@@ -67,15 +67,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
-        /// Fetch the Delivery units for user.
+        /// Get all Delivery units for an user.
         /// </summary>
         /// <param name="userId">The unit unique identifier.</param>
         /// <returns>
         /// List of <see cref="UnitLocationDTO" />.
         /// </returns>
-        public List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId)
+        public List<UnitLocationDTO> GetDeliveryUnitsForUser(Guid userId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryUnitsForUser"))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryUnitsForUser"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
@@ -217,10 +217,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
-        /// 
+        /// Gets postcode details by postcode guids
         /// </summary>
         /// <param name="postcodeGuids"></param>
-        /// <returns></returns>
+        /// <returns>List</returns>
         public async Task<List<PostCodeDTO>> GetPostCodeDetails(List<Guid> postcodeGuids)
         {
 

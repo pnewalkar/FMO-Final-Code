@@ -255,22 +255,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             return listReferenceCategories;
         }
 
-        public async Task<CommonLibrary.EntityFramework.DTO.UnitLocationDTO> GetUnitLocationDetails(Guid unitGuid)
-        {
-            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocationDTO = new CommonLibrary.EntityFramework.DTO.UnitLocationDTO();
-
-            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "unit/info/" + unitGuid);
-            if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
-
-            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>(result.Content.ReadAsStringAsync().Result);
-
-            return unitLocation;
-        }
         #endregion public methods
     }
 }

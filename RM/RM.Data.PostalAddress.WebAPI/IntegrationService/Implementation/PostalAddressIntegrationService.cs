@@ -149,7 +149,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = new List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>();
 
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(unitManagerDataWebAPIName + "postcode/search/" + unitGuid, postcodeGuids);
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(unitManagerDataWebAPIName + "postcode/search/", postcodeGuids);
             if (!result.IsSuccessStatusCode)
             {
                 // LOG ERROR WITH Statuscode

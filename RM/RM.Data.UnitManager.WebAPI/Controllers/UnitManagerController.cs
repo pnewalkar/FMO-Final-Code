@@ -29,7 +29,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Fetches Delivery Unit
+        /// Get all Delivery Units for logged in user
         /// </summary>
         /// <returns>List</returns>
         [Authorize]
@@ -41,40 +41,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                var getUnitLocations = unitLocationBusinessService.FetchDeliveryUnitsForUser(UserId);
+                var getUnitLocations = unitLocationBusinessService.GetDeliveryUnitsForUser(UserId);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return getUnitLocations;
             }
-        }
-
-        /// <summary>
-        /// Fetches unit Location type  for current user
-        /// </summary>
-        /// <returns>Guid</returns>
-        [Authorize]
-        [HttpGet("Unit/{unitId}")]
-        public Guid GetUnitLocationTypeId(Guid unitId)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetUnitLocationTypeId"))
-            {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
-
-                var unitLocationTypeId = unitLocationBusinessService.GetUnitLocationTypeId(unitId);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
-                return unitLocationTypeId;
-            }
-        }
-
-        /// <summary>
-        /// Fetches Delivery Unit info
-        /// </summary>
-        /// <returns>List</returns>
-        [Authorize]
-        [HttpGet("unit/info/{unitGuid}")]
-        public UnitLocationDTO GetUnitLocation(Guid unitGuid)
-        {
-            return unitLocationBusinessService.FetchUnitDetails(unitGuid);
         }
 
         /// <summary>
@@ -82,8 +52,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// </summary>
         /// <returns>List</returns>
         [Authorize]
-
-        // [HttpGet("GetPostCodeSectorByUDPRN")
         [HttpGet("postcodesector/udprn: {udprn}")]
         public async Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN)
         {
@@ -117,7 +85,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <param name="userUnit"></param>
         /// <returns></returns>
-        // [HttpGet("FetchPostCodeUnitForBasicSearch")]
         [HttpGet("postcodes/basic/{searchText}")]
         public async Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText)
         {
@@ -151,7 +118,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <param name="userUnit"></param>
         /// <returns></returns>
-        // [HttpGet("GetPostCodeUnitCount")]
         [HttpGet("postcodes/count/{searchText}")]
         public async Task<int> GetPostCodeUnitCount(string searchText)
         {
@@ -254,7 +220,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="deliveryUnitID">delivery Unit ID</param>
         /// <param name="fields">The fields to be returned</param>
         /// <returns></returns>
-        // [HttpGet("Scenario")]
         [HttpGet("scenario/{operationStateID}/{deliveryUnitID}/{fields}")]
         public IActionResult FetchDeliveryScenario(Guid operationStateID, Guid deliveryUnitID, string fields)
         {
@@ -277,11 +242,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Gets postcode details by postcode guids
+        /// </summary>
+        /// <param name="postcodeGuids"></param>
+        /// <returns></returns>
         [HttpPost("postcode/search/{unitGuid}")]
-        public async Task<IActionResult> GetPostCodes(Guid unitGuid, [FromBody] List<Guid> postcodeGuids)
+        public async Task<IActionResult> GetPostCodes([FromBody] List<Guid> postcodeGuids)
         {
-            List<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostCodes(unitGuid, postcodeGuids);        
+            List<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostCodeDetails(postcodeGuids);        
             return Ok(postCodes);
         }
     }

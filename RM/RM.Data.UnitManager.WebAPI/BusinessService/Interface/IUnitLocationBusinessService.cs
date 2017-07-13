@@ -17,7 +17,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <returns>
         /// The list of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId);
+        List<UnitLocationDTO> GetDeliveryUnitsForUser(Guid userId);
 
         /// <summary>
         /// Get the postcode sector by the UDPRN id
@@ -65,16 +65,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <returns>Post code ID</returns>
         Task<Guid> GetPostCodeID(string postCode);
 
-        Task<List<PostCodeDTO>> GetPostCodes(Guid unitGuid, List<Guid> postcodeGuids);
-
-        Task<PostCodeDTO> GetSelectedPostCode(Guid unitGuid, Guid postcodeGuid);
-
-        UnitLocationDTO FetchUnitDetails(Guid unitGuid);
-
-        /// <summary>
-        /// Fetches Location type id for current user
-        /// </summary>
-        /// <returns>Guid</returns>
-        Guid GetUnitLocationTypeId(Guid unitId);
+        Task<List<PostCodeDTO>> GetPostCodeDetails(List<Guid> postcodeGuids);
     }
 }

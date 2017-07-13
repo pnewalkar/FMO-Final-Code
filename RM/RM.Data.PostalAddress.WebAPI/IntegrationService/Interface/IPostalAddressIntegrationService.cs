@@ -69,7 +69,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <returns>Post code ID</returns>
         Task<Guid> GetPostCodeID(string postCode);
 
-        Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids);
+        Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids);
 
         Task<bool> CheckIfNotificationExists(int uDPRN, string action);
 
