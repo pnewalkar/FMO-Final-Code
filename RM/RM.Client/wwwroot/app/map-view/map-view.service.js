@@ -80,7 +80,6 @@ function mapService($http,
     };
     return {
         initialise: initialise,
-        initialiseMiniMap: initialiseMiniMap,
         mapLayers: mapLayers,
         getDotStyle: getDotStyle,
         deleteSelectedFeature: deleteSelectedFeature,
@@ -328,11 +327,6 @@ function mapService($http,
     function baseLayerLicensing() {
         mapFactory.LicenceInfo("Base Layers", "Base Layer", null);
     }
-    function initialiseMiniMap() {
-        mapFactory.initialiseMiniMap();
-        vm.miniMap = mapFactory.getMiniMap();
-    }
- 
     function mapLayers() {
         return mapFactory.getAllLayers();
     }
