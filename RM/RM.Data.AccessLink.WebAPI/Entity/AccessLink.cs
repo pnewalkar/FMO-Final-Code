@@ -33,7 +33,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.Entities
 
         public DateTime RowCreateDateTime { get; set; }
 
+        public Guid? ConnectedNetworkLinkID { get; set; }
+
         public virtual NetworkLink NetworkLink { get; set; }
+
+        public virtual NetworkLink NetworkLink1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AccessLinkStatus> AccessLinkStatus { get; set; }
