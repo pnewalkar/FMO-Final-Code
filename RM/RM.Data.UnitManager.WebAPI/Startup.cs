@@ -89,7 +89,7 @@ namespace RM.DataManagement.UnitManager.WebAPI
             services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
 
             // BusinessServices
-            services.AddScoped<IUnitLocationBusinessService, UnitLocationBusinessService>();
+            //services.AddScoped<IUnitLocationBusinessService, UnitLocationBusinessService>(); //TODO uncomment once businessservice changes are done
             services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
             services.AddScoped<IPostCodeSectorDataService, PostCodeSectorDataService>();
             services.AddScoped<IPostCodeDataService, PostCodeDataService>();

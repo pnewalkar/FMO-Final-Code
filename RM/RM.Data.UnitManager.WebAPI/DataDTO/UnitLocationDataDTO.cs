@@ -7,7 +7,7 @@ using RM.CommonLibrary.Utilities.Geometry;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
 {
-    internal class UnitLocationDataDTO
+    public class UnitLocationDataDTO
     {
         public string Name { get; set; }
 

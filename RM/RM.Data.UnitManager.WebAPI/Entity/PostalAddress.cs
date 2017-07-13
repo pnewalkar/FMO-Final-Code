@@ -15,64 +15,64 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
             PostalAddressIdentifiers = new HashSet<PostalAddressIdentifier>();
         }
 
-        public Guid ID { get; private set; }
+        public Guid ID { get;  set; }
 
         [Required]
         [StringLength(1)]
-        public string PostcodeType { get; private set; }
+        public string PostcodeType { get;  set; }
 
         [StringLength(60)]
-        public string OrganisationName { get; private set; }
+        public string OrganisationName { get;  set; }
 
         [StringLength(60)]
-        public string DepartmentName { get; private set; }
+        public string DepartmentName { get;  set; }
 
         [StringLength(50)]
-        public string BuildingName { get; private set; }
+        public string BuildingName { get;  set; }
 
-        public short? BuildingNumber { get; private set; }
+        public short? BuildingNumber { get;  set; }
 
         [StringLength(50)]
-        public string SubBuildingName { get; private set; }
+        public string SubBuildingName { get;  set; }
 
         [StringLength(80)]
-        public string Thoroughfare { get; private set; }
+        public string Thoroughfare { get;  set; }
 
         [StringLength(80)]
-        public string DependentThoroughfare { get; private set; }
+        public string DependentThoroughfare { get;  set; }
 
         [StringLength(35)]
-        public string DependentLocality { get; private set; }
+        public string DependentLocality { get;  set; }
 
         [StringLength(35)]
-        public string DoubleDependentLocality { get; private set; }
+        public string DoubleDependentLocality { get;  set; }
 
         [Required]
         [StringLength(30)]
-        public string PostTown { get; private set; }
+        public string PostTown { get;  set; }
 
         [Required]
         [StringLength(8)]
-        public string Postcode { get; private set; }
+        public string Postcode { get;  set; }
 
         [StringLength(2)]
-        public string DeliveryPointSuffix { get; private set; }
+        public string DeliveryPointSuffix { get;  set; }
 
         [StringLength(1)]
-        public string SmallUserOrganisationIndicator { get; private set; }
+        public string SmallUserOrganisationIndicator { get;  set; }
 
-        public int? UDPRN { get; private set; }
+        public int? UDPRN { get;  set; }
 
-        public bool? AMUApproved { get; private set; }
+        public bool? AMUApproved { get;  set; }
 
         [StringLength(6)]
-        public string POBoxNumber { get; private set; }
+        public string POBoxNumber { get;  set; }
 
-        public Guid AddressType_GUID { get; private set; }
+        public Guid AddressType_GUID { get;  set; }
 
-        public DateTime RowCreateDateTime { get; private set; }
+        public DateTime RowCreateDateTime { get;  set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PostalAddressIdentifier> PostalAddressIdentifiers { get; private set; }
+        public virtual ICollection<PostalAddressIdentifier> PostalAddressIdentifiers { get;  set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace RM.DataManagement.UnitManager.WebAPI.DTO
+namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
 {
-    public class PostCodeDTO
+    public class PostCodeDataDTO
     {
         public Guid ID { get; set; }
 

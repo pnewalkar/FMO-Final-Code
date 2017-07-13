@@ -162,24 +162,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             return postcodes;
         }
 
-
-        public async Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid)
-        {
-            CommonLibrary.EntityFramework.DTO.PostCodeDTO postcode = new CommonLibrary.EntityFramework.DTO.PostCodeDTO();
-
-            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/select/" + postcodeGuid +"/" + unitGuid);
-            if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
-
-            postcode = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.PostCodeDTO>(result.Content.ReadAsStringAsync().Result);
-
-            return postcode;
-        }
-
         ///// <summary>
         ///// This method will call Delivery point web api which is used to fetch Delivery Point by udprn.
         ///// </summary>

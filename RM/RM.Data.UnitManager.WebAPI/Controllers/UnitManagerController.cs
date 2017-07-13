@@ -284,12 +284,5 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             List<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostCodes(unitGuid, postcodeGuids);        
             return Ok(postCodes);
         }
-
-        [HttpGet("postcode/select/{postcodeGuid}/{unitGuid}")]
-        public async Task<IActionResult> GetSelectedPostCode(Guid postcodeGuid, Guid unitGuid)
-        {
-            PostCodeDTO postCode = await unitLocationBusinessService.GetSelectedPostCode(unitGuid, postcodeGuid);
-            return Ok(postCode);
-        }
     }
 }
