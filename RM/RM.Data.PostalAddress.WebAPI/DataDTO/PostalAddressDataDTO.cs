@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RM.DataManagement.PostalAddress.WebAPI.DTO
+namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
 {
-    public class PostalAddressDBDTO
+    public class PostalAddressDataDTO
     {
-        public PostalAddressDBDTO()
+        public PostalAddressDataDTO()
         {
-            this.PostalAddressStatus = new List<PostalAddressStatusDBDTO>();
+            this.PostalAddressStatus = new List<PostalAddressStatusDataDTO>();
         }
         /// <summary>
         /// This class represents DB data transfer object for PostalAddress entity
@@ -52,9 +52,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
 
         public DateTime RowCreateDateTime { get; set; }
 
-        public virtual ICollection<DeliveryPointDBDTO> DeliveryPoints { get; set; }
+        public virtual ICollection<DeliveryPointDataDTO> DeliveryPoints { get; set; }
 
-        public virtual ICollection<PostalAddressStatusDBDTO> PostalAddressStatus { get; set; }
+        public virtual ICollection<PostalAddressStatusDataDTO> PostalAddressStatus { get; set; }
 
     }
 }

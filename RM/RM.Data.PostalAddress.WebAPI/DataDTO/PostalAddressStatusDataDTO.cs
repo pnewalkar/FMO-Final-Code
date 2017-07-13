@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RM.DataManagement.PostalAddress.WebAPI.DTO
+namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
 {
-    public class PostalAddressStatusDBDTO
+    public class PostalAddressStatusDataDTO
     {
         /// <summary>
         /// This class represents data transfer object for PostalAddress entity

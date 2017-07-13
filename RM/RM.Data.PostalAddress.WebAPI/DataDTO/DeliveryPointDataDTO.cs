@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace RM.DataManagement.PostalAddress.WebAPI.DTO
+namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
 {
-    public class DeliveryPointDBDTO
+    public class DeliveryPointDataDTO
     {
         public Guid ID { get; set; }
 
