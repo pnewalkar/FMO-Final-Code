@@ -12,7 +12,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
         /// </summary>
         /// <param name="scenarioID">ID of the selected scenario</param>
         /// <returns>Returns list of route on the basis of selected scenario</returns>
-        List<RouteDTO> GetRoutes(Guid scenarioID);
+        List<RouteDTO> GetScenarioRoutes(Guid scenarioID);
 
         /// <summary>
         /// Get filtered routes on basis of search text for Advance Search .
@@ -44,7 +44,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
         /// <param name="routeId">The delivery route identifier.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>DeliveryRouteDTO</returns>
-        Task<RouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid routeId);
+        Task<RouteDTO> GetRouteSummary(Guid routeId);
 
         /// <summary>
         /// Generates the route log.

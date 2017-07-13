@@ -41,9 +41,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// </summary>
         /// <param name="scenarioID">ID of the selected scenario</param>
         /// <returns>Returns list of route on the basis of selected scenario</returns>
-        public List<RouteDataDTO> GetRoutes(Guid scenarioID)
+        public List<RouteDataDTO> GetScenarioRoutes(Guid scenarioID)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRoutes);
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetScenarioRoutes);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRoutes"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
@@ -163,9 +163,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <param name="routeId">Selected route Id</param>
         /// <param name="referenceDataCategoryDtoList">The reference data category dto list.</param>
         /// <returns>Route details </returns>
-        public async Task<RouteDataDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid routeId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList)
+        public async Task<RouteDataDTO> GetRouteSummary(Guid routeId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetDeliveryRouteDetailsforPdfGeneration);
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteSummary);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryRouteDetailsforPdfGeneration"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
@@ -268,12 +268,12 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                     deliveryRoutesDto = new RouteDataDTO();
                 }
 
-                deliveryRoutesDto.Aliases = 0;
-                deliveryRoutesDto.Blocks = await GetNumberOfBlocks(routeId);
-                deliveryRoutesDto.DPs = await GetNumberOfDPs(routeId);
-                deliveryRoutesDto.BusinessDPs = await GetNumberOfCommercialResidentialDPs(routeId, operationalObjectTypeForDpOrganisation);
-                deliveryRoutesDto.ResidentialDPs = await GetNumberOfCommercialResidentialDPs(routeId, operationalObjectTypeForDpResidential);
-                deliveryRoutesDto.PairedRoute = await GetPairedRoutesByRouteID(routeId, sharedDeliveryRouteMethodTypeGuid);
+                deliveryRoutesDto.Aliases = 0; /*Currently aliases are not in scope hence setting the value to '0'*/
+                deliveryRoutesDto.Blocks = await GetRouteBlocksCount(routeId);
+                deliveryRoutesDto.DPs = await GetDeliveryPointsCount(routeId);
+                deliveryRoutesDto.BusinessDPs = await GetDeliveryPointUseIndicatorCount(routeId, operationalObjectTypeForDpOrganisation);
+                deliveryRoutesDto.ResidentialDPs = await GetDeliveryPointUseIndicatorCount(routeId, operationalObjectTypeForDpResidential);
+                deliveryRoutesDto.PairedRoute = await GetPairedRoutes(routeId, sharedDeliveryRouteMethodTypeGuid);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return deliveryRoutesDto;
@@ -287,10 +287,10 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// </summary>
         /// <param name="routeId">The delivery route identifier.</param>
         /// <returns>block count</returns>
-        private async Task<int> GetNumberOfBlocks(Guid routeId)
+        private async Task<int> GetRouteBlocksCount(Guid routeId)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetNumberOfBlocks);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNumberOfBlocks"))
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteBlocksCount);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteBlocksCount"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -323,10 +323,10 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// </summary>
         /// <param name="routeId">Selected route id.</param>
         /// <returns>int</returns>
-        private async Task<int> GetNumberOfDPs(Guid routeId)
+        private async Task<int> GetDeliveryPointsCount(Guid routeId)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetNumberOfDPs);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNumberOfDPs"))
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetDeliveryPointsCount);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryPointsCount"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -361,10 +361,10 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <param name="routeId">The delivery route identifier.</param>
         /// <param name="operationalObjectTypeForDp">The operational object type for dp.</param>
         /// <returns>int</returns>
-        private async Task<int> GetNumberOfCommercialResidentialDPs(Guid routeId, Guid operationalObjectTypeForDp)
+        private async Task<int> GetDeliveryPointUseIndicatorCount(Guid routeId, Guid operationalObjectTypeForDp)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetNumberOfCommercialResidentialDPs);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNumberOfCommercialResidentialDPs"))
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetDeliveryPointUseIndicatorCount);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryPointUseIndicatorCount"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -399,12 +399,12 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <param name="routeId">Select route id</param>
         /// <param name="sharedVanId">Shared van ID from reference table</param>
         /// <returns>Comma separated value of paried routes</returns>
-        private async Task<string> GetPairedRoutesByRouteID(Guid routeId, Guid sharedVanId)
+        private async Task<string> GetPairedRoutes(Guid routeId, Guid sharedVanId)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetPairedRoutesByRouteID);
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetPairedRoutes);
             string pairedRoute = string.Empty;
 
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPairedRoutesByRouteID"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPairedRoutes"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -448,24 +448,30 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <returns>
         /// List of route log sequenced points
         /// </returns>
-        public async Task<List<RouteLogSequencedPointsDataDTO>> GetDeliveryRouteSequencedPointsByRouteId(Guid routeId)
+        public async Task<List<RouteLogSequencedPointsDataDTO>> GetSequencedRouteDetails(Guid routeId)
         {
-            var deliveryRoutes = await (from route in DataContext.Routes.AsNoTracking()
-                                        join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
-                                        join deliveryPoint in DataContext.DeliveryPoints.AsNoTracking() on routeActivity.LocationID equals deliveryPoint.ID
-                                        join postalAddress in DataContext.PostalAddresses.AsNoTracking() on deliveryPoint.PostalAddressID equals postalAddress.ID
-                                        where route.ID == routeId
-                                        orderby routeActivity.RouteActivityOrderIndex
-                                        select new RouteLogSequencedPointsDataDTO
-                                        {
-                                            StreetName = postalAddress.Thoroughfare,
-                                            BuildingNumber = postalAddress.BuildingNumber,
-                                            MultipleOccupancy = deliveryPoint.MultipleOccupancyCount,
-                                            SubBuildingName = postalAddress.SubBuildingName,
-                                            BuildingName = postalAddress.BuildingName
-                                        }).ToListAsync();
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetSequencedRouteDetails);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetSequencedRouteDetails"))
+            {
+                var deliveryRoutes = await (from route in DataContext.Routes.AsNoTracking()
+                                            join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
+                                            join deliveryPoint in DataContext.DeliveryPoints.AsNoTracking() on routeActivity.LocationID equals deliveryPoint.ID
+                                            join postalAddress in DataContext.PostalAddresses.AsNoTracking() on deliveryPoint.PostalAddressID equals postalAddress.ID
+                                            where route.ID == routeId
+                                            orderby routeActivity.RouteActivityOrderIndex
+                                            select new RouteLogSequencedPointsDataDTO
+                                            {
+                                                StreetName = postalAddress.Thoroughfare,
+                                                BuildingNumber = postalAddress.BuildingNumber,
+                                                MultipleOccupancy = deliveryPoint.MultipleOccupancyCount,
+                                                SubBuildingName = postalAddress.SubBuildingName,
+                                                BuildingName = postalAddress.BuildingName
+                                            }).ToListAsync();
 
-            return deliveryRoutes;
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return deliveryRoutes;
+            }
         }
 
         #endregion Private Methods

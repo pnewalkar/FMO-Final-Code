@@ -38,16 +38,16 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="scenarioID">ID of the selected scenario</param>
         /// <returns>Returns list of route on the basis of selected scenario</returns>
-        public List<RouteDTO> GetRoutes(Guid scenarioID)
+        public List<RouteDTO> GetScenarioRoutes(Guid scenarioID)
         {
             if (scenarioID != Guid.Empty)
             {
-                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRoutes);
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetScenarioRoutes);
                 using (loggingHelper.RMTraceManager.StartTrace("Business.GetRoutes"))
                 {
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    var routeDetails = deliveryRouteDataService.GetRoutes(scenarioID);
+                    var routeDetails = deliveryRouteDataService.GetScenarioRoutes(scenarioID);
 
                     List<RouteDTO> routes = GenericMapper.MapList<RouteDataDTO, RouteDTO>(routeDetails);
 
@@ -156,11 +156,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <param name="routeId">The delivery route identifier.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>DeliveryRouteDTO</returns>
-        public async Task<RouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid routeId)
+        public async Task<RouteDTO> GetRouteSummary(Guid routeId)
         {
             if (routeId != Guid.Empty)
             {
-                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetDeliveryRouteDetailsforPdfGeneration);
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRouteSummary);
                 using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryRouteDetailsforPdfGeneration"))
                 {
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
@@ -175,7 +175,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
 
                     var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
 
-                    var routeDetails = await deliveryRouteDataService.GetDeliveryRouteDetailsforPdfGeneration(routeId, referenceDataCategoryList);
+                    var routeDetails = await deliveryRouteDataService.GetRouteSummary(routeId, referenceDataCategoryList);
 
                     RouteDTO route = GenericMapper.Map<RouteDataDTO, RouteDTO>(routeDetails);
 
@@ -206,7 +206,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                     RouteLogSummaryDTO routeLogSummary = new RouteLogSummaryDTO();
                     routeLogSummary.Route = routeDetails;
-                    var routeLogSequencedPoints = await deliveryRouteDataService.GetDeliveryRouteSequencedPointsByRouteId(routeDetails.ID);
+                    var routeLogSequencedPoints = await deliveryRouteDataService.GetSequencedRouteDetails(routeDetails.ID);
                     routeLogSummary.RouteLogSequencedPoints = GenericMapper.MapList<RouteLogSequencedPointsDataDTO, RouteLogSequencedPointsDTO>(routeLogSequencedPoints);
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);

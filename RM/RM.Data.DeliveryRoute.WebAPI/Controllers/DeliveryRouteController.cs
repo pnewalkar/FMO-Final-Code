@@ -34,18 +34,25 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <returns>List of routes</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroute/{scenarioId}/{fields}")]
-        public IActionResult GetRoutes(Guid scenarioId, string fields)
+        public IActionResult GetScenarioRoutes(Guid scenarioId, string fields)
         {
-            string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRoutes);
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRoutes"))
+            string methodName = typeof(DeliveryRouteController) + "." + nameof(GetScenarioRoutes);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetScenarioRoutes"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                List<object> deliveryRoutesList = null;
+                var routedetails = deliveryRouteLogBusinessService.GetScenarioRoutes(scenarioId);
 
-                var routedetails = deliveryRouteLogBusinessService.GetRoutes(scenarioId);
+                CreateSummaryObject<RouteDTO> createSummary = new CreateSummaryObject<RouteDTO>();
+
+                if (!string.IsNullOrEmpty(fields))
+                {
+                    deliveryRoutesList = createSummary.SummarisePropertiesForList(routedetails, fields);
+                }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return Ok(routedetails);
+                return Ok(deliveryRoutesList);
             }
         }
 
@@ -59,7 +66,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         public async Task<IActionResult> GetRoutesForBasicSearch(string searchText)
         {
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRoutesForBasicSearch);
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteForBasicSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRoutesForBasicSearch"))
             {
                 try
                 {
@@ -124,10 +131,10 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <returns>List of matched routes</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroutes/advance/{searchText}")]
-        public async Task<IActionResult> GetRouteForAdvanceSearch(string searchText)
+        public async Task<IActionResult> GetRoutesForAdvanceSearch(string searchText)
         {
-            string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteForAdvanceSearch);
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteForAdvanceSearch"))
+            string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRoutesForAdvanceSearch);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRoutesForAdvanceSearch"))
             {
                 try
                 {
@@ -158,16 +165,16 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <returns>Route details</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroute/routedetails/{routeId}")]
-        public async Task<IActionResult> GetRouteDetailsForPdf(Guid routeId)
+        public async Task<IActionResult> GetRouteSummary(Guid routeId)
         {
-            string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteDetailsForPdf);
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteDetailsForPdf"))
+            string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteSummary);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteSummary"))
             {
                 try
                 {
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    RouteDTO route = await deliveryRouteLogBusinessService.GetDeliveryRouteDetailsforPdfGeneration(CurrentUserUnit);
+                    RouteDTO route = await deliveryRouteLogBusinessService.GetRouteSummary(CurrentUserUnit);
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(route);

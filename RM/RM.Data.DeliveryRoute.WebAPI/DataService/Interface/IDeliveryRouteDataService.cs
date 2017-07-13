@@ -16,7 +16,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// </summary>
         /// <param name="scenarioID">ID of the selected scenario</param>
         /// <returns>Returns list of route on the basis of selected scenario</returns>
-        List<RouteDataDTO> GetRoutes(Guid scenarioID);
+        List<RouteDataDTO> GetScenarioRoutes(Guid scenarioID);
 
         /// <summary>
         /// Get filtred routes on basis of search text for Advance Search .
@@ -48,7 +48,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <param name="routeId">Selected route Id</param>
         /// <param name="referenceDataCategoryDtoList">The reference data category dto list.</param>
         /// <returns>Route details </returns>
-        Task<RouteDataDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid routeId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList);
+        Task<RouteDataDTO> GetRouteSummary(Guid routeId, List<ReferenceDataCategoryDTO> referenceDataCategoryDtoList);
 
         /// <summary>
         /// retrieve Route Sequenced Point By passing RouteID specific to unit
@@ -57,6 +57,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <returns>
         /// List of route log sequenced points
         /// </returns>
-        Task<List<RouteLogSequencedPointsDataDTO>> GetDeliveryRouteSequencedPointsByRouteId(Guid routeId);
+        Task<List<RouteLogSequencedPointsDataDTO>> GetSequencedRouteDetails(Guid routeId);
     }
 }
