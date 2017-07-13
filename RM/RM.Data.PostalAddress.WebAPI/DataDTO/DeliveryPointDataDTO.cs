@@ -18,6 +18,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
 
         public DateTime RowCreateDateTime { get; set; }
 
-        public virtual PostalAddressDBDTO PostalAddress { get; set; }
+        public virtual PostalAddressDataDTO PostalAddress { get; set; }
     }
 }

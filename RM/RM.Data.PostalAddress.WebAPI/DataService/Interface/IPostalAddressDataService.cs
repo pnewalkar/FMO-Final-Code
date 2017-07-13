@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
 
@@ -17,38 +18,38 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="fileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        Task<bool> SaveAddress(PostalAddressDBDTO objPostalAddress, string fileName);
+        Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddress, string fileName);
 
         /// <summary>
-        /// Update PostalAddress based on the PostalAddressDBDTO passed for PAF depending upon NYB and USR scenerios
+        /// Update PostalAddress based on the PostalAddressDataDTO passed for PAF depending upon NYB and USR scenerios
         /// </summary>
-        /// <param name="objPostalAddress">PostalAddressDBDTO</param>
+        /// <param name="objPostalAddress">PostalAddressDataDTO</param>
         /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
         /// <param name="deliveryPointUseIndicatorPAF">Guid of DeliveryPointUseIndicatorPAF from reference data</param>
         /// <returns>return status as bool</returns>
-        Task<bool> UpdateAddress(PostalAddressDBDTO objPostalAddress, string fileName, Guid deliveryPointUseIndicatorPAF);
+        Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string fileName, Guid deliveryPointUseIndicatorPAF);
 
         /// <summary>
         /// Get the existing postal address details based on the UDPRN
         /// </summary>
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>PostalAddress DTO</returns>
-        Task<PostalAddressDBDTO> GetPostalAddress(int? uDPRN);
+        Task<PostalAddressDataDTO> GetPostalAddress(int? uDPRN);
 
         /// <summary>
         /// Get the existing postal address details based on the address for PAF
         /// </summary>
-        /// <param name="objPostalAddress">PostalAddressDBDTO for search operation</param>
+        /// <param name="objPostalAddress">PostalAddressDataDTO for search operation</param>
         /// <returns>PostalAddress DTO</returns>
-        Task<PostalAddressDBDTO> GetPostalAddress(PostalAddressDBDTO objPostalAddress);
+        Task<PostalAddressDataDTO> GetPostalAddress(PostalAddressDataDTO objPostalAddress);
 
         /// <summary>
-        /// Insert PostalAddress based on the PostalAddressDBDTO passed for PAF
+        /// Insert PostalAddress based on the PostalAddressDataDTO passed for PAF
         /// </summary>
-        /// <param name="objPostalAddress">PostalAddressDBDTO</param>
+        /// <param name="objPostalAddress">PostalAddressDataDTO</param>
         /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
         /// <returns>return status as bool</returns>
-        Task<bool> InsertAddress(PostalAddressDBDTO objPostalAddress, string fileName);
+        Task<bool> InsertAddress(PostalAddressDataDTO objPostalAddress, string fileName);
 
         /// <summary>
         /// Delete postal Address records do not have an associated Delivery Point
@@ -76,14 +77,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<List<PostalAddressDBDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodeDTOs);*/
+        Task<List<PostalAddressDataDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodeDTOs);*/
 
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
         /// <param name="id">postCode</param>
         /// <returns>Postal Address DTO</returns>
-        PostalAddressDBDTO GetPostalAddressDetails(Guid id);
+        PostalAddressDataDTO GetPostalAddressDetails(Guid id);
 
         /// <summary>
         /// Checking for duplicatesthat already exists in FMO as a NYB record
@@ -91,7 +92,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">objPostalAddress</param>
         /// <param name="addressTypeNYBGuid">Reference data Guid of NYB</param>
         /// <returns>string</returns>
-        string CheckForDuplicateNybRecords(PostalAddressDBDTO objPostalAddress, Guid addressTypeNYBGuid);
+        string CheckForDuplicateNybRecords(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid);
 
         /// <summary>
         /// Create delivery point for PAF and NYB details
@@ -105,9 +106,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress</param>
         /// <returns>bool</returns>
-        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDBDTO objPostalAddress);
+        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress);
 
-        Task<List<PostalAddressDBDTO>> GetPostalAddresses(List<Guid> addressGuids);
+        Task<List<PostalAddressDataDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
         /*Task<List<Guid>> GetPostcodeGuids(string searchText);
 

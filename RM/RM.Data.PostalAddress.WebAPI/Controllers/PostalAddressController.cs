@@ -54,7 +54,7 @@ namespace Fmo.API.Services.Controllers
         /// <returns></returns>
         // [HttpPost("SaveAddressdetails/{strFileName}")]
         [HttpPost("nybaddresses/{strFileName}")]
-        public async Task<IActionResult> SaveAddressdetails(string strFileName, [FromBody] List<PostalAddressDBDTO> lstAddressDetails)
+        public async Task<IActionResult> SaveAddressdetails(string strFileName, [FromBody] List<PostalAddressDTO> lstAddressDetails)
         {
             try
             {
@@ -185,7 +185,7 @@ namespace Fmo.API.Services.Controllers
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    PostalAddressDBDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+                    PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
 
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
 
@@ -219,7 +219,7 @@ namespace Fmo.API.Services.Controllers
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                PostalAddressDBDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
+                PostalAddressDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
 
@@ -244,7 +244,7 @@ namespace Fmo.API.Services.Controllers
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    PostalAddressDBDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
+                    PostalAddressDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
 
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
 
@@ -271,7 +271,7 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateNybRecords")]
         [HttpPost("postaladdress/nybduplicate/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public async Task<IActionResult> CheckForDuplicateNybRecords([FromBody] PostalAddressDBDTO objPostalAddress)
+        public async Task<IActionResult> CheckForDuplicateNybRecords([FromBody] PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateNybRecords"))
             {
@@ -294,7 +294,7 @@ namespace Fmo.API.Services.Controllers
         // [HttpPost("CheckForDuplicateAddressWithDeliveryPoints")]
         [HttpPost("postaladdress/duplicatedeliverypoint/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public async Task<IActionResult> CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDBDTO objPostalAddress)
+        public async Task<IActionResult> CheckForDuplicateAddressWithDeliveryPoints([FromBody] PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateAddressWithDeliveryPoints"))
             {
