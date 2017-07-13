@@ -67,6 +67,43 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         //    }
         //}
 
+        /// <summary>
+        /// Fetch the delivery units for user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>
+        /// List of <see cref="UnitLocationDTO"/>.
+        /// </returns>
+        internal List<UnitLocationDataDTO> FetchDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryUnitsForUser"))
+            {
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
+
+                var unitLocation = (from postalAddressIdentifier in DataContext.PostalAddressIdentifiers.AsNoTracking()
+                              join location in DataContext.Locations.AsNoTracking() on postalAddressIdentifier.ID equals location.ID
+                              join userRoleLocation in DataContext.UserRoleLocations.AsNoTracking() on postalAddressIdentifier.ID equals userRoleLocation.LocationID
+                              where userRoleLocation.UserID == userId
+                              select new UnitLocationDataDTO
+                              {
+                                  LocationId = postalAddressIdentifier.ID,
+                                  Name = postalAddressIdentifier.Name,
+                                  Shape = location.Shape,
+                                  Area = (
+                                          from postcodeHierarchy in DataContext.PostcodeHierarchies
+                                          where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID // TODO: Add to reference data xml for- 50DBBC48-ABA4-44FE-942A-68CF769B3878 - PostcodeArea
+                                          select postcodeHierarchy.Postcode).FirstOrDefault() ?? "",
+                              }).ToList();
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
+                return unitLocation;
+            }
+        }
+
+
+        // TODO: Uncomment below methods later -- commented for Data model change.
+
         ///// <summary>
         ///// Fetches unit Location type id for current user
         ///// </summary>
