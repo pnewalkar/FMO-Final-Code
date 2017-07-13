@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace RM.Common.ActionManager.WebAPI.Test
 {
-    public class Class1
+    public class ActionManagerBusinessServiceFixture
     {
-        public Class1()
+        public ActionManagerBusinessServiceFixture()
         {
+
+
         }
     }
 }

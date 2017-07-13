@@ -9,11 +9,11 @@ namespace RM.Common.ActionManager.WebAPI.Entity
     [Table("FMO.PostalAddressIdentifier")]
     public partial class PostalAddressIdentifier
     {
-        public Guid ID { get; private set; }
+        public Guid ID { get; set; }
 
         public Guid? PostalAddressID { get; private set; }
 
-        public Guid? IdentifierTypeGUID { get; private set; }
+        public Guid? IdentifierTypeGUID { get; set; }
 
         [StringLength(100)]
         public string ExternalID { get; private set; }

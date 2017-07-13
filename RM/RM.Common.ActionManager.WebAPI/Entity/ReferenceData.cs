@@ -17,7 +17,7 @@ namespace RM.Common.ActionManager.WebAPI.Entity
             ReferenceData1 = new HashSet<ReferenceData>();
         }
 
-        public Guid ID { get; private set; }
+        public Guid ID { get; set; }
 
         [StringLength(1000)]
         public string ReferenceDataName { get; private set; }
