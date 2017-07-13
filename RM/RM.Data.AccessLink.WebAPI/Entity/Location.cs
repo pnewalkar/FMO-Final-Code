@@ -6,25 +6,18 @@ namespace RM.DataManagement.AccessLink.WebAPI.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("FMO.DeliveryPoint")]
-    public partial class DeliveryPoint
+    [Table("FMO.Location")]
+    public partial class Location
     {
         public Guid ID { get; set; }
 
-        public Guid PostalAddressID { get; set; }
-
-        public short? MultipleOccupancyCount { get; set; }
-
-        public int? MailVolume { get; set; }
-
-        public Guid DeliveryPointUseIndicatorGUID { get; set; }
-
-        [Column(TypeName = "timestamp")]
-        [MaxLength(8)]
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int AlternateID { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
+
+        [Required]
+        public DbGeometry Shape { get; set; }
 
         public virtual NetworkNode NetworkNode { get; set; }
     }
