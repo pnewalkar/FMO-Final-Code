@@ -50,7 +50,10 @@ namespace RM.Common.ActionManager.WebAPI.DataService
                     UserName = x.UserName,
                     FunctionName = x.FunctionName,
                     ActionName = x.ActionName,
-                    UserId = x.UserId
+                    UserId = x.UserId,
+                    UnitType = userUnitInfo.UnitType,
+                    UnitName = userUnitInfo.UnitName
+
                 }).ToListAsync();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);

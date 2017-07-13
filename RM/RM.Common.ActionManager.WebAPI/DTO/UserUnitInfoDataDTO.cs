@@ -2,6 +2,7 @@
 
 namespace RM.Common.ActionManager.WebAPI.DTO
 {
+    //TODO: tobe marked as internal
     public class UserUnitInfoDataDTO
     {
         public string UserName { get; set; }

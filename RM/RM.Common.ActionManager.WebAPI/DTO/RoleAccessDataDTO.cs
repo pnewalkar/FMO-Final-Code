@@ -2,6 +2,7 @@
 
 namespace RM.Common.ActionManager.WebAPI.DTO
 {
+    //TODO: tobe marked as internal
     public class RoleAccessDataDTO
     {
         public string UserName { get; set; }
@@ -15,5 +16,9 @@ namespace RM.Common.ActionManager.WebAPI.DTO
         public string ActionName { get; set; }
 
         public Guid UserId { get; set; }
+
+        public string UnitType { get; set; }
+
+        public string UnitName { get; set; }
     }
 }

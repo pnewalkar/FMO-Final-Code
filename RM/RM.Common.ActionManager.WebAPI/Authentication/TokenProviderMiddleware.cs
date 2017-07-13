@@ -127,6 +127,8 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             {
                 var username = context.Request.Form["username"];
                 Guid unitGuid;
+                string unittype = string.Empty;
+                string unitName = string.Empty;
                 bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
 
                 var identity = await options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
@@ -137,20 +139,28 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     return;
                 }
 
-                if (unitGuid == Guid.Empty)
+                //Get the Unit dtails for current user. Details would be empty for the user who has access to units above mail center
+                UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitInfo(username);
+                
+                if (userUnitDetails.LocationId == Guid.Empty)
                 {
-                    UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitInfo(username);
-                    if (unitGuid == Guid.Empty)
-                    {
-                        userUnitDetails = await actionManagerService.GetUserUnitInfoFromReferenceData(username);
-                    }
+                    //Get the Unit dtails from reference data if current user has access to units above mail center
+                    userUnitDetails = await actionManagerService.GetUserUnitInfoFromReferenceData(username);
+                }
+
+                unittype = userUnitDetails.UnitType;
+
+                if (unitGuid == Guid.Empty)
+                {                    
                     unitGuid = userUnitDetails.LocationId;
                 }
 
                 UserUnitInfoDataDTO userUnitInfoDto = new UserUnitInfoDataDTO
                 {
                     UserName = username,
-                    UnitId = unitGuid
+                    LocationId = unitGuid,
+                    UnitType = unittype,
+                    UnitName = unitName
                 };
 
                 var roleAccessDataDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
