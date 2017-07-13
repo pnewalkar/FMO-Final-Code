@@ -19,6 +19,9 @@
         private const int ReferenceDataCategoryTypeForSimpleList = 2;
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.ReferenceDataAPIPriority;
+        private int entryEventId = LoggerTraceConstants.ReferenceDataDataServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId;
 
         #region Constructor
 
@@ -76,6 +79,40 @@
                 else
                 {
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return null;
+                }
+            }
+        }
+
+        public NameValuePair GetNameValueReferenceData(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNameValueReferenceData"))
+            {
+                string methodName = typeof(ReferenceDataDataService) + "." + nameof(GetNameValueReferenceData);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                RM.Common.ReferenceData.WebAPI.Entities.ReferenceData referenceData = null;
+
+                referenceData = DataContext.ReferenceDatas.Include(m => m.ReferenceDataCategory)
+                        .Where(n => n.ID == id && n.ReferenceDataCategory.CategoryType.Equals(ReferenceDataCategoryTypeForNameValuePair)).SingleOrDefault();
+
+                if (referenceData != null)
+                {
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return new NameValuePair
+                    {
+                        Id = referenceData.ID,
+                        Group = referenceData.ReferenceDataCategory.CategoryName,
+                        Name = referenceData.ReferenceDataName,
+                        Value = referenceData.ReferenceDataValue,
+                        DisplayText = referenceData.DisplayText,
+                        Description = referenceData.DataDescription,
+                        maintainable = referenceData.ReferenceDataCategory.Maintainable
+                    };
+                }
+                else
+                {
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return null;
                 }
             }
@@ -164,6 +201,38 @@
                 else
                 {
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    return null;
+                }
+            }
+        }
+
+        public SimpleListDTO GetSimpleListReferenceData(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetSimpleListReferenceData"))
+            {
+                string methodName = typeof(ReferenceDataDataService) + "." + nameof(GetSimpleListReferenceData);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                List<ListItems> listItems = new List<ListItems>();
+                
+
+                var referenceData = DataContext.ReferenceDatas.Include(m => m.ReferenceDataCategory)
+                        .Where(n => n.ID == id && n.ReferenceDataCategory.CategoryType.Equals(ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();
+                
+                if (referenceData != null)
+                {
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return new SimpleListDTO
+                    {
+                        Id = referenceData.ID,
+                        ListName = referenceData.ReferenceDataCategory.CategoryName,
+                        Maintainable = referenceData.ReferenceDataCategory.Maintainable,
+                        ListItems = listItems
+                    };
+                }
+                else
+                {
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return null;
                 }
             }

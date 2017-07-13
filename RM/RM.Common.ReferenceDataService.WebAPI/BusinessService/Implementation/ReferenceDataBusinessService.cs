@@ -27,6 +27,9 @@
         private string refDataXMLFileName = string.Empty;
         private IReferenceDataDataService referenceDataDataService;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.ReferenceDataAPIPriority;
+        private int entryEventId = LoggerTraceConstants.ReferenceDataBusinessServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.ReferenceDataBusinessServiceMethodExitEventId;
 
         #endregion Member Variables
 
@@ -91,6 +94,19 @@
             }
         }
 
+        public NameValuePair GetReferenceDataByNameValuePairs(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetReferenceDataByNameValuePairs"))
+            {
+                string methodName = typeof(ReferenceDataBusinessService) + "." + nameof(GetReferenceDataByNameValuePairs);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                
+                var getNameValueReferenceData = referenceDataDataService.GetNameValueReferenceData(id);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return getNameValueReferenceData;
+            }
+        }
+
         /// <summary> Gets all reference data. </summary> <param name="group">group is recorded as
         /// the category name</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         public List<NameValuePair> GetReferenceDataByNameValuePairs(string appGroupName)
@@ -126,6 +142,20 @@
                                     .Select(s => s.DBCategoryName).FirstOrDefault();
                 var getSimpleListReferenceData = referenceDataDataService.GetSimpleListReferenceData(categoryName);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                return getSimpleListReferenceData;
+            }
+        }
+
+        public SimpleListDTO GetSimpleListsReferenceData(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetSimpleListsReferenceData"))
+            {
+                string methodName = typeof(ReferenceDataBusinessService) + "." + nameof(GetSimpleListsReferenceData);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                var getSimpleListReferenceData = referenceDataDataService.GetSimpleListReferenceData(id);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return getSimpleListReferenceData;
             }

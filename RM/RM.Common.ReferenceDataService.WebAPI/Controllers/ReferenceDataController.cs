@@ -23,6 +23,9 @@
 
         private IReferenceDataBusinessService referenceDataBusinessService = default(IReferenceDataBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.ReferenceDataAPIPriority;
+        private int entryEventId = LoggerTraceConstants.ReferenceDataControllerMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.ReferenceDataControllerMethodExitEventId;
 
         #endregion Member Variables
 
@@ -69,6 +72,28 @@
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodExitEventId, LoggerTraceConstants.Title);
 
+                return Ok(nameValueSingleResource);
+            }
+        }
+
+        [HttpGet("nameValuePair")]
+        public IActionResult GetNameValueReferenceData(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNameValueReferenceDataByGuid"))
+            {
+                string methodName = typeof(ReferenceDataController) + "." + nameof(GetNameValueReferenceData);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                
+                var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(id);
+
+                Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(NameValuePair, nameValuePairsObject);
+
+                if (nameValuePairsObject == null)
+                {
+                    throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(nameValueSingleResource);
             }
         }
@@ -134,6 +159,28 @@
                 }
 
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ReferenceDataAPIPriority, LoggerTraceConstants.ReferenceDataControllerMethodExitEventId, LoggerTraceConstants.Title);
+                return Ok(nameValueSingleResource);
+            }
+        }
+
+        [HttpGet("simpleLists")]
+        public IActionResult GetSimpleListsReferenceData(Guid id)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetSimpleListsReferenceData"))
+            {
+                string methodName = typeof(ReferenceDataController) + "." + nameof(GetSimpleListsReferenceData);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                var simpleListObject = referenceDataBusinessService.GetSimpleListsReferenceData(id);
+
+                Tuple<string, SimpleListDTO> nameValueSingleResource = new Tuple<string, SimpleListDTO>(SimpleList, simpleListObject);
+
+                if (simpleListObject == null)
+                {
+                    throw new BusinessLogicException(ErrorConstants.Err_MisMatchConfigFile, HttpStatusCode.ExpectationFailed);
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(nameValueSingleResource);
             }
         }
