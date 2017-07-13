@@ -11,6 +11,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Route()
         {
+            Route1 = new HashSet<Route>();
             RouteActivities = new HashSet<RouteActivity>();
             RouteStatus = new HashSet<RouteStatus>();
             ScenarioRoutes = new HashSet<ScenarioRoute>();
@@ -43,6 +44,13 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         public DateTime? LastModifiedDateTime { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
+
+        public Guid? PairedRouteID { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Route> Route1 { get; set; }
+
+        public virtual Route Route2 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RouteActivity> RouteActivities { get; set; }

@@ -24,5 +24,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         public DateTime RowCreateDateTime { get; set; }
 
         public virtual Route Route { get; set; }
+
+        public virtual Scenario Scenario { get; set; }
     }
 }

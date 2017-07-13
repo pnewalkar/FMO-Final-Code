@@ -26,15 +26,15 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Fetches Delivery Route
+        /// Get Delivery Route specific to selected route
         /// </summary>
         /// <param name="operationStateID"> operationState ID</param>
         /// <param name="deliveryScenarioID">deliveryScenario ID</param>
         /// <param name="fields">The fields to be returned</param>
-        /// <returns>List</returns>
+        /// <returns>List of routes</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroute/{operationStateID}/{deliveryScenarioID}/{fields}")]
-        public IActionResult FetchRoutes(Guid operationStateID, Guid deliveryScenarioID, string fields)
+        public IActionResult GetRoutes(Guid operationStateID, Guid deliveryScenarioID, string fields)
         {
             using (logginghelper.RMTraceManager.StartTrace("WebService.FetchRoutes"))
             {
@@ -57,13 +57,13 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Fetch Delivery Route for Basic Search
+        /// Get Delivery Route for Basic Search
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <returns>Task</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroutes/basic/{searchText}")]
-        public async Task<IActionResult> FetchDeliveryRouteForBasicSearch(string searchText)
+        public async Task<IActionResult> GetDeliveryRouteForBasicSearch(string searchText)
         {
             using (logginghelper.RMTraceManager.StartTrace("WebService.FetchDeliveryRouteForBasicSearch"))
             {
@@ -123,13 +123,13 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get the count of delivery route
+        /// Get routes for advance search
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <returns>Task</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroutes/advance/{searchText}")]
-        public async Task<IActionResult> FetchDeliveryRouteForAdvanceSearch(string searchText)
+        public async Task<IActionResult> GetDeliveryRouteForAdvanceSearch(string searchText)
         {
             using (logginghelper.RMTraceManager.StartTrace("WebService.FetchDeliveryRouteForAdvanceSearch"))
             {

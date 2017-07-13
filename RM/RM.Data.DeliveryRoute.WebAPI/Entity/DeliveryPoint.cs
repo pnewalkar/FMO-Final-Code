@@ -25,5 +25,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         public DateTime RowCreateDateTime { get; private set; }
 
         public virtual NetworkNode NetworkNode { get; private set; }
+
+        public virtual PostalAddress PostalAddress { get; private set; }
     }
 }

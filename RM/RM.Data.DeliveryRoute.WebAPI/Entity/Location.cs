@@ -13,8 +13,8 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         public Location()
         {
             BlockSequences = new HashSet<BlockSequence>();
-            LocationOfferings = new HashSet<LocationOffering>();
             RouteActivities = new HashSet<RouteActivity>();
+            Scenarios = new HashSet<Scenario>();
         }
 
         public Guid ID { get; private set; }
@@ -30,12 +30,12 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BlockSequence> BlockSequences { get; private set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LocationOffering> LocationOfferings { get; private set; }
-
         public virtual NetworkNode NetworkNode { get; private set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RouteActivity> RouteActivities { get; private set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Scenario> Scenarios { get; private set; }
     }
 }

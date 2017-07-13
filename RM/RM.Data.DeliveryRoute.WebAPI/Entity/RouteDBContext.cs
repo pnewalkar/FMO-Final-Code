@@ -16,11 +16,9 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
 
         public virtual DbSet<Location> Locations { get; set; }
 
-        public virtual DbSet<LocationOffering> LocationOfferings { get; set; }
-
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
 
-        public virtual DbSet<Offering> Offerings { get; set; }
+        public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
 
         public virtual DbSet<Route> Routes { get; set; }
 
@@ -29,6 +27,8 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         public virtual DbSet<RouteNetworkLink> RouteNetworkLinks { get; set; }
 
         public virtual DbSet<RouteStatus> RouteStatus { get; set; }
+
+        public virtual DbSet<Scenario> Scenarios { get; set; }
 
         public virtual DbSet<ScenarioRoute> ScenarioRoutes { get; set; }
 
@@ -62,13 +62,13 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Location>()
-                .HasMany(e => e.LocationOfferings)
-                .WithRequired(e => e.Location)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Location>()
                 .HasOptional(e => e.NetworkNode)
                 .WithRequired(e => e.Location);
+
+            modelBuilder.Entity<Location>()
+                .HasMany(e => e.Scenarios)
+                .WithRequired(e => e.Location)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<NetworkNode>()
                 .Property(e => e.TOID)
@@ -79,13 +79,70 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
                 .HasOptional(e => e.DeliveryPoint)
                 .WithRequired(e => e.NetworkNode);
 
-            modelBuilder.Entity<Offering>()
-                .Property(e => e.OfferingDescription)
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.PostcodeType)
+                .IsFixedLength()
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Offering>()
-                .HasMany(e => e.LocationOfferings)
-                .WithRequired(e => e.Offering)
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.OrganisationName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DepartmentName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.BuildingName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.SubBuildingName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.Thoroughfare)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DependentThoroughfare)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DependentLocality)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DoubleDependentLocality)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.PostTown)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.Postcode)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.DeliveryPointSuffix)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.SmallUserOrganisationIndicator)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .Property(e => e.POBoxNumber)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<PostalAddress>()
+                .HasMany(e => e.DeliveryPoints)
+                .WithRequired(e => e.PostalAddress)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Route>()
@@ -108,6 +165,11 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<Route>()
+                .HasMany(e => e.Route1)
+                .WithOptional(e => e.Route2)
+                .HasForeignKey(e => e.PairedRouteID);
+
+            modelBuilder.Entity<Route>()
                 .HasMany(e => e.RouteActivities)
                 .WithRequired(e => e.Route)
                 .WillCascadeOnDelete(false);
@@ -124,11 +186,20 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
 
             modelBuilder.Entity<RouteActivity>()
                 .Property(e => e.RouteActivityOrderIndex)
-                .HasPrecision(8, 8);
+                .HasPrecision(16, 8);
 
             modelBuilder.Entity<RouteNetworkLink>()
                 .Property(e => e.OrderIndex)
                 .HasPrecision(8, 8);
+
+            modelBuilder.Entity<Scenario>()
+                .Property(e => e.ScenarioName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Scenario>()
+                .HasMany(e => e.ScenarioRoutes)
+                .WithRequired(e => e.Scenario)
+                .WillCascadeOnDelete(false);
         }
     }
 }
