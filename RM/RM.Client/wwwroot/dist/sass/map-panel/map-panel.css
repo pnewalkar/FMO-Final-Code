@@ -42,7 +42,8 @@ map-panel {
 
 .map-panel .map-panel-content {
   height: calc(100% - 50px);
-  pointer-events: auto; }
+  pointer-events: auto; 
+padding: 5px;}
 
 .map-panel .map-panel-summary {
   padding: 5px 5px 5px 5px;

@@ -80,7 +80,6 @@ function mapService($http,
     };
     return {
         initialise: initialise,
-        getMapButtons: getMapButtons,
         mapLayers: mapLayers,
         getDotStyle: getDotStyle,
         deleteSelectedFeature: deleteSelectedFeature,
@@ -327,9 +326,6 @@ function mapService($http,
 
     function baseLayerLicensing() {
         mapFactory.LicenceInfo("Base Layers", "Base Layer", null);
-    }
-    function getMapButtons() {
-        return vm.mapButtons;
     }
     function mapLayers() {
         return mapFactory.getAllLayers();
