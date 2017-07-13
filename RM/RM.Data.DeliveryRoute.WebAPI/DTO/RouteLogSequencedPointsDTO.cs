@@ -1,6 +1,6 @@
 ﻿namespace RM.DataManagement.DeliveryRoute.WebAPI.DTO
 {
-    internal class RouteLogSequencedPointsDTO
+    public class RouteLogSequencedPointsDTO
     {
         public RouteLogSequencedPointsDTO(string streetName, string description, int deliveryPointCount, int? multipleOccupancy, string subbuildingname, string buildingname)
         {

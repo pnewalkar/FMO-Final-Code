@@ -15,25 +15,25 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
             ScenarioRoutes = new HashSet<ScenarioRoute>();
         }
 
-        public Guid ID { get; private set; }
+        public Guid ID { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string ScenarioName { get; private set; }
+        public string ScenarioName { get; set; }
 
-        public Guid LocationID { get; private set; }
+        public Guid LocationID { get; set; }
 
-        public DateTime? StartDateTime { get; private set; }
+        public DateTime? StartDateTime { get; set; }
 
-        public DateTime? EndDateTime { get; private set; }
+        public DateTime? EndDateTime { get; set; }
 
-        public DateTime? LastModifiedDateTime { get; private set; }
+        public DateTime? LastModifiedDateTime { get; set; }
 
-        public DateTime RowCreateDateTime { get; private set; }
+        public DateTime RowCreateDateTime { get; set; }
 
-        public virtual Location Location { get; private set; }
+        public virtual Location Location { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ScenarioRoute> ScenarioRoutes { get; private set; }
+        public virtual ICollection<ScenarioRoute> ScenarioRoutes { get; set; }
     }
 }

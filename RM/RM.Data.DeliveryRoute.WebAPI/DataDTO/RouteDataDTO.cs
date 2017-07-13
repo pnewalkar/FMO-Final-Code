@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace RM.DataManagement.DeliveryRoute.WebAPI.DTO
+namespace RM.DataManagement.DeliveryRoute.WebAPI.DataDTO
 {
-    public class RouteDTO
+    public class RouteDataDTO
     {
         public Guid ID { get; set; }
 

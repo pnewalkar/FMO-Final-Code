@@ -17,25 +17,25 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
             Scenarios = new HashSet<Scenario>();
         }
 
-        public Guid ID { get; private set; }
+        public Guid ID { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int AlternateID { get; private set; }
+        public int AlternateID { get; set; }
 
-        public DateTime RowCreateDateTime { get; private set; }
+        public DateTime RowCreateDateTime { get; set; }
 
         [Required]
-        public DbGeometry Shape { get; private set; }
+        public DbGeometry Shape { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BlockSequence> BlockSequences { get; private set; }
+        public virtual ICollection<BlockSequence> BlockSequences { get; set; }
 
-        public virtual NetworkNode NetworkNode { get; private set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RouteActivity> RouteActivities { get; private set; }
+        public virtual NetworkNode NetworkNode { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Scenario> Scenarios { get; private set; }
+        public virtual ICollection<RouteActivity> RouteActivities { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Scenario> Scenarios { get; set; }
     }
 }
