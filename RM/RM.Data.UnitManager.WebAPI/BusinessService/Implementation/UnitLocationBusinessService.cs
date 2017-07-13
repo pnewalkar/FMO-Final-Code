@@ -19,7 +19,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
     /// This class contains methods for fetching Delivery unit data.
     /// </summary>
     /// <seealso cref="Fmo.BusinessServices.Interfaces.IUnitLocationBusinessService" />
-    public class UnitLocationBusinessService // : IUnitLocationBusinessService
+    public class UnitLocationBusinessService : IUnitLocationBusinessService
     {
         private const int BNGCOORDINATESYSTEM = 27700;
 

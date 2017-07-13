@@ -29,7 +29,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
         [Test]
         public void Test_FetchDeliveryUnitForUser()
         {
-            List<UnitLocationDTO> expectedDeliveryUnitListResult = testCandidate.FetchDeliveryUnitsForUser(userID);
+            List<UnitLocationDTO> expectedDeliveryUnitListResult = testCandidate.GetDeliveryUnitsForUser(userID);
             Assert.NotNull(expectedDeliveryUnitListResult);
             Assert.NotNull(expectedDeliveryUnitListResult[0].BoundingBox);
             Assert.NotNull(expectedDeliveryUnitListResult[0].BoundingBoxCenter);

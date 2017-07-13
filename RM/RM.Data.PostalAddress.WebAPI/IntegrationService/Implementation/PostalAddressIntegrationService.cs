@@ -145,7 +145,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
-        public async Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids)
+        public async Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids)
         {
             List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = new List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>();
 
