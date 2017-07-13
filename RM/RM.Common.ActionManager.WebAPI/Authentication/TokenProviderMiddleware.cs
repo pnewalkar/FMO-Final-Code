@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using RM.Common.ActionManager.WebAPI.DataDTO;
 using RM.Common.ActionManager.WebAPI.DTO;
 using RM.Common.ActionManager.WebAPI.Interfaces;
 using RM.CommonLibrary.HelperMiddleware;
@@ -34,10 +35,10 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         private IActionManagerDataService actionManagerService = default(IActionManagerDataService);
 
         public TokenProviderMiddleware(
-            RequestDelegate next,
-            IOptions<TokenProviderOptions> options,
-            ILoggingHelper loggingHelper,
-            IActionManagerDataService actionManagerService)
+           RequestDelegate next,
+           IOptions<TokenProviderOptions> options,
+           ILoggingHelper loggingHelper,
+           IActionManagerDataService actionManagerService)
         {
             this.next = next;
             this.loggingHelper = loggingHelper;
@@ -58,17 +59,18 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         /// </summary>
         /// <param name="date">The date to convert.</param>
         /// <returns>Seconds since Unix epoch.</returns>
-        public static long ToUnixEpochDate(DateTime date)
+        internal static long ToUnixEpochDate(DateTime date)
         {
             var timeSpan = new DateTimeOffset(date).ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0);
             return (long)timeSpan.TotalSeconds;
         }
+
         /// <summary>
         /// Generate token
         /// </summary>
-        /// <param name="context">context</param>
+        /// <param name="context">http context</param>
         /// <returns>Generated token</returns>
-        public Task Invoke(HttpContext context)
+        internal Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
             if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
@@ -128,7 +130,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         /// <summary>
         /// This method generates token depending on the user and selected unit
         /// </summary>
-        /// <param name="context">context</param>
+        /// <param name="context">http context</param>
         /// <returns>Token</returns>
         private async Task GenerateToken(HttpContext context)
         {
@@ -136,7 +138,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             {
                 var username = context.Request.Form["username"];
                 Guid unitGuid;
-                string unittype = string.Empty;
+                string unitType = string.Empty;
                 string unitName = string.Empty;
                 bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
 
@@ -149,18 +151,17 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 }
 
                 //Get the Unit dtails for current user. Details would be empty for the user who has access to units above mail center
-                UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitInfo(username);
-                
-                if (userUnitDetails.LocationId == Guid.Empty)
+                UserUnitInfoDataDTO userUnitDetails = await actionManagerService.GetUserUnitInfo(username, unitGuid);
+
+                if (userUnitDetails == null)
                 {
-                    //Get the Unit dtails from reference data if current user has access to units above mail center
-                    userUnitDetails = await actionManagerService.GetUserUnitInfoFromReferenceData(username);
+                    //Get the Unit details from reference data if current user has access to the units above mail center
+                    userUnitDetails = await actionManagerService.GetUserUnitInfoFromReferenceData(username, unitGuid);
                 }
 
-                unittype = userUnitDetails.UnitType;
-
+                //unitGuid would be empty while loading the application for first time for the current session for the current user
                 if (unitGuid == Guid.Empty)
-                {                    
+                {
                     unitGuid = userUnitDetails.LocationId;
                 }
 
@@ -168,8 +169,8 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 {
                     UserName = username,
                     LocationId = unitGuid,
-                    UnitType = unittype,
-                    UnitName = unitName
+                    UnitType = userUnitDetails.UnitType,
+                    UnitName = userUnitDetails.UnitName
                 };
 
                 var roleAccessDataDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
@@ -185,7 +186,8 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
                 new Claim(ClaimTypes.UserData, roleAccessDataDto.FirstOrDefault().Unit_GUID.ToString()),
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.PrimarySid, roleAccessDataDto.FirstOrDefault().UserId.ToString())
+                new Claim(ClaimTypes.PrimarySid, roleAccessDataDto.FirstOrDefault().UserId.ToString()),
+                new Claim(ClaimTypes.Upn, roleAccessDataDto.FirstOrDefault().UnitType.ToString())
             };
 
                 roleAccessDataDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));

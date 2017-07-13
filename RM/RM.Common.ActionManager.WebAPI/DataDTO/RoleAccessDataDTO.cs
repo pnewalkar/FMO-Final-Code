@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace RM.Common.ActionManager.WebAPI.DTO
+namespace RM.Common.ActionManager.WebAPI.DataDTO
 {
-    //TODO: tobe marked as internal
     public class RoleAccessDataDTO
     {
         public string UserName { get; set; }

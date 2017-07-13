@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace RM.Common.ActionManager.WebAPI.DTO
+namespace RM.Common.ActionManager.WebAPI.DataDTO
 {
-    //TODO: tobe marked as internal
     public class UserUnitInfoDataDTO
     {
         public string UserName { get; set; }
@@ -10,8 +9,6 @@ namespace RM.Common.ActionManager.WebAPI.DTO
         public Guid LocationId { get; set; }
 
         public string UnitName { get; set; }
-
-        public Guid UnitId { get; set; }
 
         public string UnitType { get; set; }
     }

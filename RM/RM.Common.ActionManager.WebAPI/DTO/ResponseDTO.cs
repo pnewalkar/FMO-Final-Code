@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RM.Common.ActionManager.WebAPI.DataDTO;
 
 namespace RM.Common.ActionManager.WebAPI.DTO
 {

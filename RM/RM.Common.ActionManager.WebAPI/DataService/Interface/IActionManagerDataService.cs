@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RM.Common.ActionManager.WebAPI.DTO;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Common.ActionManager.WebAPI.DataDTO;
+
 
 namespace RM.Common.ActionManager.WebAPI.Interfaces
 {
@@ -22,7 +22,7 @@ namespace RM.Common.ActionManager.WebAPI.Interfaces
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        Task<UserUnitInfoDataDTO> GetUserUnitInfo(string userName);
+        Task<UserUnitInfoDataDTO> GetUserUnitInfo(string userName, Guid locationId);
 
         //TODO: Method comments to be updated once the code is finalized and tested
         /// <summary>
@@ -30,6 +30,6 @@ namespace RM.Common.ActionManager.WebAPI.Interfaces
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        Task<UserUnitInfoDataDTO> GetUserUnitInfoFromReferenceData(string userName);
+        Task<UserUnitInfoDataDTO> GetUserUnitInfoFromReferenceData(string userName, Guid locationId);
     }
 }
