@@ -7,18 +7,19 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DataService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.IntegrationService;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 {
     public class NetworkManagerBusinessService : INetworkManagerBusinessService
     {
+        #region Member Variables
+
         private const string FeatureType = "Feature";
         private const string LayerType = "type";
         private const string Polygon = "POLYGON(({0} {1}, {2} {3}, {4} {5}, {6} {7}, {8} {9}))";
@@ -28,13 +29,25 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         private IStreetNetworkDataService streetNetworkDataService = default(IStreetNetworkDataService);
         private INetworkManagerIntegrationService networkManagerIntegrationService = default(INetworkManagerIntegrationService);
         private IOSRoadLinkDataService osRoadLinkDataService = default(IOSRoadLinkDataService);
-        private IRoadNameDataService roadNameDataService = default(RoadNameDataService);
+        private IRoadNameDataService roadNameDataService = default(IRoadNameDataService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
+        private int entryEventId = LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId;
+
+        #endregion Member Variables
+
+        #region Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="StreetNetworkBusinessService"/> class.
+        /// Initializes a new instance of the Network Manager Business Service class.
         /// </summary>
-        /// <param name="streetNetworkRepository">The street network repository.</param>
+        /// <param name="streetNetworkDataService">The street network data service</param>
+        /// <param name="networkManagerIntegrationService">The street network data service</param>
+        /// <param name="osRoadLinkDataService">The Ordnance Survey road link data service</param>
+        /// <param name="roadNameDataService">The road name data service</param>
+        /// <param name="loggingHelper">The helper class object for logging</param>
         public NetworkManagerBusinessService(IStreetNetworkDataService streetNetworkDataService, INetworkManagerIntegrationService networkManagerIntegrationService, IOSRoadLinkDataService osRoadLinkDataService, IRoadNameDataService roadNameDataService, ILoggingHelper loggingHelper)
         {
             this.streetNetworkDataService = streetNetworkDataService;
@@ -43,32 +56,37 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
             this.roadNameDataService = roadNameDataService;
             this.loggingHelper = loggingHelper;
         }
+        #endregion Constructors
 
+        #region Public Methods
+
+        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
-        /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
-        /// <param name="streetName">Street name.</param>
-        /// <returns>Nearest street and the intersection point.</returns>
+        /// <param name="operationalObjectPoint">The operational object unique identifier.</param>
+        /// <param name="streetName">The street name.</param>
+        /// <returns>The nearest street and the intersection point.</returns>
         public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNearestNamedRoad"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetNearestNamedRoad);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<string> categoryNamesSimpleLists = new List<string>
-            {
-                ReferenceDataCategoryNames.NetworkLinkType,
-            };
+                    {
+                        ReferenceDataCategoryNames.NetworkLinkType,
+                    };
 
                 var referenceDataCategoryList = networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
                 var getNearestNamedRoad = streetNetworkDataService.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return getNearestNamedRoad;
             }
         }
 
+        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
@@ -78,18 +96,18 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNearestSegment"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetNearestSegment);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<string> categoryNamesNameValuePairs = new List<string>
-            {
-                ReferenceDataCategoryNames.AccessLinkParameters,
-            };
+                    {
+                        ReferenceDataCategoryNames.AccessLinkParameters,
+                    };
 
                 List<string> categoryNamesSimpleLists = new List<string>
-            {
-                ReferenceDataCategoryNames.NetworkLinkType
-            };
+                    {
+                        ReferenceDataCategoryNames.NetworkLinkType
+                    };
 
                 var referenceDataCategoryList =
                     networkManagerIntegrationService.GetReferenceDataNameValuePairs(categoryNamesNameValuePairs).Result;
@@ -97,11 +115,14 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 referenceDataCategoryList.AddRange(
                    networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
                 var getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
                 return getNearestSegment;
             }
         }
 
+        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the street DTO for operational object.
         /// </summary>
@@ -111,14 +132,18 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNetworkLink"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetNetworkLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 var getNetworkLink = streetNetworkDataService.GetNetworkLink(networkLinkID);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
                 return getNetworkLink;
             }
         }
 
+        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary> This method is used to get the road links crossing the access link </summary>
         /// <param name="boundingBoxCoordinates">bbox coordinates</param> <param
         /// name="accessLinkCoordinates">access link coordinate array</param> <returns>List<NetworkLinkDTO></returns>
@@ -126,27 +151,33 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetCrossingNetworkLinks"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetCrossingNetworkLinks);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 var getCrossingNetworkLinks = streetNetworkDataService.GetCrossingNetworkLink(boundingBoxCoordinates, accessLinkCoordinates);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
                 return getCrossingNetworkLinks;
             }
         }
 
         /// <summary>
-        /// This method is used to fetch data for OSRoadLink.
+        /// This method is used to fetch data for Ordinance survey Road Link.
         /// </summary>
         /// <param name="toid">toid unique identifier for OSRoadLink</param>
-        /// <returns>returns Route Hierarchy as string</returns>
+        /// <returns>The Route Hierarchy as string</returns>
         public async Task<string> GetOSRoadLink(string toid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetOSRoadLink"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetOSRoadLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 var getOSRoadLink = await osRoadLinkDataService.GetOSRoadLink(toid);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
                 return getOSRoadLink;
             }
         }
@@ -155,32 +186,41 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// This method fetches data for RoadLinks
         /// </summary>
         /// <param name="boundarybox">boundaryBox as string.</param>
-        /// <param name="uniGuid">Unit unique identifier.</param>
+        /// <param name="locationID">location unique identifier.</param>
         /// <returns>RoadLink object</returns>
-        public string GetRoadRoutes(string boundarybox, Guid uniGuid)
+        public string GetRoadRoutes(string boundarybox, Guid locationID)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetRoadRoutes"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetRoadRoutes);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string roadLinkJsonData = null;
 
                 if (!string.IsNullOrEmpty(boundarybox))
                 {
+                    List<string> categoryNamesNameValuePairs = new List<string>
+                    {
+                        ReferenceDataCategoryNames.NetworkLinkType,
+                    };
+                    var referenceDataCategoryList = networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesNameValuePairs).Result;
+
                     var boundingBoxCoordinates =
                         GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Comma[0]));
                     roadLinkJsonData =
-                        GetRoadLinkJsonData(roadNameDataService.GetRoadRoutes(boundingBoxCoordinates, uniGuid));
+                        GetRoadLinkJsonData(roadNameDataService.GetRoadRoutes(boundingBoxCoordinates, locationID, referenceDataCategoryList));
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return roadLinkJsonData;
             }
         }
 
-        #region basic_advanced search
+        #endregion Public Methods
 
+        #region Basic And Advanced Search Public Methods
+
+        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Fetch the street name for Basic Search.
         /// </summary>
@@ -191,11 +231,13 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchStreetNamesForBasicSearch"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(FetchStreetNamesForBasicSearch);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 var fetchStreetNamesForBasicSearch = await streetNetworkDataService.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
                 return fetchStreetNamesForBasicSearch;
             }
         }
@@ -210,15 +252,19 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetStreetNameCount"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetStreetNameCount);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 var fetchStreetNamesForBasicSearch = await streetNetworkDataService.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
                 var getStreetNameCount = await streetNetworkDataService.GetStreetNameCount(searchText, userUnit).ConfigureAwait(false);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
                 return getStreetNameCount;
             }
         }
 
+        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Fetch street names for advance search
         /// </summary>
@@ -229,17 +275,19 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.FetchStreetNamesForAdvanceSearch"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(FetchStreetNamesForAdvanceSearch);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 var fetchStreetNamesForAdvanceSearch = await streetNetworkDataService.FetchStreetNamesForAdvanceSearch(searchText, unitGuid).ConfigureAwait(false);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return fetchStreetNamesForAdvanceSearch;
             }
         }
 
-        #endregion basic_advanced search
+        #endregion Basic And Advanced Search Public methods
 
-        #region private methods
+        #region Private Methods
 
         /// <summary>
         /// This method fetches co-ordinates of roadlink
@@ -268,7 +316,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 
             return coordinates;
         }
-
+        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// This method fetches geojson data for roadlink
         /// </summary>

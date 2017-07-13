@@ -10,6 +10,7 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.BusinessService;
 using RM.DataManagement.NetworkManager.WebAPI.IntegrationService;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
 
 namespace RM.Data.NetworkManager.WebAPI.Test
 {
@@ -147,7 +148,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             mockStreetNetworkDataService.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<StreetNameDTO>() { new StreetNameDTO() { LocalName = "abc" } });
 
             mockOsRoadLinkDataService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("abc");
-            mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>())).Returns(new List<NetworkLinkDTO>() { networkLink });
+            mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(new List<NetworkLinkDTO>() { networkLink });
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
