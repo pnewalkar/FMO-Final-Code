@@ -28,7 +28,6 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             this.loggingHelper = loggingHelper;
         }
 
-        //TODO: Nunits to be fixed after method completion
         /// <summary>
         /// This method fetches role based functions for the current user
         /// </summary>
@@ -60,7 +59,6 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             }
         }
 
-        //TODO: Nunits to be fixed after method completion
         /// <summary>
         /// This method fetches Unit information for which user has access
         /// </summary>
@@ -96,7 +94,6 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             }
         }
 
-        //TODO: Nunits to be fixed after method completion
         /// <summary>
         /// This method fetches information for units above mail center for the current user
         /// </summary>

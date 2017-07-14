@@ -13,6 +13,9 @@ using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Common.ActionManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for ActionManagerDataService
+    /// </summary>
     [TestFixture]
     public class ActionManagerDataServiceFixture : RepositoryFixtureBase
     {
@@ -22,6 +25,9 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
         private Mock<ILoggingHelper> mockLoggingHelper;
         private List<UserUnitInfoDataDTO> userUnitInfoDataDTOList;
 
+        /// <summary>
+        /// test scenario to get all available actions for manager role
+        /// </summary>
         [Test]
         public void Test_GetRoleBasedAccessFunctions_ManagerRole()
         {
@@ -32,6 +38,9 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             Assert.AreEqual(result.Result[1].UserName, "user1");
         }
 
+        /// <summary>
+        /// test scenario to get all available actions for non manager role
+        /// </summary>
         [Test]
         public void Test_GetRoleBasedAccessFunctions_DeliveryRole()
         {
@@ -41,16 +50,22 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             Assert.AreEqual(result.Result[0].UserName, "user2");
         }
 
+        /// <summary>
+        /// test scenario for first time application page load for any user
+        /// </summary>
         [Test]
         public void Test_GetUserUnitInfo_FirstRequest_With_EmptyLocationId()
         {
-            var result = testCandidate.GetUserUnitInfo("deliveryuser1", Guid.Empty);
+            var result = testCandidate.GetUserUnitInfo("user1", Guid.Empty);
             Assert.IsNotNull(result.Result);
             Assert.AreEqual(result.Result.UnitName, "Unit1");
             Assert.AreEqual(result.Result.UnitType, "Type1");
             Assert.AreEqual(result.Result.LocationId, new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A"));
         }
 
+        /// <summary>
+        /// test scenario for subsequent requests for application page load for any user
+        /// </summary>
         [Test]
         public void Test_GetUserUnitInfo_Not_FirstRequest_With_LocationId()
         {
@@ -61,6 +76,9 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             Assert.AreEqual(result.Result.LocationId, new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A"));
         }
 
+        /// <summary>
+        /// test scenario for first time application page load for user having access above mail center
+        /// </summary>
         [Test]
         public void Test_GetUserUnitInfoFromReferenceData_FirstRequest_With_EmptyLocationId()
         {
@@ -71,6 +89,9 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             Assert.AreEqual(result.Result.LocationId, new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A"));
         }
 
+        /// <summary>
+        /// test scenario for subsequent requests for application page load for  user having access above mail center
+        /// </summary>
         [Test]
         public void Test_GetUserUnitInfoFromReferenceData_Not_FirstRequest_With_LocationId()
         {
@@ -165,7 +186,7 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
                 Name = "Unit1"
             };
 
-            //Set up for UserRoleLocation
+            //Setup for UserRoleLocation
             mockRMDBContext = CreateMock<ActionDBContext>();
             var mockAsynEnumerable1 = new DbAsyncEnumerable<UserRoleLocation>(new List<UserRoleLocation>() { userRoleLocation });
             var mockUserRoleLocation = MockDbSet(new List<UserRoleLocation>() { userRoleLocation });
@@ -180,7 +201,7 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             mockRMDBContext.Setup(x => x.UserRoleLocations).Returns(mockUserRoleLocation.Object);
             mockUserRoleLocation.Setup(x => x.Include(It.IsAny<string>())).Returns(mockUserRoleLocation.Object);
 
-            //Set up for User
+            //Setup for User
             var mockAsynEnumerable2 = new DbAsyncEnumerable<User>(new List<User>() { user });
             var mockUser = MockDbSet(new List<User>() { user });
             mockUser.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable2.AsQueryable().Provider);
@@ -192,7 +213,7 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             mockRMDBContext.Setup(x => x.Users).Returns(mockUser.Object);
             mockUser.Setup(x => x.Include(It.IsAny<string>())).Returns(mockUser.Object);
 
-            //Set up for LocationReferenceData
+            //Setup for LocationReferenceData
             var mockAsynEnumerable3 = new DbAsyncEnumerable<LocationReferenceData>(new List<LocationReferenceData>() { locationReferenceData });
             var mockLocationReferenceData = MockDbSet(new List<LocationReferenceData>() { locationReferenceData });
             mockLocationReferenceData.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable3.AsQueryable().Provider);
@@ -204,7 +225,7 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             mockRMDBContext.Setup(x => x.LocationReferenceDatas).Returns(mockLocationReferenceData.Object);
             mockLocationReferenceData.Setup(x => x.Include(It.IsAny<string>())).Returns(mockLocationReferenceData.Object);
 
-            //Set up for LocationReferenceData
+            //Setup for LocationReferenceData
             var mockAsynEnumerable4 = new DbAsyncEnumerable<ReferenceData>(new List<ReferenceData>() { referenceData });
             var mockReferenceData = MockDbSet(new List<ReferenceData>() { referenceData });
             mockReferenceData.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable4.AsQueryable().Provider);
@@ -216,7 +237,7 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             mockRMDBContext.Setup(x => x.ReferenceDatas).Returns(mockReferenceData.Object);
             mockReferenceData.Setup(x => x.Include(It.IsAny<string>())).Returns(mockReferenceData.Object);
 
-            //Set up for PostalAddressIdentifier
+            //Setup for PostalAddressIdentifier
             var mockAsynEnumerable5 = new DbAsyncEnumerable<PostalAddressIdentifier>(new List<PostalAddressIdentifier>() { postalAddressIdentifier });
             var mockPostalAddressIdentifier = MockDbSet(new List<PostalAddressIdentifier>() { postalAddressIdentifier });
             mockPostalAddressIdentifier.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable5.AsQueryable().Provider);
@@ -228,7 +249,7 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             mockRMDBContext.Setup(x => x.PostalAddressIdentifiers).Returns(mockPostalAddressIdentifier.Object);
             mockPostalAddressIdentifier.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressIdentifier.Object);
 
-            //Set up for AccessFunction
+            //Setup for AccessFunction
             var mockAsynEnumerable6 = new DbAsyncEnumerable<AccessFunction>(accessFunctionList);
             var mockAccessFunction = MockDbSet(accessFunctionList);
             mockAccessFunction.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable6.AsQueryable().Provider);
@@ -242,7 +263,7 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             mockRMDBContext.Setup(x => x.AccessFunctions).Returns(mockAccessFunction.Object);
             mockAccessFunction.Setup(x => x.Include(It.IsAny<string>())).Returns(mockAccessFunction.Object);
 
-            //Set up for Logging
+            //Setup for Logging
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);

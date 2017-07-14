@@ -9,6 +9,9 @@ using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Common.ActionManager.WebAPI.BusinessService
 {
+    /// <summary>
+    /// This class provides methods for getting data from ActionManagerDataService and perform business logic if required
+    /// </summary>
     public class ActionManagerBusinessService : IActionManagerBusinessService
     {
         private IActionManagerDataService actionManagerDataService = default(IActionManagerDataService);
