@@ -157,41 +157,14 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         }
 
         /// <summary>
-        /// Get postcode details by passing postcode
-        /// </summary>
-        /// <param name="postCodeUnit">Postcode</param>
-        /// <returns></returns>
-        public async Task<PostCodeDataDTO> GetPostCode(string postCodeUnit)
-        {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetPostCode);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCode"))
-            {
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-                var postCode = await (from postcode in DataContext.Postcodes.AsNoTracking()
-                                      where postcode.PostcodeUnit == postCodeUnit
-                                      select new PostCodeDataDTO
-                                      {
-                                          PostcodeUnit = postcode.PostcodeUnit,
-                                          PrimaryRouteGUID = postcode.PrimaryRouteGUID,
-                                          SecondaryRouteGUID = postcode.SecondaryRouteGUID
-                                      }).SingleOrDefaultAsync();
-
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-                return postCode;
-            }
-        }
-
-        /// <summary>
         /// Get route details specific to loaction
         /// </summary>
         /// <param name="LocationId">Location ID</param>
         /// <returns> List of routes specific to location </returns>
-        public async Task<List<RouteDataDTO>> GetRouteDetailsSpecificToLocation(Guid LocationId)
+        public async Task<List<RouteDataDTO>> GetRoutesByLocation(Guid LocationId)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteDetailsSpecificToLocation);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteDetailsSpecificToLocation"))
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRoutesByLocation);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteDetailsByLocation"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -209,6 +182,47 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return routeDetails;
+            }
+        }
+
+        /// <summary>
+        /// Get route details mapped to delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery Point Id</param>
+        /// <returns>Route Details</returns>
+        public RouteDataDTO GetRouteByDeliverypoint(Guid deliveryPointId)
+        {
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteByDeliverypoint);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteByDeliverypoint"))
+            {
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                RouteDataDTO routeData = null;
+                var unSequencedBlockId = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault().BlockID;
+                var route = DataContext.Routes.AsNoTracking().Where(n => n.UnSequencedBlockID == unSequencedBlockId).SingleOrDefault();
+
+                if (route != null)
+                {
+                    var postCode = DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == route.ID || n.SecondaryRouteGUID == route.ID).SingleOrDefault();
+                    if (postCode != null)
+                    {
+                        if (postCode.PrimaryRouteGUID != null)
+                        {
+                            routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + route.RouteName };
+                        }
+                        else if (postCode.SecondaryRouteGUID != null)
+                        {
+                            routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + route.RouteName };
+                        }
+                        else
+                        {
+                            routeData = new RouteDataDTO { ID = route.ID, RouteName = route.RouteName };
+                        }
+                    }
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return routeData;
             }
         }
 

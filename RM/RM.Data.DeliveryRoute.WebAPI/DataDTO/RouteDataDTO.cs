@@ -28,6 +28,8 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataDTO
 
         public DateTime RowCreateDateTime { get; set; }
 
+        public Guid? UnSequencedBlockID { get; set; }
+
         public string DisplayText
         {
             get

@@ -49,6 +49,8 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
 
         public Guid? PairedRouteID { get; set; }
 
+        public Guid? UnSequencedBlockID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Postcode> Postcodes { get; set; }
 

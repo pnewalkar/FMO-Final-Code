@@ -21,6 +21,8 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         private IDeliveryRouteDataService deliveryRouteDataService;
         private IDeliveryRouteIntegrationService deliveryRouteIntegrationService;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IBlockSequenceDataService blockSequenceDataService = default(IBlockSequenceDataService);
+        private IPostCodeDataService postCodeDataService = default(IPostCodeDataService);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
@@ -28,11 +30,13 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <param name="deliveryRouteDataService">IDeliveryRouteRepository reference</param>
         /// <param name="scenarioDataService">IScenarioRepository reference</param>
         /// <param name="referenceDataBusinessService">The reference data business service.</param>
-        public DeliveryRouteBusinessService(IDeliveryRouteDataService deliveryRouteDataService, IDeliveryRouteIntegrationService deliveryRouteIntegrationService, ILoggingHelper loggingHelper)
+        public DeliveryRouteBusinessService(IDeliveryRouteDataService deliveryRouteDataService, IDeliveryRouteIntegrationService deliveryRouteIntegrationService, ILoggingHelper loggingHelper, IBlockSequenceDataService blockSequenceDataService, IPostCodeDataService postCodeDataService)
         {
             this.deliveryRouteDataService = deliveryRouteDataService;
             this.deliveryRouteIntegrationService = deliveryRouteIntegrationService;
             this.loggingHelper = loggingHelper;
+            this.blockSequenceDataService = blockSequenceDataService;
+            this.postCodeDataService = postCodeDataService;
         }
 
         /// <summary>
@@ -238,8 +242,8 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
                     List<RouteDTO> routes = new List<RouteDTO>();
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    var postCode = await deliveryRouteDataService.GetPostCode(postCodeUnit);
-                    var routeDetails = await deliveryRouteDataService.GetRouteDetailsSpecificToLocation(locationId);
+                    var postCode = await postCodeDataService.GetPostCode(postCodeUnit);
+                    var routeDetails = await deliveryRouteDataService.GetRoutesByLocation(locationId);
 
                     if (postCode == null && routeDetails != null && routeDetails.Count > 0)
                     {
@@ -271,32 +275,56 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             }
         }
 
-        ///// <summary>
-        ///// Method to create block sequence for delivery point
-        ///// </summary>
-        ///// <param name="deliveryRouteId">deliveryRouteId</param>
-        ///// <param name="deliveryPointId">deliveryPointId</param>
-        ///// <returns>bool</returns>
-        //public async Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
-        //{
-        //    using (loggingHelper.RMTraceManager.StartTrace("Business.CreateBlockSequenceForDeliveryPoint"))
-        //    {
-        //        string methodName = MethodHelper.GetActualAsyncMethodName();
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+        /// <summary>
+        /// method to save delivery point and selected route mapping in block sequence table
+        /// </summary>
+        /// <param name="routeId">selected route id</param>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        public void SaveDeliveryPointRouteMapping(Guid routeId, Guid deliveryPointId)
+        {
+            if (routeId != Guid.Empty && deliveryPointId != Guid.Empty)
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(SaveDeliveryPointRouteMapping);
+                using (loggingHelper.RMTraceManager.StartTrace("Business.SaveDeliveryPointRouteMapping"))
+                {
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-        //        bool isBlockSequencInserted = false;
-        //        List<string> categoryNames = new List<string> { ReferenceDataCategoryNames.OperationalObjectType };
-        //        var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
-        //        Guid operationalObjectTypeForDp = referenceDataCategoryList
-        //          .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
-        //          .SelectMany(x => x.ReferenceDatas)
-        //          .Where(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).Select(x => x.ID)
-        //          .SingleOrDefault();
-        //        BlockSequenceDTO blockSequenceDTO = new BlockSequenceDTO { ID = Guid.NewGuid(), OperationalObjectType_GUID = operationalObjectTypeForDp, OperationalObject_GUID = deliveryPointId };
-        //        isBlockSequencInserted = await blockSequenceDataService.AddBlockSequence(blockSequenceDTO, deliveryRouteId);
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-        //        return isBlockSequencInserted;
-        //    }
-        //}
+                    blockSequenceDataService.SaveDeliveryPointRouteMapping(routeId, deliveryPointId);
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException("route Id and deliveryPoint Id is empty", string.Format(ErrorConstants.Err_ArgumentmentNullException, "routeId,deliveryPointId"));
+            }
+        }
+
+        /// <summary>
+        /// Get route details mapped to delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery Point Id</param>
+        /// <returns>Route Details</returns>
+        public RouteDTO GetRouteByDeliverypoint(Guid deliveryPointId)
+        {
+            if (deliveryPointId != Guid.Empty)
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRouteByDeliverypoint);
+                using (loggingHelper.RMTraceManager.StartTrace("Business.GetRouteByDeliverypoint"))
+                {
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    var route = GenericMapper.Map<RouteDataDTO, RouteDTO>(deliveryRouteDataService.GetRouteByDeliverypoint(deliveryPointId));
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return route;
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException("deliveryPoint Id is empty", string.Format(ErrorConstants.Err_ArgumentmentNullException, "deliveryPointId"));
+            }
+        }
     }
 }

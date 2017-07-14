@@ -61,5 +61,19 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
         /// <param name="locationId">selected unit's location ID</param>
         /// <returns>List of routes</returns>
         Task<List<RouteDTO>> GetPostCodeSpecificRoutes(string postCodeUnit, Guid locationId);
+
+        /// <summary>
+        /// method to save delivery point and selected route mapping in block sequence table
+        /// </summary>
+        /// <param name="routeId">selected route id</param>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        void SaveDeliveryPointRouteMapping(Guid routeId, Guid deliveryPointId);
+
+        /// <summary>
+        /// Get route details mapped to delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery Point Id</param>
+        /// <returns>Route Details</returns>
+        RouteDTO GetRouteByDeliverypoint(Guid deliveryPointId);
     }
 }

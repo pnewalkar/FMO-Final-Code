@@ -60,17 +60,17 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         Task<List<RouteLogSequencedPointsDataDTO>> GetSequencedRouteDetails(Guid routeId);
 
         /// <summary>
-        /// Get postcode details by passing postcode
-        /// </summary>
-        /// <param name="postCodeUnit">Postcode</param>
-        /// <returns></returns>
-        Task<PostCodeDataDTO> GetPostCode(string postCodeUnit);
-
-        /// <summary>
         /// Get route details specific to loaction
         /// </summary>
         /// <param name="LocationId">Location ID</param>
         /// <returns> List of routes specific to location </returns>
-        Task<List<RouteDataDTO>> GetRouteDetailsSpecificToLocation(Guid LocationId);
+        Task<List<RouteDataDTO>> GetRoutesByLocation(Guid LocationId);
+
+        /// <summary>
+        /// Get route details mapped to delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery Point Id</param>
+        /// <returns>Route Details</returns>
+        RouteDataDTO GetRouteByDeliverypoint(Guid deliveryPointId);
     }
 }
