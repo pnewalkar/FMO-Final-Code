@@ -102,7 +102,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// This method is used to fetch Access Link.
+        /// This method is used to fetch Access Link.  ---Refactored this method.
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
         /// <returns>GeoJson string of Access link data</returns>

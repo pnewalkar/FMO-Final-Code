@@ -1,4 +1,5 @@
-﻿using RM.DataManagement.AccessLink.WebAPI.Entities;
+﻿using RM.Data.AccessLink.WebAPI.DTO;
+using RM.DataManagement.AccessLink.WebAPI.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.DTO
         public Guid? LinkDirectionGUID { get; set; }
 
         public byte[] RowVersion { get; set; }
+
+        public  NetworkLinkDataDTO NetworkLink { get; set; }
+
+        public  NetworkLinkDataDTO NetworkLink1 { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
 

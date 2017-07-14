@@ -32,6 +32,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         private IAccessLinkIntegrationService accessLinkIntegrationService = default(IAccessLinkIntegrationService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        private int priority = LoggerTraceConstants.AccessLinkAPIPriority;
+        private int entryEventId = LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.AccessLinkBusinessMethodExitEventId;
+
         #endregion Member Variables
 
         #region Constructor
@@ -476,8 +480,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetAccessLinks"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkBusinessService) + "." + nameof(GetAccessLinks);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string accessLinkJsonData = null;
 
@@ -486,10 +490,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     var accessLinkCoordinates =GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(AccessLinkConstants.Comma[0]));
                     var accessLinkDataDto = accessLinkDataService.GetAccessLinks(accessLinkCoordinates, unitGuid);
                     var accessLink = GenericMapper.MapList<AccessLinkDataDTO, AccessLinkDTO>(accessLinkDataDto);
-                    accessLinkJsonData = GetAccessLinkJsonData(accessLink);
+                    accessLinkJsonData = GetAccessLinkJsonData(accessLinkDataDto);
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return accessLinkJsonData;
             }
         }
@@ -649,7 +653,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// </summary>
         /// <param name="lstAccessLinkDTO">accesslink as list of AccessLinkDTO</param>
         /// <returns>AccsessLink object</returns>
-        private static string GetAccessLinkJsonData(List<AccessLinkDTO> lstAccessLinkDTO)
+        private static string GetAccessLinkJsonData(List<AccessLinkDataDTO> lstAccessLinkDTO)
         {
             var geoJson = new GeoJson
             {
@@ -661,14 +665,15 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 {
                     Geometry geometry = new Geometry();
 
-                    //geometry.type = res.AccessLinkLine.SpatialTypeName;
+                    geometry.type = res.NetworkLink.LinkGeometry.SpatialTypeName;
+                    
 
-                    //var resultCoordinates = res.AccessLinkLine;
+                    var resultCoordinates = res.NetworkLink.LinkGeometry;
 
                     SqlGeometry accessLinksqlGeometry = null;
                     if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                        //  accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
+                          accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
 
                         List<List<double>> cords = new List<List<double>>();
 
@@ -682,7 +687,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     }
                     else
                     {
-                        //accessLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
+                        accessLinksqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
                         geometry.coordinates = new double[] { accessLinksqlGeometry.STX.Value, accessLinksqlGeometry.STY.Value };
                     }
 

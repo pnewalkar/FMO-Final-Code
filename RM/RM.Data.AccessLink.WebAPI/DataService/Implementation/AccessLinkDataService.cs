@@ -18,6 +18,7 @@
     using MappingConfiguration;
     using Data.AccessLink.WebAPI.Utils;
     using Data.AccessLink.WebAPI.DTO;
+    using AutoMapper;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -27,6 +28,9 @@
         private const int BNGCOORDINATESYSTEM = 27700;
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.AccessLinkAPIPriority;
+        private int entryEventId = LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId;
 
         public AccessLinkDataService(IDatabaseFactory<AccessLinkDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
@@ -44,13 +48,24 @@
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAccessLinks"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkDataService) + "." + nameof(GetAccessLinks);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<AccessLink> result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
-                var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDataDTO>(result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return accessLink;
+                var result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<AccessLink,AccessLinkDataDTO >();
+                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
+                 
+                });
+                Mapper.Configuration.CreateMapper();
+
+                var accesslink = Mapper.Map<List<AccessLink> ,List<AccessLinkDataDTO>>(result);
+
+               // var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDataDTO> (result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return accesslink;
             }
         }
 
