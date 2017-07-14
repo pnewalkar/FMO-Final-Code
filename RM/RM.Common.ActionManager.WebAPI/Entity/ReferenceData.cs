@@ -23,7 +23,7 @@ namespace RM.Common.ActionManager.WebAPI.Entity
         public string ReferenceDataName { get; private set; }
 
         [StringLength(1000)]
-        public string ReferenceDataValue { get; private set; }
+        public string ReferenceDataValue { get; set; }
 
         [StringLength(1000)]
         public string DataDescription { get; private set; }

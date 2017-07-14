@@ -48,7 +48,6 @@ function manageAccessService(
         }
 
         manageAccessAPIService.getToken(vm.userdata).then(function (response) {
-            var accessData = response;
             if (response.AccessToken) {
                 sessionStorage.clear();
                 sessionStorage.setItem("authorizationData", angular.toJson({ token: response.AccessToken, userName: response.UserName[0], unitGuid: unitGuid }));

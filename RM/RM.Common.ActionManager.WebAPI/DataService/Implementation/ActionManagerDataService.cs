@@ -73,20 +73,26 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUserUnitInfo"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                try
+                {
+                    var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
+                                                 join u in DataContext.Users on r.UserID equals u.ID
+                                                 join p in DataContext.PostalAddressIdentifiers on r.LocationID equals p.ID
+                                                 join rd in DataContext.ReferenceDatas on p.IdentifierTypeGUID equals rd.ID
+                                                 where (u.UserName == userName && r.LocationID == locationId) || u.UserName == userName
+                                                 select new UserUnitInfoDataDTO
+                                                 {
+                                                     LocationId = r.LocationID,
+                                                     UnitName = p.Name,
+                                                     UnitType = rd.ReferenceDataValue
+                                                 }).FirstOrDefaultAsync();
+                    return userUnitDetails;
+                }
+                catch (Exception e)
+                {
 
-                var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
-                                             join u in DataContext.Users on r.UserID equals u.ID
-                                             join p in DataContext.PostalAddressIdentifiers on r.LocationID equals p.ID
-                                             join rd in DataContext.ReferenceDatas on p.IdentifierTypeGUID equals rd.ID
-                                             where (u.UserName == userName && r.LocationID == locationId) || u.UserName == userName
-                                             select new UserUnitInfoDataDTO
-                                             {
-                                                 LocationId = r.LocationID,
-                                                 UnitName = p.Name,
-                                                 UnitType = rd.ReferenceDataValue
-                                             }).FirstOrDefaultAsync();
-
-                return userUnitDetails;
+                    return null;
+                }
             }
         }
 

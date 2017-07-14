@@ -56,6 +56,8 @@
 
         public const int ActionManagerDataServiceMethodEntryEventId = 8003;
         public const int ActionManagerDataServiceMethodExitEventId = 8004;
+        public const int ActionManagerBusinessServiceEntryEventId = 8013;
+        public const int ActionManagerBusinessServiceExitEventId = 8014;
         public const int UserRoleUnitDataServiceMethodEntryEventId = 8013;
         public const int UserRoleUnitDataServiceMethodExitEventId = 8014;
 

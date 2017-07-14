@@ -11,9 +11,9 @@ namespace RM.Common.ActionManager.WebAPI.Entity
     {
         public Guid ID { get; private set; }
 
-        public Guid LocationID { get; private set; }
+        public Guid LocationID { get; set; }
 
-        public Guid ReferenceDataID { get; private set; }
+        public Guid ReferenceDataID { get; set; }
 
         public DateTime RowCreateDateTime { get; private set; }
 

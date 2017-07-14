@@ -14,8 +14,8 @@ namespace RM.Common.ActionManager.WebAPI.BusinessService
         private IActionManagerDataService actionManagerDataService = default(IActionManagerDataService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private int priority = LoggerTraceConstants.ActionManagerAPIPriority;
-        private int entryEventId = LoggerTraceConstants.ActionManagerDataServiceMethodEntryEventId;
-        private int exitEventId = LoggerTraceConstants.ActionManagerDataServiceMethodExitEventId;
+        private int entryEventId = LoggerTraceConstants.ActionManagerBusinessServiceEntryEventId;
+        private int exitEventId = LoggerTraceConstants.ActionManagerBusinessServiceExitEventId;
 
         public ActionManagerBusinessService(IActionManagerDataService actionManagerDataService, ILoggingHelper loggingHelper)
         {

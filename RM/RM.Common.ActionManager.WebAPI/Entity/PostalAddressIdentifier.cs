@@ -21,7 +21,7 @@ namespace RM.Common.ActionManager.WebAPI.Entity
         public DateTime RowCreateDateTime { get; private set; }
 
         [StringLength(50)]
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         public virtual ReferenceData ReferenceData { get; private set; }
     }
