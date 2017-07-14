@@ -6,5 +6,6 @@ angular.module('mapView', [
     'layers',
     'mapPanel',
     'simulation',
-    'mapToolbar'
+    'mapToolbar',
+    'miniMap'
 ]);
