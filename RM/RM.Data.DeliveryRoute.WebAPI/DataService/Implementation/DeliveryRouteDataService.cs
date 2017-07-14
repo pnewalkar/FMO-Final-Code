@@ -34,6 +34,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
+            this.configurationHelper = configurationHelper;
         }
 
         /// <summary>
