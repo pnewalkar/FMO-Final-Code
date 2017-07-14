@@ -2,10 +2,9 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Operational.RouteLog.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.RouteLog.WebAPI.BusinessService;
 using RM.Operational.RouteLog.WebAPI.Controllers.BaseController;
 
@@ -25,9 +24,13 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
             this.routeLogBusinessService = deliveryRouteBusinessService;
             this.loggingHelper = loggingHelper;
         }
-
+        /// <summary>
+        /// Method to retrieve sequenced delivery point details
+        /// </summary>
+        /// <param name="deliveryRoute">deliveryRoute</param>
+        /// <returns>deliveryRoute</returns>
         [HttpPost("routelogs")]
-        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]RouteDTO deliveryRouteDto)
+        public async Task<IActionResult> GenerateRouteLogSummaryReport([FromBody]RouteDTO deliveryRoute)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GenerateRouteLogSummaryReport"))
             {
@@ -36,7 +39,7 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
 
                 try
                 {
-                    var pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRouteDto);
+                    var pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRoute);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(pdfFilename);
                 }

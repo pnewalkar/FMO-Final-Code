@@ -2,8 +2,8 @@
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.Operational.RouteLog.WebAPI.DTO;
+using RM.Operational.RouteLog.WebAPI.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.RouteLog.WebAPI.BusinessService;
@@ -33,7 +33,7 @@ namespace RM.Operational.RouteLog.WebAPI.Test
             mockConfigurationHelper = CreateMock<IConfigurationHelper>();
             deliveryRouteDto = new RouteDTO() { };
             loggingHelperMock = CreateMock<ILoggingHelper>();
-            RouteLogSummaryModelDTO routeLogSummaryModelDTO = new RouteLogSummaryModelDTO() { };
+            RouteLogSummaryDTO routeLogSummaryModelDTO = new RouteLogSummaryDTO() { };
 
             mockConfigurationHelper.Setup(x => x.ReadAppSettingsConfigurationValues(It.IsAny<string>())).Returns("xsltFilepath");
 

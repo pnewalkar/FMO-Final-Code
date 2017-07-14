@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.Operational.RouteLog.WebAPI.DTO.Model;
+using RM.Operational.RouteLog.WebAPI.DTO;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {
@@ -9,9 +9,9 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         /// <summary>
         /// Method to retrieve sequenced delivery point details
         /// </summary>
-        /// <param name="deliveryRouteDto">deliveryRouteDto</param>
-        /// <returns>deliveryRouteDto</returns>
-        Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto);
+        /// <param name="deliveryRoute">deliveryRoute</param>
+        /// <returns>deliveryRoute</returns>
+        Task<RouteLogSummaryDTO> GenerateRouteLog(RouteDTO deliveryRoute);
 
         /// <summary>
         /// Method to generate pdf

@@ -1,15 +1,13 @@
-﻿using System.Diagnostics;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.Operational.RouteLog.WebAPI.DTO.Model;
+using RM.Operational.RouteLog.WebAPI.DTO;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Operational.RouteLog.WebAPI.Utils;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
@@ -43,23 +41,23 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         /// <summary>
         /// Method to retrieve sequenced delivery point details
         /// </summary>
-        /// <param name="deliveryRouteDto">deliveryRouteDto</param>
-        /// <returns>deliveryRouteDto</returns>
-        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto)
+        /// <param name="deliveryRoute">deliveryRoute</param>
+        /// <returns>deliveryRoute</returns>
+        public async Task<RouteLogSummaryDTO> GenerateRouteLog(RouteDTO deliveryRoute)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GenerateRouteLog"))
             {
                 string methodName = typeof(RouteLogIntegrationService) + "." + nameof(GenerateRouteLog);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteWebAPIName + "deliveryroute/deliveryroutesummaries/", deliveryRouteDto);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteWebAPIName + "deliveryroute/deliveryroutesummaries/", deliveryRoute);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                var generateRouteLog = JsonConvert.DeserializeObject<RouteLogSummaryModelDTO>(result.Content.ReadAsStringAsync().Result);
+                var generateRouteLog = JsonConvert.DeserializeObject<RouteLogSummaryDTO>(result.Content.ReadAsStringAsync().Result);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return generateRouteLog;
             }
