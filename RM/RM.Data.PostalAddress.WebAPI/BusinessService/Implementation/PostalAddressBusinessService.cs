@@ -222,7 +222,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="objPostalAddress">pass PostalAddreesDTO</param>
         public async Task SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.SaveDeliveryPointProcess"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.SaveDeliveryPointProcess"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
@@ -395,7 +395,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>Postal Address DTO</returns>
         public PostalAddressDTO GetPostalAddressDetails(Guid id)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressDetails"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetPostalAddressDetails"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -416,7 +416,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>string</returns>
         public string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.CheckForDuplicateNybRecords"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateNybRecords"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -440,7 +440,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>bool</returns>
         public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.CheckForDuplicateAddressWithDeliveryPoints"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateAddressWithDeliveryPoints"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -458,7 +458,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>bool</returns>
         public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.CreateAddressAndDeliveryPoint"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CreateAddressAndDeliveryPoint"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -489,7 +489,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns></returns>
         public async Task<List<PostalAddressDTO>> GetPostalAddresses(List<Guid> addressGuids)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddresses"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetPostalAddresses"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -516,7 +516,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>Postal Address DTO</returns>
         public async Task<PostalAddressDTO> GetPAFAddress(int udprn)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddresses"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetPostalAddresses"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -542,7 +542,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="strFileName">FileName on PAF events to track against DB</param>
         private async Task SavePAFRecords(PostalAddressDTO objPostalAddressBatch, Guid addressTypeUSR, Guid addressTypeNYB, Guid addressTypePAF, string strFileName)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.SavePAFRecords"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.SavePAFRecords"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -692,7 +692,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>nothing</returns>
         private async Task SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress, DeliveryPointDTO deliveryPoint)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.SaveDeliveryPointProcess"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.SaveDeliveryPointProcess"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -769,7 +769,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>returns concatenated value of address field</returns>
         private string AddressFields(PostalAddressDTO objPostalAddress)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.AddressFields"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.AddressFields"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -799,7 +799,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns>returns postal address DTO</returns>
         private PostalAddressStatusDataDTO GetPostalAddressStatus(Guid postalAddressGUID, Guid operationalStatusGUID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressStatus"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetPostalAddressStatus"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -828,7 +828,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns></returns>
         private Guid GetReferenceData(List<string> categoryNamesSimpleLists, string categoryName, string referenceDataValue, bool isWithSpace = false)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetReferenceData"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -859,7 +859,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
         private Guid GetReferenceData(string categoryName, string referenceDataValue)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetReferenceData"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -881,7 +881,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns></returns>
         private PostalAddressDataDTO ConvertDTOToDataDTO(PostalAddressDTO objPostalAddress)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetReferenceData"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
@@ -908,7 +908,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <returns></returns>
         private PostalAddressDTO ConvertDataDTOToDTO(PostalAddressDataDTO postalAddressDBDTO)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetReferenceData"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.GetReferenceData"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
