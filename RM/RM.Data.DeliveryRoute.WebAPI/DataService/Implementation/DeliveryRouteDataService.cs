@@ -155,6 +155,62 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
             }
         }
 
+        /// <summary>
+        /// Get postcode details by passing postcode
+        /// </summary>
+        /// <param name="postCodeUnit">Postcode</param>
+        /// <returns></returns>
+        public async Task<PostCodeDataDTO> GetPostCode(string postCodeUnit)
+        {
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetPostCode);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCode"))
+            {
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                var postCode = await (from postcode in DataContext.Postcodes.AsNoTracking()
+                                      where postcode.PostcodeUnit == postCodeUnit
+                                      select new PostCodeDataDTO
+                                      {
+                                          PostcodeUnit = postcode.PostcodeUnit,
+                                          PrimaryRouteGUID = postcode.PrimaryRouteGUID,
+                                          SecondaryRouteGUID = postcode.SecondaryRouteGUID
+                                      }).SingleOrDefaultAsync();
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return postCode;
+            }
+        }
+
+        /// <summary>
+        /// Get route details specific to loaction
+        /// </summary>
+        /// <param name="LocationId">Location ID</param>
+        /// <returns> List of routes specific to location </returns>
+        public async Task<List<RouteDataDTO>> GetRouteDetailsSpecificToLocation(Guid LocationId)
+        {
+            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteDetailsSpecificToLocation);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteDetailsSpecificToLocation"))
+            {
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                var routeDetails = await (from scenario in DataContext.Scenarios.AsNoTracking()
+                                          join scenarioRoute in DataContext.ScenarioRoutes.AsNoTracking() on scenario.ID equals scenarioRoute.ScenarioID
+                                          join route in DataContext.Routes.AsNoTracking() on scenarioRoute.RouteID equals route.ID
+                                          where scenario.LocationID == LocationId
+                                          select new RouteDataDTO
+                                          {
+                                              ID = route.ID,
+                                              RouteName = route.RouteName,
+                                              RouteNumber = route.RouteNumber
+                                          }).ToListAsync();
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return routeDetails;
+            }
+        }
+
         #region GeneratePDF
 
         /// <summary>

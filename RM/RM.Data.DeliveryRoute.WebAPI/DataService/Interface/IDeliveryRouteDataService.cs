@@ -58,5 +58,19 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// List of route log sequenced points
         /// </returns>
         Task<List<RouteLogSequencedPointsDataDTO>> GetSequencedRouteDetails(Guid routeId);
+
+        /// <summary>
+        /// Get postcode details by passing postcode
+        /// </summary>
+        /// <param name="postCodeUnit">Postcode</param>
+        /// <returns></returns>
+        Task<PostCodeDataDTO> GetPostCode(string postCodeUnit);
+
+        /// <summary>
+        /// Get route details specific to loaction
+        /// </summary>
+        /// <param name="LocationId">Location ID</param>
+        /// <returns> List of routes specific to location </returns>
+        Task<List<RouteDataDTO>> GetRouteDetailsSpecificToLocation(Guid LocationId);
     }
 }

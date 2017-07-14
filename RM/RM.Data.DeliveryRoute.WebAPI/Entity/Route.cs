@@ -11,6 +11,8 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Route()
         {
+            Postcodes = new HashSet<Postcode>();
+            Postcodes1 = new HashSet<Postcode>();
             Route1 = new HashSet<Route>();
             RouteActivities = new HashSet<RouteActivity>();
             RouteStatus = new HashSet<RouteStatus>();
@@ -46,6 +48,12 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
         public DateTime RowCreateDateTime { get; set; }
 
         public Guid? PairedRouteID { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Postcode> Postcodes { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Postcode> Postcodes1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Route> Route1 { get; set; }

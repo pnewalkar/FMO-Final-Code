@@ -51,7 +51,15 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
         /// </summary>
         /// <param name="routeDetails">Route Details</param>
         /// <param name="userUnit">The user unit.</param>
-        /// <returns>byte[]</returns>
+        /// <returns>Route log summary</returns>
         Task<RouteLogSummaryDTO> GenerateRouteLog(RouteDTO routeDetails);
+
+        /// <summary>
+        /// Get route details specific to postcode
+        /// </summary>
+        /// <param name="postCodeUnit">Post code</param>
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>List of routes</returns>
+        Task<List<RouteDTO>> GetPostCodeSpecificRoutes(string postCodeUnit, Guid locationId);
     }
 }

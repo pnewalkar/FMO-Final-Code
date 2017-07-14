@@ -20,6 +20,8 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
 
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
 
+        public virtual DbSet<Postcode> Postcodes { get; set; }
+
         public virtual DbSet<Route> Routes { get; set; }
 
         public virtual DbSet<RouteActivity> RouteActivities { get; set; }
@@ -145,6 +147,21 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
                 .WithRequired(e => e.PostalAddress)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Postcode>()
+                .Property(e => e.PostcodeUnit)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Postcode>()
+                .Property(e => e.OutwardCode)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Postcode>()
+                .Property(e => e.InwardCode)
+                .IsFixedLength()
+                .IsUnicode(false);
+
             modelBuilder.Entity<Route>()
                 .Property(e => e.RouteName)
                 .IsFixedLength()
@@ -163,6 +180,16 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
                 .Property(e => e.RouteBarcode)
                 .IsFixedLength()
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Route>()
+                .HasMany(e => e.Postcodes)
+                .WithOptional(e => e.Route)
+                .HasForeignKey(e => e.PrimaryRouteGUID);
+
+            modelBuilder.Entity<Route>()
+                .HasMany(e => e.Postcodes1)
+                .WithOptional(e => e.Route1)
+                .HasForeignKey(e => e.SecondaryRouteGUID);
 
             modelBuilder.Entity<Route>()
                 .HasMany(e => e.Route1)

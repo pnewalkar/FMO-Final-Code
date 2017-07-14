@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.HelperMiddleware;
@@ -8,6 +9,7 @@ using RM.DataManagement.DeliveryRoute.WebAPI.DataDTO;
 using RM.DataManagement.DeliveryRoute.WebAPI.DataService;
 using RM.DataManagement.DeliveryRoute.WebAPI.DTO;
 using RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService;
+using RM.DataManagement.DeliveryRoute.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
 {
@@ -217,6 +219,55 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             else
             {
                 throw new ArgumentNullException("Route details are null", string.Format(ErrorConstants.Err_ArgumentmentNullException, "routeDetails"));
+            }
+        }
+
+        /// <summary>
+        /// Get route details specific to postcode
+        /// </summary>
+        /// <param name="postCodeUnit">Post code</param>
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>List of routes</returns>
+        public async Task<List<RouteDTO>> GetPostCodeSpecificRoutes(string postCodeUnit, Guid locationId)
+        {
+            if (locationId != Guid.Empty && !string.IsNullOrEmpty(postCodeUnit))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetPostCodeSpecificRoutes);
+                using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeSpecificRoutes"))
+                {
+                    List<RouteDTO> routes = new List<RouteDTO>();
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    var postCode = await deliveryRouteDataService.GetPostCode(postCodeUnit);
+                    var routeDetails = await deliveryRouteDataService.GetRouteDetailsSpecificToLocation(locationId);
+
+                    if (postCode == null && routeDetails != null && routeDetails.Count > 0)
+                    {
+                        routes = GenericMapper.MapList<RouteDataDTO, RouteDTO>(routeDetails);
+                    }
+                    else
+                    {
+                        foreach (var route in routeDetails)
+                        {
+                            if (route.ID == postCode.PrimaryRouteGUID)
+                            {
+                                routes.Add(new RouteDTO { ID = route.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + route.RouteName });
+                            }
+                            else if (route.ID == postCode.SecondaryRouteGUID)
+                            {
+                                routes.Add(new RouteDTO { ID = route.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + route.RouteName });
+                            }
+                        }
+                    }
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return routes.OrderBy(n => n.RouteName).ToList();
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException("postCode and Loaction Id is empty", string.Format(ErrorConstants.Err_ArgumentmentNullException, "postCodeUnit,locationId"));
             }
         }
 

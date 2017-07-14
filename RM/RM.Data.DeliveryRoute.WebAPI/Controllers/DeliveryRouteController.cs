@@ -225,5 +225,40 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// Get route details specific to postcode
+        /// </summary>
+        /// <param name="postCodeUnit">Post code</param>
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>List of routes</returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [HttpGet("deliveryroute/{postCodeunit}")]
+        public async Task<IActionResult> GetPostCodeSpecificRoutes(string postCodeunit)
+        {
+            string methodName = typeof(DeliveryRouteController) + "." + nameof(GetPostCodeSpecificRoutes);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeSpecificRoutes"))
+            {
+                try
+                {
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    var routedetails = await deliveryRouteLogBusinessService.GetPostCodeSpecificRoutes(postCodeunit, CurrentUserUnit);
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(routedetails);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (var exception in ae.InnerExceptions)
+                    {
+                        loggingHelper.Log(exception, TraceEventType.Error);
+                    }
+
+                    var realExceptions = ae.Flatten().InnerException;
+                    throw realExceptions;
+                }
+            }
+        }
     }
 }
