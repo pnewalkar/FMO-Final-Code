@@ -49,6 +49,7 @@
         public const int GetDPUsePriority = 8;
         public const int SavePAFDetailsPriority = 8;
         public const int SaveDeliveryPointProcessPriority = 8;
+        public const int TokenProviderMiddlewarePriority = 8;
 
         #endregion Priority
 
@@ -58,6 +59,9 @@
         public const int ActionManagerDataServiceMethodExitEventId = 8004;
         public const int ActionManagerBusinessServiceEntryEventId = 8013;
         public const int ActionManagerBusinessServiceExitEventId = 8014;
+        public const int TokenProviderMiddlewareEntryEventId = 8015;
+        public const int TokenProviderMiddlewareExitEventId = 8016;
+
         public const int UserRoleUnitDataServiceMethodEntryEventId = 8013;
         public const int UserRoleUnitDataServiceMethodExitEventId = 8014;
 

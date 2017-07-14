@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using RM.Common.ActionManager.WebAPI.DataDTO;
 using RM.Common.ActionManager.WebAPI.Entity;
 using RM.Common.ActionManager.WebAPI.Interfaces;
-using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 
@@ -22,6 +21,11 @@ namespace RM.Common.ActionManager.WebAPI.DataService
         private int entryEventId = LoggerTraceConstants.ActionManagerDataServiceMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.ActionManagerDataServiceMethodExitEventId;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActionManagerDataService"/> class.
+        /// </summary>
+        /// <param name="databaseFactory"> reference to the databaseFactory</param>
+        /// <param name="loggingHelper">reference to the loggingHelper</param>
         public ActionManagerDataService(IDatabaseFactory<ActionDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
@@ -71,26 +75,19 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUserUnitInfo"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                try
-                {
-                    var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
-                                                 join u in DataContext.Users on r.UserID equals u.ID
-                                                 join p in DataContext.PostalAddressIdentifiers on r.LocationID equals p.ID
-                                                 join rd in DataContext.ReferenceDatas on p.IdentifierTypeGUID equals rd.ID
-                                                 where (u.UserName == userName && r.LocationID == locationId) || u.UserName == userName
-                                                 select new UserUnitInfoDataDTO
-                                                 {
-                                                     LocationId = r.LocationID,
-                                                     UnitName = p.Name,
-                                                     UnitType = rd.ReferenceDataValue
-                                                 }).FirstOrDefaultAsync();
-                    return userUnitDetails;
-                }
-                catch (Exception e)
-                {
 
-                    return null;
-                }
+                var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
+                                             join u in DataContext.Users on r.UserID equals u.ID
+                                             join p in DataContext.PostalAddressIdentifiers on r.LocationID equals p.ID
+                                             join rd in DataContext.ReferenceDatas on p.IdentifierTypeGUID equals rd.ID
+                                             where (u.UserName == userName && r.LocationID == locationId) || u.UserName == userName
+                                             select new UserUnitInfoDataDTO
+                                             {
+                                                 LocationId = r.LocationID,
+                                                 UnitName = p.Name,
+                                                 UnitType = rd.ReferenceDataValue
+                                             }).FirstOrDefaultAsync();
+                return userUnitDetails;
             }
         }
 

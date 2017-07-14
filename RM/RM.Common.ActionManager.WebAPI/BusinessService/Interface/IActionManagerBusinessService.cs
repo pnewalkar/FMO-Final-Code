@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RM.Common.ActionManager.WebAPI.DataDTO;
+using RM.Common.ActionManager.WebAPI.DTO;
 
 namespace RM.Common.ActionManager.WebAPI.BusinessService.Interface
 {
@@ -12,7 +12,7 @@ namespace RM.Common.ActionManager.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="userUnitInfo">user unit information</param>
         /// <returns>functions available for current user</returns>
-        Task<List<RoleAccessDataDTO>> GetRoleBasedAccessFunctions(UserUnitInfoDataDTO userUnitInfo);
+        Task<List<RoleAccessDTO>> GetRoleBasedAccessFunctions(UserUnitInfoDTO userUnitInfo);
 
         /// <summary>
         /// This method fetches Unit information for which user has access
@@ -20,14 +20,6 @@ namespace RM.Common.ActionManager.WebAPI.BusinessService.Interface
         /// <param name="userName">username</param>
         /// <param name="locationId">unit id</param>
         /// <returns>unit details</returns>
-        Task<UserUnitInfoDataDTO> GetUserUnitInfo(string userName, Guid locationId);
-
-        /// <summary>
-        /// This method fetches information for units above mail center for the current user
-        /// </summary>
-        /// <param name="userName">username</param>
-        /// <param name="locationId">unit id</param>
-        /// <returns>unit details</returns>
-        Task<UserUnitInfoDataDTO> GetUserUnitInfoFromReferenceData(string userName, Guid locationId);
+        Task<UserUnitInfoDTO> GetUserUnitInfo(string userName, Guid locationId);
     }
 }
