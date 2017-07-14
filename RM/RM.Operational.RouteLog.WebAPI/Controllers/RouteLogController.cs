@@ -16,6 +16,9 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
     {
         private IRouteLogBusinessService routeLogBusinessService = default(IRouteLogBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.RouteLogAPIPriority;
+        private int entryEventId = LoggerTraceConstants.RouteLogControllerMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.RouteLogControllerMethodExitEventId;
 
         public RouteLogController(IRouteLogBusinessService deliveryRouteBusinessService, ILoggingHelper loggingHelper)
         {
@@ -28,13 +31,13 @@ namespace RM.Operational.RouteLog.WebAPI.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GenerateRouteLogSummaryReport"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(RouteLogController) + "." + nameof(GenerateRouteLogSummaryReport);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 try
                 {
                     var pdfFilename = await routeLogBusinessService.GenerateRouteLog(deliveryRouteDto);
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(pdfFilename);
                 }
                 catch (AggregateException ae)

@@ -22,6 +22,9 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         private string xsltFilepath = string.Empty;
         private IRouteLogIntegrationService routeLogIntegrationService;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.RouteLogAPIPriority;
+        private int entryEventId = LoggerTraceConstants.RouteLogBusinessServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.RouteLogBusinessServiceMethodExitEventId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
@@ -45,8 +48,8 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateRouteLog"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(RouteLogBusinessService) + "." + nameof(GenerateRouteLog);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string pdfFilename = string.Empty;
                 var routeLogSummaryModelDTO = await routeLogIntegrationService.GenerateRouteLog(deliveryRouteDto);
@@ -56,7 +59,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                     pdfFilename = await routeLogIntegrationService.GenerateRouteLogSummaryReport(RouteSummaryXMLSerialization(routeLogSummaryModelDTO), xsltFilepath);
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return pdfFilename;
             }
         }
