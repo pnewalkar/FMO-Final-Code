@@ -1,4 +1,5 @@
 ﻿using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +16,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Network Link Dto</returns>
-        List<NetworkLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
+        List<NetworkLinkDataDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
     }
 }

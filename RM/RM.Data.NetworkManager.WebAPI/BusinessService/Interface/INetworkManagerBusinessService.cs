@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DTO;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 {

@@ -7,12 +7,15 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.IntegrationService;
 using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.NetworkManager.WebAPI.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
+using System.Linq;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 {
@@ -60,7 +63,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 
         #region Public Methods
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
@@ -80,13 +82,22 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                     };
 
                 var referenceDataCategoryList = networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
-                var getNearestNamedRoad = streetNetworkDataService.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
+
+                Tuple<NetworkLinkDataDTO, SqlGeometry> getNearestNamedRoad = streetNetworkDataService.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
+                NetworkLinkDTO networkLink = new NetworkLinkDTO()
+                    {
+                        Id = getNearestNamedRoad.Item1.ID,
+                        LinkGeometry = getNearestNamedRoad.Item1.LinkGeometry,
+                        NetworkLinkType_GUID = getNearestNamedRoad.Item1.NetworkLinkTypeGUID,
+                        TOID = getNearestNamedRoad.Item1.TOID
+                    };
+                
+                Tuple<NetworkLinkDTO, SqlGeometry> nearestRoad = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, getNearestNamedRoad.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return getNearestNamedRoad;
+                return nearestRoad;
             }
         }
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
@@ -114,15 +125,23 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 
                 referenceDataCategoryList.AddRange(
                    networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
-                var getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
 
+                Tuple<NetworkLinkDataDTO, SqlGeometry> getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
+                NetworkLinkDTO networkLink = new NetworkLinkDTO()
+                {
+                    Id = getNearestSegment.Item1.ID,
+                    LinkGeometry = getNearestSegment.Item1.LinkGeometry,
+                    NetworkLinkType_GUID = getNearestSegment.Item1.NetworkLinkTypeGUID,
+                    TOID = getNearestSegment.Item1.TOID
+                };
+
+                Tuple<NetworkLinkDTO, SqlGeometry> nearestSegment = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, getNearestSegment.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return getNearestSegment;
+                return nearestSegment;
             }
         }
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the street DTO for operational object.
         /// </summary>
@@ -135,15 +154,28 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetNetworkLink);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var getNetworkLink = streetNetworkDataService.GetNetworkLink(networkLinkID);
+                NetworkLinkDataDTO getNetworkLink = streetNetworkDataService.GetNetworkLink(networkLinkID);
+                NetworkLinkDTO networkLink = new NetworkLinkDTO()
+                {
+                    Id = getNetworkLink.ID,
+                    LinkGeometry = getNetworkLink.LinkGeometry,
+                    NetworkLinkType_GUID = getNetworkLink.NetworkLinkTypeGUID,
+                    TOID = getNetworkLink.TOID,
+                    DataProvider_GUID = getNetworkLink.DataProviderGUID,
+                    StartNode_GUID = getNetworkLink.StartNodeID,
+                    EndNode_GUID = getNetworkLink.EndNodeID,
+                    LinkGradientType = getNetworkLink.LinkGradientType,
+                    LinkLength = getNetworkLink.LinkLength,
+                    LinkName = getNetworkLink.LinkName,
+                    RoadName_GUID = getNetworkLink.RoadNameGUID,
+                    StreetName_GUID = getNetworkLink.StreetNameGUID
+                };
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-                return getNetworkLink;
+                return networkLink;
             }
         }
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary> This method is used to get the road links crossing the access link </summary>
         /// <param name="boundingBoxCoordinates">bbox coordinates</param> <param
         /// name="accessLinkCoordinates">access link coordinate array</param> <returns>List<NetworkLinkDTO></returns>
@@ -154,11 +186,26 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetCrossingNetworkLinks);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var getCrossingNetworkLinks = streetNetworkDataService.GetCrossingNetworkLink(boundingBoxCoordinates, accessLinkCoordinates);
+                List<NetworkLinkDataDTO> getCrossingNetworkLinks = streetNetworkDataService.GetCrossingNetworkLink(boundingBoxCoordinates, accessLinkCoordinates);
+                List<NetworkLinkDTO> networkLinkList = getCrossingNetworkLinks.Select(x => new NetworkLinkDTO()
+                {
+                    Id = x.ID,
+                    DataProvider_GUID = x.DataProviderGUID,
+                    StartNode_GUID = x.StartNodeID,
+                    EndNode_GUID = x.EndNodeID,
+                    LinkGeometry = x.LinkGeometry,
+                    LinkGradientType = x.LinkGradientType,
+                    LinkLength = x.LinkLength,
+                    LinkName = x.LinkName,
+                    NetworkLinkType_GUID = x.NetworkLinkTypeGUID,
+                    RoadName_GUID = x.RoadNameGUID,
+                    StreetName_GUID = x.StreetNameGUID,
+                    TOID = x.TOID
+                }).ToList();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return getCrossingNetworkLinks;
+                return networkLinkList;
             }
         }
 
@@ -207,8 +254,25 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 
                     var boundingBoxCoordinates =
                         GetRoadNameCoordinatesDatabyBoundarybox(boundarybox.Split(Comma[0]));
-                    roadLinkJsonData =
-                        GetRoadLinkJsonData(roadNameDataService.GetRoadRoutes(boundingBoxCoordinates, locationID, referenceDataCategoryList));
+
+                    List<NetworkLinkDataDTO> getRoadRoutes = roadNameDataService.GetRoadRoutes(boundingBoxCoordinates, locationID, referenceDataCategoryList);
+                    List<NetworkLinkDTO> networkLinkList = getRoadRoutes.Select(x => new NetworkLinkDTO()
+                    {
+                        Id = x.ID,
+                        DataProvider_GUID = x.DataProviderGUID,
+                        StartNode_GUID = x.StartNodeID,
+                        EndNode_GUID = x.EndNodeID,
+                        LinkGeometry = x.LinkGeometry,
+                        LinkGradientType = x.LinkGradientType,
+                        LinkLength = x.LinkLength,
+                        LinkName = x.LinkName,
+                        NetworkLinkType_GUID = x.NetworkLinkTypeGUID,
+                        RoadName_GUID = x.RoadNameGUID,
+                        StreetName_GUID = x.StreetNameGUID,
+                        TOID = x.TOID
+                    }).ToList();
+
+                    roadLinkJsonData = GetRoadLinkJsonData(networkLinkList);
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -220,7 +284,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 
         #region Basic And Advanced Search Public Methods
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Fetch the street name for Basic Search.
         /// </summary>
@@ -235,10 +298,10 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var fetchStreetNamesForBasicSearch = await streetNetworkDataService.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
-
+                var streetNameDTO = GenericMapper.MapList<StreetNameDataDTO, StreetNameDTO>(fetchStreetNamesForBasicSearch);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return fetchStreetNamesForBasicSearch;
+                return streetNameDTO;
             }
         }
 
@@ -264,7 +327,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
             }
         }
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Fetch street names for advance search
         /// </summary>
@@ -279,9 +341,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var fetchStreetNamesForAdvanceSearch = await streetNetworkDataService.FetchStreetNamesForAdvanceSearch(searchText, unitGuid).ConfigureAwait(false);
+              
+                var streetNameDTO = GenericMapper.MapList<StreetNameDataDTO, StreetNameDTO>(fetchStreetNamesForAdvanceSearch);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return fetchStreetNamesForAdvanceSearch;
+                return streetNameDTO;
             }
         }
 
@@ -316,7 +380,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 
             return coordinates;
         }
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
+
         /// <summary>
         /// This method fetches geojson data for roadlink
         /// </summary>

@@ -6,11 +6,12 @@ using System.Linq;
 using System.Reflection;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.Entities;
 using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
@@ -48,8 +49,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="locationID">location unique identifier.</param>
         /// <returns>List of NetworkLinkDTO</returns>
-        /// // TODO Code to be refactored : Old DTO to be refactored to new DTO
-        public List<NetworkLinkDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public List<NetworkLinkDataDTO> GetRoadRoutes(string boundingBoxCoordinates, Guid locationID, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRoadRoutes"))
             {
@@ -57,7 +57,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<NetworkLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, locationID, referenceDataCategoryList).ToList();
-                var networkLink = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(result);
+                var networkLink = GenericMapper.MapList<NetworkLink, NetworkLinkDataDTO>(result);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return networkLink;
             }

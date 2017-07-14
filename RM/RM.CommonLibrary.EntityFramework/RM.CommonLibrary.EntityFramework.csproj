@@ -122,7 +122,6 @@
     <Compile Include="DTO\Model\DeliveryPointModelDTO.cs" />
     <Compile Include="DTO\Model\RouteLogSummaryModelDTO.cs" />
     <Compile Include="DTO\Model\UpdateDeliveryPointModelDTO.cs" />
-    <Compile Include="DTO\NetworkLinkDTO.cs" />
     <Compile Include="DTO\NetworkNodeDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\OsRoadLinkDTO.cs" />
@@ -148,7 +147,6 @@
     <Compile Include="DTO\SearchCountDTO.cs" />
     <Compile Include="DTO\SearchResultDTO.cs" />
     <Compile Include="DTO\SearchResultItemDTO.cs" />
-    <Compile Include="DTO\StreetNameDTO.cs" />
     <Compile Include="DTO\UIDropdowns\BindingEntity.cs" />
     <Compile Include="DTO\UnitLocationDTO.cs" />
     <Compile Include="Entities\AccessLink.cs" />

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.BusinessService;
+using RM.DataManagement.NetworkManager.WebAPI.DTO;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 {

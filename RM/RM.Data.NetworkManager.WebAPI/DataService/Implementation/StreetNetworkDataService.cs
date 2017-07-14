@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
@@ -18,6 +17,8 @@ using RM.DataManagement.NetworkManager.WebAPI.Entities;
 using AutoMapper;
 using Microsoft.IdentityModel.Protocols;
 using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
@@ -50,14 +51,13 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
         #region Public Methods
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Fetch street names for advance search
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="locationID">The location unique identifier.</param>
         /// <returns>StreetNames</returns>
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid locationID)
+        public async Task<List<StreetNameDataDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid locationID)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchStreetNamesForAdvanceSearch"))
             {
@@ -72,7 +72,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                         l =>
                             l.Geometry.Intersects(polygon) &&
                             (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
-                    .Select(l => new StreetNameDTO
+                    .Select(l => new StreetNameDataDTO
                     {
                         ID = l.ID,
                         StreetType = l.StreetType,
@@ -86,14 +86,13 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
             }
         }
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Fetch street name for Basic Search
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <param name="locationID">The location unique identifier.</param>
         /// <returns>The result set of street name.</returns>
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid locationID)
+        public async Task<List<StreetNameDataDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid locationID)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchStreetNamesForBasicSearch"))
             {
@@ -114,7 +113,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                                 l.Geometry.Intersects(polygon) &&
                                 (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                         .Take(takeCount)
-                        .Select(l => new StreetNameDTO
+                        .Select(l => new StreetNameDataDTO
                         {
                             ID = l.ID,
                             StreetType = l.StreetType,
@@ -171,7 +170,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
             }
         }
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
@@ -179,7 +177,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// <param name="streetName">Street name.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public Tuple<NetworkLinkDataDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNearestNamedRoad"))
             {
@@ -187,7 +185,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
-                NetworkLinkDTO networkLink = null;
+                NetworkLinkDataDTO networkLink = null;
 
                 // find the nearest named road for the provided operational object.
                 var nearestNamedRoad = DataContext.StreetNames
@@ -195,7 +193,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                                  || m.DesignatedName == streetName
                                  || m.LocalName == streetName)
                     .OrderBy(n => operationalObjectPoint.Distance(n.Geometry))
-                    .Select(l => new StreetNameDTO
+                    .Select(l => new StreetNameDataDTO
                     {
                         ID = l.ID,
                         StreetType = l.StreetType,
@@ -218,11 +216,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
                     networkLink = DataContext.NetworkLinks.AsNoTracking().Where(m => m.StreetNameGUID == nearestNamedRoad.ID)
                        .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
-                       .Select(l => new NetworkLinkDTO
+                       .Select(l => new NetworkLinkDataDTO
                        {
-                           Id = l.ID,
+                           ID = l.ID,
                            LinkGeometry = l.LinkGeometry,
-                           NetworkLinkType_GUID = l.NetworkLinkTypeGUID,
+                           NetworkLinkTypeGUID = l.NetworkLinkTypeGUID,
                            TOID = l.TOID
                        }).FirstOrDefault();
 
@@ -255,18 +253,17 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
+                return new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
             }
         }
 
-        // TODO Code to be refactored : Old DTO to be refactored to new DTO
         /// <summary>
         /// Get the nearest segment for operational object.
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public Tuple<NetworkLinkDataDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNearestSegment"))
             {
@@ -293,15 +290,15 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                                 && m.LinkGeometry.Distance(operationalObjectPoint) <= accessLinkDiffRoadMaxDistance)
                     .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
                     .AsEnumerable()
-                    .Select(l => new NetworkLinkDTO
+                    .Select(l => new NetworkLinkDataDTO
                     {
-                        Id = l.ID,
+                        ID = l.ID,
                         LinkGeometry = l.LinkGeometry,
-                        NetworkLinkType_GUID = l.NetworkLinkTypeGUID,
+                        NetworkLinkTypeGUID = l.NetworkLinkTypeGUID,
                         TOID = l.TOID
                     });
 
-                NetworkLinkDTO networkLinkRoad = null;
+                NetworkLinkDataDTO networkLinkRoad = null;
 
                 // check for nearest segment which does not cross any existing access link
                 foreach (var item in networkLinkRoads)
@@ -327,7 +324,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDTO, SqlGeometry>(networkLinkRoad, networkIntersectionPoint);
+                return new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLinkRoad, networkIntersectionPoint);
             }
         }
 
@@ -336,8 +333,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// </summary>
         /// <param name="networkLinkID">networkLink unique identifier Guid.</param>
         /// <returns>NetworkLink object.</returns>
-        /// // TODO Code to be refactored : Old DTO to be refactored to new DTO
-        public NetworkLinkDTO GetNetworkLink(Guid networkLinkID)
+        public NetworkLinkDataDTO GetNetworkLink(Guid networkLinkID)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNetworkLink"))
             {
@@ -347,11 +343,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 var networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => x.ID == networkLinkID).SingleOrDefault();
                 Mapper.Initialize(cfg =>
                 {
-                    cfg.CreateMap<NetworkLink, NetworkLinkDTO>();
+                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
                 });
 
                 Mapper.Configuration.CreateMapper();
-                var networkLinkDTO = Mapper.Map<NetworkLink, NetworkLinkDTO>(networkLink);
+                var networkLinkDTO = Mapper.Map<NetworkLink, NetworkLinkDataDTO>(networkLink);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return networkLinkDTO;
@@ -362,23 +358,22 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// <param name="boundingBoxCoordinates">bbox coordinates</param>
         /// <param name="accessLink">accesslink coordinate array</param>
         /// <returns>List<NetworkLinkDTO></returns>
-        /// // TODO Code to be refactored : Old DTO to be refactored to new DTO
-        public List<NetworkLinkDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
+        public List<NetworkLinkDataDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetCrossingNetworkLink"))
             {
                 string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetCrossingNetworkLink);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<NetworkLinkDTO> networkLinkDTOs = new List<NetworkLinkDTO>();
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+                List<NetworkLinkDataDTO> networkLinkDTOs = new List<NetworkLinkDataDTO>();
+                DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
 
                 List<NetworkLink> crossingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Crosses(accessLink)).ToList();
-                List<NetworkLinkDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(crossingNetworkLinks);
+                List<NetworkLinkDataDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDataDTO>(crossingNetworkLinks);
                 networkLinkDTOs.AddRange(crossingNetworkLinkDTOs);
 
                 List<NetworkLink> overLappingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Overlaps(accessLink)).ToList();
-                List<NetworkLinkDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(overLappingNetworkLinks);
+                List<NetworkLinkDataDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDataDTO>(overLappingNetworkLinks);
                 networkLinkDTOs.AddRange(overLappingNetworkLinkDTOs);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
