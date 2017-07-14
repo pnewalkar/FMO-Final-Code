@@ -69,7 +69,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// <param name="operationalObjectPoint">The operational object unique identifier.</param>
         /// <param name="streetName">The street name.</param>
         /// <returns>The nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName)
+        public Tuple<NetworkLinkDTO, List<SqlGeometry>> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNearestNamedRoad"))
             {
@@ -83,7 +83,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
 
                 var referenceDataCategoryList = networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
 
-                Tuple<NetworkLinkDataDTO, SqlGeometry> getNearestNamedRoad = streetNetworkDataService.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
+                Tuple<NetworkLinkDataDTO, List<SqlGeometry>> getNearestNamedRoad = streetNetworkDataService.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
                 NetworkLinkDTO networkLink = new NetworkLinkDTO()
                     {
                         Id = getNearestNamedRoad.Item1.ID,
@@ -92,7 +92,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                         TOID = getNearestNamedRoad.Item1.TOID
                     };
                 
-                Tuple<NetworkLinkDTO, SqlGeometry> nearestRoad = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, getNearestNamedRoad.Item2);
+                Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestRoad = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, getNearestNamedRoad.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return nearestRoad;
             }
@@ -103,7 +103,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint)
+        public Tuple<NetworkLinkDTO, List<SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNearestSegment"))
             {
@@ -126,7 +126,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 referenceDataCategoryList.AddRange(
                    networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
 
-                Tuple<NetworkLinkDataDTO, SqlGeometry> getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
+                Tuple<NetworkLinkDataDTO, List<SqlGeometry>> getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
                 NetworkLinkDTO networkLink = new NetworkLinkDTO()
                 {
                     Id = getNearestSegment.Item1.ID,
@@ -135,7 +135,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                     TOID = getNearestSegment.Item1.TOID
                 };
 
-                Tuple<NetworkLinkDTO, SqlGeometry> nearestSegment = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, getNearestSegment.Item2);
+                Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestSegment = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, getNearestSegment.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return nearestSegment;

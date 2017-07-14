@@ -50,11 +50,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 string methodName = typeof(NetworkManagerController) + "." + nameof(GetNearestNamedRoad);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                Tuple<NetworkLinkDTO, SqlGeometry> result;
+                Tuple<NetworkLinkDTO, List<SqlGeometry>> result;
 
                 result = networkManagerBusinessService.GetNearestNamedRoad(JsonConvert.DeserializeObject<DbGeometry>(operationalObjectPointJson, new DbGeometryConverter()), streetName);
 
-                var convertedResult = new Tuple<NetworkLinkDTO, DbGeometry>(result.Item1, result.Item2.IsNull ? null : result.Item2.ToDbGeometry());
+                var convertedResult = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(result.Item1, result.Item2);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(convertedResult);
@@ -77,11 +77,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 string methodName = typeof(NetworkManagerController) + "." + nameof(GetNearestSegment);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                Tuple<NetworkLinkDTO, SqlGeometry> result;
+                Tuple<NetworkLinkDTO, List<SqlGeometry>> result;
 
                 result = networkManagerBusinessService.GetNearestSegment(JsonConvert.DeserializeObject<DbGeometry>(operationalObjectPointJson, new DbGeometryConverter()));
 
-                var convertedResult = new Tuple<NetworkLinkDTO, DbGeometry>(result.Item1, result.Item2.IsNull ? null : result.Item2.ToDbGeometry());
+                var convertedResult = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(result.Item1, result.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(convertedResult);
             }
