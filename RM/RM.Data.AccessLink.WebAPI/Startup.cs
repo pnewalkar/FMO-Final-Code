@@ -18,6 +18,9 @@ using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Implementation;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
+using RM.DataManagement.AccessLink.WebAPI.Entities;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
 
 namespace RM.DataManagement.AccessLink.WebAPI
@@ -89,7 +92,7 @@ namespace RM.DataManagement.AccessLink.WebAPI
             });
 
             // Infrastructure
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            services.AddScoped<IDatabaseFactory<AccessLinkDBContext>, DatabaseFactory<AccessLinkDBContext>>();
             services.AddScoped<IAccessLinkDataService, AccessLinkDataService>();
             services.AddScoped<IAccessLinkBusinessService, AccessLinkBusinessService>();
             services.AddScoped<IAccessLinkIntegrationService, AccessLinkIntegrationService>();

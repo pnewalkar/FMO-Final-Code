@@ -21,5 +21,7 @@ namespace RM.Data.AccessLink.WebAPI.Utils
         internal const string OpenSquareBracket = "[";
         internal const string CloseSquareBracket = "]";
         internal const string Space = " ";
+        internal const string AccessLinkDataProviderGUID = "Access Link Intersection Node";
+        internal const string Internal = "Internal";
     }
 }
