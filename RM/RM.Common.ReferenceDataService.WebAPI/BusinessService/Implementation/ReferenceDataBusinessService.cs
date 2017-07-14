@@ -94,6 +94,11 @@
             }
         }
 
+        /// <summary>
+        /// Gets reference data using Guid Id
+        /// </summary>
+        /// <param name="id">Guid Id</param>
+        /// <returns></returns>
         public NameValuePair GetReferenceDataByNameValuePairs(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetReferenceDataByNameValuePairs"))
@@ -147,6 +152,11 @@
             }
         }
 
+        /// <summary>
+        /// Gets reference data as simple list using Guid Id
+        /// </summary>
+        /// <param name="id">Guid Id</param>
+        /// <returns></returns>
         public SimpleListDTO GetSimpleListsReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetSimpleListsReferenceData"))

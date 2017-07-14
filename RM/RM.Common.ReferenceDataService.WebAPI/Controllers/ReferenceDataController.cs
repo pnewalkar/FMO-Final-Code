@@ -76,7 +76,12 @@
             }
         }
 
-        [HttpGet("nameValuePair")]
+        /// <summary>
+        /// retrieval of name-value pairs using GUID id as a discrete type of reference data addressed via the URI
+        /// </summary>
+        /// <param name="id">Guid Id</param>
+        /// <returns></returns>
+        [HttpGet("nameValuePair/{id}")]
         public IActionResult GetNameValueReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNameValueReferenceDataByGuid"))
@@ -163,7 +168,12 @@
             }
         }
 
-        [HttpGet("simpleLists")]
+        /// <summary>
+        /// retrieval of simple lists using Guid Id as a discrete type of reference data addressed via the URI path /simpleLists/{id}
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("simpleLists/{id}")]
         public IActionResult GetSimpleListsReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetSimpleListsReferenceData"))

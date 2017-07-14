@@ -84,6 +84,11 @@
             }
         }
 
+        /// <summary>
+        /// Gets all reference data for category type nameValuePair using Guid Id
+        /// </summary>
+        /// <param name="id">Guid Id</param>
+        /// <returns></returns>
         public NameValuePair GetNameValueReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNameValueReferenceData"))
@@ -206,6 +211,11 @@
             }
         }
 
+        /// <summary>
+        /// Gets all reference data for category type SimpleList using Guid Id.
+        /// </summary>
+        /// <param name="id">Guid Id</param>
+        /// <returns></returns>
         public SimpleListDTO GetSimpleListReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetSimpleListReferenceData"))
