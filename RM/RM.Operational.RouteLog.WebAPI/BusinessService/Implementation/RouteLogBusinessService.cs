@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml;
-using Fonet;
+﻿using Fonet;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.Enums;
+using RM.Operational.RouteLog.WebAPI.DTO;
+using RM.Operational.RouteLog.WebAPI.DTO.Model;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
 using RM.Operational.RouteLog.WebAPI.Utils;
-using RM.Operational.RouteLog.WebAPI.DTO.Model;
-using RM.Operational.RouteLog.WebAPI.DTO;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
@@ -224,7 +224,6 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             doc.AppendChild(report);
             return doc.InnerXml;
         }
-
 
         /// <summary>
         /// This method is used to get section column data

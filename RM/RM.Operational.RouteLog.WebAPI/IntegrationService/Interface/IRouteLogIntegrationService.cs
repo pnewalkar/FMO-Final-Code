@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using RM.Operational.RouteLog.WebAPI.DTO;
 using RM.Operational.RouteLog.WebAPI.DTO.Model;
-using RM.Operational.RouteLog.WebAPI.DTO;
+using System.Threading.Tasks;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RM.Operational.RouteLog.WebAPI.DTO
+﻿namespace RM.Operational.RouteLog.WebAPI.DTO
 {
     public class RouteLogSequencedPointsDTO
     {
-
         public RouteLogSequencedPointsDTO(string streetName, string description, int deliveryPointCount, int? multipleOccupancy, string subbuildingname, string buildingname)
         {
             StreetName = streetName;

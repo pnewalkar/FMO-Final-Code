@@ -1,14 +1,14 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.Operational.RouteLog.WebAPI.DTO.Model;
-using RM.Operational.RouteLog.WebAPI.DTO;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Operational.RouteLog.WebAPI.DTO;
+using RM.Operational.RouteLog.WebAPI.DTO.Model;
 using RM.Operational.RouteLog.WebAPI.Utils;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {
