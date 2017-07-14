@@ -1,4 +1,4 @@
-namespace RM.Data.DeliveryPoint.WebAPI.DTO
+namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 {
     using System;
 
@@ -13,8 +13,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
         public DateTime RowCreateDateTime { get; set; }
 
         public Guid? DataProviderGUID { get; set; }
-
-        public DeliveryPointDataDTO DeliveryPoint { get; set; }
 
         public LocationDataDTO Location { get; set; }
     }

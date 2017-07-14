@@ -38,7 +38,7 @@ namespace RM.CommonLibrary.HttpHandler
             }
 
             tokenGenerationURl = ConfigurationManager.AppSettings[FMOTokenGenerationUrl].ToString();
-            userName = ConfigurationManager.AppSettings[FMOWebAPIUser].ToString();
+            userName = ConfigurationManager.AppSettings[FMOWebAPIUser]!=null? ConfigurationManager.AppSettings[FMOWebAPIUser].ToString():string.Empty;
             serilaize = new JavaScriptSerializer();
         }
 

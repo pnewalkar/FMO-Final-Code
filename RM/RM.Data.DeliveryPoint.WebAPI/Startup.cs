@@ -111,7 +111,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI
 
             app.UseCors("AllowCors");
 
-            ConfigureAuth(app);
+            //TODO:Commented till action manger not present
+           // ConfigureAuth(app);
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();

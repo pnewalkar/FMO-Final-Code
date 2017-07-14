@@ -1,4 +1,4 @@
-namespace RM.Data.DeliveryPoint.WebAPI.DTO
+namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 {
     using System;
     using System.Collections.Generic;

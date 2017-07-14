@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
-using RM.Data.DeliveryPoint.WebAPI.DTO;
+using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Data.DeliveryPoint.WebAPI.DataDTO;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 {
@@ -35,7 +36,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDataDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// This method is used to fetch Delivery Points as per basic search.
@@ -43,7 +44,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDataDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Gets the delivery points count.
@@ -73,7 +74,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <returns>DeliveryPointDTO object</returns>
-        AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn);
+        RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn);
 
         /// <summary>
         /// Get the delivery points by the Postal Address Guid

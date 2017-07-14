@@ -40,8 +40,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid</param>
-        /// <returns>Task</returns>
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid userUnit);
+        /// <returns>Task List of Delivery Point Dto</returns>
+        Task<List<DeliveryPointDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid userUnit);
 
         /// <summary>
         /// Get the count of delivery point
@@ -57,7 +57,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Create delivery point for PAF and NYB records.

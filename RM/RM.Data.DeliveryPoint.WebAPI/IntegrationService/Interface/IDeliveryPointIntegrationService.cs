@@ -53,16 +53,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <param name="deliveryPointId">deliveryPointId</param>
         /// <returns>bool</returns>
         Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
-
-        /// <summary>
-        /// Method to get postal address data
-        /// </summary>
-        /// <param name="addressGuids">addressGuids</param>
-        /// <returns>Task<List<PostalAddressDBDTO>></returns>
-        Task<List<PostalAddressDTO>> GetPostalAddress(List<Guid> addressGuids);
-
+        
         Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
 
-        Task<CommonLibrary.EntityFramework.DTO.UnitLocationDTO> GetUnitLocationDetails(Guid unitGuid);
+        /// <summary>
+        /// This method is used to get route for delivery point.
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as input</param>
+        /// <returns>string</returns>
+        Task<string> GetRouteForDeliveryPoint(Guid deliveryPointId);
     }
 }

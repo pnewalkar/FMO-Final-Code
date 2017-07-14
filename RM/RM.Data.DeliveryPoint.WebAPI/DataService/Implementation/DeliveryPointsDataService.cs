@@ -11,9 +11,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using System.Reflection;
     using System.Threading.Tasks;
     using AutoMapper;
+    using CommonLibrary.EntityFramework.DTO;
     using CommonLibrary.LoggingMiddleware;
     using CommonLibrary.Utilities.HelperMiddleware;
-    using Data.DeliveryPoint.WebAPI.DTO;
+    using Data.DeliveryPoint.WebAPI.DataDTO;
     using RM.CommonLibrary.ExceptionMiddleware;
     using RM.CommonLibrary.HelperMiddleware;
     using RM.Data.DeliveryPoint.WebAPI.Entities;
@@ -100,7 +101,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                         deliveryPointStatus.ID = Guid.NewGuid();
                         deliveryPointStatus.LocationID = objDeliveryPoint.ID;
-                        deliveryPointStatus.DeliveryPointStatusGUID = objDeliveryPoint.DeliveryPointStatus.First().OperationalStatusGUID;
+                        deliveryPointStatus.DeliveryPointStatusGUID = objDeliveryPoint.DeliveryPointStatus.First().DeliveryPointStatusGUID;
                         deliveryPointStatus.RowCreateDateTime = DateTime.UtcNow;
                         deliveryPointStatus.StartDateTime = DateTime.UtcNow;
                         deliveryPoint.DeliveryPointStatus.Add(deliveryPointStatus);
@@ -138,15 +139,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         public async Task<bool> UpdatePAFIndicator(Guid addressGuid, Guid pafIndicator)
         {
             bool isDeliveryPointUpdated = false;
-            List<DeliveryPoint> deliveryPoints = new List<DeliveryPoint>();
+           DeliveryPoint deliveryPoint = new DeliveryPoint();
             using (loggingHelper.RMTraceManager.StartTrace("Data.UpdatePAFIndicator"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 try
                 {
-                    deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.PostalAddressID == addressGuid).ToList();
-                    deliveryPoints.ForEach(dp => dp.DeliveryPointUseIndicatorGUID = pafIndicator);
+                    deliveryPoint = DataContext.DeliveryPoints.Single(dp => dp.PostalAddressID == addressGuid);
+                    deliveryPoint.DeliveryPointUseIndicatorGUID = pafIndicator;
                     await DataContext.SaveChangesAsync();
                     isDeliveryPointUpdated = true;
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId, LoggerTraceConstants.Title);
@@ -154,7 +155,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 catch (Exception dbUpdateException)
                 {
                     isDeliveryPointUpdated = false;
-                    DataContext.Entry(deliveryPoints).State = EntityState.Unchanged;
+                    DataContext.Entry(deliveryPoint).State = EntityState.Unchanged;
                     loggingHelper.Log(dbUpdateException, TraceEventType.Error);
                     throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for addressId:", addressGuid)));
                 }
@@ -170,7 +171,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        public async Task<List<DeliveryPointDataDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid)
         {
             DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();
 
@@ -207,7 +208,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <param name="searchText">The text to be searched</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>The result set of delivery point.</returns>
-        public async Task<List<DeliveryPointDataDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid unitGuid)
+        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid unitGuid)
         {
             if (string.IsNullOrWhiteSpace(searchText) || Guid.Empty.Equals(unitGuid))
             {
@@ -507,9 +508,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// </summary>
         /// <param name="udprn">udprn as int</param>
         /// <returns>addDeliveryPointDto</returns>
-        public AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
+        public RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
         {
-            AddDeliveryPointDTO addDeliveryPointDto = default(AddDeliveryPointDTO);
+            RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO addDeliveryPointDto = default(RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO);
             //var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
             //                      join pa in DataContext.PostalAddresses.AsNoTracking() on dp.PostalAddressID equals pa.ID
             //                      join al in DataContext.NetworkNodes.AsNoTracking() on pa.UDPRN equals al.UDPRN
@@ -556,9 +557,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                cfg.CreateMap<Location, LocationDataDTO>();
                 cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
+                cfg.CreateMap<Location, LocationDataDTO>();
                 cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>();
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>();
             });
 
             Mapper.Configuration.CreateMapper();
@@ -584,8 +587,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                cfg.CreateMap<Location, LocationDataDTO>();
                 cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
+                cfg.CreateMap<Location, LocationDataDTO>();
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>();
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>();
             });
 
             Mapper.Configuration.CreateMapper();
@@ -675,9 +681,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                cfg.CreateMap<Location, LocationDataDTO>();
                 cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
+                cfg.CreateMap<Location, LocationDataDTO>();
                 cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>();
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>();
             });
 
             Mapper.Configuration.CreateMapper();
@@ -695,9 +703,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                cfg.CreateMap<Location, LocationDataDTO>();
                 cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
+                cfg.CreateMap<Location, LocationDataDTO>();
                 cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>();
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>();
             });
 
             Mapper.Configuration.CreateMapper();
@@ -730,11 +740,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 DbGeometry polygon = default(DbGeometry);
                 if (!string.IsNullOrEmpty(boundingBoxCoordinates))
-                {
-                    using (CommonLibrary.EntityFramework.Entities.RMDBContext rmDbContext = new CommonLibrary.EntityFramework.Entities.RMDBContext())
-                    {
-                        polygon = rmDbContext.UnitLocations.Where(u => u.ID == unitGuid).Select(x => x.UnitBoundryPolygon).SingleOrDefault();
-                    }
+                {                   
+                    polygon = DataContext.Locations.Where(u => u.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();                 
 
                     DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
 
@@ -749,6 +756,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
                         cfg.CreateMap<Location, LocationDataDTO>();
                         cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
+                        cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>();
+                        cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>();
                     });
 
                     Mapper.Configuration.CreateMapper();

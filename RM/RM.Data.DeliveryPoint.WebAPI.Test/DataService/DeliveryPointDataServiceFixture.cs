@@ -7,7 +7,7 @@ using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.Data.DeliveryPoint.WebAPI.DTO;
+using RM.Data.DeliveryPoint.WebAPI.DataDTO;
 using RM.Data.DeliveryPoint.WebAPI.Entities;
 using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
 

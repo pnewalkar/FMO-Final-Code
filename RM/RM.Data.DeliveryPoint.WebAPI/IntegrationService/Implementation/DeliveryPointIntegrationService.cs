@@ -212,31 +212,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             }
         }
 
-
-        /// <summary>
-        /// Method to get postal address data
-        /// </summary>
-        /// <param name="addressGuids">addressGuids</param>
-        /// <returns>Task<List<PostalAddressDBDTO>></returns>
-        public async Task<List<PostalAddressDTO>> GetPostalAddress(List<Guid> addressGuids)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostalAddress"))
-            {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/postaladdresses/", addressGuids);
-                if (!result.IsSuccessStatusCode)
-                {
-                    var responseContent = result.ReasonPhrase;
-                    throw new ServiceException(responseContent);
-                }
-
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return JsonConvert.DeserializeObject<List<PostalAddressDTO>>(result.Content.ReadAsStringAsync().Result);
-            }
-        }
-
-
         public async Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
         {
             List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
@@ -255,22 +230,31 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             return listReferenceCategories;
         }
 
-        public async Task<CommonLibrary.EntityFramework.DTO.UnitLocationDTO> GetUnitLocationDetails(Guid unitGuid)
+        /// <summary>
+        /// This method is used to get route for delivery point.
+        /// </summary>
+        /// <param name="deliveryPointId">deliveryPointId as input</param>
+        /// <returns>string</returns>
+        public async Task<string> GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
-            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocationDTO = new CommonLibrary.EntityFramework.DTO.UnitLocationDTO();
-
-            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "unit/info/" + unitGuid);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetRouteForDeliveryPoint"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(blockSequenceWebAPIName + "deliveryroute/route/deliverypoint", deliveryPointId);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                var route = result.Content.ReadAsStringAsync().Result;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                return route;
             }
-
-            CommonLibrary.EntityFramework.DTO.UnitLocationDTO unitLocation = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>(result.Content.ReadAsStringAsync().Result);
-
-            return unitLocation;
         }
+
         #endregion public methods
     }
 }

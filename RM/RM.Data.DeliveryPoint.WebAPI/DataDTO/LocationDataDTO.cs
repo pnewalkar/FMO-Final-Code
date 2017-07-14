@@ -1,4 +1,4 @@
-namespace RM.Data.DeliveryPoint.WebAPI.DTO
+namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 {
     using System;
     using System.Data.Entity.Spatial;
@@ -11,8 +11,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
 
         public DbGeometry Shape { get; set; }
 
-        public DateTime RowCreateDateTime { get; set; }
-
-        public NetworkNodeDataDTO NetworkNode { get; set; }
+        public DateTime RowCreateDateTime { get; set; }      
     }
 }

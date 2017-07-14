@@ -1,13 +1,11 @@
-namespace RM.Data.DeliveryPoint.WebAPI.DTO
+namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 {
     using System;
-    using System.ComponentModel.DataAnnotations;
 
     public class SupportingDeliveryPointDataDTO
     {
         public Guid ID { get; set; }
 
-        [StringLength(50)]
         public string GroupName { get; set; }
 
         public byte? NumberOfFloors { get; set; }
