@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
@@ -115,5 +116,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         Task<List<Guid>> GetSelectedPostcode(string selectedItem);*/
 
         Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
+
+        /// <summary>
+        /// Deriving approximate location for deliverypoint
+        /// </summary>
+        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
+        /// <returns></returns>
+        Task<DbGeometry> GetLocation(string postCode);
     }
 }

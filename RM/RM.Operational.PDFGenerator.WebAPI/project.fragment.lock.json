@@ -16,13 +16,6 @@
         "../packages/Microsoft.SqlServer.Types.14.0.314.76/lib/net40/Microsoft.SqlServer.Types.dll": {},
         "../packages/Newtonsoft.Json.10.0.2/lib/net45/Newtonsoft.Json.dll": {},
         "bin/Debug/RM.CommonLibrary.EntityFramework.dll": {}
-      },
-      "contentFiles": {
-        "bin/Debug/RM.CommonLibrary.EntityFramework.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        }
       }
     },
     "RM.CommonLibrary/1.0.0": {
@@ -55,11 +48,6 @@
         "bin/Debug/RM.CommonLibrary.dll": {}
       },
       "contentFiles": {
-        "bin/Debug/RM.CommonLibrary.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        },
         "bin/Debug/sqlservertypes/x64/msvcr120.dll": {
           "buildAction": "Content",
           "codeLanguage": "any",

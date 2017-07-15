@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
@@ -26,6 +27,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <returns>returns true or false</returns>
         Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress);
 
+
+        // TODO : To be moved to Unit Manager
+        /*
         /// <summary>
         /// Filter PostalAddress based on the search text
         /// </summary>
@@ -40,7 +44,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postal Address</returns>
-        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
+        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);*/
 
         /// <summary>
         /// Get Postal Address based on postal address id.
@@ -80,5 +84,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         Task<List<PostalAddressDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
+
+        /// <summary>
+        /// Deriving approximate location for deliverypoint
+        /// </summary>
+        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
+        /// <returns></returns>
+        Task<DbGeometry> GetLocation(string postCode);
     }
 }

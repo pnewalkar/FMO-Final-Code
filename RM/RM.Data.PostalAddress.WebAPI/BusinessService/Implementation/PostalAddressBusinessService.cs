@@ -20,13 +20,14 @@ using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using AutoMapper;
 using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
+using System.Data.Entity.Spatial;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 {
     /// <summary>
     /// Business service to handle CRUD operations on Postal Address entites
     /// </summary>
-    public class PostalAddressBusinessService //: IPostalAddressBusinessService
+    public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
         private const string TASKPAFACTION = "Position new DP";
         private const string DeliveryPointUseIndicatorPAF = "Organisation";
@@ -252,18 +253,19 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                 if (objAddressLocation == null)
                 {
-                    /* Poc do not create dp if adddress location does not exist
+                    // deriving an approximate Location for the Delivery Point
+                    DbGeometry approxLocation = await addressDataService.GetLocation(objPostalAddress.Postcode);
+
                     var newDeliveryPoint = new DeliveryPointDTO
                     {
                         ID = Guid.NewGuid(),
                         Address_GUID = objPostalAddress.ID,
-                        UDPRN = objPostalAddress.UDPRN,
                         DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
-
-                        OperationalStatus_GUID = OperationalStatusGUIDLive,
-                        NetworkNodeType_GUID = NetworkNodeTypeRMGServiceNode
+                        LocationXY = approxLocation,
+                        OperationalStatus_GUID = operationalStatusGUIDLive,
+                        NetworkNodeType_GUID = networkNodeTypeRMGServiceNode
                     };
-                    await postalAddressIntegrationService.InsertDeliveryPoint(newDeliveryPoint);*/
+                    await postalAddressIntegrationService.InsertDeliveryPoint(newDeliveryPoint);
 
                     // Create task
                     var objTask = new NotificationDTO
@@ -288,7 +290,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     {
                         ID = Guid.NewGuid(),
                         Address_GUID = objPostalAddress.ID,
-                        // UDPRN = objAddressLocation.UDPRN,
                         LocationXY = objAddressLocation.LocationXY,
                         Latitude = objAddressLocation.Lattitude,
                         Longitude = objAddressLocation.Longitude,
@@ -526,6 +527,17 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return await addressDataService.GetPAFAddress(udprn, addressTypePAF);
             }
+        }
+
+        /// <summary>
+        /// Deriving approximate location for deliverypoint
+        /// </summary>
+        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
+        /// <returns></returns>
+        public async Task<DbGeometry> GetLocation(string postCode)
+        {
+            DbGeometry location = null;
+            return location;
         }
 
         #endregion public methods

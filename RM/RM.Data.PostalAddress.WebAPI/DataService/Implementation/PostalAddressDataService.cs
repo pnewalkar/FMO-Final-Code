@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Spatial;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
@@ -727,6 +728,25 @@
                 };
                 fileProcessingLog.LogFileException(objFileProcessingLog);
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId);
+            }
+        }
+
+        /// <summary>
+        /// Deriving approximate location for deliverypoint
+        /// </summary>
+        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
+        /// <returns></returns>
+        public async Task<DbGeometry> GetLocation(string postCode)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetLocation"))
+            {
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId);
+
+                DbGeometry locationXY = await DataContext.Locations.AsNoTracking().Select(n => n.Shape).FirstOrDefaultAsync();
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId);
+                return locationXY;
             }
         }
 
