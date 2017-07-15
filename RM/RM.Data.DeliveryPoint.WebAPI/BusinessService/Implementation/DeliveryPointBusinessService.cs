@@ -13,7 +13,9 @@
     using Microsoft.SqlServer.Types;
     using Newtonsoft.Json.Linq;
     using RM.CommonLibrary.ConfigurationMiddleware;
-    using RM.CommonLibrary.EntityFramework.DTO.Model;
+
+    // using RM.CommonLibrary.EntityFramework.DTO.Model;
+    using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
     using RM.CommonLibrary.HelperMiddleware;
     using RM.CommonLibrary.LoggingMiddleware;
     using RM.Data.DeliveryPoint.WebAPI.DTO;

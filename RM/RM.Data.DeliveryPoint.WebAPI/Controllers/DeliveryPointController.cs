@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
+using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers

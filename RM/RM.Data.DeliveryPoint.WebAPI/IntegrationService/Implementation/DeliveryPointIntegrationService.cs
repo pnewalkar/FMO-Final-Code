@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -6,21 +7,15 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
-
-//using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
+using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
-using RM.Data.DeliveryPoint.WebAPI.DTO;
-using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-
-using System.Diagnostics;
-
-using System.Collections.Generic;
+using RM.Data.DeliveryPoint.WebAPI.DTO;
+using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration

@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DataDTO;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
+using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
 using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
 using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
@@ -30,7 +30,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         private AddDeliveryPointDTO addDeliveryPointDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
         private List<PostalAddressDTO> postalAddressesDTO;
-        private CommonLibrary.EntityFramework.DTO.Model.DeliveryPointModelDTO deliveryPointModelDTO;
+        private DeliveryPointModelDTO deliveryPointModelDTO;
         private DeliveryPointDTO deliveryPointDTO;
 
         //[Test]
@@ -393,7 +393,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                 DeliveryPointDTO = deliveryPointDTO
             };
 
-            deliveryPointModelDTO = new CommonLibrary.EntityFramework.DTO.Model.DeliveryPointModelDTO()
+            deliveryPointModelDTO = new DeliveryPointModelDTO()
             {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                 XCoordinate = 12,
@@ -416,7 +416,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointsDataService.Setup(x => x.UpdatePAFIndicator(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
 
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).Returns(Task.FromResult("ABC"));
-            mockDeliveryPointIntegrationService.Setup(x => x.CreateBlockSequenceForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            //   mockDeliveryPointIntegrationService.Setup(x => x.CreateBlockSequenceForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             mockDeliveryPointIntegrationService.Setup(x => x.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).Returns(Guid.NewGuid());
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).ReturnsAsync(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAccessLink(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);

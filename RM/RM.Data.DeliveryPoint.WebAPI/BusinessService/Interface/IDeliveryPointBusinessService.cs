@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
-//using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
