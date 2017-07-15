@@ -12,7 +12,7 @@ using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 namespace RM.DataManagement.AccessLink.WebAPI.Controllers
 {
     [Route("api/AccessLinkManager")]
-    public class AccessLinkController : Controller // RMBaseController
+    public class AccessLinkController : RMBaseController
     {
         #region Member Variables
 
