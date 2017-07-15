@@ -185,7 +185,7 @@
         }
 
         /// <summary>
-        /// This Method is used to Access Link data for defined coordinates. ------Refactored this method 13-07-2017.
+        /// This Method is used to Access Link data for defined coordinates.
         /// </summary>
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>

@@ -12,7 +12,7 @@ using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 namespace RM.DataManagement.AccessLink.WebAPI.Controllers
 {
     [Route("api/AccessLinkManager")]
-    public class AccessLinkController : Controller// RMBaseController
+    public class AccessLinkController :  RMBaseController
     {
         #region Member Variables
 
@@ -102,7 +102,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// This method is used to fetch Access Link.  ---Refactored this method.
+        /// This method is used to fetch Access Link.
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
         /// <returns>GeoJson string of Access link data</returns>
@@ -115,7 +115,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
                 string methodName = typeof(AccessLinkController) + "." + nameof(GetAccessLinks);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"));
+                string accessLink = accessLinkBusinessService.GetAccessLinks(bbox,CurrentUserUnit);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(accessLink);
