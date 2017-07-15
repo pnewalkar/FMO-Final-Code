@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RM.Data.AccessLink.WebAPI.DTO
+namespace RM.Data.AccessLink.WebAPI.DataDTOs
 {
     public class DeliveryPointDataDTO
     {

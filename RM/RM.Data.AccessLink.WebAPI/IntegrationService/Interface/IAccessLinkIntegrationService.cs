@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.AccessLink.WebAPI.DTOs;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {

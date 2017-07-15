@@ -7,17 +7,15 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.AccessLink.WebAPI.Utils;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
-using RM.DataManagement.AccessLink.WebAPI.DTO;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
-using RM.Data.AccessLink.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.DataManagement.AccessLink.WebAPI.DTOs;
+using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
 
 namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 {
@@ -69,10 +67,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>double</returns>
         public double CalculateWorkloadLength(DeliveryPointDTO pointDto, double actualLength, NetworkLinkDTO networkObject, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
+            // TODO
             using (loggingHelper.RMTraceManager.StartTrace("Business.CalculateWorkloadLength"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkBusinessService) + "." + nameof(CalculateWorkloadLength);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 double workloadLengthMeter = 0;
                 double roadWidth = 0;
@@ -168,7 +167,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     workloadLengthMeter = 1;
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return workloadLengthMeter;
             }
         }
@@ -181,10 +180,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CreateAccessLink(Guid operationalObjectId, Guid operationObjectTypeId)
         {
+            // TODO
             using (loggingHelper.RMTraceManager.StartTrace("Business.CreateAutomaticAccessLink"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkBusinessService) + "." + nameof(CreateAccessLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 bool isAccessLinkCreated = false;
 
@@ -358,7 +358,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     }
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return isAccessLinkCreated;
             }
         }
@@ -372,10 +372,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
+            // TODO
             using (loggingHelper.RMTraceManager.StartTrace("Business.CreateManualAccessLink"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkBusinessService) + "." + nameof(CreateAccessLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 bool isAccessLinkCreated = false;
 
@@ -465,7 +466,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     }
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return isAccessLinkCreated;
             }
         }
@@ -503,10 +504,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>returns calculated path length as <double>.</true></returns>
         public decimal GetAdjPathLength(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
+            // TODO
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetAdjPathLength"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkBusinessService) + "." + nameof(GetAdjPathLength);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string accessLinkLineManual = ObjectParser.GetGeometry(accessLinkManualDto.AccessLinkLine, AccessLinkConstants.LinestringObject);
                 string operationalObjectPointManual = ObjectParser.GetGeometry(accessLinkManualDto.OperationalObjectPoint, AccessLinkConstants.PointObject);
@@ -581,7 +583,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     accessLinkDto.WorkloadLengthMeter = Convert.ToDecimal(CalculateWorkloadLength(deliveryPointDto, (double)accessLinkDto.ActualLengthMeter, networkObject, referenceDataCategoryList));
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return accessLinkDto.WorkloadLengthMeter;
             }
         }
@@ -594,10 +596,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CheckManualAccessLinkIsValid(string boundingBoxCoordinates, string accessLinkCoordinates)
         {
+            // TODO
             using (loggingHelper.RMTraceManager.StartTrace("Business.CheckManualAccessLinkIsValid"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string parsedAccessLink = ObjectParser.GetGeometry(accessLinkCoordinates, AccessLinkConstants.LinestringObject);
 
@@ -609,12 +612,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 if (accessLinkDTOs.Count > 0 || networkLinkDTOs.Count > 0 || deliveryPointDTOs.Count > 0)
                 {
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return false;
                 }
                 else
                 {
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkBusinessMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return true;
                 }
             }

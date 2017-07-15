@@ -1,11 +1,11 @@
-﻿using RM.Data.AccessLink.WebAPI.DTO;
+﻿using RM.Data.AccessLink.WebAPI.DataDTOs;
 using RM.DataManagement.AccessLink.WebAPI.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RM.DataManagement.AccessLink.WebAPI.DTO
+namespace RM.DataManagement.AccessLink.WebAPI.DataDTOs
 {
     public class AccessLinkDataDTO
     {

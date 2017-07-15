@@ -1,9 +1,9 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using RM.DataManagement.AccessLink.WebAPI.DTO;
-using RM.Data.AccessLink.WebAPI.DTO;
+using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
+using RM.DataManagement.AccessLink.WebAPI.DTOs;
 
 namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
 {

@@ -4,16 +4,14 @@ using System.Data.Entity.Spatial;
 using Microsoft.SqlServer.Types;
 using Moq;
 using NUnit.Framework;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
-using RM.DataManagement.AccessLink.WebAPI.DTO;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
+using RM.DataManagement.AccessLink.WebAPI.DTOs;
+using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
 
 namespace RM.Data.AccessLink.WebAPI.Test
 {
@@ -64,7 +62,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
                 Longitude = (decimal)-0.40071150,
                 Positioned = true,
                 UDPRN = 2364534,
-                PostalAddress = new PostalAddressDTO
+                PostalAddress = new RM.CommonLibrary.EntityFramework.DTO.PostalAddressDTO
                 {
                     Thoroughfare = "Salvington Gardens"
                 },
@@ -231,7 +229,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
-            mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDTO>>);
+            mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDataDTO>>);
             mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<AccessLinkDTO>() { });
 
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(new List<ReferenceDataCategoryDTO>() { });
