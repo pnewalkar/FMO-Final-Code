@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace RM.DataManagement.UnitManager.WebAPI.DTO
+namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
 {
-    public class ScenarioDTO
-    {     
+    public class ScenarioDataDTO
+    {
         public string ScenarioName { get; set; }
 
         public Guid ID { get; set; }

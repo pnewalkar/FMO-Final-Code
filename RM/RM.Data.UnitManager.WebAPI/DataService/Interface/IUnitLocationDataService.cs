@@ -1,4 +1,4 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
+﻿using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,10 +11,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// Gets the all delivery units for an user.
         /// </summary>
         /// <param name="userId">The user unique identifier.</param>
+        /// <param name="postcodeAreaGUID">The post code area unique identifier.</param>
         /// <returns>
-        /// The list of <see cref="UnitLocationDTO"/>.
+        /// The list of <see cref="UnitLocationDataDTO"/>.
         /// </returns>
-        List<UnitLocationDTO> GetDeliveryUnitsForUser(Guid userId);
+        List<UnitLocationDataDTO> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID);
 
         /// <summary>
         /// Gets postcodes details by postcodeGuids
@@ -22,6 +23,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="postcodeGuids"></param>
         /// <param name="postcodeSectorGUID"></param>
         /// <returns></returns>
-        Task<List<PostCodeDTO>> GetPostCodeDetails(List<Guid> postcodeGuids, Guid postcodeSectorGUID);
+        Task<List<PostCodeDataDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID);
     }
 }

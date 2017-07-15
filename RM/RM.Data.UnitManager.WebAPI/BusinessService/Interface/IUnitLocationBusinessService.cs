@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.UnitManager.WebAPI.DTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
 {
@@ -22,41 +22,43 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <summary>
         /// Get the postcode sector by the UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="udprn">UDPRN id</param>
         /// <returns>PostCodeSectorDTO object</returns>
-        Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN);
+        Task<PostCodeSectorDTO> GetPostCodeSectorByUdprn(int udprn);
 
         /// <summary>
-        /// Fetch the post code unit for basic search.
+        /// Gets first five postcodeunits for an unit for a given search text
         /// </summary>
         /// <param name="searchText"></param>
-        /// <param name="userUnit"></param>
-        /// <returns></returns>
-        Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid userUnit);
+        /// <param name="unitlocationId"></param>
+        /// <param name="postcodeTypeGUID"></param>
+        /// <returns>list of PostCodeDTO</returns>
+        Task<List<PostCodeDTO>> GetPostCodeUnitForBasicSearch(string searchText, Guid unitlocationId);
 
         /// <summary>
-        /// Get the post code unit count
+        /// Gets count of postcodeunits for an unit for a given search text
         /// </summary>
         /// <param name="searchText"></param>
-        /// <param name="userUnit"></param>
-        /// <returns></returns>
-        Task<int> GetPostCodeUnitCount(string searchText, Guid userUnit);
+        /// <param name="unitlocationId"></param>
+        /// <param name="postcodeTypeGUID"></param>
+        /// <returns>count of postcodeunits</returns>
+        Task<int> GetPostCodeUnitCount(string searchText, Guid unitlocationId);
 
         /// <summary>
         /// Fetch the post code unit for advance search.
         /// </summary>
         /// <param name="searchText"></param>
-        /// <param name="userUnit"></param>
+        /// <param name="userUnit Guid Id"></param>
         /// <returns></returns>
-        Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid userUnit);
+        Task<List<PostCodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText, Guid unitlocationId);
 
         /// <summary>
-        /// Fetch the Delivery Scenario.
+        /// Get the list of route scenarios by the operationstateID and locationID.
         /// </summary>
         /// <param name="operationStateID"></param>
-        /// <param name="deliveryScenarioID"></param>
+        /// <param name="locationID"></param>
         /// <returns></returns>
-        List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID);
+        List<ScenarioDTO> GetRouteScenarios(Guid operationStateID, Guid locationID);
 
         /// <summary>
         /// Get post code ID by passing post code.

@@ -1,5 +1,6 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
+﻿using System;
 using System.Threading.Tasks;
+using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
 {
@@ -11,8 +12,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <summary>
         /// Get the postcode sector by the UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <returns>PostCodeSectorDTO object</returns>
-        Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN);
+        /// <param name="udprn">UDPRN id</param>
+        /// <param name="postCodeSectorTypeGuid">postCodeSectorType Guid</param>
+        /// <param name="postCodeDistrictTypeGuid">postCodeDistrictType Guid</param>
+        /// <returns>PostCodeSectorDataDTO</returns>
+        Task<PostCodeSectorDataDTO> GetPostCodeSectorByUdprn(int udprn, Guid postCodeSectorTypeGuid, Guid postCodeDistrictTypeGuid);
     }
 }

@@ -15,7 +15,9 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation;
+using RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Interface;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
+using RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation;
 
 namespace RM.DataManagement.UnitManager.WebAPI
 {
@@ -85,17 +87,22 @@ namespace RM.DataManagement.UnitManager.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            // Infrastructure
+            // Register Infrastructure
             services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
 
-            // BusinessServices
-            //services.AddScoped<IUnitLocationBusinessService, UnitLocationBusinessService>(); //TODO uncomment once businessservice changes are done
+            // Register BusinessServices
+            services.AddScoped<IUnitLocationBusinessService, UnitLocationBusinessService>(); //TODO uncomment once businessservice changes are done
+
+            // Register Integration services
+            services.AddScoped<IUnitManagerIntegrationService, UnitManagerIntegrationService>();
+            
+            // Register DataServices
             services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
             services.AddScoped<IPostCodeSectorDataService, PostCodeSectorDataService>();
             services.AddScoped<IPostCodeDataService, PostCodeDataService>();
             services.AddScoped<IScenarioDataService, ScenarioDataService>();
 
-            // Others - Helper, Utils etc
+            // Register Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
         }
 

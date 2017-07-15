@@ -24,7 +24,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         public virtual DbSet<PostcodeHierarchy> PostcodeHierarchies { get; set; }
         public virtual DbSet<Scenario> Scenarios { get; set; }
         public virtual DbSet<ScenarioDayOfTheWeek> ScenarioDayOfTheWeeks { get; set; }
-        public virtual DbSet<ScenarioStatu> ScenarioStatus { get; set; }
+        public virtual DbSet<ScenarioStatus> ScenarioStatus { get; set; }
 
         // Query
         public virtual DbSet<Postcode> Postcodes { get; set; }

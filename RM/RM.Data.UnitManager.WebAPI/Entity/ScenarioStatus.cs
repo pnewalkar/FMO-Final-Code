@@ -7,7 +7,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
     using System.Data.Entity.Spatial;
 
     [Table("FMO.ScenarioStatus")]
-    public partial class ScenarioStatu
+    public partial class ScenarioStatus
     {
         public Guid ID { get; set; }
 

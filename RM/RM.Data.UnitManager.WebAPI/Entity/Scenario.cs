@@ -13,7 +13,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         public Scenario()
         {
             ScenarioDayOfTheWeeks = new HashSet<ScenarioDayOfTheWeek>();
-            ScenarioStatus = new HashSet<ScenarioStatu>();
+            ScenarioStatus = new HashSet<ScenarioStatus>();
         }
 
         public Guid ID { get; set; }
@@ -38,6 +38,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         public virtual ICollection<ScenarioDayOfTheWeek> ScenarioDayOfTheWeeks { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ScenarioStatu> ScenarioStatus { get; set; }
+        public virtual ICollection<ScenarioStatus> ScenarioStatus { get; set; }
     }
 }
