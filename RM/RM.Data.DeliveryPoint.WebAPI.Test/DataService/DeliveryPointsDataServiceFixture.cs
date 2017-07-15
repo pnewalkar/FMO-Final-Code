@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using Moq;
 using NUnit.Framework;
+using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.Entities;
@@ -28,15 +29,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test.DataService
             DeliveryPointRowVersionSetup();
             var actualResult = testCandidate.GetDeliveryPointRowVersion(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
             Assert.IsNotNull(actualResult);
-        }
-
-        [Test]
-        public void Test_GetDPUse()
-        {
-            OnSetup();
-            var actualResult = testCandidate.GetDPUse(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"), new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"), new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"));
-            Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult == "Organisation");
         }
 
         [Test]
@@ -77,7 +69,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
+            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, CreateMock<IConfigurationHelper>().Object);
         }
 
         protected void DeliveryPointRowVersionSetup()
@@ -101,7 +93,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
+            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, CreateMock<IConfigurationHelper>().Object);
         }
     }
 }

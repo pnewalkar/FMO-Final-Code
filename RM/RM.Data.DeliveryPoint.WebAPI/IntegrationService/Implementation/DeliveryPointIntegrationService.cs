@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
+
 //using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
@@ -16,7 +17,9 @@ using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+
 using System.Diagnostics;
+
 using System.Collections.Generic;
 using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
 
@@ -29,7 +32,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         private string referenceDataWebAPIName = string.Empty;
         private string postalAddressManagerWebAPIName = string.Empty;
         private string accessLinkWebAPIName = string.Empty;
-        private string blockSequenceWebAPIName = string.Empty;
+        private string deliveryRouteManagerWebAPIName = string.Empty;
         private string unitManagerDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
@@ -46,7 +49,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.ReferenceDataWebAPIName).ToString() : string.Empty;
             this.accessLinkWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.AccessLinkWebAPIName).ToString() : string.Empty;
             this.postalAddressManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.PostalAddressManagerWebAPIName).ToString() : string.Empty;
-            this.blockSequenceWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
+            this.deliveryRouteManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.DeliveryRouteManagerWebAPIName).ToString() : string.Empty;
             this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.UnitManagerDataWebAPIName).ToString() : string.Empty;
         }
 
@@ -189,15 +192,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <param name="deliveryRouteId">deliveryRouteId</param>
         /// <param name="deliveryPointId">deliveryPointId</param>
         /// <returns>bool</returns>
-        public async Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
+        public async Task<bool> MapForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateBlockSequenceForDeliveryPoint"))
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.MapForDeliveryPoint"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                blockSequenceWebAPIName = blockSequenceWebAPIName + "deliveryroute/deliverypointsequence/" + deliveryRouteId + "/" + deliveryPointId + "/";
-                HttpResponseMessage result = await httpHandler.GetAsync(blockSequenceWebAPIName);
+                deliveryRouteManagerWebAPIName = deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryRouteId + "/" + deliveryPointId + "/";
+                HttpResponseMessage result = await httpHandler.GetAsync(deliveryRouteManagerWebAPIName);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode
@@ -206,9 +209,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 }
 
                 string returnvalue = result.Content.ReadAsStringAsync().Result;
-                var createBlockSequenceForDeliveryPoint = Convert.ToBoolean(returnvalue);
+                var mapRouteForDeliveryPointSuccess = Convert.ToBoolean(returnvalue);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return createBlockSequenceForDeliveryPoint;
+                return mapRouteForDeliveryPointSuccess;
             }
         }
 
@@ -242,7 +245,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(blockSequenceWebAPIName + "deliveryroute/route/deliverypoint", deliveryPointId);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/route/deliverypoint", deliveryPointId);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;

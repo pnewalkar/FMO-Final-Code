@@ -5,6 +5,7 @@ using System.Data.Entity.Spatial;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
+using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DataDTO;
@@ -27,6 +28,7 @@ namespace RM.DataServices.Tests.DataService
         private Guid user1Id;
         private Guid user2Id;
         private Mock<ILoggingHelper> mockLoggingHelper;
+        private Mock<IConfigurationHelper> mockConfigurationHelper;
         private DeliveryPointDataDTO deliveryPointDataDTO;
 
         //[Test]
@@ -134,9 +136,12 @@ namespace RM.DataServices.Tests.DataService
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
+
+            mockConfigurationHelper = new Mock<IConfigurationHelper>();
+
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
+            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object);
         }
     }
 }

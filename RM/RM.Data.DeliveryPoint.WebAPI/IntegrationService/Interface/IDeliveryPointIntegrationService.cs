@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 //using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
@@ -52,8 +53,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// <param name="deliveryRouteId">deliveryRouteId</param>
         /// <param name="deliveryPointId">deliveryPointId</param>
         /// <returns>bool</returns>
-        Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
-        
+        Task<bool> MapForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
+
         Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
 
         /// <summary>

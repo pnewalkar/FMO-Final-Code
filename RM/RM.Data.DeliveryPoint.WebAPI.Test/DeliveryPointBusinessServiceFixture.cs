@@ -66,7 +66,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             var result = await testCandidate.CreateDeliveryPoint(addDeliveryPointDTO);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Message == "Delivery Point created successfully");
-        }      
+        }
 
         [Test]
         public void Test_UpdateDeliveryPointLocation()
@@ -406,11 +406,11 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
 
             var locationXy = DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700);
 
-          //  mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>())).Returns(new List<DeliveryPointDTO>() { new DeliveryPointDTO() { Address_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"), LocationXY = locationXy, ID = Guid.NewGuid(), PostalAddress = new PostalAddressDTO() { OrganisationName  = "abc" } } });
+            //  mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoints(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CommonLibrary.EntityFramework.DTO.UnitLocationDTO>())).Returns(new List<DeliveryPointDTO>() { new DeliveryPointDTO() { Address_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"), LocationXY = locationXy, ID = Guid.NewGuid(), PostalAddress = new PostalAddressDTO() { OrganisationName  = "abc" } } });
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDataDTO>())).Returns(Task.FromResult(1));
-            mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
+            //   mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointRowVersion(It.IsAny<Guid>())).Returns(BitConverter.GetBytes(1));
-            mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
+            //    mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
             mockDeliveryPointsDataService.Setup(x => x.GetDetailDeliveryPointByUDPRN(It.IsAny<int>())).Returns(new AddDeliveryPointDTO() { });
             mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<DeliveryPointDataDTO>() { });
             mockDeliveryPointsDataService.Setup(x => x.UpdatePAFIndicator(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(true);
@@ -421,8 +421,8 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>())).ReturnsAsync(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid(), IsAddressLocationAvailable = true });
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAccessLink(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).ReturnsAsync("123");
-           // mockDeliveryPointIntegrationService.Setup(x => x.GetPostalAddress(It.IsAny<List<Guid>>())).ReturnsAsync(new List<PostalAddressDTO>() { new PostalAddressDTO() {ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11") } });
-            mockDeliveryPointIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(new List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>(){ });
+            // mockDeliveryPointIntegrationService.Setup(x => x.GetPostalAddress(It.IsAny<List<Guid>>())).ReturnsAsync(new List<PostalAddressDTO>() { new PostalAddressDTO() {ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11") } });
+            mockDeliveryPointIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(new List<RM.CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>() { });
 
             testCandidate = new DeliveryPointBusinessService(mockDeliveryPointsDataService.Object, mockLoggingDataService.Object, mockConfigurationDataService.Object, mockDeliveryPointIntegrationService.Object);
         }
