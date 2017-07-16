@@ -15,7 +15,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <returns>
         /// The list of <see cref="UnitLocationDataDTO"/>.
         /// </returns>
-        List<UnitLocationDataDTO> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID);
+        Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID);
 
         /// <summary>
         /// Gets postcodes details by postcodeGuids
@@ -23,6 +23,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="postcodeGuids"></param>
         /// <param name="postcodeSectorGUID"></param>
         /// <returns></returns>
-        Task<List<PostCodeDataDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID);
+        Task<List<PostCodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID);
     }
 }

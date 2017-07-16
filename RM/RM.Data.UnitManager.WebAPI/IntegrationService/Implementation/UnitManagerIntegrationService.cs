@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
@@ -16,7 +14,6 @@ using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Interface;
-using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation
 {
@@ -40,6 +37,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation
 
         public UnitManagerIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
+            // Store injected dependencies
             this.httpHandler = httpHandler;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
@@ -51,7 +49,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation
         #region public methods
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="categoryName"></param>
         /// <param name="itemName"></param>
@@ -84,7 +82,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation
         }
 
         /// <summary>
-        /// Gets the name of the reference data categories by category. 
+        /// Gets the name of the reference data categories by category.
         /// </summary>
         /// <param name="listName"></param>
         /// <returns>ReferenceDataCategoryDTO</returns>
@@ -96,7 +94,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 ReferenceDataCategoryDTO referenceCategories = new ReferenceDataCategoryDTO();
-
 
                 HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + listName);
                 if (!result.IsSuccessStatusCode)

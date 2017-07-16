@@ -26,6 +26,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         public UnitLocationDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            // Store injected dependencies
             this.loggingHelper = loggingHelper;
         }
 
@@ -37,27 +38,27 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <returns>
         /// List of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        public List<UnitLocationDataDTO> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID)
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetDeliveryUnitsForUser);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryUnitsForUser"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
 
-                var unitLocation = (from postalAddressIdentifier in DataContext.PostalAddressIdentifiers.AsNoTracking()
-                                    join location in DataContext.Locations.AsNoTracking() on postalAddressIdentifier.ID equals location.ID
-                                    join userRoleLocation in DataContext.UserRoleLocations.AsNoTracking() on postalAddressIdentifier.ID equals userRoleLocation.LocationID
-                                    where userRoleLocation.UserID == userId
-                                    select new UnitLocationDataDTO
-                                    {
-                                        LocationId = postalAddressIdentifier.ID,
-                                        Name = postalAddressIdentifier.Name,
-                                        Shape = location.Shape,
-                                        Area = (
-                                                from postcodeHierarchy in DataContext.PostcodeHierarchies
-                                                where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID
-                                                select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
-                                    }).ToList();
+                var unitLocation = await (from postalAddressIdentifier in DataContext.PostalAddressIdentifiers.AsNoTracking()
+                                          join location in DataContext.Locations.AsNoTracking() on postalAddressIdentifier.ID equals location.ID
+                                          join userRoleLocation in DataContext.UserRoleLocations.AsNoTracking() on postalAddressIdentifier.ID equals userRoleLocation.LocationID
+                                          where userRoleLocation.UserID == userId
+                                          select new UnitLocationDataDTO
+                                          {
+                                              LocationId = postalAddressIdentifier.ID,
+                                              Name = postalAddressIdentifier.Name,
+                                              Shape = location.Shape,
+                                              Area = (
+                                                      from postcodeHierarchy in DataContext.PostcodeHierarchies
+                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID
+                                                      select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
+                                          }).ToListAsync();
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
                 return unitLocation;
@@ -70,9 +71,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <param name="postcodeGuids"></param>
         /// <param name="postcodeSectorGUID"></param>
         /// <returns></returns>
-        public async Task<List<PostCodeDataDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID)
+        public async Task<List<PostCodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID)
         {
-            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostCodes);
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodes);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCodes"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);

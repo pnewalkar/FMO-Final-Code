@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RM.DataManagement.UnitManager.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
+using RM.DataManagement.UnitManager.WebAPI.DTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 {
@@ -24,6 +23,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
         public UnitManagerController(IUnitLocationBusinessService unitLocationBusinessService, ILoggingHelper loggingHelper)
         {
+            // Store injected dependencies
             this.unitLocationBusinessService = unitLocationBusinessService;
             this.loggingHelper = loggingHelper;
         }
@@ -34,16 +34,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <returns>List</returns>
         [Authorize]
         [HttpGet("Unit")]
-        public List<UnitLocationDTO> GetUnitLocations()
+        public async Task<IEnumerable<UnitLocationDTO>> GetUnitLocations()
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetUnitLocations);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetUnitLocations"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
-                var getUnitLocations = unitLocationBusinessService.GetDeliveryUnitsForUser(UserId);
+                var unitLocations = await unitLocationBusinessService.GetDeliveryUnitsForUser(UserId);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
-                return getUnitLocations;
+                return unitLocations;
             }
         }
 
@@ -53,21 +53,21 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <returns>List</returns>
         [Authorize]
         [HttpGet("postcodesector/udprn: {udprn}")]
-        public async Task<PostCodeSectorDTO> GetPostCodeSectorByUdprn(int udprn)
+        public async Task<PostCodeSectorDTO> GetPostcodeSectorByUdprn(int udprn)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeSectorByUdprn"))
+            string methodName = typeof(UnitManagerController) + "." + nameof(GetPostcodeSectorByUdprn);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostcodeSectorByUdprn"))
             {
                 if (udprn.Equals(0))
                 {
                     throw new ArgumentNullException(ErrorConstants.Error_NonZero, nameof(udprn));
                 }
 
-                string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
                 {
-                    var getPostCodeSectorByUDPRN = await unitLocationBusinessService.GetPostCodeSectorByUdprn(udprn);
+                    var getPostCodeSectorByUDPRN = await unitLocationBusinessService.GetPostcodeSectorByUdprn(udprn);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return getPostCodeSectorByUDPRN;
                 }
@@ -90,10 +90,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <returns></returns>
         [HttpGet("postcodes/basic/{searchText}")]
-        public async Task<List<PostCodeDTO>> GetPostCodeUnitForBasicSearch(string searchText)
+        public async Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForBasicSearch(string searchText)
         {
-            string methodName = typeof(UnitManagerController) + "." + nameof(GetPostCodeUnitForBasicSearch);
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeUnitForBasicSearch"))
+            string methodName = typeof(UnitManagerController) + "." + nameof(GetPostcodeUnitForBasicSearch);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostcodeUnitForBasicSearch"))
             {
                 if (string.IsNullOrEmpty(searchText))
                 {
@@ -104,7 +104,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 try
                 {
-                    var postcodeUnits = await unitLocationBusinessService.GetPostCodeUnitForBasicSearch(searchText, CurrentUserUnit);
+                    var postcodeUnits = await unitLocationBusinessService.GetPostcodeUnitForBasicSearch(searchText, CurrentUserUnit);
 
                     loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
                     return postcodeUnits;
@@ -143,7 +143,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 try
                 {
-                    var postCodeUnitCount = await unitLocationBusinessService.GetPostCodeUnitCount(searchText, CurrentUserUnit);
+                    var postCodeUnitCount = await unitLocationBusinessService.GetPostcodeUnitCount(searchText, CurrentUserUnit);
 
                     loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
                     return postCodeUnitCount;
@@ -167,13 +167,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <returns></returns>
         [HttpGet("postcodes/advance/{searchText}")]
-        public async Task<List<PostCodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText)
+        public async Task<IEnumerable<PostCodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText)
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetPostCodeUnitForAdvanceSearch);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeUnitForAdvanceSearch"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
-
 
                 if (string.IsNullOrEmpty(searchText))
                 {
@@ -182,7 +181,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 try
                 {
-                    var postCodeUnits = await unitLocationBusinessService.GetPostCodeUnitForAdvanceSearch(searchText, CurrentUserUnit);
+                    var postCodeUnits = await unitLocationBusinessService.GetPostcodeUnitForAdvanceSearch(searchText, CurrentUserUnit);
                     loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
                     return postCodeUnits;
                 }
@@ -207,10 +206,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpGet("postcode/guid/{searchText}")]
-        public async Task<Guid> GetPostCodeID(string searchText)
+        public async Task<Guid> GetPostcodeID(string searchText)
         {
-            string methodName = typeof(UnitManagerController) + "." + nameof(GetPostCodeUnitForAdvanceSearch);
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeUnitForAdvanceSearch"))
+            string methodName = typeof(UnitManagerController) + "." + nameof(GetPostcodeID);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostcodeID"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
@@ -221,7 +220,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 try
                 {
-                    var getPostCodeID = await unitLocationBusinessService.GetPostCodeID(searchText);
+                    var getPostCodeID = await unitLocationBusinessService.GetPostcodeID(searchText);
                     loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
                     return getPostCodeID;
                 }
@@ -246,7 +245,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="fields">The fields to be returned</param>
         /// <returns></returns>
         [HttpGet("scenario/{operationStateID}/{locationID}/{fields}")]
-        public IActionResult GetRouteScenarios(Guid operationStateID, Guid locationID, string fields)
+        public async Task<IActionResult> GetRouteScenarios(Guid operationStateID, Guid locationID, string fields)
         {
             if (operationStateID.Equals(Guid.Empty))
             {
@@ -267,12 +266,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
                 List<object> deliveryScenerioList = null;
-                List<ScenarioDTO> Scenerio = unitLocationBusinessService.GetRouteScenarios(operationStateID, locationID);
+                IEnumerable<ScenarioDTO> Scenerio = await unitLocationBusinessService.GetRouteScenarios(operationStateID, locationID);
                 CreateSummaryObject<ScenarioDTO> createSummary = new CreateSummaryObject<ScenarioDTO>();
 
-                if (!string.IsNullOrEmpty(fields))
+                if (!string.IsNullOrEmpty(fields) && Scenerio != null)
                 {
-                    deliveryScenerioList = createSummary.SummarisePropertiesForList(Scenerio, fields);
+                    deliveryScenerioList = createSummary.SummarisePropertiesForList(Scenerio.ToList(), fields);
                 }
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
@@ -288,7 +287,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         [HttpPost("postcode/search/{unitGuid}")]
         public async Task<IActionResult> GetPostCodes([FromBody] List<Guid> postcodeGuids)
         {
-            if (postcodeGuids == null || postcodeGuids.Count.Equals(0) )
+            if (postcodeGuids == null || postcodeGuids.Count.Equals(0))
             {
                 throw new ArgumentNullException(nameof(postcodeGuids));
             }
@@ -298,7 +297,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
-                List<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostCodeDetails(postcodeGuids);
+                IEnumerable<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostcodes(postcodeGuids);
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
                 return Ok(postCodes);

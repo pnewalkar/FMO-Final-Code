@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
@@ -12,6 +13,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="operationStateID"></param>
         /// <param name="locationID"></param>
         /// <returns></returns>
-        List<ScenarioDataDTO> GetRouteScenarios(Guid operationStateID, Guid locationID);
+        Task<IEnumerable<ScenarioDataDTO>> GetRouteScenarios(Guid operationStateID, Guid locationID);
     }
 }

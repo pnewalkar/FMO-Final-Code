@@ -13,13 +13,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     /// <summary>
     /// Data service to handle CRUD operations on PostcodeHierarchy and related entites
     /// </summary>
-    public class PostCodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>//, IPostCodeSectorDataService
+    public class PostCodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>//, IPostcodeSectorDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public PostCodeSectorDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            // Store injected dependencies
             this.loggingHelper = loggingHelper;
         }
 
@@ -27,24 +28,24 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// Get the postcode sector by the UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
-        /// <param name="postCodeSectorTypeGuid">postCodeSectorType Guid</param>
-        /// <param name="postCodeDistrictTypeGuid">postCodeDistrictType Guid</param>
+        /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
+        /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
         /// <returns>PostCodeSectorDataDTO</returns>
-        public async Task<PostCodeSectorDataDTO> GetPostCodeSectorByUdprn(int udprn, Guid postCodeSectorTypeGuid, Guid postCodeDistrictTypeGuid)
+        public async Task<PostCodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid)
         {
-            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostCodeSectorByUdprn);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCodes"))
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeSectorByUdprn);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeSectorByUdprn"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeSectorDataServiceMethodEntryEventId);
 
                 var postcodeSector = await (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
                                             join pa in DataContext.PostalAddresses on ph.Postcode equals pa.Postcode
-                                            where ph.PostcodeTypeGUID == postCodeSectorTypeGuid && pa.UDPRN == udprn
+                                            where ph.PostcodeTypeGUID == postcodeSectorTypeGuid && pa.UDPRN == udprn
                                             select ph.ParentPostcode).FirstOrDefaultAsync();
 
                 var postcodeDistrict = await (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
                                               join pa in DataContext.PostalAddresses on ph.Postcode equals pa.Postcode
-                                              where ph.PostcodeTypeGUID == postCodeDistrictTypeGuid && pa.UDPRN == udprn
+                                              where ph.PostcodeTypeGUID == postcodeDistrictTypeGuid && pa.UDPRN == udprn
                                               select ph.ParentPostcode).FirstOrDefaultAsync();
 
                 PostCodeSectorDataDTO PostCodeSectorDataDTO = new PostCodeSectorDataDTO

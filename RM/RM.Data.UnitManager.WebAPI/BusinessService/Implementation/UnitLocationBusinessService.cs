@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Diagnostics;
-using System.Reflection;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
-using Newtonsoft.Json;
-using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
-using RM.DataManagement.UnitManager.WebAPI.DTO;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
-using System.Linq;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Interface;
+using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
+using RM.DataManagement.UnitManager.WebAPI.DataDTO;
+using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.UnitManager.WebAPI.DTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 {
@@ -31,13 +28,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         #region property declaration
 
         private IUnitLocationDataService unitLocationDataService;
-        private IPostCodeSectorDataService postcodeSectorDataService = default(IPostCodeSectorDataService);
-        private IPostCodeDataService postCodeDataService = default(IPostCodeDataService);
+        private IPostcodeSectorDataService postcodeSectorDataService = default(IPostcodeSectorDataService);
+        private IPostcodeDataService postCodeDataService = default(IPostcodeDataService);
         private IScenarioDataService scenarioDataService = default(IScenarioDataService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IUnitManagerIntegrationService unitManagerIntegrationService = default(IUnitManagerIntegrationService);
 
         #endregion property declaration
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UnitLocationBusinessService"/> class.
         /// </summary>
@@ -45,8 +43,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <param name="postcodeSectorDataService">post code sector data service</param>
         /// <param name="postCodeDataService">post code data service</param>
         /// <param name="scenarioDataService">scenario data service</param>
-        public UnitLocationBusinessService(IUnitLocationDataService unitLocationDataService, IPostCodeSectorDataService postcodeSectorDataService, IPostCodeDataService postCodeDataService, IScenarioDataService scenarioDataService, ILoggingHelper loggingHelper, IUnitManagerIntegrationService unitManagerIntegrationService)
+        public UnitLocationBusinessService(IUnitLocationDataService unitLocationDataService, IPostcodeSectorDataService postcodeSectorDataService, IPostcodeDataService postCodeDataService, IScenarioDataService scenarioDataService, ILoggingHelper loggingHelper, IUnitManagerIntegrationService unitManagerIntegrationService)
         {
+            // Store injected dependencies
             this.unitLocationDataService = unitLocationDataService;
             this.postcodeSectorDataService = postcodeSectorDataService;
             this.postCodeDataService = postCodeDataService;
@@ -62,7 +61,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>
         /// List of <see cref="UnitLocationDTO" />.
         /// </returns>
-        public List<UnitLocationDTO> GetDeliveryUnitsForUser(Guid userId)
+        public async Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsForUser(Guid userId)
         {
             string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetDeliveryUnitsForUser);
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryUnitsForUser"))
@@ -72,7 +71,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 //reference data value for PostcodeSector with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeArea.GetDescription()).Result;
 
-                var unitLocationDataDtoList = unitLocationDataService.GetDeliveryUnitsForUser(userId, Guid.NewGuid());
+                var unitLocationDataDtoList = await unitLocationDataService.GetDeliveryUnitsForUser(userId, Guid.NewGuid());
 
                 var unitLocationDtoList = unitLocationDataDtoList.Select(x => new UnitLocationDTO
                 {
@@ -102,9 +101,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <returns>PostCodeSectorDTO object</returns>
-        public async Task<PostCodeSectorDTO> GetPostCodeSectorByUdprn(int udprn)
+        public async Task<PostCodeSectorDTO> GetPostcodeSectorByUdprn(int udprn)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostCodeSectorByUdprn);
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostcodeSectorByUdprn);
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeSectorByUdprn"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
@@ -113,9 +112,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 var dictionarySector = postcodeTypCategory.ReferenceDatas.Where(x => x.ReferenceDataValue == PostCodeTypeCategory.PostcodeSector.GetDescription()).SingleOrDefault().ID;
                 var dictionaryDistrict = postcodeTypCategory.ReferenceDatas.Where(x => x.ReferenceDataValue == PostCodeTypeCategory.PostcodeSector.GetDescription()).SingleOrDefault().ID;
 
-                var postCodeSector = await postcodeSectorDataService.GetPostCodeSectorByUdprn(udprn, dictionarySector, dictionaryDistrict);
+                var postCodeSector = await postcodeSectorDataService.GetPostcodeSectorByUdprn(udprn, dictionarySector, dictionaryDistrict);
                 PostCodeSectorDTO postCodeSectorDto = GenericMapper.Map<PostCodeSectorDataDTO, PostCodeSectorDTO>(postCodeSector);
-               
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return postCodeSectorDto;
             }
@@ -129,17 +128,17 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>
         /// Task
         /// </returns>
-        public async Task<List<PostCodeDTO>> GetPostCodeUnitForBasicSearch(string searchText, Guid userUnit)
+        public async Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid userUnit)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostCodeUnitForBasicSearch);
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeUnitForBasicSearch"))
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostcodeUnitForBasicSearch);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostcodeUnitForBasicSearch"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
                 //reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
 
-                var postcodeUnits = await postCodeDataService.GetPostCodeUnitForBasicSearch(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
+                var postcodeUnits = await postCodeDataService.GetPostcodeUnitForBasicSearch(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
                 List<PostCodeDTO> postCodeList = postcodeUnits.Select(x => new PostCodeDTO
                 {
                     PostcodeUnit = x.PostcodeUnit
@@ -156,16 +155,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <param name="searchText">The text to be searched</param>
         /// <param name="userUnit">Guid userUnit</param>
         /// <returns>The total count of post code</returns>
-        public async Task<int> GetPostCodeUnitCount(string searchText, Guid userUnit)
+        public async Task<int> GetPostcodeUnitCount(string searchText, Guid userUnit)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostCodeUnitCount);
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeUnitCount"))
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostcodeUnitCount);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostcodeUnitCount"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
                 //reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
-                var postCodeUnitCount = await postCodeDataService.GetPostCodeUnitCount(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
+                var postCodeUnitCount = await postCodeDataService.GetPostcodeUnitCount(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
                 return postCodeUnitCount;
@@ -178,16 +177,16 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">userUnit Guid Id</param>
         /// <returns>list of PostCodeDTO</returns>
-        public async Task<List<PostCodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText, Guid userUnit)
+        public async Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid userUnit)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostCodeUnitForAdvanceSearch);
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeUnitForAdvanceSearch"))
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostcodeUnitForAdvanceSearch);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostcodeUnitForAdvanceSearch"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
                 //reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
-                var postcodeUnits = await postCodeDataService.GetPostCodeUnitForAdvanceSearch(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
+                var postcodeUnits = await postCodeDataService.GetPostcodeUnitForAdvanceSearch(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
 
                 List<PostCodeDTO> postCodeList = postcodeUnits.Select(x => new PostCodeDTO
                 {
@@ -204,14 +203,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="postCode"> Post Code</param>
         /// <returns>Post code ID</returns>
-        public async Task<Guid> GetPostCodeID(string postCode)
+        public async Task<Guid> GetPostcodeID(string postCode)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostCodeID);
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeID"))
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostcodeID);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostcodeID"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                var getPostCodeID = await postCodeDataService.GetPostCodeID(postCode);
+                var getPostCodeID = await postCodeDataService.GetPostcodeID(postCode);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
                 return getPostCodeID;
@@ -224,15 +223,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <param name="operationStateID">The operationstate id.</param>
         /// <param name="locationID">The location id.</param>
         /// <returns>List</returns>
-        public List<ScenarioDTO> GetRouteScenarios(Guid operationStateID, Guid locationID)
+        public async Task<IEnumerable<ScenarioDTO>> GetRouteScenarios(Guid operationStateID, Guid locationID)
         {
             string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetRouteScenarios);
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetRouteScenarios"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                var scenarioDataList = scenarioDataService.GetRouteScenarios(operationStateID, locationID);
-                List<ScenarioDTO> scenariolist = GenericMapper.MapList<ScenarioDataDTO, ScenarioDTO>(scenarioDataList);
+                var scenarioDataList = await scenarioDataService.GetRouteScenarios(operationStateID, locationID);
+                List<ScenarioDTO> scenariolist = GenericMapper.MapList<ScenarioDataDTO, ScenarioDTO>(scenarioDataList.ToList());
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
                 return scenariolist;
@@ -244,12 +243,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="postcodeGuids"></param>
         /// <returns>List</returns>
-        public async Task<List<PostCodeDTO>> GetPostCodeDetails(List<Guid> postcodeGuids)
+        public async Task<IEnumerable<PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids)
         {
-            //TODO: 1. Add to entry in reference data xml in ref data service for - PostcodeSector
-            //      2. Call ReferenceDataService for getting PostcodeSector - 9813B8BE-83FB-48D0-A8A2-703B2524002B
-            //      3. Replace Guid.NewGuid() with actual value
-
             string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetDeliveryUnitsForUser);
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeUnitCount"))
             {
@@ -258,7 +253,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 //reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeSector.GetDescription()).Result;
 
-                var postcodeDataDto = await unitLocationDataService.GetPostCodes(postcodeGuids, postcodeTypeGUID);
+                var postcodeDataDto = await unitLocationDataService.GetPostcodes(postcodeGuids, postcodeTypeGUID);
                 var postCodeDto = GenericMapper.MapList<PostCodeDataDTO, PostCodeDTO>(postcodeDataDto.ToList());
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);

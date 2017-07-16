@@ -18,8 +18,8 @@ namespace RM.Data.UnitManager.WebAPI.Test
     //public class UnitLocationBusinessServiceFixture : TestFixtureBase
     //{
     //    private Mock<IUnitLocationDataService> mockUnitLocationDataService;
-    //    private Mock<IPostCodeSectorDataService> mockPostCodeSectorDataService;
-    //    private Mock<IPostCodeDataService> mockPostCodeDataService;
+    //    private Mock<IPostcodeSectorDataService> mockPostCodeSectorDataService;
+    //    private Mock<IPostcodeDataService> mockPostCodeDataService;
     //    private Mock<IScenarioDataService> mockScenarioDataService;
     //    private UnitLocationDTO actualDeliveryUnitResult = null;
     //    private List<UnitLocationDTO> actualDeliveryUnitListForUserResult = null;
@@ -86,8 +86,8 @@ namespace RM.Data.UnitManager.WebAPI.Test
     //    protected override void OnSetup()
     //    {
     //        mockUnitLocationDataService = CreateMock<IUnitLocationDataService>();
-    //        mockPostCodeSectorDataService = CreateMock<IPostCodeSectorDataService>();
-    //        mockPostCodeDataService = CreateMock<IPostCodeDataService>();
+    //        mockPostCodeSectorDataService = CreateMock<IPostcodeSectorDataService>();
+    //        mockPostCodeDataService = CreateMock<IPostcodeDataService>();
     //        mockScenarioDataService = CreateMock<IScenarioDataService>();
     //        loggingHelperMock = CreateMock<ILoggingHelper>();
 
