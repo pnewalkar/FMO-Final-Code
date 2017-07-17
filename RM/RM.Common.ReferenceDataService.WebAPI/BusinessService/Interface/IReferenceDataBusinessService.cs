@@ -1,5 +1,6 @@
 ﻿namespace RM.Common.ReferenceData.WebAPI.BusinessService.Interface
 {
+    using System;
     using System.Collections.Generic;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 
@@ -21,6 +22,13 @@
         NameValuePair GetReferenceDataByNameValuePairs(string appGroupName, string appItemName);
 
         /// <summary>
+        /// Retrieval of name-value pairs as a discrete type of reference data using Guid id.
+        /// </summary>
+        /// <param name="id">Guid id</param>
+        /// <returns>NameValuePair</returns>
+        NameValuePair GetReferenceDataByNameValuePairs(Guid id);
+
+        /// <summary>
         /// retrieval of name-value pairs as a discrete type of reference data.
         /// </summary>
         /// <param name="appGroupName">appGroupName is recorded as the category name</param>
@@ -33,6 +41,13 @@
         /// <param name="listName">listname maps to ReferenceDataCategory.CategoryName</param>
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         SimpleListDTO GetSimpleListsReferenceData(string listName);
+
+        /// <summary>
+        /// Retrieval of simple lists as a discrete type of reference data using Guid id
+        /// </summary>
+        /// <param name="id">Guid id</param>
+        /// <returns>SimpleListDTO</returns>
+        SimpleListDTO GetSimpleListsReferenceData(Guid id);
 
         /// <summary>
         /// retrieval of simple lists as a discrete type of reference data addressed via the URI path /simpleLists
