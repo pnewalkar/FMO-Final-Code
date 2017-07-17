@@ -5,15 +5,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
-using System.Diagnostics;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.PostalAddress.WebAPI.DTO;
 
 namespace Fmo.API.Services.Controllers
 {
@@ -341,7 +338,6 @@ namespace Fmo.API.Services.Controllers
                 throw realExceptions;
             }
         }
-
 
         [HttpPost("postaladdress/postaladdresses/")]
         public async Task<IActionResult> GetPostalAddresses([FromBody] List<Guid> addressGuids)
