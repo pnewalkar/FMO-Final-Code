@@ -28,5 +28,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
         /// <param name="udprn">UDPRN id</param>
         /// <returns>Task<int></returns>
         Task<bool> AddressLocationExists(int udprn);
+
+        Task<PostalAddressDataDTO> GetPostalAddressData(int udprn);
     }
 }
