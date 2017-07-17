@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.ExceptionMiddleware;
@@ -90,7 +91,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            services.AddScoped<DataService.IDatabaseFactory<RouteDBContext>, DataService.DatabaseFactory<RouteDBContext>>();
+            services.AddScoped<IDatabaseFactory<RouteDBContext>, DatabaseFactory<RouteDBContext>>();
             services.AddScoped<IHttpHandler, HttpHandler>();
             services.AddScoped<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
             services.AddScoped<DataService.IDeliveryRouteDataService, DataService.DeliveryRouteDataService>();
