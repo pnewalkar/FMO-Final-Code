@@ -60,8 +60,8 @@ namespace Fmo.API.Services.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.SaveAddressdetails"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                    string methodName = typeof(PostalAddressController) + "." + nameof(SaveAddressdetails);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     bool isSaved = false;
                     if (!ModelState.IsValid)
@@ -75,7 +75,7 @@ namespace Fmo.API.Services.Controllers
                         return Ok(isSaved);
                     }
 
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(isSaved);
                 }
             }
@@ -103,8 +103,8 @@ namespace Fmo.API.Services.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.SavePAFDetails"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                    string methodName = typeof(PostalAddressController) + "." + nameof(SavePAFDetails);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     bool isPAFSaved = false;
                     if (!ModelState.IsValid)
@@ -118,7 +118,7 @@ namespace Fmo.API.Services.Controllers
                         return Ok(isPAFSaved);
                     }
 
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(isPAFSaved);
                 }
             }
@@ -187,7 +187,7 @@ namespace Fmo.API.Services.Controllers
 
                     PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
 
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId); 
 
                     return Ok(postalAddressDto);
                 }
@@ -216,12 +216,12 @@ namespace Fmo.API.Services.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.GetPostalAddressByGuid"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressController) + "." + nameof(GetPostalAddressByGuid);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 PostalAddressDTO postalAddressDto = businessService.GetPostalAddressDetails(addressGuid);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return Ok(postalAddressDto);
             }
@@ -241,12 +241,12 @@ namespace Fmo.API.Services.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.GetPostalAddress"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                    string methodName = typeof(PostalAddressController) + "." + nameof(GetPostalAddress);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     PostalAddressDTO postalAddressDTO = await businessService.GetPostalAddress(uDPRN);
 
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                     return Ok(postalAddressDTO);
                 }
@@ -275,12 +275,12 @@ namespace Fmo.API.Services.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateNybRecords"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateNybRecords);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 string postCode = businessService.CheckForDuplicateNybRecords(objPostalAddress);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return Ok(postCode);
             }
@@ -298,12 +298,12 @@ namespace Fmo.API.Services.Controllers
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.CheckForDuplicateAddressWithDeliveryPoints"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 bool isDuplicate = businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return Ok(isDuplicate);
             }
@@ -322,11 +322,11 @@ namespace Fmo.API.Services.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressForDeliveryPoint"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                    string methodName = typeof(PostalAddressController) + "." + nameof(CreateAddressForDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     var deliveryPointAddressDetails = businessService.CreateAddressForDeliveryPoint(addDeliveryPointDTO);
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(deliveryPointAddressDetails);
                 }
             }
@@ -352,8 +352,14 @@ namespace Fmo.API.Services.Controllers
         {
             try
             {
-                var addressDetails = await businessService.GetPostalAddresses(addressGuids);
-                return Ok(addressDetails);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.GetPostalAddresses"))
+                {
+                    string methodName = typeof(PostalAddressController) + "." + nameof(GetPostalAddresses);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                    var addressDetails = await businessService.GetPostalAddresses(addressGuids);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(addressDetails);
+                }
             }
             catch (AggregateException ae)
             {
@@ -375,7 +381,28 @@ namespace Fmo.API.Services.Controllers
         [HttpGet("postaladdress/pafaddress/{udprn}")]
         public async Task<PostalAddressDTO> GetPAFAddress(int udprn)
         {
-            return await businessService.GetPAFAddress(udprn);
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.GetPAFAddress"))
+                {
+                    string methodName = typeof(PostalAddressController) + "." + nameof(GetPAFAddress);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    var postalAddress = await businessService.GetPAFAddress(udprn);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return postalAddress;
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
         }
 
         #endregion Public Methods
