@@ -4,6 +4,7 @@ using System.Data.Entity.Spatial;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.Entities;
@@ -69,7 +70,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, CreateMock<IConfigurationHelper>().Object);
+            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
 
         protected void DeliveryPointRowVersionSetup()
@@ -93,7 +94,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, CreateMock<IConfigurationHelper>().Object);
+            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

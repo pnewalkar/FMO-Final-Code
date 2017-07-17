@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
@@ -44,7 +45,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="bbox">bbox as string</param>
         /// <returns>Json Result of Delivery Points</returns>
-     //   [Authorize]
+        [Authorize]
         [Route("deliverypoints")]
         [HttpGet]
         public JsonResult GetDeliveryPoints(string bbox)
@@ -67,7 +68,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="Guid">The Guid </param>
         /// <returns>The coordinates of the delivery point</returns>
-     //   [Authorize]
+        [Authorize]
         [Route("deliverypoint/Guid/{id}")]
         [HttpGet]
         public IActionResult GetDeliveryPointByGuId(Guid id, [FromQuery]string fields)
@@ -89,7 +90,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="udprn">The UDPRN number</param>
         /// <returns>The coordinates of the delivery point</returns>
-      //  [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints)]
         [Route("deliverypoint/Details/{udprn}")]
         [HttpGet]
         public JsonResult GetDetailDeliveryPointByUDPRN(int udprn, [FromQuery]string fields)
@@ -110,10 +111,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryPointDto">deliveryPointDto</param>
         /// <returns>createDeliveryPointModelDTO</returns>
-     //   [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("deliverypoint/newdeliverypoint")]
-
-        // [Route("CreateDeliveryPoint")]
         [HttpPost]
         public async Task<IActionResult> CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
         {
@@ -153,7 +152,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryPointModelDto">deliveryPointDTO</param>
         /// <returns>updateDeliveryPointModelDTO</returns>
-     //   [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("deliverypoint")]
         [HttpPut]
         public async Task<IActionResult> UpdateDeliveryPoint([FromBody] DeliveryPointModelDTO deliveryPointModelDto)
@@ -193,7 +192,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryPointId">Guid</param>
         /// <returns>List of Key Value Pair for route details</returns>
-        //[Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints + "," + UserAccessFunctionsConstants.ViewRoutes)]
+        [Authorize(Roles = UserAccessFunctionsConstants.ViewDeliveryPoints + "," + UserAccessFunctionsConstants.ViewRoutes)]
         [Route("deliverypoint/routes/{deliveryPointId}")]
         [HttpGet]
         public List<KeyValuePair<string, string>> GetRouteForDeliveryPoint(Guid deliveryPointId)
@@ -215,7 +214,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-       // [Authorize]
+        [Authorize]
         [Route("deliverypoints/basic/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> GetDeliveryPointsForBasicSearch(string searchText)
@@ -250,7 +249,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <returns>The total count of delivery point</returns>
-      //  [Authorize]
+        [Authorize]
         [Route("deliverypoints/count/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> GetDeliveryPointsCount(string searchText)
@@ -284,7 +283,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <returns></returns>
-       // [Authorize]
+        [Authorize]
         [Route("deliverypoints/advance/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> GetDeliveryPointsForAdvancedSearch(string searchText)
@@ -355,7 +354,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
-      //  [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpPost("deliverypoint/batch/location")]
         public async Task<IActionResult> UpdateDeliveryPointLocationOnUDPRN([FromBody]string deliveryPointDTO)
         {
@@ -389,7 +388,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
-      //  [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpPost("deliverypoint/location")]
         public async Task<IActionResult> UpdateDeliveryPointLocationOnID([FromBody]string deliveryPointDTO)
         {
@@ -521,7 +520,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
         /// <returns>bool</returns>
-      //  [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("deliverypoint/batch")]
         [HttpPost]
         public async Task<IActionResult> InsertDeliveryPoint([FromBody] string objDeliveryPointJson)
@@ -549,26 +548,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 throw realExceptions;
             }
         }
-
-        ///// <summary>
-        ///// This method updates delivery point access link status
-        ///// </summary>
-        ///// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
-        ///// <returns>updated delivery point</returns>
-        //[Route("deliverypoint/accesslinkstatus")]
-        //[HttpPut]
-        //public IActionResult UpdateDeliveryPointAccessLinkCreationStatus([FromBody]string deliveryPointDTOJson)
-        //{
-        //    using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPointAccessLinkCreationStatus"))
-        //    {
-        //        string methodName = MethodBase.GetCurrentMethod().Name;
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodEntryEventId, LoggerTraceConstants.Title);
-
-        //        bool success = businessService.UpdateDeliveryPointAccessLinkCreationStatus(JsonConvert.DeserializeObject<DeliveryPointDTO>(deliveryPointDTOJson));
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointControllerMethodExitEventId, LoggerTraceConstants.Title);
-        //        return Ok(success);
-        //    }
-        //}
 
         /// <summary> This method is used to get the delivery points crossing the operational object.
         /// </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param

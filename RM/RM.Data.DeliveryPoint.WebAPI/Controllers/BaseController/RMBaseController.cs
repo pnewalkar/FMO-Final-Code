@@ -9,7 +9,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
     /// <summary>
     /// Base controller class for FMO Web API
     /// </summary>
-  //  [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public abstract class RMBaseController : Controller
     {

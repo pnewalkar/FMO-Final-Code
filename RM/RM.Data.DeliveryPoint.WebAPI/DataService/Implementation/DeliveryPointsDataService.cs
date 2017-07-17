@@ -11,6 +11,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using System.Threading.Tasks;
     using AutoMapper;
     using CommonLibrary.ConfigurationMiddleware;
+    using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
     using Data.DeliveryPoint.WebAPI.DataDTO;
     using RM.CommonLibrary.ExceptionMiddleware;
@@ -28,13 +29,16 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         private int exitEventId = LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId;
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
 
-        public DeliveryPointsDataService(IDatabaseFactory<DeliveryPointDBContext> databaseFactory, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
-            : base(databaseFactory)
+        /// <summary>
+        /// Initialises new instance of <see cref="DeliveryPointsDataService"/> that contains data methods related to delivery point.
+        /// </summary>
+        /// <param name="databaseFactory"></param>
+        /// <param name="loggingHelper">Helper class for logging related functions.</param>
+        public DeliveryPointsDataService(IDatabaseFactory<DeliveryPointDBContext> databaseFactory, ILoggingHelper loggingHelper)
+        : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
-            this.configurationHelper = configurationHelper;
         }
 
         #region Public Methods
@@ -69,6 +73,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <returns>Unique identifier of delivery point.</returns>
         public async Task<Guid> InsertDeliveryPoint(DeliveryPointDataDTO objDeliveryPoint)
         {
+            if (objDeliveryPoint == null)
+            {
+                throw new ArgumentNullException(nameof(objDeliveryPoint), string.Format(ErrorConstants.Err_ArgumentmentNullException, objDeliveryPoint));
+            }
+
             Guid deliveryPointId = Guid.Empty;
             DeliveryPoint deliveryPoint = new DeliveryPoint();
             DeliveryPointStatus deliveryPointStatus = new DeliveryPointStatus();
@@ -143,6 +152,20 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     await DataContext.SaveChangesAsync();
                     isDeliveryPointUpdated = true;
                 }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+                }
+                catch (ObjectDisposedException disposedException)
+                {
+                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                }
                 catch (Exception dbUpdateException)
                 {
                     isDeliveryPointUpdated = false;
@@ -205,12 +228,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         }
 
         /// <summary>
-        /// Fetch Delivery point for Basic Search
+        /// This method is used to fetch Delivery Points as per basic search.
         /// </summary>
-        /// <param name="searchText">The text to be searched</param>
+        /// <param name="searchText">searchText as string</param>
+        /// <param name="recordTakeCount">Number of records to be returned.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
-        /// <returns>The result set of delivery point.</returns>
-        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid unitGuid)
+        /// <returns>Collection of Delivery Points that matches the criteria.</returns>
+        public async Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, int recordTakeCount, Guid unitGuid)
         {
             if (searchText == null)
             {
@@ -221,8 +245,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             {
                 throw new ArgumentNullException(nameof(unitGuid), string.Format(ErrorConstants.Err_ArgumentmentNullException, unitGuid));
             }
-
-            int takeCount = Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.SearchResultCount));
 
             DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid)
                 .Select(x => x.Shape).SingleOrDefault();
@@ -250,7 +272,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         UDPRN = l.PostalAddress.UDPRN
                     }
                 })
-                .Take(takeCount)
+                .Take(recordTakeCount)
                 .ToListAsync();
 
             return result;
@@ -330,38 +352,52 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <returns>updated delivery point</returns>
         public async Task<int> UpdateDeliveryPointLocationOnUDPRN(DeliveryPointDataDTO deliveryPointDto)
         {
-            int status = 0;
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Data.UpdateDeliveryPointLocationOnUDPRN"))
             {
-                DeliveryPoint deliveryPoint =
-                    DataContext.DeliveryPoints.SingleOrDefault(dp => dp.PostalAddress.UDPRN == deliveryPointDto.PostalAddress.UDPRN);
-
-                if (deliveryPoint != null)
+                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(UpdateDeliveryPointLocationOnUDPRN);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                if (deliveryPointDto == null)
                 {
-                    deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
-                    deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
-                    status = await DataContext.SaveChangesAsync();
+                    throw new ArgumentNullException(nameof(deliveryPointDto), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointDto));
                 }
 
+                int status = 0;
+                try
+                {
+                    DeliveryPoint deliveryPoint =
+                        DataContext.DeliveryPoints.SingleOrDefault(dp => dp.PostalAddress.UDPRN == deliveryPointDto.PostalAddress.UDPRN);
+
+                    if (deliveryPoint != null)
+                    {
+                        deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
+                        deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
+
+                        deliveryPoint.DeliveryPointStatus.First().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.First().DeliveryPointStatusGUID;
+
+                        status = await DataContext.SaveChangesAsync();
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+                }
+                catch (ObjectDisposedException disposedException)
+                {
+                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return status;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
-            }
-            catch (NotSupportedException notSupportedException)
-            {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
-            }
-            catch (ObjectDisposedException disposedException)
-            {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
 
@@ -372,40 +408,57 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <returns>updated delivery point</returns>
         public async Task<Guid> UpdateDeliveryPointLocationOnID(DeliveryPointDataDTO deliveryPointDto)
         {
-            try
+            Guid returnId = Guid.Empty;
+            using (loggingHelper.RMTraceManager.StartTrace("Data.UpdateDeliveryPointLocationOnID"))
             {
-                DeliveryPoint deliveryPoint =
-                    DataContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
+                string methodName = typeof(DeliveryPointsDataService) + "." + nameof(UpdateDeliveryPointLocationOnID);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                if (deliveryPoint != null)
+                if (deliveryPointDto == null)
                 {
-                    deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
-                    deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
-
-                    DataContext.Entry(deliveryPoint).State = EntityState.Modified;
-                    DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
-                    await DataContext.SaveChangesAsync();
+                    throw new ArgumentNullException(nameof(deliveryPointDto), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointDto));
                 }
 
-                return deliveryPoint.ID;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
-            }
-            catch (NotSupportedException notSupportedException)
-            {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
-            }
-            catch (ObjectDisposedException disposedException)
-            {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                try
+                {
+                    DeliveryPoint deliveryPoint =
+                        DataContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
+
+                    if (deliveryPoint != null)
+                    {
+                        deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
+                        deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
+
+                        deliveryPoint.DeliveryPointStatus.First().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.First().DeliveryPointStatusGUID;
+
+                        DataContext.Entry(deliveryPoint).State = EntityState.Modified;
+                        DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
+                        await DataContext.SaveChangesAsync();
+                        returnId = deliveryPoint.ID;
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+                }
+                catch (ObjectDisposedException disposedException)
+                {
+                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return returnId;
             }
         }
 
@@ -523,6 +576,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <returns>distance as double</returns>
         public double? GetDeliveryPointDistance(DeliveryPointDataDTO deliveryPointDTO, DbGeometry newPoint)
         {
+            if (deliveryPointDTO == null)
+            {
+                throw new ArgumentNullException(nameof(deliveryPointDTO), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointDTO));
+            }
+
             double? distance = 0;
             if (deliveryPointDTO != null)
             {
@@ -549,6 +607,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             return rowVersion;
         }
 
+        /// <summary>
+        /// Deletes a delivery point.
+        /// </summary>
+        /// <param name="id">Delivery point unique identifier.</param>
+        /// <returns>Success of delete operation.</returns>
         public async Task<bool> DeleteDeliveryPoint(Guid id)
         {
             try
@@ -569,6 +632,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             }
             catch (Exception ex)
             {
+                loggingHelper.Log(ex, TraceEventType.Error);
                 return false;
             }
         }
