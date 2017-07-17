@@ -19,7 +19,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List<StreetNameDTO></returns>
-        Task<List<StreetNameDataDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid unitGuid);
+        Task<List<StreetNameDataDTO>> GetStreetNamesForBasicSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Fetches the street names for advance search.
@@ -27,7 +27,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
         /// <param name="searchText">The search text.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List<StreetNameDTO></returns>
-        Task<List<StreetNameDataDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<StreetNameDataDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Gets the street name count.

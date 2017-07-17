@@ -93,6 +93,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                     };
                 
                 Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestRoad = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, getNearestNamedRoad.Item2);
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return nearestRoad;
             }
@@ -290,15 +291,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid</param>
         /// <returns>Task</returns>
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid userUnit)
+        public async Task<List<StreetNameDTO>> GetStreetNamesForBasicSearch(string searchText, Guid userUnit)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchStreetNamesForBasicSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetStreetNamesForBasicSearch"))
             {
-                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(FetchStreetNamesForBasicSearch);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetStreetNamesForBasicSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.GetStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
                 var streetNameDTO = GenericMapper.MapList<StreetNameDataDTO, StreetNameDTO>(fetchStreetNamesForBasicSearch);
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return streetNameDTO;
@@ -318,7 +320,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetStreetNameCount);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.FetchStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
+                var fetchStreetNamesForBasicSearch = await streetNetworkDataService.GetStreetNamesForBasicSearch(searchText, userUnit).ConfigureAwait(false);
                 var getStreetNameCount = await streetNetworkDataService.GetStreetNameCount(searchText, userUnit).ConfigureAwait(false);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -333,14 +335,14 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>StreetNames</returns>
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<StreetNameDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchStreetNamesForAdvanceSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetStreetNamesForAdvanceSearch"))
             {
-                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(FetchStreetNamesForAdvanceSearch);
+                string methodName = typeof(NetworkManagerBusinessService) + "." + nameof(GetStreetNamesForAdvanceSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var fetchStreetNamesForAdvanceSearch = await streetNetworkDataService.FetchStreetNamesForAdvanceSearch(searchText, unitGuid).ConfigureAwait(false);
+                var fetchStreetNamesForAdvanceSearch = await streetNetworkDataService.GetStreetNamesForAdvanceSearch(searchText, unitGuid).ConfigureAwait(false);
               
                 var streetNameDTO = GenericMapper.MapList<StreetNameDataDTO, StreetNameDTO>(fetchStreetNamesForAdvanceSearch);
 

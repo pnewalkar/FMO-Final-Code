@@ -193,16 +193,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         /// <returns>Task</returns>
         [Route("streetnames/basic/{searchText}")]
         [HttpGet]
-        public async Task<IActionResult> FetchStreetNamesForBasicSearch(string searchText)
+        public async Task<IActionResult> GetStreetNamesForBasicSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.FetchStreetNamesForBasicSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetStreetNamesForBasicSearch"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(FetchStreetNamesForBasicSearch);
+                string methodName = typeof(NetworkManagerController) + "." + nameof(GetStreetNamesForBasicSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.FetchStreetNamesForBasicSearch(searchText, CurrentUserUnit).ConfigureAwait(false);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForBasicSearch(searchText, CurrentUserUnit).ConfigureAwait(false);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetNames);
                 }
@@ -261,16 +261,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         /// <returns>StreetNames</returns>
         [Route("streetnames/advance/{searchText}")]
         [HttpGet]
-        public async Task<IActionResult> FetchStreetNamesForAdvanceSearch(string searchText)
+        public async Task<IActionResult> GetStreetNamesForAdvanceSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.FetchStreetNamesForAdvanceSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetStreetNamesForAdvanceSearch"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(FetchStreetNamesForAdvanceSearch);
+                string methodName = typeof(NetworkManagerController) + "." + nameof(GetStreetNamesForAdvanceSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.FetchStreetNamesForAdvanceSearch(searchText, CurrentUserUnit);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForAdvanceSearch(searchText, CurrentUserUnit);
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(streetNames);
                 }

@@ -11,7 +11,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataDTO
 
         public string TOID { get; set; }
 
-        [JsonConverter(typeof(DbGeometryConverter))]
         public DbGeometry LinkGeometry { get; set; }
 
         public decimal LinkLength { get; set; }

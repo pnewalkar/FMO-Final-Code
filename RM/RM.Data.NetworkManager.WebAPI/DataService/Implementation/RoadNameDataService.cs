@@ -58,6 +58,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
                 List<NetworkLink> result = GetRoadNameCoordinatesDatabyBoundingbox(boundingBoxCoordinates, locationID, referenceDataCategoryList).ToList();
                 var networkLink = GenericMapper.MapList<NetworkLink, NetworkLinkDataDTO>(result);
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return networkLink;
             }

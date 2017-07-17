@@ -78,7 +78,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         [Test]
         public void Test_FetchStreetNamesForBasicSearch()
         {
-            var result = testCandidate.FetchStreetNamesForBasicSearch("abc", Guid.NewGuid());
+            var result = testCandidate.GetStreetNamesForBasicSearch("abc", Guid.NewGuid());
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Result[0].LocalName, "abc");
         }
@@ -94,7 +94,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         [Test]
         public void Test_FetchStreetNamesForAdvanceSearch()
         {
-            var result = testCandidate.FetchStreetNamesForAdvanceSearch("abc", Guid.NewGuid());
+            var result = testCandidate.GetStreetNamesForAdvanceSearch("abc", Guid.NewGuid());
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Result[0].LocalName, "abc");
         }

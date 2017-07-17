@@ -23,7 +23,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataDTO
 
         public string StreetType { get; set; }
 
-        [JsonConverter(typeof(DbGeometryConverter))]
         public DbGeometry Geometry { get; set; }
 
         public string StreetNameProvider { get; set; }

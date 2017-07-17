@@ -13,7 +13,7 @@ using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
     /// <summary>
-    /// This class contains methods of Access Link DataService for fetching Access Link data.
+    /// This class contains methods of OS Road Link DataService.
     /// </summary>
     public class OSRoadLinkDataService : DataServiceBase<OSRoadLink, NetworkDBContext>, IOSRoadLinkDataService
     {
@@ -53,6 +53,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 try
                 {
                     var result = await DataContext.OSRoadLinks.Where(x => x.TOID == toid).Select(z => z.RouteHierarchy).SingleOrDefaultAsync();
+
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return result;
                 }

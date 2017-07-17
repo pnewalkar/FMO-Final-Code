@@ -52,16 +52,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         #region Public Methods
 
         /// <summary>
-        /// Fetch street names for advance search
+        /// Get street names for advance search
         /// </summary>
         /// <param name="searchText">searchText as string</param>
         /// <param name="locationID">The location unique identifier.</param>
         /// <returns>StreetNames</returns>
-        public async Task<List<StreetNameDataDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid locationID)
+        public async Task<List<StreetNameDataDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid locationID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchStreetNamesForAdvanceSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNamesForAdvanceSearch"))
             {
-                string methodName = typeof(StreetNetworkDataService) + "." + nameof(FetchStreetNamesForAdvanceSearch);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNamesForAdvanceSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationID)
@@ -92,11 +92,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// <param name="searchText">The text to be searched</param>
         /// <param name="locationID">The location unique identifier.</param>
         /// <returns>The result set of street name.</returns>
-        public async Task<List<StreetNameDataDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid locationID)
+        public async Task<List<StreetNameDataDTO>> GetStreetNamesForBasicSearch(string searchText, Guid locationID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchStreetNamesForBasicSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNamesForBasicSearch"))
             {
-                string methodName = typeof(StreetNetworkDataService) + "." + nameof(FetchStreetNamesForBasicSearch);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNamesForBasicSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 int takeCount = Convert.ToInt32(ConfigurationSettings.AppSettings[SearchResultCount]);
