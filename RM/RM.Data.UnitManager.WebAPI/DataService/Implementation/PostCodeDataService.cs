@@ -49,7 +49,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                                  ID = p.ID
                                              }).Take(searchInputs.SearchResultCount).ToListAsync();
 
-                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
                 return postCodeDataDto;
             }
         }
