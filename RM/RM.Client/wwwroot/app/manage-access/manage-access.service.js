@@ -50,7 +50,7 @@ function manageAccessService(
         manageAccessAPIService.getToken(vm.userdata).then(function (accessData) {
             if (accessData.AccessToken) {
                 sessionStorage.clear();
-                sessionStorage.setItem("authorizationData", angular.toJson({ token: accessData.AccessToken, userName: accessData.UserName[0], unitGuid: unitGuid }));
+                sessionStorage.setItem("authorizationData", angular.toJson({ token: accessData.AccessToken, userName: accessData.UserName, unitGuid: unitGuid }));
                 sessionStorage.setItem("roleAccessData", angular.toJson((accessData.RoleActions)));
                 if (unitGuid) {
                     $window.location.href = GlobalSettings.indexUrl;

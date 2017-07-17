@@ -22,9 +22,15 @@ namespace RM.Common.ActionManager.WebAPI.DataService
         private int entryEventId = LoggerTraceConstants.ActionManagerDataServiceMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.ActionManagerDataServiceMethodExitEventId;
 
+        /// <summary>
+        /// Parameterised constructor
+        /// </summary>
+        /// <param name="databaseFactory"></param>
+        /// <param name="loggingHelper"></param>
         public ActionManagerDataService(IDatabaseFactory<ActionDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            // store injected dependancies.
             this.loggingHelper = loggingHelper;
         }
 
