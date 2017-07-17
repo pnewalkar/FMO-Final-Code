@@ -57,7 +57,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
-        /// Get all Delivery units for an user.
+        /// Get all Delivery units for a user.
         /// </summary>
         /// <param name="userId">user Id.</param>
         /// <returns>
