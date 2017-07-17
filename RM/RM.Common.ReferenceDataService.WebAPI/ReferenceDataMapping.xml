@@ -1,6 +1,138 @@
 <?xml version="1.0"?>
 <ReferenceDataMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <CategoryName>
+    <AppCategoryName>BlockType</AppCategoryName>
+    <DBCategoryName>Block Type</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>Live</AppReferenceDataName>
+      <DBReferenceDataName>Live</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>UnSequenced</AppReferenceDataName>
+      <DBReferenceDataName>UnSequenced</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>PostalAddressIdentifierType</AppCategoryName>
+    <DBCategoryName>Postal Address Identifier Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>LocationRelationshipType</AppCategoryName>
+    <DBCategoryName>Location Relationship Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>ProductOrService</AppCategoryName>
+    <DBCategoryName>Product Or Service</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryService</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Service</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>CollectionService</AppReferenceDataName>
+      <DBReferenceDataName>Collection Service</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryUnitService</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Unit Service</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>CollectionUnitService</AppReferenceDataName>
+      <DBReferenceDataName>Collection Unit Service</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DayOfTheWeek</AppCategoryName>
+    <DBCategoryName>Day Of The Week</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>OrganisationalStructure</AppCategoryName>
+    <DBCategoryName>Organisational Structure</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>RouteActivityType</AppCategoryName>
+    <DBCategoryName>Route Activity Type</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryPointColor</AppCategoryName>
+    <DBCategoryName>Delivery Point Color</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+    <ReferenceDataName>
+      <AppReferenceDataName>DeliveryPointColor</AppReferenceDataName>
+      <DBReferenceDataName>Delivery Point Color</DBReferenceDataName>
+    </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
     <AppCategoryName>AccessLinkStatus</AppCategoryName>
     <DBCategoryName>Access Link Status</DBCategoryName>
   </CategoryName>
@@ -35,6 +167,14 @@
       <AppReferenceDataName>ThirdParty_NI_Licensing</AppReferenceDataName>
       <DBReferenceDataName>ThirdParty_NI_Licensing</DBReferenceDataName>
     </ReferenceDataName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>DeliveryPointOperationalStatus</AppCategoryName>
+    <DBCategoryName>Delivery Point Operational Status</DBCategoryName>
+  </CategoryName>
+  <CategoryName>
+    <AppCategoryName>NetworkNodeType</AppCategoryName>
+    <DBCategoryName>Network Node Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
     <AppCategoryName>NetworkLinkType</AppCategoryName>
@@ -273,8 +413,8 @@
     </ReferenceDataName>
   </CategoryName>
   <CategoryName>
-    <AppCategoryName>DeliveryRouteOperationalStatus</AppCategoryName>
-    <DBCategoryName>Delivery Route Operational Status</DBCategoryName>
+    <AppCategoryName>RouteOperationalStatus</AppCategoryName>
+    <DBCategoryName>Route Operational Status</DBCategoryName>
   </CategoryName>
   <CategoryName>
     <AppCategoryName>DeliveryRouteMethodType</AppCategoryName>
@@ -289,12 +429,12 @@
     <DBCategoryName>Unit Location Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
-    <AppCategoryName>PostalAddressType</AppCategoryName>
-    <DBCategoryName>Postal Address Type</DBCategoryName>
+    <AppCategoryName>PostcodeType</AppCategoryName>
+    <DBCategoryName>Postcode Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
-    <AppCategoryName>NetworkNodeType</AppCategoryName>
-    <DBCategoryName>Network Node Type</DBCategoryName>
+    <AppCategoryName>PostalAddressType</AppCategoryName>
+    <DBCategoryName>Postal Address Type</DBCategoryName>
   </CategoryName>
   <CategoryName>
     <AppCategoryName>SenarioOperationState</AppCategoryName>
@@ -321,19 +461,11 @@
     <DBCategoryName>Access Link Direction</DBCategoryName>
   </CategoryName>
   <CategoryName>
-    <AppCategoryName>DeliveryPointOperationalStatus</AppCategoryName>
-    <DBCategoryName>Delivery Point Operational Status</DBCategoryName>
-  </CategoryName>
-  <CategoryName>
-    <AppCategoryName>DeliveryPointColor</AppCategoryName>
-    <DBCategoryName>Delivery Point Color</DBCategoryName>
-  </CategoryName>
-  <CategoryName>
     <AppCategoryName>ObjectTransparency</AppCategoryName>
     <DBCategoryName>Object Transparency</DBCategoryName>
-  </CategoryName>
-  <CategoryName>
-    <AppCategoryName>DeliveryPointOperationalStatus</AppCategoryName>
-    <DBCategoryName>Delivery Point Operational Status</DBCategoryName>
+    <ReferenceDataName>
+      <AppReferenceDataName>ObjectTransparency</AppReferenceDataName>
+      <DBReferenceDataName>Object Transparency</DBReferenceDataName>
+    </ReferenceDataName>
   </CategoryName>
 </ReferenceDataMapping>
