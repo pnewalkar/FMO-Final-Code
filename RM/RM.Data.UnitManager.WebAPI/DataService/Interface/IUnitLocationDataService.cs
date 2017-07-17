@@ -23,6 +23,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="postcodeGuids"></param>
         /// <param name="postcodeSectorGUID"></param>
         /// <returns></returns>
-        Task<List<PostCodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID);
+        Task<List<PostcodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID);
     }
 }

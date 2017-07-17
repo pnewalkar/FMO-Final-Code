@@ -23,8 +23,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// Get the postcode sector by the UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
-        /// <returns>PostCodeSectorDTO object</returns>
-        Task<PostCodeSectorDTO> GetPostcodeSectorByUdprn(int udprn);
+        /// <returns>PostcodeSectorDTO object</returns>
+        Task<PostcodeSectorDTO> GetPostcodeSectorByUdprn(int udprn);
 
         /// <summary>
         /// Gets first five postcodeunits for an unit for a given search text
@@ -32,8 +32,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <param name="searchText"></param>
         /// <param name="unitlocationId"></param>
         /// <param name="postcodeTypeGUID"></param>
-        /// <returns>list of PostCodeDTO</returns>
-        Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId);
+        /// <returns>list of PostcodeDTO</returns>
+        Task<IEnumerable<PostcodeDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId);
 
         /// <summary>
         /// Gets count of postcodeunits for an unit for a given search text
@@ -50,7 +50,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <param name="searchText"></param>
         /// <param name="userUnit Guid Id"></param>
         /// <returns></returns>
-        Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid unitlocationId);
+        Task<IEnumerable<PostcodeDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid unitlocationId);
 
         /// <summary>
         /// Get the list of route scenarios by the operationstateID and locationID.
@@ -72,6 +72,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="postcodeGuids"></param>
         /// <returns></returns>
-        Task<IEnumerable<PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids);
+        Task<IEnumerable<PostcodeDTO>> GetPostcodes(List<Guid> postcodeGuids);
     }
 }

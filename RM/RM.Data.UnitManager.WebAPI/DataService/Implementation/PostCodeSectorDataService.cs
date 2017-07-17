@@ -13,11 +13,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     /// <summary>
     /// Data service to handle CRUD operations on PostcodeHierarchy and related entites
     /// </summary>
-    public class PostCodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>//, IPostcodeSectorDataService
+    public class PostcodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>//, IPostcodeSectorDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public PostCodeSectorDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
+        public PostcodeSectorDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
             // Store injected dependencies
@@ -30,8 +30,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <param name="udprn">UDPRN id</param>
         /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
         /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
-        /// <returns>PostCodeSectorDataDTO</returns>
-        public async Task<PostCodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid)
+        /// <returns>PostcodeSectorDataDTO</returns>
+        public async Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeSectorByUdprn);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeSectorByUdprn"))
@@ -48,7 +48,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                               where ph.PostcodeTypeGUID == postcodeDistrictTypeGuid && pa.UDPRN == udprn
                                               select ph.ParentPostcode).FirstOrDefaultAsync();
 
-                PostCodeSectorDataDTO PostCodeSectorDataDTO = new PostCodeSectorDataDTO
+                PostcodeSectorDataDTO PostCodeSectorDataDTO = new PostcodeSectorDataDTO
                 {
                     District = postcodeDistrict,
                     Sector = postcodeSector
