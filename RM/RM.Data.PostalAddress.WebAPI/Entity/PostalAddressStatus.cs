@@ -15,13 +15,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public Guid OperationalStatusGUID { get; set; }
 
-        [Column(TypeName = "datetime2")]
         public DateTime StartDateTime { get; set; }
 
-        [Column(TypeName = "datetime2")]
-        public DateTime? EndDateTimee { get; set; }
-
-        [Column(TypeName = "datetime2")]
         public DateTime RowCreateDateTime { get; set; }
 
         public virtual PostalAddress PostalAddress { get; set; }

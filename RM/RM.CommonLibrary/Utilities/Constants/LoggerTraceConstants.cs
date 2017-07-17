@@ -159,8 +159,8 @@
         public const int PostalAddressDataServiceMethodExitEventId = 9324;
         public const int PostalAddressIntegrationServiceMethodEntryEventId = 9333;
         public const int PostalAddressIntegrationServiceMethodExitEventId = 9334;
-        public const int FileProcessingLogPriorityDataServiceMethodEntryEventId = 9343;
-        public const int FileProcessingLogPriorityDataServiceMethodExitEventId = 9344;
+        public const int FileProcessingLogDataServiceMethodEntryEventId = 9343;
+        public const int FileProcessingLogDataServiceMethodExitEventId = 9344;
 
         public const int ThirdPartyAddressLocationControllerMethodEntryEventId = 9403;
         public const int ThirdPartyAddressLocationControllerMethodExitEventId = 9404;
