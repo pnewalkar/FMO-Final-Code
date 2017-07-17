@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
@@ -130,6 +131,72 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
                 return postCodeDetail;
+            }
+        }
+
+        /// <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode">Postal code</param>
+        /// <param name="unitId">Unique identifier for unit.</param>
+        /// <returns>The approx location for the given postal code.</returns>
+        public async Task<DbGeometry> GetApproxLocation(string postcode, Guid unitId)
+        {
+            DbGeometry approxLocation = null;
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetApproxLocation);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetApproxLocation"))
+            {
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
+
+                // get approx loaction for that post code
+                var approxLocationForPostCode = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode == postcode);
+
+                if (approxLocationForPostCode != null)
+                {
+                    approxLocation = approxLocationForPostCode.NetworkNode.Location.Shape;
+                }
+                else
+                {
+                    var postcodeSector = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
+                                          where ph.Postcode == postcode
+                                          select ph.ParentPostcode).FirstOrDefault();
+
+                    // get approx location for the pose code sector
+                    var approxLocationForPostCodeSector = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeSector));
+
+                    if (approxLocationForPostCodeSector != null)
+                    {
+                        approxLocation = approxLocationForPostCodeSector.NetworkNode.Location.Shape;
+                    }
+                    else
+                    {
+                        var postcodeDistrict = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
+                                                where ph.Postcode == postcodeSector
+                                                select ph.ParentPostcode).FirstOrDefault();
+
+                        // get approx location for the pose code sector
+                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeDistrict));
+
+                        if (approxLocationForPostCodeDistrict != null)
+                        {
+                            approxLocation = approxLocationForPostCodeDistrict.NetworkNode.Location.Shape;
+                        }
+                        else
+                        {
+                            // get approx location for that unit
+                            var dpForUnit = DataContext.DeliveryPoints.FirstOrDefault(dp => DataContext.PostalAddressIdentifiers.Any(pa => pa.ID == unitId && pa.PostalAddressID == dp.PostalAddressID));
+
+                            if (dpForUnit != null)
+                            {
+                                approxLocation = dpForUnit.NetworkNode.Location.Shape;
+                            }
+                        }
+                    }
+                }
+
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
+
+                return approxLocation;
             }
         }
     }
