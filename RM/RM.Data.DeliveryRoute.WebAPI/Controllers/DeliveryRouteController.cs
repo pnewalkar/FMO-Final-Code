@@ -22,6 +22,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
 
         public DeliveryRouteController(IDeliveryRouteBusinessService deliveryRouteBusinessService, ILoggingHelper loggingHelper)
         {
+            // Store  injected dependencies
             this.loggingHelper = loggingHelper;
             this.deliveryRouteLogBusinessService = deliveryRouteBusinessService;
         }
@@ -36,6 +37,15 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpGet("deliveryroute/{scenarioId}/{fields}")]
         public IActionResult GetScenarioRoutes(Guid scenarioId, string fields)
         {
+            if (scenarioId == Guid.Empty)
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(scenarioId)));
+            }
+            if (string.IsNullOrEmpty(fields))
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(fields)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetScenarioRoutes);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetScenarioRoutes"))
             {
@@ -65,6 +75,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpGet("deliveryroutes/basic/{searchText}")]
         public async Task<IActionResult> GetRoutesForBasicSearch(string searchText)
         {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(searchText)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRoutesForBasicSearch);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRoutesForBasicSearch"))
             {
@@ -99,6 +114,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpGet("deliveryroutes/count/{searchText}")]
         public async Task<IActionResult> GetRouteCount(string searchText)
         {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(searchText)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteCount);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteCount"))
             {
@@ -133,6 +153,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpGet("deliveryroutes/advance/{searchText}")]
         public async Task<IActionResult> GetRoutesForAdvanceSearch(string searchText)
         {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(searchText)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRoutesForAdvanceSearch);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRoutesForAdvanceSearch"))
             {
@@ -167,6 +192,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpGet("deliveryroute/routedetails/{routeId}")]
         public async Task<IActionResult> GetRouteSummary(Guid routeId)
         {
+            if (routeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(routeId)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteSummary);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteSummary"))
             {
@@ -174,7 +204,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 {
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    RouteDTO route = await deliveryRouteLogBusinessService.GetRouteSummary(CurrentUserUnit);
+                    RouteDTO route = await deliveryRouteLogBusinessService.GetRouteSummary(routeId);
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(route);
@@ -201,6 +231,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpPost("deliveryroute/deliveryroutesummaries")]
         public async Task<IActionResult> GenerateRouteLog([FromBody]RouteDTO routeDetails)
         {
+            if (routeDetails == null)
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(routeDetails)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GenerateRouteLog);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GenerateRouteLog"))
             {
@@ -236,6 +271,15 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpGet("deliveryroute/{postCodeunit}/{fields}")]
         public async Task<IActionResult> GetPostCodeSpecificRoutes(string postCodeunit, string fields)
         {
+            if (string.IsNullOrEmpty(postCodeunit))
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(postCodeunit)));
+            }
+            if (string.IsNullOrEmpty(fields))
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(fields)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetPostCodeSpecificRoutes);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeSpecificRoutes"))
             {
@@ -276,6 +320,15 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpPost("deliveryroute/deliverypoint")]
         public IActionResult SaveDeliveryPointRouteMapping(Guid routeId, Guid deliveryPointId)
         {
+            if (routeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(routeId)));
+            }
+            if (deliveryPointId == Guid.Empty)
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(deliveryPointId)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(SaveDeliveryPointRouteMapping);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveDeliveryPointRouteMapping"))
             {
@@ -296,6 +349,11 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         [HttpGet("deliveryroute/deliverypoint/{deliveryPointId}")]
         public IActionResult GetRouteByDeliverypoint(Guid deliveryPointId)
         {
+            if (deliveryPointId == Guid.Empty)
+            {
+                throw new ArgumentNullException(string.Format(ErrorConstants.Err_ArgumentmentNullException, nameof(deliveryPointId)));
+            }
+
             string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteByDeliverypoint);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteByDeliverypoint"))
             {

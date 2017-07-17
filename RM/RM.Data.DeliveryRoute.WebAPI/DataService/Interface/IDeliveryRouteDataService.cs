@@ -71,6 +71,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// </summary>
         /// <param name="deliveryPointId">Delivery Point Id</param>
         /// <returns>Route Details</returns>
-        RouteDataDTO GetRouteByDeliverypoint(Guid deliveryPointId);
+        Task<RouteDataDTO> GetRouteByDeliverypoint(Guid deliveryPointId);
     }
 }

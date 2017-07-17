@@ -33,6 +33,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         public DeliveryRouteDataService(IDatabaseFactory<RouteDBContext> databaseFactory, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
             : base(databaseFactory)
         {
+            // Store  injected dependencies
             this.loggingHelper = loggingHelper;
             this.configurationHelper = configurationHelper;
         }
@@ -190,7 +191,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// </summary>
         /// <param name="deliveryPointId">Delivery Point Id</param>
         /// <returns>Route Details</returns>
-        public RouteDataDTO GetRouteByDeliverypoint(Guid deliveryPointId)
+        public async Task<RouteDataDTO> GetRouteByDeliverypoint(Guid deliveryPointId)
         {
             string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteByDeliverypoint);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteByDeliverypoint"))
@@ -202,21 +203,21 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
 
                 if (route != null)
                 {
-                    var postCode = DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == route.ID || n.SecondaryRouteGUID == route.ID).SingleOrDefault();
+                    var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == route.ID || n.SecondaryRouteGUID == route.ID).SingleOrDefaultAsync();
                     if (postCode != null)
                     {
-                        if (postCode.PrimaryRouteGUID != null)
+                        if (route.ID == postCode.PrimaryRouteGUID)
                         {
                             routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + route.RouteName };
                         }
-                        else if (postCode.SecondaryRouteGUID != null)
+                        else if (route.ID == postCode.SecondaryRouteGUID)
                         {
                             routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + route.RouteName };
                         }
-                        else
-                        {
-                            routeData = new RouteDataDTO { ID = route.ID, RouteName = route.RouteName };
-                        }
+                    }
+                    else
+                    {
+                        routeData = new RouteDataDTO { ID = route.ID, RouteName = route.RouteName };
                     }
                 }
 
