@@ -15,8 +15,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// Gets first five postcodeunits for an unit for a given search text
         /// </summary>
         /// <param name="searchInputs">SearchInputDataDto</param>
-        /// <returns>collection of PostCodeDataDTO</returns>
-        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForBasicSearch(SearchInputDataDto searchInputs);
+        /// <returns>collection of PostcodeDataDTO</returns>
+        Task<IEnumerable<PostcodeDataDTO>> GetPostcodeUnitForBasicSearch(SearchInputDataDto searchInputs);
 
         /// <summary>
         /// Gets count of postcodeunits for an unit for a given search text
@@ -29,15 +29,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// Gets all postcodeunits for an unit for a given search text
         /// </summary>
         /// <param name="searchInputs">SearchInputDataDto</param>
-        /// <returns>collection of PostCodeDataDTO</returns>
-        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForAdvanceSearch(SearchInputDataDto searchInputs);
+        /// <returns>collection of PostcodeDataDTO</returns>
+        Task<IEnumerable<PostcodeDataDTO>> GetPostcodeUnitForAdvanceSearch(SearchInputDataDto searchInputs);
 
         /// <summary>
         /// Get post code ID by passing postcode.
         /// </summary>
-        /// <param name="postCode"> Post Code</param>
+        /// <param name="PostcodeDataDTO"> PostcodeDataDTO</param>
         /// <returns>Post code ID</returns>
-        Task<Guid> GetPostcodeID(string postCode);
+        Task<PostcodeDataDTO> GetPostcodeID(string postCode);
 
         /// <summary>
         /// Gets approx location based on the postal code.

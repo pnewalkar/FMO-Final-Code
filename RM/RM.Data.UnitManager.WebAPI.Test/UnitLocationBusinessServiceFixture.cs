@@ -101,11 +101,11 @@ namespace RM.Data.UnitManager.WebAPI.Test
     //        actualDeliveryUnitResult = new UnitLocationDTO() { ID = Guid.NewGuid(), ExternalId = "DI0001", UnitAddressUDPRN = 1, UnitName = "UnitOne" };
     //        mockUnitLocationDataService.Setup(n => n.FetchDeliveryUnit(deliveryUnitID)).Returns(actualDeliveryUnitResult);
 
-    //        mockPostCodeSectorDataService.Setup(x => x.GetPostCodeSectorByUDPRN(It.IsAny<int>())).ReturnsAsync(new PostCodeSectorDTO() { });
+    //        mockPostCodeSectorDataService.Setup(x => x.GetPostCodeSectorByUDPRN(It.IsAny<int>())).ReturnsAsync(new PostcodeSectorDTO() { });
 
-    //        mockPostCodeDataService.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<PostCodeDTO>() { });
+    //        mockPostCodeDataService.Setup(x => x.FetchPostCodeUnitForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<PostcodeDTO>() { });
     //        mockPostCodeDataService.Setup(x => x.GetPostCodeUnitCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
-    //        mockPostCodeDataService.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<PostCodeDTO>() { });
+    //        mockPostCodeDataService.Setup(x => x.FetchPostCodeUnitForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<PostcodeDTO>() { });
     //        mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).ReturnsAsync(System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"));
 
     //        mockScenarioDataService.Setup(x => x.FetchScenario(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(new List<ScenarioDTO>());

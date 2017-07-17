@@ -41,7 +41,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
-                var unitLocations = await unitLocationBusinessService.GetDeliveryUnitsForUser(UserId);
+                var unitLocations = await unitLocationBusinessService.GetDeliveryUnitsByUser(UserId);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
                 return unitLocations;
             }
@@ -53,7 +53,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <returns>List</returns>
         [Authorize]
         [HttpGet("postcodesector/udprn: {udprn}")]
-        public async Task<PostCodeSectorDTO> GetPostcodeSectorByUdprn(int udprn)
+        public async Task<PostcodeSectorDTO> GetPostcodeSectorByUdprn(int udprn)
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetPostcodeSectorByUdprn);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostcodeSectorByUdprn"))
@@ -90,7 +90,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <returns></returns>
         [HttpGet("postcodes/basic/{searchText}")]
-        public async Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForBasicSearch(string searchText)
+        public async Task<IEnumerable<PostcodeDTO>> GetPostcodeUnitForBasicSearch(string searchText)
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetPostcodeUnitForBasicSearch);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostcodeUnitForBasicSearch"))
@@ -167,7 +167,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <returns></returns>
         [HttpGet("postcodes/advance/{searchText}")]
-        public async Task<IEnumerable<PostCodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText)
+        public async Task<IEnumerable<PostcodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText)
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetPostCodeUnitForAdvanceSearch);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeUnitForAdvanceSearch"))
@@ -297,7 +297,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
-                IEnumerable<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostcodes(postcodeGuids);
+                IEnumerable<PostcodeDTO> postCodes = await unitLocationBusinessService.GetPostcodes(postcodeGuids);
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
                 return Ok(postCodes);

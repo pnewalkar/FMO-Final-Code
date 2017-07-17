@@ -2,7 +2,7 @@
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
 {
-    public class PostCodeDataDTO
+    public class PostcodeDataDTO
     {
         public Guid ID { get; set; }
 
