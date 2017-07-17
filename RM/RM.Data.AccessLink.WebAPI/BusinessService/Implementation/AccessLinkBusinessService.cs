@@ -15,6 +15,7 @@ using RM.DataManagement.AccessLink.WebAPI.Integration;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
 using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
+using RM.Data.AccessLink.WebAPI.Utils.ReferenceData;
 
 namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 {
@@ -604,7 +605,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 string parsedAccessLink = ObjectParser.GetGeometry(accessLinkCoordinates, AccessLinkConstants.LinestringObject);
 
                 DbGeometry accessLink = DbGeometry.LineFromText(parsedAccessLink, AccessLinkConstants.BNGCOORDINATESYSTEM);
-                string formattedBoundaryCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates.Replace(AccessLinkConstants.OpenSquareBracket, string.Empty).Replace(AccessLinkConstants.CloseSquareBracket, string.Empty).Split(AccessLinkConstants.Comma[0]));
+                string formattedBoundaryCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates.AppendString(AccessLinkConstants.OpenSquareBracket).AppendString(AccessLinkConstants.CloseSquareBracket).Split(AccessLinkConstants.Comma[0]));
                 List<AccessLinkDTO> accessLinkDTOs = accessLinkDataService.GetAccessLinksCrossingOperationalObject(formattedBoundaryCoordinates, accessLink);
                 List<NetworkLinkDTO> networkLinkDTOs = accessLinkIntegrationService.GetCrossingNetworkLinks(formattedBoundaryCoordinates, accessLink).Result;
                 List<DeliveryPointDTO> deliveryPointDTOs = accessLinkIntegrationService.GetDeliveryPointsCrossingOperationalObject(formattedBoundaryCoordinates, accessLink).Result;
