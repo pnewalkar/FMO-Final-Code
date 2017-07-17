@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
@@ -282,6 +283,26 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
                 return postCodeDto;
+            }
+        }
+
+        /// <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode">Postal code</param>
+        /// <param name="unitId">Unique identifier for unit.</param>
+        /// <returns>The approx location for the given postal code.</returns>
+        public async Task<DbGeometry> GetApproxLocation(string postcode, Guid unitId)
+        {
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetApproxLocation);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetApproxLocation"))
+            {
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
+
+                var approxLocation = await postCodeDataService.GetApproxLocation(postcode, unitId);
+
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
+                return approxLocation;
             }
         }
     }
