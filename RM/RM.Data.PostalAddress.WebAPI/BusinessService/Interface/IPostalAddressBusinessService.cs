@@ -81,8 +81,18 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <returns>returns PostalAddress object</returns>
         Task<PostalAddressDTO> GetPostalAddress(int? uDPRN);
 
+        /// <summary>
+        ///  Get Postal Addresses on adress guid's  as search criteria
+        /// </summary>
+        /// <param name="addressGuids"></param>
+        /// <returns></returns>
         Task<List<PostalAddressDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
+        /// <summary>
+        /// Get Postal Address on UDPRN value
+        /// </summary>
+        /// <param name="udprn">udprn value of PostalAddress</param>
+        /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
     }
 }

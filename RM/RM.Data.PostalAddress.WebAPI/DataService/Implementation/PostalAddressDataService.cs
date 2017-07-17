@@ -10,6 +10,7 @@
     using System.Threading.Tasks;
     using AutoMapper;
     using CommonLibrary.Utilities.HelperMiddleware;
+    using Data.PostalAddress.WebAPI.Utils;
     using DataDTO;
     using DTO.Model;
     using RM.CommonLibrary.DataMiddleware;
@@ -26,10 +27,7 @@
     /// </summary>
     public class PostalAddressDataService : DataServiceBase<PostalAddress, PostalAddressDBContext>, IPostalAddressDataService
     {
-        private const string INSERT = "I";
-        private const string UPDATE = "U";
-        private const string DELETE = "D";
-        private const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
+        
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogDataService fileProcessingLog = default(IFileProcessingLogDataService);
@@ -52,7 +50,7 @@
             try
             {
                 bool isPostalAddressDeleted = false;
-                string nybDeleteMsg = NYBErrorMessageForDelete;
+                string nybDeleteMsg = PostalAddressConstants.NYBErrorMessageForDelete;
                 if (lstUDPRN != null && lstUDPRN.Any())
                 {
                     var lstAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToListAsync();
@@ -521,6 +519,12 @@
             }
         }
 
+        /// <summary>
+        /// Get Postal Address on UDPRN value
+        /// </summary>
+        /// <param name="udprn">udprn value of PostalAddress</param>
+        /// <param name="pafGuid">pafGuid as Address Type Guid</param>
+        /// <returns></returns>
         public async Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPAFAddress"))
@@ -722,7 +726,7 @@
                 {
                     FileID = Guid.NewGuid(),
                     UDPRN = uDPRN,
-                    AmendmentType = INSERT,
+                    AmendmentType = PostalAddressConstants.INSERT,
                     FileName = strFileName,
                     FileProcessing_TimeStamp = DateTime.UtcNow,
                     FileType = fileType,

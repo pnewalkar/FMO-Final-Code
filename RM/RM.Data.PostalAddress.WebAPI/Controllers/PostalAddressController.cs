@@ -342,7 +342,11 @@ namespace Fmo.API.Services.Controllers
             }
         }
 
-
+        /// <summary>
+        ///  Get Postal Addresses on adress guid's  as search criteria
+        /// </summary>
+        /// <param name="addressGuids"></param>
+        /// <returns></returns>
         [HttpPost("postaladdress/postaladdresses/")]
         public async Task<IActionResult> GetPostalAddresses([FromBody] List<Guid> addressGuids)
         {
@@ -363,6 +367,11 @@ namespace Fmo.API.Services.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Postal Address on UDPRN value
+        /// </summary>
+        /// <param name="udprn">udprn value of PostalAddress</param>
+        /// <returns></returns>
         [HttpGet("postaladdress/pafaddress/{udprn}")]
         public async Task<PostalAddressDTO> GetPAFAddress(int udprn)
         {
