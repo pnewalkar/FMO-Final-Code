@@ -17,6 +17,7 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using System.Data.Entity.Spatial;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation
 {
@@ -425,6 +426,32 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
 
             return isUpdated;
+        }
+
+        // <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode"></param>
+        /// <returns>The approx location/</returns>
+        public async Task<DbGeometry> GetApproxLocation(string postcode)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetApproxLocation"))
+            {
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetApproxLocation);
+                //loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "approxlocation/" + postcode);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                //loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return approxLocation;
+            }
         }
 
         #endregion public methods

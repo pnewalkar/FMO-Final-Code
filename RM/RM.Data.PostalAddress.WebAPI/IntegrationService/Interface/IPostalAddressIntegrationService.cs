@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 
@@ -78,5 +79,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction);
 
         Task<bool> UpdateNotificationMessageByUDPRN(int udprn, string action, string message);
+
+        // <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode"></param>
+        /// <returns>The approx location/</returns>
+        Task<DbGeometry> GetApproxLocation(string postcode);
     }
 }

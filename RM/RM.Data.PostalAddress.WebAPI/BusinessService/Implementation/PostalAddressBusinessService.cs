@@ -254,7 +254,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 if (objAddressLocation == null)
                 {
                     // deriving an approximate Location for the Delivery Point
-                    DbGeometry approxLocation = await addressDataService.GetLocation(objPostalAddress.Postcode);
+                    DbGeometry approxLocation = await postalAddressIntegrationService.GetApproxLocation(objPostalAddress.Postcode);
 
                     var newDeliveryPoint = new DeliveryPointDTO
                     {
@@ -457,14 +457,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CreateAddressAndDeliveryPoint"))
+            using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CreateAddressForDeliveryPoint"))
             {
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.GetPostalAddressDetailsByIdPriority, LoggerTraceConstants.GetPostalAddressDetailsByIdBusinessMethodEntryEventId);
 
-                
+                bool isAddressLocationAvailable = false;
+                double? addLocationXCoOrdinate = 0;
+                double? addLocationYCoOrdinate = 0;
                 List<string> listNames = new List<string> { ReferenceDataCategoryNames.PostalAddressType, ReferenceDataCategoryNames.PostalAddressStatus };
 
                 Guid usrAddressTypeId = GetReferenceData(listNames, ReferenceDataCategoryNames.PostalAddressType, FileType.Usr.ToString().ToUpper(), true);
@@ -478,8 +480,25 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
-                return addressDataService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
+                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
 
+                // check if third partylocation exists
+                var addressLocation = postalAddressIntegrationService.GetAddressLocationByUDPRN(addDeliveryPointDTO.PostalAddressDTO.UDPRN ?? default(int)).Result;
+
+                if (addressLocation == null)
+                {
+                    isAddressLocationAvailable = false;
+                    // get approximate location
+                    var shape = postalAddressIntegrationService.GetApproxLocation(addDeliveryPointDTO.PostalAddressDTO.Postcode);
+                }
+                else
+                {
+                    isAddressLocationAvailable = false;
+                    addLocationXCoOrdinate = Convert.ToDouble(addressLocation.Lattitude);
+                    addLocationYCoOrdinate = Convert.ToDouble(addressLocation.Longitude);
+                }
+
+                return new CreateDeliveryPointModelDTO { ID = postalAddressId, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate =  addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
             }
         }
 
@@ -527,17 +546,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return await addressDataService.GetPAFAddress(udprn, addressTypePAF);
             }
-        }
-
-        /// <summary>
-        /// Deriving approximate location for deliverypoint
-        /// </summary>
-        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
-        /// <returns></returns>
-        public async Task<DbGeometry> GetLocation(string postCode)
-        {
-            DbGeometry location = null;
-            return location;
         }
 
         #endregion public methods

@@ -14,12 +14,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
-        public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
         public virtual DbSet<PostalAddressStatus> PostalAddressStatus { get; set; }
         public virtual DbSet<Postcode> Postcodes { get; set; }
-        public virtual DbSet<PostcodeHierarchy> PostcodeHierarchies { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AddressLocation>()
@@ -141,20 +139,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
                 .Property(e => e.InwardCode)
                 .IsFixedLength()
                 .IsUnicode(false);
-
-            modelBuilder.Entity<PostcodeHierarchy>()
-                .Property(e => e.Postcode)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<PostcodeHierarchy>()
-                .Property(e => e.ParentPostcode)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<PostcodeHierarchy>()
-                .HasOptional(e => e.Postcode1)
-                .WithRequired(e => e.PostcodeHierarchy);
         }
     }
 }

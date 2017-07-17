@@ -28,6 +28,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
         public Guid? SecondaryRouteGUID { get; private set; }
 
         public DateTime RowCreateDateTime { get; private set; }
-        public virtual PostcodeHierarchy PostcodeHierarchy { get; set; }
     }
 }

@@ -441,16 +441,18 @@
         /// Create delivery point for PAF and NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
-        /// <returns>bool</returns>
-        public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
+        /// <returns>Guid address Guid</returns>
+        public Guid CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
         {
             try
             {
-                bool isAddressLocationAvailable = false;
+                //bool isAddressLocationAvailable = false;
+                //double? addLocationXCoOrdinate = 0;
+                //double? addLocationYCoOrdinate = 0;
+
                 Guid returnGuid = Guid.Empty;
-                double? addLocationXCoOrdinate = 0;
-                double? addLocationYCoOrdinate = 0;
-                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAddressAndDeliveryPoint"))
+                
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAddressForDeliveryPoint"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId);
@@ -480,7 +482,8 @@
                     }
 
                     loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId);
-                    return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
+                    // return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
+                    return returnGuid;
                 }
             }
             catch (DbUpdateException dbUpdateException)
@@ -731,24 +734,6 @@
             }
         }
 
-        /// <summary>
-        /// Deriving approximate location for deliverypoint
-        /// </summary>
-        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
-        /// <returns></returns>
-        public async Task<DbGeometry> GetLocation(string postCode)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetLocation"))
-            {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodEntryEventId);
-
-                DbGeometry locationXY = await DataContext.Locations.AsNoTracking().Select(n => n.Shape).FirstOrDefaultAsync();
-
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId);
-                return locationXY;
-            }
-        }
 
         /* To be a part of Unit manager
 
@@ -1601,7 +1586,7 @@
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        //public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
+        //public CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
         //{
         //    try
         //    {
@@ -1758,7 +1743,7 @@
         //    throw new NotImplementedException();
         //}
 
-        //public CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        //public CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         //{
         //    throw new NotImplementedException();
         //}

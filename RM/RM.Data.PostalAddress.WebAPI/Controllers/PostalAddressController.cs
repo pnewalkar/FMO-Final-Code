@@ -139,7 +139,7 @@ namespace Fmo.API.Services.Controllers
         /// </summary>
         /// <param name="searchText">searchText</param>
         /// <returns></returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        /*[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [HttpGet("postaladdress/search/{searchText}")]
         public async Task<IActionResult> SearchAddressdetails(string searchText)
         {
@@ -202,7 +202,7 @@ namespace Fmo.API.Services.Controllers
                 var realExceptions = ae.Flatten().InnerException;
                 throw realExceptions;
             }
-        }
+        }*/
 
         /// <summary>
         ///  Filters postal address on basis of postal address id.
@@ -316,16 +316,16 @@ namespace Fmo.API.Services.Controllers
         /// <returns>bool</returns>
         [HttpPost("postaladdress/savedeliverypointaddress/")]
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        public IActionResult CreateAddressAndDeliveryPoint([FromBody] AddDeliveryPointDTO addDeliveryPointDTO)
+        public IActionResult CreateAddressForDeliveryPoint([FromBody] AddDeliveryPointDTO addDeliveryPointDTO)
         {
             try
             {
-                using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressAndDeliveryPoint"))
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.CreateAddressForDeliveryPoint"))
                 {
                     string methodName = MethodHelper.GetActualAsyncMethodName();
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    var deliveryPointAddressDetails = businessService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                    var deliveryPointAddressDetails = businessService.CreateAddressForDeliveryPoint(addDeliveryPointDTO);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(deliveryPointAddressDetails);
                 }

@@ -72,7 +72,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="addDeliveryPointDTO">AddDeliveryPointDTO as input</param>
         /// <returns>CreateDeliveryPointModelDTO</returns>
-        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+        CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
 
         /// <summary>
         /// Get Postal address details depending on the UDPRN
@@ -84,12 +84,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         Task<List<PostalAddressDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
         Task<PostalAddressDTO> GetPAFAddress(int udprn);
-
-        /// <summary>
-        /// Deriving approximate location for deliverypoint
-        /// </summary>
-        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
-        /// <returns></returns>
-        Task<DbGeometry> GetLocation(string postCode);
     }
 }

@@ -99,8 +99,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// Create delivery point for PAF and NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
-        /// <returns>bool</returns>
-        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus);
+        /// <returns>Guid</returns>
+        Guid CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus);
 
         /// <summary>
         /// Check For Duplicate Address With DeliveryPoints
@@ -116,12 +116,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         Task<List<Guid>> GetSelectedPostcode(string selectedItem);*/
 
         Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
-
-        /// <summary>
-        /// Deriving approximate location for deliverypoint
-        /// </summary>
-        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
-        /// <returns></returns>
-        Task<DbGeometry> GetLocation(string postCode);
     }
 }
