@@ -192,7 +192,6 @@
         /// <returns>Link of Access Link Entity</returns>
         private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
         {
-            // TODO (UnitLocations is not available)
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
                 DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();

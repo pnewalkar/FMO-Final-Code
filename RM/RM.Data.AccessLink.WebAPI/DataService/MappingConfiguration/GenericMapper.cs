@@ -40,13 +40,4 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.MappingConfiguration
             Mapper.Map<TSource, TDestination>(source,destination);
         }
     }
-
-    //public static class MappingExpressionExtensions
-    //{
-    //    public static IMappingExpression<TSource, TDestination> IgnoreAllUnmapped<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
-    //    {
-    //        expression.ForAllMembers(opt => opt.Ignore());
-    //        return expression;
-    //    }
-    //}
 }
