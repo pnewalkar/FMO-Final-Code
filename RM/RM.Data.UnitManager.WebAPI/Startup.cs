@@ -11,12 +11,15 @@ using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.HttpHandler;
+using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Interface;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 using RM.DataManagement.UnitManager.WebAPI.DataService;
 using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.UnitManager.WebAPI.Entity;
 using RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation;
 
 namespace RM.DataManagement.UnitManager.WebAPI
@@ -88,7 +91,7 @@ namespace RM.DataManagement.UnitManager.WebAPI
             });
 
             // Register Infrastructure
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            services.AddScoped<IDatabaseFactory<UnitManagerDbContext>, DatabaseFactory<UnitManagerDbContext>>();
 
             // Register BusinessServices
             services.AddScoped<IUnitLocationBusinessService, UnitLocationBusinessService>();
@@ -104,6 +107,7 @@ namespace RM.DataManagement.UnitManager.WebAPI
 
             // Register Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
+            services.AddScoped<IHttpHandler, HttpHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
