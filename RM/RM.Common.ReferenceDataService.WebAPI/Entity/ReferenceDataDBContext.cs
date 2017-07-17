@@ -34,6 +34,11 @@ namespace RM.Common.ReferenceData.WebAPI.Entities
                 .Property(e => e.DisplayText)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<ReferenceData>()
+               .HasMany(e => e.ReferenceData1)
+               .WithOptional(e => e.ReferenceData2)
+               .HasForeignKey(e => e.ParentReferenceDataID);
+
             modelBuilder.Entity<ReferenceDataCategory>()
                 .Property(e => e.CategoryName)
                 .IsUnicode(false);
@@ -41,7 +46,6 @@ namespace RM.Common.ReferenceData.WebAPI.Entities
             modelBuilder.Entity<ReferenceDataCategory>()
                 .HasMany(e => e.ReferenceDatas)
                 .WithRequired(e => e.ReferenceDataCategory)
-                .HasForeignKey(e => e.ReferenceDataCategory_GUID)
                 .WillCascadeOnDelete(false);
         }
     }
