@@ -13,29 +13,23 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <summary>
         /// Gets first five postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText"></param>
-        /// <param name="unitlocationId"></param>
-        /// <param name="postcodeTypeGUID"></param>
-        /// <returns>list of PostCodeDataDTO</returns>
-        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId, Guid postcodeTypeGUID);
+        /// <param name="searchInputs">SearchInputDataDto</param>
+        /// <returns>collection of PostCodeDataDTO</returns>
+        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForBasicSearch(SearchInputDataDto searchInputs);
 
         /// <summary>
         /// Gets count of postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText"></param>
-        /// <param name="unitlocationId"></param>
-        /// <param name="postcodeTypeGUID"></param>
-        /// <returns>count of postcodeunits</returns>
-        Task<int> GetPostcodeUnitCount(string searchText, Guid unitlocationId, Guid postcodeTypeGUID);
+        /// <param name="searchInputs">SearchInputDataDto</param>
+        /// <returns>count of PostcodeUnit</returns>
+        Task<int> GetPostcodeUnitCount(SearchInputDataDto searchInputs);
 
         /// <summary>
         /// Gets all postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText"></param>
-        /// <param name="unitlocationId"></param>
-        /// <param name="postcodeTypeGUID"></param>
-        /// <returns>list of PostCodeDataDTO</returns>
-        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid unitlocationId, Guid postcodeTypeGUID);
+        /// <param name="searchInputs">SearchInputDataDto</param>
+        /// <returns>collection of PostCodeDataDTO</returns>
+        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForAdvanceSearch(SearchInputDataDto searchInputs);
 
         /// <summary>
         /// Get post code ID by passing postcode.

@@ -24,6 +24,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
     {
         private const int BNGCOORDINATESYSTEM = 27700;
         private const string PostCodeType = "Postcode Type";
+        private const int searchResultCount = 5;
 
         #region property declaration
 
@@ -137,8 +138,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 
                 //reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
+                SearchInputDataDto searchInputs = new SearchInputDataDto
+                {
+                    SearchText = searchText,
+                    UserUnitLocationId = userUnit,
+                    PostcodeTypeGUID = postcodeTypeGUID,
+                    SearchResultCount = searchResultCount
+                };
 
-                var postcodeUnits = await postCodeDataService.GetPostcodeUnitForBasicSearch(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
+                var postcodeUnits = await postCodeDataService.GetPostcodeUnitForBasicSearch(searchInputs).ConfigureAwait(false);
                 List<PostCodeDTO> postCodeList = postcodeUnits.Select(x => new PostCodeDTO
                 {
                     PostcodeUnit = x.PostcodeUnit
@@ -164,7 +172,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 
                 //reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
-                var postCodeUnitCount = await postCodeDataService.GetPostcodeUnitCount(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
+                SearchInputDataDto searchInputs = new SearchInputDataDto
+                {
+                    SearchText = searchText,
+                    UserUnitLocationId = userUnit,
+                    PostcodeTypeGUID = postcodeTypeGUID,
+                    SearchResultCount = searchResultCount
+                };
+
+                var postCodeUnitCount = await postCodeDataService.GetPostcodeUnitCount(searchInputs).ConfigureAwait(false);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
                 return postCodeUnitCount;
@@ -186,7 +202,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 
                 //reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
-                var postcodeUnits = await postCodeDataService.GetPostcodeUnitForAdvanceSearch(searchText, userUnit, postcodeTypeGUID).ConfigureAwait(false);
+                SearchInputDataDto searchInputs = new SearchInputDataDto
+                {
+                    SearchText = searchText,
+                    UserUnitLocationId = userUnit,
+                    PostcodeTypeGUID = postcodeTypeGUID,
+                    SearchResultCount = searchResultCount
+                };
+
+                var postcodeUnits = await postCodeDataService.GetPostcodeUnitForAdvanceSearch(searchInputs).ConfigureAwait(false);
 
                 List<PostCodeDTO> postCodeList = postcodeUnits.Select(x => new PostCodeDTO
                 {

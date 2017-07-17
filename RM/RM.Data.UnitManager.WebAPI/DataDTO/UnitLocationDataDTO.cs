@@ -15,7 +15,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
 
         public Guid LocationId { get; set; }
 
-        [JsonConverter(typeof(DbGeometryGeoJsonConverter))]
         public DbGeometry Shape { get; set; }
     }
 }

@@ -17,7 +17,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     /// </summary>
     public class PostCodeDataService : DataServiceBase<Postcode, UnitManagerDbContext>, IPostcodeDataService
     {
-        private const int searchResultCount = 5;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public PostCodeDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
@@ -30,28 +29,25 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <summary>
         /// Gets first five postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText"></param>
-        /// <param name="unitlocationId"></param>
-        /// <param name="postcodeTypeGUID"></param>
-        /// <returns>list</returns>
-        public async Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId, Guid postcodeTypeGUID)
+        /// <param name="searchInputs">SearchInputDataDto</param>
+        /// <returns>collection of PostCodeDataDTO</returns>
+        public async Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForBasicSearch(SearchInputDataDto searchInputs)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeUnitForBasicSearch);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeUnitForBasicSearch"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                searchText = searchText ?? string.Empty;
                 var postCodeDataDto = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
                                              join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
-                                             where p.Postcode.StartsWith(searchText) && p.PostcodeTypeGUID == postcodeTypeGUID
-                                              && l.ID == unitlocationId
+                                             where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
+                                              && l.ID == searchInputs.UserUnitLocationId
                                              select new PostCodeDataDTO
                                              {
                                                  PostcodeUnit = p.Postcode,
                                                  ID = p.ID
-                                             }).Take(searchResultCount).ToListAsync();
+                                             }).Take(searchInputs.SearchResultCount).ToListAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
                 return postCodeDataDto;
@@ -61,59 +57,53 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <summary>
         /// Gets count of postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText"></param>
-        /// <param name="unitlocationId"></param>
-        /// <param name="postcodeTypeGUID"></param>
-        /// <returns>count of postcodeunits</returns>
-        public async Task<int> GetPostcodeUnitCount(string searchText, Guid unitlocationId, Guid postcodeTypeGUID)
+        /// <param name="searchInputs">SearchInputDataDto</param>
+        /// <returns>count of PostcodeUnit</returns>
+        public async Task<int> GetPostcodeUnitCount(SearchInputDataDto searchInputs)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeUnitCount);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeUnitCount"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                searchText = searchText ?? string.Empty;
-                var postCodeDetailsDto = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
-                                                join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
-                                                join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
-                                                where p.Postcode.StartsWith(searchText) && p.PostcodeTypeGUID == postcodeTypeGUID //TODO : Call reference data service - Postcode- 9813B8BE-83FB-48D0-A8A2-703B2524002B
-                                                 && l.ID == unitlocationId
-                                                select new PostCodeDataDTO
-                                                {
-                                                    PostcodeUnit = p.Postcode,
-                                                    ID = p.ID
-                                                }).CountAsync();
+                var postCodeDataDto = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
+                                             join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
+                                             join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
+                                             where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
+                                              && l.ID == searchInputs.UserUnitLocationId
+                                             select new PostCodeDataDTO
+                                             {
+                                                 PostcodeUnit = p.Postcode,
+                                                 ID = p.ID
+                                             }).CountAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return postCodeDetailsDto;
+                return postCodeDataDto;
             }
         }
 
         /// <summary>
         /// Gets all postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText"></param>
-        /// <param name="unitlocationId"></param>
-        /// <param name="postcodeTypeGUID"></param>
-        /// <returns>list</returns>
-        public async Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid unitlocationId, Guid postcodeTypeGUID)
+        /// <param name="searchInputs">SearchInputDataDto</param>
+        /// <returns>collection of PostCodeDataDTO</returns>
+        public async Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForAdvanceSearch(SearchInputDataDto searchInputs)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeUnitForAdvanceSearch);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeUnitForAdvanceSearch"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                searchText = searchText ?? string.Empty;
                 var postCodeDataDto = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
                                              join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
-                                             where p.Postcode.StartsWith(searchText) && p.PostcodeTypeGUID == postcodeTypeGUID
-                                              && l.ID == unitlocationId
+                                             where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
+                                              && l.ID == searchInputs.UserUnitLocationId
                                              select new PostCodeDataDTO
                                              {
                                                  PostcodeUnit = p.Postcode,
                                                  ID = p.ID
-                                             }).Take(searchResultCount).ToListAsync();
+                                             }).ToListAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
                 return postCodeDataDto;
