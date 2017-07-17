@@ -126,3 +126,15 @@ span.closeRouteWindow {
 .routeLogList md-list-item, md-list-item .md-list-item-inner {
   height: 28px;
   min-height: 28px; }
+
+.routeLogDialog h1{
+    margin-bottom: 5px;
+  }
+
+.routeLogDialog md-input-container {
+    margin-right: 12px;
+}
+
+.routeLogDialog md-input-container.md-block.md-input-has-placeholder {
+    margin-right: 0px;
+}

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace RM.DataManagement.AccessLink.WebAPI.DataDTOs
+namespace RM.Data.AccessLink.WebAPI.DataDTOs
 {
     public class NetworkLinkDataDTO
     {
@@ -37,12 +34,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataDTOs
 
         public DateTime RowCreateDateTime { get; set; }
 
+
         public virtual AccessLinkDataDTO AccessLinkDataDTOs { get; set; }
 
         public virtual NetworkNodeDataDTO NetworkNodeDataDTO { get; set; }
 
         public virtual NetworkNodeDataDTO NetworkNodeDataDTO1 { get; set; }
-
-
     }
 }

@@ -10,9 +10,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
-    using System.Diagnostics;
     using System.Linq;
-    using System.Reflection;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
     using Entities;
@@ -23,7 +21,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
     using AutoMapper;
     using DTOs;
     using DataDTOs;
-  
+    using Data.AccessLink.WebAPI.DataDTOs;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -56,6 +54,16 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
             {
                 string methodName = typeof(AccessLinkDataService) + "." + nameof(GetAccessLinks);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                var result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<AccessLink,AccessLinkDataDTO >();
+                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
+                 
+                });
+                Mapper.Configuration.CreateMapper();
 
                 var result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
@@ -161,6 +169,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
+                    accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return accessLinkCreationSuccess;
                 }
             }
@@ -197,7 +207,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
                 accessLinkDataDTOs.AddRange(overLappingAccessLinkDTOs);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return accessLinkDataDTOs;
+                return accessLinkDTOs;
             }
         }
 
@@ -209,11 +219,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
         /// <returns>Link of Access Link Entity</returns>
         private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
         {
-
-
-
-
-
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
                 DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();
