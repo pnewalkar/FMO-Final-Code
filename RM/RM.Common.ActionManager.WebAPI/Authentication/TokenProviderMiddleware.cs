@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Common.ActionManager.WebAPI.DataDTO;
+using RM.Common.ActionManager.WebAPI.DTO;
+using RM.Common.ActionManager.WebAPI.BusinessService.Interface;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 
@@ -31,15 +32,13 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         private readonly TokenProviderOptions options;
         private readonly JsonSerializerSettings serializerSettings;
         private ILoggingHelper loggingHelper;
-        private IActionManagerDataService actionManagerService = default(IActionManagerDataService);
-        private IUserRoleUnitDataService userRoleUnitService = default(IUserRoleUnitDataService);
+        private IActionManagerBusinessService actionManagerBusinessService = default(IActionManagerBusinessService);
 
         public TokenProviderMiddleware(
-            RequestDelegate next,
-            IOptions<TokenProviderOptions> options,
-            ILoggingHelper loggingHelper,
-            IActionManagerDataService actionManagerService,
-            IUserRoleUnitDataService userRoleUnitService)
+           RequestDelegate next,
+           IOptions<TokenProviderOptions> options,
+           ILoggingHelper loggingHelper,
+           IActionManagerBusinessService actionManagerBusinessService)
         {
             this.next = next;
             this.loggingHelper = loggingHelper;
@@ -52,8 +51,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 Formatting = Formatting.Indented
             };
 
-            this.actionManagerService = actionManagerService;
-            this.userRoleUnitService = userRoleUnitService;
+            this.actionManagerBusinessService = actionManagerBusinessService;
         }
 
         /// <summary>
@@ -67,6 +65,11 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             return (long)timeSpan.TotalSeconds;
         }
 
+        /// <summary>
+        /// Generate token
+        /// </summary>
+        /// <param name="context">http context</param>
+        /// <returns>Generated token</returns>
         public Task Invoke(HttpContext context)
         {
             // If the request path doesn't match, skip
@@ -124,12 +127,19 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             }
         }
 
+        /// <summary>
+        /// This method generates token depending on the user and selected unit
+        /// </summary>
+        /// <param name="context">http context</param>
+        /// <returns>Token</returns>
         private async Task GenerateToken(HttpContext context)
         {
             try
             {
                 var username = context.Request.Form["username"];
                 Guid unitGuid;
+                string unitType = string.Empty;
+                string unitName = string.Empty;
                 bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
 
                 var identity = await options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
@@ -140,18 +150,30 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     return;
                 }
 
-                if (unitGuid == Guid.Empty)
+                //Get the Unit dtails for current user. Details would be empty for the user who has access to units above mail center
+                UserUnitInfoDataDTO userUnitDetails = await actionManagerBusinessService.GetUserUnitInfo(username, unitGuid);
+
+                if (userUnitDetails == null)
                 {
-                    unitGuid = await userRoleUnitService.GetUserUnitInfo(username);
+                    //Get the Unit details from reference data if current user has access to the units above mail center
+                    userUnitDetails = await actionManagerBusinessService.GetUserUnitInfoFromReferenceData(username, unitGuid);
                 }
 
-                UserUnitInfoDTO userUnitInfoDto = new UserUnitInfoDTO
+                //unitGuid would be empty while loading the application for first time for the current session for the current user
+                if (unitGuid == Guid.Empty)
+                {
+                    unitGuid = userUnitDetails.LocationId;
+                }
+
+                UserUnitInfoDataDTO userUnitInfoDto = new UserUnitInfoDataDTO
                 {
                     UserName = username,
-                    UnitGuid = unitGuid
+                    LocationId = unitGuid,
+                    UnitType = userUnitDetails.UnitType,
+                    UnitName = userUnitDetails.UnitName
                 };
 
-                var roleAccessDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+                var roleAccessDataDto = await actionManagerBusinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
 
                 var now = DateTime.UtcNow;
 
@@ -162,12 +184,13 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, await options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.UserData, roleAccessDto.FirstOrDefault().Unit_GUID.ToString()),
+                new Claim(ClaimTypes.UserData, roleAccessDataDto.FirstOrDefault().Unit_GUID.ToString()),
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.PrimarySid, roleAccessDto.FirstOrDefault().UserId.ToString())
+                new Claim(ClaimTypes.PrimarySid, roleAccessDataDto.FirstOrDefault().UserId.ToString()),
+                new Claim(ClaimTypes.Upn, roleAccessDataDto.FirstOrDefault().UnitType.ToString())
             };
 
-                roleAccessDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
+                roleAccessDataDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
 
                 // Create the JWT and write it to a string
                 var jwt = new JwtSecurityToken(
@@ -179,17 +202,17 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     signingCredentials: options.SigningCredentials);
                 var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-                var response = new
+                ResponseDTO responseDTO = new ResponseDTO
                 {
-                    access_token = encodedJwt,
-                    expires_in = (int)options.Expiration.TotalSeconds,
-                    roleActions = roleAccessDto,
-                    username = username
+                    AccessToken = encodedJwt,
+                    ExpiresIn = (int)options.Expiration.TotalSeconds,
+                    RoleActions = roleAccessDataDto,
+                    UserName = username
                 };
 
                 // Serialize and return the response
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(response, serializerSettings));
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(responseDTO, serializerSettings));
             }
             catch (Exception ex)
             {

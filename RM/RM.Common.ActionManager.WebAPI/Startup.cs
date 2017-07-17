@@ -6,11 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
+using RM.Common.ActionManager.WebAPI.BusinessService;
+using RM.Common.ActionManager.WebAPI.BusinessService.Interface;
+using RM.Common.ActionManager.WebAPI.DataService;
+using RM.Common.ActionManager.WebAPI.Entity;
+using RM.Common.ActionManager.WebAPI.Interfaces;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.Entities;
+
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -85,13 +87,13 @@ namespace RM.Common.ActionManager.WebAPI
             });
 
             // Infrastructure
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            services.AddScoped<IDatabaseFactory<ActionDBContext>, DatabaseFactory<ActionDBContext>>();
 
             // BusinessServices
+            services.AddScoped<IActionManagerBusinessService, ActionManagerBusinessService>();
 
             // DataServices
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
-            services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
 
             // Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
