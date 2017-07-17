@@ -24,6 +24,13 @@
         NameValuePair GetReferenceDataByNameValuePairs(Guid id);
 
         /// <summary>
+        /// Retrieval of name-value pairs as a discrete type of reference data using Guid id.
+        /// </summary>
+        /// <param name="id">Guid id</param>
+        /// <returns>NameValuePair</returns>
+        NameValuePair GetReferenceDataByNameValuePairs(Guid id);
+
+        /// <summary>
         /// retrieval of name-value pairs as a discrete type of reference data.
         /// </summary>
         /// <param name="appGroupName">appGroupName is recorded as the category name</param>
@@ -37,6 +44,13 @@
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         SimpleListDTO GetSimpleListsReferenceData(string listName);
 
+        SimpleListDTO GetSimpleListsReferenceData(Guid id);
+
+        /// <summary>
+        /// Retrieval of simple lists as a discrete type of reference data using Guid id
+        /// </summary>
+        /// <param name="id">Guid id</param>
+        /// <returns>SimpleListDTO</returns>
         SimpleListDTO GetSimpleListsReferenceData(Guid id);
 
         /// <summary>
