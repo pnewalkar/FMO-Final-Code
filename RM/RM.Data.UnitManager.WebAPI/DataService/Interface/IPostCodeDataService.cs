@@ -34,8 +34,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <summary>
         /// Get post code ID by passing postcode.
         /// </summary>
-        /// <param name="postCode"> Post Code</param>
+        /// <param name="PostcodeDataDTO"> PostcodeDataDTO</param>
         /// <returns>Post code ID</returns>
-        Task<Guid> GetPostcodeID(string postCode);
+        Task<PostCodeDataDTO> GetPostcodeID(string postCode);
     }
 }

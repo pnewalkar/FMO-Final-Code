@@ -234,10 +234,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                var getPostCodeID = await postCodeDataService.GetPostcodeID(postCode);
-
+                var postCodeData = await postCodeDataService.GetPostcodeID(postCode);
+                var postCodeID = postCodeData != null ? postCodeData.ID : Guid.Empty;
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
-                return getPostCodeID;
+                return postCodeID;
             }
         }
 
@@ -254,7 +254,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                var scenarioDataList = await scenarioDataService.GetRouteScenarios(operationStateID, locationID);
+                var scenarioDataList = await scenarioDataService.GetScenariosByOperationStateAndDeliveryUnit(operationStateID, locationID);
                 List<ScenarioDTO> scenariolist = GenericMapper.MapList<ScenarioDataDTO, ScenarioDTO>(scenarioDataList.ToList());
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);

@@ -114,18 +114,22 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// Get post code ID by passing postcode.
         /// </summary>
         /// <param name="postCode"> Post Code</param>
-        /// <returns>Post code ID</returns>
-        public async Task<Guid> GetPostcodeID(string postCode)
+        /// <returns>PostCodeDataDTO</returns>
+        public async Task<PostCodeDataDTO> GetPostcodeID(string postCode)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeID);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeID"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                var postCodeDetail = await DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefaultAsync();
+                var postCodeDetail = await DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase))
+                    .Select(l => new PostCodeDataDTO
+                    {
+                        ID = l.ID
+                    }).SingleOrDefaultAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return postCodeDetail != null ? postCodeDetail.ID : Guid.Empty;
+                return postCodeDetail;
             }
         }
     }
