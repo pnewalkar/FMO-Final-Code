@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
@@ -17,6 +17,9 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 
+/// <summary>
+/// Class definition for the Third Party integration Service members
+/// </summary>
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 {
     public class ThirdPartyAddressLocationIntegrationService : IThirdPartyAddressLocationIntegrationService
@@ -33,6 +36,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 
         public ThirdPartyAddressLocationIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
+            // Store injected dependencies
             this.httpHandler = httpHandler;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
@@ -298,6 +302,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             }
         }
 
+        /// <summary>
+        /// Get PAF address details depending on the UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <returns>returns PostalAddress object</returns>
         public async Task<PostalAddressDTO> GetPAFAddress(int uDPRN)
         {
             string methodName = MethodHelper.GetActualAsyncMethodName();
@@ -315,6 +324,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             return postalAddressDTO;
         }
 
+        /// <summary>
+        /// Get Delivery Point details depending on the UDPRN
+        /// </summary>
+        /// <param name="addressId">Postal Address id</param>
+        /// <returns>returns DeliveryPoint object</returns>
         public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId)
         {
             try
@@ -339,6 +353,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             }
         }
 
+        /// <summary>
+        /// Delete Delivery Point details depending on the DeliveryPoint id
+        /// </summary>
+        /// <param name="addressId">Delivery Point id</param>
+        /// <returns>returns whether Delivery Point is deleted or not</returns>
         public async Task<bool> DeleteDeliveryPoint(Guid id)
         {
             string methodName = MethodHelper.GetActualAsyncMethodName();
@@ -356,6 +375,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             return status;
         }
 
+        /// <summary>
+        /// Insert new Delivery Point details depending on the DeliveryPoint id
+        /// </summary>
+        /// <param name="objDeliveryPoint">Delivery Point object</param>
+        /// <returns>returns whether Delivery Point is created or not</returns>
         public async Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
         {
             string methodName = MethodHelper.GetActualAsyncMethodName();
@@ -378,6 +402,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             return Convert.ToBoolean(isDeliveryPointCreated);
         }
 
+        /// <summary>
+        /// Get the reference data category details based on the list of categores
+        /// </summary>
+        /// <param name="listNames">Category names</param>
+        /// <returns>returns Category details</returns>
         public async Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
         {
             List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
@@ -400,6 +429,13 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             return listReferenceCategories;
         }
 
+        /// <summary>
+        /// Update the Notification By UDPRN
+        /// </summary>
+        /// <param name="udprn">UDPRN id</param>
+        /// <param name="oldAction">old action</param>
+        /// <param name="newAction">new action</param>
+        /// <returns></returns>
         public async Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction)
         {
             string methodName = MethodHelper.GetActualAsyncMethodName();
