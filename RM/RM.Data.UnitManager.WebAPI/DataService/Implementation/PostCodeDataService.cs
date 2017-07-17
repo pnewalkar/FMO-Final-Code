@@ -184,7 +184,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                         else
                         {
                             // get approx location for that unit
-                            var dpForUnit = DataContext.DeliveryPoints.FirstOrDefault(dp => DataContext.PostalAddressIdentifiers.Any(pa => pa.ID == unitId && pa.PostalAddressID == dp.PostalAddressID);
+                            var dpForUnit = DataContext.DeliveryPoints.FirstOrDefault(dp => DataContext.PostalAddressIdentifiers.Any(pa => pa.ID == unitId && pa.PostalAddressID == dp.PostalAddressID));
 
                             if (dpForUnit != null)
                             {
