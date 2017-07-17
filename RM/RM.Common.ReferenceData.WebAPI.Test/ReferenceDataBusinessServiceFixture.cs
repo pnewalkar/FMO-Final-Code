@@ -36,9 +36,25 @@ namespace RM.Common.ReferenceData.WebAPI.Test
         }
 
         [Test]
+        public void Test_GetReferenceDataByNameValuePairsByGuid()
+        {
+            var result = testCandidate.GetReferenceDataByNameValuePairs(new Guid("FE392EC6-92D6-4585-AA1E-19B60E16298B"));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Name, "key");
+            Assert.AreEqual(result.Value, "value");
+        }
+
+        [Test]
         public void Test_GetSimpleListsReferenceData()
         {
             var result = testCandidate.GetSimpleListsReferenceData("AccessLinkStatus");
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_GetSimpleListsReferenceDataByGuid()
+        {
+            var result = testCandidate.GetSimpleListsReferenceData(new Guid("FE392EC6-92D6-4585-AA1E-19B60E16298B"));
             Assert.IsNotNull(result);
         }
 
@@ -71,7 +87,9 @@ namespace RM.Common.ReferenceData.WebAPI.Test
             mockFileProvider.Setup(x => x.GetFileInfo(It.IsAny<string>())).Returns(fileInfo);
 
             mockReferenceDataDataService.Setup(x => x.GetNameValueReferenceData(It.IsAny<string>(), It.IsAny<string>())).Returns(collection);
+            mockReferenceDataDataService.Setup(x => x.GetNameValueReferenceData(It.IsAny<Guid>())).Returns(collection);
             mockReferenceDataDataService.Setup(x => x.GetSimpleListReferenceData(It.IsAny<string>())).Returns(new SimpleListDTO() { });
+            mockReferenceDataDataService.Setup(x => x.GetSimpleListReferenceData(It.IsAny<Guid>())).Returns(new SimpleListDTO() { });
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
