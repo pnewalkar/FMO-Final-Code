@@ -41,9 +41,6 @@
       "dependencies": {
         "RM.CommonLibrary": {
           "target": "project"
-        },
-        "RM.CommonLibrary.EntityFramework": {
-          "target": "project"
         }
       },
       "frameworkAssemblies": {

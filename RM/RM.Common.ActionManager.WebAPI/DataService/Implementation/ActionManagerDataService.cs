@@ -94,7 +94,6 @@ namespace RM.Common.ActionManager.WebAPI.DataService
                 }
                 catch (Exception e)
                 {
-
                     return null;
                 }
             }
