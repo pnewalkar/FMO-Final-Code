@@ -3,13 +3,13 @@ using RM.DataManagement.DeliveryRoute.WebAPI.DataDTO;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
 {
-    public interface IPostCodeDataService
+    public interface IPostcodeDataService
     {
         /// <summary>
         /// Get postcode details by passing postcode
         /// </summary>
-        /// <param name="postCodeUnit">Postcode</param>
+        /// <param name="postcodeUnit">Postcode</param>
         /// <returns></returns>
-        Task<PostCodeDataDTO> GetPostCode(string postCodeUnit);
+        Task<PostcodeDataDTO> GetPostcode(string postcodeUnit);
     }
 }

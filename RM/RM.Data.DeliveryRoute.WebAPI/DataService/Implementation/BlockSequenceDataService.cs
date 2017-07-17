@@ -8,9 +8,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
 {
     public class BlockSequenceDataService : DataServiceBase<BlockSequence, RouteDBContext>, IBlockSequenceDataService
     {
-        private int priority = LoggerTraceConstants.DeliveryRouteAPIPriority;
-        private int entryEventId = LoggerTraceConstants.BlockSequenceDataServiceMethodEntryEventId;
-        private int exitEventId = LoggerTraceConstants.BlockSequenceDataServiceMethodExitEventId;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         /// <summary>
@@ -30,10 +27,10 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <param name="deliveryPointId">Delivery point unique id</param>
         public void SaveDeliveryPointRouteMapping(Guid routeId, Guid deliveryPointId)
         {
-            string methodName = typeof(DeliveryRouteDataService) + "." + nameof(SaveDeliveryPointRouteMapping);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveDeliveryPointRouteMapping"))
             {
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = typeof(DeliveryRouteDataService) + "." + nameof(SaveDeliveryPointRouteMapping);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.BlockSequenceDataServiceMethodEntryEventId);
 
                 Guid blockId = DataContext.Routes.AsNoTracking().Where(n => n.ID == routeId).SingleOrDefault().UnSequencedBlockID.Value;
 
@@ -48,7 +45,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
 
                 DataContext.SaveChanges();
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.BlockSequenceDataServiceMethodExitEventId);
             }
         }
     }

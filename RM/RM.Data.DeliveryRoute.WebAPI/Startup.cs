@@ -97,7 +97,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI
             services.AddScoped<IDeliveryRouteIntegrationService, DeliveryRouteIntegrationService>();
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
             services.AddScoped<DataService.IBlockSequenceDataService, DataService.BlockSequenceDataService>();
-            services.AddScoped<DataService.IPostCodeDataService, DataService.PostCodeDataService>();
+            services.AddScoped<DataService.IPostcodeDataService, DataService.PostcodeDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
