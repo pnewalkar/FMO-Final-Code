@@ -38,10 +38,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <returns>
         /// List of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        public async Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID)
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsByUser(Guid userId, Guid postcodeAreaGUID)
         {
-            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetDeliveryUnitsForUser);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryUnitsForUser"))
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetDeliveryUnitsByUser);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryUnitsByUser"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
 

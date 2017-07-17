@@ -17,7 +17,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <returns>
         /// The list of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsForUser(Guid userId);
+        Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsByUser(Guid userId);
 
         /// <summary>
         /// Get the postcode sector by the UDPRN id

@@ -41,7 +41,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
-                var unitLocations = await unitLocationBusinessService.GetDeliveryUnitsForUser(UserId);
+                var unitLocations = await unitLocationBusinessService.GetDeliveryUnitsByUser(UserId);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
                 return unitLocations;
             }

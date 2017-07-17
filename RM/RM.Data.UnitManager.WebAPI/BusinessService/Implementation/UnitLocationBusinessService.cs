@@ -62,9 +62,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>
         /// List of <see cref="UnitLocationDTO" />.
         /// </returns>
-        public async Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsForUser(Guid userId)
+        public async Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsByUser(Guid userId)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetDeliveryUnitsForUser);
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetDeliveryUnitsByUser);
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryUnitsForUser"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
@@ -72,7 +72,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 //reference data value for PostcodeSector with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeArea.GetDescription()).Result;
 
-                var unitLocationDataDtoList = await unitLocationDataService.GetDeliveryUnitsForUser(userId, Guid.NewGuid());
+                var unitLocationDataDtoList = await unitLocationDataService.GetDeliveryUnitsByUser(userId, Guid.NewGuid());
 
                 var unitLocationDtoList = unitLocationDataDtoList.Select(x => new UnitLocationDTO
                 {
@@ -269,8 +269,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <returns>List</returns>
         public async Task<IEnumerable<PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetDeliveryUnitsForUser);
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostCodeUnitCount"))
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostcodes);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostcodes"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 

@@ -15,7 +15,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <returns>
         /// The list of <see cref="UnitLocationDataDTO"/>.
         /// </returns>
-        Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID);
+        Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsByUser(Guid userId, Guid postcodeAreaGUID);
 
         /// <summary>
         /// Gets postcodes details by postcodeGuids
