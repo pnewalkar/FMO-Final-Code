@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Data.Entity;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.UnitManager.WebAPI.DataDTO;
+using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService
 {
-    public class ScenarioDataService : DataServiceBase<Scenario, RMDBContext>//, IScenarioDataService
+    /// <summary>
+    /// DataService to interact with Scenario entity and handle CRUD operations.
+    /// </summary>
+    public class ScenarioDataService : DataServiceBase<Scenario, UnitManagerDbContext>, IScenarioDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
@@ -20,29 +23,37 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// Initializes a new instance of the <see cref="ScenarioDataService"/> class.
         /// </summary>
         /// <param name="databaseFactory">IDatabaseFactory reference</param>
-        public ScenarioDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
+        public ScenarioDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            // Store injected dependencies
             this.loggingHelper = loggingHelper;
         }
 
         /// <summary>
-        /// Fetch the Delivery Scenario by passing the operationstateID and deliveryUnitID.
+        /// Get the list of route scenarios by the operationstateID and locationID.
         /// </summary>
         /// <param name="operationStateID">Guid operationStateID</param>
-        /// <param name="deliveryUnitID">Guid deliveryUnitID</param>
+        /// <param name="locationID">Guid locationID</param>
         /// <returns>List</returns>
-        public List<DTO.ScenarioDTO> FetchScenario(Guid operationStateID, Guid deliveryUnitID)
+        public async Task<IEnumerable<ScenarioDataDTO>> GetRouteScenarios(Guid operationStateID, Guid locationID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchScenario"))
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetRouteScenarios);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteScenarios"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.ScenarioDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.ScenarioDataServiceMethodEntryEventId);
 
-                IEnumerable<Scenario> result = DataContext.Scenarios.AsNoTracking().ToList().Where(x => x.OperationalState_GUID == operationStateID && x.Unit_GUID == deliveryUnitID);
-                var fetchScenario = GenericMapper.MapList<Scenario, DTO.ScenarioDTO>(result.ToList());
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.ScenarioDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return fetchScenario;
+                var scenarios = await (from Scenario in DataContext.Scenarios.AsNoTracking()
+                                       join ScenarioStatus in DataContext.ScenarioStatus.AsNoTracking() on Scenario.ID equals ScenarioStatus.ScenarioID
+                                       where ScenarioStatus.ScenarioStatusGUID == operationStateID && Scenario.LocationID == locationID
+                                       select new ScenarioDataDTO
+                                       {
+                                           ScenarioName = Scenario.ScenarioName,
+                                           ID = Scenario.ID
+                                       }).OrderBy(n => n.ScenarioName).ToListAsync();
+
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.ScenarioDataServiceMethodExitEventId);
+                return scenarios.ToList();
             }
         }
     }

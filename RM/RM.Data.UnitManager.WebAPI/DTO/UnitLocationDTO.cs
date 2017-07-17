@@ -9,11 +9,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DTO
 {
     public class UnitLocationDTO
     {
-        public string ExternalId { get; set; }
-
         public string UnitName { get; set; }
-
-        public int UnitAddressUDPRN { get; set; }
 
         public string Area { get; set; }
 

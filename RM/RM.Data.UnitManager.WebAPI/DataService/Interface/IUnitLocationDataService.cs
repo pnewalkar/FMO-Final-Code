@@ -1,4 +1,4 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
+﻿using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,33 +8,21 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
     public interface IUnitLocationDataService
     {
         /// <summary>
-        /// Fetch the Delivery unit.
-        /// </summary>
-        /// <param name="unitGuid">The unit unique identifier.</param>
-        /// <returns>
-        /// The <see cref="UnitLocationDTO"/>.
-        /// </returns>
-        UnitLocationDTO FetchDeliveryUnit(Guid unitGuid);
-
-        /// <summary>
-        /// Fetch the Delivery units for an user.
+        /// Gets the all delivery units for an user.
         /// </summary>
         /// <param name="userId">The user unique identifier.</param>
+        /// <param name="postcodeAreaGUID">The post code area unique identifier.</param>
         /// <returns>
-        /// The list of <see cref="UnitLocationDTO"/>.
+        /// The list of <see cref="UnitLocationDataDTO"/>.
         /// </returns>
-        List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId);
-
-        Task<List<PostCodeDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid unitGuid);
-
-        Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid);
-
-        UnitLocationDTO FetchUnitDetails(Guid unitGuid);
+        Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID);
 
         /// <summary>
-        /// Fetches Location type id for current user
+        /// Gets postcodes details by postcodeGuids
         /// </summary>
-        /// <returns>Guid</returns>
-        Guid GetUnitLocationTypeId(Guid unitId);
+        /// <param name="postcodeGuids"></param>
+        /// <param name="postcodeSectorGUID"></param>
+        /// <returns></returns>
+        Task<List<PostCodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID);
     }
 }

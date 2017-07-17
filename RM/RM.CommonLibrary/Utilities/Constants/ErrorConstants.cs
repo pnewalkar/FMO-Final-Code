@@ -33,5 +33,6 @@
         public const string Err_Token = "Error occured while generating token";
         public const string Err_UnHandled = "An unhandled application error occurred and has been logged. Please contact your administrator.";
         public const string Err_MisMatchConfigFile = "Mismatch between reference configuration file and reference data tables.";
+        public const string Error_NonZero = "Must be non-zero";
     }
 }

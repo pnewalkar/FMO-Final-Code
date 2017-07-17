@@ -1,18 +1,21 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
+﻿using System;
 using System.Threading.Tasks;
+using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
 {
     /// <summary>
-    /// IPostCodeSectorDataService interface to abstract away the PostCodeSectorDataService implementation
+    /// IPostcodeSectorDataService interface to abstract away the PostCodeSectorDataService implementation
     /// </summary>
-    public interface IPostCodeSectorDataService
+    public interface IPostcodeSectorDataService
     {
         /// <summary>
         /// Get the postcode sector by the UDPRN id
         /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <returns>PostCodeSectorDTO object</returns>
-        Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN);
+        /// <param name="udprn">UDPRN id</param>
+        /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
+        /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
+        /// <returns>PostCodeSectorDataDTO</returns>
+        Task<PostCodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid);
     }
 }

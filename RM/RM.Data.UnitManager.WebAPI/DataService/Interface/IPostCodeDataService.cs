@@ -1,44 +1,47 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
 {
     /// <summary>
     /// Interface to perfrom CRUD operations on postcode
     /// </summary>
-    public interface IPostCodeDataService
+    public interface IPostcodeDataService
     {
         /// <summary>
-        ///  Fetch postcode for basic search
+        /// Gets first five postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText">The text to be searched</param>
-        /// <param name="userUnit">The unit uniqueidentifier for user</param>
-        /// <returns>PostCode DTO</returns>
-        Task<List<PostCodeDTO>> FetchPostCodeUnitForBasicSearch(string searchText, Guid userUnit);
+        /// <param name="searchText"></param>
+        /// <param name="unitlocationId"></param>
+        /// <param name="postcodeTypeGUID"></param>
+        /// <returns>list of PostCodeDataDTO</returns>
+        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId, Guid postcodeTypeGUID);
 
         /// <summary>
-        /// Fetch Postcode Unit for advance search
+        /// Gets count of postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText">The text to be searched</param>
-        /// <param name="userUnit">The unit uniqueidentifier for user</param>
-        /// <returns>PostCode DTO</returns>
-        Task<int> GetPostCodeUnitCount(string searchText, Guid userUnit);
+        /// <param name="searchText"></param>
+        /// <param name="unitlocationId"></param>
+        /// <param name="postcodeTypeGUID"></param>
+        /// <returns>count of postcodeunits</returns>
+        Task<int> GetPostcodeUnitCount(string searchText, Guid unitlocationId, Guid postcodeTypeGUID);
 
         /// <summary>
-        ///  Fetch postcode for advanced search
+        /// Gets all postcodeunits for an unit for a given search text
         /// </summary>
-        /// <param name="searchText">The text to be searched</param>
-        /// <param name="unitGuid">The unit uniqueidentifier for user</param>
-        /// <returns>PostCode DTO</returns>
-        Task<List<PostCodeDTO>> FetchPostCodeUnitForAdvanceSearch(string searchText, Guid unitGuid);
+        /// <param name="searchText"></param>
+        /// <param name="unitlocationId"></param>
+        /// <param name="postcodeTypeGUID"></param>
+        /// <returns>list of PostCodeDataDTO</returns>
+        Task<IEnumerable<PostCodeDataDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid unitlocationId, Guid postcodeTypeGUID);
 
         /// <summary>
-        /// Get post code ID by passing post code.
+        /// Get post code ID by passing postcode.
         /// </summary>
         /// <param name="postCode"> Post Code</param>
         /// <returns>Post code ID</returns>
-        Task<Guid> GetPostCodeID(string postCode);
+        Task<Guid> GetPostcodeID(string postCode);
     }
 }

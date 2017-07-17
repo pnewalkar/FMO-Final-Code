@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Data.Entity;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-
-using RM.DataManagement.UnitManager.WebAPI.Entity;
-using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using System.Data.Entity;
-using System.Threading.Tasks;
+using RM.DataManagement.UnitManager.WebAPI.DataDTO;
+using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService
 {
-    public class UnitLocationDataService : DataServiceBase<Location, UnitManagerDbContext>//, IUnitLocationDataService
+    /// <summary>
+    /// DataService to interact with Location entity and handle CRUD operations.
+    /// </summary>
+    public class UnitLocationDataService : DataServiceBase<Location, UnitManagerDbContext>, IUnitLocationDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
@@ -27,126 +26,73 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         public UnitLocationDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            // Store injected dependencies
             this.loggingHelper = loggingHelper;
         }
 
-        ///// <summary>
-        ///// Fetch the delivery units for user.
-        ///// </summary>
-        ///// <param name="userId">The user identifier.</param>
-        ///// <returns>
-        ///// List of <see cref="UnitLocationDTO"/>.
-        ///// </returns>
-        //public List<UnitLocationDTO> FetchDeliveryUnitsForUser(Guid userId)
-        //{
-        //    using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryUnitsForUser"))
-        //    {
-        //        string methodName = MethodBase.GetCurrentMethod().Name;
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-        //        var result = (from location in DataContext.UnitLocations.AsNoTracking()
-        //                      join userRoleUnit in DataContext.UserRoleUnits.AsNoTracking() on unitLocation.ID equals userRoleUnit.Unit_GUID
-        //                      where userRoleUnit.User_GUID == userId && unitLocation.UnitBoundryPolygon != null
-        //                      select new UnitLocationDTO
-        //                      {
-        //                          ID = unitLocation.ID,
-        //                          UnitName = unitLocation.UnitName,
-        //                          Area = (
-        //                                  from postcodeDistrict in DataContext.PostcodeDistricts
-        //                                  join postcodeSector in DataContext.PostcodeSectors on postcodeDistrict.ID equals postcodeSector.DistrictGUID
-        //                                  join unitPostcodeSector in DataContext.UnitPostcodeSectors on postcodeSector.ID equals unitPostcodeSector.PostcodeSector_GUID
-        //                                  where unitPostcodeSector.Unit_GUID == unitLocation.ID
-        //                                  select postcodeDistrict.Area).FirstOrDefault() ?? "",
-        //                          UnitAddressUDPRN = unitLocation.UnitAddressUDPRN,
-        //                          UnitBoundryPolygon = unitLocation.UnitBoundryPolygon,
-        //                          ExternalId = unitLocation.ExternalId
-        //                      }).ToList();
-
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-        //        return result;
-        //    }
-        //}
-
         /// <summary>
-        /// Fetch the delivery units for user.
+        /// Gets the all delivery units for an user.
         /// </summary>
         /// <param name="userId">The user identifier.</param>
+        /// <param name="postcodeAreaGUID">The post code area unique identifier.</param>
         /// <returns>
         /// List of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        internal List<UnitLocationDataDTO> FetchDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID)
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsForUser(Guid userId, Guid postcodeAreaGUID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchDeliveryUnitsForUser"))
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetDeliveryUnitsForUser);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryUnitsForUser"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
 
-                var unitLocation = (from postalAddressIdentifier in DataContext.PostalAddressIdentifiers.AsNoTracking()
-                              join location in DataContext.Locations.AsNoTracking() on postalAddressIdentifier.ID equals location.ID
-                              join userRoleLocation in DataContext.UserRoleLocations.AsNoTracking() on postalAddressIdentifier.ID equals userRoleLocation.LocationID
-                              where userRoleLocation.UserID == userId
-                              select new UnitLocationDataDTO
-                              {
-                                  LocationId = postalAddressIdentifier.ID,
-                                  Name = postalAddressIdentifier.Name,
-                                  Shape = location.Shape,
-                                  Area = (
-                                          from postcodeHierarchy in DataContext.PostcodeHierarchies
-                                          where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID // TODO: Add to reference data xml for- 50DBBC48-ABA4-44FE-942A-68CF769B3878 - PostcodeArea
-                                          select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
-                              }).ToList();
+                var unitLocation = await (from postalAddressIdentifier in DataContext.PostalAddressIdentifiers.AsNoTracking()
+                                          join location in DataContext.Locations.AsNoTracking() on postalAddressIdentifier.ID equals location.ID
+                                          join userRoleLocation in DataContext.UserRoleLocations.AsNoTracking() on postalAddressIdentifier.ID equals userRoleLocation.LocationID
+                                          where userRoleLocation.UserID == userId
+                                          select new UnitLocationDataDTO
+                                          {
+                                              LocationId = postalAddressIdentifier.ID,
+                                              Name = postalAddressIdentifier.Name,
+                                              Shape = location.Shape,
+                                              Area = (
+                                                      from postcodeHierarchy in DataContext.PostcodeHierarchies
+                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID
+                                                      select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
+                                          }).ToListAsync();
 
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
                 return unitLocation;
             }
         }
 
-        //public async Task<PostCodeDTO> GetSelectedPostcode(Guid postcodeGuid, Guid unitGuid)
-        //{
-        //    var result = await (from pc in DataContext.Postcodes.AsNoTracking()
-        //                        join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-        //                        where pc.ID == postcodeGuid && ul.Unit_GUID == unitGuid
-        //                        select pc).SingleOrDefaultAsync();
+        /// <summary>
+        /// Gets postcodes details by postcodeGuids
+        /// </summary>
+        /// <param name="postcodeGuids"></param>
+        /// <param name="postcodeSectorGUID"></param>
+        /// <returns></returns>
+        public async Task<List<PostCodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID)
+        {
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodes);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCodes"))
+            {
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
 
-        //    return GenericMapper.Map<Postcode, PostCodeDTO>(result);
+                var postcodeDetails = await (from pc in DataContext.Postcodes.AsNoTracking()
+                                             join postcodeHierarchy in DataContext.PostcodeHierarchies.AsNoTracking() on pc.ID equals postcodeHierarchy.ID
+                                             where postcodeHierarchy.PostcodeTypeGUID == postcodeSectorGUID && postcodeGuids.Contains(pc.ID)
+                                             select new PostCodeDataDTO
+                                             {
+                                                 ID = pc.ID,
+                                                 InwardCode = pc.InwardCode,
+                                                 OutwardCode = pc.OutwardCode,
+                                                 PostcodeUnit = pc.PostcodeUnit,
+                                                 Sector = postcodeHierarchy.ParentPostcode
+                                             }).ToListAsync();
 
-        //}
-
-        // TODO: Uncomment below methods later -- commented for Data model change.
-
-        ///// <summary>
-        ///// Fetches unit Location type id for current user
-        ///// </summary>
-        ///// <returns>Guid</returns>
-        //public Guid GetUnitLocationTypeId(Guid unitId)
-        //{
-        //    using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUnitLocationTypeId"))
-        //    {
-        //        string methodName = MethodBase.GetCurrentMethod().Name;
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-        //        var result = DataContext.UnitLocations.Where(n => n.ID == unitId).SingleOrDefault().LocationType_GUID;
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-        //        return result.Value;
-        //    }
-        //}
-
-
-        //public UnitLocationDTO FetchUnitDetails(Guid unitGuid)
-        //{
-        //    UnitLocation location = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid).SingleOrDefault();
-        //    return GenericMapper.Map<UnitLocation, UnitLocationDTO>(location);
-        //}
-
-        //public async Task<List<PostCodeDTO>> GetPostCodes(List<Guid> postcodeGuids, Guid unitGuid)
-        //{
-        //    var result = await (from pc in DataContext.Postcodes.AsNoTracking()
-        //                        join ul in DataContext.UnitLocationPostcodes.AsNoTracking() on pc.ID equals ul.PoscodeUnit_GUID
-        //                        where postcodeGuids.Contains(pc.ID) && ul.Unit_GUID == unitGuid
-        //                        select pc).ToListAsync();
-
-        //    return GenericMapper.MapList<Postcode, PostCodeDTO>(result);
-
-        //}
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
+                return postcodeDetails;
+            }
+        }
     }
 }
