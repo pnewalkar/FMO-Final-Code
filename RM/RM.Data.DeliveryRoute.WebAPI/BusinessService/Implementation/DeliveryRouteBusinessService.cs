@@ -1,29 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.DeliveryRoute.WebAPI.DataDTO;
+using RM.DataManagement.DeliveryRoute.WebAPI.DataService;
+using RM.DataManagement.DeliveryRoute.WebAPI.DTO;
 using RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService;
+using RM.DataManagement.DeliveryRoute.WebAPI.Utils;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
 {
     public class DeliveryRouteBusinessService : IDeliveryRouteBusinessService
     {
         private IDeliveryRouteDataService deliveryRouteDataService;
-        private IScenarioDataService scenarioDataService;
         private IDeliveryRouteIntegrationService deliveryRouteIntegrationService;
-        private IBlockSequenceDataService blockSequenceDataService;
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-
-        // private IHttpHandler httpHandler;
-        // private string ReferenceDataWebapiUri = string.Empty;
+        private IBlockSequenceDataService blockSequenceDataService = default(IBlockSequenceDataService);
+        private IPostcodeDataService postCodeDataService = default(IPostcodeDataService);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeliveryRouteBusinessService" /> class and other classes.
@@ -31,223 +27,306 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// <param name="deliveryRouteDataService">IDeliveryRouteRepository reference</param>
         /// <param name="scenarioDataService">IScenarioRepository reference</param>
         /// <param name="referenceDataBusinessService">The reference data business service.</param>
-        public DeliveryRouteBusinessService(IDeliveryRouteDataService deliveryRouteDataService, IScenarioDataService scenarioDataService, IDeliveryRouteIntegrationService deliveryRouteIntegrationService, IBlockSequenceDataService blockSequenceDataService, ILoggingHelper loggingHelper)
+        public DeliveryRouteBusinessService(IDeliveryRouteDataService deliveryRouteDataService, IDeliveryRouteIntegrationService deliveryRouteIntegrationService, ILoggingHelper loggingHelper, IBlockSequenceDataService blockSequenceDataService, IPostcodeDataService postCodeDataService)
         {
-            // this.httpHandler = httpHandler;
+            // Store  injected dependencies
             this.deliveryRouteDataService = deliveryRouteDataService;
-            this.scenarioDataService = scenarioDataService;
             this.deliveryRouteIntegrationService = deliveryRouteIntegrationService;
-            this.blockSequenceDataService = blockSequenceDataService;
             this.loggingHelper = loggingHelper;
+            this.blockSequenceDataService = blockSequenceDataService;
+            this.postCodeDataService = postCodeDataService;
         }
 
         /// <summary>
-        /// Fetch Route by passing operationStateID and deliveryScenarioID.
+        /// Get route details specific to scenario.
         /// </summary>
-        /// <param name="operationStateID">The operationstate id.</param>
-        /// <param name="deliveryScenarioID">The delivery scenario id.</param>
-        /// <param name="userUnit">Guid</param>
-        /// <returns>
-        /// List
-        /// </returns>
-        public List<RouteDTO> FetchRoutes(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit)
+        /// <param name="scenarioID">ID of the selected scenario</param>
+        /// <returns>Returns list of route on the basis of selected scenario</returns>
+        public List<RouteDTO> GetScenarioRoutes(Guid scenarioID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchRoutes"))
+            if (scenarioID == Guid.Empty)
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                throw new ArgumentNullException(nameof(scenarioID));
+            }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetRoutes"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetScenarioRoutes);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
 
-                return deliveryRouteDataService.FetchRoutes(operationStateID, deliveryScenarioID, userUnit, GetUnitNameByUnitId(userUnit));
+                var routeDetails = deliveryRouteDataService.GetScenarioRoutes(scenarioID);
+
+                List<RouteDTO> routes = GenericMapper.MapList<RouteDataDTO, RouteDTO>(routeDetails);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return routes.OrderBy(n => n.DisplayText).ToList();
             }
         }
 
         /// <summary>
-        /// Fetch the Delivery Scenario.
-        /// </summary>
-        /// <param name="operationStateID">The operationstate id.</param>
-        /// <param name="deliveryScenarioID">The delivery scenario id.</param>
-        /// <returns>List</returns>
-        public List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryScenario"))
-            {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                var fetchScenario = scenarioDataService.FetchScenario(operationStateID, deliveryScenarioID);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return fetchScenario;
-            }
-        }
-
-        /// <summary>
-        /// Fetch the Delivery Route for Basic Search.
+        /// Get filtered routes on basis of search text for Advance Search .
         /// </summary>
         /// <param name="searchText">Text to search</param>
-        /// <param name="userUnit">Guid</param>
-        /// <returns>
-        /// Task
-        /// </returns>
-        public async Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit)
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>Returns list of routes that matches the search text</returns>
+        public async Task<List<RouteDTO>> GetRoutesForAdvanceSearch(string searchText, Guid locationId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryRouteForBasicSearch"))
+            if (string.IsNullOrEmpty(searchText))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-                var fetchDeliveryRouteForBasicSearch = await deliveryRouteDataService.FetchDeliveryRouteForBasicSearch(searchText, userUnit, GetUnitNameByUnitId(userUnit)).ConfigureAwait(false);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return fetchDeliveryRouteForBasicSearch;
+                throw new ArgumentNullException(nameof(searchText));
+            }
+            if (locationId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(locationId));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetRouteForAdvanceSearch"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRoutesForAdvanceSearch);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
+
+                var routeDetails = await deliveryRouteDataService.GetRoutesForAdvanceSearch(searchText, locationId);
+
+                List<RouteDTO> routes = GenericMapper.MapList<RouteDataDTO, RouteDTO>(routeDetails);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return routes;
             }
         }
 
         /// <summary>
-        /// Get the count of delivery route
+        /// Get filtered routes on basis of search text for basic Search .
+        /// </summary>
+        /// <param name="searchText">Text to search</param>
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>Returns list of routes that matches the search text</returns>
+        public async Task<List<RouteDTO>> GetRoutesForBasicSearch(string searchText, Guid locationId)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                throw new ArgumentNullException(nameof(searchText));
+            }
+            if (locationId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(locationId));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetRouteForBasicSearch"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRoutesForBasicSearch);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
+
+                var routeDetails = await deliveryRouteDataService.GetRoutesForBasicSearch(searchText, locationId);
+
+                List<RouteDTO> routes = GenericMapper.MapList<RouteDataDTO, RouteDTO>(routeDetails);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return routes;
+            }
+        }
+
+        /// <summary>
+        /// Get filtered route count
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <param name="userUnit">Guid userUnit</param>
+        /// <param name="locationId">selected unit's location ID</param>
         /// <returns>The total count of delivery route</returns>
-        public async Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit)
+        public async Task<int> GetRouteCount(string searchText, Guid locationId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryRouteCount"))
+            if (string.IsNullOrEmpty(searchText))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                var getDeliveryRouteCount = await deliveryRouteDataService.GetDeliveryRouteCount(searchText, userUnit, GetUnitNameByUnitId(userUnit)).ConfigureAwait(false);
-
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return getDeliveryRouteCount;
+                throw new ArgumentNullException(nameof(searchText));
             }
-        }
-
-        /// <summary>
-        /// Fetch Delivery Route for Advance Search
-        /// </summary>
-        /// <param name="searchText">Text to search</param>
-        /// <param name="unitGuid">The unit unique identifier.</param>
-        /// <returns>
-        /// List of <see cref="RouteDTO"/>.
-        /// </returns>
-        public async Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid unitGuid)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.FetchDeliveryRouteForAdvanceSearch"))
+            if (locationId == Guid.Empty)
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                throw new ArgumentNullException(nameof(locationId));
+            }
 
-                var fetchDeliveryRouteForAdvanceSearch = await deliveryRouteDataService.FetchDeliveryRouteForAdvanceSearch(searchText, unitGuid, GetUnitNameByUnitId(unitGuid)).ConfigureAwait(false);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetRouteCount"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRouteCount);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return fetchDeliveryRouteForAdvanceSearch;
+                int routeCount = await deliveryRouteDataService.GetRouteCount(searchText, locationId);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return routeCount;
             }
         }
 
         /// <summary>
         /// Gets the delivery route details for Pdf Generation.
         /// </summary>
-        /// <param name="deliveryRouteId">The delivery route identifier.</param>
+        /// <param name="routeId">The delivery route identifier.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>DeliveryRouteDTO</returns>
-        public async Task<RouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid)
+        public async Task<RouteDTO> GetRouteSummary(Guid routeId)
         {
+            if (routeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(routeId));
+            }
+
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryRouteDetailsforPdfGeneration"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRouteSummary);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
 
                 List<string> categoryNames = new List<string>
             {
                 ReferenceDataCategoryNames.DeliveryPointUseIndicator,
                 ReferenceDataCategoryNames.OperationalObjectType,
-                ReferenceDataCategoryNames.DeliveryRouteMethodType
+                ReferenceDataCategoryNames.DeliveryRouteMethodType,
+                ReferenceDataCategoryNames.RouteActivityType
             };
 
                 var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
 
-                var deliveryRouteDto =
-                    await deliveryRouteDataService.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteId, referenceDataCategoryList, unitGuid);
+                var routeDetails = await deliveryRouteDataService.GetRouteSummary(routeId, referenceDataCategoryList);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return deliveryRouteDto;
+                RouteDTO route = GenericMapper.Map<RouteDataDTO, RouteDTO>(routeDetails);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return route;
             }
         }
 
         /// <summary>
         /// Generates the route log.
         /// </summary>
-        /// <param name="deliveryRouteDto">The delivery route dto.</param>
+        /// <param name="routeDetails">Route Details</param>
         /// <param name="userUnit">The user unit.</param>
         /// <returns>byte[]</returns>
-        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto, Guid userUnit)
+        public async Task<RouteLogSummaryDTO> GenerateRouteLog(RouteDTO routeDetails)
         {
+            if (routeDetails == null)
+            {
+                throw new ArgumentNullException(nameof(routeDetails));
+            }
+
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateRouteLog"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GenerateRouteLog);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
+                RouteLogSummaryDTO routeLogSummary = new RouteLogSummaryDTO();
+                routeLogSummary.Route = routeDetails;
+                var routeLogSequencedPoints = await deliveryRouteDataService.GetSequencedRouteDetails(routeDetails.ID);
+                routeLogSummary.RouteLogSequencedPoints = GenericMapper.MapList<RouteLogSequencedPointsDataDTO, RouteLogSequencedPointsDTO>(routeLogSequencedPoints);
 
-                Guid operationalObjectTypeForDp = deliveryRouteIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP).Result;
-                var generateRouteLog = await deliveryRouteDataService.GenerateRouteLog(deliveryRouteDto, userUnit, operationalObjectTypeForDp);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return generateRouteLog;
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return routeLogSummary;
             }
         }
 
         /// <summary>
-        /// Method to create block sequence for delivery point
+        /// Get route details specific to postcode
         /// </summary>
-        /// <param name="deliveryRouteId">deliveryRouteId</param>
-        /// <param name="deliveryPointId">deliveryPointId</param>
-        /// <returns>bool</returns>
-        public async Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
+        /// <param name="postcodeUnit">Post code</param>
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>List of routes</returns>
+        public async Task<List<RouteDTO>> GetPostcodeSpecificRoutes(string postcodeUnit, Guid locationId)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.CreateBlockSequenceForDeliveryPoint"))
+            if (string.IsNullOrEmpty(postcodeUnit))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                bool isBlockSequencInserted = false;
-                List<string> categoryNames = new List<string> { ReferenceDataCategoryNames.OperationalObjectType };
-                var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
-                Guid operationalObjectTypeForDp = referenceDataCategoryList
-                  .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
-                  .SelectMany(x => x.ReferenceDatas)
-                  .Where(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).Select(x => x.ID)
-                  .SingleOrDefault();
-                BlockSequenceDTO blockSequenceDTO = new BlockSequenceDTO { ID = Guid.NewGuid(), OperationalObjectType_GUID = operationalObjectTypeForDp, OperationalObject_GUID = deliveryPointId };
-                isBlockSequencInserted = await blockSequenceDataService.AddBlockSequence(blockSequenceDTO, deliveryRouteId);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return isBlockSequencInserted;
+                throw new ArgumentNullException(nameof(postcodeUnit));
             }
-        }
-
-        /// <summary>
-        /// Get current users Unit by passing unit ID
-        /// </summary>
-        /// <param name="userUnit"></param>
-        /// <returns></returns>
-        private string GetUnitNameByUnitId(Guid userUnit)
-        {
-            string unitName = string.Empty;
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetUnitNameByUnitId"))
+            if (locationId == Guid.Empty)
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                throw new ArgumentNullException(nameof(locationId));
+            }
 
-                List<string> categoryNames = new List<string> { ReferenceDataCategoryNames.UnitLocationType };
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostcodeSpecificRoutes"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetPostcodeSpecificRoutes);
+                List<RouteDTO> routes = new List<RouteDTO>();
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
 
-                var referenceDataCategoryList = deliveryRouteIntegrationService.GetReferenceDataSimpleLists(categoryNames).Result;
+                var postcode = await postCodeDataService.GetPostcode(postcodeUnit);
+                var routeDetails = await deliveryRouteDataService.GetRoutesByLocation(locationId);
 
-                var locationtypeId = deliveryRouteIntegrationService.GetUnitLocationTypeId(userUnit).Result;
-
-                if (referenceDataCategoryList != null && referenceDataCategoryList.Count > 0)
+                if (routeDetails != null && routeDetails.Count > 0)
                 {
-                    var referenceData = referenceDataCategoryList.SingleOrDefault().ReferenceDatas;
-                    unitName = referenceData.Where(n => n.ID == locationtypeId).SingleOrDefault().ReferenceDataValue;
+                    if (postcode != null)
+                    {
+                        foreach (var route in routeDetails)
+                        {
+                            if (route.ID == postcode.PrimaryRouteGUID)
+                            {
+                                routes.Add(new RouteDTO { ID = route.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + route.RouteName });
+                            }
+                            else if (route.ID == postcode.SecondaryRouteGUID)
+                            {
+                                routes.Add(new RouteDTO { ID = route.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + route.RouteName });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        routes = GenericMapper.MapList<RouteDataDTO, RouteDTO>(routeDetails);
+                    }
                 }
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return unitName;
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return routes.OrderBy(n => n.RouteName).ToList();
+            }
+        }
+
+        /// <summary>
+        /// method to save delivery point and selected route mapping in block sequence table
+        /// </summary>
+        /// <param name="routeId">selected route id</param>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        public void SaveDeliveryPointRouteMapping(Guid routeId, Guid deliveryPointId)
+        {
+            if (routeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(routeId));
+            }
+            if (routeId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(routeId));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("Business.SaveDeliveryPointRouteMapping"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(SaveDeliveryPointRouteMapping);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
+
+                blockSequenceDataService.SaveDeliveryPointRouteMapping(routeId, deliveryPointId);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+            }
+        }
+
+        /// <summary>
+        /// Get route details mapped to delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery Point Id</param>
+        /// <returns>Route Details</returns>
+        public async Task<RouteDTO> GetRouteByDeliveryPoint(Guid deliveryPointId)
+        {
+            if (deliveryPointId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(deliveryPointId));
+            }
+
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetRouteByDeliverypoint"))
+            {
+                string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetRouteByDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
+
+                var route = GenericMapper.Map<RouteDataDTO, RouteDTO>(await deliveryRouteDataService.GetRouteByDeliverypoint(deliveryPointId));
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodExitEventId);
+
+                return route;
             }
         }
     }
