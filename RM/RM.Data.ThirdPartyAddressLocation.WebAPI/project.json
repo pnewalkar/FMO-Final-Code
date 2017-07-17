@@ -1,4 +1,7 @@
 {
+  "language": "en-GB",
+  "title": "RM.Data.ThirdPartyAddressLocation.WebAPI",
+  "copyright": "Copyright © Royal Mail Group 2017",
   "dependencies": {
     "EnterpriseLibrary.Logging": "6.0.1304",
     "EntityFramework": "6.1.3",

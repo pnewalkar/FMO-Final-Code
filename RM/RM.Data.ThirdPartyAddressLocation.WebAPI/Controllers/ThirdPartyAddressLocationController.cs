@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
@@ -20,6 +20,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
 
         public ThirdPartyAddressLocationController(IThirdPartyAddressLocationBusinessService thirdPartyAddressLocationBusinessService, ILoggingHelper logginghelper)
         {
+            // Store injected dependencies
             this.thirdPartyAddressLocationBusinessService = thirdPartyAddressLocationBusinessService;
             this.loggingHelper = logginghelper;
         }
@@ -112,7 +113,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
                         return BadRequest(ModelState);
                     }
 
-                    await this.thirdPartyAddressLocationBusinessService.SaveUSRDetails(addressLocationUsrpostdtos);
+                    //await this.thirdPartyAddressLocationBusinessService.SaveUSRDetails(addressLocationUsrpostdtos);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId, LoggerTraceConstants.Title);
 
                     return Ok("Saved successfully");

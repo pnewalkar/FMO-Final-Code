@@ -6,18 +6,22 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
 using System.Linq;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 {
+    /// <summary>
+    /// Class definition for the Third Party business Service members
+    /// </summary>
     public class ThirdPartyAddressLocationBusinessService : IThirdPartyAddressLocationBusinessService
     {
         private IAddressLocationDataService addressLocationDataService = default(IAddressLocationDataService);
@@ -29,6 +33,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                                         IThirdPartyAddressLocationIntegrationService thirdPartyAddressLocationIntegrationService,
                                                         ILoggingHelper loggingHelper)
         {
+            // Store injected dependencies
             this.addressLocationDataService = addressLocationDataService;
             this.thirdPartyAddressLocationIntegrationService = thirdPartyAddressLocationIntegrationService;
             this.loggingHelper = loggingHelper;
@@ -44,11 +49,12 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetAddressLocationByUDPRNJson"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
-                AddressLocationDTO addressLocationDto = await this.addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
+                AddressLocationDataDTO addressLocationDataDto = await this.addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
+                AddressLocationDTO addressLocationDto = GenericMapper.Map<AddressLocationDataDTO, AddressLocationDTO>(addressLocationDataDto);
                 var getAddressLocationJsonData = GetAddressLocationJsonData(addressLocationDto);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return getAddressLocationJsonData;
             }
         }
@@ -63,30 +69,31 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetAddressLocationByUDPRN"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
-                var getAddressLocationByUDPRN = await addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return getAddressLocationByUDPRN;
+                var addressLocationDataDto = await addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
+                AddressLocationDTO addressLocationDto = GenericMapper.Map<AddressLocationDataDTO, AddressLocationDTO>(addressLocationDataDto);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                return addressLocationDto;
             }
         }
 
         #region Save USR Details to Database
 
+        // To be implemented in parallel
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
         /// <param name="addressLocationUsrpostdtos">List of Address Locations</param>
         /// <returns>Task</returns>
-        public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
+        /*public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
             using (loggingHelper.RMTraceManager.StartTrace("Business.SaveUSRDetails"))
             {
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionStarted, LoggerTraceConstants.COLON);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
                 foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
                 {
@@ -97,17 +104,18 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                     {
                         DbGeometry spatialLocationXY = GetSpatialLocation(addressLocationUSRPOSTDTO);
 
-                        AddressLocationDTO newAddressLocationDTO = new AddressLocationDTO()
+                        AddressLocationDataDTO newAddressLocationDTO = new AddressLocationDataDTO()
                         {
                             ID = Guid.NewGuid(),
-                            UDPRN = addressLocationUSRPOSTDTO.UDPRN,
+                            UDPRN = (int)addressLocationUSRPOSTDTO.UDPRN,
                             LocationXY = spatialLocationXY,
-                            Lattitude = addressLocationUSRPOSTDTO.Latitude,
-                            Longitude = addressLocationUSRPOSTDTO.Longitude
+                            Lattitude = (decimal)addressLocationUSRPOSTDTO.Latitude,
+                            Longitude = (decimal)addressLocationUSRPOSTDTO.Longitude
                         };
 
                         // Save the address location data record to the database.
                         await addressLocationDataService.SaveNewAddressLocation(newAddressLocationDTO);
+
 
                     PostalAddressDTO postalAddressDTONew = await thirdPartyAddressLocationIntegrationService.GetPAFAddress((int)fileUdprn);
 
@@ -265,13 +273,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             }
                         }
                     }
-
-                    LogMethodInfoBlock(methodName, LoggerTraceConstants.MethodExecutionCompleted, LoggerTraceConstants.COLON);
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
             }
-        }
+        }*/
 
         /// <summary>
         /// This method is used to fetch GeoJson data for Address Location.
