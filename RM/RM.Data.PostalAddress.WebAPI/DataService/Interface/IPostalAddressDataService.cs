@@ -109,12 +109,24 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <returns>bool</returns>
         bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress);
 
+
+        /// <summary>
+        ///  Get Postal Addresses on adress guid's  as search criteria
+        /// </summary>
+        /// <param name="addressGuids">List of addressGuid</param>
+        /// <returns></returns>
         Task<List<PostalAddressDataDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
         /*Task<List<Guid>> GetPostcodeGuids(string searchText);
 
         Task<List<Guid>> GetSelectedPostcode(string selectedItem);*/
 
+        /// <summary>
+        /// Get Postal Address on UDPRN value
+        /// </summary>
+        /// <param name="udprn">udprn value of PostalAddress</param>
+        /// <param name="pafGuid">pafGuid as Address Type Guid</param>
+        /// <returns></returns>
         Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
     }
 }
