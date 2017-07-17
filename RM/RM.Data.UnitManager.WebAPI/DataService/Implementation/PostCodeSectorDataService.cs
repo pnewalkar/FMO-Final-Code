@@ -6,6 +6,7 @@ using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.DataDTO;
+using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
 using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService
@@ -13,7 +14,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     /// <summary>
     /// Data service to handle CRUD operations on PostcodeHierarchy and related entites
     /// </summary>
-    public class PostcodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>//, IPostcodeSectorDataService
+    public class PostcodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>, IPostcodeSectorDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
