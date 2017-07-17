@@ -88,7 +88,7 @@
         /// Gets all reference data for category type nameValuePair using Guid Id
         /// </summary>
         /// <param name="id">Guid Id</param>
-        /// <returns></returns>
+        /// <returns>NameValuePair</returns>
         public NameValuePair GetNameValueReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNameValueReferenceData"))
@@ -215,7 +215,7 @@
         /// Gets all reference data for category type SimpleList using Guid Id.
         /// </summary>
         /// <param name="id">Guid Id</param>
-        /// <returns></returns>
+        /// <returns>SimpleListDTO</returns>
         public SimpleListDTO GetSimpleListReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetSimpleListReferenceData"))
@@ -224,11 +224,11 @@
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<ListItems> listItems = new List<ListItems>();
-                
+
 
                 var referenceData = DataContext.ReferenceDatas.Include(m => m.ReferenceDataCategory)
                         .Where(n => n.ID == id && n.ReferenceDataCategory.CategoryType.Equals(ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();
-                
+
                 if (referenceData != null)
                 {
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);

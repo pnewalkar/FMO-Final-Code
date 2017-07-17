@@ -99,8 +99,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// Create delivery point for PAF and NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
-        /// <returns>bool</returns>
-        CreateDeliveryPointModelDTO CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus);
+        /// <returns>Guid</returns>
+        Guid CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus);
 
         /// <summary>
         /// Check For Duplicate Address With DeliveryPoints
@@ -109,19 +109,24 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <returns>bool</returns>
         bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress);
 
+
+        /// <summary>
+        ///  Get Postal Addresses on adress guid's  as search criteria
+        /// </summary>
+        /// <param name="addressGuids">List of addressGuid</param>
+        /// <returns></returns>
         Task<List<PostalAddressDataDTO>> GetPostalAddresses(List<Guid> addressGuids);
 
         /*Task<List<Guid>> GetPostcodeGuids(string searchText);
 
         Task<List<Guid>> GetSelectedPostcode(string selectedItem);*/
 
-        Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
-
         /// <summary>
-        /// Deriving approximate location for deliverypoint
+        /// Get Postal Address on UDPRN value
         /// </summary>
-        /// <param name="postCode">postcode as string such as e.g - "GU21 6DB"</param>
+        /// <param name="udprn">udprn value of PostalAddress</param>
+        /// <param name="pafGuid">pafGuid as Address Type Guid</param>
         /// <returns></returns>
-        Task<DbGeometry> GetLocation(string postCode);
+        Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid);
     }
 }

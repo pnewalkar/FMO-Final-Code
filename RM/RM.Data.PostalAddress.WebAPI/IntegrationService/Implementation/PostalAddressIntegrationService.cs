@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -7,16 +8,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.PostalAddress.WebAPI.Utils;
+using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation
 {
@@ -25,13 +25,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
     /// </summary>
     public class PostalAddressIntegrationService : IPostalAddressIntegrationService
     {
-        private const string ResponseContent = "Status Code: {0} Reason: {1} ";
-        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
-        private const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
-        private const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
-        private const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
-        private const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
-
         #region Property Declarations
 
         private string referenceDataWebAPIName = string.Empty;
@@ -42,6 +35,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.PostalAddressAPIPriority;
+        private int entryEventId = LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId;
 
         #endregion Property Declarations
 
@@ -52,11 +48,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             this.httpHandler = httpHandler;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.deliveryPointManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
-            this.addressLocationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(AddressLocationManagerDataWebAPIName).ToString() : string.Empty;
-            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName).ToString() : string.Empty;
-            this.notificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerDataWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.deliveryPointManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
+            this.addressLocationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.AddressLocationManagerDataWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.UnitManagerDataWebAPIName).ToString() : string.Empty;
+            this.notificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.NotificationManagerDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
@@ -67,8 +63,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataGuId"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetReferenceDataGuId);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 Guid referenceId = Guid.Empty;
                 HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + categoryName);
@@ -84,7 +80,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                     referenceId = apiResult.Item2.ListItems.Where(n => n.Value.Equals(itemName, StringComparison.OrdinalIgnoreCase)).SingleOrDefault().Id;
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return referenceId;
             }
@@ -96,11 +92,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataSimpleLists"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetReferenceDataSimpleLists);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO referenceCategories = new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO();
-
 
                 HttpResponseMessage result = await httpHandler.GetAsync(referenceDataWebAPIName + "simpleLists?listName=" + listName);
                 if (!result.IsSuccessStatusCode)
@@ -112,7 +107,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 Tuple<string, SimpleListDTO> apiResult = JsonConvert.DeserializeObject<Tuple<string, SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
 
                 referenceCategories = ReferenceDataHelper.MapDTO(apiResult.Item2);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return referenceCategories;
             }
@@ -124,12 +119,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataSimpleLists"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetReferenceDataSimpleLists);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-            List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
+                List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
 
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", listNames);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(referenceDataWebAPIName + "simpleLists", listNames);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
@@ -139,45 +134,57 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
 
                 listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return listReferenceCategories;
             }
         }
 
-        public async Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids)
+        public async Task<List<PostcodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids)
         {
-            List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = new List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>();
-
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(unitManagerDataWebAPIName + "postcode/search/" + unitGuid, postcodeGuids);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostcodes"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetPostcodes);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                List<PostcodeDTO> postcodes = new List<PostcodeDTO>();
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(unitManagerDataWebAPIName + "postcode/search/" + unitGuid, postcodeGuids);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                postcodes = JsonConvert.DeserializeObject<List<PostcodeDTO>>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return postcodes;
             }
-
-            postcodes = JsonConvert.DeserializeObject<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>>(result.Content.ReadAsStringAsync().Result);
-
-            return postcodes;
         }
 
-
-        public async Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid)
+        public async Task<PostcodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid)
         {
-            CommonLibrary.EntityFramework.DTO.PostCodeDTO postcode = new CommonLibrary.EntityFramework.DTO.PostCodeDTO();
-
-            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/select/" + postcodeGuid +"/" + unitGuid);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetSelecetdPostcode"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetSelecetdPostcode);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                PostcodeDTO postcode = new PostcodeDTO();
+
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/select/" + postcodeGuid + "/" + unitGuid);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                postcode = JsonConvert.DeserializeObject<PostcodeDTO>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return postcode;
             }
-
-            postcode = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.PostCodeDTO>(result.Content.ReadAsStringAsync().Result);
-
-            return postcode;
         }
 
         ///// <summary>
@@ -216,8 +223,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByPostalAddress"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetDeliveryPointByPostalAddress);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/addressId:" + addressId);
@@ -230,9 +237,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 DTO.DeliveryPointDTO deliveryPoint = JsonConvert.DeserializeObject<DTO.DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return deliveryPoint;
-
             }
         }
 
@@ -245,8 +251,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.InsertDeliveryPoint"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(InsertDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
@@ -262,14 +268,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 bool isDeliveryPointCreated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Convert.ToBoolean(isDeliveryPointCreated);
-
             }
         }
 
         /// <summary>
-        /// This method will call Delivery point web api which is used to 
+        /// This method will call Delivery point web api which is used to
         /// update delivery point for resp PostalAddress which has type <USR>.
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
@@ -278,8 +283,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPoint"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(UpdateDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
                 HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + addressId, deliveryPointUseIndicatorPAF);
@@ -292,9 +297,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 bool isDeliveryPointCreated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Convert.ToBoolean(isDeliveryPointCreated);
-
             }
         }
 
@@ -304,11 +308,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.AddNewNotification"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(AddNewNotification);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(PostalAddressConstants.NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
                 if (!result.IsSuccessStatusCode)
                 {
                     // Log error with statuscode
@@ -318,9 +322,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return status;
-
             }
         }
 
@@ -333,8 +336,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetAddressLocationByUDPRN"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetAddressLocationByUDPRN);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
                 HttpResponseMessage result = await httpHandler.GetAsync(addressLocationManagerDataWebAPIName + "addresslocation/udprn:" + udprn);
@@ -347,9 +350,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 }
 
                 DTO.AddressLocationDTO addressLocation = JsonConvert.DeserializeObject<DTO.AddressLocationDTO>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return addressLocation;
-
             }
         }
 
@@ -362,8 +364,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostCodeID"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetPostCodeID);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
                 HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/guid/" + postCode);
@@ -377,54 +379,100 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
 
                 Guid postCodeGuid = JsonConvert.DeserializeObject<Guid>(result.Content.ReadAsStringAsync().Result);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return postCodeGuid;
-
             }
         }
 
         public async Task<bool> CheckIfNotificationExists(int uDPRN, string action)
         {
-            HttpResponseMessage result = await httpHandler.GetAsync(string.Format(notificationManagerDataWebAPIName + "/Notifications/check/{0}/{1}", uDPRN.ToString(), action));
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.CheckIfNotificationExists"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(CheckIfNotificationExists);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-            bool notificationExists = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-            return notificationExists;
+                HttpResponseMessage result = await httpHandler.GetAsync(string.Format(notificationManagerDataWebAPIName + "/Notifications/check/{0}/{1}", uDPRN.ToString(), action));
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool notificationExists = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return notificationExists;
+            }
         }
 
         public async Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction)
         {
-            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(notificationManagerDataWebAPIName + "/notifications/location/{0}/{1}", udprn.ToString(), oldAction), newAction);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateNotificationByUDPRN"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(UpdateNotificationByUDPRN);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(notificationManagerDataWebAPIName + "/notifications/location/{0}/{1}", udprn.ToString(), oldAction), newAction);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isUpdated;
             }
-
-            bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-
-            return isUpdated;
         }
 
         public async Task<bool> UpdateNotificationMessageByUDPRN(int udprn, string action, string message)
         {
-            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(notificationManagerDataWebAPIName + "notifications/postaladdress/{0}/{1}", udprn.ToString(), action), message);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateNotificationMessageByUDPRN"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(UpdateNotificationMessageByUDPRN);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(notificationManagerDataWebAPIName + "notifications/postaladdress/{0}/{1}", udprn.ToString(), action), message);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return isUpdated;
             }
+        }
 
-            bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+        // <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode"></param>
+        /// <returns>The approx location/</returns>
+        public async Task<DbGeometry> GetApproxLocation(string postcode)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetApproxLocation"))
+            {
+                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetApproxLocation);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-            return isUpdated;
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "approxlocation/" + postcode);
+                if (!result.IsSuccessStatusCode)
+                {
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                return approxLocation;
+            }
         }
 
         #endregion public methods
