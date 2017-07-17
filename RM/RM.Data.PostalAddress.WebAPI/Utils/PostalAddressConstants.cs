@@ -34,5 +34,12 @@ namespace RM.Data.PostalAddress.WebAPI.Utils
         internal const string UPDATE = "U";
         internal const string DELETE = "D";
         internal const string NYBErrorMessageForDelete = "Load NYB Error Message : AddressType is NYB and have an associated Delivery Point for UDPRN: {0}";
+
+        internal const string ResponseContent = "Status Code: {0} Reason: {1} ";
+        internal const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
+        internal const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
+        internal const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
+        internal const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
+        internal const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
     }
 }

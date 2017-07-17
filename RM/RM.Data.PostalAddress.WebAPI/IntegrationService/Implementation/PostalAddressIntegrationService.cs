@@ -18,6 +18,7 @@ using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using System.Data.Entity.Spatial;
+using RM.Data.PostalAddress.WebAPI.Utils;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation
 {
@@ -26,12 +27,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
     /// </summary>
     public class PostalAddressIntegrationService : IPostalAddressIntegrationService
     {
-        private const string ResponseContent = "Status Code: {0} Reason: {1} ";
-        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
-        private const string UnitManagerDataWebAPIName = "UnitManagerDataWebAPIName";
-        private const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
-        private const string NotificationManagerDataWebAPIName = "NotificationManagerDataWebAPIName";
-        private const string AddressLocationManagerDataWebAPIName = "AddressLocationManagerDataWebAPIName";
+        
 
         #region Property Declarations
 
@@ -53,11 +49,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             this.httpHandler = httpHandler;
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
-            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
-            this.deliveryPointManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
-            this.addressLocationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(AddressLocationManagerDataWebAPIName).ToString() : string.Empty;
-            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName).ToString() : string.Empty;
-            this.notificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerDataWebAPIName).ToString() : string.Empty;
+            this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.deliveryPointManagerWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.DeliveryPointManagerDataWebAPIName).ToString() : string.Empty;
+            this.addressLocationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.AddressLocationManagerDataWebAPIName).ToString() : string.Empty;
+            this.unitManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.UnitManagerDataWebAPIName).ToString() : string.Empty;
+            this.notificationManagerDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressConstants.NotificationManagerDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor
@@ -309,7 +305,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                 // method logic here
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(PostalAddressConstants.NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
                 if (!result.IsSuccessStatusCode)
                 {
                     // Log error with statuscode
