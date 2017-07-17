@@ -19,6 +19,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         private IAccessLinkBusinessService accessLinkBusinessService;
 
         private ILoggingHelper loggingHelper;
+        private int priority = LoggerTraceConstants.AccessLinkAPIPriority;
+        private int entryEventId = LoggerTraceConstants.AccessLinkControllerMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.AccessLinkControllerMethodExitEventId;
 
         #endregion Member Variables
 
@@ -103,18 +106,18 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
         /// <returns>GeoJson string of Access link data</returns>
-        [Authorize]
+        //[Authorize]
         [HttpGet("AccessLinks")]
         public IActionResult GetAccessLinks(string bbox)
         {
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetAccessLinks"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkController) + "." + nameof(GetAccessLinks);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, CurrentUserUnit);
+                string accessLink = accessLinkBusinessService.GetAccessLinks(bbox, Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050"));
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkControllerMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(accessLink);
             }
         }

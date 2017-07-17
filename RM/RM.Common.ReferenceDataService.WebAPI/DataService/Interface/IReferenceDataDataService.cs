@@ -1,5 +1,6 @@
 ﻿namespace RM.Common.ReferenceData.WebAPI.DataService.Interface
 {
+    using System;
     using System.Collections.Generic;
     using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 
@@ -18,6 +19,8 @@
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         NameValuePair GetNameValueReferenceData(string dbGroupName, string dbItemName);
 
+        NameValuePair GetNameValueReferenceData(Guid id);
+
         /// <summary>
         /// Gets all reference data.
         /// </summary>
@@ -32,6 +35,8 @@
         /// <param name="dbItemName">dbItemName is recorded as the item name</param>
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         SimpleListDTO GetSimpleListReferenceData(string dbGroupName);
+
+        SimpleListDTO GetSimpleListReferenceData(Guid id);
 
         #endregion Reference Data Manager methods
     }
