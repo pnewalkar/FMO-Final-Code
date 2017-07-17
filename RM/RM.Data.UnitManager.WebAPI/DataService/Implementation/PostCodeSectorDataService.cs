@@ -18,6 +18,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        /// <summary>
+        /// Parameterised Constructor
+        /// </summary>
+        /// <param name="databaseFactory"></param>
+        /// <param name="loggingHelper"></param>
         public PostcodeSectorDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
