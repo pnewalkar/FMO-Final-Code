@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.Controllers;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
@@ -184,7 +182,7 @@ namespace Fmo.API.Services.Controllers
 
                     PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
 
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId); 
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                     return Ok(postalAddressDto);
                 }

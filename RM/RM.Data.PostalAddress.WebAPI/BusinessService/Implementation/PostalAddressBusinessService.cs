@@ -10,10 +10,9 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.PostalAddress.WebAPI.Utils;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
-using System.Data.Entity.Spatial;
-using RM.Data.PostalAddress.WebAPI.Utils;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
@@ -26,7 +25,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
     /// </summary>
     public class PostalAddressBusinessService : IPostalAddressBusinessService
     {
-
         private const string Comma = ", ";
 
         #region Property Declarations

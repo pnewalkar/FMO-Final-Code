@@ -8,7 +8,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using CommonLibrary.Utilities.HelperMiddleware;
     using Data.PostalAddress.WebAPI.Utils;
     using DataDTO;
     using RM.CommonLibrary.DataMiddleware;
@@ -25,8 +24,6 @@
     /// </summary>
     public class PostalAddressDataService : DataServiceBase<PostalAddress, PostalAddressDBContext>, IPostalAddressDataService
     {
-        
-
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IFileProcessingLogDataService fileProcessingLog = default(IFileProcessingLogDataService);
         private int priority = LoggerTraceConstants.PostalAddressAPIPriority;
@@ -56,7 +53,7 @@
                 try
                 {
                     bool isPostalAddressDeleted = false;
-                    string nybDeleteMsg = NYBErrorMessageForDelete;
+                    string nybDeleteMsg = PostalAddressConstants.NYBErrorMessageForDelete;
                     if (lstUDPRN != null && lstUDPRN.Any())
                     {
                         var lstAddress = await DataContext.PostalAddresses.Include(m => m.DeliveryPoints).Where(n => !lstUDPRN.Contains(n.UDPRN.Value) && n.AddressType_GUID == addressType).ToListAsync();
