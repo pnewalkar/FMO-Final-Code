@@ -13,6 +13,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         }
 
         //command
+
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<LocationOffering> LocationOfferings { get; set; }
         public virtual DbSet<LocationPostcodeHierarchy> LocationPostcodeHierarchies { get; set; }
@@ -28,10 +29,17 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
 
         // Query
         public virtual DbSet<Postcode> Postcodes { get; set; }
+
         public virtual DbSet<UserRoleLocation> UserRoleLocations { get; set; }
+
+        public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DeliveryPoint>()
+               .Property(e => e.RowVersion)
+               .IsFixedLength();
+
             modelBuilder.Entity<Location>()
                 .HasMany(e => e.LocationOfferings)
                 .WithRequired(e => e.Location)

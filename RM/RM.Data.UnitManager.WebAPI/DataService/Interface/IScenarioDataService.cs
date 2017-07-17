@@ -13,6 +13,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="operationStateID"></param>
         /// <param name="locationID"></param>
         /// <returns></returns>
-        Task<IEnumerable<ScenarioDataDTO>> GetRouteScenarios(Guid operationStateID, Guid locationID);
+        Task<IEnumerable<ScenarioDataDTO>> GetScenariosByOperationStateAndDeliveryUnit(Guid operationStateID, Guid locationID);
     }
 }

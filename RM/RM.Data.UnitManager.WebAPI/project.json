@@ -1,4 +1,7 @@
 {
+  "title": "RM.Data.UnitManager.WebAPI",
+  "copyright": "Copyright © Royal Mail Group 2017",
+  "language": "en-GB",
   "dependencies": {
     "EnterpriseLibrary.Logging": "6.0.1304",
     "EntityFramework": "6.1.3",
