@@ -111,8 +111,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// Insert the DeliveryPointDTO object into the database
         /// </summary>
         /// <param name="objDeliveryPoint">DeliveryPointDTO object</param>
-        /// <returns>boolean value</returns>
-        Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
+        /// <returns>Unique identifier of delivery point.</returns>
+        Task<Guid> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
         ///// <summary>
         ///// This method updates delivery point access link status

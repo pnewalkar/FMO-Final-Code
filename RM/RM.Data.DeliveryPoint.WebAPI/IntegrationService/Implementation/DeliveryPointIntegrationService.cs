@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -182,12 +183,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         }
 
         /// <summary>
-        /// Method to create block sequence for delivery point
+        /// Method to map a route  for delivery point
         /// </summary>
         /// <param name="deliveryRouteId">deliveryRouteId</param>
         /// <param name="deliveryPointId">deliveryPointId</param>
         /// <returns>bool</returns>
-        public async Task<bool> MapForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
+        public async Task<bool> MapRouteForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.MapForDeliveryPoint"))
             {
@@ -251,6 +252,16 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return route;
             }
+        }
+
+        /// <summary>
+        /// Gets approx location based on the potal code.
+        /// </summary>
+        /// <param name="postcode"></param>
+        /// <returns>The approx location/</returns>
+        public async Task<DbGeometry> GetApproxLocation(string postcode)
+        {
+            return null;
         }
 
         #endregion public methods

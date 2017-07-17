@@ -533,7 +533,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                     string methodName = typeof(DeliveryPointController) + "." + nameof(InsertDeliveryPoint);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    bool success = await businessService.InsertDeliveryPoint(JsonConvert.DeserializeObject<DeliveryPointDTO>(objDeliveryPointJson));
+                    bool success = await businessService.InsertDeliveryPoint(JsonConvert.DeserializeObject<DeliveryPointDTO>(objDeliveryPointJson)) != Guid.Empty;
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return Ok(success);
                 }

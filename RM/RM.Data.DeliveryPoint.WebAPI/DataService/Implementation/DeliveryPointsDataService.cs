@@ -16,19 +16,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using RM.CommonLibrary.ExceptionMiddleware;
     using RM.CommonLibrary.HelperMiddleware;
     using RM.Data.DeliveryPoint.WebAPI.Entities;
+    using Utils;
 
     /// <summary>
     /// This class contains methods used for fetching/Inserting Delivery Points data.
     /// </summary>
     public class DeliveryPointsDataService : DataServiceBase<DeliveryPoint, DeliveryPointDBContext>, IDeliveryPointsDataService
     {
-        private const string ROWVERSION = "RowVersion";
-        private const string UnSequenced = "U";
-        private const string PRIMARYROUTE = "Primary - ";
-        private const string SECONDARYROUTE = "Secondary - ";
-        private const int BNGCOORDINATESYSTEM = 27700;
-        private const string SearchResultCount = "SearchResultCount";
-
         private int priority = LoggerTraceConstants.DeliveryPointAPIPriority;
         private int entryEventId = LoggerTraceConstants.DeliveryPointDataServiceMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId;
@@ -72,10 +66,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// This method is used to insert delivery point.
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
-        /// <returns>bool</returns>
-        public async Task<bool> InsertDeliveryPoint(DeliveryPointDataDTO objDeliveryPoint)
+        /// <returns>Unique identifier of delivery point.</returns>
+        public async Task<Guid> InsertDeliveryPoint(DeliveryPointDataDTO objDeliveryPoint)
         {
-            bool isDeliveryPointInserted = false;
+            Guid deliveryPointId = Guid.Empty;
             DeliveryPoint deliveryPoint = new DeliveryPoint();
             DeliveryPointStatus deliveryPointStatus = new DeliveryPointStatus();
             NetworkNode networkNode = new NetworkNode();
@@ -116,11 +110,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         DataContext.DeliveryPoints.Add(deliveryPoint);
 
                         await DataContext.SaveChangesAsync();
-                        isDeliveryPointInserted = true;
+                        deliveryPointId = deliveryPoint.ID;
                     }
                     catch (Exception dbUpdateException)
                     {
-                        isDeliveryPointInserted = false;
+                        deliveryPointId = Guid.Empty;
                         DataContext.Entry(deliveryPoint).State = EntityState.Unchanged;
                         loggingHelper.Log(dbUpdateException, TraceEventType.Error);
                         throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for addressId:", deliveryPoint.PostalAddressID)));
@@ -129,7 +123,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return isDeliveryPointInserted;
+                return deliveryPointId;
             }
         }
 
@@ -228,7 +222,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 throw new ArgumentNullException(nameof(unitGuid), string.Format(ErrorConstants.Err_ArgumentmentNullException, unitGuid));
             }
 
-            int takeCount = Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(SearchResultCount));
+            int takeCount = Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointConstants.SearchResultCount));
 
             DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == unitGuid)
                 .Select(x => x.Shape).SingleOrDefault();
@@ -389,7 +383,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
 
                     DataContext.Entry(deliveryPoint).State = EntityState.Modified;
-                    DataContext.Entry(deliveryPoint).OriginalValues[ROWVERSION] = deliveryPointDto.RowVersion;
+                    DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
                     await DataContext.SaveChangesAsync();
                 }
 
@@ -602,7 +596,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
             ConfigureMapper();
 
-            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+            DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), DeliveryPointConstants.BNGCOORDINATESYSTEM);
             List<DeliveryPoint> crossingDeliveryPoints = DataContext.DeliveryPoints.AsNoTracking().Where(dp => dp.NetworkNode.Location.Shape != null && dp.NetworkNode.Location.Shape.Intersects(extent) && dp.NetworkNode.Location.Shape.Crosses(operationalObject)).ToList();
             List<DeliveryPointDataDTO> crossingAccessLinkDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(crossingDeliveryPoints);
             deliveryPointDTOs.AddRange(crossingAccessLinkDTOs);
@@ -635,7 +629,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 {
                     polygon = DataContext.Locations.Where(u => u.ID == unitGuid).Select(x => x.Shape).SingleOrDefault();
 
-                    DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+                    DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), DeliveryPointConstants.BNGCOORDINATESYSTEM);
 
                     var deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
                         .Include(x => x.NetworkNode)

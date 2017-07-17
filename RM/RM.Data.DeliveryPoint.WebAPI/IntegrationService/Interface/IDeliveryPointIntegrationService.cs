@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
@@ -46,12 +47,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
 
         /// <summary>
-        /// Method to create block sequence for delivery point
+        /// Method to map a route for delivery point
         /// </summary>
         /// <param name="deliveryRouteId">deliveryRouteId</param>
         /// <param name="deliveryPointId">deliveryPointId</param>
         /// <returns>bool</returns>
-        Task<bool> MapForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
+        Task<bool> MapRouteForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
 
         Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames);
 
@@ -59,7 +60,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// This method is used to get route for delivery point.
         /// </summary>
         /// <param name="deliveryPointId">deliveryPointId as input</param>
-        /// <returns>string</returns>
+        /// <returns>The route name.</returns>
         Task<string> GetRouteForDeliveryPoint(Guid deliveryPointId);
+
+        /// <summary>
+        /// Gets approx location based on the potal code.
+        /// </summary>
+        /// <param name="postcode"></param>
+        /// <returns>The approx location/</returns>
+        Task<DbGeometry> GetApproxLocation(string postcode);
     }
 }

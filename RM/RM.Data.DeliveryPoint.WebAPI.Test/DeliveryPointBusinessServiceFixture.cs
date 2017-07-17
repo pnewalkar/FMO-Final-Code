@@ -116,10 +116,11 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         [Test]
         public void Test_InsertDeliveryPoint()
         {
-            mockDeliveryPointsDataService.Setup(x => x.InsertDeliveryPoint(It.IsAny<DeliveryPointDataDTO>())).ReturnsAsync(true);
+            Guid expected = Guid.Parse("12345678-1234-1234-123456789012");
+            mockDeliveryPointsDataService.Setup(x => x.InsertDeliveryPoint(It.IsAny<DeliveryPointDataDTO>())).ReturnsAsync(Guid.Parse("12345678-1234-1234-123456789012"));
             var result = testCandidate.InsertDeliveryPoint(deliveryPointDTO);
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Result);
+            Assert.AreEqual(expected, result.Result);
         }
 
         [Test]

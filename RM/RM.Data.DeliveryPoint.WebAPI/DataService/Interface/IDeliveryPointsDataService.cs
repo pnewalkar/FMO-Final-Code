@@ -22,8 +22,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// Insert the DeliveryPointDTO object into the database
         /// </summary>
         /// <param name="objDeliveryPoint">DeliveryPointDTO object</param>
-        /// <returns>Boolean value indicating success of operation.</returns>
-        Task<bool> InsertDeliveryPoint(DeliveryPointDataDTO objDeliveryPoint);
+        /// <returns>Unique identifier of delivery point.</returns>
+        Task<Guid> InsertDeliveryPoint(DeliveryPointDataDTO objDeliveryPoint);
 
         /// <summary> Update the delivery point based on the UDPRN id </summary> <param
         /// name="deliveryPointDto">DeliveryPointDTO object</param> <returns>Task<Guid></returns>
