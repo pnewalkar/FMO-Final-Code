@@ -59,7 +59,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <summary>
         /// Get all Delivery units for an user.
         /// </summary>
-        /// <param name="userId">The unit unique identifier.</param>
+        /// <param name="userId">user Id.</param>
         /// <returns>
         /// List of <see cref="UnitLocationDTO" />.
         /// </returns>
