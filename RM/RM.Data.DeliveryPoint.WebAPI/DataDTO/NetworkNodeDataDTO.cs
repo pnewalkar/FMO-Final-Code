@@ -1,8 +1,8 @@
-namespace RM.Data.DeliveryPoint.WebAPI.DTO
+namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 {
     using System;
 
-    public class NetworkNodeDatabaseDTO
+    public class NetworkNodeDataDTO
     {
         public Guid ID { get; set; }
 
@@ -14,8 +14,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
 
         public Guid? DataProviderGUID { get; set; }
 
-        public DeliveryPointDatabaseDTO DeliveryPoint { get; set; }
-
-        public LocationDatabaseDTO Location { get; set; }
+        public LocationDataDTO Location { get; set; }
     }
 }
