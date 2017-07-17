@@ -98,14 +98,14 @@
         /// Gets reference data using Guid Id
         /// </summary>
         /// <param name="id">Guid Id</param>
-        /// <returns></returns>
+        /// <returns>NameValuePair</returns>
         public NameValuePair GetReferenceDataByNameValuePairs(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetReferenceDataByNameValuePairs"))
             {
                 string methodName = typeof(ReferenceDataBusinessService) + "." + nameof(GetReferenceDataByNameValuePairs);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                
+
                 var getNameValueReferenceData = referenceDataDataService.GetNameValueReferenceData(id);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return getNameValueReferenceData;
@@ -156,7 +156,7 @@
         /// Gets reference data as simple list using Guid Id
         /// </summary>
         /// <param name="id">Guid Id</param>
-        /// <returns></returns>
+        /// <returns>SimpleListDTO</returns>
         public SimpleListDTO GetSimpleListsReferenceData(Guid id)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetSimpleListsReferenceData"))

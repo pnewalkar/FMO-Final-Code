@@ -88,7 +88,7 @@
             {
                 string methodName = typeof(ReferenceDataController) + "." + nameof(GetNameValueReferenceData);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                
+
                 var nameValuePairsObject = referenceDataBusinessService.GetReferenceDataByNameValuePairs(id);
 
                 Tuple<string, NameValuePair> nameValueSingleResource = new Tuple<string, NameValuePair>(NameValuePair, nameValuePairsObject);

@@ -19,6 +19,11 @@
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         NameValuePair GetNameValueReferenceData(string dbGroupName, string dbItemName);
 
+        /// <summary>
+        /// Gets all reference data using Guid id.
+        /// </summary>
+        /// <param name="id">Guid id</param>
+        /// <returns>NameValuePair</returns>
         NameValuePair GetNameValueReferenceData(Guid id);
 
         /// <summary>
@@ -36,6 +41,11 @@
         /// <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
         SimpleListDTO GetSimpleListReferenceData(string dbGroupName);
 
+        /// <summary>
+        /// Gets all reference data using Guid id.
+        /// </summary>
+        /// <param name="id">Guid id</param>
+        /// <returns>SimpleListDTO</returns>
         SimpleListDTO GetSimpleListReferenceData(Guid id);
 
         #endregion Reference Data Manager methods
