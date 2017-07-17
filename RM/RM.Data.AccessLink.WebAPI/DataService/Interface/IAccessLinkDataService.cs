@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
-using RM.DataManagement.AccessLink.WebAPI.DTOs;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
 
 namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
 {

@@ -14,8 +14,7 @@ using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
-using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
-using RM.Data.AccessLink.WebAPI.Utils.ReferenceData;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
 
 
 

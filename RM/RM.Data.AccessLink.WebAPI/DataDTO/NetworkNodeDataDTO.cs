@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RM.DataManagement.AccessLink.WebAPI.DataDTOs
+namespace RM.Data.AccessLink.WebAPI.DataDTOs
 {
     public class NetworkNodeDataDTO
     {

@@ -1,9 +1,4 @@
-﻿using RM.CommonLibrary.EntityFramework.Entities;
-using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
-using RM.DataManagement.AccessLink.WebAPI.DTOs;
-using System.Collections.Generic;
-
-namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
+﻿namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
 {
     using System;
     using System.Collections.Generic;
@@ -19,8 +14,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
     using Interfaces;
     using MappingConfiguration;
     using AutoMapper;
-    using DTOs;
-    using DataDTOs;
     using Data.AccessLink.WebAPI.DataDTOs;
 
     /// <summary>
@@ -65,7 +58,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
                 });
                 Mapper.Configuration.CreateMapper();
 
-                var result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+                var resultValue = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
 
                 Mapper.Initialize(cfg =>
                 {
@@ -75,7 +68,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
                 });
                 Mapper.Configuration.CreateMapper();
 
-                var accesslink = Mapper.Map<List<AccessLink> ,List<AccessLinkDataDTO>>(result);
+                var accesslink = Mapper.Map<List<AccessLink> ,List<AccessLinkDataDTO>>(resultValue);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return accesslink;
             }
@@ -207,7 +200,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Implementation
                 accessLinkDataDTOs.AddRange(overLappingAccessLinkDTOs);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return accessLinkDTOs;
+                return accessLinkDataDTOs;
             }
         }
 
