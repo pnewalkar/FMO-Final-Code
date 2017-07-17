@@ -5,9 +5,7 @@
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
-    using System.Diagnostics;
     using System.Linq;
-    using System.Reflection;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
     using Entities;

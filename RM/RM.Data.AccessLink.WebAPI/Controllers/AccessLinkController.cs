@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Controllers
