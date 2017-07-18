@@ -11,7 +11,7 @@ using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
-using RM.DataManagement.AccessLink.WebAPI.DataDTOs;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
 
 namespace RM.Data.AccessLink.WebAPI.Test
 {
@@ -230,7 +230,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDataDTO>>);
-            mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<AccessLinkDTO>() { });
+            mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<AccessLinkDataDTO>() { });
 
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(new List<ReferenceDataCategoryDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(refDataCategotyDTO);
@@ -241,7 +241,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             mockAccessLinkIntegrationService.Setup(x => x.GetCrossingNetworkLinks(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<NetworkLinkDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
 
-            mockaccessLinkDataService.Setup(x => x.CreateAccessLink(It.IsAny<AccessLinkDTO>())).Returns(true);
+            mockaccessLinkDataService.Setup(x => x.CreateAccessLink(It.IsAny<NetworkLinkDataDTO>())).Returns(true);
 
             testCandidate = new AccessLinkBusinessService(mockaccessLinkDataService.Object, loggingHelperMock.Object, mockAccessLinkIntegrationService.Object);
         }
