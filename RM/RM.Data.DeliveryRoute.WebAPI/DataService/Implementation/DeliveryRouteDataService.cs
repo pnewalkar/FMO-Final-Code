@@ -41,18 +41,18 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// </summary>
         /// <param name="scenarioID">ID of the selected scenario</param>
         /// <returns>Returns list of route on the basis of selected scenario</returns>
-        public List<RouteDataDTO> GetScenarioRoutes(Guid scenarioID)
+        public async Task<List<RouteDataDTO>> GetScenarioRoutes(Guid scenarioID)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRoutes"))
             {
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetScenarioRoutes);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
 
-                var routes = from r in DataContext.Routes.AsNoTracking()
-                             join s in DataContext.ScenarioRoutes.AsNoTracking() on r.ID equals s.RouteID
-                             where s.ScenarioID == scenarioID
-                             select r;
-                List<RouteDataDTO> routedetails = GenericMapper.MapList<Route, RouteDataDTO>(routes.ToList());
+                var routes = await (from r in DataContext.Routes.AsNoTracking()
+                                    join s in DataContext.ScenarioRoutes.AsNoTracking() on r.ID equals s.RouteID
+                                    where s.ScenarioID == scenarioID
+                                    select r).ToListAsync();
+                List<RouteDataDTO> routedetails = GenericMapper.MapList<Route, RouteDataDTO>(routes);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
 
