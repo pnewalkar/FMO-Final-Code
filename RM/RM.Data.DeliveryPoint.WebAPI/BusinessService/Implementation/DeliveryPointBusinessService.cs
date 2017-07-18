@@ -655,7 +655,7 @@
         /// This method is used to fetch GeoJson data for Delivery Point.
         /// </summary>
         /// <param name="lstDeliveryPointDTO">List of Delivery Point Dto</param>
-        /// <returns>lstDeliveryPointDTO</returns>
+        /// <returns>Delivery point json collection</returns>
         private static object GetDeliveryPointsJsonData(List<DeliveryPointDTO> lstDeliveryPointDTO)
         {
             var deliveryPointGeoJson = new GeoJson
@@ -704,7 +704,7 @@
         /// This Method is used to fetch Delivery Points Co-ordinates.
         /// </summary>
         /// <param name="parameters">parameters as object</param>
-        /// <returns>coordinates</returns>
+        /// <returns>Polygon text for given coordinates.</returns>
         private static string GetDeliveryPointsCoordinatesDatabyBoundingBox(params object[] parameters)
         {
             string coordinates = string.Empty;
@@ -761,6 +761,11 @@
             return dpUsetype;
         }
 
+        /// <summary>
+        /// Covert delivery point public DTO to data DTO.
+        /// </summary>
+        /// <param name="deliveryPointDTO">Delivery point data DTO.</param>
+        /// <returns>Delivery point public DTO.</returns>
         private DeliveryPointDataDTO ConvertToDataDTO(DeliveryPointDTO deliveryPointDTO)
         {
             DeliveryPointDataDTO deliveryPointDataDTO = new DeliveryPointDataDTO();
@@ -785,11 +790,34 @@
 
                 // location details
                 deliveryPointDataDTO.NetworkNode.Location.Shape = deliveryPointDTO.LocationXY;
+
+                if (deliveryPointDTO.PostalAddress != null)
+                {
+                    //postal address details
+                    deliveryPointDataDTO.PostalAddress.ID = deliveryPointDTO.PostalAddress.ID;
+                    deliveryPointDataDTO.PostalAddress.OrganisationName = deliveryPointDTO.PostalAddress.OrganisationName;
+                    deliveryPointDataDTO.PostalAddress.BuildingName = deliveryPointDTO.PostalAddress.BuildingName;
+                    deliveryPointDataDTO.PostalAddress.SubBuildingName = deliveryPointDTO.PostalAddress.SubBuildingName;
+                    deliveryPointDataDTO.PostalAddress.BuildingNumber = deliveryPointDTO.PostalAddress.BuildingNumber;
+                    deliveryPointDataDTO.PostalAddress.Thoroughfare = deliveryPointDTO.PostalAddress.Thoroughfare;
+                    deliveryPointDataDTO.PostalAddress.DependentLocality = deliveryPointDTO.PostalAddress.DependentLocality;
+                    deliveryPointDataDTO.PostalAddress.UDPRN = deliveryPointDTO.PostalAddress.UDPRN;
+                    deliveryPointDataDTO.PostalAddress.Postcode = deliveryPointDTO.PostalAddress.Postcode;
+                    deliveryPointDataDTO.PostalAddress.DeliveryPointSuffix = deliveryPointDTO.PostalAddress.DeliveryPointSuffix;
+                    deliveryPointDataDTO.PostalAddress.DependentThoroughfare = deliveryPointDTO.PostalAddress.DependentThoroughfare;
+                    deliveryPointDataDTO.PostalAddress.DoubleDependentLocality = deliveryPointDTO.PostalAddress.DoubleDependentLocality;
+                    deliveryPointDataDTO.PostalAddress.DepartmentName = deliveryPointDTO.PostalAddress.DepartmentName;
+                }
             }
 
             return deliveryPointDataDTO;
         }
 
+        /// <summary>
+        /// Covert delivery point data DTO to public DTO.
+        /// </summary>
+        /// <param name="deliveryPointDTO">Collection of delivery point public DTO.</param>
+        /// <returns>Collection of delivery point data DTO.</returns>
         private List<DeliveryPointDataDTO> ConvertToDataDTO(List<DeliveryPointDTO> deliveryPointDTOList)
         {
             List<DeliveryPointDataDTO> deliveryPointDataDTO = new List<DeliveryPointDataDTO>();
@@ -802,6 +830,11 @@
             return deliveryPointDataDTO;
         }
 
+        /// <summary>
+        /// Covert data dto to public dto.
+        /// </summary>
+        /// <param name="deliveryPointDTO">Delivery point data DTO.</param>
+        /// <returns>Delivery point public DTO.</returns>
         private DeliveryPointDTO ConvertToDTO(DeliveryPointDataDTO deliveryPointDataDTO)
         {
             DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
@@ -845,12 +878,22 @@
                     deliveryPointDTO.PostalAddress.Thoroughfare = deliveryPointDataDTO.PostalAddress.Thoroughfare;
                     deliveryPointDTO.PostalAddress.DependentLocality = deliveryPointDataDTO.PostalAddress.DependentLocality;
                     deliveryPointDTO.PostalAddress.UDPRN = deliveryPointDataDTO.PostalAddress.UDPRN;
+                    deliveryPointDTO.PostalAddress.Postcode = deliveryPointDataDTO.PostalAddress.Postcode;
+                    deliveryPointDTO.PostalAddress.DeliveryPointSuffix = deliveryPointDataDTO.PostalAddress.DeliveryPointSuffix;
+                    deliveryPointDTO.PostalAddress.DependentThoroughfare = deliveryPointDataDTO.PostalAddress.DependentThoroughfare;
+                    deliveryPointDTO.PostalAddress.DoubleDependentLocality = deliveryPointDataDTO.PostalAddress.DoubleDependentLocality;
+                    deliveryPointDTO.PostalAddress.DepartmentName = deliveryPointDataDTO.PostalAddress.DepartmentName;
                 }
             }
 
             return deliveryPointDTO;
         }
 
+        /// <summary>
+        /// Covert collection of delivery point data DTO to public DTO.
+        /// </summary>
+        /// <param name="deliveryPointDataDTOList">Collection of delivery point data DTO.</param>
+        /// <returns>Collection of delivery point public dtDTOo.</returns>
         private List<DeliveryPointDTO> ConvertToDTO(List<DeliveryPointDataDTO> deliveryPointDataDTOList)
         {
             List<DeliveryPointDTO> deliveryPointDTO = new List<DeliveryPointDTO>();

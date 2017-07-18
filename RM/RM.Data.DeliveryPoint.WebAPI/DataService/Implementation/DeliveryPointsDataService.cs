@@ -61,7 +61,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForCountAsync, ex);
             }
         }
@@ -136,9 +136,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             }
         }
 
+        /// <summary>
+        /// Update PAF indicator of a delivery point for an address
+        /// </summary>
+        /// <param name="addressGuid">Postal address unique identifier.</param>
+        /// <param name="pafIndicator">PAF indicator for delivery point.</param>
+        /// <returns>Success of update operation.</returns>
         public async Task<bool> UpdatePAFIndicator(Guid addressGuid, Guid pafIndicator)
         {
-            bool isDeliveryPointUpdated = false;
+            bool recordsUpdated = false;
             DeliveryPoint deliveryPoint = new DeliveryPoint();
             using (loggingHelper.RMTraceManager.StartTrace("Data.UpdatePAFIndicator"))
             {
@@ -147,10 +153,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                 try
                 {
-                    deliveryPoint = DataContext.DeliveryPoints.Single(dp => dp.PostalAddressID == addressGuid);
-                    deliveryPoint.DeliveryPointUseIndicatorGUID = pafIndicator;
+                    var deliveryPoints = DataContext.DeliveryPoints.Where(dp => dp.PostalAddressID == addressGuid).ToList();
+                    deliveryPoints.ForEach(dp => dp.DeliveryPointUseIndicatorGUID = pafIndicator);
+
                     await DataContext.SaveChangesAsync();
-                    isDeliveryPointUpdated = true;
+                    recordsUpdated = true;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -158,17 +165,17 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 }
                 catch (NotSupportedException notSupportedException)
                 {
-                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
                 }
                 catch (ObjectDisposedException disposedException)
                 {
-                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
                 }
                 catch (Exception dbUpdateException)
                 {
-                    isDeliveryPointUpdated = false;
+                    recordsUpdated = false;
                     DataContext.Entry(deliveryPoint).State = EntityState.Unchanged;
                     loggingHelper.Log(dbUpdateException, TraceEventType.Error);
                     throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for addressId:", addressGuid)));
@@ -176,7 +183,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                return isDeliveryPointUpdated;
+                return recordsUpdated;
             }
         }
 
@@ -314,12 +321,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             }
             catch (InvalidOperationException ex)
             {
-                ex.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                ex.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_InvalidOperationExceptionForSingleorDefault, ex);
             }
             catch (OverflowException overflow)
             {
-                overflow.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                overflow.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                 throw new SystemException(ErrorConstants.Err_OverflowException, overflow);
             }
         }
@@ -387,12 +394,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 }
                 catch (NotSupportedException notSupportedException)
                 {
-                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
                 }
                 catch (ObjectDisposedException disposedException)
                 {
-                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
                 }
 
@@ -447,12 +454,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 }
                 catch (NotSupportedException notSupportedException)
                 {
-                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
                 }
                 catch (ObjectDisposedException disposedException)
                 {
-                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
                 }
 
