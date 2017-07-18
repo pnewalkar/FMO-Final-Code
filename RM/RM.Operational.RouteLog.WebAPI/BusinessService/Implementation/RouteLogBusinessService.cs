@@ -2,9 +2,7 @@
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.Enums;
 using RM.Operational.RouteLog.WebAPI.DTO;
-using RM.Operational.RouteLog.WebAPI.DTO.Model;
 using RM.Operational.RouteLog.WebAPI.IntegrationService;
 using RM.Operational.RouteLog.WebAPI.Utils;
 using System.Collections.Generic;
@@ -12,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using static RM.Operational.RouteLog.WebAPI.BusinessService.RouteSummaryGroup;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
@@ -67,7 +66,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>True if the address could be added to the group, otherwise false</returns>
-        private bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private bool Add(RouteLogSequencedPointsDTO address, RouteSummaryGroup grp)
         {
             // Determine whether the address should be part of the current group
             //
@@ -113,7 +112,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// <summary>
         /// This method is used to generate Route log summary Pdf
         /// </summary>
-        /// <param name="xml">string as xml</param>
+        /// <param name="xml">xml as string</param>
         /// <returns>byte[]</returns>
         private byte[] GenerateRouteLogSummaryPdf(string xml)
         {
@@ -416,7 +415,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 // Route summary group
                 // The route summary group keeps track of the current group while the route summary
                 // is being generated
-                RouteSummaryGroupDTO group = null;
+                RouteSummaryGroup group = null;
 
                 // Step through the addresses
                 foreach (RouteLogSequencedPointsDTO address in addressList)
@@ -427,7 +426,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                         // The current address is the start of a new route summary group
                         //
                         // Initialize a new route summary group from the current address
-                        group = new RouteSummaryGroupDTO(address);
+                        group = new RouteSummaryGroup(address);
                     }
                     else
                     {
@@ -447,7 +446,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                             routeSummary.Add(row);
 
                             // Initialize a new route summary group from the current address
-                            group = new RouteSummaryGroupDTO(address);
+                            group = new RouteSummaryGroup(address);
                         }
                     }
                 }
@@ -476,7 +475,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>True if the address continues the current group, otherwise false</returns>
-        private bool ContinuesGroup(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private bool ContinuesGroup(RouteLogSequencedPointsDTO address, RouteSummaryGroup grp)
         {
             // Assume that the address does not continue the current group
             bool doesContinueGroup = false;
@@ -591,7 +590,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// </summary>
         /// <param name="address">The address</param>
         /// <returns>The group type</returns>
-        private GroupType IdentifyGroupType(RouteLogSequencedPointsDTO address, RouteSummaryGroupDTO grp)
+        private GroupType IdentifyGroupType(RouteLogSequencedPointsDTO address, RouteSummaryGroup grp)
         {
             // Assume that the group type is unknown
             GroupType groupType = GroupType.Unknown;

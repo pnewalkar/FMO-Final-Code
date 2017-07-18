@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RM.Operational.RouteLog.WebAPI.DTO.Model
+namespace RM.Operational.RouteLog.WebAPI.DTO
 {
     [Serializable]
     public class RouteLogSummaryDTO

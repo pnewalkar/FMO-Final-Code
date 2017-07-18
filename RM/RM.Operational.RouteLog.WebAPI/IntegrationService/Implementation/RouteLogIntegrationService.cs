@@ -5,7 +5,6 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Operational.RouteLog.WebAPI.DTO;
-using RM.Operational.RouteLog.WebAPI.DTO.Model;
 using RM.Operational.RouteLog.WebAPI.Utils;
 using System.Net.Http;
 using System.Threading.Tasks;

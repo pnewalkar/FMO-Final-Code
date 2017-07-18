@@ -1,15 +1,15 @@
-﻿using RM.CommonLibrary.Utilities.Enums;
+﻿using RM.Operational.RouteLog.WebAPI.DTO;
 using System.Collections.Generic;
 
-namespace RM.Operational.RouteLog.WebAPI.DTO
+namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
-    public class RouteSummaryGroupDTO
+    public class RouteSummaryGroup
     {
         /// <summary>
         /// Constructs route summary group with an initial address
         /// </summary>
         /// <param name="address">The address</param>
-        public RouteSummaryGroupDTO(RouteLogSequencedPointsDTO address)
+        public RouteSummaryGroup(RouteLogSequencedPointsDTO address)
         {
             // Default the group type
             this.CurrentGroupType = GroupType.Unknown;
@@ -196,5 +196,16 @@ namespace RM.Operational.RouteLog.WebAPI.DTO
         public string SubBuildingName { get; set; }
 
         public string BuildingName { get; set; }
+
+        public enum GroupType
+        {
+            SequentialAscending,
+            SequentialDescending,
+            EvensAscending,
+            EvensDescending,
+            OddsAscending,
+            OddsDescending,
+            Unknown
+        }
     }
 }
