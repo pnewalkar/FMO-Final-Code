@@ -30,11 +30,10 @@ function unitSelectorService($q,
         if (deliveryRouteUnit.length === 0) {
             var authData = sessionStorage.getItem('authorizationData');
             authData = angular.fromJson(authData);
-            if (authData.unitGuid) {
+            if (authData.unitGuid !=null) {
                 var deferred = $q.defer();
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                     if (response) {
-                        //deliveryRouteUnit = response;
                         angular.forEach(response, function (value, key) {
                             deliveryRouteUnit.push({
                                 displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery", area: value.area,
@@ -61,7 +60,6 @@ function unitSelectorService($q,
                         if (response.length === 1) {
                             isDeliveryUnitDisabled = true;
                         }
-                        //  deliveryRouteUnit = response;
                         angular.forEach(response, function (value, key) {
                             deliveryRouteUnit.push({
                                 displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery", area: value.area,
