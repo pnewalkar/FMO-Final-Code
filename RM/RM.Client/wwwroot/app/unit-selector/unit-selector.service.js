@@ -30,7 +30,7 @@ function unitSelectorService($q,
         if (deliveryRouteUnit.length === 0) {
             var authData = sessionStorage.getItem('authorizationData');
             authData = angular.fromJson(authData);
-            if (authData.unitGuid !=null) {
+            if (authData.unitGuid !==null) {
                 var deferred = $q.defer();
                 unitSelectorAPIService.getDeliveryUnit().then(function (response) {
                     if (response) {
@@ -54,31 +54,33 @@ function unitSelectorService($q,
                 });
                 return deferred.promise;
             } else {
-                var deferred = $q.defer();
-                unitSelectorAPIService.getDeliveryUnit().then(function (response) {
-                    if (response) {
-                        if (response.length === 1) {
-                            isDeliveryUnitDisabled = true;
+                if (authData.token!==null) {
+                    var deferred = $q.defer();
+                    unitSelectorAPIService.getDeliveryUnit().then(function (response) {
+                        if (response) {
+                            if (response.length === 1) {
+                                isDeliveryUnitDisabled = true;
+                            }
+                            angular.forEach(response, function (value, key) {
+                                deliveryRouteUnit.push({
+                                    displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery", area: value.area,
+                                    boundingBox: value.boundingBox,
+                                    unitName: value.unitName,
+                                    boundingBoxCenter: value.boundingBoxCenter,
+                                    unitBoundryPolygon: value.unitBoundryPolygon
+                                })
+                            });
+                            selectedUser = deliveryRouteUnit[0];
+                            selectedDeliveryUnit = response[0];
+
+                            result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled });
+                            updateMapAfterUnitChange(selectedDeliveryUnit);
+                            deferred.resolve(result);
                         }
-                        angular.forEach(response, function (value, key) {
-                            deliveryRouteUnit.push({
-                                displayText: value.area + '    ' + value.unitName, ID: value.id, icon: "fa-map-marker delivery", area: value.area,
-                                boundingBox: value.boundingBox,
-                                unitName: value.unitName,
-                                boundingBoxCenter: value.boundingBoxCenter,
-                                unitBoundryPolygon: value.unitBoundryPolygon
-                            })
-                        });
-                        selectedUser = deliveryRouteUnit[0];
-                        selectedDeliveryUnit = response[0];
+                    });
 
-                        result.push({ "deliveryRouteUnit": deliveryRouteUnit, "selectedUser": selectedUser, "selectedDeliveryUnit": selectedDeliveryUnit, "isDeliveryUnitDisabled": isDeliveryUnitDisabled });
-                        updateMapAfterUnitChange(selectedDeliveryUnit);
-                        deferred.resolve(result);
-                    }
-                });
-
-                return deferred.promise;
+                    return deferred.promise;
+                }
             }
         }
     }
