@@ -5,7 +5,6 @@ describe('Delivery Point : Factory', function() {
     var deliveryPointAPIService;
     var $rootScope;    
     var stringFormatService;
-
     var MockGlobalSettings = {
         postalAddressApiUrl: "http://172.18.5.7/PostalAddress/api",
         thirdPartyAddressLocationApiUrl: "http://172.18.5.7/ThirdPartyAddressLocation/api",
