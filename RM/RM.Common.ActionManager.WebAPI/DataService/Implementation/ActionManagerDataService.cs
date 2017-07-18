@@ -29,6 +29,7 @@ namespace RM.Common.ActionManager.WebAPI.DataService
         public ActionManagerDataService(IDatabaseFactory<ActionDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
+            // store injected dependancies.
             this.loggingHelper = loggingHelper;
         }
 

@@ -29,6 +29,7 @@ namespace RM.Common.ActionManager.WebAPI.BusinessService
         /// <param name="loggingHelper">reference to the loggingHelper class</param>
         public ActionManagerBusinessService(IActionManagerDataService actionManagerDataService, ILoggingHelper loggingHelper)
         {
+            // store injected dependancies.
             this.actionManagerDataService = actionManagerDataService;
             this.loggingHelper = loggingHelper;
         }
