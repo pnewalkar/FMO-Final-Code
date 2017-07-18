@@ -246,10 +246,22 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 // Rule 1. Named road is within threshold limit and there are no intersections with any
                 // other roads
-                Tuple<NetworkLinkDTO, SqlGeometry> nearestNamedStreetNetworkObjectWithIntersectionTuple =
+                Tuple<NetworkLinkDTO,SqlGeometry> nearestNamedStreetNetworkObjectWithIntersectionTuple =
                     accessLinkIntegrationService.GetNearestNamedRoad(operationalObjectPoint, roadName).Result;
-                NetworkLinkDTO networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item1;
-                SqlGeometry networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
+
+ 
+                SqlGeometry accesslink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
+                var intersectionCountForDeliveryPoint =accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accesslink.ToDbGeometry());
+              var getAccessLinkCountForCrossesorOverLaps = accessLinkDataService.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accesslink.ToDbGeometry());
+
+                NetworkLinkDTO networkLink = null;
+                SqlGeometry networkIntersectionPoint=null;
+                if (intersectionCountForDeliveryPoint == 0  && getAccessLinkCountForCrossesorOverLaps==0)
+                {
+
+                     networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item1;
+                    networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
+                }
 
                 if (networkLink != null && networkIntersectionPoint != null && !networkIntersectionPoint.IsNull && !networkIntersectionPoint.STX.IsNull && !networkIntersectionPoint.STY.IsNull)
                 {
@@ -277,11 +289,26 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 {
                     // Rule 2. - look for any path or road if there is any other road other than the
                     // return the road segment object and the access link intersection point
-                    Tuple<NetworkLinkDTO, SqlGeometry> nearestStreetNetworkObjectWithIntersectionTuple =
+                    Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestStreetNetworkObjectWithIntersectionTuple =
                         accessLinkIntegrationService.GetNearestSegment(operationalObjectPoint).Result;
 
-                    networkLink = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
-                    networkIntersectionPoint = nearestStreetNetworkObjectWithIntersectionTuple?.Item2;
+                    var networkLikdDTO = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;                   
+                   // var    accessLinks = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLikdDTO.LinkGeometry.ToSqlGeometry());
+
+                        foreach (var accessLink in nearestStreetNetworkObjectWithIntersectionTuple?.Item2)
+                    {
+                         intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accessLink.ToDbGeometry());
+                         getAccessLinkCountForCrossesorOverLaps = accessLinkDataService.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accessLink.ToDbGeometry());
+
+                        if (intersectionCountForDeliveryPoint == 0 && getAccessLinkCountForCrossesorOverLaps == 0)
+                        {
+                            networkLink = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
+                            networkIntersectionPoint = accessLink.STEndPoint();
+                            break;
+                        }
+                    }
+
+                    
                     if (networkLink != null && !networkIntersectionPoint.IsNull && !networkIntersectionPoint.STX.IsNull && !networkIntersectionPoint.STY.IsNull)
                     {
                         actualLength = (double)operationalObjectPoint.ToSqlGeometry()

@@ -11,6 +11,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
     /// </summary>
     public interface IAccessLinkDataService
     {
+
         /// <summary>
         /// This method is used to fetch access Link data.
         /// </summary>
@@ -33,5 +34,14 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<AccessLinkDTO> </returns>
         List<AccessLinkDataDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink);
+        int GetIntersectionCountForDeliveryPoint(DbGeometry operationalObjectPoint,DbGeometry accessLink);
+        /// <summary>
+        /// This method is used to get the a
+        /// </summary>
+        /// <param name="operationalObjectPoint"></param>
+        /// <returns></returns>
+        int GetAccessLinkCountForCrossesorOverLaps(DbGeometry operationalObjectPoint,DbGeometry accessLink);
+
+
     }
 }
