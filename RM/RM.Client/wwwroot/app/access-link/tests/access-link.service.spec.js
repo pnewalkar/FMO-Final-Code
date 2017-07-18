@@ -14,7 +14,6 @@ describe('Access LInk : Service', function() {
             clickOutsideToClose: false,
             controller: "AccessLinkController as vm"
         };
-
     	expect(accessLinkService.accessLink()).toEqual(obj);
 	});
 });	

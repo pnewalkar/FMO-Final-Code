@@ -1,5 +1,5 @@
-﻿describe('Access Link: Controller', function () {
-
+﻿'use strict';
+describe('Access Link: Controller', function () {
     var accessLinkAPIService;
     var $scope;
     var $mdDialog;
@@ -15,37 +15,26 @@
     var $stateParams;
     var vm;
     var $q;
-    var deffered;
     var response;
-    var CommonConstants;    
-
-    stateMockData = { "selectedUnit": { "displayText": "BN    Worthing  Office", "ID": "b51aa229-c984-4ca6-9c12-510187b81050", "icon": "fa-map-marker delivery", "$$mdSelectId": 1, "$$hashKey": "object:114" } };
-    stateParamsMockData = { "accessLinkFeature": "geometri" };
-
+    var CommonConstants;
+    var $rootScope;      
+    
     beforeEach(function () {
         module('accessLink');
-
         module(function ($provide) {
+            $provide.value('$state', { "selectedUnit": { "displayText": "BN    Worthing  Office", "ID": "b51aa229-c984-4ca6-9c12-510187b81050", "icon": "fa-map-marker delivery"}});
+            $provide.value('$stateParams',{"accessLinkFeature": "geometri"});
             $provide.value('CommonConstants', {DeliveryPointActionName: 'Delivery Point'});            
-            $provide.value('GlobalSettings', { deliveryPointLayerName: 'mapLayer' });
-            MockMdCancel = jasmine.createSpy();
+            $provide.value('GlobalSettings', { deliveryPointLayerName: 'mapLayer' });            
             $provide.factory('$mdDialog', function () {
-                return { cancel: MockMdCancel };
+                return { cancel: jasmine.createSpy()};
             });
 
             $provide.factory('accessLinkAPIService', function ($q) {
-                function GetAdjPathLength(accessLinkManualCreateModelDTO) {
-                    deferred = $q.defer();
-                    return deferred.promise;
-                }
-
-                function CreateAccessLink(accessLinkDTO) {
-                    deferred = $q.defer();
-                    return deferred.promise;
-                }
-
+                function GetAdjPathLength(accessLinkManualCreateModelDTO){}
+                function CreateAccessLink(accessLinkDTO){}
                 function CheckAccessLinkIsValid(accessLinkManualCreateModelDTO) {
-                    deferred = $q.defer();
+                    var deferred = $q.defer();
                     return deferred.promise;
                 }
                 return {
@@ -64,8 +53,7 @@
                 }
             });
         
-            $provide.factory('mapFactory', function () {
-                //Set up variable for mapFactory
+            $provide.factory('mapFactory', function () {            
                 var map = {
                     getView: function () {
                         return {
@@ -84,42 +72,40 @@
                     setAccessLink: setAccessLink
                 }
             });
-
-            //inject with mockdata mapFactory
+            
             $provide.factory('coordinatesService', function ($q) {
-
-                var coordinates = '';
                 return {
-                    getCordinates: function () {
-                        return coordinates;
-                    },
-                    setCordinates: function (value) {
-                        coordinates = value;
-                    }
+                    getCordinates: function () {},                    
+                    setCordinates: function (value) {}
                 }
             });
 
-            //inject with mockdata mapFactory
             $provide.factory('guidService', function () {
-
-                var guid = '';
                 return {
-                    getGuid: function () {
-                        return guid;
-                    },
-                    setGuid: function (value) {
-                        guid = value;
-                    }
-                }
-            });
-
-            $provide.value('$state', stateMockData);
-            $provide.value('$stateParams', stateParamsMockData);
+                    getGuid:function(){},
+                    setGuid:function(value){}
+                }                             
+            });            
         });
+        
+        inject(function (
+            _$controller_,
+            _$rootScope_,
+            _$q_,
+            _accessLinkAPIService_,
+            _$mdDialog_,
+            _$state_,
+            _mapService_,
+            _mapFactory_,
+            _coordinatesService_,
+            _roadLinkGuidService_,
+            _accessLinkCoordinatesService_,
+            _intersectionPointService_,
+            _GlobalSettings_,
+            _guidService_,
+            _$stateParams_,
+            _CommonConstants_) {
 
-
-        //get Instance of controller with inject properties
-        inject(function (_$controller_, _$rootScope_, _$q_, _accessLinkAPIService_, _$mdDialog_, _$state_, _mapService_, _mapFactory_, _coordinatesService_, _roadLinkGuidService_, _accessLinkCoordinatesService_, _intersectionPointService_, _GlobalSettings_, _guidService_, _$stateParams_,_CommonConstants_) {
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
             accessLinkAPIService = _accessLinkAPIService_;
@@ -133,8 +119,7 @@
             accessLinkCoordinatesService = _accessLinkCoordinatesService_;
             intersectionPointService = _intersectionPointService_;
             $stateParams = _$stateParams_;
-            $q = _$q_;
-            deferred = _$q_.defer();
+            $q = _$q_;            
 
             vm = _$controller_('AccessLinkController', {
                 accessLinkAPIService: accessLinkAPIService,
@@ -153,30 +138,27 @@
                 CommonConstants : _CommonConstants_
             })
         });
-
     });
 
-    it('should be contextTitle has been undefined', function () {
+    it('should contextTitle is undefined', function () {
         expect(vm.contextTitle).toBeUndefined();
     });
 
-    it('should be set default enableBack is `true`', function () {
+    it('should set default enableBack is `true`', function () {
         expect(vm.enableBack).toBe(true);
     });
 
-    it('should be set default enableBack is `false`', function () {
+    it('should set default enableBack is `false`', function () {
         expect(vm.enableSave).toBe(false);
     });
 
-    it('should be set default pathLength is `null`', function () {
+    it('should set default pathLength is `null`', function () {
         expect(vm.pathLength).toBe(null);
     });
 
     it('should promise to return a success response once createAccessLink method is called', function () {
         var deferred = $q.defer();
-        var response = true;
-
-        //Once promsie resolved then we have to check all spy has been called
+        var response = true;        
         spyOn(accessLinkAPIService, 'CreateAccessLink').and.returnValue(deferred.promise);
         spyOn(mapFactory, 'setAccessLink');
         spyOn(coordinatesService, 'setCordinates');
@@ -186,41 +168,72 @@
         vm.createAccessLink();
 
         deferred.resolve(response);
-        $scope.$digest();
+        $rootScope.$apply();
 
-        expect(accessLinkAPIService.CreateAccessLink).toHaveBeenCalled();
-        expect(response).toBe(true);
+        expect(accessLinkAPIService.CreateAccessLink).toHaveBeenCalled();        
         expect(mapFactory.setAccessLink).toHaveBeenCalled();
-        expect(coordinatesService.setCordinates).toHaveBeenCalled();
+        expect(vm.enableBack).toBe(false);
+        expect(vm.enableSave).toBe(false);
+        expect(vm.pathLength).toBe('');
         expect(coordinatesService.setCordinates).toHaveBeenCalledWith('');
+        expect($rootScope.state).toBe(true);
         expect(mapService.refreshLayers).toHaveBeenCalled();
         expect($rootScope.$broadcast).toHaveBeenCalledWith('redirectTo', { contextTitle: 'Delivery Point' });
         expect($rootScope.$broadcast).toHaveBeenCalledWith('disablePrintMap', { disable: false });
-
+        expect(vm.isOnceClicked).toBe(false);
     });
 
-    it('should promise to return a success response true once accessLink method is called', function () {
-        var deferred = $q.defer();
-        var response = true;
+    it('should promise to return a success response true one by one once accessLink method is called', function () {
+        var deferred1 = $q.defer();
+        var deferred2 = $q.defer();
+        var deferred1_response = true;
+        var deferred2_response = true;
 
-        spyOn(accessLinkAPIService, 'CheckAccessLinkIsValid').and.returnValue(deferred.promise);
-        spyOn(accessLinkAPIService, 'GetAdjPathLength').and.returnValue(deferred.promise);
+        spyOn(accessLinkAPIService, 'CheckAccessLinkIsValid').and.returnValue(deferred1.promise);
+        spyOn(accessLinkAPIService, 'GetAdjPathLength').and.returnValue(deferred2.promise);
 
         vm.accessLink();
 
-        deferred.resolve(response);
-        $scope.$digest();
+        deferred1.resolve(deferred1_response);
+        deferred2.resolve(deferred2_response);
+        $rootScope.$apply();
 
-        expect(accessLinkAPIService.CheckAccessLinkIsValid).toHaveBeenCalled();
-        expect(response).toBe(true);
+        expect(accessLinkAPIService.CheckAccessLinkIsValid).toHaveBeenCalled();        
         expect(accessLinkAPIService.GetAdjPathLength).toHaveBeenCalled();
         expect(vm.pathLength).toBe(true);
         expect(vm.enableSave).toBe(true);
         expect(vm.enableBack).toBe(true);
     });
 
-    it('should be clear access link value when clearAccessLink method is called', function () {
+    it('should promise to return a `empty` response once accessLink method is called', function () {
+        var deferred1 = $q.defer();
+        var deferred2 = $q.defer();
+        var deferred1_response = false;
+        var deferred2_response = false;
 
+        spyOn(accessLinkAPIService, 'CheckAccessLinkIsValid').and.returnValue(deferred1.promise);
+        spyOn(accessLinkAPIService, 'GetAdjPathLength').and.returnValue(deferred2.promise);
+        spyOn(accessLinkCoordinatesService, 'setCordinates');
+        spyOn(roadLinkGuidService, 'setRoadLinkGuid');
+        spyOn(intersectionPointService, 'setIntersectionPoint');
+        spyOn(mapService, 'deleteAccessLinkFeature');
+
+        vm.accessLink();
+
+        deferred1.resolve(deferred1_response);
+        $rootScope.$apply();
+
+        expect(accessLinkAPIService.CheckAccessLinkIsValid).toHaveBeenCalled();        
+        expect(accessLinkAPIService.GetAdjPathLength).not.toHaveBeenCalled();
+        expect(accessLinkCoordinatesService.setCordinates).toHaveBeenCalledWith(null);
+        expect(roadLinkGuidService.setRoadLinkGuid).toHaveBeenCalledWith(null);
+        expect(intersectionPointService.setIntersectionPoint).toHaveBeenCalledWith(null);
+        expect(mapService.deleteAccessLinkFeature).toHaveBeenCalledWith('geometri');
+        expect(vm.enableSave).toBe(false);
+        expect(vm.pathLength).toBe('');
+    });
+
+    it('should be clear access link value when clearAccessLink method is called', function () {
         spyOn(accessLinkCoordinatesService, 'setCordinates');
         spyOn(roadLinkGuidService, 'setRoadLinkGuid');
         spyOn(intersectionPointService, 'setIntersectionPoint');
@@ -234,12 +247,10 @@
         expect(mapService.deleteAccessLinkFeature).toHaveBeenCalledWith('geometri');
         expect(vm.enableSave).toBe(false);
         expect(vm.pathLength).toBe('');
-
     });
 
-    it('should be accessLinkFeature defined in stateParams', function () {
-        expect(vm.accessLinkFeature).toBeDefined();
-        expect(vm.accessLinkFeature).toBe(stateParamsMockData.accessLinkFeature);
+    it('should accessLinkFeature defined in stateParams', function () {        
+        expect(vm.accessLinkFeature).toBe($stateParams.accessLinkFeature);
     });
 });
 

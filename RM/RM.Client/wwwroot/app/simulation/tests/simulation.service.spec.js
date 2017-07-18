@@ -3,7 +3,6 @@ describe('Simulation: Service', function () {
     var $rootScope;
     var $scope;
     var $q;
-    var defrred;
     var simulationService;
     var simulationAPIService;
     var referencedataApiService;
@@ -64,7 +63,6 @@ describe('Simulation: Service', function () {
         deffer.resolve(loadScenarioMockData);
         $rootScope.$apply();
 
-        expect(simulationAPIService.getScenario).toHaveBeenCalled();        
         expect(simulationAPIService.getScenario).toHaveBeenCalledWith("9c1e56d7-5397-4984-9cf0-cd9ee7093c88","b51aa229-c984-4ca6-9c12-510187b81050");        
     }); 
 
@@ -78,7 +76,6 @@ describe('Simulation: Service', function () {
         deffer.resolve(loadDeliveryRouteMockData);
         $rootScope.$apply();
 
-        expect(simulationAPIService.getRoutes).toHaveBeenCalled(); 
         expect(simulationAPIService.getRoutes).toHaveBeenCalledWith("9c1e56d7-5397-4984-9cf0-cd9ee7093c88","b51aa229-c984-4ca6-9c12-510187b81050");        
     }); 
     

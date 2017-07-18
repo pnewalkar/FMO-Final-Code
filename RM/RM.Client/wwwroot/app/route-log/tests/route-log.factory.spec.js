@@ -1,7 +1,6 @@
-﻿describe('Route-Log: Factory', function () {
-
-    var $q;
-    var defrred;
+﻿'use strict';
+describe('Route-Log: Factory', function () {
+    var $q;    
     var $httpBackend;
     var GlobalSettings;
     var stringFormatService;
@@ -44,7 +43,7 @@
         inject(function (_routeLogAPIService_,_$httpBackend_, _$q_,_GlobalSettings_,_stringFormatService_) {
             routeLogAPIService = _routeLogAPIService_;
             $httpBackend = _$httpBackend_;
-            mockService = _$q_;
+            $q = _$q_;
             GlobalSettings = _GlobalSettings_;
             stringFormatService = _stringFormatService_;
             

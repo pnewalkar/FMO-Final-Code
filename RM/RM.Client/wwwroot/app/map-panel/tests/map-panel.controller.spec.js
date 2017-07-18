@@ -1,29 +1,25 @@
-﻿describe('Map Panel: Controller', function() {
-
-    var $rootScope;
-    var $scope;
-    var $timeout;
-    var $interval;
-    var ctrl;
-
-    beforeEach(module('mapPanel'));
-
-    beforeEach(inject(function ($rootScope, $controller,_$timeout_) {
-        ctrl = $controller('MapPanelController', {
-            $timeout: _$timeout_,
+﻿'use strict';
+describe('Map Panel: Controller', function() {
+    var vm;
+       
+    beforeEach(function() {
+        module('mapPanel');
+        inject(function (_$controller_,_$timeout_) {
+            vm = _$controller_('MapPanelController', {
+                $timeout: _$timeout_,
+            });
         });
-    }));
+    });    
 
     it('should collapsed `false` when togglePanel set `true` ', function() {
-        ctrl.collapsed = false;
-        ctrl.togglePanel();        
-        expect(ctrl.collapsed).toBe(true);
+        vm.collapsed = false;
+        vm.togglePanel();        
+        expect(vm.collapsed).toBe(true);
     });
 
     it('should collapsed `true` when togglePanel set `false` ', function() {
-        ctrl.collapsed = true;
-        ctrl.togglePanel();        
-        expect(ctrl.collapsed).toBe(false);
+        vm.collapsed = true;
+        vm.togglePanel();        
+        expect(vm.collapsed).toBe(false);
     });
-
 });

@@ -1,17 +1,13 @@
 ﻿'use strict';
 describe('Access LInk : Factory', function() {
-
-    var $q;
-    var defrred;
-    var httpBackend;
+    var $q;    
+    var $httpBackend;
     var GlobalSettings;
     var stringFormatService;
     var accessLinkAPIService;
-    var $rootScope;
-    var apiUrl = undefined;
-   
+    var $rootScope;    
     var MockGlobalSettings = {
-        apiUrl: undefined,
+        accessLinkApiUrl: "http://172.18.5.7/AccessLink/api",
         createAccessLink: "/accessLink/CreateManual/",
         getAdjustedPathLength: "/accessLink/GetWorkloadLength/",
         checkAccessLinkIsValid: "/accessLink/CheckAccessLinkIsValid/"
@@ -25,18 +21,17 @@ describe('Access LInk : Factory', function() {
 
         inject(function (_$rootScope_,_accessLinkAPIService_,_$httpBackend_, _$q_,_GlobalSettings_) {
             accessLinkAPIService = _accessLinkAPIService_;
-            httpBackend = _$httpBackend_;
+            $httpBackend = _$httpBackend_;
             $q = _$q_;
             GlobalSettings = _GlobalSettings_;
             $rootScope: _$rootScope_;
         });
     });
   
-    it('should promise to return a success response once GetAdjPathLength method is called', function() {
-        var response; 
-        var expectedUrl = GlobalSettings.apiUrl+GlobalSettings.getAdjustedPathLength;
-
-        httpBackend.when('POST', expectedUrl, {result: "success"})
+    it('should promise to return a success response once GetAdjPathLength method is called', function() {        
+        var response;
+        var expectedUrl = GlobalSettings.accessLinkApiUrl+GlobalSettings.getAdjustedPathLength;
+        $httpBackend.when('POST', expectedUrl, {result: "success"})
             .respond(200, {result:"success"});
 
         accessLinkAPIService.GetAdjPathLength({result: "success"})
@@ -44,16 +39,14 @@ describe('Access LInk : Factory', function() {
                 response = data;
             });
 
-        httpBackend.flush();
+        $httpBackend.flush();
         expect(response).toEqual({result: "success"});
-
     });
    
     it('should promise to return a error response once GetAdjPathLength method is called', function() {
-        var response; 
-        var expectedUrl = GlobalSettings.apiUrl+GlobalSettings.getAdjustedPathLength;
-
-        httpBackend.when('POST', expectedUrl, {result: "success"})
+        var response;
+        var expectedUrl = GlobalSettings.accessLinkApiUrl+GlobalSettings.getAdjustedPathLength;
+        $httpBackend.when('POST', expectedUrl)
             .respond(500);
 
         accessLinkAPIService.GetAdjPathLength({result: "success"})
@@ -63,15 +56,14 @@ describe('Access LInk : Factory', function() {
                 response = 'Error!';
             });
 
-        httpBackend.flush();
+        $httpBackend.flush();
         expect(response).toEqual('Error!');
     });
     
-    it('should promise to return a success response once CreateAccessLink method is called', function() {
-        var response; 
-        var expectedUrl = GlobalSettings.apiUrl+GlobalSettings.createAccessLink;
-
-        httpBackend.when('POST', expectedUrl , {result: "success"})
+    it('should promise to return a success response once CreateAccessLink method is called', function() {        
+        var response;
+        var expectedUrl = GlobalSettings.accessLinkApiUrl+GlobalSettings.createAccessLink;
+        $httpBackend.when('POST', expectedUrl , {result: "success"})
             .respond(200, {result:"success"});
 
         accessLinkAPIService.CreateAccessLink({result: "success"})
@@ -79,15 +71,14 @@ describe('Access LInk : Factory', function() {
                 response = data;
             });
 
-        httpBackend.flush();
+        $httpBackend.flush();
         expect(response).toEqual({result: "success"});
     });
     
-    it('should promise to return a error response once CreateAccessLink method is called', function() {
-        var response; 
-        var expectedUrl = GlobalSettings.apiUrl+GlobalSettings.createAccessLink;
-
-        httpBackend.when('POST', expectedUrl, {result: "success"})
+    it('should promise to return a error response once CreateAccessLink method is called', function() {        
+        var response;
+        var expectedUrl = GlobalSettings.accessLinkApiUrl+GlobalSettings.createAccessLink;
+        $httpBackend.when('POST', expectedUrl)
             .respond(500);
 
         accessLinkAPIService.CreateAccessLink({result: "success"})
@@ -97,15 +88,14 @@ describe('Access LInk : Factory', function() {
                 response = 'Error!';
             });
 
-        httpBackend.flush();
+        $httpBackend.flush();
         expect(response).toEqual('Error!');
     });
     
-    it('should promise to return a success response once CheckAccessLinkIsValid method is called', function() {
-        var response; 
-        var expectedUrl = GlobalSettings.apiUrl+GlobalSettings.checkAccessLinkIsValid;        
-
-        httpBackend.when('POST', expectedUrl, {result: "success"})
+    it('should promise to return a success response once CheckAccessLinkIsValid method is called', function() {        
+        var response;
+        var expectedUrl = GlobalSettings.accessLinkApiUrl+GlobalSettings.checkAccessLinkIsValid;
+        $httpBackend.when('POST', expectedUrl, {result: "success"})
             .respond(200, {result:"success"});
 
         accessLinkAPIService.CheckAccessLinkIsValid({result: "success"})
@@ -113,15 +103,14 @@ describe('Access LInk : Factory', function() {
                 response = data;
             });
 
-        httpBackend.flush();
+        $httpBackend.flush();
         expect(response).toEqual({result: "success"});
     });
     
-    it('should promise to return a error response once CheckAccessLinkIsValid method is called', function() {
-        var response; 
-        var expectedUrl = GlobalSettings.apiUrl+GlobalSettings.checkAccessLinkIsValid;
-        
-        httpBackend.when('POST', expectedUrl, {result: "success"})
+    it('should promise to return a error response once CheckAccessLinkIsValid method is called', function() {        
+        var response;
+        var expectedUrl = GlobalSettings.accessLinkApiUrl+GlobalSettings.checkAccessLinkIsValid;        
+        $httpBackend.when('POST', expectedUrl)
             .respond(500);
 
         accessLinkAPIService.CheckAccessLinkIsValid({result: "success"})
@@ -131,7 +120,7 @@ describe('Access LInk : Factory', function() {
                 response = 'Error!';
             });
 
-        httpBackend.flush();
+        $httpBackend.flush();
         expect(response).toEqual('Error!');
     });
 });

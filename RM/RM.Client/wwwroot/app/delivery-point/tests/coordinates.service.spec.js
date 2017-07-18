@@ -1,7 +1,6 @@
 ﻿'use strict';
 describe('Delivery Point : Coordinates Service', function() {
-	var coordinatesService;
-    
+	var coordinatesService;    
     beforeEach(function() {
     	module('deliveryPoint');
         inject(function(_coordinatesService_) {

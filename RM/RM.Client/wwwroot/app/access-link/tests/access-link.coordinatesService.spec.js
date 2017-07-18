@@ -1,9 +1,6 @@
 'use strict';
 describe('Access Link : Coordinates Service', function() {
-
-	var accessLinkCoordinatesService;
-	var getCordData;
-    
+	var accessLinkCoordinatesService;    
     beforeEach(function() {
     	module('accessLink');
         inject(function(_accessLinkCoordinatesService_) {

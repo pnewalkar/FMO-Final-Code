@@ -1,14 +1,13 @@
 ﻿describe('Simulation: Factory', function () {
     var $q;
-    var defrred;
     var $httpBackend;
     var GlobalSettings;
     var stringFormatService;
     var simulationAPIService;
 
     var MockGlobalSettings = {
-    	apiUrl: 'http://10.246.18.217/fmoapi/api',
-        deliveryRouteApiUrl: "http://172.18.5.7/DeliveryRoute/api",
+    	apiUrl: '',
+        deliveryRouteApiUrl: "http://localhost:50239/DeliveryRoute/api",
         getRouteLogStatus: "/RouteLog/RouteLogsStatus",
         unitManagerApiUrl: "http://localhost:50239/api",
         getDeliveryRouteScenario: "/UnitManager/scenario/{0}/{1}",
@@ -44,11 +43,10 @@
         });
     });
    
-    it('should promise to return a success response once GetAdjPathLength method is called', function() {
-        
+    it('should promise to return a success response once GetAdjPathLength method is called', function() {        
         var response; 
         var getStatusMockData = {"id":"87216073-e731-4b8c-9801-877ea4891f7e","listName":"Operational Status","maintainable":false,"listItems":[{"id":"9c1e56d7-5397-4984-9cf0-cd9ee7093c88","name":null,"value":"Live","displayText":null,"description":"Live"},{"id":"bee6048d-79b3-49a4-ad26-e4f5b988b7ab","name":null,"value":"Not Live","displayText":null,"description":"Not Live"}]};        
-        var expectedUrl = GlobalSettings.apiUrl+GlobalSettings.getRouteLogStatus;
+        var expectedUrl = GlobalSettings.getRouteLogStatus;
 
         $httpBackend.when('GET', expectedUrl)
             .respond(200, getStatusMockData);

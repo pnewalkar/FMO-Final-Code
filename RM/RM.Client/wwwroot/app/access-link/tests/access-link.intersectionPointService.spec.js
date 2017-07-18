@@ -1,9 +1,6 @@
 'use strict';
 describe('Access Link : Intersection Point Service', function() {
-
 	var intersectionPointService;
-	var getIntData;
-    
     beforeEach(function() {
     	module('accessLink');
         inject(function(_intersectionPointService_) {

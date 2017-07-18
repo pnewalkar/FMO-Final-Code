@@ -1,12 +1,11 @@
 ﻿'use strict';
 describe('Simulation: Controller', function () {
-    var scope;
+    var vm;
+    var $scope;
     var $rootScope;
     var $q;
-    var deferred;
     var $stateParams;
-    var simulationService;
-    var vm;
+    var simulationService;    
     var referencedataApiService;
     var referenceDataConstants;
     var mockReferenceDataConstants;
@@ -26,13 +25,15 @@ describe('Simulation: Controller', function () {
 
                 function getRoutes(operationStateID, deliveryScenarioID) {
                     var deferred = $q.defer();
+                    deferred.resolve([{"scenarioName":"Worthing Delivery Office - Baseline weekday","id":"b51aa229-c984-4ca6-9c12-510187b81050"}]);
                     return deferred.promise;
                 }
                 return {
                     getScenario: getScenario,
                     getRoutes: getRoutes
                 };
-            });            
+            });      
+
             $provide.factory('referencedataApiService', function ($q) {     
                 function getSimpleListsReferenceData(){
                     var deferred = $q.defer();
@@ -44,11 +45,18 @@ describe('Simulation: Controller', function () {
             });
         });
 
-        inject(function(_$rootScope_,_$controller_,_simulationService_,_$stateParams_,_$q_,_referenceDataConstants_,_referencedataApiService_) {
+        inject(function(
+            _$rootScope_,
+            _$controller_,
+            _simulationService_,
+            _$stateParams_,
+            _$q_,
+            _referenceDataConstants_,
+            _referencedataApiService_) {
+            
             $rootScope = _$rootScope_;
-            scope = _$rootScope_.$new();
-            $q = _$q_;
-            deferred = _$q_.defer();
+            $scope = _$rootScope_.$new();
+            $q = _$q_;            
             simulationService = _simulationService_;
             referenceDataConstants = _referenceDataConstants_;
             referencedataApiService = _referencedataApiService_;
@@ -56,7 +64,7 @@ describe('Simulation: Controller', function () {
             vm = _$controller_('SimulationController', {
                 simulationService: simulationService,
                 $stateParams: _$stateParams_,
-                $scope: scope,                
+                $scope: $scope,                
             });
         });
     });
@@ -67,7 +75,6 @@ describe('Simulation: Controller', function () {
     });
 
     it('should be selectedDeliveryUnitObj is `$stateParams`', function() {
-        expect(vm.selectedDeliveryUnitObj).toBeDefined();
         expect(vm.selectedDeliveryUnitObj).toBe(stateParamsMockData);        
     });
 
@@ -75,21 +82,18 @@ describe('Simulation: Controller', function () {
         expect(vm.isDeliveryRouteDisabled).toBe(true);
     });
 
-    it('should be undefined selectedRoute ', function() {
+    it('should set by default `undefined` selectedRoute value', function() {
         expect(vm.selectedRoute).toBeUndefined();
     });
 
     it('should be set searchTerm blank when clearSearchTerm called', function() {
         vm.clearSearchTerm();
-        expect(vm.searchTerm).toBeDefined();
         expect(vm.searchTerm).toBe("");
-
     });
 
     it('should promise to return a success response once loadRouteLogStatus method is called', function() {
         var deffer = $q.defer();
-        var loadRouteLogStatusMockData = [{"id":"9c1e56d7-5397-4984-9cf0-cd9ee7093c88","name":null,"value":"Live","displayText":null,"description":"Live"},{"id":"bee6048d-79b3-49a4-ad26-e4f5b988b7ab","name":null,"value":"Not Live","displayText":null,"description":"Not Live"}];
-
+        var loadRouteLogStatusMockData = [{"id":"9c1e56d7-5397-4984-9cf0-cd9ee7093c88","name":null,"value":"Live","displayText":null,"description":"Live"},{"id":"bee6048d-79b3-49a4-ad26-e4f5b988b7ab","name":null,"value":"Not Live","displayText":null,"description":"Not Live"}];        
         spyOn(simulationService,'loadRouteLogStatus').and.returnValue(deffer.promise);               
 
         vm.loadRouteLogStatus();
@@ -104,9 +108,13 @@ describe('Simulation: Controller', function () {
     });   
 
     it('should call loadDeliveryRoute once scenarioChange method called', function() {
+        var deffer = $q.defer();
         vm.selectedRouteScenario = {id:"9c1e56d7-5397-4984-9cf0-cd9ee7093c88"};
+        spyOn(simulationService,'loadDeliveryRoute').and.returnValue(deffer.promise);               
+
         vm.scenarioChange();
         expect(vm.isDeliveryRouteDisabled).toBe(false);
+        expect(simulationService.loadDeliveryRoute).toHaveBeenCalled();
     });
 
     it('should promise to return a success response once loadScenario method is called', function() {
@@ -123,7 +131,6 @@ describe('Simulation: Controller', function () {
 
         expect(simulationService.loadScenario).toHaveBeenCalled();
         expect(vm.RouteScenario).toEqual([{"scenarioName":"Worthing Delivery Office - Baseline weekday","id":"b51aa229-c984-4ca6-9c12-510187b81050"}]);
-        
     });
 
     it('should promise to return a empty response once loadScenario method is called', function() {

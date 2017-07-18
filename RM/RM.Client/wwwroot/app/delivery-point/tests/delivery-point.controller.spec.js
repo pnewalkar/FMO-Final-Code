@@ -1,26 +1,23 @@
 'use strict';
-describe('Delivery Point: Controller', function () {
-    var mapToolbarService;
+describe('Delivery Point: Controller', function () {    
+    var $rootScope;    
     var $scope;
+    var vm;
+    var $q; 
     var $mdDialog;
+    var mapToolbarService;    
     var popUpSettingService;
-    var deliveryPointAPIService;
-    var $filter;
+    var deliveryPointAPIService;    
     var mapFactory;
     var coordinatesService;
     var guidService;
     var $state;
     var $stateParams;
-    var deliveryPointService
-    var vm;
-    var $q;
-    var deferred;
-    var $controller;
+    var deliveryPointService           
     var stateMockData;
     var stateParamsMockingData;
     var mapService;
-    var MockMdHide;
-    var $rootScope;
+    
 
     stateMockData = {"selectedUnit":{"displayText":"BN    Worthing  Office","ID":"b51aa229-c984-4ca6-9c12-510187b81050","icon":"fa-map-marker delivery","$$mdSelectId":1,"$$hashKey":"object:114"}};
     stateParamsMockingData = {
@@ -33,14 +30,13 @@ describe('Delivery Point: Controller', function () {
     beforeEach(function () {
         module('deliveryPoint'); 
         module(function ($provide) {
-          $provide.value('$state', stateMockData);
-          $provide.value('$stateParams', stateParamsMockingData);  
-          $provide.value('GlobalSettings', {});
-          $provide.value('stringFormatService', {});
-          MockMdHide = jasmine.createSpy();
-          $provide.factory('$mdDialog', function() {
-            return {hide:MockMdHide};
-          });
+            $provide.value('$state', stateMockData);
+            $provide.value('$stateParams', stateParamsMockingData);  
+            $provide.value('GlobalSettings', {});
+            $provide.value('stringFormatService', {});          
+            $provide.factory('$mdDialog', function() {
+                return {hide:jasmine.createSpy()};
+            });
 
             $provide.factory('mapToolbarService', function ($q) {
               function getShapeForButton(button) {}
@@ -63,18 +59,18 @@ describe('Delivery Point: Controller', function () {
                 function closeModalPopup() {}
                 function getPostalAddress(postcode) {
                   var getPostalAddressMockData = {display:true,selectedValue:true,postalAddressData:{nybAddressDetails:'testDetails',routeDetails:''}};
-                    deferred = $q.defer();
+                    var deferred = $q.defer();
                     deferred.resolve(getPostalAddressMockData);
                     return deferred.promise;
                 }
 
                 function bindAddressDetails(notyetBuilt) {
-                    deferred = $q.defer();
+                    var deferred = $q.defer();
                     return deferred.promise;
                 }
 
                 function setOrganisation(addressDetails, dpUseType) {
-                    deferred = $q.defer();
+                    var deferred = $q.defer();
                     return deferred.promise;
                 }
 
@@ -134,13 +130,25 @@ describe('Delivery Point: Controller', function () {
             });            
         });        
 
-        inject(function (_$controller_,_$rootScope_,_mapToolbarService_,_$mdDialog_,_popUpSettingService_,_deliveryPointAPIService_,_$filter_,_mapFactory_,_$state_,_$stateParams_,_deliveryPointService_,_$q_,_mapService_) {
+        inject(function (
+            _$controller_,
+            _$rootScope_,
+            _mapToolbarService_,
+            _$mdDialog_,
+            _popUpSettingService_,
+            _deliveryPointAPIService_,
+            _mapFactory_,
+            _$state_,
+            _$stateParams_,
+            _deliveryPointService_,
+            _$q_,
+            _mapService_) {
+            
             $rootScope = _$rootScope_;
             $scope = $rootScope.$new();
             mapToolbarService = _mapToolbarService_;
             $mdDialog = _$mdDialog_;
             popUpSettingService = _popUpSettingService_;
-            $filter = _$filter_;
             mapFactory = _mapFactory_;
             $state = _$state_;
             $stateParams = _$stateParams_;
@@ -152,7 +160,6 @@ describe('Delivery Point: Controller', function () {
                 mapToolbarService : mapToolbarService,
                 $mdDialog : $mdDialog,
                 popUpSettingService : popUpSettingService,
-                $filter : $filter,
                 mapFactory : mapFactory,
                 $state : $state,
                 $stateParams : $stateParams,
@@ -166,64 +173,58 @@ describe('Delivery Point: Controller', function () {
         });
     });
     
-    it('should be set positionedThirdPartyDeliveryPoint `array`', function() {
+    it('should set positionedThirdPartyDeliveryPoint value as `array`', function() {
         expect(vm.positionedThirdPartyDeliveryPoint).toEqual([ ]);
     });
     
-    it('should be set isError `false`', function() {
+    it('should set isError value as `false`', function() {
         expect(vm.isError).toBe(false);
     });
 
-    it('should be set isDisable `false`', function() {
+    it('should set `isDisable` value as `false`', function() {
         expect(vm.isDisable).toBe(false);
     });
 
-    it('should be set positionedSaveDeliveryPointList `array`', function() {
+    it('should set `positionedSaveDeliveryPointList` value as `array`', function() {
         expect(vm.positionedSaveDeliveryPointList).toEqual([ ]);
     });
 
-    it('should be set defaultNYBValue', function() {
+    it('should set defaultNYBValue', function() {
         expect(vm.defaultNYBValue).toBeDefined();
         expect(vm.defaultNYBValue).toBe("00000000-0000-0000-0000-000000000000");
     });
 
-    it('should be set errorMessageDisplay is `false`', function() {
+    it('should set `errorMessageDisplay` value as `false`', function() {
         expect(vm.errorMessageDisplay).toBe(false);
     });
 
-    it('should be set selectedItem `null`', function() {
+    it('should set `selectedItem` value as `null`', function() {
         expect(vm.selectedItem).toBe(null);
     });
 
-    it('should be set positionedCoOrdinates `[]`', function() {
+    it('should set `positionedCoOrdinates` value as `[]`', function() {
         expect(vm.positionedCoOrdinates).toEqual([]);
     });
 
-    it('should be set alias `null`', function() {
+    it('should set default alias value as `null`', function() {
         expect(vm.alias).toBe(null);
     });
 
-    it('should be set display `false`', function() {
+    it('should set display value as `false`', function() {
         expect(vm.display).toBe(false);
     });
 
-    it('should be set disable `true`', function() {
+    it('should set disable value as `true`', function() {
         expect(vm.disable).toBe(true);
     });
 
-    it('should be set items `array`', function() {
+    it('should be set items value as `array`', function() {
         expect(vm.items).toEqual([]);
     });
 
-    it('should be set false dpIsChecked', function() {
+    it('should set `dpIsChecked` value as `false`', function() {
         expect(vm.dpIsChecked).toBe(false);
-    });
-
-    it('should be auto initialize method', function() {
-        spyOn(vm,'initialize');
-        vm.initialize();
-        expect(vm.initialize).toHaveBeenCalled();
-    });
+    });    
 
     it('should promise to return a success response once initialize method is called', function() {            
         var deferred = $q.defer();
@@ -337,13 +338,13 @@ describe('Delivery Point: Controller', function () {
     });
 
     it('should promise to return a success response once setOrganisation method is called', function() {
-        var deferredSuccess = $q.defer(); 
+        var deferred = $q.defer(); 
         var response = {dpUse:true,selectedDPUse:true};
-        spyOn(deliveryPointService, 'setOrganisation').and.returnValue(deferredSuccess.promise);
+        spyOn(deliveryPointService, 'setOrganisation').and.returnValue(deferred.promise);
         
         vm.setOrganisation();
         
-        deferredSuccess.resolve(response);
+        deferred.resolve(response);
         $scope.$digest();
 
         expect(deliveryPointService.setOrganisation).toHaveBeenCalled();
@@ -367,7 +368,6 @@ describe('Delivery Point: Controller', function () {
         expect(deliveryPointService.UpdateDeliverypoint).toHaveBeenCalledWith('firstPointList');
     });
 
-
     it('should be return isError and isDisable `false` when called Ok method', function() {
         vm.Ok();
         expect(vm.isError).toBe(false);
@@ -389,14 +389,14 @@ describe('Delivery Point: Controller', function () {
         expect(vm.getCommaSeparatedVale('', 'value2')).toEqual('value2');
     });
 
-    it('should be return a object addAlias ', function() {
+    it('should add an item when `addAlias` method called ', function() {
         vm.addAlias();
         expect(vm.items).toEqual([{ Preferred: false, DPAlias: null }]);
         expect(vm.alias).toBeDefined();
         expect(vm.alias).toBe('');
     });
 
-    it('should be remove alias', function() {
+    it('should remove an item when removeAlias method called', function() {
         vm.items = [1,2,3,4,5];
         vm.removeAlias();
         var lastItem = vm.items.length - 1;
