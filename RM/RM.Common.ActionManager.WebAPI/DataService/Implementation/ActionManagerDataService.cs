@@ -23,10 +23,10 @@ namespace RM.Common.ActionManager.WebAPI.DataService
         private int exitEventId = LoggerTraceConstants.ActionManagerDataServiceMethodExitEventId;
 
         /// <summary>
-        /// Parameterised constructor
+        /// Initializes a new instance of the <see cref="ActionManagerDataService"/> class.
         /// </summary>
-        /// <param name="databaseFactory"></param>
-        /// <param name="loggingHelper"></param>
+        /// <param name="databaseFactory"> reference to the databaseFactory</param>
+        /// <param name="loggingHelper">reference to the loggingHelper</param>
         public ActionManagerDataService(IDatabaseFactory<ActionDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
