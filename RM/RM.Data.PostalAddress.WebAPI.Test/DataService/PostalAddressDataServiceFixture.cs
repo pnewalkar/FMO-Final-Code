@@ -8,6 +8,7 @@ using NUnit.Framework;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
@@ -26,13 +27,13 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         private Mock<CommonLibrary.EntityFramework.DataService.Interfaces.IReferenceDataCategoryDataService> mockReferenceDataCategoryDataService;
         private Mock<IPostalAddressDataService> mockAddressDataService;
         private IPostalAddressDataService testCandidate;
-        private List<PostalAddressDBDTO> postalAddressesDTO;
+        private List<PostalAddressDataDTO> postalAddressesDTO;
         private AddDeliveryPointDTO addDeliveryPointDTO1;
         private AddDeliveryPointDTO addDeliveryPointDTO2;
         private AddDeliveryPointDTO addDeliveryPointDTO3;
-        private PostalAddressDBDTO dtoPostalAddresses;
+        private PostalAddressDataDTO dtoPostalAddresses;
         private List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> lstPostCodeDTO;
-        private PostalAddressDBDTO testObject;
+        private PostalAddressDataDTO testObject;
         private Guid id1 = new Guid("00000000-0000-0000-0000-000000000002");
         private Guid id2 = new Guid("00000000-0000-0000-0000-000000000001");
 
@@ -40,7 +41,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_UpdateAddressValidTestCase()
         {
             this.SetUpdataWithDeliverypoints();
-            PostalAddressDBDTO objstPostalAddressDTO = new PostalAddressDBDTO() { UDPRN = 14856 };
+            PostalAddressDataDTO objstPostalAddressDTO = new PostalAddressDataDTO() { UDPRN = 14856 };
             var result = this.testCandidate.SaveAddress(objstPostalAddressDTO, "NYB.CSV");
             mockFmoDbContext.Verify(n => n.SaveChangesAsync(), Times.Once);
             Assert.NotNull(result);
@@ -51,7 +52,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_CreateAddressValidTestCase()
         {
             SetUpdataWithDeliverypoints();
-            PostalAddressDBDTO objstPostalAddressDTO = new PostalAddressDBDTO() { UDPRN = 15862 };
+            PostalAddressDataDTO objstPostalAddressDTO = new PostalAddressDataDTO() { UDPRN = 15862 };
             var result = testCandidate.SaveAddress(objstPostalAddressDTO, "NYB.CSV");
             mockFmoDbContext.Verify(n => n.SaveChangesAsync(), Times.Once);
             Assert.NotNull(result);
@@ -62,7 +63,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_InValidAddress()
         {
             SetUpdataWithDeliverypoints();
-            PostalAddressDBDTO objstPostalAddressDTO = null;
+            PostalAddressDataDTO objstPostalAddressDTO = null;
             var result = testCandidate.SaveAddress(objstPostalAddressDTO, "NYB.CSV");
             mockFmoDbContext.Verify(n => n.SaveChangesAsync(), Times.Never);
             Assert.NotNull(result);
@@ -196,7 +197,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_InsertAddress()
         {
             OnSetupPaf();
-            testObject = new PostalAddressDBDTO()
+            testObject = new PostalAddressDataDTO()
             {
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                 UDPRN = 14856
@@ -211,7 +212,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         public void Test_GetPostalAddressByUDPRN()
         {
             OnSetupPaf();
-            testObject = new PostalAddressDBDTO()
+            testObject = new PostalAddressDataDTO()
             {
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                 UDPRN = 14856
@@ -264,9 +265,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
 
         private void SetUpDataForDeliveryPoints()
         {
-            postalAddressesDTO = new List<PostalAddressDBDTO>()
+            postalAddressesDTO = new List<PostalAddressDataDTO>()
             {
-                new PostalAddressDBDTO()
+                new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -282,11 +283,11 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
-                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
             },
-                new PostalAddressDBDTO()
+                new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -302,7 +303,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
-                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
             }
@@ -362,9 +363,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
 
         private void SetUpDataForCreateAddressAndDeliveryPoint()
         {
-            postalAddressesDTO = new List<PostalAddressDBDTO>()
+            postalAddressesDTO = new List<PostalAddressDataDTO>()
             {
-                new PostalAddressDBDTO()
+                new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -380,11 +381,11 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
-                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
             },
-                new PostalAddressDBDTO()
+                new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -400,7 +401,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
-                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
             }
@@ -491,7 +492,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 }
             };
 
-            PostalAddressDBDTO postalAddress = new PostalAddressDBDTO()
+            PostalAddressDataDTO postalAddress = new PostalAddressDataDTO()
             {
                 UDPRN = 14856,
                 BuildingName = "Building one",
@@ -499,7 +500,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15")
             };
 
-            dtoPostalAddresses = new PostalAddressDBDTO()
+            dtoPostalAddresses = new PostalAddressDataDTO()
             {
                 BuildingName = "bldg1",
                 BuildingNumber = 1,
@@ -515,7 +516,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 PostcodeType = "xyz",
                 SmallUserOrganisationIndicator = "indicator",
                 DeliveryPointSuffix = "DeliveryPointSuffix",
-                PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
             };
@@ -607,7 +608,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 }
             };
 
-            PostalAddressDBDTO postalAddress = new PostalAddressDBDTO()
+            PostalAddressDataDTO postalAddress = new PostalAddressDataDTO()
             {
                 UDPRN = 14856,
                 BuildingName = "Building one",
@@ -648,7 +649,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     Thoroughfare = "ThoroughFare1",
                     DependentThoroughfare = "DependentThoroughFare1",
                     AddressType_GUID = new Guid("222C68A4-D959-4B37-B468-4B1855950A81"),
-                    PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000002"),
+                    //PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000002"),
                     UDPRN = 14856,
                     PostcodeType = "S",
                     PostTown = "test",
@@ -660,7 +661,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     Thoroughfare = "ThoroughFare2",
                     DependentThoroughfare = "DependentThoroughFare2",
                     AddressType_GUID = new Guid("A21F3E46-2D0D-4989-A5D5-872D23B479A2"),
-                    PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000001"),
+                    //PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000001"),
                     UDPRN = 14856,
                     PostcodeType = "S",
                     PostTown = "test",

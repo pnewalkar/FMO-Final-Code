@@ -20,6 +20,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public DateTime FileProcessing_TimeStamp { get; set; }
 
+        [Required]
         [StringLength(256)]
         public string FileName { get; set; }
 
@@ -32,7 +33,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public string Comments { get; set; }
 
-        [Required]
         public bool SuccessFlag { get; set; }
     }
 }

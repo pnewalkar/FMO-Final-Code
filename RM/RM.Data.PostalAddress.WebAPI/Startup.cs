@@ -101,14 +101,15 @@ namespace RM.DataManagement.PostalAddress.WebAPI
             // DataServices
             services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
             services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
-            services.AddScoped<DataService.Interfaces.IPostalAddressDataService, DataService.Implementation.PostalAddressDataService>();
+            // TODO: Uncomment below code once PostalAddressDataService is ready
+            //services.AddScoped<DataService.Interfaces.IPostalAddressDataService, DataService.Implementation.PostalAddressDataService>();
             services.AddScoped<DataService.Interfaces.IFileProcessingLogDataService, DataService.Implementation.FileProcessingLogDataService>();
             //services.AddScoped<IPostCodeDataService, PostCodeDataService>();
             //services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
 
             // Integration Services
             services.AddScoped<IPostalAddressIntegrationService, PostalAddressIntegrationService>();
-            services.AddScoped<IPostalAddressBusinessService, PostalAddressBusinessService>();
+            //services.AddScoped<IPostalAddressBusinessService, PostalAddressBusinessService>();
 
             // Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();

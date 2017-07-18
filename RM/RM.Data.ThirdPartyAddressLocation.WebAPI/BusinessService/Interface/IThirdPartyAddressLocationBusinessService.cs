@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 {
+    /// <summary>
+    /// Interface definition for the Third Party business Service members
+    /// </summary>
     public interface IThirdPartyAddressLocationBusinessService
     {
         /// <summary>
@@ -16,12 +19,13 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// </returns>
         Task<object> GetAddressLocationByUDPRNJson(int uDPRN);
 
+        // To be implemented in parallel
         /// <summary>
         /// Method to save the list of USR data into the database.
         /// </summary>
         /// <param name="addressLocationUsrpostdtos"> List of Address Locations</param>
         /// <returns> Task </returns>
-        Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos);
+        //Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos);
 
         /// <summary>
         /// Get AddressLocation by UDPRN

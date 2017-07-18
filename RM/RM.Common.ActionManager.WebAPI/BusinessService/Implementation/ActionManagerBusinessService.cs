@@ -20,8 +20,14 @@ namespace RM.Common.ActionManager.WebAPI.BusinessService
         private int entryEventId = LoggerTraceConstants.ActionManagerBusinessServiceEntryEventId;
         private int exitEventId = LoggerTraceConstants.ActionManagerBusinessServiceExitEventId;
 
+        /// <summary>
+        /// Parameterised constructor
+        /// </summary>
+        /// <param name="actionManagerDataService"></param>
+        /// <param name="loggingHelper"></param>
         public ActionManagerBusinessService(IActionManagerDataService actionManagerDataService, ILoggingHelper loggingHelper)
         {
+            // store injected dependancies.
             this.actionManagerDataService = actionManagerDataService;
             this.loggingHelper = loggingHelper;
         }

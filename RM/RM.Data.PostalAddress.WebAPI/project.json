@@ -1,4 +1,7 @@
 {
+  "title": "RM.Data.PostalAddress.WebAPI",
+  "copyright": "Copyright © Royal Mail Group 2017",
+  "language": "en-GB",
   "dependencies": {
     "EnterpriseLibrary.Logging": "6.0.1304",
     "AutoMapper": "6.0.2",

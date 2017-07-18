@@ -1,4 +1,4 @@
-namespace RM.DataManagement.PostalAddress.WebAPI.Entities
+namespace RM.DataManagement.AccessLink.WebAPI.Entities
 {
     using System;
     using System.Collections.Generic;
@@ -14,11 +14,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AlternateID { get; set; }
 
+        public DateTime RowCreateDateTime { get; set; }
+
         [Required]
         public DbGeometry Shape { get; set; }
-
-        [Column(TypeName = "datetime2")]
-        public DateTime RowCreateDateTime { get; set; }
 
         public virtual NetworkNode NetworkNode { get; set; }
     }
