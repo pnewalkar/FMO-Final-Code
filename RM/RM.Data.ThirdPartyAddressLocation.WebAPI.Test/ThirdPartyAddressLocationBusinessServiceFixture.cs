@@ -28,7 +28,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         private Mock<ILoggingHelper> loggingHelperMock;
         private Mock<IConfigurationHelper> configurationHelperMock;
 
-        /// <summary>
+        // TODO : Test methods will be implemented
+        /*/// <summary>
         /// Test the method get Address location by Udprn.
         /// </summary>
         [Test]
@@ -129,11 +130,12 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             this.configurationHelperMock.Setup(x => x.ReadAppSettingsConfigurationValues("USRToEmail")).Returns("sriram.kandade@capgemini.com");
 
             await this.testCandidate.SaveUSRDetails(new List<AddressLocationUSRPOSTDTO> { new AddressLocationUSRPOSTDTO { UDPRN = 0, XCoordinate = 0, YCoordinate = 5 } });
-        }
+        }*/
 
         protected override void OnSetup()
         {
-            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            // OnSetup to be configured 
+            /*addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
             thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
             loggingHelperMock = new Mock<ILoggingHelper>();
 
@@ -154,7 +156,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
-            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);
+            testCandidate = new ThirdPartyAddressLocationBusinessService(addressLocationDataServiceMock.Object, thirdPartyAddressLocationIntegrationServiceMock.Object, loggingHelperMock.Object);*/
         }
     }
 }
