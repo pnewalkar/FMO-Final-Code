@@ -89,7 +89,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// </summary>
         /// <param name="addressLocationUsrpostdtos">List of Address Locations</param>
         /// <returns>Task</returns>
-        /*public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
+        public async Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             int fileUdprn;
             using (loggingHelper.RMTraceManager.StartTrace("Business.SaveUSRDetails"))
@@ -103,16 +103,19 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 ThirdPartyAddressLocationConstants.TASKNOTIFICATION,
                                 ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER,
                                 ThirdPartyAddressLocationConstants.DeliveryPointUseIndicator,
+                                ThirdPartyAddressLocationConstants.APPROXLOCATION,
                                 ReferenceDataCategoryNames.DeliveryPointOperationalStatus,
                                 ReferenceDataCategoryNames.NetworkNodeType
                             };
 
-
+                // Get all the reference data Guids required for the below 
                 Guid tasktypeId = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.TASKNOTIFICATION, ThirdPartyAddressLocationConstants.TASKACTION);
                 Guid locationProviderId = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER, ThirdPartyAddressLocationConstants.EXTERNAL);
                 Guid deliveryPointUseIndicator = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.DeliveryPointUseIndicator, ThirdPartyAddressLocationConstants.DeliveryPointUseIndicatorPAF);
-                Guid OperationalStatusGUIDLive = GetReferenceData(categoryNamesSimpleLists, ReferenceDataCategoryNames.DeliveryPointOperationalStatus, ThirdPartyAddressLocationConstants.OperationalStatusGUIDLive, true);
-                Guid NetworkNodeTypeRMGServiceNode = GetReferenceData(categoryNamesSimpleLists, ReferenceDataCategoryNames.NetworkNodeType, ThirdPartyAddressLocationConstants.NetworkNodeTypeRMGServiceNode, true);
+                Guid operationalStatusGUIDLive = GetReferenceData(categoryNamesSimpleLists, ReferenceDataCategoryNames.DeliveryPointOperationalStatus, ThirdPartyAddressLocationConstants.OperationalStatusGUIDLive, true);
+                Guid networkNodeTypeRMGServiceNode = GetReferenceData(categoryNamesSimpleLists, ReferenceDataCategoryNames.NetworkNodeType, ThirdPartyAddressLocationConstants.NetworkNodeTypeRMGServiceNode, true);
+                Guid approxLocation = GetReferenceData(categoryNamesSimpleLists, ReferenceDataCategoryNames.DeliveryPointOperationalStatus, ThirdPartyAddressLocationConstants.APPROXLOCATION, true);
+                Guid notificationTypeId_GUID = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(ThirdPartyAddressLocationConstants.USRCATEGORY, ThirdPartyAddressLocationConstants.USRREFERENCEDATANAME);
 
                 foreach (AddressLocationUSRPOSTDTO addressLocationUSRPOSTDTO in addressLocationUsrpostdtos)
                 {
@@ -140,38 +143,29 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                         // Check if the delivery point exists
                         if (postalAddressDataDTO.DeliveryPoints != null && postalAddressDataDTO.DeliveryPoints.Count > 0)
                         {
-                            //DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress((Guid)postalAddressDTONew.ID);
-                            DeliveryPointDataDTO deliveryPointDataDTO = postalAddressDataDTO.DeliveryPoints.FirstOrDefault();
+                            DeliveryPointDTO deliveryPointDTO = await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByPostalAddress(postalAddressDataDTO.ID);
 
-                            //await thirdPartyAddressLocationIntegrationService.GetDeliveryPointByUDPRNForThirdParty((int)fileUdprn);
-
-                            // Check if the existing delivery point has a location.
-                            if (deliveryPointDTO == null)
+                            // Check if the existing delivery point has an approx location.
+                            if (deliveryPointDTO.OperationalStatus_GUID == approxLocation)
                             {
-                                // Get the Location provider Guid from the reference data table.
-                                //Guid locationProviderId =
-                                //    await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(Constants.NETWORKLINKDATAPROVIDER, Constants.EXTERNAL);
-
 
                                 DeliveryPointDTO newDeliveryPoint = new DeliveryPointDTO
                                 {
                                     ID = Guid.NewGuid(),
-                                    Latitude = addressLocationUSRPOSTDTO.Latitude,
-                                    Longitude = addressLocationUSRPOSTDTO.Longitude,
                                     LocationXY = spatialLocationXY,
-                                    Address_GUID = postalAddressDTONew.ID,
+                                    Address_GUID = postalAddressDataDTO.ID,
                                     LocationProvider_GUID = locationProviderId,
                                     UDPRN = fileUdprn,
                                     DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
-                                    OperationalStatus_GUID = OperationalStatusGUIDLive,
-                                    NetworkNodeType_GUID = NetworkNodeTypeRMGServiceNode
+                                    OperationalStatus_GUID = operationalStatusGUIDLive,
+                                    NetworkNodeType_GUID = networkNodeTypeRMGServiceNode
                                 };
 
                                 // Update the location details for the delivery point
-                                await thirdPartyAddressLocationIntegrationService.InsertDeliveryPoint(newDeliveryPoint);
+                                await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(newDeliveryPoint);
 
                                 // Check if a notification exists for the UDPRN.
-                                if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
+                                if (await addressLocationDataService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
                                 {
                                     // update the notification if it exists.
                                     await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION, ThirdPartyAddressLocationConstants.NOTIFICATIONCLOSED);
@@ -186,36 +180,25 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 // Check if the new point is within the tolerance limit
                                 if (straightLineDistance < ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
                                 {
-                                    //Guid locationProviderId = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(
-                                    //    Constants.NETWORKLINKDATAPROVIDER,
-                                    //    Constants.EXTERNAL);
 
                                     DeliveryPointDTO newDeliveryPoint = new DeliveryPointDTO
                                     {
-                                        ID = Guid.NewGuid(),
-                                        Latitude = addressLocationUSRPOSTDTO.Latitude,
-                                        Longitude = addressLocationUSRPOSTDTO.Longitude,
+                                        ID = Guid.NewGuid(),                                        
                                         LocationXY = spatialLocationXY,
-                                        Address_GUID = postalAddressDTONew.ID,
+                                        Address_GUID = postalAddressDataDTO.ID,
                                         LocationProvider_GUID = locationProviderId,
                                         UDPRN = fileUdprn,
                                         DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
-                                        OperationalStatus_GUID = OperationalStatusGUIDLive,
-                                        NetworkNodeType_GUID = NetworkNodeTypeRMGServiceNode
+                                        OperationalStatus_GUID = operationalStatusGUIDLive,
+                                        NetworkNodeType_GUID = networkNodeTypeRMGServiceNode
                                     };
-
-                                    if (await thirdPartyAddressLocationIntegrationService.DeleteDeliveryPoint(deliveryPointDTO.ID))
-                                    {
-                                        await thirdPartyAddressLocationIntegrationService.InsertDeliveryPoint(newDeliveryPoint);
-                                    }
-
 
                                     // Update the delivery point location directly in case it is within
                                     // the tolerance limits.
-                                    //await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
+                                    await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(newDeliveryPoint);
 
                                     // Check if the notification exists for the given UDPRN.
-                                    if (await thirdPartyAddressLocationIntegrationService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
+                                    if (await addressLocationDataService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
                                     {
                                         // update the notification if it exists.
                                         await thirdPartyAddressLocationIntegrationService.UpdateNotificationByUDPRN(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION, ThirdPartyAddressLocationConstants.NOTIFICATIONCLOSED);
@@ -227,12 +210,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                     PostCodeSectorDTO postCodeSectorDTO =
                                         await thirdPartyAddressLocationIntegrationService.GetPostCodeSectorByUDPRN(fileUdprn);
 
-                                    // Get the Notification Type from the Reference data table
-                                    Guid notificationTypeId_GUID = await thirdPartyAddressLocationIntegrationService.GetReferenceDataId(
-                                        ThirdPartyAddressLocationConstants.USRCATEGORY,
-                                        ThirdPartyAddressLocationConstants.USRREFERENCEDATANAME);
-
-                                    PostalAddressDTO postalAddressDTO = await thirdPartyAddressLocationIntegrationService.GetPostalAddress(fileUdprn);
+                                    PostalAddressDataDTO postalAddressDTO = await addressLocationDataService.GetPostalAddressData(fileUdprn);
 
                                     NotificationDTO notificationDO = new NotificationDTO
                                     {
@@ -261,7 +239,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
             }
-        }*/
+        }
 
         /// <summary>
         /// This method is used to fetch GeoJson data for Address Location.
@@ -343,7 +321,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// </summary>
         /// <param name="objPostalAddress">USR create event PostalAddressDTO</param>
         /// <returns>returns concatenated value of address field</returns>
-        private string AddressFields(PostalAddressDTO objPostalAddress)
+        private string AddressFields(PostalAddressDataDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.AddressFields"))
             {
