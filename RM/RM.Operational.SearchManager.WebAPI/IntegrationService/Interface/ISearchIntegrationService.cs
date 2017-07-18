@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.SearchManager.WebAPI.DTO;
 
 namespace RM.Operational.SearchManager.WebAPI.Integration
 {

@@ -13,6 +13,7 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.SearchManager.WebAPI.DTO;
 
 namespace RM.Operational.SearchManager.WebAPI.Integration
 {
