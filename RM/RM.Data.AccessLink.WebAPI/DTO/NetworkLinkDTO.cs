@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 
-namespace RM.DataManagement.AccessLink.WebAPI.DTO
+namespace RM.DataManagement.AccessLink.WebAPI.DTOs
 {
     public class NetworkLinkDTO
     {

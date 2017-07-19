@@ -1,8 +1,8 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using RM.DataManagement.AccessLink.WebAPI.DTO;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
 
 namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
 {
@@ -17,14 +17,14 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>List of Access Link dto</returns>
-        List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid);
+        List<AccessLinkDataDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid);
 
         /// <summary>
         /// Creates access link.
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
-        bool CreateAccessLink(AccessLinkDTO accessLinkDto);
+        bool CreateAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
 
         /// <summary>
         /// This method is used to get the access links crossing the created access link
@@ -32,6 +32,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// <param name="boundingBoxCoordinates">bbox coordinates</param>
         /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<AccessLinkDTO> </returns>
-        List<AccessLinkDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink);
+        List<AccessLinkDataDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink);
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RM.Data.AccessLink.WebAPI.Utils
+﻿namespace RM.Data.AccessLink.WebAPI.Utils
 {
     public static class AccessLinkConstants
     {
