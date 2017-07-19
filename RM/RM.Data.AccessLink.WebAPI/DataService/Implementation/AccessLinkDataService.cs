@@ -222,5 +222,22 @@
 
             return null;
         }
+
+
+        public int GetIntersectionCountForDeliveryPoint(DbGeometry operationalObjectPoint,DbGeometry accessLink)
+        {
+            
+          var  intersectionCount=  DataContext.DeliveryPoints.AsNoTracking()
+                .Count(m => m.NetworkNode.Location.Shape.Intersects(accessLink) && !m.NetworkNode.Location.Shape.SpatialEquals(operationalObjectPoint));
+
+            return intersectionCount;
+        }
+
+        public int GetAccessLinkCountForCrossesorOverLaps(DbGeometry operationalObjectPoint,DbGeometry accessLink)
+        {
+
+          var accesslinkCount= DataContext.NetworkLinks.AsNoTracking().Where(al => al.LinkGeometry != null && al.LinkGeometry.Intersects(accessLink) && al.LinkGeometry.Crosses(accessLink)).ToList();
+            return accesslinkCount.Count;
+        }
     }
 }
