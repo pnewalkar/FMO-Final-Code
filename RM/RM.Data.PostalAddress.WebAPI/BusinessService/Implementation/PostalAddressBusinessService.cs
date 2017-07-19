@@ -921,7 +921,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// Method to convert DTO to DataDTO of PostalAddress
         /// </summary>
         /// <param name="postalAddressDTO">PostalAddress DTO Object</param>
-        /// <returns></returns>
+        /// <returns>returns converted PostalAddressDataDTO object</returns>
         private PostalAddressDataDTO ConvertToDataDTO(PostalAddressDTO postalAddressDTO)
         {
             PostalAddressDataDTO postalAddressDataDTO = new PostalAddressDataDTO();
@@ -958,6 +958,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             return postalAddressDataDTO;
         }
 
+        /// <summary>
+        /// Method to convert List od DTO to List of DataDTO of PostalAddress
+        /// </summary>
+        /// <param name="postalAddressDTOList">List of PostalAddress DTO Object</param>
+        /// <returns>returns converted List of PostalAddressDataDTO object</returns>
         private List<PostalAddressDataDTO> ConvertToDataDTO(List<PostalAddressDTO> postalAddressDTOList)
         {
             List<PostalAddressDataDTO> postalAddressDataDTO = new List<PostalAddressDataDTO>();
@@ -970,6 +975,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             return postalAddressDataDTO;
         }
 
+        /// <summary>
+        /// Method to convert DataDTO to DTO of PostalAddress
+        /// </summary>
+        /// <param name="postalAddressDataDTO">postalAddressDataDTO Object</param>
+        /// <returns>returns converted PostalAddressDTO object</returns>
         private PostalAddressDTO ConvertToDTO(PostalAddressDataDTO postalAddressDataDTO)
         {
             PostalAddressDTO postalAddressDTO = new PostalAddressDTO();
@@ -1007,6 +1017,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             return postalAddressDTO;
         }
 
+        /// <summary>
+        /// Method to convert List of DataDTO to List of DTO for PostalAddress
+        /// </summary>
+        /// <param name="postalAddressDataDTOList">List of postalAddressDataDTO Object</param>
+        /// <returns>returns converted List of PostalAddressDTO object</returns>
         private List<PostalAddressDTO> ConvertToDTO(List<PostalAddressDataDTO> postalAddressDataDTOList)
         {
             List<PostalAddressDTO> postalAddressDTO = new List<PostalAddressDTO>();
