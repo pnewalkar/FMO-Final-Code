@@ -20,7 +20,7 @@ namespace RM.CommonLibrary.HttpHandler
         private const string FMOTokenGenerationUrl = "FMOTokenGenerationUrl";
         private const string FMOWebAPIUser = "FMOWebAPIUser";
         private const string UserName = "username";
-        private const string AccessToken = "access_token";
+        private const string AccessToken = "AccessToken"; // "access_token";
         private const string Bearer = "bearer";
 
         #endregion constants

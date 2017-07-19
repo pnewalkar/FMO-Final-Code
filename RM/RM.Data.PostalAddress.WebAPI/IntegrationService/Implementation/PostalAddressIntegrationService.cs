@@ -436,7 +436,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetApproxLocation);
                 //loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "approxlocation/" + postcode);
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/approxlocation/" + postcode);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;

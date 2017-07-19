@@ -31,7 +31,7 @@ namespace Fmo.API.Services.Controllers
 
         #region Constructors
 
-        public PostalAddressController(IPostalAddressBusinessService _businessService, ILoggingHelper _loggingHelper)
+        public PostalAddressController(IPostalAddressBusinessService businessService, ILoggingHelper loggingHelper)
         {
             this.businessService = businessService;
             this.loggingHelper = loggingHelper;
