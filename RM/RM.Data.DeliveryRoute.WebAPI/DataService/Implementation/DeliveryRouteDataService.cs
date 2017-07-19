@@ -196,26 +196,30 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteByDeliverypoint);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
                 RouteDataDTO routeData = null;
-                var unSequencedBlockId = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault().BlockID;
-                var route = DataContext.Routes.AsNoTracking().Where(n => n.UnSequencedBlockID == unSequencedBlockId).SingleOrDefault();
+                var blockId = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault().BlockID;
 
-                if (route != null)
+                var routeDetails = (from route in DataContext.Routes.AsNoTracking()
+                                    join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
+                                    where route.UnSequencedBlockID == blockId || routeActivity.BlockID == blockId
+                                    select route).FirstOrDefault();
+
+                if (routeDetails != null)
                 {
-                    var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == route.ID || n.SecondaryRouteGUID == route.ID).SingleOrDefaultAsync();
+                    var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID).SingleOrDefaultAsync();
                     if (postCode != null)
                     {
-                        if (route.ID == postCode.PrimaryRouteGUID)
+                        if (routeDetails.ID == postCode.PrimaryRouteGUID)
                         {
-                            routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + route.RouteName };
+                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName };
                         }
-                        else if (route.ID == postCode.SecondaryRouteGUID)
+                        else if (routeDetails.ID == postCode.SecondaryRouteGUID)
                         {
-                            routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + route.RouteName };
+                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName };
                         }
                     }
                     else
                     {
-                        routeData = new RouteDataDTO { ID = route.ID, RouteName = route.RouteName };
+                        routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = routeDetails.RouteName };
                     }
                 }
 

@@ -344,7 +344,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <param name="deliveryPointId">Delivery Point Id</param>
         /// <returns>Route Details</returns>
         [HttpGet("deliveryroute/deliverypoint/{deliveryPointId}")]
-        public IActionResult GetRouteByDeliveryPoint(Guid deliveryPointId)
+        public async Task<IActionResult> GetRouteByDeliveryPoint(Guid deliveryPointId)
         {
             if (deliveryPointId == Guid.Empty)
             {
@@ -356,7 +356,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteByDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId);
 
-                var route = deliveryRouteLogBusinessService.GetRouteByDeliveryPoint(deliveryPointId);
+                var route = await deliveryRouteLogBusinessService.GetRouteByDeliveryPoint(deliveryPointId);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId);
                 return Ok(route);
