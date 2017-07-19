@@ -31,9 +31,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         private string deliveryRouteManagerWebAPIName = string.Empty;
         private string unitManagerDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
-        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-
         private int priority = LoggerTraceConstants.DeliveryPointAPIPriority;
         private int entryEventId = LoggerTraceConstants.DeliveryPointIntegrationServiceMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.DeliveryPointIntegrationServiceMethodExitEventId;
@@ -199,8 +197,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(MapRouteForDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                deliveryRouteManagerWebAPIName = deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryRouteId + "/" + deliveryPointId + "/";
-                HttpResponseMessage result = await httpHandler.GetAsync(deliveryRouteManagerWebAPIName);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryRouteId + "/" + deliveryPointId, string.Empty);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode
@@ -245,22 +242,23 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// This method is used to get route for delivery point.
         /// </summary>
         /// <param name="deliveryPointId">deliveryPointId as input</param>
-        /// <returns>string</returns>
-        public async Task<string> GetRouteForDeliveryPoint(Guid deliveryPointId)
+        /// <returns>The Route details for the provided delivery point.</returns>
+        public async Task<RouteDTO> GetRouteForDeliveryPoint(Guid deliveryPointId)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetRouteForDeliveryPoint"))
             {
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(GetRouteForDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteManagerWebAPIName + "deliveryroute/route/deliverypoint", deliveryPointId);
+                HttpResponseMessage result = await httpHandler.GetAsync(deliveryRouteManagerWebAPIName + "deliveryroute/deliverypoint/" + deliveryPointId);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                var route = result.Content.ReadAsStringAsync().Result;
+                RouteDTO route = JsonConvert.DeserializeObject<RouteDTO>(result.Content.ReadAsStringAsync().Result);
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return route;
             }

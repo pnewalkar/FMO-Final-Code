@@ -465,7 +465,8 @@
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<KeyValuePair<string, string>> dpDetails = new List<KeyValuePair<string, string>>();
-                string routeName = deliveryPointIntegrationService.GetRouteForDeliveryPoint(deliveryPointId).Result;
+
+                string routeName = deliveryPointIntegrationService.GetRouteForDeliveryPoint(deliveryPointId).Result.RouteName;
                 string dpUse = GetDPUse(deliveryPointId);
                 if (routeName != null)
                 {
