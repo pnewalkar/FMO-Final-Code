@@ -9,7 +9,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
     /// <summary>
     /// Base controller class for FMO Web API
     /// </summary>
-  //  [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public abstract class RMBaseController : Controller
     {
@@ -49,15 +49,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         {
             get
             {
-                // TODO: Uncomment after action manger is working
-                //var userUnit = User.Claims.Where(c => c.Type == ClaimTypes.UserData)
-                //               .Select(c => c.Value).SingleOrDefault();
-                //Guid unitGuid;
-                //bool isGuid = Guid.TryParse(userUnit, out unitGuid);
+                var userUnit = User.Claims.Where(c => c.Type == ClaimTypes.UserData)
+                               .Select(c => c.Value).SingleOrDefault();
+                Guid unitGuid;
+                bool isGuid = Guid.TryParse(userUnit, out unitGuid);
 
-                //return unitGuid;
-
-                return Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
+                return unitGuid;
             }
         }
 
