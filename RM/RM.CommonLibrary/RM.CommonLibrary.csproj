@@ -164,6 +164,7 @@
     <Compile Include="Utilities\Enums\PostCodePrefix.cs" />
     <Compile Include="Utilities\Enums\PostCodeStatus.cs" />
     <Compile Include="Utilities\Enums\PostcodeType.cs" />
+    <Compile Include="Utilities\Enums\PostCodeTypeCategory.cs" />
     <Compile Include="Utilities\Enums\SearchBusinessEntityType.cs" />
     <Compile Include="Interfaces\IConfigurationHelper.cs" />
     <Compile Include="Interfaces\IExceptionHelper.cs" />
