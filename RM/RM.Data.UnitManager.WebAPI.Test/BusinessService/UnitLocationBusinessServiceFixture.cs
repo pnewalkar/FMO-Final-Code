@@ -34,7 +34,8 @@ namespace RM.Data.UnitManager.WebAPI.Test
         public void Test_FetchDeliveryUnitForUser()
         {
             //TODO- methos not yet fixed
-            var expectedDeliveryUnitListResult = testCandidate.GetDeliveryUnitsByUser(userID);
+            string currentUserUnitType = "Delivery Office";
+            var expectedDeliveryUnitListResult = testCandidate.GetUnitsByUser(userID, currentUserUnitType);
             Assert.NotNull(expectedDeliveryUnitListResult);
             //  Assert.NotNull(expectedDeliveryUnitListResult[0].BoundingBox);
             //  Assert.NotNull(expectedDeliveryUnitListResult[0].BoundingBoxCenter);
@@ -127,7 +128,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             List<ScenarioDataDTO> scenarioDataDTOList = new List<ScenarioDataDTO>() { new ScenarioDataDTO() { } };
 
             mockUnitManagerIntegrationService.Setup(x => x.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Guid("A867065B-B91E-E711-9F8C-28D244AEF9EC"));
-            mockUnitLocationDataService.Setup(x => x.GetDeliveryUnitsByUser(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(unitLocationDataDTOList);
+            mockUnitLocationDataService.Setup(x => x.GetUnitsByUser(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(unitLocationDataDTOList);
             mockUnitManagerIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<string>())).ReturnsAsync(referenceDataCategoryDTO);
             mockPostCodeSectorDataService.Setup(x => x.GetPostcodeSectorByUdprn(It.IsAny<int>(), It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(postcodeSectorDataDTO);
             mockPostCodeDataService.Setup(x => x.GetPostcodeUnitForBasicSearch(It.IsAny<SearchInputDataDto>())).ReturnsAsync(postcodeDataDTOList);
