@@ -1,6 +1,149 @@
 {
   "CategoryNames": [
     {
+      "AppCategoryName": "BlockType",
+      "DBCategoryName": "Block Type",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "Live",
+          "DBReferenceDataName": "Live"
+        },
+        {
+          "AppReferenceDataName": "UnSequenced",
+          "DBReferenceDataName": "UnSequenced"
+        }
+      ]
+    },
+    {
+      "AppCategoryName": "PostalAddressIdentifierType",
+      "DBCategoryName": "Postal Address Identifier Type",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "LocationRelationshipType",
+      "DBCategoryName": "Location Relationship Type",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "ProductOrService",
+      "DBCategoryName": "Product Or Service",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "DeliveryService",
+          "DBReferenceDataName": "Delivery Service"
+        },
+        {
+          "AppReferenceDataName": "CollectionService",
+          "DBReferenceDataName": "Collection Service"
+        },
+        {
+          "AppReferenceDataName": "DeliveryUnitService",
+          "DBReferenceDataName": "Delivery Unit Service"
+        },
+        {
+          "AppReferenceDataName": "CollectionUnitService",
+          "DBReferenceDataName": "Collection Unit Service"
+        }
+      ]
+    },
+    {
+      "AppCategoryName": "DayOfTheWeek",
+      "DBCategoryName": "Day Of The Week",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "OrganisationalStructure",
+      "DBCategoryName": "Organisational Structure",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "RouteActivityType",
+      "DBCategoryName": "Route Activity Type",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "DeliveryPointColor",
+      "DBCategoryName": "Delivery Point Color",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        },
+        {
+          "AppReferenceDataName": "DeliveryPointColor",
+          "DBReferenceDataName": "Delivery Point Color"
+        }
+      ]
+    },
+    {
       "AppCategoryName": "AccessLinkStatus",
       "DBCategoryName": "Access Link Status",
       "ReferenceDataNames": []
@@ -40,6 +183,16 @@
           "DBReferenceDataName": "ThirdParty_NI_Licensing"
         }
       ]
+    },
+    {
+      "AppCategoryName": "DeliveryPointOperationalStatus",
+      "DBCategoryName": "Delivery Point Operational Status",
+      "ReferenceDataNames": []
+    },
+    {
+      "AppCategoryName": "NetworkNodeType",
+      "DBCategoryName": "Network Node Type",
+      "ReferenceDataNames": []
     },
     {
       "AppCategoryName": "NetworkLinkType",
@@ -272,8 +425,8 @@
       ]
     },
     {
-      "AppCategoryName": "DeliveryRouteOperationalStatus",
-      "DBCategoryName": "Delivery Route Operational Status",
+      "AppCategoryName": "RouteOperationalStatus",
+      "DBCategoryName": "Route Operational Status",
       "ReferenceDataNames": []
     },
     {
@@ -292,13 +445,13 @@
       "ReferenceDataNames": []
     },
     {
-      "AppCategoryName": "PostalAddressType",
-      "DBCategoryName": "Postal Address Type",
+      "AppCategoryName": "PostcodeType",
+      "DBCategoryName": "Postcode Type",
       "ReferenceDataNames": []
     },
     {
-      "AppCategoryName": "NetworkNodeType",
-      "DBCategoryName": "Network Node Type",
+      "AppCategoryName": "PostalAddressType",
+      "DBCategoryName": "Postal Address Type",
       "ReferenceDataNames": []
     },
     {
@@ -332,14 +485,14 @@
       "ReferenceDataNames": []
     },
     {
-      "AppCategoryName": "DeliveryPointOperationalStatus",
-      "DBCategoryName": "Delivery Point Operational Status",
-      "ReferenceDataNames": []
-    },
-    {
-      "AppCategoryName": "DeliveryPointColor",
-      "DBCategoryName": "Delivery Point Color",
-      "ReferenceDataNames": []
+      "AppCategoryName": "ObjectTransparency",
+      "DBCategoryName": "Object Transparency",
+      "ReferenceDataNames": [
+        {
+          "AppReferenceDataName": "ObjectTransparency",
+          "DBReferenceDataName": "Object Transparency"
+        }
+      ]
     }
   ]
 }
