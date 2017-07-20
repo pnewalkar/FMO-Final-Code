@@ -30,9 +30,9 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task Test_GetDeliveryUnitsByUser_PositiveScenario()
+        public async Task Test_GetUnitsByUser_PositiveScenario()
         {
-            var result = await testCandidate.GetDeliveryUnitsByUser(userId, postcodeTypeGUID);
+            var result = await testCandidate.GetUnitsByUser(userId, postcodeTypeGUID);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 1);
             Assert.AreEqual(result.ToList()[0].LocationId, new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918"));
@@ -44,9 +44,9 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task Test_GetDeliveryUnitsByUser_NegativeScenario()
+        public async Task Test_GetUnitsByUser_NegativeScenario()
         {
-            var result = await testCandidate.GetDeliveryUnitsByUser(Guid.Empty, postcodeTypeGUID);
+            var result = await testCandidate.GetUnitsByUser(Guid.Empty, postcodeTypeGUID);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 0);
         }
