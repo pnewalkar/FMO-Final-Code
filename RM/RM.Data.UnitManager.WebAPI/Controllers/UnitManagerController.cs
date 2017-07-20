@@ -373,5 +373,30 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 throw realExceptions;
             }
         }
+
+        /// <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode">Postal code</param>
+        /// <returns>The approx location for the given postal code.</returns>
+        [HttpPost("postcode/approxlocation/{postcode}")]
+        public async Task<IActionResult> GetApproxLocation(string postcode)
+        {
+            if (postcode == null)
+            {
+                throw new ArgumentNullException(nameof(postcode));
+            }
+
+            string methodName = typeof(UnitManagerController) + "." + nameof(GetApproxLocation);
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetApproxLocation"))
+            {
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
+
+                var location = await unitLocationBusinessService.GetApproxLocation(postcode, CurrentUserUnit);
+
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
+                return Ok(location);
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
         private Mock<IPostcodeDataService> mockPostCodeDataService;
         private Mock<IScenarioDataService> mockScenarioDataService;
         private Mock<IUnitManagerIntegrationService> mockUnitManagerIntegrationService;
+        private Mock<IPostalAddressDataService> mockPostalAddressDataService;
         private Mock<ILoggingHelper> loggingHelperMock;
 
         private UnitLocationDTO actualDeliveryUnitResult = null;
@@ -112,6 +113,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             loggingHelperMock = CreateMock<ILoggingHelper>();
             mockUnitLocationDataService = CreateMock<IUnitLocationDataService>();
             mockUnitManagerIntegrationService = CreateMock<IUnitManagerIntegrationService>();
+            mockPostalAddressDataService = CreateMock<IPostalAddressDataService>();
 
             userID = System.Guid.Parse("A867065B-B91E-E711-9F8C-28D244AEF9ED");
             deliveryUnitID = System.Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
@@ -143,7 +145,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
-            testCandidate = new UnitLocationBusinessService(mockUnitLocationDataService.Object, mockPostCodeSectorDataService.Object, mockPostCodeDataService.Object, mockScenarioDataService.Object, loggingHelperMock.Object, mockUnitManagerIntegrationService.Object);
+            testCandidate = new UnitLocationBusinessService(mockUnitLocationDataService.Object, mockPostCodeSectorDataService.Object, mockPostCodeDataService.Object, mockScenarioDataService.Object, mockPostalAddressDataService.Object, loggingHelperMock.Object, mockUnitManagerIntegrationService.Object);
         }
     }
 }
