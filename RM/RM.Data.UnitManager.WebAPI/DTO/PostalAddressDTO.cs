@@ -1,24 +1,15 @@
-namespace RM.DataManagement.UnitManager.WebAPI.Entity
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using RM.CommonLibrary.EntityFramework.DTO.UIDropdowns;
+
+namespace RM.Data.UnitManager.WebAPI.DTO
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
-
-    [Table("FMO.PostalAddress")]
-    public partial class PostalAddress
+    public class PostalAddressDTO
     {
-        public PostalAddress()
-        {
-            DeliveryPoints = new HashSet<DeliveryPoint>();
-            PostalAddressIdentifiers = new HashSet<PostalAddressIdentifier>();
-        }
-
-        public Guid ID { get; set; }
-
-        [Required]
-        [StringLength(1)]
+        /// <summary>
+        /// This class represents data transfer object for PostalAddress entity
+        /// </summary>
         public string PostcodeType { get; set; }
 
         [StringLength(60)]
@@ -47,11 +38,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         [StringLength(35)]
         public string DoubleDependentLocality { get; set; }
 
-        [Required]
         [StringLength(30)]
         public string PostTown { get; set; }
 
-        [Required]
         [StringLength(8)]
         public string Postcode { get; set; }
 
@@ -68,14 +57,31 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         [StringLength(6)]
         public string POBoxNumber { get; set; }
 
+        public Guid ID { get; set; }
+
+        public Guid PostCodeGUID { get; set; }
+
         public Guid AddressType_GUID { get; set; }
 
-        public DateTime RowCreateDateTime { get; set; }
+        public Guid? AddressStatus_GUID { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DeliveryPoint> DeliveryPoints { get; set; }
+        public bool IsValidData { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PostalAddressIdentifier> PostalAddressIdentifiers { get; set; }
+        public string InValidRemarks { get; set; }
+
+        public string Date { get; set; }
+
+        public string Time { get; set; }
+
+        public string AmendmentType { get; set; }
+
+        public string AmendmentDesc { get; set; }
+
+        public string FileName { get; set; }
+
+        public List<BindingDTO> NybAddressDetails { get; set; }
+
+        public List<BindingDTO> RouteDetails { get; set; }
+
     }
 }

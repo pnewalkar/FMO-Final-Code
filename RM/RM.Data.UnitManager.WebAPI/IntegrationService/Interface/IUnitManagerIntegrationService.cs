@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Data.UnitManager.WebAPI.DTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Interface
 {
@@ -24,5 +25,13 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Inter
         /// <param name="listName"></param>
         /// <returns>ReferenceDataCategoryDTO</returns>
         Task<ReferenceDataCategoryDTO> GetReferenceDataSimpleLists(string listName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="postcode"></param>
+        /// <param name="fields"></param>
+        /// <returns></returns>
+        Task<List<DeliveryRouteDTO>> GetRouteData(string postcode, string fields);
     }
 }

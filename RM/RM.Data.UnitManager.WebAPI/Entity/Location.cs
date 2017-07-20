@@ -18,6 +18,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
             LocationRelationships = new HashSet<LocationRelationship>();
             LocationRelationships1 = new HashSet<LocationRelationship>();
             Scenarios = new HashSet<Scenario>();
+            UserRoleLocations = new HashSet<UserRoleLocation>();
         }
 
         public Guid ID { get; set; }
@@ -49,5 +50,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Scenario> Scenarios { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserRoleLocation> UserRoleLocations { get; set; }
     }
 }
