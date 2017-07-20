@@ -98,28 +98,28 @@
                     NetworkNode networkNode = new NetworkNode();
                     NetworkLink networkLink = new Entities.NetworkLink();
 
+                    NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
+
+                    //networkLink.NetworkNode.Location.ID = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.ID;
+                    //networkLink.NetworkNode.Location.Shape = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.Shape;
+                    //networkLink.NetworkNode.Location.RowCreateDateTime = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.RowCreateDateTime;
 
 
-                    networkLink.NetworkNode.Location.ID = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.ID;
-                    networkLink.NetworkNode.Location.Shape = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.Shape;
-                    networkLink.NetworkNode.Location.RowCreateDateTime = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.RowCreateDateTime;
-
-
-                    networkLink.NetworkNode1.Location.ID = networkLinkDataDTO.NetworkNodeDataDTO1.LocationDatatDTO.ID;
-                    networkLink.NetworkNode1.Location.Shape = networkLinkDataDTO.NetworkNodeDataDTO1.LocationDatatDTO.Shape;
-                    networkLink.NetworkNode1.Location.RowCreateDateTime = networkLinkDataDTO.NetworkNodeDataDTO1.LocationDatatDTO.RowCreateDateTime;
+                    //networkLink.NetworkNode1.Location.ID = networkLinkDataDTO.NetworkNodeDataDTO1.LocationDatatDTO.ID;
+                    //networkLink.NetworkNode1.Location.Shape = networkLinkDataDTO.NetworkNodeDataDTO1.LocationDatatDTO.Shape;
+                    //networkLink.NetworkNode1.Location.RowCreateDateTime = networkLinkDataDTO.NetworkNodeDataDTO1.LocationDatatDTO.RowCreateDateTime;
 
 
 
 
-                    networkLink.ID = networkLinkDataDTO.ID;// accessLinkGuid,
-                    networkLink.DataProviderGUID = networkLinkDataDTO.DataProviderGUID;//Guid.Empty,// AccessLinkConstants.Internal,
-                    networkLink.NetworkLinkTypeGUID = networkLinkDataDTO.NetworkLinkTypeGUID;//Guid.Empty,// (AccessLink)
-                    networkLink.StartNodeID = networkLinkDataDTO.StartNodeID;//accessLinkDto.OperationalObject_GUID,
-                    networkLink.EndNodeID = networkLinkDataDTO.EndNodeID;//locationGuid,
-                    networkLink.LinkLength = networkLinkDataDTO.LinkLength;//accessLinkDto.ActualLengthMeter,
-                    networkLink.LinkGeometry = networkLinkDataDTO.LinkGeometry;//accesaccessLinkDto.AccessLinkLine,
-                       networkLink.RowCreateDateTime = networkLinkDataDTO.RowCreateDateTime;
+                    //networkLink.ID = networkLinkDataDTO.ID;// accessLinkGuid,
+                    //networkLink.DataProviderGUID = networkLinkDataDTO.DataProviderGUID;//Guid.Empty,// AccessLinkConstants.Internal,
+                    //networkLink.NetworkLinkTypeGUID = networkLinkDataDTO.NetworkLinkTypeGUID;//Guid.Empty,// (AccessLink)
+                    //networkLink.StartNodeID = networkLinkDataDTO.StartNodeID;//accessLinkDto.OperationalObject_GUID,
+                    //networkLink.EndNodeID = networkLinkDataDTO.EndNodeID;//locationGuid,
+                    //networkLink.LinkLength = networkLinkDataDTO.LinkLength;//accessLinkDto.ActualLengthMeter,
+                    //networkLink.LinkGeometry = networkLinkDataDTO.LinkGeometry;//accesaccessLinkDto.AccessLinkLine,
+                    //   networkLink.RowCreateDateTime = networkLinkDataDTO.RowCreateDateTime;
 
 
                     AccessLinkDataDTO accessLinkDataDTO = networkLinkDataDTO.AccessLinkDataDTOs;
@@ -138,8 +138,8 @@
                     //LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
                     accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
                     //OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
-                    
-                
+
+                    accessLink.RowCreateDateTime = DateTime.UtcNow;
 
                     networkLink.AccessLink = accessLink;
 
@@ -155,15 +155,15 @@
                     };
                     accessLink.AccessLinkStatus.Add(accessLinkStatus);
 
-                    networkLink.AccessLink = accessLink;
-                    DataContext.NetworkLinks.Add(networkLink);
+
+                    accessLink.NetworkLink = networkLink1;
+                    accessLink.NetworkLink1 = networkLink1;
+                    DataContext.AccessLinks.Add(accessLink);
 
                     accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                    accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return accessLinkCreationSuccess;
                 }
             }
@@ -173,6 +173,62 @@
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
             }
     
+        }
+
+
+        public bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAccessLink"))
+                {
+                    string methodName = typeof(AccessLinkDataService) + "." + nameof(CreateAccessLink);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    bool accessLinkCreationSuccess = false;                 
+                    AccessLink accessLink = new Entities.AccessLink();
+                    
+                    NetworkNode networkNode = new NetworkNode();
+                    NetworkLink networkLink = new Entities.NetworkLink();
+
+                    NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
+                    AccessLinkDataDTO accessLinkDataDTO = networkLinkDataDTO.AccessLinkDataDTOs;
+
+                    accessLink.ID = accessLinkDataDTO.ID;
+                    accessLink.WorkloadLengthMeter = accessLinkDataDTO.WorkloadLengthMeter;
+                    accessLink.Approved = accessLinkDataDTO.Approved;
+                    accessLink.ConnectedNetworkLinkID = new Guid();
+                    accessLink.AccessLinkTypeGUID = accessLinkDataDTO.AccessLinkTypeGUID;
+                    accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
+                    accessLink.RowCreateDateTime = DateTime.UtcNow;
+                   // networkLink.AccessLink = accessLink;
+
+                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatusDataDTO;
+                    AccessLinkStatus accessLinkStatus = new AccessLinkStatus
+                    {
+                        ID = accessLinkStatusDataDTO.ID,
+                        NetworkLinkID = accessLinkStatusDataDTO.NetworkLinkID,
+                        AccessLinkStatusGUID = accessLinkStatusDataDTO.AccessLinkStatusGUID,
+                        StartDateTime = accessLinkStatusDataDTO.StartDateTime,
+                        RowCreateDateTime = accessLinkStatusDataDTO.RowCreateDateTime
+                    };
+                    accessLink.AccessLinkStatus.Add(accessLinkStatus);
+
+                    accessLink.NetworkLink = networkLink1;
+                    accessLink.NetworkLink1 = networkLink1;
+                    DataContext.AccessLinks.Add(accessLink);
+
+                    accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return accessLinkCreationSuccess;
+                }
+            }
+
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
+            }
         }
 
         /// <summary>

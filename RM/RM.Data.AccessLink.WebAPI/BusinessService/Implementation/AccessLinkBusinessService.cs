@@ -332,8 +332,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 if (matchFound)
                 {
                     NetworkLinkDataDTO networkLinkDataDTO = new NetworkLinkDataDTO();
-                    NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
-                    NetworkNodeDataDTO networkNodeDataDTO1 = new NetworkNodeDataDTO();
+                    //NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
+                    //NetworkNodeDataDTO networkNodeDataDTO1 = new NetworkNodeDataDTO();
                     AccessLinkDataDTO accessLinkDatatDTO = new AccessLinkDataDTO();
                     AccessLinkStatusDataDTO accessLinkStatusDataDTO = new AccessLinkStatusDataDTO();
                   
@@ -344,36 +344,36 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     Guid accessLinkGuid = Guid.NewGuid();
                     Guid NetworkNodeTypeGuid = Guid.NewGuid();
                     //code for adding location details
-                    LocationDataDTO locationDataDTO = new LocationDataDTO
-                    {
-                        ID = locationGuid,
-                        Shape = networkIntersectionPoint.ToDbGeometry(),
-                        RowCreateDateTime = DateTime.UtcNow
+                   // LocationDataDTO locationDataDTO = new LocationDataDTO
+                   // {
+                   //     ID = locationGuid,
+                   //     Shape = networkIntersectionPoint.ToDbGeometry(),
+                   //     RowCreateDateTime = DateTime.UtcNow
 
-                    };
-                    networkNodeDataDTO.LocationDatatDTO=locationDataDTO;
+                   // };
+                   // networkNodeDataDTO.LocationDatatDTO=locationDataDTO;
 
-                    locationDataDTO = new LocationDataDTO
-                    {
-                        ID = locationGuid,
-                        Shape = operationalObjectPoint,
-                        RowCreateDateTime = DateTime.UtcNow
+                   // locationDataDTO = new LocationDataDTO
+                   // {
+                   //     ID = locationGuid,
+                   //     Shape = operationalObjectPoint,
+                   //     RowCreateDateTime = DateTime.UtcNow
 
-                    };
-                    networkNodeDataDTO1.LocationDatatDTO=locationDataDTO;
-                    //code for adding network node to accesslinkdatadto
+                   // };
+                   // networkNodeDataDTO1.LocationDatatDTO=locationDataDTO;
+                   // //code for adding network node to accesslinkdatadto
 
-                    networkNodeDataDTO.ID = networkNodeDataDTO1.ID = locationGuid;
-                    networkNodeDataDTO.DataProviderGUID = networkNodeDataDTO1.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
-                   networkNodeDataDTO.RowCreateDateTime = networkNodeDataDTO1.RowCreateDateTime = DateTime.UtcNow;
-                    networkNodeDataDTO.NetworkNodeType_GUID = networkNodeDataDTO1.NetworkNodeType_GUID = NetworkNodeTypeGuid;
+                   // networkNodeDataDTO.ID = networkNodeDataDTO1.ID = locationGuid;
+                   // networkNodeDataDTO.DataProviderGUID = networkNodeDataDTO1.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
+                   //networkNodeDataDTO.RowCreateDateTime = networkNodeDataDTO1.RowCreateDateTime = DateTime.UtcNow;
+                   // networkNodeDataDTO.NetworkNodeType_GUID = networkNodeDataDTO1.NetworkNodeType_GUID = NetworkNodeTypeGuid;
                     
-                    networkLinkDataDTO.NetworkNodeDataDTO= networkNodeDataDTO;
-                    networkLinkDataDTO.NetworkNodeDataDTO1 = networkNodeDataDTO1;
+                   // networkLinkDataDTO.NetworkNodeDataDTO= networkNodeDataDTO;
+                   // networkLinkDataDTO.NetworkNodeDataDTO1 = networkNodeDataDTO1;
 
                     //code for adding network link
 
-                    networkLinkDataDTO.ID = accessLinkGuid;
+                    networkLinkDataDTO.ID = networkLink.Id;
                     networkLinkDataDTO.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
                     networkLinkDataDTO.NetworkLinkTypeGUID = operationObjectTypeId;// (AccessLink)
 
@@ -385,11 +385,11 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         .ToDbGeometry();
                     networkLinkDataDTO.RowCreateDateTime = DateTime.Now;
 
-                    
 
-                  //  accessLinkDatatDTO.NetworkLinkDatatDTO = networkLinkDataDTO;
 
-                    accessLinkDatatDTO.ID = Guid.Empty;
+                    //  accessLinkDatatDTO.NetworkLinkDatatDTO = networkLinkDataDTO;
+                    accessLinkDatatDTO.ConnectedNetworkLinkID = networkLink.Id;
+                    accessLinkDatatDTO.ID = networkLink.Id;
 
                     accessLinkDatatDTO.Approved = accessLinkApproved;
                     if (referenceDataCategoryList
@@ -411,7 +411,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         .SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == accessLinkDirection).ID;
 
-
+                    accessLinkDatatDTO.RowCreateDateTime = DateTime.UtcNow;
 
                     // create access link status Data DTO.
                     accessLinkStatusDataDTO = new AccessLinkStatusDataDTO
@@ -466,8 +466,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 string methodName = typeof(AccessLinkBusinessService) + "." + nameof(CreateAccessLink);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 NetworkLinkDataDTO networkLinkDataDTO = new NetworkLinkDataDTO();
-                NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
-                NetworkNodeDataDTO networkNodeDataDTO1 = new NetworkNodeDataDTO();
+                
                 AccessLinkStatusDataDTO accessLinkStatusDataDTO = new AccessLinkStatusDataDTO();
                 Guid locationGuid = Guid.NewGuid();
                 Guid accessLinkGuid = Guid.NewGuid();
@@ -480,12 +479,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
                 Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
 
-                AccessLinkDataDTO accessLinkDatatDTO = new AccessLinkDataDTO
-                {
-                    ID = Guid.Empty,
-                    Approved = true,
-                    WorkloadLengthMeter = accessLinkManualDto.Workloadlength,
-                };
 
                 object operationalObject = new object();
 
@@ -536,63 +529,30 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 DbGeometry ActualLengthMeter = DbGeometry.LineFromText(accessLinkLineManual, AccessLinkConstants.BNGCOORDINATESYSTEM);
 
-              
-                //code for adding location details
-                LocationDataDTO locationDataDTO = new LocationDataDTO
+                AccessLinkDataDTO accessLinkDatatDTO = new AccessLinkDataDTO
                 {
-                    ID = locationGuid,
-                    Shape = DbGeometry.PointFromText(networkIntersectionPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM),
-                    RowCreateDateTime = DateTime.UtcNow
-
+                    ID = networkObject.Id,
+                    Approved = true,
+                    WorkloadLengthMeter = accessLinkManualDto.Workloadlength,
+                    RowCreateDateTime = DateTime.UtcNow,
+                    AccessLinkTypeGUID = AccessLinkType_GUID,
+                   LinkDirectionGUID=LinkDirection_GUID
                 };
-                networkNodeDataDTO.LocationDatatDTO = locationDataDTO;
 
-                locationDataDTO = new LocationDataDTO
-                {
-                    ID = locationGuid,
-                    Shape = OperationalObjectPoint,
-                    RowCreateDateTime = DateTime.UtcNow
-
-                };
-                networkNodeDataDTO1.LocationDatatDTO = locationDataDTO;
-                //code for adding network node to accesslinkdatadto
-
-                networkNodeDataDTO.ID = networkNodeDataDTO1.ID = locationGuid;
-                networkNodeDataDTO.DataProviderGUID = networkNodeDataDTO1.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
-                networkNodeDataDTO.RowCreateDateTime = networkNodeDataDTO1.RowCreateDateTime = DateTime.UtcNow;
-                networkNodeDataDTO.NetworkNodeType_GUID = networkNodeDataDTO1.NetworkNodeType_GUID = NetworkNodeTypeGuid;
-
-                networkLinkDataDTO.NetworkNodeDataDTO = networkNodeDataDTO;
-                networkLinkDataDTO.NetworkNodeDataDTO1 = networkNodeDataDTO1;
-
-                //code for adding network link
-
-                networkLinkDataDTO.ID = accessLinkGuid;
-                networkLinkDataDTO.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
-                networkLinkDataDTO.NetworkLinkTypeGUID = OperationalObjectType_GUID;// (AccessLink)
-
-                networkLinkDataDTO.StartNodeID = OperationalObjectType_GUID;
-                networkLinkDataDTO.EndNodeID = locationGuid;
-                networkLinkDataDTO.LinkLength = Convert.ToDecimal(ActualLengthMeter);
-                networkLinkDataDTO.LinkGeometry = OperationalObjectPoint.ToSqlGeometry()
-                    .ShortestLineTo(networkLinkDataDTO.LinkGeometry.ToSqlGeometry())
-                    .ToDbGeometry();
-                networkLinkDataDTO.RowCreateDateTime = DateTime.Now;
-
-                // create access link status Data DTO.
                 accessLinkStatusDataDTO = new AccessLinkStatusDataDTO
                 {
-                    ID = new Guid(),
+                    ID = networkObject.Id,
                     AccessLinkStatusGUID = LinkStatus_GUID,
                     RowCreateDateTime = DateTime.UtcNow,
-                    NetworkLinkID = locationGuid,
+                    NetworkLinkID = networkObject.Id,
                     StartDateTime = DateTime.UtcNow
                 };
 
                 accessLinkDatatDTO.AccessLinkStatusDataDTO = accessLinkStatusDataDTO;
                 networkLinkDataDTO.AccessLinkDataDTOs = accessLinkDatatDTO;
+                networkLinkDataDTO.ID = networkObject.Id;
                 //calling dataservice for creating accesslink  using networklink parameter.
-                isAccessLinkCreated = accessLinkDataService.CreateAccessLink(networkLinkDataDTO);
+                isAccessLinkCreated = accessLinkDataService.CreateManualAccessLink(networkLinkDataDTO);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return isAccessLinkCreated;

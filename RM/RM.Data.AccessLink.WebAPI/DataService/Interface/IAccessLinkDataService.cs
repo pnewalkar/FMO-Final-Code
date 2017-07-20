@@ -21,11 +21,18 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         List<AccessLinkDataDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid);
 
         /// <summary>
-        /// Creates access link.
+        /// Creates automatic access link.
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
         bool CreateAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
+
+        /// <summary>
+        /// Creates manual access link
+        /// </summary>
+        /// <param name="networkLinkDataDTO"></param>
+        /// <returns></returns>
+        bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
 
         /// <summary>
         /// This method is used to get the access links crossing the created access link
