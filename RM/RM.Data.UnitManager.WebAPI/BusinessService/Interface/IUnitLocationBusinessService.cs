@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
+using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
@@ -77,11 +78,28 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         Task<IEnumerable<PostcodeDTO>> GetPostcodes(List<Guid> postcodeGuids);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectedItem"></param>
+        /// <param name="unitGuid"></param>
+        /// <returns></returns>
+        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <param name="unitGuid"></param>
+        /// <returns></returns>
+        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
+
+/// <summary>
         /// Gets approx location based on the postal code.
         /// </summary>
         /// <param name="postcode">Postal code</param>
         /// <param name="unitId">Unique identifier for unit.</param>
         /// <returns>The approx location for the given postal code.</returns>
         Task<DbGeometry> GetApproxLocation(string postcode, Guid unitId);
+
     }
 }

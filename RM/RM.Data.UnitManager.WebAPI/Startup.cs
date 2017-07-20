@@ -103,6 +103,7 @@ namespace RM.DataManagement.UnitManager.WebAPI
             services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
             services.AddScoped<IPostcodeSectorDataService, PostcodeSectorDataService>();
             services.AddScoped<IPostcodeDataService, PostcodeDataService>();
+            services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
             services.AddScoped<IScenarioDataService, ScenarioDataService>();
 
             // Register Others - Helper, Utils etc
