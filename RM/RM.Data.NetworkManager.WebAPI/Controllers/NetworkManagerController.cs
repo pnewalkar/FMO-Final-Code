@@ -16,12 +16,13 @@ using RM.DataManagement.NetworkManager.WebAPI.DTO;
 namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 {
     [Route("/api/NetworkManager")]
-    public class NetworkManagerController : RMBaseController
+    public class NetworkManagerController : Controller
     {
         #region Member Variables
         private INetworkManagerBusinessService networkManagerBusinessService = default(INetworkManagerBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        Guid CurrentUserUnit = Guid.Empty;
         private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
         private int entryEventId = LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.NetworkManagerControllerMethodExitEventId;
@@ -69,8 +70,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        [HttpPost("nearestsegment")]
-        public IActionResult GetNearestSegment([FromBody]string operationalObjectPointJson)
+        [HttpGet("nearestsegment/{operationalObjectPointJson}")]
+        public IActionResult GetNearestSegment(string operationalObjectPointJson)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNearestSegment"))
             {

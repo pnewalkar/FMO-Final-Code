@@ -379,7 +379,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// </summary>
         /// <param name="postcode">Postal code</param>
         /// <returns>The approx location for the given postal code.</returns>
-        [HttpPost("postcode/approxlocation/{postcode}")]
+        [HttpGet("postcode/approxlocation/{postcode}")]
         public async Task<IActionResult> GetApproxLocation(string postcode)
         {
             if (postcode == null)
