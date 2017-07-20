@@ -81,13 +81,13 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeArea.GetDescription()).Result;
 
                 IEnumerable<UnitLocationDataDTO> unitLocationDataDtoList = null;
-                if (currentUserUnitType.Equals(UserUnit.National.GetDescription()))
+                if (!currentUserUnitType.Equals(UserUnit.National.GetDescription()))
                 {
                     unitLocationDataDtoList = await unitLocationDataService.GetUnitsByUser(userId, postcodeTypeGUID);
                 }
                 else
                 {
-                    unitLocationDataDtoList = await unitLocationDataService.GetUnitsByUser(userId, postcodeTypeGUID, currentUserUnitType);
+                    unitLocationDataDtoList = await unitLocationDataService.GetUnitsByUserForNational(userId, postcodeTypeGUID);
                 }
 
                 var unitLocationDtoList = unitLocationDataDtoList.Select(x => new UnitLocationDTO

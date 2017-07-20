@@ -24,7 +24,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="postcodeAreaGUID"></param>
         /// <param name="currentUserUnitType"></param>
         /// The collection of <see cref="UnitLocationDataDTO"/>.
-        Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUser(Guid userId, Guid postcodeAreaGUID, string currentUserUnitType);
+        Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUserForNational(Guid userId, Guid postcodeAreaGUID);
 
         /// <summary>
         /// Gets postcodes details by postcodeGuids
