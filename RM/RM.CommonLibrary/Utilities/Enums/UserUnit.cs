@@ -20,6 +20,12 @@ namespace RM.CommonLibrary.HelperMiddleware
         /// Collection Unit
         /// </summary>
         [Description("Collection Unit")]
-        CollectionUnit = 2
+        CollectionUnit = 2,
+
+        /// <summary>
+        /// National
+        /// </summary>
+        [Description("National")]
+        National = 3
     }
 }

@@ -57,30 +57,39 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
-        /// Get all Delivery units for a user.
+        /// Get all units for a user.
         /// </summary>
         /// <param name="userId">user Id.</param>
+        /// <param name="currentUserUnitType">current user unit type.</param>
         /// <returns>
         /// List of <see cref="UnitLocationDTO" />.
         /// </returns>
-        public async Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsByUser(Guid userId)
+        public async Task<IEnumerable<UnitLocationDTO>> GetUnitsByUser(Guid userId, string currentUserUnitType)
         {
-            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetDeliveryUnitsByUser);
-            using (loggingHelper.RMTraceManager.StartTrace("Business.GetDeliveryUnitsForUser"))
+            string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetUnitsByUser);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetUnitsByUser"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
                 //reference data value for PostcodeSector with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeArea.GetDescription()).Result;
 
-                var unitLocationDataDtoList = await unitLocationDataService.GetDeliveryUnitsByUser(userId, Guid.NewGuid());
+                IEnumerable<UnitLocationDataDTO> unitLocationDataDtoList = null;
+                if (currentUserUnitType.Equals(UserUnit.National.ToString()))
+                {
+                    unitLocationDataDtoList = await unitLocationDataService.GetUnitsByUser(userId, postcodeTypeGUID);
+                }
+                else
+                {
+                    unitLocationDataDtoList = await unitLocationDataService.GetUnitsByUser(userId, postcodeTypeGUID, currentUserUnitType);
+                }
 
                 var unitLocationDtoList = unitLocationDataDtoList.Select(x => new UnitLocationDTO
                 {
                     ID = x.LocationId,
                     Area = x.Area,
                     UnitBoundryPolygon = x.Shape,
-                    UnitName = x.Name
+                    UnitName = currentUserUnitType.Equals(UserUnit.National.ToString()) ? currentUserUnitType : x.Name
                 }).ToList();
 
                 foreach (var unitLocationDto in unitLocationDtoList)

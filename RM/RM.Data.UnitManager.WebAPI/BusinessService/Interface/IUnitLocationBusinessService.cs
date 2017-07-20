@@ -12,13 +12,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
     public interface IUnitLocationBusinessService
     {
         /// <summary>
-        /// Gets all the associated Delivery units for an user.
+        /// Gets all the associated units for an user.
         /// </summary>
         /// <param name="userId">The user unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>
         /// The list of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsByUser(Guid userId);
+        Task<IEnumerable<UnitLocationDTO>> GetUnitsByUser(Guid userId, string currentUserUnitType);
 
         /// <summary>
         /// Get the postcode sector by the UDPRN id
