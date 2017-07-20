@@ -75,7 +75,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeArea.GetDescription()).Result;
 
                 IEnumerable<UnitLocationDataDTO> unitLocationDataDtoList = null;
-                if (currentUserUnitType.Equals(UserUnit.National.ToString()))
+                if (currentUserUnitType.Equals(UserUnit.National.GetDescription()))
                 {
                     unitLocationDataDtoList = await unitLocationDataService.GetUnitsByUser(userId, postcodeTypeGUID);
                 }
