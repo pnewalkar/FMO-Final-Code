@@ -25,6 +25,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
 
         public DateTime RowCreateDateTime { get; set; }
 
+        public virtual DeliveryPoint DeliveryPoint { get; set; }
+
         public virtual Location Location { get; set; }
     }
 }
