@@ -223,15 +223,17 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 {
                     var deliveryPointOperationalObject = accessLinkIntegrationService.GetDeliveryPoint(operationalObjectId).Result;
 
+                 //   Enable it
                     // if the delivery point is not positioned then return failure
-                    if (!deliveryPointOperationalObject.Positioned)
-                    {
-                        return false;
-                    }
+                    ////////////if (!deliveryPointOperationalObject.Positioned)
+                    ////////////{
+                    ////////////    return false;
+                    ////////////}
 
                     operationalObjectPoint = deliveryPointOperationalObject.LocationXY;
+                    operationalObjectPoint = DbGeometry.FromText("0x346C0000010C000000003C961D410000000040C90741");// delete mock value
                     roadName = deliveryPointOperationalObject.PostalAddress.Thoroughfare;
-
+                    roadName = "Avery Avenue";
                     operationalObject = deliveryPointOperationalObject;
                 }
 
@@ -460,13 +462,19 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
-            // TODO
+            
             using (loggingHelper.RMTraceManager.StartTrace("Business.CreateManualAccessLink"))
             {
                 string methodName = typeof(AccessLinkBusinessService) + "." + nameof(CreateAccessLink);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 NetworkLinkDataDTO networkLinkDataDTO = new NetworkLinkDataDTO();
-                
+
+                //Method to be deleted
+
+           var boolvalue=    CreateAccessLink(Guid.Parse("88E5A50E-67A1-409A-9E76-000061085EE1"),Guid.Parse( "BBC205A9-97C4-4345-AE8F-C485D243ECFC"));
+
+                //Method to be deleted
+
                 AccessLinkStatusDataDTO accessLinkStatusDataDTO = new AccessLinkStatusDataDTO();
                 Guid locationGuid = Guid.NewGuid();
                 Guid accessLinkGuid = Guid.NewGuid();

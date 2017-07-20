@@ -50,11 +50,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 string methodName = typeof(NetworkManagerController) + "." + nameof(GetNearestNamedRoad);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                Tuple<NetworkLinkDTO, List<SqlGeometry>> result;
+                Tuple<NetworkLinkDTO, SqlGeometry> result;
 
                 result = networkManagerBusinessService.GetNearestNamedRoad(JsonConvert.DeserializeObject<DbGeometry>(operationalObjectPointJson, new DbGeometryConverter()), streetName);
 
-                var convertedResult = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(result.Item1, result.Item2);
+                var convertedResult = new Tuple<NetworkLinkDTO, DbGeometry>(result.Item1, result.Item2.IsNull ? null : result.Item2.ToDbGeometry());
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(convertedResult);

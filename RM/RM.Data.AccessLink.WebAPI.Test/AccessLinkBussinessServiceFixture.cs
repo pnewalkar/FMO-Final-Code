@@ -236,7 +236,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(refDataCategotyDTO);
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(deliveryPointDTO);
             mockAccessLinkIntegrationService.Setup(x => x.GetNearestNamedRoad(It.IsAny<DbGeometry>(), It.IsAny<string>())).ReturnsAsync(tuple);
-            mockAccessLinkIntegrationService.Setup(x => x.GetNearestSegment(It.IsAny<DbGeometry>())).ReturnsAsync(tuple);
+           // mockAccessLinkIntegrationService.Setup(x => x.GetNearestSegment(It.IsAny<DbGeometry>())).ReturnsAsync(tuple);
             mockAccessLinkIntegrationService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("Local Road");
             mockAccessLinkIntegrationService.Setup(x => x.GetCrossingNetworkLinks(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<NetworkLinkDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
