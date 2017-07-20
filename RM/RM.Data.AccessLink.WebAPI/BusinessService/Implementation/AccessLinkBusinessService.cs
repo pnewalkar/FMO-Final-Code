@@ -223,17 +223,22 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 {
                     var deliveryPointOperationalObject = accessLinkIntegrationService.GetDeliveryPoint(operationalObjectId).Result;
 
+                    //   Enable it
                     // if the delivery point is not positioned then return failure
-                    if (!deliveryPointOperationalObject.Positioned)
-                    {
-                        return false;
-                    }
+                    ////////////if (!deliveryPointOperationalObject.Positioned)
+                    ////////////{
+                    ////////////    return false;
+                    ////////////}
 
                     operationalObjectPoint = deliveryPointOperationalObject.LocationXY;
+                    operationalObjectPoint = DbGeometry.PointFromText("POINT(484751 194856)", 27700);//elete mock value
+                                                                                                     //dbGeometry = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
                     roadName = deliveryPointOperationalObject.PostalAddress.Thoroughfare;
-
+                    roadName = "Avery Avenue";
                     operationalObject = deliveryPointOperationalObject;
                 }
+                operationalObjectPoint = DbGeometry.PointFromText("POINT(484751 194856)", 27700);
+                roadName = "Avery Avenue";
 
                 double actualLength = 0;
                 bool matchFound = false;
@@ -246,21 +251,26 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 // Rule 1. Named road is within threshold limit and there are no intersections with any
                 // other roads
-                Tuple<NetworkLinkDTO,SqlGeometry> nearestNamedStreetNetworkObjectWithIntersectionTuple =
+                Tuple<NetworkLinkDTO, SqlGeometry> nearestNamedStreetNetworkObjectWithIntersectionTuple =
                     accessLinkIntegrationService.GetNearestNamedRoad(operationalObjectPoint, roadName).Result;
 
- 
+
                 SqlGeometry accesslink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
-                var intersectionCountForDeliveryPoint =accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accesslink.ToDbGeometry());
-              var getAccessLinkCountForCrossesorOverLaps = accessLinkDataService.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accesslink.ToDbGeometry());
-
                 NetworkLinkDTO networkLink = null;
-                SqlGeometry networkIntersectionPoint=null;
-                if (intersectionCountForDeliveryPoint == 0  && getAccessLinkCountForCrossesorOverLaps==0)
+                SqlGeometry networkIntersectionPoint = null;
+                if (accesslink != null)
                 {
+                    var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accesslink.ToDbGeometry());
+                    var getAccessLinkCountForCrossesorOverLaps = accessLinkDataService.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accesslink.ToDbGeometry());
 
-                     networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item1;
-                    networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
+
+
+                    if (intersectionCountForDeliveryPoint == 0 && getAccessLinkCountForCrossesorOverLaps == 0)
+                    {
+
+                        networkLink = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item1;
+                        networkIntersectionPoint = nearestNamedStreetNetworkObjectWithIntersectionTuple?.Item2;
+                    }
                 }
 
                 if (networkLink != null && networkIntersectionPoint != null && !networkIntersectionPoint.IsNull && !networkIntersectionPoint.STX.IsNull && !networkIntersectionPoint.STY.IsNull)
@@ -292,23 +302,26 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestStreetNetworkObjectWithIntersectionTuple =
                         accessLinkIntegrationService.GetNearestSegment(operationalObjectPoint).Result;
 
-                    var networkLikdDTO = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;                   
-                   // var    accessLinks = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLikdDTO.LinkGeometry.ToSqlGeometry());
+                    var networkLikdDTO = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
+                    // var    accessLinks = operationalObjectPoint.ToSqlGeometry().ShortestLineTo(networkLikdDTO.LinkGeometry.ToSqlGeometry());
 
-                        foreach (var accessLink in nearestStreetNetworkObjectWithIntersectionTuple?.Item2)
+                    foreach (var accessLink in nearestStreetNetworkObjectWithIntersectionTuple?.Item2)
                     {
-                         intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accessLink.ToDbGeometry());
-                         getAccessLinkCountForCrossesorOverLaps = accessLinkDataService.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accessLink.ToDbGeometry());
-
-                        if (intersectionCountForDeliveryPoint == 0 && getAccessLinkCountForCrossesorOverLaps == 0)
+                        if (accesslink != null)
                         {
-                            networkLink = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
-                            networkIntersectionPoint = accessLink.STEndPoint();
-                            break;
+                            var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accessLink.ToDbGeometry());
+                            var getAccessLinkCountForCrossesorOverLaps = accessLinkDataService.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accessLink.ToDbGeometry());
+
+                            if (intersectionCountForDeliveryPoint == 0 && getAccessLinkCountForCrossesorOverLaps == 0)
+                            {
+                                networkLink = nearestStreetNetworkObjectWithIntersectionTuple?.Item1;
+                                networkIntersectionPoint = accessLink.STEndPoint();
+                                break;
+                            }
                         }
                     }
 
-                    
+
                     if (networkLink != null && !networkIntersectionPoint.IsNull && !networkIntersectionPoint.STX.IsNull && !networkIntersectionPoint.STY.IsNull)
                     {
                         actualLength = (double)operationalObjectPoint.ToSqlGeometry()
@@ -332,48 +345,18 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 if (matchFound)
                 {
                     NetworkLinkDataDTO networkLinkDataDTO = new NetworkLinkDataDTO();
-                    NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
-                    NetworkNodeDataDTO networkNodeDataDTO1 = new NetworkNodeDataDTO();
+                    //NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
+                    //NetworkNodeDataDTO networkNodeDataDTO1 = new NetworkNodeDataDTO();
                     AccessLinkDataDTO accessLinkDatatDTO = new AccessLinkDataDTO();
                     AccessLinkStatusDataDTO accessLinkStatusDataDTO = new AccessLinkStatusDataDTO();
-                  
-
-
 
                     Guid locationGuid = Guid.NewGuid();
                     Guid accessLinkGuid = Guid.NewGuid();
                     Guid NetworkNodeTypeGuid = Guid.NewGuid();
-                    //code for adding location details
-                    LocationDataDTO locationDataDTO = new LocationDataDTO
-                    {
-                        ID = locationGuid,
-                        Shape = networkIntersectionPoint.ToDbGeometry(),
-                        RowCreateDateTime = DateTime.UtcNow
-
-                    };
-                    networkNodeDataDTO.LocationDatatDTO=locationDataDTO;
-
-                    locationDataDTO = new LocationDataDTO
-                    {
-                        ID = locationGuid,
-                        Shape = operationalObjectPoint,
-                        RowCreateDateTime = DateTime.UtcNow
-
-                    };
-                    networkNodeDataDTO1.LocationDatatDTO=locationDataDTO;
-                    //code for adding network node to accesslinkdatadto
-
-                    networkNodeDataDTO.ID = networkNodeDataDTO1.ID = locationGuid;
-                    networkNodeDataDTO.DataProviderGUID = networkNodeDataDTO1.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
-                   networkNodeDataDTO.RowCreateDateTime = networkNodeDataDTO1.RowCreateDateTime = DateTime.UtcNow;
-                    networkNodeDataDTO.NetworkNodeType_GUID = networkNodeDataDTO1.NetworkNodeType_GUID = NetworkNodeTypeGuid;
-                    
-                    networkLinkDataDTO.NetworkNodeDataDTO= networkNodeDataDTO;
-                    networkLinkDataDTO.NetworkNodeDataDTO1 = networkNodeDataDTO1;
 
                     //code for adding network link
 
-                    networkLinkDataDTO.ID = accessLinkGuid;
+                    networkLinkDataDTO.ID = networkLink.Id;
                     networkLinkDataDTO.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
                     networkLinkDataDTO.NetworkLinkTypeGUID = operationObjectTypeId;// (AccessLink)
 
@@ -385,11 +368,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         .ToDbGeometry();
                     networkLinkDataDTO.RowCreateDateTime = DateTime.Now;
 
-                    
 
-                  //  accessLinkDatatDTO.NetworkLinkDatatDTO = networkLinkDataDTO;
-
-                    accessLinkDatatDTO.ID = Guid.Empty;
+                    //  accessLinkDatatDTO.NetworkLinkDatatDTO = networkLinkDataDTO;
+                    accessLinkDatatDTO.ConnectedNetworkLinkID = networkLink.Id;
+                    accessLinkDatatDTO.ID = networkLink.Id;
 
                     accessLinkDatatDTO.Approved = accessLinkApproved;
                     if (referenceDataCategoryList
@@ -411,7 +393,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         .SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == accessLinkDirection).ID;
 
-
+                    accessLinkDatatDTO.RowCreateDateTime = DateTime.UtcNow;
 
                     // create access link status Data DTO.
                     accessLinkStatusDataDTO = new AccessLinkStatusDataDTO
@@ -423,14 +405,14 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         .Single(x => x.ReferenceDataValue == accessLinkStatus).ID,
                         RowCreateDateTime = DateTime.UtcNow,
                         NetworkLinkID = locationGuid,
-                        StartDateTime=DateTime.UtcNow                   
+                        StartDateTime = DateTime.UtcNow
 
-                };
-                    accessLinkDatatDTO.AccessLinkStatusDataDTO=accessLinkStatusDataDTO;
-                    networkLinkDataDTO.AccessLinkDataDTOs=accessLinkDatatDTO;
+                    };
+                    accessLinkDatatDTO.AccessLinkStatusDataDTO = accessLinkStatusDataDTO;
+                    networkLinkDataDTO.AccessLinkDataDTOs = accessLinkDatatDTO;
                     //calling dataservice alsong with accesslink parameter.
                     isAccessLinkCreated = accessLinkDataService.CreateAccessLink(networkLinkDataDTO);
-                
+
 
                     if (isAccessLinkCreated)
                     {
@@ -460,14 +442,19 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
         /// <returns>bool</returns>
         public bool CreateAccessLink(AccessLinkManualCreateModelDTO accessLinkManualDto)
         {
-            // TODO
+
             using (loggingHelper.RMTraceManager.StartTrace("Business.CreateManualAccessLink"))
             {
                 string methodName = typeof(AccessLinkBusinessService) + "." + nameof(CreateAccessLink);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 NetworkLinkDataDTO networkLinkDataDTO = new NetworkLinkDataDTO();
-                NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
-                NetworkNodeDataDTO networkNodeDataDTO1 = new NetworkNodeDataDTO();
+
+                //Method to be deleted
+
+                var boolvalue = CreateAccessLink(Guid.Parse("88E5A50E-67A1-409A-9E76-000061085EE1"), Guid.Parse("BBC205A9-97C4-4345-AE8F-C485D243ECFC"));
+
+                //Method to be deleted
+
                 AccessLinkStatusDataDTO accessLinkStatusDataDTO = new AccessLinkStatusDataDTO();
                 Guid locationGuid = Guid.NewGuid();
                 Guid accessLinkGuid = Guid.NewGuid();
@@ -480,12 +467,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 Guid operationalObjectGuidManual = Guid.Parse(accessLinkManualDto.OperationalObjectGUID);
                 Guid networkLinkGuidManual = Guid.Parse(accessLinkManualDto.NetworkLinkGUID);
 
-                AccessLinkDataDTO accessLinkDatatDTO = new AccessLinkDataDTO
-                {
-                    ID = Guid.Empty,
-                    Approved = true,
-                    WorkloadLengthMeter = accessLinkManualDto.Workloadlength,
-                };
 
                 object operationalObject = new object();
 
@@ -512,7 +493,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 string roadName = string.Empty;
 
-                Guid  OperationalObjectType_GUID = referenceDataCategoryList
+                Guid OperationalObjectType_GUID = referenceDataCategoryList
                         .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.OperationalObjectType).SelectMany(x => x.ReferenceDatas)
                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.OperationalObjectTypeDP).ID;
 
@@ -524,9 +505,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                             .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkType).SelectMany(x => x.ReferenceDatas)
                             .Single(x => x.ReferenceDataValue == ReferenceDataValues.UserDefined).ID;
 
-                 Guid LinkDirection_GUID = referenceDataCategoryList
-                    .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
-                    .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkDirectionBoth).ID;
+                Guid LinkDirection_GUID = referenceDataCategoryList
+                   .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkDirection).SelectMany(x => x.ReferenceDatas)
+                   .Single(x => x.ReferenceDataValue == ReferenceDataValues.AccessLinkDirectionBoth).ID;
 
                 Guid LinkStatus_GUID = referenceDataCategoryList
                     .Where(x => x.CategoryName.Replace(AccessLinkConstants.Space, string.Empty) == ReferenceDataCategoryNames.AccessLinkStatus).SelectMany(x => x.ReferenceDatas)
@@ -536,63 +517,30 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 DbGeometry ActualLengthMeter = DbGeometry.LineFromText(accessLinkLineManual, AccessLinkConstants.BNGCOORDINATESYSTEM);
 
-              
-                //code for adding location details
-                LocationDataDTO locationDataDTO = new LocationDataDTO
+                AccessLinkDataDTO accessLinkDatatDTO = new AccessLinkDataDTO
                 {
-                    ID = locationGuid,
-                    Shape = DbGeometry.PointFromText(networkIntersectionPointManual, AccessLinkConstants.BNGCOORDINATESYSTEM),
-                    RowCreateDateTime = DateTime.UtcNow
-
+                    ID = networkObject.Id,
+                    Approved = true,
+                    WorkloadLengthMeter = accessLinkManualDto.Workloadlength,
+                    RowCreateDateTime = DateTime.UtcNow,
+                    AccessLinkTypeGUID = AccessLinkType_GUID,
+                    LinkDirectionGUID = LinkDirection_GUID
                 };
-                networkNodeDataDTO.LocationDatatDTO = locationDataDTO;
 
-                locationDataDTO = new LocationDataDTO
-                {
-                    ID = locationGuid,
-                    Shape = OperationalObjectPoint,
-                    RowCreateDateTime = DateTime.UtcNow
-
-                };
-                networkNodeDataDTO1.LocationDatatDTO = locationDataDTO;
-                //code for adding network node to accesslinkdatadto
-
-                networkNodeDataDTO.ID = networkNodeDataDTO1.ID = locationGuid;
-                networkNodeDataDTO.DataProviderGUID = networkNodeDataDTO1.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
-                networkNodeDataDTO.RowCreateDateTime = networkNodeDataDTO1.RowCreateDateTime = DateTime.UtcNow;
-                networkNodeDataDTO.NetworkNodeType_GUID = networkNodeDataDTO1.NetworkNodeType_GUID = NetworkNodeTypeGuid;
-
-                networkLinkDataDTO.NetworkNodeDataDTO = networkNodeDataDTO;
-                networkLinkDataDTO.NetworkNodeDataDTO1 = networkNodeDataDTO1;
-
-                //code for adding network link
-
-                networkLinkDataDTO.ID = accessLinkGuid;
-                networkLinkDataDTO.DataProviderGUID = Guid.Empty;// AccessLinkConstants.Internal,
-                networkLinkDataDTO.NetworkLinkTypeGUID = OperationalObjectType_GUID;// (AccessLink)
-
-                networkLinkDataDTO.StartNodeID = OperationalObjectType_GUID;
-                networkLinkDataDTO.EndNodeID = locationGuid;
-                networkLinkDataDTO.LinkLength = Convert.ToDecimal(ActualLengthMeter);
-                networkLinkDataDTO.LinkGeometry = OperationalObjectPoint.ToSqlGeometry()
-                    .ShortestLineTo(networkLinkDataDTO.LinkGeometry.ToSqlGeometry())
-                    .ToDbGeometry();
-                networkLinkDataDTO.RowCreateDateTime = DateTime.Now;
-
-                // create access link status Data DTO.
                 accessLinkStatusDataDTO = new AccessLinkStatusDataDTO
                 {
-                    ID = new Guid(),
+                    ID = networkObject.Id,
                     AccessLinkStatusGUID = LinkStatus_GUID,
                     RowCreateDateTime = DateTime.UtcNow,
-                    NetworkLinkID = locationGuid,
+                    NetworkLinkID = networkObject.Id,
                     StartDateTime = DateTime.UtcNow
                 };
 
                 accessLinkDatatDTO.AccessLinkStatusDataDTO = accessLinkStatusDataDTO;
                 networkLinkDataDTO.AccessLinkDataDTOs = accessLinkDatatDTO;
+                networkLinkDataDTO.ID = networkObject.Id;
                 //calling dataservice for creating accesslink  using networklink parameter.
-                isAccessLinkCreated = accessLinkDataService.CreateAccessLink(networkLinkDataDTO);
+                isAccessLinkCreated = accessLinkDataService.CreateManualAccessLink(networkLinkDataDTO);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return isAccessLinkCreated;
@@ -616,7 +564,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
 
                 if (!string.IsNullOrEmpty(boundaryBox))
                 {
-                    var accessLinkCoordinates =GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(AccessLinkConstants.Comma[0]));
+                    var accessLinkCoordinates = GetAccessLinkCoordinatesDataByBoundingBox(boundaryBox.Split(AccessLinkConstants.Comma[0]));
                     var accessLinkDataDto = accessLinkDataService.GetAccessLinks(accessLinkCoordinates, unitGuid);
                     var accessLink = GenericMapper.MapList<AccessLinkDataDTO, AccessLinkDTO>(accessLinkDataDto);
                     accessLinkJsonData = GetAccessLinkJsonData(accessLinkDataDto);
@@ -797,14 +745,14 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     Geometry geometry = new Geometry();
 
                     geometry.type = res.NetworkLinkDatatDTO.LinkGeometry.SpatialTypeName;
-                    
+
 
                     var resultCoordinates = res.NetworkLinkDatatDTO.LinkGeometry;
 
                     SqlGeometry accessLinksqlGeometry = null;
                     if (geometry.type == Convert.ToString(GeometryType.LineString))
                     {
-                          accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
+                        accessLinksqlGeometry = SqlGeometry.STLineFromWKB(new SqlBytes(resultCoordinates.AsBinary()), AccessLinkConstants.BNGCOORDINATESYSTEM).MakeValid();
 
                         List<List<double>> cords = new List<List<double>>();
 

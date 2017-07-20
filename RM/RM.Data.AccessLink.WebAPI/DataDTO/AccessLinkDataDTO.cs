@@ -26,9 +26,9 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         public  NetworkLinkDataDTO NetworkLinkDataDTO1 { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-       
 
-   
+        public Guid? ConnectedNetworkLinkID { get; set; }
+
         public virtual AccessLinkStatusDataDTO AccessLinkStatusDataDTO { get; set; }
         public NetworkNodeDataDTO NetworkNodeDataDTO { get; set; }
     }
