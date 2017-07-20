@@ -56,7 +56,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                               Shape = location.Shape,
                                               Area = (
                                                       from postcodeHierarchy in DataContext.PostcodeHierarchies
-                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID
+                                                      join lh in DataContext.LocationPostcodeHierarchies on postcodeHierarchy.ID equals lh.PostcodeHierarchyID
+                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID && location.ID == lh.LocationID
                                                       select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
                                           }).ToListAsync();
 
@@ -82,16 +83,17 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
 
                 var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
-                                             join lr in DataContext.LocationReferenceDatas on r.LocationID equals lr.LocationID
-                                             join l in DataContext.Locations on lr.LocationID equals l.ID
+                                             join lref in DataContext.LocationReferenceDatas on r.LocationID equals lref.LocationID
+                                             join location in DataContext.Locations on lref.LocationID equals location.ID
                                              where r.UserID == userId
                                              select new UnitLocationDataDTO
                                              {
-                                                 Shape = l.Shape,
-                                                 LocationId = lr.LocationID,
+                                                 Shape = location.Shape,
+                                                 LocationId = location.ID,
                                                  Area = (
                                                       from postcodeHierarchy in DataContext.PostcodeHierarchies
-                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID
+                                                      join lh in DataContext.LocationPostcodeHierarchies on postcodeHierarchy.ID equals lh.PostcodeHierarchyID
+                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID && location.ID == lh.LocationID
                                                       select postcodeHierarchy.Postcode
                                                       ).FirstOrDefault() ?? string.Empty
                                              }).ToListAsync();
