@@ -4,11 +4,15 @@ using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.SqlServer.Types;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.UnitManager.WebAPI.DataDTO;
+using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Interface;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 using RM.DataManagement.UnitManager.WebAPI.DataDTO;
@@ -25,6 +29,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
     {
         private const int BNGCOORDINATESYSTEM = 27700;
         private const string PostCodeType = "Postcode Type";
+        private const string PostalAddressType = "PostalAddressType";
         private const int searchResultCount = 5;
 
         #region property declaration
@@ -35,6 +40,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         private IScenarioDataService scenarioDataService = default(IScenarioDataService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private IUnitManagerIntegrationService unitManagerIntegrationService = default(IUnitManagerIntegrationService);
+        private IPostalAddressDataService postalAddressDataService = default(IPostalAddressDataService);
 
         #endregion property declaration
 
@@ -45,7 +51,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// <param name="postcodeSectorDataService">post code sector data service</param>
         /// <param name="postCodeDataService">post code data service</param>
         /// <param name="scenarioDataService">scenario data service</param>
-        public UnitLocationBusinessService(IUnitLocationDataService unitLocationDataService, IPostcodeSectorDataService postcodeSectorDataService, IPostcodeDataService postCodeDataService, IScenarioDataService scenarioDataService, ILoggingHelper loggingHelper, IUnitManagerIntegrationService unitManagerIntegrationService)
+        public UnitLocationBusinessService(IUnitLocationDataService unitLocationDataService, IPostcodeSectorDataService postcodeSectorDataService, IPostcodeDataService postCodeDataService, IScenarioDataService scenarioDataService, IPostalAddressDataService postalAddressDataService, ILoggingHelper loggingHelper, IUnitManagerIntegrationService unitManagerIntegrationService)
         {
             // Store injected dependencies
             this.unitLocationDataService = unitLocationDataService;
@@ -54,6 +60,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             this.scenarioDataService = scenarioDataService;
             this.loggingHelper = loggingHelper;
             this.unitManagerIntegrationService = unitManagerIntegrationService;
+            this.postalAddressDataService = postalAddressDataService;
         }
 
         /// <summary>
@@ -111,7 +118,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// Get the postcode sector by the UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
-        /// <returns>PostcodeSectorDTO object</returns>
+        /// <returns>PostCodeSectorDTO object</returns>
         public async Task<PostcodeSectorDTO> GetPostcodeSectorByUdprn(int udprn)
         {
             string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostcodeSectorByUdprn);
@@ -296,6 +303,89 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
+        /// Filter PostalAddress based on the post code
+        /// </summary>
+        /// <param name="selectedItem">selectedItem</param>
+        /// <param name="unitGuid">unitGuid</param>
+        /// <returns>List of postcodes</returns>
+        public async Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressDetails"))
+            {
+                string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostalAddressDetails);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
+
+                List<BindingDTO> nybDetails = new List<BindingDTO>();
+                List<BindingDTO> routeDetails = new List<BindingDTO>();
+                PostalAddressDTO postalAddressDto = null;
+                var postalAddressDetails = await postalAddressDataService.GetPostalAddressDetails(selectedItem, unitGuid);
+                var routeData = unitManagerIntegrationService.GetRouteData(selectedItem.Split(',')[1].Trim(), "ID,RouteName").Result;
+                routeData.ForEach(route => {
+                    routeDetails.Add(new BindingDTO { Value = route.ID, DisplayText = route.RouteName });
+                });
+
+
+                Guid nybAddressTypeId = unitManagerIntegrationService.GetReferenceDataGuId(PostalAddressType, FileType.Nyb.ToString()).Result;
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddressDataDTO, PostalAddressDTO>();
+                });
+
+                var postalAddressDetailsDTO = Mapper.Map<List<PostalAddressDataDTO>, List<PostalAddressDTO>>(postalAddressDetails);
+
+                if (postalAddressDetailsDTO != null && postalAddressDetailsDTO.Count > 0)
+                {
+                    postalAddressDto = postalAddressDetailsDTO[0];
+                    foreach (var postalAddress in postalAddressDetailsDTO)
+                    {
+                        if (postalAddress.AddressType_GUID == nybAddressTypeId)
+                        {
+                            string address = string.Join(",", Convert.ToString(postalAddress.BuildingNumber) ?? string.Empty, postalAddress.BuildingName, postalAddress.SubBuildingName);
+                            string formattedAddress = Regex.Replace(address, ",+", ",").Trim(',');
+                            nybDetails.Add(new BindingDTO { Value = postalAddress.ID, DisplayText = formattedAddress });
+                        }
+                    }
+
+                    nybDetails.OrderBy(n => n.DisplayText);
+                    nybDetails.Add(new BindingDTO { Value = Guid.Empty, DisplayText = "Not Shown" });
+                    postalAddressDto.NybAddressDetails = nybDetails;
+                    postalAddressDto.RouteDetails = routeDetails;
+                }
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
+                return postalAddressDto;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <param name="unitGuid"></param>
+        /// <returns></returns>
+        public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressSearchDetails"))
+            {
+                string methodName = typeof(UnitLocationBusinessService) + "." + nameof(GetPostalAddressSearchDetails);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
+
+                List<string> listNames = new List<string> { FileType.Paf.ToString().ToUpper(), FileType.Nyb.ToString().ToUpper() };
+
+                var referenceDataCategoryList = unitManagerIntegrationService.GetReferenceDataSimpleLists(ReferenceDataCategoryNames.PostalAddressType).Result;
+                List<Guid> addresstypeIDs = referenceDataCategoryList.ReferenceDatas
+                .Where(a => listNames.Contains(a.ReferenceDataValue))
+                .Select(a => a.ID).ToList();
+
+                var postalAddress = await postalAddressDataService.GetPostalAddressSearchDetails(searchText, unitGuid, addresstypeIDs);
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodExitEventId);
+                return postalAddress;
+            }
+        }
+
+        /// <summary>
         /// Gets approx location based on the postal code.
         /// </summary>
         /// <param name="postcode">Postal code</param>
@@ -314,5 +404,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 return approxLocation;
             }
         }
+
     }
 }

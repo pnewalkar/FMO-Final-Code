@@ -34,15 +34,13 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         [HttpGet("basic/{searchText}")]
         public async Task<SearchResultDTO> BasicSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.BasicSearch"))
+            string methodName = typeof(SearchBusinessService) + "." + nameof(BasicSearch);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.BasicSearch"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId);
                 try
                 {
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
-
-                    var unitGuid = this.CurrentUserUnit;
-                    return await searchBussinessService.FetchBasicSearchDetails(searchText, this.CurrentUserUnit);
+                    return await searchBussinessService.GetBasicSearchDetails(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                 }
                 catch (AggregateException ae)
                 {
@@ -56,7 +54,7 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
                 }
                 finally
                 {
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodExitEventId);
                 }
             }
         }
@@ -69,15 +67,14 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
         [HttpGet("advance/{searchText}")]
         public async Task<SearchResultDTO> AdvanceSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.AdvanceSearch"))
+            string methodName = typeof(SearchBusinessService) + "." + nameof(AdvanceSearch);
+            using (loggingHelper.RMTraceManager.StartTrace("Business.AdvanceSearch"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId);
                 try
                 {
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    var unitGuid = this.CurrentUserUnit;
-                    return await searchBussinessService.FetchAdvanceSearchDetails(searchText, this.CurrentUserUnit);
+                    return await searchBussinessService.GetAdvanceSearchDetails(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                 }
                 catch (AggregateException ae)
                 {
@@ -91,7 +88,7 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
                 }
                 finally
                 {
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodExitEventId);
                 }
             }
         }

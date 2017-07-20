@@ -33,8 +33,8 @@ namespace Fmo.API.Services.Controllers
 
         public PostalAddressController(IPostalAddressBusinessService _businessService, ILoggingHelper _loggingHelper)
         {
-            this.businessService = businessService;
-            this.loggingHelper = loggingHelper;
+            this.businessService = _businessService;
+            this.loggingHelper = _loggingHelper;
         }
 
         #endregion Constructors

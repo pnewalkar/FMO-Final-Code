@@ -8,7 +8,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q, stringFormatService)
         var deferred = $q.defer();
 
         var getDeliveryPointsParams = stringFormatService.Stringformat(GlobalSettings.getDeliveryPointsResultSet, searchText);
-        $http.get(GlobalSettings.postalAddressApiUrl + getDeliveryPointsParams).success(function (response) {
+        $http.get(GlobalSettings.unitManagerApiUrl + getDeliveryPointsParams).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {
@@ -24,7 +24,7 @@ function deliveryPointAPIService($http, GlobalSettings, $q, stringFormatService)
 
     
         var getAddressByPostCodeParams = stringFormatService.Stringformat(GlobalSettings.getAddressByPostCode, selectedItem);
-        $http.get(GlobalSettings.postalAddressApiUrl + getAddressByPostCodeParams).success(function (response) {
+        $http.get(GlobalSettings.unitManagerApiUrl + getAddressByPostCodeParams).success(function (response) {
             deferred.resolve(response);
 
             }).error(function (err, status) {

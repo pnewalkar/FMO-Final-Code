@@ -93,8 +93,8 @@ GlobalSettings.createAccessLink = "/accessLinkManager/accessLink/manual/";
 GlobalSettings.checkAccessLinkIsValid = "/accessLinkManager/accessLink/valid/";
 
 //------Delivery Point Factory--------//
-GlobalSettings.getDeliveryPointsResultSet = "/postaladdressmanager/postaladdress/search/{0}";
-GlobalSettings.getAddressByPostCode = "/postaladdressmanager/postaladdress/filter?selectedItem={0}";
+GlobalSettings.getDeliveryPointsResultSet = "/UnitManager/postaladdress/search/{0}";
+GlobalSettings.getAddressByPostCode = "/UnitManager/postaladdress/filter?selectedItem={0}";
 GlobalSettings.getAddressLocation = "/thirdpartyaddresslocationmanager/addresslocation/geojson/udprn:";
 GlobalSettings.getPostalAddressByGuid = "/postaladdressmanager/postaladdress/filter/addressguid:{0}";
 GlobalSettings.createDeliveryPoint = "/DeliveryPointManager/deliverypoint/newdeliverypoint";
