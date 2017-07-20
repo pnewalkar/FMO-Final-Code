@@ -12,6 +12,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using AutoMapper;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 {
@@ -21,6 +22,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
     public class AddressLocationDataService : DataServiceBase<AddressLocation, AddressLocationDBContext>, IAddressLocationDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
 
         public AddressLocationDataService(IDatabaseFactory<AddressLocationDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
@@ -38,7 +40,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.AddressLocationExists"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string methodName = typeof(AddressLocationDataService) + "." + nameof(AddressLocationExists);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
                 bool addressLocationExists = await DataContext.AddressLocations.AsNoTracking().Where(n => n.UDPRN == udprn).AnyAsync();
@@ -57,7 +59,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAddressLocationByUDPRN"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string methodName = typeof(AddressLocationDataService) + "." + nameof(GetAddressLocationByUDPRN);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
                 var objAddressLocation = await DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
@@ -78,7 +80,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.SaveNewAddressLocation"))
                 {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    string methodName = typeof(AddressLocationDataService) + "." + nameof(SaveNewAddressLocation);
                     loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
                     var addressLocationEntity = new AddressLocation();
@@ -105,5 +107,53 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
                 throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
             }
         }
+
+        /// <summary>
+        /// Get the Postal Address based on UDPRN
+        /// </summary>
+        /// <param name="udprn">UDPRN id</param>
+        /// <returns>Postal Address record</returns>
+        public async Task<PostalAddressDataDTO> GetPostalAddressData(int udprn)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressData"))
+            {
+                string methodName = typeof(AddressLocationDataService) + "." + nameof(GetPostalAddressData);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                PostalAddress postalAddress = await DataContext.PostalAddresses.Include(d => d.DeliveryPoints).Where(p => p.UDPRN == udprn).FirstOrDefaultAsync();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
+                });
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                return Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
+            }
+        }
+
+        /// <summary>
+        /// Check if there are any notification for the given UDPRN and action
+        /// </summary>
+        /// <param name="udprn">UDPRN ID</param>
+        /// <param name="action">action message to be updated</param>
+        /// <returns>whether the notification exists or not</returns>
+        public async Task<bool> CheckIfNotificationExists(int udprn, string action)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.CheckIfNotificationExists"))
+            {
+                string methodName = typeof(AddressLocationDataService) + "." + nameof(CheckIfNotificationExists);
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
+
+                string notificationActionlink = string.Format(USRNOTIFICATIONLINK, udprn.ToString());
+                bool notificationExists = await DataContext.Notifications.AsNoTracking()
+                .AnyAsync(notific => notific.NotificationActionLink.Equals(notificationActionlink) &&
+                                  notific.Notification_Heading.Trim().Equals(action));
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
+                return notificationExists;
+            }
+        }
+
     }
 }

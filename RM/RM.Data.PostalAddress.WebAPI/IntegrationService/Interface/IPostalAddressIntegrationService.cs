@@ -42,7 +42,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
         /// <summary>
-        /// This method will call Delivery point web api which is used to 
+        /// This method will call Delivery point web api which is used to
         /// update delivery point for resp PostalAddress which has type <USR>.
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
@@ -63,16 +63,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <returns>AddressLocationDTO object</returns>
         Task<AddressLocationDTO> GetAddressLocationByUDPRN(int udprn);
 
-        /// <summary>
-        /// Get post code ID by passing post code.
-        /// </summary>
-        /// <param name="postCode"> Post Code</param>
-        /// <returns>Post code ID</returns>
-        Task<Guid> GetPostCodeID(string postCode);
+        Task<List<PostcodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids);
 
-        Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids);
-
-        Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid);
+        Task<PostcodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid);
 
         Task<bool> CheckIfNotificationExists(int uDPRN, string action);
 
