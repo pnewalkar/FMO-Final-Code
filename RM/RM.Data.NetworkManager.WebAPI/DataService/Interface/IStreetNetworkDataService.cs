@@ -44,7 +44,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
         /// <param name="streetName">Street name.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and intersection point.</returns>
-        Tuple<NetworkLinkDataDTO, List<SqlGeometry>> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
+        Tuple<NetworkLinkDataDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList);
 
         /// <summary>
         /// Get the nearest street for operational object.
