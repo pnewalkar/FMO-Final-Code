@@ -16,6 +16,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
         /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
         /// <returns>PostCodeSectorDataDTO</returns>
-        Task<PostCodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid);
+        Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid);
     }
 }

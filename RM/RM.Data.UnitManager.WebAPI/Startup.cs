@@ -8,8 +8,6 @@ using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
@@ -17,6 +15,8 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Integration.Interface;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
+using RM.DataManagement.UnitManager.WebAPI.DataService;
+using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
 using RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation;
 
 namespace RM.DataManagement.UnitManager.WebAPI
@@ -95,11 +95,12 @@ namespace RM.DataManagement.UnitManager.WebAPI
 
             // Register Integration services
             services.AddScoped<IUnitManagerIntegrationService, UnitManagerIntegrationService>();
-            
+
             // Register DataServices
             services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
-            services.AddScoped<IPostCodeSectorDataService, PostCodeSectorDataService>();
-            services.AddScoped<IPostCodeDataService, PostCodeDataService>();
+            services.AddScoped<IPostcodeSectorDataService, PostcodeSectorDataService>();
+            services.AddScoped<IPostcodeDataService, PostcodeDataService>();
+            services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
             services.AddScoped<IScenarioDataService, ScenarioDataService>();
 
             // Register Others - Helper, Utils etc

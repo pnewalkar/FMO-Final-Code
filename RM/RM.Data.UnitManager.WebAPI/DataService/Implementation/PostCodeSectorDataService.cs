@@ -6,6 +6,7 @@ using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.UnitManager.WebAPI.DataDTO;
+using RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces;
 using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataService
@@ -13,11 +14,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     /// <summary>
     /// Data service to handle CRUD operations on PostcodeHierarchy and related entites
     /// </summary>
-    public class PostCodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>//, IPostcodeSectorDataService
+    public class PostcodeSectorDataService : DataServiceBase<PostcodeHierarchy, UnitManagerDbContext>, IPostcodeSectorDataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        public PostCodeSectorDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
+        public PostcodeSectorDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
             // Store injected dependencies
@@ -31,7 +32,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
         /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
         /// <returns>PostCodeSectorDataDTO</returns>
-        public async Task<PostCodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid)
+        public async Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeSectorByUdprn);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeSectorByUdprn"))
@@ -48,7 +49,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                               where ph.PostcodeTypeGUID == postcodeDistrictTypeGuid && pa.UDPRN == udprn
                                               select ph.ParentPostcode).FirstOrDefaultAsync();
 
-                PostCodeSectorDataDTO PostCodeSectorDataDTO = new PostCodeSectorDataDTO
+                PostcodeSectorDataDTO PostCodeSectorDataDTO = new PostcodeSectorDataDTO
                 {
                     District = postcodeDistrict,
                     Sector = postcodeSector

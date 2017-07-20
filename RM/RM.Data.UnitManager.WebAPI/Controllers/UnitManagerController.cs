@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
 
@@ -53,7 +54,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <returns>List</returns>
         [Authorize]
         [HttpGet("postcodesector/udprn: {udprn}")]
-        public async Task<PostCodeSectorDTO> GetPostcodeSectorByUdprn(int udprn)
+        public async Task<PostcodeSectorDTO> GetPostcodeSectorByUdprn(int udprn)
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetPostcodeSectorByUdprn);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostcodeSectorByUdprn"))
@@ -90,7 +91,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <returns></returns>
         [HttpGet("postcodes/basic/{searchText}")]
-        public async Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForBasicSearch(string searchText)
+        public async Task<IEnumerable<PostcodeDTO>> GetPostcodeUnitForBasicSearch(string searchText)
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetPostcodeUnitForBasicSearch);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostcodeUnitForBasicSearch"))
@@ -167,7 +168,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// <param name="searchText"></param>
         /// <returns></returns>
         [HttpGet("postcodes/advance/{searchText}")]
-        public async Task<IEnumerable<PostCodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText)
+        public async Task<IEnumerable<PostcodeDTO>> GetPostCodeUnitForAdvanceSearch(string searchText)
         {
             string methodName = typeof(UnitManagerController) + "." + nameof(GetPostCodeUnitForAdvanceSearch);
             using (loggingHelper.RMTraceManager.StartTrace("WebService.GetPostCodeUnitForAdvanceSearch"))
@@ -297,10 +298,79 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
-                IEnumerable<PostCodeDTO> postCodes = await unitLocationBusinessService.GetPostcodes(postcodeGuids);
+                IEnumerable<PostcodeDTO> postCodes = await unitLocationBusinessService.GetPostcodes(postcodeGuids);
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
                 return Ok(postCodes);
+            }
+        }
+        /// <summary>
+        /// Api searches pstcode and thorough in postal address entity on basis of searhtext
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [HttpGet("postaladdress/search/{searchText}")]
+        public async Task<IActionResult> SearchAddressdetails(string searchText)
+        {
+            try
+            {
+                string methodName = typeof(UnitManagerController) + "." + nameof(SearchAddressdetails);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.SearchAddressdetails"))
+                {
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
+
+                    List<string> postalAddressList = await unitLocationBusinessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
+
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
+
+                    return Ok(postalAddressList);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// Filters postal address on basis of postcode
+        /// </summary>
+        /// <param name="postCode">postcode</param>
+        /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [HttpGet("postaladdress/filter")]
+        public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.GetAddressByPostCode"))
+                {
+                    string methodName = typeof(UnitManagerController) + "." + nameof(GetAddressByPostCode);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    PostalAddressDTO postalAddressDto = await unitLocationBusinessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                    return Ok(postalAddressDto);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
     }

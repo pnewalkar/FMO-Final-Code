@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
 
 namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
@@ -24,7 +25,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <returns>PostCodeSectorDTO object</returns>
-        Task<PostCodeSectorDTO> GetPostcodeSectorByUdprn(int udprn);
+        Task<PostcodeSectorDTO> GetPostcodeSectorByUdprn(int udprn);
 
         /// <summary>
         /// Gets first five postcodeunits for an unit for a given search text
@@ -33,7 +34,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <param name="unitlocationId"></param>
         /// <param name="postcodeTypeGUID"></param>
         /// <returns>list of PostCodeDTO</returns>
-        Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId);
+        Task<IEnumerable<PostcodeDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId);
 
         /// <summary>
         /// Gets count of postcodeunits for an unit for a given search text
@@ -50,7 +51,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <param name="searchText"></param>
         /// <param name="userUnit Guid Id"></param>
         /// <returns></returns>
-        Task<IEnumerable<PostCodeDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid unitlocationId);
+        Task<IEnumerable<PostcodeDTO>> GetPostcodeUnitForAdvanceSearch(string searchText, Guid unitlocationId);
 
         /// <summary>
         /// Get the list of route scenarios by the operationstateID and locationID.
@@ -72,6 +73,22 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="postcodeGuids"></param>
         /// <returns></returns>
-        Task<IEnumerable<PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids);
+        Task<IEnumerable<PostcodeDTO>> GetPostcodes(List<Guid> postcodeGuids);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="selectedItem"></param>
+        /// <param name="unitGuid"></param>
+        /// <returns></returns>
+        Task<PostalAddressDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <param name="unitGuid"></param>
+        /// <returns></returns>
+        Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid);
     }
 }

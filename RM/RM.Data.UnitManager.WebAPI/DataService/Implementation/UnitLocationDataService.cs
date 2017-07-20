@@ -71,7 +71,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <param name="postcodeGuids"></param>
         /// <param name="postcodeSectorGUID"></param>
         /// <returns></returns>
-        public async Task<List<PostCodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID)
+        public async Task<List<PostcodeDataDTO>> GetPostcodes(List<Guid> postcodeGuids, Guid postcodeSectorGUID)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodes);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostCodes"))
@@ -81,7 +81,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                 var postcodeDetails = await (from pc in DataContext.Postcodes.AsNoTracking()
                                              join postcodeHierarchy in DataContext.PostcodeHierarchies.AsNoTracking() on pc.ID equals postcodeHierarchy.ID
                                              where postcodeHierarchy.PostcodeTypeGUID == postcodeSectorGUID && postcodeGuids.Contains(pc.ID)
-                                             select new PostCodeDataDTO
+                                             select new PostcodeDataDTO
                                              {
                                                  ID = pc.ID,
                                                  InwardCode = pc.InwardCode,
