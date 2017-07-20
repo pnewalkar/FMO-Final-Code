@@ -36,10 +36,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <param name="operationStateID">Guid operationStateID</param>
         /// <param name="locationID">Guid locationID</param>
         /// <returns>List</returns>
-        public async Task<IEnumerable<ScenarioDataDTO>> GetRouteScenarios(Guid operationStateID, Guid locationID)
+        public async Task<IEnumerable<ScenarioDataDTO>> GetScenariosByOperationStateAndDeliveryUnit(Guid operationStateID, Guid locationID)
         {
-            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetRouteScenarios);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteScenarios"))
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetScenariosByOperationStateAndDeliveryUnit);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetScenariosByOperationStateAndDeliveryUnit"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.ScenarioDataServiceMethodEntryEventId);
 

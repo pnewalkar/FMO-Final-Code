@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
@@ -12,19 +13,20 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
     public interface IUnitLocationBusinessService
     {
         /// <summary>
-        /// Gets all the associated Delivery units for an user.
+        /// Gets all the associated units for an user.
         /// </summary>
         /// <param name="userId">The user unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
         /// <returns>
         /// The list of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        Task<IEnumerable<UnitLocationDTO>> GetDeliveryUnitsByUser(Guid userId);
+        Task<IEnumerable<UnitLocationDTO>> GetUnitsByUser(Guid userId, string currentUserUnitType);
 
         /// <summary>
         /// Get the postcode sector by the UDPRN id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
-        /// <returns>PostCodeSectorDTO object</returns>
+        /// <returns>PostcodeSectorDTO object</returns>
         Task<PostcodeSectorDTO> GetPostcodeSectorByUdprn(int udprn);
 
         /// <summary>
@@ -33,7 +35,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface
         /// <param name="searchText"></param>
         /// <param name="unitlocationId"></param>
         /// <param name="postcodeTypeGUID"></param>
-        /// <returns>list of PostCodeDTO</returns>
+        /// <returns>list of PostcodeDTO</returns>
         Task<IEnumerable<PostcodeDTO>> GetPostcodeUnitForBasicSearch(string searchText, Guid unitlocationId);
 
         /// <summary>

@@ -5,7 +5,7 @@ using RM.DataManagement.UnitManager.WebAPI.DataDTO;
 namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
 {
     /// <summary>
-    /// IPostcodeSectorDataService interface to abstract away the PostCodeSectorDataService implementation
+    /// IPostcodeSectorDataService interface to abstract away the PostcodeSectorDataService implementation
     /// </summary>
     public interface IPostcodeSectorDataService
     {
@@ -15,7 +15,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         /// <param name="udprn">UDPRN id</param>
         /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
         /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
-        /// <returns>PostCodeSectorDataDTO</returns>
+        /// <returns>PostcodeSectorDataDTO</returns>
         Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid);
     }
 }

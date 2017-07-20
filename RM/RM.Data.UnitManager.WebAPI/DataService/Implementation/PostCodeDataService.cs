@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
@@ -19,6 +20,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        /// <summary>
+        /// Parameterised Constructor 
+        /// </summary>
+        /// <param name="databaseFactory"></param>
+        /// <param name="loggingHelper"></param>
         public PostcodeDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
@@ -49,8 +55,8 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                                  ID = p.ID
                                              }).Take(searchInputs.SearchResultCount).ToListAsync();
 
-                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return PostcodeDataDTO;
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
+                return postCodeDataDto;
             }
         }
 
@@ -114,18 +120,88 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// Get post code ID by passing postcode.
         /// </summary>
         /// <param name="postCode"> Post Code</param>
-        /// <returns>Post code ID</returns>
-        public async Task<Guid> GetPostcodeID(string postCode)
+        /// <returns>PostcodeDataDTO</returns>
+        public async Task<PostcodeDataDTO> GetPostcodeID(string postCode)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeID);
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostcodeID"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                var postCodeDetail = await DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase)).SingleOrDefaultAsync();
+                var postCodeDetail = await DataContext.Postcodes.Where(l => l.PostcodeUnit.Trim().Equals(postCode, StringComparison.OrdinalIgnoreCase))
+                    .Select(l => new PostcodeDataDTO
+                    {
+                        ID = l.ID
+                    }).SingleOrDefaultAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return postCodeDetail != null ? postCodeDetail.ID : Guid.Empty;
+                return postCodeDetail;
+            }
+        }
+
+        /// <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode">Postal code</param>
+        /// <param name="unitId">Unique identifier for unit.</param>
+        /// <returns>The approx location for the given postal code.</returns>
+        public async Task<DbGeometry> GetApproxLocation(string postcode, Guid unitId)
+        {
+            DbGeometry approxLocation = null;
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetApproxLocation);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetApproxLocation"))
+            {
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
+
+                // get approx loaction for that post code
+                var approxLocationForPostCode = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode == postcode);
+
+                if (approxLocationForPostCode != null)
+                {
+                    approxLocation = approxLocationForPostCode.NetworkNode.Location.Shape;
+                }
+                else
+                {
+                    var postcodeSector = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
+                                          where ph.Postcode == postcode
+                                          select ph.ParentPostcode).FirstOrDefault();
+
+                    // get approx location for the pose code sector
+                    var approxLocationForPostCodeSector = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeSector));
+
+                    if (approxLocationForPostCodeSector != null)
+                    {
+                        approxLocation = approxLocationForPostCodeSector.NetworkNode.Location.Shape;
+                    }
+                    else
+                    {
+                        var postcodeDistrict = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
+                                                where ph.Postcode == postcodeSector
+                                                select ph.ParentPostcode).FirstOrDefault();
+
+                        // get approx location for the pose code sector
+                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeDistrict));
+
+                        if (approxLocationForPostCodeDistrict != null)
+                        {
+                            approxLocation = approxLocationForPostCodeDistrict.NetworkNode.Location.Shape;
+                        }
+                        else
+                        {
+                            // get approx location for that unit
+                            var dpForUnit = DataContext.DeliveryPoints.FirstOrDefault(dp => DataContext.PostalAddressIdentifiers.Any(pa => pa.ID == unitId && pa.PostalAddressID == dp.PostalAddressID));
+
+                            if (dpForUnit != null)
+                            {
+                                approxLocation = dpForUnit.NetworkNode.Location.Shape;
+                            }
+                        }
+                    }
+                }
+
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
+
+                return approxLocation;
             }
         }
     }

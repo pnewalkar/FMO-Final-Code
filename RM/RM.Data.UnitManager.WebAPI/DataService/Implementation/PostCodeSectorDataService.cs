@@ -18,6 +18,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
     {
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        /// <summary>
+        /// Parameterised Constructor
+        /// </summary>
+        /// <param name="databaseFactory"></param>
+        /// <param name="loggingHelper"></param>
         public PostcodeSectorDataService(IDatabaseFactory<UnitManagerDbContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
@@ -31,7 +36,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <param name="udprn">UDPRN id</param>
         /// <param name="postcodeSectorTypeGuid">Postcode Sector Type Guid</param>
         /// <param name="postcodeDistrictTypeGuid">Postcode District Type Guid</param>
-        /// <returns>PostCodeSectorDataDTO</returns>
+        /// <returns>PostcodeSectorDataDTO</returns>
         public async Task<PostcodeSectorDataDTO> GetPostcodeSectorByUdprn(int udprn, Guid postcodeSectorTypeGuid, Guid postcodeDistrictTypeGuid)
         {
             string methodName = typeof(UnitLocationDataService) + "." + nameof(GetPostcodeSectorByUdprn);
