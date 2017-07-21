@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using RM.CommonLibrary.DataMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using Moq;
+using NUnit.Framework;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Implementation;
+using RM.DataManagement.AccessLink.WebAPI.Entities;
 
 namespace RM.DataServices.Tests.DataService
 {
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using CommonLibrary.DataMiddleware;
-    using CommonLibrary.LoggingMiddleware;
-    using Moq;
-    using NUnit.Framework;
-    using CommonLibrary.HelperMiddleware;
-    using DataManagement.AccessLink.WebAPI.DataService.Interfaces;
-    using DataManagement.AccessLink.WebAPI.DTOs;
-    using Data.AccessLink.WebAPI.DataDTOs;
-    using DataManagement.AccessLink.WebAPI.DataService.Implementation;
-    using DataManagement.AccessLink.WebAPI.Entities;
 
+    [TestFixture]
     public class AccessLinkDataServiceFixture : RepositoryFixtureBase
     {
         private Mock<AccessLinkDBContext> mockFmoDbContext;
@@ -98,9 +98,27 @@ namespace RM.DataServices.Tests.DataService
             var accessLink = new List<AccessLink>() { new AccessLink() { ID = Guid.NewGuid(), NetworkLink = networkLink } };
             var deliveryPoint = new List<DeliveryPoint>() { new DeliveryPoint() { NetworkNode = new NetworkNode() { Location = new Location() { Shape = unitBoundary } } } };
 
+
             netWorkLinkDataDto = new NetworkLinkDataDTO()
             {
                 ID = Guid.NewGuid(),
+                DataProviderGUID = Guid.NewGuid(),
+                NetworkLinkTypeGUID = Guid.NewGuid(),
+                StartNodeID = Guid.NewGuid(),
+                EndNodeID = Guid.NewGuid(),
+                LinkLength = 40,
+                LinkGeometry = unitBoundary,
+                RowCreateDateTime = DateTime.UtcNow,
+                NetworkNodeDataDTO = new NetworkNodeDataDTO()
+                {
+                    ID = Guid.NewGuid(),
+                    LocationDatatDTO = new LocationDataDTO()
+                    {
+                        ID = Guid.NewGuid(),
+                        Shape = unitBoundary,
+                        RowCreateDateTime = DateTime.UtcNow
+                    }
+                },
                 AccessLinkDataDTOs = new AccessLinkDataDTO()
                 {
                     Approved = true,
@@ -108,6 +126,7 @@ namespace RM.DataServices.Tests.DataService
                     WorkloadLengthMeter = 40,
                     LinkDirectionGUID = Guid.NewGuid(),
                     ConnectedNetworkLinkID = Guid.NewGuid(),
+                    AccessLinkTypeGUID = Guid.NewGuid(),
                     AccessLinkStatusDataDTO = new AccessLinkStatusDataDTO()
                     {
                         ID = Guid.NewGuid(),
@@ -115,7 +134,7 @@ namespace RM.DataServices.Tests.DataService
                         AccessLinkStatusGUID = Guid.NewGuid(),
                         StartDateTime = DateTime.UtcNow,
                         RowCreateDateTime = DateTime.UtcNow
-                    }
+                    },
                 }
             };
 

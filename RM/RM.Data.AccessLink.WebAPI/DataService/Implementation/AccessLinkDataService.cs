@@ -95,7 +95,8 @@
                     NetworkNode networkNode = new NetworkNode();
                     NetworkLink networkLink = new Entities.NetworkLink();
                     NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
-
+                    networkLink.NetworkNode = new Entities.NetworkNode();
+                    networkLink.NetworkNode.Location = new Entities.Location();
                     networkLink.NetworkNode.Location = new Location();
                     networkLink.NetworkNode.Location.ID = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.ID;
                     networkLink.NetworkNode.Location.Shape = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.Shape;
