@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.DataMiddleware;
+
 //using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
@@ -111,7 +113,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI
 
             app.UseCors("AllowCors");
 
-            //TODO:Commented till action manger not present
             ConfigureAuth(app);
             app.UseApplicationInsightsRequestTelemetry();
 

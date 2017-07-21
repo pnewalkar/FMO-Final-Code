@@ -917,6 +917,108 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
+        /// <summary>
+        /// Method to convert DTO to DataDTO of PostalAddress
+        /// </summary>
+        /// <param name="postalAddressDTO">PostalAddress DTO Object</param>
+        /// <returns></returns>
+        private PostalAddressDataDTO ConvertToDataDTO(PostalAddressDTO postalAddressDTO)
+        {
+            PostalAddressDataDTO postalAddressDataDTO = new PostalAddressDataDTO();
+            if (postalAddressDTO != null)
+            {
+                postalAddressDataDTO.ID = postalAddressDTO.ID;
+                // postalAddressDataDTO.AddressStatus_GUID = postalAddressDTO.AddressStatus_GUID;
+                postalAddressDataDTO.AddressType_GUID = postalAddressDTO.AddressType_GUID;
+                postalAddressDataDTO.AMUApproved = postalAddressDTO.AMUApproved;
+                postalAddressDataDTO.BuildingName = postalAddressDTO.BuildingName;
+                postalAddressDataDTO.BuildingNumber = postalAddressDTO.BuildingNumber;
+                postalAddressDataDTO.DeliveryPointSuffix = postalAddressDTO.DeliveryPointSuffix;
+                postalAddressDataDTO.DepartmentName = postalAddressDTO.DepartmentName;
+                postalAddressDataDTO.DependentLocality = postalAddressDTO.DependentLocality;
+                postalAddressDataDTO.DependentThoroughfare = postalAddressDTO.DependentThoroughfare;
+                postalAddressDataDTO.DoubleDependentLocality = postalAddressDTO.DoubleDependentLocality;
+                postalAddressDataDTO.OrganisationName = postalAddressDTO.OrganisationName;
+                postalAddressDataDTO.POBoxNumber = postalAddressDTO.POBoxNumber;
+                postalAddressDataDTO.Postcode = postalAddressDTO.Postcode;
+                // postalAddressDataDTO.pos = postalAddressDTO.PostCodeGUID;
+                postalAddressDataDTO.PostcodeType = postalAddressDTO.PostcodeType;
+                postalAddressDataDTO.PostTown = postalAddressDTO.PostTown;
+                postalAddressDataDTO.SmallUserOrganisationIndicator = postalAddressDTO.SmallUserOrganisationIndicator;
+                postalAddressDataDTO.SubBuildingName = postalAddressDTO.SubBuildingName;
+                postalAddressDataDTO.Thoroughfare = postalAddressDTO.Thoroughfare;
+                postalAddressDataDTO.UDPRN = postalAddressDTO.UDPRN;
+
+                PostalAddressStatusDataDTO postalAddressStatusDataDTO = new PostalAddressStatusDataDTO();
+                postalAddressStatusDataDTO.PostalAddressGUID = postalAddressDTO.ID;
+                postalAddressStatusDataDTO.OperationalStatusGUID = postalAddressDTO.AddressStatus_GUID.HasValue ? postalAddressDTO.AddressStatus_GUID.Value : Guid.Empty;
+                postalAddressDataDTO.PostalAddressStatus.Add(postalAddressStatusDataDTO);
+            }
+
+            return postalAddressDataDTO;
+        }
+
+        private List<PostalAddressDataDTO> ConvertToDataDTO(List<PostalAddressDTO> postalAddressDTOList)
+        {
+            List<PostalAddressDataDTO> postalAddressDataDTO = new List<PostalAddressDataDTO>();
+
+            foreach (var postalAddressDTO in postalAddressDTOList)
+            {
+                postalAddressDataDTO.Add(ConvertToDataDTO(postalAddressDTO));
+            }
+
+            return postalAddressDataDTO;
+        }
+
+        private PostalAddressDTO ConvertToDTO(PostalAddressDataDTO postalAddressDataDTO)
+        {
+            PostalAddressDTO postalAddressDTO = new PostalAddressDTO();
+
+            if (postalAddressDataDTO != null)
+            {
+                postalAddressDTO.ID = postalAddressDataDTO.ID;
+                // postalAddressDataDTO.AddressStatus_GUID = postalAddressDTO.AddressStatus_GUID;
+                postalAddressDTO.AddressType_GUID = postalAddressDataDTO.AddressType_GUID;
+                postalAddressDTO.AMUApproved = postalAddressDataDTO.AMUApproved;
+                postalAddressDTO.BuildingName = postalAddressDataDTO.BuildingName;
+                postalAddressDTO.BuildingNumber = postalAddressDataDTO.BuildingNumber;
+                postalAddressDTO.DeliveryPointSuffix = postalAddressDataDTO.DeliveryPointSuffix;
+                postalAddressDTO.DepartmentName = postalAddressDataDTO.DepartmentName;
+                postalAddressDTO.DependentLocality = postalAddressDataDTO.DependentLocality;
+                postalAddressDTO.DependentThoroughfare = postalAddressDataDTO.DependentThoroughfare;
+                postalAddressDTO.DoubleDependentLocality = postalAddressDataDTO.DoubleDependentLocality;
+                postalAddressDTO.OrganisationName = postalAddressDataDTO.OrganisationName;
+                postalAddressDTO.POBoxNumber = postalAddressDataDTO.POBoxNumber;
+                postalAddressDTO.Postcode = postalAddressDataDTO.Postcode;
+                // postalAddressDataDTO.pos = postalAddressDTO.PostCodeGUID;
+                postalAddressDTO.PostcodeType = postalAddressDataDTO.PostcodeType;
+                postalAddressDTO.PostTown = postalAddressDataDTO.PostTown;
+                postalAddressDTO.SmallUserOrganisationIndicator = postalAddressDataDTO.SmallUserOrganisationIndicator;
+                postalAddressDTO.SubBuildingName = postalAddressDataDTO.SubBuildingName;
+                postalAddressDTO.Thoroughfare = postalAddressDataDTO.Thoroughfare;
+                postalAddressDTO.UDPRN = postalAddressDataDTO.UDPRN;
+
+                if (postalAddressDataDTO.PostalAddressStatus != null)
+                {
+                    postalAddressDTO.AddressStatus_GUID = postalAddressDataDTO.PostalAddressStatus.First().OperationalStatusGUID;
+                }
+            }
+
+            return postalAddressDTO;
+        }
+
+        private List<PostalAddressDTO> ConvertToDTO(List<PostalAddressDataDTO> postalAddressDataDTOList)
+        {
+            List<PostalAddressDTO> postalAddressDTO = new List<PostalAddressDTO>();
+
+            foreach (var postalAddressDataDTO in postalAddressDataDTOList)
+            {
+                postalAddressDTO.Add(ConvertToDTO(postalAddressDataDTO));
+            }
+
+            return postalAddressDTO;
+        }
+
         #endregion private methods
     }
 }

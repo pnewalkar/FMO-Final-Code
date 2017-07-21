@@ -33,9 +33,9 @@ function simulationService(simulationAPIService,
         return deferred.promise;
     }
 
-    function loadDeliveryRoute(operationStateID, deliveryScenarioID) {
+    function loadDeliveryRoute(deliveryScenarioID) {
         var deferred = $q.defer();
-        simulationAPIService.getRoutes(operationStateID, deliveryScenarioID).then(function (response) {
+        simulationAPIService.getRoutes(deliveryScenarioID).then(function (response) {
           
                 deferred.resolve(response);
 

@@ -62,7 +62,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
                 var objAddressLocation = await DataContext.AddressLocations.Where(n => n.UDPRN == udprn).SingleOrDefaultAsync();
-                var getAddressLocationByUDPRN = GenericMapper.Map<AddressLocation, AddressLocationDataDTO>(objAddressLocation);
+                ConfigureMapper();
+                var getAddressLocationByUDPRN = Mapper.Map<AddressLocation, AddressLocationDataDTO>(objAddressLocation);
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return getAddressLocationByUDPRN;
             }
@@ -126,6 +127,16 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
                 return Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
 
             }
+        }
+
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<AddressLocation, AddressLocationDataDTO>().MaxDepth(1);
+            });
+
+            Mapper.Configuration.CreateMapper();
         }
 
     }

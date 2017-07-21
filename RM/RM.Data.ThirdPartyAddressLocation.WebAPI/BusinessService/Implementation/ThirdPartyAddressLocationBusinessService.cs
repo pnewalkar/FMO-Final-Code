@@ -17,6 +17,7 @@ using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
 using System.Linq;
 using System.Reflection;
+using AutoMapper;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 {
@@ -73,7 +74,13 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
                 var addressLocationDataDto = await addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
-                AddressLocationDTO addressLocationDto = GenericMapper.Map<AddressLocationDataDTO, AddressLocationDTO>(addressLocationDataDto);
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<AddressLocationDataDTO, AddressLocationDTO>().MaxDepth(1);
+                });
+                Mapper.Configuration.CreateMapper();
+
+                AddressLocationDTO addressLocationDto = Mapper.Map<AddressLocationDataDTO, AddressLocationDTO>(addressLocationDataDto);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return addressLocationDto;
