@@ -76,9 +76,15 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public async Task TestGetRoutesForAdvanceSearch_NegativeScenario()
         {
-            List<RouteDTO> expectedRoutesForAdvancedSearch = await testCandidate.GetRoutesForAdvanceSearch(searchText, deliveryScenarioID);
-            Assert.NotNull(expectedRoutesForAdvancedSearch);
-            Assert.IsTrue(expectedRoutesForAdvancedSearch.Count == 2);
+            try
+            {
+                List<RouteDTO> expectedRoutesForAdvancedSearch = await testCandidate.GetRoutesForAdvanceSearch(string.Empty, Guid.Empty);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: searchText", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         [Test]
@@ -92,9 +98,15 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public async Task TestGetRoutesForBasicSearch_NegativeScenario()
         {
-            List<RouteDTO> expectedRoutesForBasicSearch = await testCandidate.GetRoutesForBasicSearch(searchText, deliveryScenarioID);
-            Assert.NotNull(expectedRoutesForBasicSearch);
-            Assert.IsTrue(expectedRoutesForBasicSearch.Count == 2);
+            try
+            {
+                List<RouteDTO> expectedRoutesForBasicSearch = await testCandidate.GetRoutesForBasicSearch(string.Empty, Guid.Empty);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: searchText", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         [Test]
@@ -108,9 +120,15 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public async Task TestGetRouteCount_NegativeScenario()
         {
-            int expectedRouteCount = await testCandidate.GetRouteCount(searchText, unitLocationTypeId);
-            Assert.NotNull(expectedRouteCount);
-            Assert.IsTrue(expectedRouteCount == 5);
+            try
+            {
+                int expectedRouteCount = await testCandidate.GetRouteCount(string.Empty, Guid.Empty);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: searchText", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         [Test]
@@ -118,6 +136,20 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         {
             RouteDTO expectedRouteSummaryResult = await testCandidate.GetRouteSummary(routeId);
             Assert.NotNull(expectedRouteSummaryResult);
+        }
+
+        [Test]
+        public async Task TestGetRouteSummary_NegativeScenario()
+        {
+            try
+            {
+                RouteDTO expectedRouteSummaryResult = await testCandidate.GetRouteSummary(Guid.Empty);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: routeId", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         [Test]
@@ -131,9 +163,15 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public async Task TestGenerateRouteLog_NegativeScenario()
         {
-            RouteLogSummaryDTO expectedRouteLogSummaryResult = await testCandidate.GenerateRouteLog(deliveryRouteDto);
-            Assert.NotNull(expectedRouteLogSummaryResult);
-            Assert.IsTrue(expectedRouteLogSummaryResult.RouteLogSequencedPoints.Count == 2);
+            try
+            {
+                RouteLogSummaryDTO expectedRouteLogSummaryResult = await testCandidate.GenerateRouteLog(null);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: routeDetails", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         [Test]
@@ -147,9 +185,15 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         [Test]
         public async Task TestGetPostcodeSpecificRoutes_NegativeScenario()
         {
-            List<RouteDTO> expectedRouteResult = await testCandidate.GetPostcodeSpecificRoutes(postcodeUnit, unitLocationTypeId);
-            Assert.NotNull(expectedRouteResult);
-            Assert.IsTrue(expectedRouteResult.Count == 2);
+            try
+            {
+                List<RouteDTO> expectedRouteResult = await testCandidate.GetPostcodeSpecificRoutes(string.Empty, Guid.Empty);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: postcodeUnit", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         [Test]
@@ -157,6 +201,20 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         {
             RouteDTO expectedRouteResult = await testCandidate.GetRouteByDeliveryPoint(deliveryPointId);
             Assert.NotNull(expectedRouteResult);
+        }
+
+        [Test]
+        public async Task TestGetRouteByDeliveryPoint_NegativeScenario()
+        {
+            try
+            {
+                RouteDTO expectedRouteResult = await testCandidate.GetRouteByDeliveryPoint(Guid.Empty);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Value cannot be null.Parameter name: deliveryPointId", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         protected override void OnSetup()

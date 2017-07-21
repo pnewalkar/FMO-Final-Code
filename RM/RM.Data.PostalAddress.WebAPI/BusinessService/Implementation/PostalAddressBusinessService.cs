@@ -628,7 +628,15 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             objPostalAddress.PostalAddressStatus = objPostalAddressMatchedUDPRN.PostalAddressStatus;
 
                             // Update address and delivery point for USR records
-                            await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF);
+                            if (await addressDataService.UpdateAddress(objPostalAddress, strFileName, deliveryPointUseIndicatorPAF))
+                            {
+                                // calling delivery point web api
+                                var objDeliveryPointforUSR = await postalAddressIntegrationService.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
+                                if (objDeliveryPointforUSR == null)
+                                {
+                                    await SaveDeliveryPointProcess(objPostalAddressBatch);
+                                }
+                            }
 
                             //await postalAddressIntegrationService.UpdateDeliveryPoint(objPostalAddress.ID, deliveryPointUseIndicatorPAF);
 
