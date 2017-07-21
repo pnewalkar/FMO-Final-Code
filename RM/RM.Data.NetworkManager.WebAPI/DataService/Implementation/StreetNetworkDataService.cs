@@ -177,14 +177,13 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         /// <param name="streetName">Street name.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDataDTO, List<SqlGeometry>> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public Tuple<NetworkLinkDataDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNearestNamedRoad"))
             {
                 string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetNearestNamedRoad);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<SqlGeometry> listNetworkIntersectionPoints = new List<SqlGeometry>();
                 SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
                 NetworkLinkDataDTO networkLink = null;
 
@@ -250,7 +249,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                                 // if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.AsNoTracking().Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
                                 // {
                                 networkIntersectionPoint = accessLinkLine.STEndPoint();
-                                listNetworkIntersectionPoints.Add(networkIntersectionPoint);
                                 //}
                             }
                         }
@@ -258,7 +256,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDataDTO, List<SqlGeometry>>(networkLink, listNetworkIntersectionPoints);
+                return new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
             }
         }
 

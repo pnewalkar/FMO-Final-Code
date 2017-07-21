@@ -38,10 +38,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <returns>
         /// List of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        public async Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsByUser(Guid userId, Guid postcodeAreaGUID)
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUser(Guid userId, Guid postcodeAreaGUID)
         {
-            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetDeliveryUnitsByUser);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryUnitsByUser"))
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetUnitsByUser);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUnitsByUser"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
 
@@ -62,6 +62,41 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
                 return unitLocation;
+            }
+        }
+
+        /// <summary>
+        /// Gets the all units for an user whose access level is above mail centre.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="postcodeAreaGUID">The post code area unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
+        /// <returns>
+        /// List of <see cref="UnitLocationDTO"/>.
+        /// </returns>
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUserForNational(Guid userId, Guid postcodeAreaGUID)
+        {
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetUnitsByUserForNational);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUnitsByUserForNational"))
+            {
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
+
+                var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
+                                             join lr in DataContext.LocationReferenceDatas on r.LocationID equals lr.LocationID
+                                             join l in DataContext.Locations on lr.LocationID equals l.ID
+                                             where r.UserID == userId
+                                             select new UnitLocationDataDTO
+                                             {
+                                                 Shape = l.Shape,
+                                                 LocationId = lr.LocationID,
+                                                 Area = (
+                                                      from postcodeHierarchy in DataContext.PostcodeHierarchies
+                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID
+                                                      select postcodeHierarchy.Postcode
+                                                      ).FirstOrDefault() ?? string.Empty
+                                             }).ToListAsync();
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
+                return userUnitDetails;
             }
         }
 

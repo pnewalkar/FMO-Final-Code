@@ -15,7 +15,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="streetName">Street name.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        Tuple<NetworkLinkDTO, List<SqlGeometry>> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName);
+        Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName);
 
         /// <summary>
         /// Get the nearest street for operational object.

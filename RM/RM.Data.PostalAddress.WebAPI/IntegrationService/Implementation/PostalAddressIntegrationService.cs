@@ -461,20 +461,41 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetApproxLocation);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "approxlocation/" + postcode);
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/approxlocation/" + postcode);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                //DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+
+                GeometryDTO obj = JsonConvert.DeserializeObject<GeometryDTO>(result.Content.ReadAsStringAsync().Result);
+                DbGeometry approxLocation = DbGeometry.FromText(obj.geometry.wellKnownText, obj.geometry.coordinateSystemId);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;
             }
         }
 
+
+
         #endregion public methods
     }
+
+
+    public class GeometryDTO
+    {
+        public geometry geometry { get; set; }
+
+    }
+
+    public class geometry
+    {
+        public int coordinateSystemId { get; set; }
+
+        public string wellKnownText { get; set; }
+    }
+
+
 }

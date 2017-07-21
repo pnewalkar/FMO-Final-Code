@@ -16,12 +16,13 @@ using RM.DataManagement.NetworkManager.WebAPI.DTO;
 namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 {
     [Route("/api/NetworkManager")]
-    public class NetworkManagerController : RMBaseController
+    public class NetworkManagerController : Controller
     {
         #region Member Variables
         private INetworkManagerBusinessService networkManagerBusinessService = default(INetworkManagerBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        Guid CurrentUserUnit = Guid.Empty;
         private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
         private int entryEventId = LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.NetworkManagerControllerMethodExitEventId;
@@ -50,11 +51,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 string methodName = typeof(NetworkManagerController) + "." + nameof(GetNearestNamedRoad);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                Tuple<NetworkLinkDTO, List<SqlGeometry>> result;
+                Tuple<NetworkLinkDTO, SqlGeometry> result;
 
                 result = networkManagerBusinessService.GetNearestNamedRoad(JsonConvert.DeserializeObject<DbGeometry>(operationalObjectPointJson, new DbGeometryConverter()), streetName);
 
-                var convertedResult = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(result.Item1, result.Item2);
+                var convertedResult = new Tuple<NetworkLinkDTO, DbGeometry>(result.Item1, result.Item2.IsNull ? null : result.Item2.ToDbGeometry());
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(convertedResult);
@@ -69,8 +70,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        [HttpPost("nearestsegment")]
-        public IActionResult GetNearestSegment([FromBody]string operationalObjectPointJson)
+        [HttpGet("nearestsegment/{operationalObjectPointJson}")]
+        public IActionResult GetNearestSegment(string operationalObjectPointJson)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNearestSegment"))
             {
