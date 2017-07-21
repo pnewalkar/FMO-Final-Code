@@ -112,7 +112,6 @@ function mapService($http,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing,
         setPolygonTransparency: setPolygonTransparency
-      
     }
 
     function LicenceInfo(displayText) {
@@ -475,7 +474,6 @@ function mapService($http,
         }
 
         else if (name === "line") {
-            
             vm.interactions.draw.on('drawstart', enableDrawingLayer, this);
             vm.interactions.draw.on('drawend', function (evt) {
                 evt.feature.set("type", "linestring");
@@ -641,17 +639,16 @@ function mapService($http,
         });
         persistSelection();
     }
-    function setModifyButton() {       
-            vm.interactions.select = new ol.interaction.Select({
-                condition: ol.events.condition.never
-            });
-            var collection = new ol.Collection();
-            collection.push(getActiveFeature());
-            if (vm.layerName === GlobalSettings.drawingLayerName) {
+    function setModifyButton() {
+        vm.interactions.select = new ol.interaction.Select({
+            condition: ol.events.condition.never
+        });
+        var collection = new ol.Collection();
+        collection.push(getActiveFeature());
+        if (vm.layerName === GlobalSettings.drawingLayerName) {
             vm.interactions.modify = new ol.interaction.Modify({
                 features: collection
             });
-            
 
             vm.map.on('singleclick', function (evt) {
                 if (vm.activeTool === "modify" && getActiveFeature().getProperties().type === "deliverypoint") {
@@ -870,7 +867,7 @@ function mapService($http,
         var scalenumber = parseInt(scale, 10);
         var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
 
-        var calculatedScale = setScaleUnit(scalenumber, scaleunit);
+        var calculatedScale = setScaleUnit(scalenumber, scaleunit.toString());
         //Scale Text
         ctx.beginPath();
         ctx.textAlign = "left";
@@ -965,5 +962,4 @@ function mapService($http,
             return uuid.toString(16);
         });
     }
-
 }
