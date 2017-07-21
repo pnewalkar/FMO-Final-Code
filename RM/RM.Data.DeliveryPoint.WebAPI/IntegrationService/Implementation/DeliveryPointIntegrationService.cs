@@ -18,6 +18,7 @@ using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {
@@ -273,7 +274,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.GetApproxLocation"))
             {
-                string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetApproxLocation);
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(GetApproxLocation);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/approxlocation/" + postcode);
