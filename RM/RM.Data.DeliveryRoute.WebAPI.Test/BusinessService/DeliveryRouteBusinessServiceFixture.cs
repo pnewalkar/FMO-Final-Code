@@ -1,4 +1,7 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -8,9 +11,6 @@ using RM.DataManagement.DeliveryRoute.WebAPI.DataDTO;
 using RM.DataManagement.DeliveryRoute.WebAPI.DataService;
 using RM.DataManagement.DeliveryRoute.WebAPI.DTO;
 using RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Common = RM.CommonLibrary.EntityFramework.DTO;
 
 namespace RM.Data.DeliveryRoute.WebAPI.Test
@@ -32,12 +32,12 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         private List<Common.ReferenceDataDTO> actualReferenceDataCategoryResult = null;
         private Mock<ILoggingHelper> mockLoggingHelper;
 
-        private Guid deliveryUnitID = System.Guid.NewGuid();
+        private Guid deliveryUnitID = Guid.NewGuid();
         private Guid unitLocationTypeId = new Guid("97FE320A-AFEE-4E68-980D-3A70F418E46D");
-        private Guid operationalStateID = System.Guid.NewGuid();
-        private Guid deliveryScenarioID = System.Guid.NewGuid();
-        private Guid routeId = System.Guid.NewGuid();
-        private Guid deliveryPointId = System.Guid.NewGuid();
+        private Guid operationalStateID = Guid.NewGuid();
+        private Guid deliveryScenarioID = Guid.NewGuid();
+        private Guid routeId = Guid.NewGuid();
+        private Guid deliveryPointId = Guid.NewGuid();
         private string searchText = "road";
         private string postcodeUnit = "PO001";
         private RouteDTO deliveryRouteDto;
@@ -47,7 +47,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         public async Task TestGetScenarioRoutes_PostiveScenario()
         {
             List<RouteDTO> expectedScenarioResult = await testCandidate.GetScenarioRoutes(deliveryScenarioID);
-            Assert.NotNull(expectedScenarioResult);
+            Assert.IsNotNull(expectedScenarioResult);
             Assert.IsTrue(expectedScenarioResult.Count == 2);
         }
 
@@ -56,14 +56,13 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         {
             try
             {
-                deliveryScenarioID = Guid.Empty;
-                List<RouteDTO> expectedScenarioResult = await testCandidate.GetScenarioRoutes(deliveryScenarioID);
+                List<RouteDTO> expectedScenarioResult = await testCandidate.GetScenarioRoutes(Guid.Empty);
+                Assert.Fail("An exception should have been thrown");
             }
-            catch (Exception e)
+            catch (ArgumentNullException ae)
             {
-                Assert.AreEqual("ArgumentNullException", e);
+                Assert.AreEqual("Value cannot be null.Parameter name: scenarioID", ae.Message.Replace("\r\n", string.Empty));
             }
-            //  Assert.Throws<ExpectedException>(() =>  testCandidate.GetScenarioRoutes(deliveryScenarioID));
         }
 
         [Test]
@@ -119,15 +118,6 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         {
             RouteDTO expectedRouteSummaryResult = await testCandidate.GetRouteSummary(routeId);
             Assert.NotNull(expectedRouteSummaryResult);
-            //Assert.IsTrue(expectedRouteSummaryResult == 5);
-        }
-
-        [Test]
-        public async Task TestGetRouteSummary_NegativeScenario()
-        {
-            RouteDTO expectedRouteSummaryResult = await testCandidate.GetRouteSummary(routeId);
-            Assert.NotNull(expectedRouteSummaryResult);
-            //Assert.IsTrue(expectedRouteSummaryResult == 5);
         }
 
         [Test]
@@ -163,120 +153,12 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         }
 
         [Test]
-        public void TestSaveDeliveryPointRouteMapping_PositiveScenario()
-        {
-            testCandidate.SaveDeliveryPointRouteMapping(routeId, deliveryPointId);
-            //Assert.NotNull(expectedRouteResult);
-            //Assert.IsTrue(expectedRouteResult.Count == 2);
-        }
-
-        [Test]
-        public void TestSaveDeliveryPointRouteMapping_NegativeScenario()
-        {
-            testCandidate.SaveDeliveryPointRouteMapping(routeId, deliveryPointId);
-            //Assert.NotNull(expectedRouteResult);
-            //Assert.IsTrue(expectedRouteResult.Count == 2);
-        }
-
-        [Test]
         public async Task TestGetRouteByDeliveryPoint_PositiveScenario()
         {
             RouteDTO expectedRouteResult = await testCandidate.GetRouteByDeliveryPoint(deliveryPointId);
             Assert.NotNull(expectedRouteResult);
         }
 
-        //[Test]
-        //public void Test_FetchDeliveryRoute()
-        //{
-        //    List<RouteDTO> expectedDeliveryRouteResult = testCandidate.FetchRoutes(operationalStateID, deliveryScenarioID, deliveryUnitID);
-        //    Assert.NotNull(expectedDeliveryRouteResult);
-        //    Assert.NotNull(actualDeliveryRouteResult);
-        //    Assert.AreEqual(expectedDeliveryRouteResult, actualDeliveryRouteResult);
-        //}
-
-        //[Test]
-        //public void Test_GetDeliveryRouteDetailsforPdfGeneration()
-        //{
-        //    var deliveryRouteGuid = System.Guid.Parse("B13D545D-2DE7-4E62-8DAD-00EC2B7FF8B8");
-        //    var unitGuid = Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
-        //    var expectedDeliveryRouteResult = testCandidate.GetDeliveryRouteDetailsforPdfGeneration(deliveryRouteGuid, unitGuid);
-        //    Assert.NotNull(expectedDeliveryRouteResult);
-        //}
-
-        //[Test]
-        //public void Test_FetchDeliveryRouteForBasicSearch()
-        //{
-        //    mockDeliveryRouteDataService.Setup(n => n.FetchDeliveryRouteForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Unit")).ReturnsAsync(new List<RouteDTO>() { });
-        //    var expectedDeliveryRouteResult = testCandidate.FetchDeliveryRouteForBasicSearch("abc", Guid.NewGuid());
-        //    Assert.NotNull(expectedDeliveryRouteResult);
-        //}
-
-        //[Test]
-        //public void Test_GetDeliveryRouteCount()
-        //{
-        //    mockDeliveryRouteDataService.Setup(n => n.GetDeliveryRouteCount(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Unit")).ReturnsAsync(5);
-        //    var actualResult = testCandidate.GetDeliveryRouteCount("abc", Guid.NewGuid());
-        //    Assert.NotNull(actualResult);
-        //    Assert.AreEqual(actualResult.Result, 5);
-        //}
-
-        //[Test]
-        //public void Test_FetchDeliveryRouteForAdvanceSearch()
-        //{
-        //    mockDeliveryRouteDataService.Setup(n => n.FetchDeliveryRouteForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>(), "Delivery Unit")).ReturnsAsync(new List<RouteDTO>() { });
-        //    var actualResult = testCandidate.FetchDeliveryRouteForAdvanceSearch("abc", Guid.NewGuid());
-        //    Assert.NotNull(actualResult);
-        //}
-
-        //[Test]
-        //public void Test_GenerateRouteLog()
-        //{
-        //    mockDeliveryRouteIntegrationService.Setup(n => n.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid());
-        //    mockDeliveryRouteDataService.Setup(n => n.GenerateRouteLog(It.IsAny<RouteDTO>(), It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(new RouteLogSummaryModelDTO() { });
-        //    var expectedDeliveryRouteResult = testCandidate.GenerateRouteLog(deliveryRouteDto, Guid.NewGuid());
-        //    Assert.NotNull(actualDeliveryRouteResult);
-        //}
-
-        //[Test]
-        //public void Test_CreateBlockSequenceForDeliveryPoint()
-        //{
-        //    mockDeliveryRouteIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(referenceDataCategoryDTOList);
-        //    mockBlockSequenceDataService.Setup(n => n.AddBlockSequence(It.IsAny<BlockSequenceDTO>(), It.IsAny<Guid>())).ReturnsAsync(true);
-        //    var actualDeliveryRouteResult = testCandidate.CreateBlockSequenceForDeliveryPoint(Guid.NewGuid(), Guid.NewGuid());
-        //    Assert.NotNull(actualDeliveryRouteResult);
-        //    Assert.IsTrue(actualDeliveryRouteResult.Result);
-        //}
-
-        //[Test]
-        //public void TestGenerateRouteLog()
-        //{
-        //    RouteDTO deliveryRouteDTO = new RouteDTO() { DeliveryRouteBarcode = "D0001234", ID = Guid.NewGuid(), DeliveryScenario_Id = 1, ExternalId = 1, OperationalStatus_Id = 1, RouteMethodType_Id = 1, RouteName = "RouteOneTwothree", RouteNumber = "R004341566" };
-        //    var unitGuid = Guid.Parse("B51AA229-C984-4CA6-9C12-510187B81050");
-        //    var expectedDeliveryRouteResult = testCandidate.GenerateRouteLog(deliveryRouteDTO, unitGuid);
-        //    Assert.NotNull(expectedDeliveryRouteResult);
-        //}
-        //public static void Throws<T>(Action task, string expectedMessage, ExceptionMessageCompareOptions options) where T : Exception
-        //{
-        //    try
-        //    {
-        //        task();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        AssertExceptionType<T>(ex);
-        //        AssertExceptionMessage(ex, expectedMessage, options);
-        //        return;
-        //    }
-
-        //    if (typeof(T).Equals(new Exception().GetType()))
-        //    {
-        //        Assert.Fail("Expected exception but no exception was thrown.");
-        //    }
-        //    else
-        //    {
-        //        Assert.Fail(string.Format("Expected exception of type {0} but no exception was thrown.", typeof(T)));
-        //    }
-        //}
         protected override void OnSetup()
         {
             mockLoggingHelper = CreateMock<ILoggingHelper>();
