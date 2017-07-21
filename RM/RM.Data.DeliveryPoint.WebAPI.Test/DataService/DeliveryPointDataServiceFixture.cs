@@ -6,6 +6,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DataDTO;
@@ -84,15 +85,15 @@ namespace RM.DataServices.Tests.DataService
 
             deliveryPointDataDTO = new DeliveryPointDataDTO()
             {
-               // OperationalStatus_GUID = Guid.NewGuid(),
-               
+                // OperationalStatus_GUID = Guid.NewGuid(),
+
                 NetworkNode = new NetworkNodeDataDTO
                 {
                     Location = new LocationDataDTO
                     {
                         Shape = unitBoundary
                     }
-                }               
+                }
             };
 
             var deliveryPoint = new List<RM.Data.DeliveryPoint.WebAPI.Entities.DeliveryPoint>()
@@ -135,7 +136,6 @@ namespace RM.DataServices.Tests.DataService
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
-
 
             mockConfigurationHelper = new Mock<IConfigurationHelper>();
 
