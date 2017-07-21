@@ -235,23 +235,23 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             Dictionary<string, string> data = new Dictionary<string, string>();
             if (sectionNumber == 1)
             {
-                data.Add(RouteLogConstants.RouteSummaryName, routeLogSummary.DeliveryRoute.RouteName);
-                data.Add(RouteLogConstants.Number, routeLogSummary.DeliveryRoute.RouteNumber);
-                data.Add(RouteLogConstants.RouteMethod, routeLogSummary.DeliveryRoute.Method);
-                data.Add(RouteLogConstants.DeliveryOffice, routeLogSummary.DeliveryRoute.DeliveryOffice);
-                data.Add(RouteLogConstants.Aliases, routeLogSummary.DeliveryRoute.Aliases.ToString());
-                data.Add(RouteLogConstants.Block, routeLogSummary.DeliveryRoute.Blocks.ToString());
-                data.Add(RouteLogConstants.Scenario, routeLogSummary.DeliveryRoute.ScenarioName);
+                data.Add(RouteLogConstants.RouteSummaryName, routeLogSummary.Route.RouteName);
+                data.Add(RouteLogConstants.Number, routeLogSummary.Route.RouteNumber);
+                data.Add(RouteLogConstants.RouteMethod, routeLogSummary.Route.Method);
+                data.Add(RouteLogConstants.DeliveryOffice, routeLogSummary.Route.DeliveryOffice);
+                data.Add(RouteLogConstants.Aliases, routeLogSummary.Route.Aliases.ToString());
+                data.Add(RouteLogConstants.Block, routeLogSummary.Route.Blocks.ToString());
+                data.Add(RouteLogConstants.Scenario, routeLogSummary.Route.ScenarioName);
             }
             else if (sectionNumber == 2)
             {
                 data.Add(RouteLogConstants.CollectionPoint, "0");
-                data.Add(RouteLogConstants.DeliveryPoint, routeLogSummary.DeliveryRoute.DPs.ToString());
-                data.Add(RouteLogConstants.BusinessDeliveryPoint, routeLogSummary.DeliveryRoute.BusinessDPs.ToString());
-                data.Add(RouteLogConstants.ResidentialDeliveryPoint, routeLogSummary.DeliveryRoute.ResidentialDPs.ToString());
-                data.Add(RouteLogConstants.AccelerationIn, routeLogSummary.DeliveryRoute.AccelarationIn);
-                data.Add(RouteLogConstants.AccelerationOut, routeLogSummary.DeliveryRoute.AccelarationOut);
-                data.Add(RouteLogConstants.PairedRoute, routeLogSummary.DeliveryRoute.PairedRoute);
+                data.Add(RouteLogConstants.DeliveryPoint, routeLogSummary.Route.DPs.ToString());
+                data.Add(RouteLogConstants.BusinessDeliveryPoint, routeLogSummary.Route.BusinessDPs.ToString());
+                data.Add(RouteLogConstants.ResidentialDeliveryPoint, routeLogSummary.Route.ResidentialDPs.ToString());
+                data.Add(RouteLogConstants.AccelerationIn, routeLogSummary.Route.AccelarationIn);
+                data.Add(RouteLogConstants.AccelerationOut, routeLogSummary.Route.AccelarationOut);
+                data.Add(RouteLogConstants.PairedRoute, routeLogSummary.Route.PairedRoute);
             }
             else
             {

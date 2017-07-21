@@ -25,7 +25,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
-        bool CreateAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
+        bool CreateAutomaticAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
 
         /// <summary>
         /// Creates manual access link
@@ -41,13 +41,13 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<AccessLinkDTO> </returns>
         List<AccessLinkDataDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink);
-        int GetIntersectionCountForDeliveryPoint(DbGeometry operationalObjectPoint,DbGeometry accessLink);
+        int GetIntersectionCountForDeliveryPoint(DbGeometry operationalObjectPoint, DbGeometry accessLink);
         /// <summary>
         /// This method is used to get the a
         /// </summary>
         /// <param name="operationalObjectPoint"></param>
         /// <returns></returns>
-        int GetAccessLinkCountForCrossesorOverLaps(DbGeometry operationalObjectPoint,DbGeometry accessLink);
+        int GetAccessLinkCountForCrossesorOverLaps(DbGeometry operationalObjectPoint, DbGeometry accessLink);
 
 
     }
