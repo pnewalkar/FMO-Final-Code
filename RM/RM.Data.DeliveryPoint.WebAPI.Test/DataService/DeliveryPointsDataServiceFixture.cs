@@ -70,7 +70,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, CreateMock<IConfigurationHelper>().Object);
+            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
 
         protected void DeliveryPointRowVersionSetup()
@@ -94,7 +94,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test.DataService
 
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
-            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, CreateMock<IConfigurationHelper>().Object);
+            testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
     }
 }

@@ -10,6 +10,7 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 {
