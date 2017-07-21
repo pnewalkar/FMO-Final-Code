@@ -16,8 +16,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
-    //TODO: Nunits to be fixed
-
+    /// <summary>
+    /// This class contains test methods for PostcodeDataService
+    /// </summary>
     [TestFixture]
     public class PostCodeDataServiceFixture : RepositoryFixtureBase
     {
@@ -70,6 +71,9 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.AreEqual(actualResult, unitBoundary);
         }
 
+        /// <summary>
+        /// Setup for Nunit Tests
+        /// </summary>
         protected override void OnSetup()
         {
 

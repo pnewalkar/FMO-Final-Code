@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
+using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.HelperMiddleware;
@@ -16,6 +18,9 @@ using RM.DataManagement.UnitManager.WebAPI.DTO;
 
 namespace RM.Data.UnitManager.WebAPI.Test
 {
+    /// <summary>
+    /// This class contains test methods for UnitLocationBusinessService
+    /// </summary>
     [TestFixture]
     public class UnitLocationBusinessServiceFixture : TestFixtureBase
     {
@@ -33,28 +38,48 @@ namespace RM.Data.UnitManager.WebAPI.Test
         private Guid userID = System.Guid.NewGuid();
         private IUnitLocationBusinessService testCandidate;
 
+        /// <summary>
+        /// Test for getting delivery unit
+        /// </summary>
+        /// <returns></returns>
         [Test]
-        public void Test_FetchDeliveryUnitForUser()
+        public async Task Test_FetchDeliveryUnitForUser()
         {
             string currentUserUnitType = "Delivery Office";
-            var result = testCandidate.GetUnitsByUser(userID, currentUserUnitType);
-            Assert.IsNotNull(result.Result);
+            var result = await testCandidate.GetUnitsByUser(userID, currentUserUnitType);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Select(x => x.Area).First(), "Polygon");
+            Assert.AreEqual(result.Select(x => x.UnitName).First(), "UnitOne");
         }
 
+        /// <summary>
+        /// Test for getting postcode sector by passing UDPRN
+        /// </summary>
+        /// <returns></returns>
         [Test]
-        public void Test_GetPostCodeSectorByUDPRN()
+        public async Task Test_GetPostCodeSectorByUDPRN()
         {
-            var result = testCandidate.GetPostcodeSectorByUdprn(12345);
-            Assert.NotNull(result.Result);
+            var result = await testCandidate.GetPostcodeSectorByUdprn(12345);
+            Assert.NotNull(result);
+            Assert.AreEqual(result.District, null);
+            Assert.AreEqual(result.Sector, null);
         }
 
+        /// <summary>
+        /// Test for getting PostcodeUnit for basic search
+        /// </summary>
+        /// <returns></returns>
         [Test]
-        public void Test_FetchPostCodeUnitForBasicSearch()
+        public async Task Test_FetchPostCodeUnitForBasicSearch()
         {
-            var result = testCandidate.GetPostcodeUnitForBasicSearch("abc", Guid.NewGuid());
-            Assert.NotNull(result.Result);
+            var result = await testCandidate.GetPostcodeUnitForBasicSearch("abc", Guid.NewGuid());
+            Assert.NotNull(result);
+            Assert.AreEqual(result.ToList()[0].PostcodeUnit, "Unit1");
         }
 
+        /// <summary>
+        ///Test for getting count for Postcodeunit
+        /// </summary>
         [Test]
         public void Test_GetPostCodeUnitCount()
         {
