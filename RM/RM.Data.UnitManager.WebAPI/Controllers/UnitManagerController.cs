@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
@@ -394,8 +395,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 var location = await unitLocationBusinessService.GetApproxLocation(postcode, CurrentUserUnit);
 
+                DBGeometryObj geometryData = new DBGeometryObj { dbGeometry = location };
+
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
-                return Ok(location);
+                return Ok(geometryData);
             }
         }
     }
