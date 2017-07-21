@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RM.DataManagement.AccessLink.WebAPI.Entities;
+using System;
 
 namespace RM.Data.AccessLink.WebAPI.DataDTOs
 {
@@ -20,6 +21,10 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         public Guid? LinkDirectionGUID { get; set; }
 
         public byte[] RowVersion { get; set; }
+
+        public virtual NetworkLink NetworkLink { get; set; }
+
+        public virtual NetworkLink NetworkLink1 { get; set; }
 
         public  NetworkLinkDataDTO NetworkLinkDatatDTO { get; set; }
 
