@@ -48,14 +48,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         Task<bool> CheckIfNotificationExists(int uDPRN, string action);
 
         /// <summary>
-        /// Delete the notification based on the UDPRN and the action
-        /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <param name="action">action string</param>
-        /// <returns>Task<int></returns>
-        Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action);
-
-        /// <summary>
         /// Add new notification to the database
         /// </summary>
         /// <param name="notificationDTO">NotificationDTO object</param>
@@ -70,39 +62,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         Task<PostCodeSectorDTO> GetPostCodeSectorByUDPRN(int uDPRN);
 
         /// <summary>
-        /// Get Postal address details depending on the UDPRN
-        /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <returns>returns PostalAddress object</returns>
-        Task<PostalAddressDTO> GetPostalAddress(int uDPRN);
-
-        /// <summary>
-        /// Get PAF address details depending on the UDPRN
-        /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <returns>returns PostalAddress object</returns>
-        Task<PostalAddressDTO> GetPAFAddress(int uDPRN);
-
-        /// <summary>
         /// Get Delivery Point details depending on the UDPRN
         /// </summary>
         /// <param name="addressId">Postal Address id</param>
         /// <returns>returns DeliveryPoint object</returns>
         Task<DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId);
-
-        /// <summary>
-        /// Delete Delivery Point details depending on the DeliveryPoint id
-        /// </summary>
-        /// <param name="addressId">Delivery Point id</param>
-        /// <returns>returns whether Delivery Point is deleted or not</returns>
-        Task<bool> DeleteDeliveryPoint(Guid id);
-
-        /// <summary>
-        /// Insert new Delivery Point details depending on the DeliveryPoint id
-        /// </summary>
-        /// <param name="objDeliveryPoint">Delivery Point object</param>
-        /// <returns>returns whether Delivery Point is created or not</returns>
-        Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
         /// <summary>
         /// Get the reference data category details based on the list of categores
@@ -119,5 +83,12 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <param name="newAction">new action</param>
         /// <returns></returns>
         Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction);
+
+        /// <summary>
+        /// Update Delivery Point by Id
+        /// </summary>
+        /// <param name="deliveryPointDTO">Delivery Point DTO</param>
+        /// <returns>whether DP has been updated successfully</returns>
+        Task<bool> UpdateDeliveryPointById(DeliveryPointDTO deliveryPointDTO);
     }
 }

@@ -136,7 +136,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
 
         protected override void OnSetup()
         {
-            addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
+            // OnSetup to be configured 
+            /*addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
             thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
             loggingHelperMock = new Mock<ILoggingHelper>();
 

@@ -45,5 +45,6 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string TASKSOURCE = "SYSTEM";
         internal const string DeliveryPointUseIndicatorPAF = "Organisation";
         internal const string NOTIFICATIONCLOSED = "Closed";
+        internal const string APPROXLOCATION = "Live pending location";
     }
 }
