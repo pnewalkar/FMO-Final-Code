@@ -724,12 +724,12 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>();
-                cfg.CreateMap<Location, LocationDataDTO>();
-                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>();
-                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>();
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
+                cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(2);
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().MaxDepth(1);
             });
 
             Mapper.Configuration.CreateMapper();

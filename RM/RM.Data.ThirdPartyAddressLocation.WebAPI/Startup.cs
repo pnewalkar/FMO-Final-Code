@@ -87,16 +87,17 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            // Infrastructure
+            // Register Infrastructure
             services.AddScoped<IDatabaseFactory<AddressLocationDBContext>, DatabaseFactory<AddressLocationDBContext>>();
 
-
-
+            // Register DataServices
             services.AddScoped<IAddressLocationDataService, AddressLocationDataService>();
-            services.AddScoped<IThirdPartyAddressLocationBusinessService, ThirdPartyAddressLocationBusinessService>();
 
-            // Integration Services
+            // Register Integration Services
             services.AddScoped<IThirdPartyAddressLocationIntegrationService, ThirdPartyAddressLocationIntegrationService>();
+
+            // Register Business Service
+            services.AddScoped<IThirdPartyAddressLocationBusinessService, ThirdPartyAddressLocationBusinessService>();
 
             // Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();

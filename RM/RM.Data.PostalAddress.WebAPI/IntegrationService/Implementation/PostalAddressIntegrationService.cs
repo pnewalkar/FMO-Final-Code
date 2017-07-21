@@ -14,6 +14,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.PostalAddress.WebAPI.Utils;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
@@ -468,34 +469,15 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                     throw new ServiceException(responseContent);
                 }
 
-                //DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
-
-                GeometryDTO obj = JsonConvert.DeserializeObject<GeometryDTO>(result.Content.ReadAsStringAsync().Result);
-                DbGeometry approxLocation = DbGeometry.FromText(obj.geometry.wellKnownText, obj.geometry.coordinateSystemId);
+                // DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                DBGeometryObj locationObject = JsonConvert.DeserializeObject<DBGeometryObj>(result.Content.ReadAsStringAsync().Result);
+                DbGeometry approxLocation = locationObject.dbGeometry;
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;
             }
         }
 
-
-
         #endregion public methods
     }
-
-
-    public class GeometryDTO
-    {
-        public geometry geometry { get; set; }
-
-    }
-
-    public class geometry
-    {
-        public int coordinateSystemId { get; set; }
-
-        public string wellKnownText { get; set; }
-    }
-
-
 }
