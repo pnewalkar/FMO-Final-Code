@@ -98,24 +98,25 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         deliveryPoint.ID = objDeliveryPoint.ID;
                         deliveryPoint.PostalAddressID = objDeliveryPoint.PostalAddressID;
                         deliveryPoint.DeliveryPointUseIndicatorGUID = objDeliveryPoint.DeliveryPointUseIndicatorGUID;
+                        deliveryPoint.RowCreateDateTime = DateTime.Now;
 
                         deliveryPointStatus.ID = Guid.NewGuid();
                         deliveryPointStatus.LocationID = objDeliveryPoint.ID;
                         deliveryPointStatus.DeliveryPointStatusGUID = objDeliveryPoint.DeliveryPointStatus.First().DeliveryPointStatusGUID;
-                        deliveryPointStatus.RowCreateDateTime = DateTime.UtcNow;
-                        deliveryPointStatus.StartDateTime = DateTime.UtcNow;
+                        deliveryPointStatus.RowCreateDateTime = DateTime.Now;
+                        deliveryPointStatus.StartDateTime = DateTime.Now;
                         deliveryPoint.DeliveryPointStatus.Add(deliveryPointStatus);
 
                         networkNode.ID = objDeliveryPoint.ID;
                         networkNode.DataProviderGUID = objDeliveryPoint.NetworkNode.DataProviderGUID;
-                        networkNode.RowCreateDateTime = DateTime.UtcNow;
+                        networkNode.RowCreateDateTime = DateTime.Now;
                         networkNode.DeliveryPoint = deliveryPoint;
                         networkNode.NetworkNodeType_GUID = objDeliveryPoint.NetworkNode.NetworkNodeType_GUID;
 
                         location.Shape = objDeliveryPoint.NetworkNode.Location.Shape;
                         location.ID = objDeliveryPoint.ID;
                         location.NetworkNode = networkNode;
-                        location.RowCreateDateTime = DateTime.UtcNow;
+                        location.RowCreateDateTime = DateTime.Now;
                         DataContext.Locations.Add(location);
 
                         DataContext.DeliveryPoints.Add(deliveryPoint);

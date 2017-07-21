@@ -217,6 +217,12 @@ function printMapService(
     }
 
     function captureImage(printOptions, resolution, map, scaleline) {
+        var license = licensingInformationAccessorService.getLicensingInformation();
+        var licenseInfo = '';
+        if (license) {
+            licenseInfo = license[0].value;
+        }
+
         mapService.composeMap();
 
         var printMapDto = {
@@ -226,7 +232,7 @@ function printMapService(
             "PdfSize": printOptions.size,
             "MapScale": 25,
             "EncodedString": $rootScope.canvas.toDataURL('image/png'),
-            "License": licensingInformationAccessorService.getLicensingInformation()[0].value
+            "License": licenseInfo
         };
         mapService.setOriginalSize();
         map.removeControl(scaleline);
