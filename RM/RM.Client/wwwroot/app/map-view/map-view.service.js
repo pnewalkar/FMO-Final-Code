@@ -870,7 +870,7 @@ function mapService($http,
         var scalenumber = parseInt(scale, 10);
         var scaleunit = scale.match(/[Aa-zZ]{1,}/g);
 
-        var calculatedScale = setScaleUnit(scalenumber, scaleunit);
+        var calculatedScale = setScaleUnit(scalenumber, scaleunit.toString());
         //Scale Text
         ctx.beginPath();
         ctx.textAlign = "left";
