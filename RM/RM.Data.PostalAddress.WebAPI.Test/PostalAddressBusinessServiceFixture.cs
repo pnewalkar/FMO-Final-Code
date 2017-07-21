@@ -184,12 +184,14 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         {
             var result = testCandidate.GetPostalAddresses(new List<Guid>() { Guid.NewGuid() });
             Assert.IsNotNull(result);
-        }
+        }*/
 
     */
         protected override void OnSetup()
         {
-            referenceDataCategoryDTOList = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
+            // OnSetup to be configured
+
+            /*referenceDataCategoryDTOList = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
             {
                 new CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO()
                 {
@@ -278,7 +280,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test
             mockPostalAddressDataService.Setup(n => n.GetPostalAddresses(It.IsAny<List<Guid>>())).ReturnsAsync(new List<PostalAddressDataDTO>() { });
             */
 
-            testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockFileProcessingLogDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);
+            testCandidate = new DataManagement.PostalAddress.WebAPI.BusinessService.Implementation.PostalAddressBusinessService(mockPostalAddressDataService.Object, mockFileProcessingLogDataService.Object, mockLoggingHelper.Object, mockConfigurationHelper.Object, mockHttpHandler.Object, mockPostalAddressIntegrationService.Object);*/
         }
     }
 }

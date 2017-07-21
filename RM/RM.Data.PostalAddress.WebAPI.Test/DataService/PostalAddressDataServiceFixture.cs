@@ -700,7 +700,9 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
 
         private void OnSetupPaf()
         {
-            List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress> lstPostalAddress = new List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>()
+            // OnSetup to be configured
+
+            /*List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress> lstPostalAddress = new List<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>()
                         {
                             new RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress
                             {
@@ -739,7 +741,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
-            testCandidate = new PostalAddressDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);
+            testCandidate = new PostalAddressDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object, mockFileProcessingLog.Object);*/
         }
     }
 }
