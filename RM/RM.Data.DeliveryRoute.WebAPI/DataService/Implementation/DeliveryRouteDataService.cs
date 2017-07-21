@@ -196,30 +196,33 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteByDeliverypoint);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
                 RouteDataDTO routeData = null;
-                var blockId = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault().BlockID;
+                var block = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
 
-                var routeDetails = (from route in DataContext.Routes.AsNoTracking()
-                                    join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
-                                    where route.UnSequencedBlockID == blockId || routeActivity.BlockID == blockId
-                                    select route).FirstOrDefault();
-
-                if (routeDetails != null)
+                if (block != null)
                 {
-                    var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID).SingleOrDefaultAsync();
-                    if (postCode != null)
+                    var routeDetails = (from route in DataContext.Routes.AsNoTracking()
+                                        join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
+                                        where route.UnSequencedBlockID == block.BlockID || routeActivity.BlockID == block.BlockID
+                                        select route).FirstOrDefault();
+
+                    if (routeDetails != null)
                     {
-                        if (routeDetails.ID == postCode.PrimaryRouteGUID)
+                        var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID).SingleOrDefaultAsync();
+                        if (postCode != null)
                         {
-                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName };
+                            if (routeDetails.ID == postCode.PrimaryRouteGUID)
+                            {
+                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName };
+                            }
+                            else if (routeDetails.ID == postCode.SecondaryRouteGUID)
+                            {
+                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName };
+                            }
                         }
-                        else if (routeDetails.ID == postCode.SecondaryRouteGUID)
+                        else
                         {
-                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName };
+                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = routeDetails.RouteName };
                         }
-                    }
-                    else
-                    {
-                        routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = routeDetails.RouteName };
                     }
                 }
 
