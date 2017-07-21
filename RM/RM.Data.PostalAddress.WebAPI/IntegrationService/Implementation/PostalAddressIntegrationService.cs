@@ -14,6 +14,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.PostalAddress.WebAPI.Utils;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
@@ -461,14 +462,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(GetApproxLocation);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "approxlocation/" + postcode);
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/approxlocation/" + postcode);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                // DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                DBGeometryObj locationObject = JsonConvert.DeserializeObject<DBGeometryObj>(result.Content.ReadAsStringAsync().Result);
+                DbGeometry approxLocation = locationObject.dbGeometry;
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;

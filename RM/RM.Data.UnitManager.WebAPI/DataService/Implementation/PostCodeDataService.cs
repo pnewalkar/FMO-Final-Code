@@ -154,7 +154,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
                 // get approx loaction for that post code
-                var approxLocationForPostCode = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode == postcode);
+                var approxLocationForPostCode = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode == postcode);
 
                 if (approxLocationForPostCode != null)
                 {
@@ -164,10 +164,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                 {
                     var postcodeSector = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
                                           where ph.Postcode == postcode
-                                          select ph.ParentPostcode).FirstOrDefault();
+                                          select ph.ParentPostcode.Trim()).FirstOrDefault();
 
                     // get approx location for the pose code sector
-                    var approxLocationForPostCodeSector = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeSector));
+                    var approxLocationForPostCodeSector = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode.Replace(" ","").StartsWith(postcodeSector));
 
                     if (approxLocationForPostCodeSector != null)
                     {
@@ -177,10 +177,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                     {
                         var postcodeDistrict = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
                                                 where ph.Postcode == postcodeSector
-                                                select ph.ParentPostcode).FirstOrDefault();
+                                                select ph.ParentPostcode.Trim()).FirstOrDefault();
 
                         // get approx location for the pose code sector
-                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeDistrict));
+                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.Replace(" ", "").StartsWith(postcodeDistrict));
 
                         if (approxLocationForPostCodeDistrict != null)
                         {

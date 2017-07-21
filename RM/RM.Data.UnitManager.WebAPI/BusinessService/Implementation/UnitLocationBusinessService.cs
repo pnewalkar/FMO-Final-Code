@@ -112,7 +112,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
 
                 var postcodeTypCategory = unitManagerIntegrationService.GetReferenceDataSimpleLists(PostCodeType).Result;
                 var dictionarySector = postcodeTypCategory.ReferenceDatas.Where(x => x.ReferenceDataValue == PostCodeTypeCategory.PostcodeSector.GetDescription()).SingleOrDefault().ID;
-                var dictionaryDistrict = postcodeTypCategory.ReferenceDatas.Where(x => x.ReferenceDataValue == PostCodeTypeCategory.PostcodeSector.GetDescription()).SingleOrDefault().ID;
+                var dictionaryDistrict = postcodeTypCategory.ReferenceDatas.Where(x => x.ReferenceDataValue == PostCodeTypeCategory.PostcodeDistrict.GetDescription()).SingleOrDefault().ID;
 
                 var postCodeSector = await postcodeSectorDataService.GetPostcodeSectorByUdprn(udprn, dictionarySector, dictionaryDistrict);
                 PostcodeSectorDTO postCodeSectorDto = GenericMapper.Map<PostcodeSectorDataDTO, PostcodeSectorDTO>(postCodeSector);

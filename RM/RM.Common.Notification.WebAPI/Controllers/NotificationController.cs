@@ -178,13 +178,13 @@ namespace RM.Common.Notification.WebAPI.Controllers
         }
 
 
-        [Route("notifications/postaladdress/{udprn}/{action}")]
+        [Route("notifications/postaladdress/{udprn}/{newaction}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateNotificationMessageByUDPRN(int udprn, string action, [FromBody]string message)
+        public async Task<IActionResult> UpdateNotificationMessageByUDPRN(int udprn, string newaction, [FromBody]string message)
         {
             try
             {
-                bool isUpdated = await notificationBusinessService.UpdateNotificationMessageByUDPRN(udprn, action, message);
+                bool isUpdated = await notificationBusinessService.UpdateNotificationMessageByUDPRN(udprn, newaction, message);
                 return Ok(isUpdated);
             }
             catch (AggregateException ae)

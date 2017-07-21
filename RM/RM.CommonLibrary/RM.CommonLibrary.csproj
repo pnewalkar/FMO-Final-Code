@@ -184,6 +184,7 @@
     <Compile Include="Utilities\Geometry\DbGeometryGeoJsonConverter.cs" />
     <Compile Include="Utilities\HelperMiddleware\Common\MethodHelper.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Coordinates.cs" />
+    <Compile Include="Utilities\HelperMiddleware\GeoJsonData\DBGeometryObj.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Feature.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\GeoJson.cs" />
     <Compile Include="Utilities\HelperMiddleware\GeoJsonData\Geometry.cs" />

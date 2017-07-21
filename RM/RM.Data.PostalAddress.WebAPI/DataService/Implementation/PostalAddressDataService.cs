@@ -239,13 +239,7 @@
 
                 var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -268,13 +262,7 @@
                 // Get first Postal Address satifying the below condition
                 PostalAddress postalAddress = await GetPostalAddressEntity(objPostalAddress);
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -509,14 +497,7 @@
 
                 var addressDetails = await DataContext.PostalAddresses.Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Mapper.Map<List<PostalAddress>, List<PostalAddressDataDTO>>(addressDetails);
@@ -538,13 +519,7 @@
 
                 PostalAddress postalAddress = await DataContext.PostalAddresses.Where(pa => pa.UDPRN == udprn && pa.AddressType_GUID == pafGuid).SingleOrDefaultAsync();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 PostalAddressDataDTO postalAddressDataDTO = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
 
@@ -738,6 +713,20 @@
                 fileProcessingLog.LogFileException(objFileProcessingLog);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
             }
+        }
+
+        /// <summary>
+        /// Common steps to configure mapper for PostalAddress
+        /// </summary>
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+            });
+            Mapper.Configuration.CreateMapper();
         }
 
         /* To be a part of Unit manager

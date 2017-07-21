@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
 
@@ -309,7 +311,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// </summary>
         /// <param name="postcode">Postal code</param>
         /// <returns>The approx location for the given postal code.</returns>
-        [HttpPost("postcode/approxlocation/{postcode}")]
+        [HttpGet("postcode/approxlocation/{postcode}")]
         public async Task<IActionResult> GetApproxLocation(string postcode)
         {
             if (postcode == null)
@@ -324,8 +326,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 var location = await unitLocationBusinessService.GetApproxLocation(postcode, CurrentUserUnit);
 
+                DBGeometryObj geometryData = new DBGeometryObj { dbGeometry = location };
+
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
-                return Ok(location);
+                return Ok(geometryData);
             }
         }
     }

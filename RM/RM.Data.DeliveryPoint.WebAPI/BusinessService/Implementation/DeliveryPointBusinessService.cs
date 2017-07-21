@@ -747,7 +747,6 @@
                 deliveryPointDataDTO.PostalAddressID = deliveryPointDTO.Address_GUID;
                 deliveryPointDataDTO.MailVolume = deliveryPointDTO.MailVolume;
                 deliveryPointDataDTO.MultipleOccupancyCount = deliveryPointDTO.MultipleOccupancyCount;
-                deliveryPointDataDTO.PostalAddressID = deliveryPointDTO.PostalAddress.ID;
                 deliveryPointDataDTO.RowCreateDateTime = deliveryPointDTO.RowCreateDateTime;
                 deliveryPointDataDTO.RowVersion = deliveryPointDTO.RowVersion;
 
@@ -756,11 +755,15 @@
                 deliveryPointDataDTO.DeliveryPointStatus.Add(deliveryPointStatusDataDTO);
 
                 //network node details
-                deliveryPointDataDTO.NetworkNode.DataProviderGUID = deliveryPointDTO.LocationProvider_GUID;
-                deliveryPointDataDTO.NetworkNode.NetworkNodeType_GUID = deliveryPointDTO.NetworkNodeType_GUID;
+                NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
+                networkNodeDataDTO.DataProviderGUID = deliveryPointDTO.LocationProvider_GUID;
+                networkNodeDataDTO.NetworkNodeType_GUID = deliveryPointDTO.NetworkNodeType_GUID;
+                deliveryPointDataDTO.NetworkNode = networkNodeDataDTO;
 
                 // location details
-                deliveryPointDataDTO.NetworkNode.Location.Shape = deliveryPointDTO.LocationXY;
+                LocationDataDTO locationDataDTO = new LocationDataDTO();
+                locationDataDTO.Shape = deliveryPointDTO.LocationXY;
+                networkNodeDataDTO.Location = locationDataDTO;
             }
 
             return deliveryPointDataDTO;
@@ -782,7 +785,7 @@
         {
             DeliveryPointDTO deliveryPointDTO = new DeliveryPointDTO();
 
-            if (deliveryPointDTO != null)
+            if (deliveryPointDataDTO != null)
             {
                 deliveryPointDTO.DeliveryPointUseIndicator_GUID = deliveryPointDataDTO.DeliveryPointUseIndicatorGUID;
                 deliveryPointDTO.ID = deliveryPointDataDTO.ID;
