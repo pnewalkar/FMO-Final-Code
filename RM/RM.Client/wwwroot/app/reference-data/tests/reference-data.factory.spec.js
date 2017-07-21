@@ -20,7 +20,7 @@ describe('Reference Data : Factory', function() {
         });
     });
 
-    it('should promise to return a success response once readJson method is called', function() {
+    it('should resolve the promise when readJson method is called', function() {
         var response;
         var expectedUrl = GlobalSettings.readJson;
         var readJsonMockData = {"DELIVERY_POINT":"Delivery Point","ACCESS_LINK":"Access Link"};
@@ -37,7 +37,7 @@ describe('Reference Data : Factory', function() {
         expect(response).toEqual(readJsonMockData);
     });
 
-    it('should promise to return a error response once readJson method is called', function() {
+    it('should reject the promise when readJson method is called', function() {
         var response;
         var expectedUrl = GlobalSettings.readJson;
         var readJsonMockData = {"DELIVERY_POINT":"Delivery Point","ACCESS_LINK":"Access Link"};
@@ -56,7 +56,7 @@ describe('Reference Data : Factory', function() {
         expect(response).toEqual('Error!');
     });
 
-    it('should promise to return a success response once getSimpleListsReferenceData method is called', function() {
+    it('should resolve the promise when getSimpleListsReferenceData method is called', function() {
         var response;
         var params = '/ReferenceDataManager/simpleLists?listName=DeliveryPointColor';
         var expectedUrl = GlobalSettings.referenceDataApiUrl+params;
@@ -74,7 +74,7 @@ describe('Reference Data : Factory', function() {
         expect(response).toEqual([{"id":"ef7176d0-120c-4fc3-b67f-e7f5b879ecb6","name":"Object Transparency"}]);
     });
 
-    it('should promise to return a error response once getSimpleListsReferenceData method is called', function() {
+    it('should reject the promise when getSimpleListsReferenceData method is called', function() {
         var response;
         var params = '/ReferenceDataManager/simpleLists?listName=DeliveryPointColor';
         var expectedUrl = GlobalSettings.referenceDataApiUrl+params;
@@ -94,7 +94,7 @@ describe('Reference Data : Factory', function() {
         expect(response).toEqual('Error!');
     });
 
-    it('should promise to return a success response once getNameValueReferenceData method is called', function() {
+    it('should resolve the promise when getNameValueReferenceData method is called', function() {
         var response;
         var params = '/ReferenceDataManager/nameValuePairs?appGroupName=Map_License_Information';
         var expectedUrl = GlobalSettings.referenceDataApiUrl+params;
@@ -112,7 +112,7 @@ describe('Reference Data : Factory', function() {
         expect(response).toEqual([{"id":"b5e7ed0d-c744-4e86-b0c0-0d967f595e93","group":"Map_License_Information"}]);
     });
 
-    it('should promise to return a error response once getNameValueReferenceData method is called', function() {
+    it('should reject the promise when getNameValueReferenceData method is called', function() {
         var response;
         var params = '/ReferenceDataManager/nameValuePairs?appGroupName=Map_License_Information';
         var expectedUrl = GlobalSettings.referenceDataApiUrl+params;
