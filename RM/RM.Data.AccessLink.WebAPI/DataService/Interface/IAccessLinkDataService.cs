@@ -35,13 +35,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
 
         /// <summary>
-        /// Creates manual access link
-        /// </summary>
-        /// <param name="networkLinkDataDTO"></param>
-        /// <returns></returns>
-        bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
-
-        /// <summary>
         /// This method is used to get the access links crossing the created access link
         /// </summary>
         /// <param name="boundingBoxCoordinates">bbox coordinates</param>

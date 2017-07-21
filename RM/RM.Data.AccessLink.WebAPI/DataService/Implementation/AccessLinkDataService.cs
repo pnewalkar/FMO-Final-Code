@@ -214,61 +214,6 @@
         }
 
 
-        public bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO)
-        {
-            try
-            {
-                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAccessLink"))
-                {
-                    string methodName = typeof(AccessLinkDataService) + "." + nameof(CreateAccessLink);
-                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-                    bool accessLinkCreationSuccess = false;                 
-                    AccessLink accessLink = new Entities.AccessLink();
-                    
-                    NetworkNode networkNode = new NetworkNode();
-                    NetworkLink networkLink = new Entities.NetworkLink();
-
-                    NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
-                    AccessLinkDataDTO accessLinkDataDTO = networkLinkDataDTO.AccessLinkDataDTOs;
-
-                    accessLink.ID = accessLinkDataDTO.ID;
-                    accessLink.WorkloadLengthMeter = accessLinkDataDTO.WorkloadLengthMeter;
-                    accessLink.Approved = accessLinkDataDTO.Approved;
-                    accessLink.ConnectedNetworkLinkID = new Guid();
-                    accessLink.AccessLinkTypeGUID = accessLinkDataDTO.AccessLinkTypeGUID;
-                    accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
-                    accessLink.RowCreateDateTime = DateTime.UtcNow;
-                   // networkLink.AccessLink = accessLink;
-
-                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatusDataDTO;
-                    AccessLinkStatus accessLinkStatus = new AccessLinkStatus
-                    {
-                        ID = accessLinkStatusDataDTO.ID,
-                        NetworkLinkID = accessLinkStatusDataDTO.NetworkLinkID,
-                        AccessLinkStatusGUID = accessLinkStatusDataDTO.AccessLinkStatusGUID,
-                        StartDateTime = accessLinkStatusDataDTO.StartDateTime,
-                        RowCreateDateTime = accessLinkStatusDataDTO.RowCreateDateTime
-                    };
-                    accessLink.AccessLinkStatus.Add(accessLinkStatus);
-
-                    accessLink.NetworkLink = networkLink1;
-                    accessLink.NetworkLink1 = networkLink1;
-                    DataContext.AccessLinks.Add(accessLink);
-
-                    accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                    return accessLinkCreationSuccess;
-                }
-            }
-
-            catch (DbUpdateException dbUpdateException)
-            {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
-            }
-        }
-
         /// <summary>
         /// this method is used to get the access links crossing the created access link
         /// </summary>
