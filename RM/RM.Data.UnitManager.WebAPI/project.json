@@ -3,6 +3,7 @@
   "copyright": "Copyright © Royal Mail Group 2017",
   "language": "en-GB",
   "dependencies": {
+    "AutoMapper": "6.0.2",
     "EnterpriseLibrary.Logging": "6.0.1304",
     "EntityFramework": "6.1.3",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",

@@ -12,7 +12,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
         /// </summary>
         /// <param name="scenarioID">ID of the selected scenario</param>
         /// <returns>Returns list of route on the basis of selected scenario</returns>
-        List<RouteDTO> GetScenarioRoutes(Guid scenarioID);
+        Task<List<RouteDTO>> GetScenarioRoutes(Guid scenarioID);
 
         /// <summary>
         /// Get filtered routes on basis of search text for Advance Search .

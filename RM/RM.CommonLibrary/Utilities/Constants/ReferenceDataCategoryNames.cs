@@ -11,7 +11,7 @@
         public const string DeliveryPointOperationalStatus = "OperationalStatus";
         public const string DeliveryPointUseIndicator = "DeliveryPointUseIndicator";
         public const string DeliveryRouteMethodType = "DeliveryRouteMethodType";
-        public const string RouteActivityType = "Route Activity Type";
+        public const string RouteActivityType = "RouteActivityType";
         public const string DeliveryRouteOperationalStatus = "DeliveryRouteOperationalStatus";
         public const string DeliveryUnitStatus = "DeliveryUnitStatus";
         public const string NetworkLinkType = "NetworkLinkType";

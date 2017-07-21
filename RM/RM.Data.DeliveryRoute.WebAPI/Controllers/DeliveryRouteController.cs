@@ -32,7 +32,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <returns>List of routes</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.ViewRoutes)]
         [HttpGet("deliveryroute/{scenarioId}/{fields}")]
-        public IActionResult GetScenarioRoutes(Guid scenarioId, string fields)
+        public async Task<IActionResult> GetScenarioRoutes(Guid scenarioId, string fields)
         {
             if (scenarioId == Guid.Empty)
             {
@@ -48,7 +48,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 string methodName = typeof(DeliveryRouteController) + "." + nameof(GetScenarioRoutes);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId);
                 List<object> routes = null;
-                var routedetails = deliveryRouteLogBusinessService.GetScenarioRoutes(scenarioId);
+                var routedetails = await deliveryRouteLogBusinessService.GetScenarioRoutes(scenarioId);
 
                 CreateSummaryObject<RouteDTO> createSummary = new CreateSummaryObject<RouteDTO>();
 
@@ -265,7 +265,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <param name="locationId">selected unit's location ID</param>
         /// <returns>List of routes</returns>
         [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        [HttpGet("deliveryroute/{postcodeunit}/{fields}")]
+        [HttpGet("deliveryroute/postcode/{postcodeunit}/{fields}")]
         public async Task<IActionResult> GetPostcodeSpecificRoutes(string postcodeunit, string fields)
         {
             if (string.IsNullOrEmpty(postcodeunit))
@@ -314,7 +314,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// </summary>
         /// <param name="routeId">selected route id</param>
         /// <param name="deliveryPointId">Delivery point unique id</param>
-        [HttpPost("deliveryroute/deliverypoint")]
+        [HttpPost("deliveryroute/deliverypoint/{routeId}/{deliveryPointId}")]
         public IActionResult SaveDeliveryPointRouteMapping(Guid routeId, Guid deliveryPointId)
         {
             if (routeId == Guid.Empty)
@@ -344,7 +344,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
         /// <param name="deliveryPointId">Delivery Point Id</param>
         /// <returns>Route Details</returns>
         [HttpGet("deliveryroute/deliverypoint/{deliveryPointId}")]
-        public IActionResult GetRouteByDeliveryPoint(Guid deliveryPointId)
+        public async Task<IActionResult> GetRouteByDeliveryPoint(Guid deliveryPointId)
         {
             if (deliveryPointId == Guid.Empty)
             {
@@ -356,7 +356,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.Controllers
                 string methodName = typeof(DeliveryRouteController) + "." + nameof(GetRouteByDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodEntryEventId);
 
-                var route = deliveryRouteLogBusinessService.GetRouteByDeliveryPoint(deliveryPointId);
+                var route = await deliveryRouteLogBusinessService.GetRouteByDeliveryPoint(deliveryPointId);
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteControllerMethodExitEventId);
                 return Ok(route);

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
+using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
 
@@ -43,7 +44,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
-                var unitLocations = await unitLocationBusinessService.GetDeliveryUnitsByUser(UserId);
+                var unitLocations = await unitLocationBusinessService.GetUnitsByUser(UserId, CurrentUserUnitType);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
                 return unitLocations;
             }
@@ -303,6 +304,75 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
                 return Ok(postCodes);
+            }
+        }
+        /// <summary>
+        /// Api searches pstcode and thorough in postal address entity on basis of searhtext
+        /// </summary>
+        /// <param name="searchText">searchText</param>
+        /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [HttpGet("postaladdress/search/{searchText}")]
+        public async Task<IActionResult> SearchAddressdetails(string searchText)
+        {
+            try
+            {
+                string methodName = typeof(UnitManagerController) + "." + nameof(SearchAddressdetails);
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.SearchAddressdetails"))
+                {
+                    loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
+
+                    List<string> postalAddressList = await unitLocationBusinessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
+
+                    loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodExitEventId);
+
+                    return Ok(postalAddressList);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
+            }
+        }
+
+        /// <summary>
+        /// Filters postal address on basis of postcode
+        /// </summary>
+        /// <param name="postCode">postcode</param>
+        /// <returns></returns>
+        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        [HttpGet("postaladdress/filter")]
+        public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("Controller.GetAddressByPostCode"))
+                {
+                    string methodName = typeof(UnitManagerController) + "." + nameof(GetAddressByPostCode);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+
+                    PostalAddressDTO postalAddressDto = await unitLocationBusinessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodExitEventId, LoggerTraceConstants.Title);
+
+                    return Ok(postalAddressDto);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
+                }
+
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
 

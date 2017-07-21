@@ -103,12 +103,14 @@ namespace RM.DataManagement.UnitManager.WebAPI
             services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
             services.AddScoped<IPostcodeSectorDataService, PostcodeSectorDataService>();
             services.AddScoped<IPostcodeDataService, PostcodeDataService>();
+            services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
             services.AddScoped<IScenarioDataService, ScenarioDataService>();
             services.AddScoped<IHttpHandler, HttpHandler>();
 
 
             // Register Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
+            services.AddScoped<IHttpHandler, HttpHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

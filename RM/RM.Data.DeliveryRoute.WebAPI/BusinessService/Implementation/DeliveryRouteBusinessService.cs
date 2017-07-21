@@ -42,7 +42,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="scenarioID">ID of the selected scenario</param>
         /// <returns>Returns list of route on the basis of selected scenario</returns>
-        public List<RouteDTO> GetScenarioRoutes(Guid scenarioID)
+        public async Task<List<RouteDTO>> GetScenarioRoutes(Guid scenarioID)
         {
             if (scenarioID == Guid.Empty)
             {
@@ -54,7 +54,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
                 string methodName = typeof(DeliveryRouteBusinessService) + "." + nameof(GetScenarioRoutes);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteBusinessServiceMethodEntryEventId);
 
-                var routeDetails = deliveryRouteDataService.GetScenarioRoutes(scenarioID);
+                var routeDetails = await deliveryRouteDataService.GetScenarioRoutes(scenarioID);
 
                 List<RouteDTO> routes = GenericMapper.MapList<RouteDataDTO, RouteDTO>(routeDetails);
 
@@ -252,7 +252,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
 
                 if (routeDetails != null && routeDetails.Count > 0)
                 {
-                    if (postcode != null)
+                    if (postcode != null && (postcode.PrimaryRouteGUID != null || postcode.SecondaryRouteGUID != null))
                     {
                         foreach (var route in routeDetails)
                         {

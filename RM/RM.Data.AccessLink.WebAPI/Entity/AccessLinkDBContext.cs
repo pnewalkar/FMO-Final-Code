@@ -5,7 +5,7 @@
     public partial class AccessLinkDBContext : AuditContext
     {
         public AccessLinkDBContext()
-            : base("name=AccessLink")
+            : base("name=AccessLinkDBContext")
         {
         }
 
