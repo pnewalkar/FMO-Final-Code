@@ -41,9 +41,10 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// This method is used to fetch Delivery Points as per basic search.
         /// </summary>
         /// <param name="searchText">searchText as string</param>
+        /// <param name="numberOfRecordRequested">Number of records to be returned.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Collection of Delivery Points that matches the criteria.</returns>
-        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDataDTO>> GetDeliveryPointsForBasicSearch(string searchText, int numberOfRecordRequested, Guid unitGuid);
 
         /// <summary>
         /// Gets the delivery points count.
