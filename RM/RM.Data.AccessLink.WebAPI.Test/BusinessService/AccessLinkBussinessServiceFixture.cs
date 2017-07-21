@@ -28,6 +28,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
         private List<AccessLinkDTO> accessLinkDTO = null;
         private DeliveryPointDTO deliveryPointDTO = null;
         private AccessLinkManualCreateModelDTO accessLinkManualCreateModelDTO = null;
+        private NetworkLinkDTO networkLink = null;
         private Guid operationalObjectId = System.Guid.NewGuid();
         private Guid operationObjectTypeId = new Guid("415c9129-0615-457e-98b7-3a60436320c5");
 
@@ -66,13 +67,13 @@ namespace RM.Data.AccessLink.WebAPI.Test
         {
             accessLinkManualCreateModelDTO = new AccessLinkManualCreateModelDTO
             {
-                AccessLinkLine="LineString",
+                AccessLinkLine= "[[512455.33999999985,107127.7899999991],[512454.8208646417,107129.43228437999],[512474,107139]]",
                 BoundingBoxCoordinates= "511684.44432227453,106504.23168359262,513419.32779204147,107103.43288199503",
-                NetworkLinkGUID=Guid.NewGuid().ToString(),
-                OperationalObjectGUID=Guid.NewGuid().ToString(),
-                Workloadlength=40,
-                NetworkIntersectionPoint= "511684.44432227453,106504.23168359262,513419.32779204147,107103.43288199503",
-                OperationalObjectPoint= "511684.44432227453,106504.23168359262,513419.32779204147,107103.43288199503"
+                NetworkLinkGUID= "c55712fe-ce92-4386-a0a5-e9a158b15441",
+                OperationalObjectGUID= "ffc86397-fbb5-4caf-a070-aca8d723de57",
+                Workloadlength =40,
+                NetworkIntersectionPoint= "[512455.33999999985,107127.7899999991]",
+                OperationalObjectPoint= "[512455.33999999985,107127.7899999991]"
             };
 
             deliveryPointDTO = new DeliveryPointDTO
@@ -101,7 +102,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
                     }
                 };
 
-            NetworkLinkDTO networkLink = new NetworkLinkDTO()
+             networkLink = new NetworkLinkDTO
             {
                 Id = Guid.Parse("4DBA7B39-D23E-493A-9B8F-B94D181A082F"),
                 TOID = "osgb4000000023358315",
@@ -137,6 +138,13 @@ namespace RM.Data.AccessLink.WebAPI.Test
                             ReferenceDataName = null,
                             ReferenceDataValue = ReferenceDataValues.AccessLinkTypeDefault,
                             ID = Guid.Parse("4DBA7B39-D23E-493A-9B8F-B94D181A082F")
+                        },
+
+                        new ReferenceDataDTO()
+                        {
+                            ReferenceDataName = null,
+                            ReferenceDataValue = ReferenceDataValues.UserDefined,
+                            ID = Guid.Parse("DA8F1A91-2E2B-4EEF-9A81-9B18A917CBF1")
                         }
                     }
                 },
@@ -169,7 +177,14 @@ namespace RM.Data.AccessLink.WebAPI.Test
                             ReferenceDataName = null,
                             ReferenceDataValue = ReferenceDataValues.AccessLinkStatusDraftPendingApproval,
                             ID = Guid.Parse("7DBA7B39-D23E-493A-9B8F-B94D181A082F")
+                        },
+                        new ReferenceDataDTO()
+                        {
+                            ReferenceDataName = null,
+                            ReferenceDataValue = ReferenceDataValues.AccessLinkStatusDraftPendingReview,
+                            ID = Guid.Parse("7B90B2F9-F62F-E711-8735-28D244AEF9ED")
                         }
+                        
                     }
                 },
                 new ReferenceDataCategoryDTO()
@@ -264,7 +279,9 @@ namespace RM.Data.AccessLink.WebAPI.Test
             mockAccessLinkIntegrationService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("Local Road");
             mockAccessLinkIntegrationService.Setup(x => x.GetCrossingNetworkLinks(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<NetworkLinkDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
-            mockaccessLinkDataService.Setup(x => x.CreateAccessLink(It.IsAny<NetworkLinkDataDTO>())).Returns(true);
+            mockAccessLinkIntegrationService.Setup(x => x.GetNetworkLink(It.IsAny<Guid>())).ReturnsAsync(networkLink);
+            mockaccessLinkDataService.Setup(x => x.CreateManualAccessLink(It.IsAny<NetworkLinkDataDTO>())).Returns(true);
+
            // mockaccessLinkDataService.Setup(x => x.CreateAccessLink(It.IsAny<NetworkLinkDataDTO>())).Returns(true);
 
             testCandidate = new AccessLinkBusinessService(mockaccessLinkDataService.Object, loggingHelperMock.Object, mockAccessLinkIntegrationService.Object);
