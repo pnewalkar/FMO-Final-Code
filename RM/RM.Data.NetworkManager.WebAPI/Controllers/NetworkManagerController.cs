@@ -7,29 +7,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
+using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.BusinessService;
-using RM.DataManagement.NetworkManager.WebAPI.DTO;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 {
     [Route("/api/NetworkManager")]
     public class NetworkManagerController : RMBaseController
     {
-        #region Member Variables
         private INetworkManagerBusinessService networkManagerBusinessService = default(INetworkManagerBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-
-        Guid CurrentUserUnit = Guid.Empty;
-        private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
-        private int entryEventId = LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId;
-        private int exitEventId = LoggerTraceConstants.NetworkManagerControllerMethodExitEventId;
-
-        #endregion Member Variables
-
-        #region Constructors
 
         public NetworkManagerController(INetworkManagerBusinessService networkManagerBusinessService, ILoggingHelper loggingHelper)
         {
@@ -46,10 +36,10 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         [HttpPost("nearestnamedroad/{streetName}")]
         public IActionResult GetNearestNamedRoad([FromBody]string operationalObjectPointJson, string streetName)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNearestNamedRoad"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNearestNamedRoad"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetNearestNamedRoad);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 Tuple<NetworkLinkDTO, SqlGeometry> result;
 
@@ -57,33 +47,30 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 var convertedResult = new Tuple<NetworkLinkDTO, DbGeometry>(result.Item1, result.Item2.IsNull ? null : result.Item2.ToDbGeometry());
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(convertedResult);
             }
         }
-        #endregion Constructors
-
-        #region Public Methods
 
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        [HttpGet("nearestsegment/{operationalObjectPointJson}")]
-        public IActionResult GetNearestSegment(string operationalObjectPointJson)
+        [HttpPost("nearestsegment")]
+        public IActionResult GetNearestSegment([FromBody]string operationalObjectPointJson)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNearestSegment"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNearestSegment"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetNearestSegment);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                Tuple<NetworkLinkDTO, List<SqlGeometry>> result;
+                Tuple<NetworkLinkDTO, SqlGeometry> result;
 
                 result = networkManagerBusinessService.GetNearestSegment(JsonConvert.DeserializeObject<DbGeometry>(operationalObjectPointJson, new DbGeometryConverter()));
 
-                var convertedResult = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(result.Item1, result.Item2);
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                var convertedResult = new Tuple<NetworkLinkDTO, DbGeometry>(result.Item1, result.Item2.IsNull ? null : result.Item2.ToDbGeometry());
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(convertedResult);
             }
         }
@@ -96,16 +83,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         [HttpGet("networklink/{networkLinkID}")]
         public IActionResult GetNetworkLink(Guid networkLinkID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNetworkLink"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNetworkLink"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetNetworkLink);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 NetworkLinkDTO result;
 
                 result = networkManagerBusinessService.GetNetworkLink(networkLinkID);
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(result);
             }
         }
@@ -116,16 +103,16 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         [HttpPost("networklink/{boundingBoxCoordinates}")]
         public IActionResult GetNetworkLink(string boundingBoxCoordinates, [FromBody]string accessLinkCoordinatesJson)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNetworkLink"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetNetworkLink"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetNetworkLink);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 List<NetworkLinkDTO> result;
 
                 result = networkManagerBusinessService.GetCrossingNetworkLinks(boundingBoxCoordinates, JsonConvert.DeserializeObject<DbGeometry>(accessLinkCoordinatesJson, new DbGeometryConverter()));
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(result);
             }
         }
@@ -139,10 +126,10 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         [Route("osroadlink/{toid}")]
         public async Task<IActionResult> GetOSRoadLink(string toid)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetOSRoadLink"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetOSRoadLink"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetOSRoadLink);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
                 {
@@ -150,7 +137,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                     result = await networkManagerBusinessService.GetOSRoadLink(toid);
 
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(result);
                 }
                 catch (AggregateException ae)
@@ -175,13 +162,13 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetRouteData(string bbox)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetRouteData"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetRouteData"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetRouteData);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodBase.GetCurrentMethod().Name;
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 string route = networkManagerBusinessService.GetRoadRoutes(bbox, CurrentUserUnit);
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                 return Ok(route);
             }
         }
@@ -194,17 +181,17 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         /// <returns>Task</returns>
         [Route("streetnames/basic/{searchText}")]
         [HttpGet]
-        public async Task<IActionResult> GetStreetNamesForBasicSearch(string searchText)
+        public async Task<IActionResult> FetchStreetNamesForBasicSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetStreetNamesForBasicSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.FetchStreetNamesForBasicSearch"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetStreetNamesForBasicSearch);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForBasicSearch(searchText, CurrentUserUnit).ConfigureAwait(false);
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.FetchStreetNamesForBasicSearch(searchText, CurrentUserUnit).ConfigureAwait(false);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(streetNames);
                 }
                 catch (AggregateException ae)
@@ -230,15 +217,15 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStreetNameCount(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetStreetNameCount"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.GetStreetNameCount"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetStreetNameCount);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
                 {
                     int streetCount = await networkManagerBusinessService.GetStreetNameCount(searchText, CurrentUserUnit).ConfigureAwait(false);
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(streetCount);
                 }
                 catch (AggregateException ae)
@@ -262,17 +249,17 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         /// <returns>StreetNames</returns>
         [Route("streetnames/advance/{searchText}")]
         [HttpGet]
-        public async Task<IActionResult> GetStreetNamesForAdvanceSearch(string searchText)
+        public async Task<IActionResult> FetchStreetNamesForAdvanceSearch(string searchText)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Controller.GetStreetNamesForAdvanceSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("WebService.FetchStreetNamesForAdvanceSearch"))
             {
-                string methodName = typeof(NetworkManagerController) + "." + nameof(GetStreetNamesForAdvanceSearch);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                 try
                 {
-                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.GetStreetNamesForAdvanceSearch(searchText, CurrentUserUnit);
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    List<StreetNameDTO> streetNames = await networkManagerBusinessService.FetchStreetNamesForAdvanceSearch(searchText, CurrentUserUnit);
+                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerControllerMethodExitEventId, LoggerTraceConstants.Title);
                     return Ok(streetNames);
                 }
                 catch (AggregateException ae)
@@ -287,6 +274,5 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 }
             }
         }
-        #endregion Public Methods
     }
 }

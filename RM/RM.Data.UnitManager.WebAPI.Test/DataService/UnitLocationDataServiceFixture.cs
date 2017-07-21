@@ -24,6 +24,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         private Guid postcodeTypeGUID = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918");
         private Guid userId = new Guid("2534AA41-391F-4579-A18D-D7EDF5B5F918");
         private List<PostcodeHierarchy> postcodeHierarchyList;
+        private List<Location> locationList;
 
         /// <summary>
         /// Passed all correct values
@@ -119,7 +120,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
                 }
             };
 
-            List<Location> locationList = new List<Location>()
+            locationList = new List<Location>()
             {
                 new Location()
                 {
@@ -241,5 +242,6 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockUnitManagerDbContext.Object);
             testCandidate = new UnitLocationDataService(mockDatabaseFactory.Object, mockILoggingHelper.Object);
         }
+
     }
 }
