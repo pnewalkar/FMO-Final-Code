@@ -88,6 +88,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.AreEqual(result.Result, 5);
         }
 
+        /// <summary>
+        /// Test for getting PostcodeUnit for Advance search
+        /// </summary>
         [Test]
         public void Test_FetchPostCodeUnitForAdvanceSearch()
         {
@@ -95,6 +98,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.NotNull(result.Result);
         }
 
+        /// <summary>
+        /// Test for getting post code ID by passing post code
+        /// </summary>
         [Test]
         public void Test_GetPostCodeID()
         {
@@ -103,6 +109,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.AreEqual(result.Result, new Guid("B51AA229-C984-4CA6-9C12-510187B81050"));
         }
 
+        /// <summary>
+        /// Test for get the list of route scenarios by the operationstateID and locationID
+        /// </summary>
         [Test]
         public void Test_GetRouteScenarios()
         {
@@ -110,6 +119,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.NotNull(result.Result);
         }
 
+        /// <summary>
+        /// Test for getting postcode details by postcode guids
+        /// </summary>
         [Test]
         public void Test_GetPostcodes()
         {
@@ -117,6 +129,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.NotNull(result.Result);
         }
 
+        /// <summary>
+        /// Test for getting approx location based on the postal code
+        /// </summary>
         [Test]
         public void Test_GetApproxLocation()
         {
@@ -124,6 +139,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.NotNull(result.Result);
         }
 
+        /// <summary>
+        /// Test for getting filtered PostalAddress based on the post code
+        /// </summary>
         [Test]
         public void Test_GetPostalAddressDetails()
         {
@@ -134,6 +152,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.AreEqual(result.Result.SubBuildingName, "subbldg");
         }
 
+        /// <summary>
+        /// Test for getting search result for postal address
+        /// </summary>
         [Test]
         public void Test_GetPostalAddressSearchDetails()
         {
@@ -143,6 +164,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
             Assert.AreEqual(result.Result[0], "123");
         }
 
+        /// <summary>
+        /// Setup for Nunit Tests
+        /// </summary>
         protected override void OnSetup()
         {
             SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
@@ -186,6 +210,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             List<PostalAddressDataDTO> PostalAddressDataServiceList = new List<PostalAddressDataDTO>() { new PostalAddressDataDTO() { AddressType_GUID = new Guid("A867065B-B91E-E711-9F8C-28D244AEF9EC"), BuildingName = "bldg1", BuildingNumber = 1, SubBuildingName = "subbldg" } };
             List<DeliveryRouteDTO> deliveryRouteDTOList = new List<DeliveryRouteDTO>() { };
 
+            // setup methods
             mockUnitManagerIntegrationService.Setup(x => x.GetReferenceDataGuId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new Guid("A867065B-B91E-E711-9F8C-28D244AEF9EC"));
             mockUnitLocationDataService.Setup(x => x.GetUnitsByUser(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(unitLocationDataDTOList);
             mockUnitManagerIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<string>())).ReturnsAsync(referenceDataCategoryDTO);
