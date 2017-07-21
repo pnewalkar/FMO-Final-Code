@@ -103,6 +103,9 @@ namespace RM.Common.ActionManager.WebAPI.Test.DataService
             Assert.AreEqual(result.Result.LocationId, new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A"));
         }
 
+        /// <summary>
+        /// Tests setup for methods and data
+        /// </summary>
         protected override void OnSetup()
         {
             mockLoggingHelper = CreateMock<ILoggingHelper>();

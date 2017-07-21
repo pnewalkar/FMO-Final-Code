@@ -53,6 +53,9 @@ namespace RM.Common.ActionManager.WebAPI.Test
             Assert.IsNotNull(result.Result);
         }
 
+        /// <summary>
+        /// Tests setup for methods and data
+        /// </summary>
         protected override void OnSetup()
         {
             // Data Setup
