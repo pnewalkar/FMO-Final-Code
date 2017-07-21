@@ -97,6 +97,14 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 0);
         }
+        [Test]
+        public async Task Test_GetUnitsByUserForNational()
+        {
+            var result = await testCandidate.GetUnitsByUserForNational(userId, postcodeTypeGUID);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.ToList().Count, 0);
+        }
+
 
         /// <summary>
         /// setup for nunit tests
@@ -147,6 +155,14 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
                     InwardCode = "a",
                     OutwardCode = "b",
                     PostcodeUnit = "unit1",
+                }
+            };
+
+            List<LocationReferenceData> locationReferenceDataList = new List<LocationReferenceData>()
+            {
+                new LocationReferenceData()
+                {
+                    LocationID = new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918")
                 }
             };
 
@@ -206,6 +222,16 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Set<Postcode>()).Returns(mockPostcode.Object);
             mockUnitManagerDbContext.Setup(x => x.Postcodes).Returns(mockPostcode.Object);
             mockUnitManagerDbContext.Setup(c => c.Postcodes.AsNoTracking()).Returns(mockPostcode.Object);
+
+            //Setup for Postcode
+            var mockAsynEnumerable6 = new DbAsyncEnumerable<LocationReferenceData>(locationReferenceDataList);
+            var mockLocationReferenceData = MockDbSet(locationReferenceDataList);
+            mockLocationReferenceData.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable6.AsQueryable().Provider);
+            mockLocationReferenceData.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynEnumerable6.AsQueryable().Expression);
+            mockLocationReferenceData.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable6.AsQueryable().ElementType);
+            mockLocationReferenceData.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<LocationReferenceData>)mockAsynEnumerable6).GetAsyncEnumerator());
+            mockUnitManagerDbContext.Setup(x => x.Set<LocationReferenceData>()).Returns(mockLocationReferenceData.Object);
+            mockUnitManagerDbContext.Setup(x => x.LocationReferenceDatas).Returns(mockLocationReferenceData.Object);
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
