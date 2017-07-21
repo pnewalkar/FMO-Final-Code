@@ -33,6 +33,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetUnitsByUser_PositiveScenario()
         {
+            //TODO
             var result = await testCandidate.GetUnitsByUser(userId, postcodeTypeGUID);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 1);
@@ -101,6 +102,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetUnitsByUserForNational()
         {
+            //TODO
             var result = await testCandidate.GetUnitsByUserForNational(userId, postcodeTypeGUID);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 0);
@@ -144,7 +146,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
                     ID = new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918"),
                     PostcodeTypeGUID = postcodeTypeGUID,
                     ParentPostcode = "111",
-                    Postcode = "123"
+                    Postcode = "123",                   
                 }
             };
 
@@ -163,6 +165,15 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             {
                 new LocationReferenceData()
                 {
+                    LocationID = new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918")
+                }
+            };
+
+            List<LocationPostcodeHierarchy> locationPostcodeHierarchyList = new List<LocationPostcodeHierarchy>()
+            {
+                new LocationPostcodeHierarchy()
+                {
+                    PostcodeHierarchyID = new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918"),
                     LocationID = new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918")
                 }
             };
@@ -233,6 +244,17 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockLocationReferenceData.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<LocationReferenceData>)mockAsynEnumerable6).GetAsyncEnumerator());
             mockUnitManagerDbContext.Setup(x => x.Set<LocationReferenceData>()).Returns(mockLocationReferenceData.Object);
             mockUnitManagerDbContext.Setup(x => x.LocationReferenceDatas).Returns(mockLocationReferenceData.Object);
+
+            //Setup for LocationPostcodeHierarchy
+            var mockAsynEnumerable7 = new DbAsyncEnumerable<LocationPostcodeHierarchy>(locationPostcodeHierarchyList);
+            var mockLocationPostcodeHierarchy = MockDbSet(locationPostcodeHierarchyList);
+            mockLocationPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable7.AsQueryable().Provider);
+            mockLocationPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynEnumerable7.AsQueryable().Expression);
+            mockLocationPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable7.AsQueryable().ElementType);
+            mockLocationPostcodeHierarchy.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<LocationPostcodeHierarchy>)mockAsynEnumerable7).GetAsyncEnumerator());
+            mockUnitManagerDbContext.Setup(x => x.Set<LocationPostcodeHierarchy>()).Returns(mockLocationPostcodeHierarchy.Object);
+            mockUnitManagerDbContext.Setup(x => x.LocationPostcodeHierarchies).Returns(mockLocationPostcodeHierarchy.Object);
+            mockUnitManagerDbContext.Setup(c => c.LocationPostcodeHierarchies.AsNoTracking()).Returns(mockLocationPostcodeHierarchy.Object);
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
