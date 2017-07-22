@@ -51,10 +51,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.DeliveryPointExists"))
             {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(DeliveryPointExists);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
                 string methodName = ThirdPartyAddressLocationConstants.DeliveryPointExists;
+
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
                 string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
                 HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
@@ -65,7 +65,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 bool deliveryPointExists = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
 
                 return deliveryPointExists;
             }
@@ -80,8 +80,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByUDPRNForThirdParty"))
             {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(GetDeliveryPointByUDPRNForThirdParty);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
 
                 string methodName = ThirdPartyAddressLocationConstants.GetDeliveryPointByUDPRNForThirdParty;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
@@ -94,7 +94,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 DeliveryPointDTO deliveryPointDTO = JsonConvert.DeserializeObject<DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return deliveryPointDTO;
             }
         }
@@ -109,8 +109,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataId"))
             {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(GetReferenceDataId);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
 
                 string methodName = ThirdPartyAddressLocationConstants.GetReferenceDataId;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName);
@@ -124,7 +124,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 
                 Tuple<string, SimpleListDTO> simpleListDTO = JsonConvert.DeserializeObject<Tuple<string, SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
                 var getReferenceDataId = simpleListDTO.Item2.ListItems.Where(li => li.Value.Trim().Equals(strRefDataName.Trim(), StringComparison.OrdinalIgnoreCase)).SingleOrDefault().Id;
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return getReferenceDataId;
             }
         }
@@ -138,8 +138,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointLocationOnUDPRN"))
             {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(UpdateDeliveryPointLocationOnUDPRN);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
 
                 string methodName = ThirdPartyAddressLocationConstants.UpdateDeliveryPointLocationOnUDPRN;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
@@ -153,7 +153,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return status;
             }
         }
@@ -168,8 +168,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.CheckIfNotificationExists"))
             {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(CheckIfNotificationExists);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
 
                 string methodName = ThirdPartyAddressLocationConstants.CheckIfNotificationExists;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
@@ -182,38 +182,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 bool notificationExists = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return notificationExists;
-            }
-        }
-
-        /// <summary>
-        /// Delete the notification based on the UDPRN and the action
-        /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <param name="action">action string</param>
-        /// <returns>Task<int></returns>
-        public async Task<int> DeleteNotificationbyUDPRNAndAction(int uDPRN, string action)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Integration.DeleteNotificationbyUDPRNAndAction"))
-            {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                string methodName = ThirdPartyAddressLocationConstants.DeleteNotificationbyUDPRNAndAction;
-                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
-                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-                HttpResponseMessage result = await httpHandler.DeleteAsync(string.Format(serviceUrl + route, uDPRN.ToString(), action));
-                if (!result.IsSuccessStatusCode)
-                {
-                    // LOG ERROR WITH Statuscode
-                    var responseContent = result.ReasonPhrase;
-                    throw new ServiceException(responseContent);
-                }
-
-                int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return status;
             }
         }
 
@@ -226,8 +196,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.AddNewNotification"))
             {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(AddNewNotification);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
 
                 string methodName = ThirdPartyAddressLocationConstants.AddNewNotification;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
@@ -241,7 +211,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 int status = JsonConvert.DeserializeObject<int>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return status;
             }
         }
@@ -255,8 +225,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostCodeSectorByUDPRN"))
             {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(GetPostCodeSectorByUDPRN);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
 
                 string methodName = ThirdPartyAddressLocationConstants.GetPostCodeSectorByUDPRN;
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(UnitManagerDataWebAPIName);
@@ -269,60 +239,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 PostCodeSectorDTO postcodeSectorDTO = JsonConvert.DeserializeObject<PostCodeSectorDTO>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return postcodeSectorDTO;
             }
         }
 
-        /// <summary>
-        /// Get Postal address details depending on the UDPRN
-        /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <returns>returns PostalAddress object</returns>
-        public async Task<PostalAddressDTO> GetPostalAddress(int uDPRN)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetPostalAddress"))
-            {
-                string method = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
-
-                string methodName = ThirdPartyAddressLocationConstants.GetPostalAddress;
-                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressManagerWebAPIName);
-                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-                HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
-                if (!result.IsSuccessStatusCode)
-                {
-                    var responseContent = result.ReasonPhrase;
-                    throw new ServiceException(responseContent);
-                }
-
-                PostalAddressDTO postalAddressDTO = JsonConvert.DeserializeObject<PostalAddressDTO>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(method + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return postalAddressDTO;
-            }
-        }
-
-        /// <summary>
-        /// Get PAF address details depending on the UDPRN
-        /// </summary>
-        /// <param name="uDPRN">UDPRN id</param>
-        /// <returns>returns PostalAddress object</returns>
-        public async Task<PostalAddressDTO> GetPAFAddress(int uDPRN)
-        {
-            string methodName = MethodHelper.GetActualAsyncMethodName();
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(PostalAddressManagerWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-            HttpResponseMessage result = await httpHandler.GetAsync(string.Format(serviceUrl + route, uDPRN.ToString()));
-            if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
-
-            PostalAddressDTO postalAddressDTO = JsonConvert.DeserializeObject<PostalAddressDTO>(result.Content.ReadAsStringAsync().Result);
-            return postalAddressDTO;
-        }
 
         /// <summary>
         /// Get Delivery Point details depending on the UDPRN
@@ -331,8 +252,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <returns>returns DeliveryPoint object</returns>
         public async Task<DeliveryPointDTO> GetDeliveryPointByPostalAddress(Guid addressId)
         {
-            try
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByPostalAddress"))
             {
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(GetDeliveryPointByPostalAddress);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
+
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
                 string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
@@ -345,61 +269,9 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 }
 
                 DeliveryPointDTO deliveryPointDTO = JsonConvert.DeserializeObject<DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
                 return deliveryPointDTO;
             }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Delete Delivery Point details depending on the DeliveryPoint id
-        /// </summary>
-        /// <param name="addressId">Delivery Point id</param>
-        /// <returns>returns whether Delivery Point is deleted or not</returns>
-        public async Task<bool> DeleteDeliveryPoint(Guid id)
-        {
-            string methodName = MethodHelper.GetActualAsyncMethodName();
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-            HttpResponseMessage result = await httpHandler.DeleteAsync(string.Format(serviceUrl + route, id));
-            if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
-
-            bool status = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-            return status;
-        }
-
-        /// <summary>
-        /// Insert new Delivery Point details depending on the DeliveryPoint id
-        /// </summary>
-        /// <param name="objDeliveryPoint">Delivery Point object</param>
-        /// <returns>returns whether Delivery Point is created or not</returns>
-        public async Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint)
-        {
-            string methodName = MethodHelper.GetActualAsyncMethodName();
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-
-            // method logic here
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            }));
-            if (!result.IsSuccessStatusCode)
-            {
-                // Log error with statuscode
-                var responseContent = result.ReasonPhrase;
-                return false;
-            }
-
-            bool isDeliveryPointCreated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-            return Convert.ToBoolean(isDeliveryPointCreated);
         }
 
         /// <summary>
@@ -409,24 +281,32 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <returns>returns Category details</returns>
         public async Task<List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>> GetReferenceDataSimpleLists(List<string> listNames)
         {
-            List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
-
-            string methodName = MethodHelper.GetActualAsyncMethodName();
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, listNames);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataSimpleLists"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(GetReferenceDataSimpleLists);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
+
+                List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> listReferenceCategories = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>();
+
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName);
+                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(serviceUrl + route, listNames);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
+
+                listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
+
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
+                return listReferenceCategories;
             }
-
-            List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
-
-            listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
-            return listReferenceCategories;
         }
 
         /// <summary>
@@ -438,21 +318,63 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         /// <returns></returns>
         public async Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction)
         {
-            string methodName = MethodHelper.GetActualAsyncMethodName();
-            string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
-            string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
-
-            HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(serviceUrl + route, udprn.ToString(), oldAction), newAction);
-            if (!result.IsSuccessStatusCode)
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateNotificationByUDPRN"))
             {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(UpdateNotificationByUDPRN);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
+
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
+                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(string.Format(serviceUrl + route, udprn.ToString(), oldAction), newAction);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
+                return isUpdated;
             }
+        }
 
-            bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
 
-            return isUpdated;
+
+        /// <summary>
+        /// Update Delivery Point by Id
+        /// </summary>
+        /// <param name="deliveryPointDTO">Delivery Point DTO</param>
+        /// <returns>whether DP has been updated successfully</returns>
+        public async Task<bool> UpdateDeliveryPointById(DeliveryPointDTO deliveryPointDTO)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointById"))
+            {
+                string method = typeof(ThirdPartyAddressLocationIntegrationService) + "." + nameof(UpdateDeliveryPointById);
+                loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
+
+                string methodName = MethodHelper.GetActualAsyncMethodName();
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
+                string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
+
+                string serializedDeliveryPoint = JsonConvert.SerializeObject(deliveryPointDTO);
+
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(serviceUrl + route, serializedDeliveryPoint);
+                if (!result.IsSuccessStatusCode)
+                {
+                    // LOG ERROR WITH Statuscode
+                    var responseContent = result.ReasonPhrase;
+                    throw new ServiceException(responseContent);
+                }
+
+                bool isUpdated = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
+
+                loggingHelper.LogMethodExit(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodExitEventId);
+                return isUpdated;
+            }
         }
     }
 }
