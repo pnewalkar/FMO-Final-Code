@@ -24,7 +24,7 @@ namespace RM.CommonLibrary.HelperMiddleware
             string geometry = "geometry";
             string wellKnownText = "wellKnownText";
             string coordinateSystemId = "coordinateSystemId";
-            if (serializer.ContractResolver.GetType() == typeof(CamelCasePropertyNamesContractResolver))
+            if (((JProperty)location.First).Name == "Geometry")
             {
                 geometry = "Geometry";
                 wellKnownText = "WellKnownText";

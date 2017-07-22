@@ -86,6 +86,9 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 
                     var addressLocationEntity = new AddressLocation();
 
+                    Mapper.Initialize(cfg => cfg.CreateMap<AddressLocationDataDTO, AddressLocation>());
+                    addressLocationEntity = Mapper.Map<AddressLocationDataDTO, AddressLocation>(addressLocationDTO);
+
                     GenericMapper.Map(addressLocationDTO, addressLocationEntity);
                     DataContext.AddressLocations.Add(addressLocationEntity);
                     var saveNewAddressLocation = await DataContext.SaveChangesAsync();
@@ -125,8 +128,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
 
                 Mapper.Initialize(cfg =>
                 {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
+                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(2);
                 });
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
@@ -154,6 +157,16 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return notificationExists;
             }
+        }
+
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<AddressLocation, AddressLocationDataDTO>().MaxDepth(1);
+            });
+
+            Mapper.Configuration.CreateMapper();
         }
 
         private static void ConfigureMapper()

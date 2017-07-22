@@ -389,7 +389,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
         [Authorize]
-        [HttpPost("deliverypoint/location")]
+        [HttpPut("deliverypoint/location")]
         public async Task<IActionResult> UpdateDeliveryPointLocationOnID([FromBody]string deliveryPointDTO)
         {
             try

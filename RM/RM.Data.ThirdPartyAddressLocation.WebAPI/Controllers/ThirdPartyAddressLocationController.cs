@@ -104,19 +104,19 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
         /// </summary>
         /// <param name="addressLocationUsrpostdtos"> List of Address Locations</param>
         /// <returns> Task </returns>
-        /*[HttpPost("addresslocation/save")]
+        [HttpPost("addresslocation/save")]
         public async Task<IActionResult> SaveUSRDetails([FromBody] List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos)
         {
             try
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.SaveUSRDetails"))
                 {
-                    if (addressLocationUsrpostdtos != null && addressLocationUsrpostdtos.Count > 0)
+                    if (addressLocationUsrpostdtos == null || addressLocationUsrpostdtos.Count <= 0)
                     {
                         throw new ArgumentException(nameof(addressLocationUsrpostdtos));
                     }
 
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
+                    string methodName = typeof(ThirdPartyAddressLocationController) + "." + nameof(SaveUSRDetails);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
                     if (!ModelState.IsValid)
@@ -124,7 +124,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
                         return BadRequest(ModelState);
                     }
 
-                    //await this.thirdPartyAddressLocationBusinessService.SaveUSRDetails(addressLocationUsrpostdtos);
+                    await this.thirdPartyAddressLocationBusinessService.SaveUSRDetails(addressLocationUsrpostdtos);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationControllerMethodExitEventId, LoggerTraceConstants.Title);
 
                     return Ok("Saved successfully");
@@ -140,6 +140,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
                 var realExceptions = ae.Flatten().InnerException;
                 throw realExceptions;
             }
-        }*/
+        }
+
     }
 }
