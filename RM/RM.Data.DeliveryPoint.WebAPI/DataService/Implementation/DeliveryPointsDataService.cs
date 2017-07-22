@@ -434,37 +434,38 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     DeliveryPoint deliveryPoint =
                         DataContext.DeliveryPoints.SingleOrDefault(dp => dp.ID == deliveryPointDto.ID);
 
-                if (deliveryPoint != null)
-                {
-                    deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
-                    deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
-                    deliveryPoint.NetworkNode.NetworkNodeType_GUID = deliveryPointDto.NetworkNode.NetworkNodeType_GUID;
-                    deliveryPoint.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID;
-                    deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
-                    DataContext.Entry(deliveryPoint).State = EntityState.Modified;
-                    DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
-                    await DataContext.SaveChangesAsync();
-                }
+                    if (deliveryPoint != null)
+                    {
+                        deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
+                        deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
+                        deliveryPoint.NetworkNode.NetworkNodeType_GUID = deliveryPointDto.NetworkNode.NetworkNodeType_GUID;
+                        deliveryPoint.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID;
+                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
+                        DataContext.Entry(deliveryPoint).State = EntityState.Modified;
+                        DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
+                        await DataContext.SaveChangesAsync();
+                    }
 
-                return deliveryPoint.ID;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
-            }
-            catch (NotSupportedException notSupportedException)
-            {
-                notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
-            }
-            catch (ObjectDisposedException disposedException)
-            {
-                disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
-                throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                    return deliveryPoint.ID;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw new DbConcurrencyException(ErrorConstants.Err_Concurrency);
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlUpdateException, string.Concat("delivery point location for:", deliveryPointDto.ID)));
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
+                }
+                catch (ObjectDisposedException disposedException)
+                {
+                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
+                    throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
+                }
             }
         }
 
