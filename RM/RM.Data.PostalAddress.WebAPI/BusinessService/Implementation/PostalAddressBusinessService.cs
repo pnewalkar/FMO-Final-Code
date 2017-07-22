@@ -454,10 +454,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
 
                 // check if third partylocation exists
                 var addressLocation = postalAddressIntegrationService.GetAddressLocationByUDPRN(addDeliveryPointDTO.PostalAddressDTO.UDPRN ?? default(int)).Result;
+
+                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
 
                 if (addressLocation == null)
                 {

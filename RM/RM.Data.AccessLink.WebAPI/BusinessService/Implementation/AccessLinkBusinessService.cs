@@ -735,10 +735,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 {
                     Geometry geometry = new Geometry();
 
-                    geometry.type = res.NetworkLinkDatatDTO.LinkGeometry.SpatialTypeName;
+                    geometry.type = res.NetworkLink.LinkGeometry.SpatialTypeName;
 
 
-                    var resultCoordinates = res.NetworkLinkDatatDTO.LinkGeometry;
+                    var resultCoordinates = res.NetworkLink.LinkGeometry;
 
                     SqlGeometry accessLinksqlGeometry = null;
                     if (geometry.type == Convert.ToString(GeometryType.LineString))

@@ -853,7 +853,7 @@
                 deliveryPointDTO.RowCreateDateTime = deliveryPointDataDTO.RowCreateDateTime;
                 deliveryPointDTO.RowVersion = deliveryPointDataDTO.RowVersion;
 
-                if (deliveryPointDataDTO.DeliveryPointStatus != null)
+                if (deliveryPointDataDTO.DeliveryPointStatus != null && deliveryPointDataDTO.DeliveryPointStatus.Count > 0)
                 {
                     deliveryPointDTO.OperationalStatus_GUID = deliveryPointDataDTO.DeliveryPointStatus.First().DeliveryPointStatusGUID;
                 }

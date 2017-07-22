@@ -21,9 +21,9 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
 
         public byte[] RowVersion { get; set; }
 
-        public  NetworkLinkDataDTO NetworkLinkDatatDTO { get; set; }
+        public  NetworkLinkDataDTO NetworkLink { get; set; }
 
-        public  NetworkLinkDataDTO NetworkLinkDataDTO1 { get; set; }
+        public  NetworkLinkDataDTO NetworkLink1 { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
 
