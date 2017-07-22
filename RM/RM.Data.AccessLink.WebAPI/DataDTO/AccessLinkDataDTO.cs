@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RM.DataManagement.AccessLink.WebAPI.Entities;
+using System;
 
 namespace RM.Data.AccessLink.WebAPI.DataDTOs
 {

@@ -15,6 +15,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for PostalAddressDataService
+    /// </summary>
     [TestFixture]
     public class PostalAddressDataServiceFixture : RepositoryFixtureBase
     {
@@ -25,6 +28,10 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         private Guid postcodeTypeGUID = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918");
         private SearchInputDataDto searchInputDataDto;
 
+        /// <summary>
+        /// Test for getting Gets first five postcodeunits for an unit for a given search text
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetPostcodeUnitForBasicSearch()
         {
@@ -33,6 +40,10 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsTrue(result.ToList().Count == 1);
         }
 
+        /// <summary>
+        /// Test for getting filtered PostalAddress based on the search text
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetPostalAddressSearchDetails()
         {
@@ -42,6 +53,10 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.AreEqual(result.ToList()[0], "12,123");
         }
 
+        /// <summary>
+        /// Test for getting PostalAddressDetails by passing both Postcode and Street
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetPostalAddressDetails_With_PostcodeAndStreet()
         {
@@ -52,6 +67,10 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.AreEqual(result.ToList()[0].Thoroughfare, "12");
         }
 
+        /// <summary>
+        /// Test for getting PostalAddressDetails by passing only Postcode
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetPostalAddressDetails_With_Postcode()
         {
@@ -61,8 +80,12 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.AreEqual(result.ToList()[0].Postcode, "123");
         }
 
+        /// <summary>
+        /// Setup for Nunit Tests
+        /// </summary>
         protected override void OnSetup()
         {
+            // Data Setup
             List<PostcodeHierarchy> postcodeHierarchyList = new List<PostcodeHierarchy>()
             {
                 new PostcodeHierarchy()

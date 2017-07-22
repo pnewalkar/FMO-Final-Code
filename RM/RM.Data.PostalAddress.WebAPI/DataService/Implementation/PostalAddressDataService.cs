@@ -172,6 +172,10 @@
         /// <returns>Whether the record has been inserted correctly</returns>
         public async Task<bool> InsertAddress(PostalAddressDataDTO objPostalAddress, string strFileName)
         {
+            if (objPostalAddress == null)
+            {
+                throw new ArgumentNullException(nameof(objPostalAddress), string.Format(ErrorConstants.Err_ArgumentmentNullException, objPostalAddress));
+            }
             bool isPostalAddressInserted = false;
             PostalAddress objAddress = new PostalAddress();
             try

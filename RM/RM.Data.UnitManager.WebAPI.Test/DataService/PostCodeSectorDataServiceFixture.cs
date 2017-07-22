@@ -14,6 +14,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for PostcodeSectorDataService
+    /// </summary>
     [TestFixture]
     public class PostCodeSectorDataServiceFixture : RepositoryFixtureBase
     {
@@ -80,6 +83,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         /// </summary>
         protected override void OnSetup()
         {
+            //Data Setup
             List<PostcodeHierarchy> postcodeHierarchyList = new List<PostcodeHierarchy>()
             {
                 new PostcodeHierarchy()

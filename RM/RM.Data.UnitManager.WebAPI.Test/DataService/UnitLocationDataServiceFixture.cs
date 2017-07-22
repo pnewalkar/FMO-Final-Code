@@ -14,6 +14,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for UnitLocationDataService
+    /// </summary>
     [TestFixture]
     public class UnitLocationDataServiceFixture : RepositoryFixtureBase
     {
@@ -33,7 +36,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetUnitsByUser_PositiveScenario()
         {
-            //TODO
+            OnSetup();
             var result = await testCandidate.GetUnitsByUser(userId, postcodeTypeGUID);
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 1);
@@ -99,21 +102,28 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsNotNull(result);
             Assert.AreEqual(result.ToList().Count, 0);
         }
+
+        /// <summary>
+        /// get the unit id for user above mail center by passing all correct values
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetUnitsByUserForNational()
         {
-            //TODO
+            OnSetup();
             var result = await testCandidate.GetUnitsByUserForNational(userId, postcodeTypeGUID);
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.ToList().Count, 0);
+            Assert.AreEqual(result.ToList().Count, 1);
+            Assert.AreEqual(result.ToList()[0].Area, "123");
+            Assert.AreEqual(result.ToList()[0].LocationId, new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918"));
         }
-
 
         /// <summary>
         /// setup for nunit tests
         /// </summary>
         protected override void OnSetup()
         {
+            //Data Setup
             List<PostalAddressIdentifier> postalAddressIdentifierList = new List<PostalAddressIdentifier>()
             {
                 new PostalAddressIdentifier()
@@ -146,7 +156,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
                     ID = new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918"),
                     PostcodeTypeGUID = postcodeTypeGUID,
                     ParentPostcode = "111",
-                    Postcode = "123",                   
+                    Postcode = "123",
                 }
             };
 
@@ -222,7 +232,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable4.AsQueryable().ElementType);
             mockPostcodeHierarchy.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<PostcodeHierarchy>)mockAsynEnumerable4).GetAsyncEnumerator());
             mockUnitManagerDbContext.Setup(x => x.Set<PostcodeHierarchy>()).Returns(mockPostcodeHierarchy.Object);
-            mockUnitManagerDbContext.Setup(x => x.PostcodeHierarchies).Returns(mockPostcodeHierarchy.Object);          
+            mockUnitManagerDbContext.Setup(x => x.PostcodeHierarchies).Returns(mockPostcodeHierarchy.Object);
 
             //Setup for Postcode
             var mockAsynEnumerable5 = new DbAsyncEnumerable<Postcode>(postcodeList);
@@ -254,7 +264,6 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockLocationPostcodeHierarchy.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<LocationPostcodeHierarchy>)mockAsynEnumerable7).GetAsyncEnumerator());
             mockUnitManagerDbContext.Setup(x => x.Set<LocationPostcodeHierarchy>()).Returns(mockLocationPostcodeHierarchy.Object);
             mockUnitManagerDbContext.Setup(x => x.LocationPostcodeHierarchies).Returns(mockLocationPostcodeHierarchy.Object);
-            mockUnitManagerDbContext.Setup(c => c.LocationPostcodeHierarchies.AsNoTracking()).Returns(mockLocationPostcodeHierarchy.Object);
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
@@ -264,6 +273,5 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockUnitManagerDbContext.Object);
             testCandidate = new UnitLocationDataService(mockDatabaseFactory.Object, mockILoggingHelper.Object);
         }
-
     }
 }
