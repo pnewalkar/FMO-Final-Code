@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
@@ -26,7 +25,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <param name="postalAddress">list of PostalAddress DTO</param>
         /// <returns>returns true or false</returns>
         Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress);
-
 
         // TODO : To be moved to Unit Manager
         /*
