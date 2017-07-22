@@ -16,13 +16,13 @@ namespace RM.Common.Notification.WebAPI.Test
         private INotificationBusinessService testCandidate;
         private Mock<ILoggingHelper> mockLoggingHelper;
 
-        [Test]
+        /*[Test]
         public void Test_AddNewNotification()
         {
             var result = testCandidate.AddNewNotification(new NotificationDTO() { });
             Assert.NotNull(result);
             Assert.AreEqual(result.Result, 1);
-        }
+        }*/
 
         [Test]
         public void Test_CheckIfNotificationExists()
@@ -49,7 +49,7 @@ namespace RM.Common.Notification.WebAPI.Test
 
         protected override void OnSetup()
         {
-            mockNotificationDataService = CreateMock<INotificationDataService>();
+            /*mockNotificationDataService = CreateMock<INotificationDataService>();
             mockLoggingHelper = CreateMock<ILoggingHelper>();
 
             mockNotificationDataService.Setup(x => x.AddNewNotification(It.IsAny<NotificationDTO>())).ReturnsAsync(1);
@@ -61,7 +61,7 @@ namespace RM.Common.Notification.WebAPI.Test
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
-            testCandidate = new NotificationBusinessService(mockNotificationDataService.Object, mockLoggingHelper.Object);
-        }
+            testCandidate = new NotificationBusinessService(mockNotificationDataService.Object, mockLoggingHelper.Object);*/
     }
+}
 }
