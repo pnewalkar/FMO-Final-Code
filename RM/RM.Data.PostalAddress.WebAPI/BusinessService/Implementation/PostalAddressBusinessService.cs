@@ -450,11 +450,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
                 }
 
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
-                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 // check if third partylocation exists
                 var addressLocation = postalAddressIntegrationService.GetAddressLocationByUDPRN(addDeliveryPointDTO.PostalAddressDTO.UDPRN ?? default(int)).Result;
+
+                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
 
                 if (addressLocation == null)
                 {
