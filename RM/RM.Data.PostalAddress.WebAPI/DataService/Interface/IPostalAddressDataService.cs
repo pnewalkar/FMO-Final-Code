@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
-using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
 {
@@ -62,7 +60,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
 
         /*
-        To be moved to Unit manager 
+        To be moved to Unit manager
         /// <summary>
         /// Filter PostalAddress based on the search text
         /// </summary>
@@ -71,7 +69,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <returns>List of Postcodes</returns>
         Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs);*/
 
-        /* 
+        /*
          To be moved to Unit manager
         /// <summary>
         /// Get Postal Address based on postcode
@@ -109,7 +107,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">objPostalAddress</param>
         /// <returns>bool</returns>
         bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress);
-
 
         /// <summary>
         ///  Get Postal Addresses on adress guid's  as search criteria

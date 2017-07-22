@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RM.Data.PostalAddress.WebAPI.Utils
+﻿namespace RM.Data.PostalAddress.WebAPI.Utils
 {
     public static class PostalAddressConstants
     {
@@ -20,7 +15,7 @@ namespace RM.Data.PostalAddress.WebAPI.Utils
         internal const string TASKSOURCE = "SYSTEM";
         internal const string PostalAddressStatus = "Postal Address Status";
         internal const string PostalAddressType = "Postal Address Type";
-        
+
         internal const string LiveAddressStatus = "Live";
         internal const string OperationalStatusGUIDLive = "Live";
         internal const string OperationalStatusGUIDLivePending = "Live Pending Location";

@@ -13,14 +13,13 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.DataManagement.PostalAddress.WebAPI.Entities;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface;
-using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation;
-using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation;
 using RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces;
-using Microsoft.Practices.EnterpriseLibrary.Logging;
+using RM.DataManagement.PostalAddress.WebAPI.Entities;
+using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementation;
+using RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface;
 
 namespace RM.DataManagement.PostalAddress.WebAPI
 {

@@ -9,6 +9,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         {
             this.PostalAddressStatus = new List<PostalAddressStatusDataDTO>();
         }
+
         /// <summary>
         /// This class represents DB data transfer object for PostalAddress entity
         /// </summary>
@@ -55,6 +56,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         public virtual ICollection<DeliveryPointDataDTO> DeliveryPoints { get; set; }
 
         public virtual ICollection<PostalAddressStatusDataDTO> PostalAddressStatus { get; set; }
-
     }
 }
