@@ -21,7 +21,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         /// <summary>
-        /// Parameterised Constructor 
+        /// Parameterised Constructor
         /// </summary>
         /// <param name="databaseFactory"></param>
         /// <param name="loggingHelper"></param>
@@ -44,7 +44,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                var postCodeDataDto = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
+                var postcodeDataDTO = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
                                              join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
                                              where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
@@ -56,7 +56,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                              }).Take(searchInputs.SearchResultCount).ToListAsync();
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return postCodeDataDto;
+                return postcodeDataDTO;
             }
         }
 
@@ -72,7 +72,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                var postCodeDataDto = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
+                var PostcodeDataDTO = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
                                              join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
                                              where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
@@ -84,7 +84,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                              }).CountAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return postCodeDataDto;
+                return PostcodeDataDTO;
             }
         }
 
@@ -100,7 +100,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                var postCodeDataDto = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
+                var PostcodeDataDTO = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
                                              join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
                                              where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
@@ -112,7 +112,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                              }).ToListAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return postCodeDataDto;
+                return PostcodeDataDTO;
             }
         }
 
@@ -154,7 +154,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
                 // get approx loaction for that post code
-                var approxLocationForPostCode = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode == postcode);
+                var approxLocationForPostCode = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode == postcode);
 
                 if (approxLocationForPostCode != null)
                 {
@@ -164,10 +164,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                 {
                     var postcodeSector = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
                                           where ph.Postcode == postcode
-                                          select ph.ParentPostcode).FirstOrDefault();
+                                          select ph.ParentPostcode.Trim()).FirstOrDefault();
 
                     // get approx location for the pose code sector
-                    var approxLocationForPostCodeSector = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeSector));
+                    var approxLocationForPostCodeSector = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode.Replace(" ","").StartsWith(postcodeSector));
 
                     if (approxLocationForPostCodeSector != null)
                     {
@@ -177,10 +177,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                     {
                         var postcodeDistrict = (from ph in DataContext.PostcodeHierarchies.AsNoTracking()
                                                 where ph.Postcode == postcodeSector
-                                                select ph.ParentPostcode).FirstOrDefault();
+                                                select ph.ParentPostcode.Trim()).FirstOrDefault();
 
                         // get approx location for the pose code sector
-                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.StartsWith(postcodeDistrict));
+                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.Replace(" ", "").StartsWith(postcodeDistrict));
 
                         if (approxLocationForPostCodeDistrict != null)
                         {

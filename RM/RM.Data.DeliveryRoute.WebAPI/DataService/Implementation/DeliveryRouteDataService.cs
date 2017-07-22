@@ -196,26 +196,33 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteByDeliverypoint);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
                 RouteDataDTO routeData = null;
-                var unSequencedBlockId = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault().BlockID;
-                var route = DataContext.Routes.AsNoTracking().Where(n => n.UnSequencedBlockID == unSequencedBlockId).SingleOrDefault();
+                var block = DataContext.BlockSequences.AsNoTracking().Where(n => n.LocationID == deliveryPointId).SingleOrDefault();
 
-                if (route != null)
+                if (block != null)
                 {
-                    var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == route.ID || n.SecondaryRouteGUID == route.ID).SingleOrDefaultAsync();
-                    if (postCode != null)
+                    var routeDetails = (from route in DataContext.Routes.AsNoTracking()
+                                        join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
+                                        where route.UnSequencedBlockID == block.BlockID || routeActivity.BlockID == block.BlockID
+                                        select route).FirstOrDefault();
+
+                    if (routeDetails != null)
                     {
-                        if (route.ID == postCode.PrimaryRouteGUID)
+                        var postCode = await DataContext.Postcodes.AsNoTracking().Where(n => n.PrimaryRouteGUID == routeDetails.ID || n.SecondaryRouteGUID == routeDetails.ID).SingleOrDefaultAsync();
+                        if (postCode != null)
                         {
-                            routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + route.RouteName };
+                            if (routeDetails.ID == postCode.PrimaryRouteGUID)
+                            {
+                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.PrimaryRoute + routeDetails.RouteName };
+                            }
+                            else if (routeDetails.ID == postCode.SecondaryRouteGUID)
+                            {
+                                routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + routeDetails.RouteName };
+                            }
                         }
-                        else if (route.ID == postCode.SecondaryRouteGUID)
+                        else
                         {
-                            routeData = new RouteDataDTO { ID = route.ID, RouteName = DeliveryRouteConstants.SecondaryRoute + route.RouteName };
+                            routeData = new RouteDataDTO { ID = routeDetails.ID, RouteName = routeDetails.RouteName };
                         }
-                    }
-                    else
-                    {
-                        routeData = new RouteDataDTO { ID = route.ID, RouteName = route.RouteName };
                     }
                 }
 
@@ -467,33 +474,41 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <returns>Comma separated value of paried routes</returns>
         private async Task<string> GetPairedRoutes(Guid routeId, Guid sharedVanId)
         {
-            string pairedRoute = string.Empty;
+            List<string> pairedRoutes = new List<string>();
 
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPairedRoutes"))
             {
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetPairedRoutes);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
 
-                var routeResults = await (from r in DataContext.Routes.AsNoTracking()
-                                          join pr in DataContext.Routes.AsNoTracking() on r.PairedRouteID equals pr.ID
-                                          where r.ID == routeId && r.RouteMethodTypeGUID == sharedVanId
-                                          select new
-                                          {
-                                              RouteNumber = pr.RouteNumber
-                                          }).ToListAsync();
+                var route = await DataContext.Routes.AsNoTracking().Where(r => r.ID == routeId).SingleOrDefaultAsync();
 
-                if (routeResults != null && routeResults.Count > 0)
+                if (route != null && route.PairedRouteID != null)
                 {
-                    foreach (var item in routeResults)
-                    {
-                        pairedRoute = pairedRoute + "," + item.RouteNumber;
-                    }
-                    pairedRoute = Regex.Replace(pairedRoute, ",+", ",").Trim(',');
+                    PopulatePairedRoutes(route.PairedRouteID.Value, pairedRoutes, sharedVanId);
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
             }
-            return pairedRoute;
+            return string.Join(",", pairedRoutes);
+        }
+
+        /// <summary>
+        /// Method to populate paired routes
+        /// </summary>
+        /// <param name="pairedRouteId">Paired route Id</param>
+        /// <param name="pairedRoutes">list of paired routes</param>
+        private void PopulatePairedRoutes(Guid pairedRouteId, List<string> pairedRoutes, Guid sharedVanId)
+        {
+            Route route = DataContext.Routes.Where(n => n.ID == pairedRouteId && n.RouteMethodTypeGUID == sharedVanId).SingleOrDefault();
+            if (route != null)
+            {
+                pairedRoutes.Add(route.RouteNumber.Trim());
+                if (route.PairedRouteID != null)
+                {
+                    PopulatePairedRoutes(route.PairedRouteID.Value, pairedRoutes, sharedVanId);
+                }
+            }
         }
 
         /// <summary>

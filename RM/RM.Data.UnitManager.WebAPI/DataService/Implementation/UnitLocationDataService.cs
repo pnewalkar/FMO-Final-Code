@@ -38,10 +38,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         /// <returns>
         /// List of <see cref="UnitLocationDTO"/>.
         /// </returns>
-        public async Task<IEnumerable<UnitLocationDataDTO>> GetDeliveryUnitsByUser(Guid userId, Guid postcodeAreaGUID)
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUser(Guid userId, Guid postcodeAreaGUID)
         {
-            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetDeliveryUnitsByUser);
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetDeliveryUnitsByUser"))
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetUnitsByUser);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUnitsByUser"))
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
 
@@ -56,12 +56,49 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                               Shape = location.Shape,
                                               Area = (
                                                       from postcodeHierarchy in DataContext.PostcodeHierarchies
-                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID
+                                                      join lh in DataContext.LocationPostcodeHierarchies on postcodeHierarchy.ID equals lh.PostcodeHierarchyID
+                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID && location.ID == lh.LocationID
                                                       select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty,
                                           }).ToListAsync();
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
                 return unitLocation;
+            }
+        }
+
+        /// <summary>
+        /// Gets the all units for an user whose access level is above mail centre.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="postcodeAreaGUID">The post code area unique identifier.</param>
+        /// <param name="currentUserUnitType">The current user unit type.</param>
+        /// <returns>
+        /// List of <see cref="UnitLocationDTO"/>.
+        /// </returns>
+        public async Task<IEnumerable<UnitLocationDataDTO>> GetUnitsByUserForNational(Guid userId, Guid postcodeAreaGUID)
+        {
+            string methodName = typeof(UnitLocationDataService) + "." + nameof(GetUnitsByUserForNational);
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUnitsByUserForNational"))
+            {
+                loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodEntryEventId);
+
+                var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
+                                             join lref in DataContext.LocationReferenceDatas on r.LocationID equals lref.LocationID
+                                             join location in DataContext.Locations.AsNoTracking() on lref.LocationID equals location.ID
+                                             where r.UserID == userId
+                                             select new UnitLocationDataDTO
+                                             {
+                                                 Shape = location.Shape,
+                                                 LocationId = location.ID,
+                                                 Area = (
+                                                      from postcodeHierarchy in DataContext.PostcodeHierarchies
+                                                      join lh in DataContext.LocationPostcodeHierarchies on postcodeHierarchy.ID equals lh.PostcodeHierarchyID
+                                                      where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID && location.ID == lh.LocationID
+                                                      select postcodeHierarchy.Postcode
+                                                      ).FirstOrDefault() ?? string.Empty
+                                             }).ToListAsync();
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
+                return userUnitDetails;
             }
         }
 

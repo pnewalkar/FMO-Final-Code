@@ -8,6 +8,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
         {
             this.Location = new LocationDataDTO();
         }
+
         public Guid ID { get; set; }
 
         public Guid NetworkNodeType_GUID { get; set; }

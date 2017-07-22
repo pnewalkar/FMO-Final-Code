@@ -5,18 +5,16 @@
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
-    using System.Diagnostics;
     using System.Linq;
-    using System.Reflection;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
-    using DTO;
     using Entities;
     using CommonLibrary.ExceptionMiddleware;
     using CommonLibrary.HelperMiddleware;
     using Interfaces;
     using MappingConfiguration;
-    using Data.AccessLink.WebAPI.Utils;
+    using AutoMapper;
+    using Data.AccessLink.WebAPI.DataDTOs;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -25,7 +23,11 @@
     {
         private const int BNGCOORDINATESYSTEM = 27700;
 
+
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.AccessLinkAPIPriority;
+        private int entryEventId = LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId;
 
         public AccessLinkDataService(IDatabaseFactory<AccessLinkDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
@@ -39,17 +41,36 @@
         /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
         /// <param name="unitGuid">unit unique identifier.</param>
         /// <returns>List of Access Link Dto</returns>
-        public List<AccessLinkDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
+        public List<AccessLinkDataDTO> GetAccessLinks(string boundingBoxCoordinates, Guid unitGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAccessLinks"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkDataService) + "." + nameof(GetAccessLinks);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<AccessLink> result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
-                var accessLink = GenericMapper.MapList<AccessLink, AccessLinkDTO>(result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return accessLink;
+                var result = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
+                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
+
+                });
+                Mapper.Configuration.CreateMapper();
+
+                var resultValue = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
+                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
+
+                });
+                Mapper.Configuration.CreateMapper();
+
+                var accesslink = Mapper.Map<List<AccessLink>, List<AccessLinkDataDTO>>(resultValue);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return accesslink;
             }
         }
 
@@ -58,85 +79,141 @@
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
-        public bool CreateAccessLink(AccessLinkDTO accessLinkDto)
+        public bool CreateAutomaticAccessLink(NetworkLinkDataDTO networkLinkDataDTO)
         {
-            // to do
+            // TODO
             try
             {
-                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAccessLink"))
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAutomaticAccessLink"))
                 {
-                    string methodName = MethodBase.GetCurrentMethod().Name;
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    string methodName = typeof(AccessLinkDataService) + "." + nameof(CreateAutomaticAccessLink);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     bool accessLinkCreationSuccess = false;
-                    Guid locationGuid = Guid.NewGuid();
-                    Guid accessLinkGuid = Guid.NewGuid();
-
+                    AccessLink accessLink = new Entities.AccessLink();
                     // need to save Location for Access link with shape as NetworkIntersectionPoint i.e. roadlink and access link intersection
-                    Location location = new Location
-                    {
-                        ID = locationGuid,
-                        Shape = accessLinkDto.NetworkIntersectionPoint,
-                        RowCreateDateTime = DateTime.UtcNow
-                    };
-                    NetworkNode networkNode = new NetworkNode
-                    {
-                        ID = locationGuid,
-                        DataProviderGUID = Guid.Empty,// AccessLinkConstants.Internal,
-                        RowCreateDateTime = DateTime.UtcNow,
-                        NetworkNodeType_GUID = Guid.Empty,// AccessLinkConstants.AccessLinkDataProviderGUID,
-                    };
-                    location.NetworkNode = networkNode;
+                    NetworkNode networkNode = new NetworkNode();
+                    NetworkLink networkLink = new Entities.NetworkLink();
+                    NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
+                    networkLink.NetworkNode = new Entities.NetworkNode();
+                    networkLink.NetworkNode.Location = new Entities.Location();
+                    networkLink.NetworkNode.Location = new Location();
+                    networkLink.NetworkNode.Location.ID = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.ID;
+                    networkLink.NetworkNode.Location.Shape = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.Shape;
+                    networkLink.NetworkNode.Location.RowCreateDateTime = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.RowCreateDateTime;
 
-                    NetworkLink networkLink = new NetworkLink
-                    {
-                        ID = accessLinkGuid,
-                        DataProviderGUID = Guid.Empty,// AccessLinkConstants.Internal,
-                        NetworkLinkTypeGUID = Guid.Empty,// (AccessLink)
-                        StartNodeID = accessLinkDto.OperationalObject_GUID,
-                        EndNodeID = locationGuid,
-                        LinkLength = accessLinkDto.ActualLengthMeter,
-                        LinkGeometry = accessLinkDto.AccessLinkLine,
-                        RowCreateDateTime = DateTime.Now
-                    };
-                    AccessLink accessLink = new AccessLink
-                    {
-                        ID = accessLinkGuid,
-                        //OperationalObjectPoint = accessLinkDto.OperationalObjectPoint,
-                        //NetworkIntersectionPoint = accessLinkDto.NetworkIntersectionPoint,
-                        //AccessLinkLine = accessLinkDto.AccessLinkLine,
-                        //ActualLengthMeter = accessLinkDto.ActualLengthMeter,
-                        WorkloadLengthMeter = accessLinkDto.WorkloadLengthMeter,
-                        Approved = accessLinkDto.Approved,
-                        //OperationalObject_GUID = accessLinkDto.OperationalObject_GUID,
-                        ConnectedNetworkLinkID = accessLinkDto.NetworkLink_GUID,
-                        AccessLinkTypeGUID = accessLinkDto.AccessLinkType_GUID,
-                        //LinkStatus_GUID = accessLinkDto.LinkStatus_GUID,
-                        LinkDirectionGUID = accessLinkDto.LinkDirection_GUID,
-                        //OperationalObjectType_GUID = accessLinkDto.OperationalObjectType_GUID
-                    };
+                    networkLink.ID = networkLinkDataDTO.ID;
+                    networkLink.DataProviderGUID = networkLinkDataDTO.DataProviderGUID;
+                    networkLink.NetworkLinkTypeGUID = networkLinkDataDTO.NetworkLinkTypeGUID;
+                    networkLink.StartNodeID = networkLinkDataDTO.StartNodeID;
+                    networkLink.EndNodeID = networkLinkDataDTO.EndNodeID;
+                    networkLink.LinkLength = networkLinkDataDTO.LinkLength;
+                    networkLink.LinkGeometry = networkLinkDataDTO.LinkGeometry;
+                    networkLink.RowCreateDateTime = networkLinkDataDTO.RowCreateDateTime;
+                    AccessLinkDataDTO accessLinkDataDTO = networkLinkDataDTO.AccessLinkDataDTOs;
+
+                    accessLink.ID = accessLinkDataDTO.ID;
+                    accessLink.WorkloadLengthMeter = accessLinkDataDTO.WorkloadLengthMeter;
+                    accessLink.Approved = accessLinkDataDTO.Approved;
+                    accessLink.ConnectedNetworkLinkID = new Guid();
+                    accessLink.AccessLinkTypeGUID = accessLinkDataDTO.AccessLinkTypeGUID;
+                    accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
+                    accessLink.RowCreateDateTime = DateTime.UtcNow;
+                    networkLink.AccessLink = accessLink;
+
+                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatusDataDTO;
                     AccessLinkStatus accessLinkStatus = new AccessLinkStatus
                     {
-                        ID = Guid.Empty,
-                        NetworkLinkID = accessLinkGuid,
-                        AccessLinkStatusGUID = Guid.Empty,
-                        StartDateTime = DateTime.UtcNow,
-                        RowCreateDateTime = DateTime.UtcNow
+                        ID = accessLinkStatusDataDTO.ID,
+                        NetworkLinkID = accessLinkStatusDataDTO.NetworkLinkID,
+                        AccessLinkStatusGUID = accessLinkStatusDataDTO.AccessLinkStatusGUID,
+                        StartDateTime = accessLinkStatusDataDTO.StartDateTime,
+                        RowCreateDateTime = accessLinkStatusDataDTO.RowCreateDateTime
                     };
+                    accessLink.AccessLinkStatus.Add(accessLinkStatus);
 
 
+                    accessLink.NetworkLink = networkLink1;
+                    accessLink.NetworkLink1 = networkLink1;
                     DataContext.AccessLinks.Add(accessLink);
 
                     accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
                     return accessLinkCreationSuccess;
                 }
             }
+
             catch (DbUpdateException dbUpdateException)
             {
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
             }
+
         }
+        /// <summary>
+        /// Method to create manual access link in db
+        /// </summary>
+        /// <param name="networkLinkDataDTO"></param>
+        /// <returns></returns>
+
+        public bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO)
+        {
+            try
+            {
+                using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateManualAccessLink"))
+                {
+                    string methodName = typeof(AccessLinkDataService) + "." + nameof(CreateManualAccessLink);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
+                    bool accessLinkCreationSuccess = false;
+                    AccessLink accessLink = new Entities.AccessLink();
+
+                    NetworkNode networkNode = new NetworkNode();
+                    NetworkLink networkLink = new Entities.NetworkLink();
+
+                    NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
+                    AccessLinkDataDTO accessLinkDataDTO = networkLinkDataDTO.AccessLinkDataDTOs;
+
+                    accessLink.ID = accessLinkDataDTO.ID;
+                    accessLink.WorkloadLengthMeter = accessLinkDataDTO.WorkloadLengthMeter;
+                    accessLink.Approved = accessLinkDataDTO.Approved;
+                    accessLink.ConnectedNetworkLinkID = new Guid();
+                    accessLink.AccessLinkTypeGUID = accessLinkDataDTO.AccessLinkTypeGUID;
+                    accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
+                    accessLink.RowCreateDateTime = DateTime.UtcNow;
+                    // networkLink.AccessLink = accessLink;
+
+                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatusDataDTO;
+                    AccessLinkStatus accessLinkStatus = new AccessLinkStatus
+                    {
+                        ID = accessLinkStatusDataDTO.ID,
+                        NetworkLinkID = accessLinkStatusDataDTO.NetworkLinkID,
+                        AccessLinkStatusGUID = accessLinkStatusDataDTO.AccessLinkStatusGUID,
+                        StartDateTime = accessLinkStatusDataDTO.StartDateTime,
+                        RowCreateDateTime = accessLinkStatusDataDTO.RowCreateDateTime
+                    };
+                    accessLink.AccessLinkStatus.Add(accessLinkStatus);
+
+                    accessLink.NetworkLink = networkLink1;
+                    accessLink.NetworkLink1 = networkLink1;
+                    DataContext.AccessLinks.Add(accessLink);
+
+                    accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
+
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+
+                    return accessLinkCreationSuccess;
+                }
+            }
+
+            catch (DbUpdateException dbUpdateException)
+            {
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
+            }
+    
+        }
+
 
         /// <summary>
         /// this method is used to get the access links crossing the created access link
@@ -144,27 +221,26 @@
         /// <param name="boundingBoxCoordinates">bbox coordinates</param>
         /// <param name="accessLink">access link coordinate array</param>
         /// <returns>List<AccessLinkDTO> </returns>
-        public List<AccessLinkDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink)
+        public List<AccessLinkDataDTO> GetAccessLinksCrossingOperationalObject(string boundingBoxCoordinates, DbGeometry accessLink)
         {
-            // to do
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetAccessLinksCrossingOperationalObject"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkDataService) + "." + nameof(GetAccessLinksCrossingOperationalObject);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<AccessLinkDTO> accessLinkDTOs = new List<AccessLinkDTO>();
+                List<AccessLinkDataDTO> accessLinkDataDTOs = new List<AccessLinkDataDTO>();
                 DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
 
                 List<AccessLink> crossingAccessLinks = null; // DataContext.AccessLinks.AsNoTracking().Where(al => al.AccessLinkLine != null && al.AccessLinkLine.Intersects(extent) && al.AccessLinkLine.Crosses(accessLink)).ToList();
-                List<AccessLinkDTO> crossingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDTO>(crossingAccessLinks);
-                accessLinkDTOs.AddRange(crossingAccessLinkDTOs);
+                List<AccessLinkDataDTO> crossingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDataDTO>(crossingAccessLinks);
+                accessLinkDataDTOs.AddRange(crossingAccessLinkDTOs);
 
                 List<AccessLink> overLappingAccessLinks = null; // DataContext.AccessLinks.AsNoTracking().Where(al => al.AccessLinkLine != null && al.AccessLinkLine.Intersects(extent) && al.AccessLinkLine.Overlaps(accessLink)).ToList();
-                List<AccessLinkDTO> overLappingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDTO>(overLappingAccessLinks);
-                accessLinkDTOs.AddRange(overLappingAccessLinkDTOs);
+                List<AccessLinkDataDTO> overLappingAccessLinkDTOs = GenericMapper.MapList<AccessLink, AccessLinkDataDTO>(overLappingAccessLinks);
+                accessLinkDataDTOs.AddRange(overLappingAccessLinkDTOs);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return accessLinkDTOs;
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return accessLinkDataDTOs;
             }
         }
 
@@ -176,7 +252,6 @@
         /// <returns>Link of Access Link Entity</returns>
         private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
         {
-            // to do (UnitLocations is not available)
             if (!string.IsNullOrEmpty(boundingBoxCoordinates))
             {
                 DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();
@@ -186,6 +261,33 @@
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Getting count of Deliverypoint intersecs with other DP.
+        /// </summary>
+        /// <param name="operationalObjectPoint"></param>
+        /// <param name="accessLink"></param>
+        /// <returns>integer count</returns>
+        public int GetIntersectionCountForDeliveryPoint(DbGeometry operationalObjectPoint, DbGeometry accessLink)
+        {
+            var intersectionCount = DataContext.DeliveryPoints.AsNoTracking()
+                  .Count(m => m.NetworkNode.Location.Shape.Intersects(accessLink) && !m.NetworkNode.Location.Shape.SpatialEquals(operationalObjectPoint));
+
+            return intersectionCount;
+        }
+
+        /// <summary>
+        /// Getting count of accesslink crosses or overlaps with other accesslink
+        /// </summary>
+        /// <param name="operationalObjectPoint"></param>
+        /// <param name="accessLink"></param>
+        /// <returns>integer count</returns>
+        public int GetAccessLinkCountForCrossesorOverLaps(DbGeometry operationalObjectPoint, DbGeometry accessLink)
+        {
+            var accesslinkCount = DataContext.NetworkLinks.AsNoTracking().Where(al => al.LinkGeometry != null && al.LinkGeometry.Intersects(accessLink) && al.LinkGeometry.Crosses(accessLink)).ToList();
+
+            return accesslinkCount.Count;
         }
     }
 }

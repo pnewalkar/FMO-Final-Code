@@ -31,7 +31,7 @@ namespace Fmo.API.Services.Controllers
 
         #region Constructors
 
-        public PostalAddressController(IPostalAddressBusinessService _businessService, ILoggingHelper _loggingHelper)
+        public PostalAddressController(IPostalAddressBusinessService businessService, ILoggingHelper loggingHelper)
         {
             this.businessService = businessService;
             this.loggingHelper = loggingHelper;
@@ -74,14 +74,14 @@ namespace Fmo.API.Services.Controllers
                     return Ok(isSaved);
                 }
             }
-            catch (AggregateException ae)
+            catch (AggregateException ex)
             {
-                foreach (var exception in ae.InnerExceptions)
+                foreach (var exception in ex.InnerExceptions)
                 {
                     loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
                 }
 
-                var realExceptions = ae.Flatten().InnerException;
+                var realExceptions = ex.Flatten().InnerException;
                 throw realExceptions;
             }
         }
@@ -117,87 +117,88 @@ namespace Fmo.API.Services.Controllers
                     return Ok(isPAFSaved);
                 }
             }
-            catch (AggregateException ae)
+            catch (AggregateException ex)
             {
-                foreach (var exception in ae.InnerExceptions)
+                foreach (var exception in ex.InnerExceptions)
                 {
                     loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
                 }
 
-                var realExceptions = ae.Flatten().InnerException;
+                var realExceptions = ex.Flatten().InnerException;
                 throw realExceptions;
             }
         }
 
-        /// <summary>
-        /// Api searches pstcode and thorough in postal address entity on basis of searhtext
-        /// </summary>
-        /// <param name="searchText">searchText</param>
-        /// <returns></returns>
-        /*[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        [HttpGet("postaladdress/search/{searchText}")]
-        public async Task<IActionResult> SearchAddressdetails(string searchText)
-        {
-            try
-            {
-                string methodName = typeof(PostalAddressController) + "." + nameof(SearchAddressdetails);
-                using (loggingHelper.RMTraceManager.StartTrace("Controller.SearchAddressdetails"))
-                {
-                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+        //// TODO : to be moved to unit manager as per new archimate
+        ///// <summary>
+        ///// Api searches pstcode and thorough in postal address entity on basis of searhtext
+        ///// </summary>
+        ///// <param name="searchText">searchText</param>
+        ///// <returns></returns>
+        //[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        //[HttpGet("postaladdress/search/{searchText}")]
+        //public async Task<IActionResult> SearchAddressdetails(string searchText)
+        //{
+        //    try
+        //    {
+        //        string methodName = typeof(PostalAddressController) + "." + nameof(SearchAddressdetails);
+        //        using (loggingHelper.RMTraceManager.StartTrace("Controller.SearchAddressdetails"))
+        //        {
+        //            loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    List<string> postalAddressList = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
+        //            List<string> postalAddressList = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
 
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+        //            loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                    return Ok(postalAddressList);
-                }
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
-                }
+        //            return Ok(postalAddressList);
+        //        }
+        //    }
+        //    catch (AggregateException ae)
+        //    {
+        //        foreach (var exception in ae.InnerExceptions)
+        //        {
+        //            loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
+        //        }
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
-            }
-        }
+        //        var realExceptions = ae.Flatten().InnerException;
+        //        throw realExceptions;
+        //    }
+        //}
 
-        /// <summary>
-        /// Filters postal address on basis of postcode
-        /// </summary>
-        /// <param name="postCode">postcode</param>
-        /// <returns></returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        [HttpGet("postaladdress/filter")]
-        public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
-        {
-            try
-            {
-                using (loggingHelper.RMTraceManager.StartTrace("Controller.GetAddressByPostCode"))
-                {
-                    string methodName = MethodHelper.GetActualAsyncMethodName();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
+        ///// <summary>
+        ///// Filters postal address on basis of postcode
+        ///// </summary>
+        ///// <param name="postCode">postcode</param>
+        ///// <returns></returns>
+        //[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        //[HttpGet("postaladdress/filter")]
+        //public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
+        //{
+        //    try
+        //    {
+        //        using (loggingHelper.RMTraceManager.StartTrace("Controller.GetAddressByPostCode"))
+        //        {
+        //            string methodName = MethodHelper.GetActualAsyncMethodName();
+        //            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
 
-                    PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
+        //            PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
 
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+        //            loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                    return Ok(postalAddressDto);
-                }
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var exception in ae.InnerExceptions)
-                {
-                    loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
-                }
+        //            return Ok(postalAddressDto);
+        //        }
+        //    }
+        //    catch (AggregateException ae)
+        //    {
+        //        foreach (var exception in ae.InnerExceptions)
+        //        {
+        //            loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
+        //        }
 
-                var realExceptions = ae.Flatten().InnerException;
-                throw realExceptions;
-            }
-        }*/
+        //        var realExceptions = ae.Flatten().InnerException;
+        //        throw realExceptions;
+        //    }
+        //}
 
         /// <summary>
         ///  Filters postal address on basis of postal address id.
@@ -246,14 +247,14 @@ namespace Fmo.API.Services.Controllers
                     return Ok(postalAddressDTO);
                 }
             }
-            catch (AggregateException ae)
+            catch (AggregateException ex)
             {
-                foreach (var exception in ae.InnerExceptions)
+                foreach (var exception in ex.InnerExceptions)
                 {
                     loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
                 }
 
-                var realExceptions = ae.Flatten().InnerException;
+                var realExceptions = ex.Flatten().InnerException;
                 throw realExceptions;
             }
         }
@@ -325,14 +326,14 @@ namespace Fmo.API.Services.Controllers
                     return Ok(deliveryPointAddressDetails);
                 }
             }
-            catch (AggregateException ae)
+            catch (AggregateException ex)
             {
-                foreach (var exception in ae.InnerExceptions)
+                foreach (var exception in ex.InnerExceptions)
                 {
                     loggingHelper.Log(exception, TraceEventType.Error);
                 }
 
-                var realExceptions = ae.Flatten().InnerException;
+                var realExceptions = ex.Flatten().InnerException;
                 throw realExceptions;
             }
         }
@@ -356,14 +357,14 @@ namespace Fmo.API.Services.Controllers
                     return Ok(addressDetails);
                 }
             }
-            catch (AggregateException ae)
+            catch (AggregateException ex)
             {
-                foreach (var exception in ae.InnerExceptions)
+                foreach (var exception in ex.InnerExceptions)
                 {
                     loggingHelper.Log(exception, TraceEventType.Error);
                 }
 
-                var realExceptions = ae.Flatten().InnerException;
+                var realExceptions = ex.Flatten().InnerException;
                 throw realExceptions;
             }
         }
@@ -388,14 +389,14 @@ namespace Fmo.API.Services.Controllers
                     return postalAddress;
                 }
             }
-            catch (AggregateException ae)
+            catch (AggregateException ex)
             {
-                foreach (var exception in ae.InnerExceptions)
+                foreach (var exception in ex.InnerExceptions)
                 {
                     loggingHelper.Log(exception, TraceEventType.Error);
                 }
 
-                var realExceptions = ae.Flatten().InnerException;
+                var realExceptions = ex.Flatten().InnerException;
                 throw realExceptions;
             }
         }

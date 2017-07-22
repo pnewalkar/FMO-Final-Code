@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO
+namespace RM.DataManagement.AccessLink.WebAPI.DTOs
 {
     public class ReferenceDataDTO
     {

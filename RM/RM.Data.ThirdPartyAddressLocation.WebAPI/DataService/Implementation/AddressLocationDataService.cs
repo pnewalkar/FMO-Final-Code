@@ -169,5 +169,15 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
             Mapper.Configuration.CreateMapper();
         }
 
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<AddressLocation, AddressLocationDataDTO>().MaxDepth(1);
+            });
+
+            Mapper.Configuration.CreateMapper();
+        }
+
     }
 }

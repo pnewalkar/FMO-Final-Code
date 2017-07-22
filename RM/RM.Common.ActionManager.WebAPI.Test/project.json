@@ -1,5 +1,7 @@
-﻿{
-  "version": "1.0.0-*",
+{
+  "title": "RM.Common.ActionManager.WebAPI.Test",
+  "copyright": "Copyright © Royal Mail Group 2017",
+  "version": "1.0.0-0",
 
   "dependencies": {
     "Moq": "4.7.1",

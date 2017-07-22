@@ -85,7 +85,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                     DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationID).Select(x => x.Shape).SingleOrDefault();
 
                     var roadLinkTypeId = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkLinkType)
-                                                                        .SelectMany(x => x.ReferenceDatas).Select(x => x.ID).SingleOrDefault();
+                                                                        .SelectMany(x => x.ReferenceDatas).Where(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).Select(x => x.ID).SingleOrDefault();
 
                     DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates, BNGCOORDINATESYSTEM);
 

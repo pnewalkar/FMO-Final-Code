@@ -74,9 +74,9 @@ referenceDataConstants) {
         });
         return deferred.promise;
     }
-    function loadDeliveryRoute(operationStateID, deliveryScenarioID, selectionType) {
+    function loadDeliveryRoute(deliveryScenarioID, selectionType) {
         var deferred = $q.defer();
-        routeLogAPIService.getRoutes(operationStateID, deliveryScenarioID, selectionType).then(function (response) {
+        routeLogAPIService.getRoutes(deliveryScenarioID, selectionType).then(function (response) {
             var deliveryRouteResult = [];
             if (selectionType === CommonConstants.RouteLogSelectionType.Single) {
                 deliveryRoute = response;

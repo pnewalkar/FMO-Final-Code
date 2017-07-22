@@ -252,7 +252,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
 
                 if (routeDetails != null && routeDetails.Count > 0)
                 {
-                    if (postcode != null)
+                    if (postcode != null && (postcode.PrimaryRouteGUID != null || postcode.SecondaryRouteGUID != null))
                     {
                         foreach (var route in routeDetails)
                         {

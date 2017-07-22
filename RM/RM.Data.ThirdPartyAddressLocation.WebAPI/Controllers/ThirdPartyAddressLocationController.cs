@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
-using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
@@ -100,7 +97,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
                 }
             }
         }
-
 
         // TODO : Add method when ready
         /// <summary>

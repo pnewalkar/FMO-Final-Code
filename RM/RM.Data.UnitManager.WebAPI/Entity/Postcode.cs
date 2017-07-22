@@ -35,5 +35,9 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
         public DateTime RowCreateDateTime { get; set; }
 
         public virtual PostcodeHierarchy PostcodeHierarchy { get; set; }
+
+        public virtual Route Route { get; set; }
+
+        public virtual Route Route1 { get; set; }
     }
 }

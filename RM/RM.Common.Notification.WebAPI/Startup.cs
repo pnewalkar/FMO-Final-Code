@@ -7,11 +7,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.Common.Notification.WebAPI.BusinessService;
+using RM.Common.Notification.WebAPI.DataService;
+using RM.Common.Notification.WebAPI.DataService.Interface;
+using RM.Common.Notification.WebAPI.Entities;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
@@ -87,34 +87,15 @@ namespace RM.Common.Notification.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            // Infrastructure
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            // Register Infrastructure
+            services.AddScoped<IDatabaseFactory<NotificationDBContext>, DatabaseFactory<NotificationDBContext>>();
 
-            // DataServices services.AddScoped<IActionManagerDataService,
-            // ActionManagerDataService>(); services.AddScoped<IUserRoleUnitDataService,
-            // UserRoleUnitDataService>(); services.AddScoped<IUnitLocationDataService,
-            // UnitLocationDataService>(); services.AddScoped<IAddressDataService,
-            // AddressDataService>(); services.AddScoped<IDeliveryPointsDataService,
-            // DeliveryPointsDataService>(); services.AddScoped<IFileProcessingLogDataService,
-            // FileProcessingLogDataService>(); services.AddScoped<IAddressLocationDataService, AddressLocationDataService>();
+            // Register DataServices
             services.AddScoped<INotificationDataService, NotificationDataService>();
-            //services.AddScoped<IDeliveryPointsDataService, DeliveryPointsDataService>();
-            // services.AddScoped<IPostalAddressDataService, PostalAddressDataService>();
-            services.AddScoped<IReferenceDataCategoryDataService, ReferenceDataCategoryDataService>();
-            services.AddScoped<IDeliveryRouteDataService, DeliveryRouteDataService>();
-            services.AddScoped<IScenarioDataService, ScenarioDataService>();
-            services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
-            services.AddScoped<IAddressLocationDataService, AddressLocationDataService>();
-            services.AddScoped<IPostCodeDataService, PostCodeDataService>();
-        //    services.AddScoped<IStreetNetworkDataService, StreetNetworkDataService>();
-            services.AddScoped<INotificationDataService, NotificationDataService>();
-            services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
-        //    services.AddScoped<IOSRoadLinkDataService, OSRoadLinkDataService>();
-            services.AddScoped<IFileProcessingLogDataService, FileProcessingLogDataService>();
-            services.AddScoped<IReferenceDataDataService, ReferenceDataDataService>();
-            services.AddScoped<IPostCodeSectorDataService, PostCodeSectorDataService>();
-            services.AddScoped<IActionManagerDataService, ActionManagerDataService>();
-            services.AddScoped<IUserRoleUnitDataService, UserRoleUnitDataService>();
+
+            // Register Integration Services
+
+            // Register Business Service
             services.AddScoped<INotificationBusinessService, NotificationBusinessService>();
 
             // Others - Helper, Utils etc

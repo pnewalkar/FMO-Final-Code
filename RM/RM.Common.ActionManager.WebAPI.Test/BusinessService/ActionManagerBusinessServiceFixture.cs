@@ -5,6 +5,7 @@ using NUnit.Framework;
 using RM.Common.ActionManager.WebAPI.BusinessService;
 using RM.Common.ActionManager.WebAPI.BusinessService.Interface;
 using RM.Common.ActionManager.WebAPI.DataDTO;
+using RM.Common.ActionManager.WebAPI.DTO;
 using RM.Common.ActionManager.WebAPI.Interfaces;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
@@ -20,7 +21,7 @@ namespace RM.Common.ActionManager.WebAPI.Test
         private Mock<IActionManagerDataService> mockActionManagerDataService;
         private IActionManagerBusinessService testCandidate;
         private Mock<ILoggingHelper> mockLoggingHelper;
-        private List<UserUnitInfoDataDTO> userUnitInfoDataDTOList;
+        private List<UserUnitInfoDTO> userUnitInfoDTOList;
 
         /// <summary>
         /// test scenario to get all available actions for current user
@@ -28,7 +29,7 @@ namespace RM.Common.ActionManager.WebAPI.Test
         [Test]
         public void Test_GetRoleBasedAccessFunctions()
         {
-            var result = testCandidate.GetRoleBasedAccessFunctions(userUnitInfoDataDTOList[0]);
+            var result = testCandidate.GetRoleBasedAccessFunctions(userUnitInfoDTOList[0]);
             Assert.IsNotNull(result.Result);
         }
 
@@ -53,37 +54,20 @@ namespace RM.Common.ActionManager.WebAPI.Test
         }
 
         /// <summary>
-        /// test scenario for first time application page load for user having access above mail center
+        /// Tests setup for methods and data
         /// </summary>
-        [Test]
-        public void Test_GetUserUnitInfoFromReferenceData_FirstLogin_With_EmptyLocationId()
-        {
-            var result = testCandidate.GetUserUnitInfoFromReferenceData("user1", Guid.Empty);
-            Assert.IsNotNull(result.Result);
-        }
-
-        /// <summary>
-        /// test scenario for subsequent requests for application page load for  user having access above mail center
-        /// </summary>
-        [Test]
-        public void Test_GetUserUnitInfoFromReferenceData_Not_FirstLogin_With_LocationId()
-        {
-            var result = testCandidate.GetUserUnitInfoFromReferenceData("user1", Guid.NewGuid());
-            Assert.IsNotNull(result.Result);
-        }
-
         protected override void OnSetup()
         {
             // Data Setup
-            userUnitInfoDataDTOList = new List<UserUnitInfoDataDTO>()
+            userUnitInfoDTOList = new List<UserUnitInfoDTO>()
             {
-                new UserUnitInfoDataDTO()
+                new UserUnitInfoDTO()
                 {
                     UserName = "user1",
                     LocationId = new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A")
                 },
 
-                new UserUnitInfoDataDTO()
+                new UserUnitInfoDTO()
                 {
                     UserName = "user2",
                     LocationId = new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A")

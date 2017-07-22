@@ -1,6 +1,10 @@
 {
+  "title": "RM.Common.ActionManager.WebAPI",
+  "version": "1.0.0-0",
+  "copyright": "Copyright © Royal Mail Group 2017",
   "dependencies": {
     "EntityFramework": "6.1.3",
+    "AutoMapper": "6.0.2",
     "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.1.1",
     "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
@@ -40,6 +44,9 @@
     "net452": {
       "dependencies": {
         "RM.CommonLibrary": {
+          "target": "project"
+        },
+        "RM.CommonLibrary.EntityFramework": {
           "target": "project"
         }
       },

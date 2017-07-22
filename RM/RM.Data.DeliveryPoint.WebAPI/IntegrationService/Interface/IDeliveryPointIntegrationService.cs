@@ -60,8 +60,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         /// This method is used to get route for delivery point.
         /// </summary>
         /// <param name="deliveryPointId">deliveryPointId as input</param>
-        /// <returns>The route name.</returns>
-        Task<string> GetRouteForDeliveryPoint(Guid deliveryPointId);
+        /// <returns>The Route details for the provided delivery point.</returns>
+        Task<RouteDTO> GetRouteForDeliveryPoint(Guid deliveryPointId);
 
         /// <summary>
         /// Gets approx location based on the potal code.

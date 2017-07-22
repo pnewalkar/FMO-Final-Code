@@ -172,6 +172,10 @@
         /// <returns>Whether the record has been inserted correctly</returns>
         public async Task<bool> InsertAddress(PostalAddressDataDTO objPostalAddress, string strFileName)
         {
+            if (objPostalAddress == null)
+            {
+                throw new ArgumentNullException(nameof(objPostalAddress), string.Format(ErrorConstants.Err_ArgumentmentNullException, objPostalAddress));
+            }
             bool isPostalAddressInserted = false;
             PostalAddress objAddress = new PostalAddress();
             try
@@ -200,6 +204,12 @@
                     }
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 }
+            }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
+                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -239,13 +249,7 @@
 
                 var postalAddress = await DataContext.PostalAddresses.Where(n => n.UDPRN == uDPRN).SingleOrDefaultAsync();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -268,13 +272,7 @@
                 // Get first Postal Address satifying the below condition
                 PostalAddress postalAddress = await GetPostalAddressEntity(objPostalAddress);
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 var dtoPostalAddress = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -356,7 +354,7 @@
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
         /// <returns>Whether the entity has been updated or not</returns>
-        public async Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string strFileName, Guid deliveryPointUseIndicatorPAF)
+        public async Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string strFileName)
         {
             bool isPostalAddressUpdated = false;
             PostalAddress objAddress = new PostalAddress();
@@ -399,6 +397,12 @@
                     }
                 }
             }
+            catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)
+            {
+                // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
+                LogFileException(objPostalAddress.UDPRN.Value, strFileName, FileType.Paf.ToString(), dbUpdateConcurrencyException.ToString());
+                throw new DataAccessException(dbUpdateConcurrencyException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("PostalAddress PAF for UDPRN:", objAddress.UDPRN)));
+            }
             catch (DbUpdateException dbUpdateException)
             {
                 // Logging exception to database as mentioned in JIRA RFMO-258, RFMO-259 and RFMO-260
@@ -426,15 +430,15 @@
         /// <summary>
         /// Filter PostalAddress based on postal address id.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="postalAddressId">PostalAddress Unique Identifier</param>
         /// <returns>Postal Address DTO</returns>
-        public PostalAddressDataDTO GetPostalAddressDetails(Guid id)
+        public PostalAddressDataDTO GetPostalAddressDetails(Guid postalAddressId)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressDetails"))
             {
                 string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddressDetails);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == postalAddressId).FirstOrDefault();
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return GenericMapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
             }
@@ -496,9 +500,9 @@
         }
 
         /// <summary>
-        /// Get PostalAddress
+        /// Get PostalAddress on list of PostalAddress Guid
         /// </summary>
-        /// <param name="addressGuids"></param>
+        /// <param name="addressGuids">List of PostalAddress Guid</param>
         /// <returns></returns>
         public async Task<List<PostalAddressDataDTO>> GetPostalAddresses(List<Guid> addressGuids)
         {
@@ -509,14 +513,7 @@
 
                 var addressDetails = await DataContext.PostalAddresses.Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Mapper.Map<List<PostalAddress>, List<PostalAddressDataDTO>>(addressDetails);
@@ -538,13 +535,7 @@
 
                 PostalAddress postalAddress = await DataContext.PostalAddresses.Where(pa => pa.UDPRN == udprn && pa.AddressType_GUID == pafGuid).SingleOrDefaultAsync();
 
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
-                    cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>();
-                    cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>();
-                });
-                Mapper.Configuration.CreateMapper();
+                ConfigureMapper();
 
                 PostalAddressDataDTO postalAddressDataDTO = Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
 
@@ -738,6 +729,20 @@
                 fileProcessingLog.LogFileException(objFileProcessingLog);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
             }
+        }
+
+        /// <summary>
+        /// Common steps to configure mapper for PostalAddress
+        /// </summary>
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+            });
+            Mapper.Configuration.CreateMapper();
         }
 
         /* To be a part of Unit manager

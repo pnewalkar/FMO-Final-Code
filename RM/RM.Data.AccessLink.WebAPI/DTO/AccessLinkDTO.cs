@@ -3,7 +3,7 @@ using System.Data.Entity.Spatial;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 
-namespace RM.DataManagement.AccessLink.WebAPI.DTO
+namespace RM.DataManagement.AccessLink.WebAPI.DTOs
 {
     /// <summary>
     /// This class represents data transfer object for AccessLink entity

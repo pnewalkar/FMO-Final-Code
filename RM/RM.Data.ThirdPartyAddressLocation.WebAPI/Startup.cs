@@ -13,6 +13,8 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.Entities;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
@@ -96,8 +98,11 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI
 
             services.AddScoped<IThirdPartyAddressLocationBusinessService, ThirdPartyAddressLocationBusinessService>();
 
-            // Integration Services
+            // Register Integration Services
             services.AddScoped<IThirdPartyAddressLocationIntegrationService, ThirdPartyAddressLocationIntegrationService>();
+
+            // Register Business Service
+            services.AddScoped<IThirdPartyAddressLocationBusinessService, ThirdPartyAddressLocationBusinessService>();
 
             // Others - Helper, Utils etc
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();

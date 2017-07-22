@@ -275,7 +275,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         }
 
         /// <summary>
-        /// Get the reference data category details based on the list of categores
+        /// Update the Notification By UDPRN
         /// </summary>
         /// <param name="listNames">Category names</param>
         /// <returns>returns Category details</returns>
@@ -309,8 +309,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             }
         }
 
+
+
         /// <summary>
-        /// Update the Notification By UDPRN
+        /// Update Delivery Point by Id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <param name="oldAction">old action</param>
