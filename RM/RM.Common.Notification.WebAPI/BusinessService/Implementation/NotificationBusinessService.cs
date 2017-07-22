@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Common.Notification.WebAPI.DataService.Interface;
+using RM.Common.Notification.WebAPI.DTO;
 
 namespace RM.Common.Notification.WebAPI.BusinessService
 {
@@ -34,7 +34,21 @@ namespace RM.Common.Notification.WebAPI.BusinessService
 
                 try
                 {
-                    return await notificationDataService.AddNewNotification(notificationDTO);
+                    NotificationDataDTO notificationDataDTO = new NotificationDataDTO
+                    {
+                        ID = notificationDTO.ID,
+                        Notification_Heading = notificationDTO.Notification_Heading,
+                        Notification_Message = notificationDTO.Notification_Message,
+                        NotificationDueDate = notificationDTO.NotificationDueDate,
+                        NotificationActionLink = notificationDTO.NotificationActionLink,
+                        NotificationSource = notificationDTO.NotificationSource,
+                        PostcodeDistrict = notificationDTO.PostcodeDistrict,
+                        PostcodeSector = notificationDTO.PostcodeSector,
+                        NotificationTypeGUID = notificationDTO.NotificationType_GUID,
+                        NotificationPriorityGUID = notificationDTO.NotificationPriority_GUID
+                    };
+    
+                    return await notificationDataService.AddNewNotification(notificationDataDTO);
                 }
                 finally
                 {
@@ -97,8 +111,21 @@ namespace RM.Common.Notification.WebAPI.BusinessService
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 var getNotificationByUDPRN = await notificationDataService.GetNotificationByUDPRN(uDPRN);
+                NotificationDTO notificationDTO = new NotificationDTO
+                {
+                    ID = getNotificationByUDPRN.ID,
+                    Notification_Heading = getNotificationByUDPRN.Notification_Heading,
+                    Notification_Message = getNotificationByUDPRN.Notification_Message,
+                    NotificationDueDate = getNotificationByUDPRN.NotificationDueDate,
+                    NotificationActionLink = getNotificationByUDPRN.NotificationActionLink,
+                    NotificationSource = getNotificationByUDPRN.NotificationSource,
+                    PostcodeDistrict = getNotificationByUDPRN.PostcodeDistrict,
+                    PostcodeSector = getNotificationByUDPRN.PostcodeSector,
+                    NotificationType_GUID = getNotificationByUDPRN.NotificationTypeGUID,
+                    NotificationPriority_GUID = getNotificationByUDPRN.NotificationPriorityGUID
+                };
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return getNotificationByUDPRN;
+                return notificationDTO;
             }
         }
 

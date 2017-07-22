@@ -13,7 +13,7 @@ namespace RM.Common.Notification.WebAPI.DataService.Interface
         /// </summary>
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>NotificationDTO object</returns>
-        Task<NotificationDTO> GetNotificationByUDPRN(int uDPRN);
+        Task<NotificationDataDTO> GetNotificationByUDPRN(int uDPRN);
 
         /// <summary>
         /// Delete the notification based on the UDPRN and the action
@@ -28,7 +28,7 @@ namespace RM.Common.Notification.WebAPI.DataService.Interface
         /// </summary>
         /// <param name="notificationDTO">NotificationDTO object</param>
         /// <returns>Task<int></returns>
-        Task<int> AddNewNotification(NotificationDTO notificationDTO);
+        Task<int> AddNewNotification(NotificationDataDTO notificationDTO);
 
         /// <summary>
         /// Check if a notification exists for a given UDPRN id and action string.
@@ -38,8 +38,22 @@ namespace RM.Common.Notification.WebAPI.DataService.Interface
         /// <returns>boolean value</returns>
         Task<bool> CheckIfNotificationExists(int uDPRN, string action);
 
+        /// <summary>
+        /// Update the notifications on UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="oldAction">old Action</param>
+        /// <param name="newAction">updated action</param>
+        /// <returns>whether notification was updated or not</returns>
         Task<bool> UpdateNotificationByUDPRN(int uDPRN, string oldAction, string newAction);
 
+        /// <summary>
+        /// Update notification message by UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="action">Action</param>
+        /// <param name="message">message</param>
+        /// <returns>whether notification was updated or not</returns>
         Task<bool> UpdateNotificationMessageByUDPRN(int uDPRN, string action, string message);
     }
 }
