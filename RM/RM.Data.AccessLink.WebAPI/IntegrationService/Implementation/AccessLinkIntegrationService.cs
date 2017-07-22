@@ -113,10 +113,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                Tuple<NetworkLinkDTO, DbGeometry> nearestSegment = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DbGeometry>>(result.Content.ReadAsStringAsync().Result, new DbGeometryConverter());
+                Tuple<NetworkLinkDTO, List<DbGeometry>> nearestSegment = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, List<DbGeometry>>>(result.Content.ReadAsStringAsync().Result, new DbGeometryConverter());
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDTO, List<SqlGeometry>>(nearestSegment.Item1, new List<SqlGeometry>());
+                return new Tuple<NetworkLinkDTO, List<SqlGeometry>>(nearestSegment.Item1, nearestSegment.Item2.ToSqlGeometry());
             }
         }
 
@@ -267,7 +267,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPoint"))
             {
-
                 string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 

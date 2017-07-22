@@ -453,25 +453,23 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     addDeliveryPointDTO.PostalAddressDTO.PostalAddressStatus.Add(GetPostalAddressStatus(addDeliveryPointDTO.PostalAddressDTO.ID, liveAddressStatusId));
                 }
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO.PostalAddressDTO);
 
                 // check if third partylocation exists
                 var addressLocation = postalAddressIntegrationService.GetAddressLocationByUDPRN(addDeliveryPointDTO.PostalAddressDTO.UDPRN ?? default(int)).Result;
 
-                var postalAddressId = addressDataService.CreateAddressForDeliveryPoint(addDeliveryPointDTO, liveAddressStatusId);
-
                 if (addressLocation == null)
                 {
                     isAddressLocationAvailable = false;
-                    // get approximate location
-                    var shape = postalAddressIntegrationService.GetApproxLocation(addDeliveryPointDTO.PostalAddressDTO.Postcode);
                 }
                 else
                 {
-                    isAddressLocationAvailable = false;
+                    isAddressLocationAvailable = true;
                     addLocationXCoOrdinate = Convert.ToDouble(addressLocation.Lattitude);
                     addLocationYCoOrdinate = Convert.ToDouble(addressLocation.Longitude);
                 }
+
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return new CreateDeliveryPointModelDTO { ID = postalAddressId, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
             }

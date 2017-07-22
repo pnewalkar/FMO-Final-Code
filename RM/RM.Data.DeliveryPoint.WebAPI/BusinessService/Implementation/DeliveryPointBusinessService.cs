@@ -224,7 +224,7 @@
         /// <returns>string</returns>
         public async Task<CreateDeliveryPointModelDTO> CreateDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("Business.AddDeliveryPoint"))
+            using (loggingHelper.RMTraceManager.StartTrace("Business.CreateDeliveryPoint"))
             {
                 string methodName = typeof(DeliveryPointBusinessService) + "." + nameof(CreateDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
@@ -259,7 +259,7 @@
                     else
                     {
                         // Call Postal Address integration API
-                        CreateDeliveryPointModelDTO createDeliveryPointModelDTO = await deliveryPointIntegrationService.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
+                        CreateDeliveryPointModelDTO createDeliveryPointModelDTO = await deliveryPointIntegrationService.CreateAddressForDeliveryPoint(addDeliveryPointDTO);
 
                         List<string> listNames = new List<string> { ReferenceDataCategoryNames.DeliveryPointOperationalStatus, ReferenceDataCategoryNames.DataProvider, ReferenceDataCategoryNames.NetworkNodeType };
 

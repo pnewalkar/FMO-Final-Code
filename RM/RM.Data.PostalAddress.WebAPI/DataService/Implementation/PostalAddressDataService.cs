@@ -427,6 +427,9 @@
                 string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddressDetails);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
+
+                ConfigureMapper();
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return GenericMapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
             }
@@ -435,16 +438,12 @@
         /// <summary>
         /// Create delivery point for PAF and NYB details
         /// </summary>
-        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <param name="postalAddressDataDTO">Postal address data DTO.</param>
         /// <returns>Guid address Guid</returns>
-        public Guid CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
+        public Guid CreateAddressForDeliveryPoint(PostalAddressDataDTO postalAddressDataDTO)
         {
             try
             {
-                //bool isAddressLocationAvailable = false;
-                //double? addLocationXCoOrdinate = 0;
-                //double? addLocationYCoOrdinate = 0;
-
                 Guid returnGuid = Guid.Empty;
 
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAddressForDeliveryPoint"))
@@ -452,24 +451,48 @@
                     string methodName = typeof(PostalAddressDataService) + "." + nameof(CreateAddressForDeliveryPoint);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
+                    if (postalAddressDataDTO != null)
                     {
-                        var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
+                        var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.UDPRN == postalAddressDataDTO.UDPRN && n.UDPRN.HasValue);
 
                         if (objPostalAddress != null)
                         {
-                            objPostalAddress.BuildingNumber = addDeliveryPointDTO.PostalAddressDTO.BuildingNumber;
-                            objPostalAddress.BuildingName = addDeliveryPointDTO.PostalAddressDTO.BuildingName;
-                            objPostalAddress.SubBuildingName = addDeliveryPointDTO.PostalAddressDTO.SubBuildingName;
-                            objPostalAddress.POBoxNumber = addDeliveryPointDTO.PostalAddressDTO.POBoxNumber;
-                            objPostalAddress.DepartmentName = addDeliveryPointDTO.PostalAddressDTO.DepartmentName;
-                            objPostalAddress.OrganisationName = addDeliveryPointDTO.PostalAddressDTO.OrganisationName;
-                            objPostalAddress.UDPRN = addDeliveryPointDTO.PostalAddressDTO.UDPRN;
-                            objPostalAddress.PostcodeType = addDeliveryPointDTO.PostalAddressDTO.PostcodeType;
-                            objPostalAddress.SmallUserOrganisationIndicator = addDeliveryPointDTO.PostalAddressDTO.SmallUserOrganisationIndicator;
-                            objPostalAddress.DeliveryPointSuffix = addDeliveryPointDTO.PostalAddressDTO.DeliveryPointSuffix;
-                            objPostalAddress.Postcode = addDeliveryPointDTO.PostalAddressDTO.Postcode;
-                            objPostalAddress.AddressType_GUID = addDeliveryPointDTO.PostalAddressDTO.AddressType_GUID;
+                            objPostalAddress.BuildingNumber = postalAddressDataDTO.BuildingNumber;
+                            objPostalAddress.BuildingName = postalAddressDataDTO.BuildingName;
+                            objPostalAddress.SubBuildingName = postalAddressDataDTO.SubBuildingName;
+                            objPostalAddress.POBoxNumber = postalAddressDataDTO.POBoxNumber;
+                            objPostalAddress.DepartmentName = postalAddressDataDTO.DepartmentName;
+                            objPostalAddress.OrganisationName = postalAddressDataDTO.OrganisationName;
+                            objPostalAddress.UDPRN = postalAddressDataDTO.UDPRN;
+                            objPostalAddress.PostcodeType = postalAddressDataDTO.PostcodeType;
+                            objPostalAddress.SmallUserOrganisationIndicator = postalAddressDataDTO.SmallUserOrganisationIndicator;
+                            objPostalAddress.DeliveryPointSuffix = postalAddressDataDTO.DeliveryPointSuffix;
+                            objPostalAddress.Postcode = postalAddressDataDTO.Postcode;
+                            objPostalAddress.AddressType_GUID = postalAddressDataDTO.AddressType_GUID;
+                        }
+                        else
+                        {
+                            Mapper.Initialize(cfg =>
+                            {
+                                cfg.CreateMap<PostalAddressDataDTO, PostalAddress>();
+                                cfg.CreateMap<PostalAddressStatusDataDTO, PostalAddressStatus>();
+                                cfg.CreateMap<DeliveryPointDataDTO, DeliveryPoint>();
+                            });
+
+                            Mapper.Configuration.CreateMapper();
+
+                            objPostalAddress = Mapper.Map<PostalAddressDataDTO, PostalAddress>(postalAddressDataDTO);
+
+                            objPostalAddress.RowCreateDateTime = DateTime.UtcNow;
+
+                            foreach (var status in objPostalAddress.PostalAddressStatus)
+                            {
+                                status.RowCreateDateTime = DateTime.UtcNow;
+                                status.StartDateTime = DateTime.UtcNow;
+                            }
+
+                            // add new address
+                            DataContext.PostalAddresses.Add(objPostalAddress);
                         }
 
                         returnGuid = objPostalAddress.ID;
@@ -477,13 +500,13 @@
                     }
 
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                    // return new CreateDeliveryPointModelDTO { ID = returnGuid, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
+
                     return returnGuid;
                 }
             }
             catch (DbUpdateException dbUpdateException)
             {
-                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", addDeliveryPointDTO.PostalAddressDTO.UDPRN)));
+                throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", postalAddressDataDTO.UDPRN)));
             }
         }
 

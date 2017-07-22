@@ -98,25 +98,25 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         deliveryPoint.ID = objDeliveryPoint.ID;
                         deliveryPoint.PostalAddressID = objDeliveryPoint.PostalAddressID;
                         deliveryPoint.DeliveryPointUseIndicatorGUID = objDeliveryPoint.DeliveryPointUseIndicatorGUID;
-                        deliveryPoint.RowCreateDateTime = DateTime.Now;
+                        deliveryPoint.RowCreateDateTime = DateTime.UtcNow;
 
                         deliveryPointStatus.ID = Guid.NewGuid();
                         deliveryPointStatus.LocationID = objDeliveryPoint.ID;
                         deliveryPointStatus.DeliveryPointStatusGUID = objDeliveryPoint.DeliveryPointStatus.First().DeliveryPointStatusGUID;
-                        deliveryPointStatus.RowCreateDateTime = DateTime.Now;
-                        deliveryPointStatus.StartDateTime = DateTime.Now;
+                        deliveryPointStatus.RowCreateDateTime = DateTime.UtcNow;
+                        deliveryPointStatus.StartDateTime = DateTime.UtcNow;
                         deliveryPoint.DeliveryPointStatus.Add(deliveryPointStatus);
 
                         networkNode.ID = objDeliveryPoint.ID;
                         networkNode.DataProviderGUID = objDeliveryPoint.NetworkNode.DataProviderGUID;
-                        networkNode.RowCreateDateTime = DateTime.Now;
+                        networkNode.RowCreateDateTime = DateTime.UtcNow;
                         networkNode.DeliveryPoint = deliveryPoint;
                         networkNode.NetworkNodeType_GUID = objDeliveryPoint.NetworkNode.NetworkNodeType_GUID;
 
                         location.Shape = objDeliveryPoint.NetworkNode.Location.Shape;
                         location.ID = objDeliveryPoint.ID;
                         location.NetworkNode = networkNode;
-                        location.RowCreateDateTime = DateTime.Now;
+                        location.RowCreateDateTime = DateTime.UtcNow;
                         DataContext.Locations.Add(location);
 
                         DataContext.DeliveryPoints.Add(deliveryPoint);
