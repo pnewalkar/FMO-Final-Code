@@ -436,6 +436,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                     if (deliveryPoint != null)
                     {
+                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
+
                         deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
                         deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
 

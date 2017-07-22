@@ -27,8 +27,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">PostalAddressDataDTO</param>
         /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
         /// <param name="deliveryPointUseIndicatorPAF">Guid of DeliveryPointUseIndicatorPAF from reference data</param>
+        /// , Guid deliveryPointUseIndicatorPAF removed this param as DP changes is moved to their resp api
         /// <returns>return status as bool</returns>
-        Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string fileName, Guid deliveryPointUseIndicatorPAF);
+        Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string fileName);
 
         /// <summary>
         /// Get the existing postal address details based on the UDPRN
@@ -83,9 +84,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
-        /// <param name="id">postCode</param>
+        /// <param name="postalAddressId">PostalAddress Unique Identifier</param>
         /// <returns>Postal Address DTO</returns>
-        PostalAddressDataDTO GetPostalAddressDetails(Guid id);
+        PostalAddressDataDTO GetPostalAddressDetails(Guid postalAddressId);
 
         /// <summary>
         /// Checking for duplicatesthat already exists in FMO as a NYB record

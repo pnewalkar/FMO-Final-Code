@@ -430,7 +430,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByUDPRNforBatch"))
                 {
-                    string methodName = typeof(DeliveryPointController) + "." + nameof(InsertDeliveryPoint);
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(GetDeliveryPointByUDPRNforBatch);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     DeliveryPointDTO deliveryPointDTO = await businessService.GetDeliveryPointByUDPRNforBatch(udprn);
@@ -601,19 +601,39 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-        [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
-        public Task<bool> UpdatePAFIndicator(Guid addressGuid, [FromBody] Guid pafIndicator)
+
+        /// <summary>
+        /// This method will call Delivery point web api which is used to
+        /// update delivery point location, status and dpuseindicator for resp PostalAddress which has type <USR>.
+        /// </summary>
+        /// <param name="objDeliveryPoint">Delivery point dto as object</param>
+        /// <returns>bool</returns>
+        [Route("deliverypoint/batch")]
+        [HttpPut]
+        // [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
+        public async Task<IActionResult> UpdateDeliveryPoint([FromBody] string objDeliveryPointJson)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdatePAFIndicator"))
+            try
             {
-                string methodName = typeof(DeliveryPointController) + "." + nameof(UpdatePAFIndicator);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPoint"))
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(UpdateDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var isDeliveryPointUpdated = businessService.UpdatePAFIndicator(addressGuid, pafIndicator);
+                    bool success = await businessService.UpdateDeliveryPointLocationOnID(JsonConvert.DeserializeObject<DeliveryPointDTO>(objDeliveryPointJson)) != Guid.Empty;
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(success);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-                return isDeliveryPointUpdated;
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
 
