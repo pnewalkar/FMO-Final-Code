@@ -192,7 +192,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// Method implementation to save delivery point and Task for notification for PAF create events
         /// </summary>
         /// <param name="objPostalAddress">pass PostalAddreesDTO</param>
-        public async Task SaveDeliveryPointProcess(PostalAddressDTO objPostalAddress)
+        public async Task SaveDeliveryPointProcess(PostalAddressDataDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.SaveDeliveryPointProcess"))
             {
@@ -559,7 +559,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     UDPRN = objPostalAddressBatch.UDPRN,
                     PostcodeType = objPostalAddressBatch.PostcodeType,
                     SmallUserOrganisationIndicator = objPostalAddressBatch.SmallUserOrganisationIndicator,
-                    DeliveryPointSuffix = objPostalAddressBatch.DeliveryPointSuffix
+                    DeliveryPointSuffix = objPostalAddressBatch.DeliveryPointSuffix,
+                    RowCreateDateTime = DateTime.UtcNow
                 };
 
                 // Address type will be PAF only in case of Inserting and updating records
@@ -587,7 +588,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             var objDeliveryPoint = await postalAddressIntegrationService.GetDeliveryPointByPostalAddress(objPostalAddress.ID);
                             if (objDeliveryPoint == null)
                             {
-                                await SaveDeliveryPointProcess(objPostalAddressBatch);
+                                await SaveDeliveryPointProcess(objPostalAddress);
                             }
                         }
                     }
@@ -627,7 +628,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             // Update address and delivery point for USR records
                             if (await addressDataService.UpdateAddress(objPostalAddress, strFileName))
                             {
-                                await UpdateDeliveryPointProcess(objPostalAddressBatch);
+                                await UpdateDeliveryPointProcess(objPostalAddress);
                             }
                         }
                         /*else
@@ -669,7 +670,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     objPostalAddress.ID = Guid.NewGuid();
                     objPostalAddress.PostalAddressStatus.Add(GetPostalAddressStatus(objPostalAddress.ID, addressStatus_GUID));
                     await addressDataService.InsertAddress(objPostalAddress, strFileName);
-                    await SaveDeliveryPointProcess(objPostalAddressBatch);
+                    await SaveDeliveryPointProcess(objPostalAddress);
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
@@ -681,7 +682,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">Postal Address DTO</param>
         /// <returns>nothing</returns>
-        private async Task UpdateDeliveryPointProcess(PostalAddressDTO objPostalAddress)
+        private async Task UpdateDeliveryPointProcess(PostalAddressDataDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.SaveDeliveryPointProcess"))
             {
@@ -754,7 +755,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">PAF create event PostalAddressDTO</param>
         /// <returns>returns concatenated value of address field</returns>
-        private string AddressFields(PostalAddressDTO objPostalAddress)
+        private string AddressFields(PostalAddressDataDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.AddressFields"))
             {

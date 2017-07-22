@@ -318,7 +318,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(PostalAddressConstants.NotificationManagerDataWebAPIName + "notifications/add", notificationDTO);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(notificationManagerDataWebAPIName + "notifications/add/", notificationDTO);
                 if (!result.IsSuccessStatusCode)
                 {
                     // Log error with statuscode
