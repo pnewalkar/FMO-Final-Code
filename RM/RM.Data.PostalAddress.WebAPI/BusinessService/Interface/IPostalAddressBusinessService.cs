@@ -49,9 +49,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="postalAddressId">PostalAddress Unique Identifier</param>
         /// <returns>Postal Address DTO</returns>
-        PostalAddressDTO GetPostalAddressDetails(Guid id);
+        PostalAddressDTO GetPostalAddressDetails(Guid postalAddressId);
 
         /// <summary>
         /// This method is used to check Duplicate NYB records

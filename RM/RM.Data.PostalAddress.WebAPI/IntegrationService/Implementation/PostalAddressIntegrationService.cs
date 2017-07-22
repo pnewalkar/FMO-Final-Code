@@ -280,7 +280,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
         /// <returns>bool</returns>
-        public async Task<bool> UpdateDeliveryPoint(Guid addressId, Guid deliveryPointUseIndicatorPAF)
+        public async Task<bool> UpdateDeliveryPoint(DTO.DeliveryPointDTO objDeliveryPoint) // (Guid addressId, Guid deliveryPointUseIndicatorPAF)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPoint"))
             {
@@ -288,7 +288,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 // method logic here
-                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/" + addressId, deliveryPointUseIndicatorPAF);
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                }));
+
+                // (deliveryPointManagerWebAPIName + "deliverypoint/batch/" + addressId, deliveryPointUseIndicatorPAF);
                 if (!result.IsSuccessStatusCode)
                 {
                     // Log error with statuscode

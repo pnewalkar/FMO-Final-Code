@@ -25,7 +25,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         /// </summary>
         /// <param name="addressLocationUsrpostdtos"> List of Address Locations</param>
         /// <returns> Task </returns>
-        //Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos);
+        Task SaveUSRDetails(List<AddressLocationUSRPOSTDTO> addressLocationUsrpostdtos);
 
         /// <summary>
         /// Get AddressLocation by UDPRN
