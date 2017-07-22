@@ -466,7 +466,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     addLocationYCoOrdinate = Convert.ToDouble(addressLocation.Longitude);
                 }
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
 
                 return new CreateDeliveryPointModelDTO { ID = postalAddressId, IsAddressLocationAvailable = isAddressLocationAvailable, XCoordinate = addLocationXCoOrdinate, YCoordinate = addLocationYCoOrdinate };
             }

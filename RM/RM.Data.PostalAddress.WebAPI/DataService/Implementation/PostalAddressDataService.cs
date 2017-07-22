@@ -438,7 +438,7 @@
             {
                 string methodName = typeof(PostalAddressDataService) + "." + nameof(GetPostalAddressDetails);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
+                var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == postalAddressId).FirstOrDefault();
 
                 ConfigureMapper();
 
