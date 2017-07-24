@@ -7,57 +7,72 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.SqlServer.Types;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.DataManagement.NetworkManager.WebAPI.Entities;
+using AutoMapper;
+using Microsoft.IdentityModel.Protocols;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
 
-namespace RM.CommonLibrary.EntityFramework.DataService
+namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
     /// <summary>
     /// DataService to fetch street network details
     /// </summary>
-    public class StreetNetworkDataService : DataServiceBase<StreetName, RMDBContext>, IStreetNetworkDataService
+    public class StreetNetworkDataService : DataServiceBase<StreetName, NetworkDBContext>, IStreetNetworkDataService
     {
+        #region Member Variables
+
         private const int BNGCOORDINATESYSTEM = 27700;
         private const string SearchResultCount = "SearchResultCount";
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
+        private int entryEventId = LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId;
 
-        public StreetNetworkDataService(IDatabaseFactory<RMDBContext> databaseFactory, ILoggingHelper loggingHelper)
+        #endregion Member Variables
+
+        #region Constructors
+
+        public StreetNetworkDataService(IDatabaseFactory<NetworkDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
         }
 
+        #endregion Constructors
+
+        #region Public Methods
+
         /// <summary>
-        /// Fetch street names for advance search
+        /// Get street names for advance search
         /// </summary>
         /// <param name="searchText">searchText as string</param>
-        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="locationID">The location unique identifier.</param>
         /// <returns>StreetNames</returns>
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForAdvanceSearch(string searchText, Guid unitGuid)
+        public async Task<List<StreetNameDataDTO>> GetStreetNamesForAdvanceSearch(string searchText, Guid locationID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchStreetNamesForAdvanceSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNamesForAdvanceSearch"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNamesForAdvanceSearch);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                DbGeometry polygon = DataContext.UnitLocations.AsNoTracking().Where(x => x.ID == unitGuid)
-                .Select(x => x.UnitBoundryPolygon).SingleOrDefault();
+                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationID)
+                .Select(x => x.Shape).SingleOrDefault();
 
                 var streetNames = await DataContext.StreetNames.AsNoTracking()
                     .Where(
                         l =>
                             l.Geometry.Intersects(polygon) &&
                             (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
-                    .Select(l => new StreetNameDTO
+                    .Select(l => new StreetNameDataDTO
                     {
                         ID = l.ID,
                         StreetType = l.StreetType,
@@ -66,7 +81,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         Descriptor = l.Descriptor
                     }).ToListAsync();
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return streetNames;
             }
         }
@@ -75,21 +90,21 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// Fetch street name for Basic Search
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="locationID">The location unique identifier.</param>
         /// <returns>The result set of street name.</returns>
-        public async Task<List<StreetNameDTO>> FetchStreetNamesForBasicSearch(string searchText, Guid unitGuid)
+        public async Task<List<StreetNameDataDTO>> GetStreetNamesForBasicSearch(string searchText, Guid locationID)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.FetchStreetNamesForBasicSearch"))
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNamesForBasicSearch"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNamesForBasicSearch);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                int takeCount = Convert.ToInt32(ConfigurationManager.AppSettings[SearchResultCount]);
+                int takeCount = Convert.ToInt32(ConfigurationSettings.AppSettings[SearchResultCount]);
                 searchText = searchText ?? string.Empty;
 
                 DbGeometry polygon =
-                    DataContext.UnitLocations.Where(x => x.ID == unitGuid)
-                        .Select(x => x.UnitBoundryPolygon)
+                    DataContext.Locations.Where(x => x.ID == locationID)
+                        .Select(x => x.Shape)
                         .SingleOrDefault();
 
                 var streetNamesDto =
@@ -98,7 +113,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                 l.Geometry.Intersects(polygon) &&
                                 (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                         .Take(takeCount)
-                        .Select(l => new StreetNameDTO
+                        .Select(l => new StreetNameDataDTO
                         {
                             ID = l.ID,
                             StreetType = l.StreetType,
@@ -108,7 +123,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                         })
                         .ToListAsync();
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return streetNamesDto;
             }
         }
@@ -117,21 +132,21 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// Get the count of street name
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <param name="unitGuid">The unit unique identifier.</param>
+        /// <param name="locationID">The location unique identifier.</param>
         /// <returns>The total count of street name</returns>
-        public async Task<int> GetStreetNameCount(string searchText, Guid unitGuid)
+        public async Task<int> GetStreetNameCount(string searchText, Guid locationID)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetStreetNameCount"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNameCount);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 try
                 {
                     searchText = searchText ?? string.Empty;
                     DbGeometry polygon =
-                        DataContext.UnitLocations.Where(x => x.ID == unitGuid)
-                            .Select(x => x.UnitBoundryPolygon)
+                        DataContext.Locations.Where(x => x.ID == locationID)
+                            .Select(x => x.Shape)
                             .SingleOrDefault();
                     var getStreetNameCount = await DataContext.StreetNames.Where(
                             l =>
@@ -139,7 +154,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                 (l.NationalRoadCode.StartsWith(searchText) || l.DesignatedName.StartsWith(searchText)))
                         .CountAsync();
 
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                     return getStreetNameCount;
                 }
                 catch (InvalidOperationException ex)
@@ -162,15 +177,15 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="streetName">Street name.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public Tuple<NetworkLinkDataDTO, SqlGeometry> GetNearestNamedRoad(DbGeometry operationalObjectPoint, string streetName, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNearestNamedRoad"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetNearestNamedRoad);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
-                NetworkLinkDTO networkLink = null;
+                NetworkLinkDataDTO networkLink = null;
 
                 // find the nearest named road for the provided operational object.
                 var nearestNamedRoad = DataContext.StreetNames
@@ -178,7 +193,7 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                  || m.DesignatedName == streetName
                                  || m.LocalName == streetName)
                     .OrderBy(n => operationalObjectPoint.Distance(n.Geometry))
-                    .Select(l => new StreetNameDTO
+                    .Select(l => new StreetNameDataDTO
                     {
                         ID = l.ID,
                         StreetType = l.StreetType,
@@ -199,13 +214,13 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                                                         .SelectMany(x => x.ReferenceDatas)
                                                                         .Single(x => x.ReferenceDataValue == ReferenceDataValues.NetworkLinkRoadLink).ID;
 
-                    networkLink = DataContext.NetworkLinks.AsNoTracking().Where(m => m.StreetName_GUID == nearestNamedRoad.ID)
+                    networkLink = DataContext.NetworkLinks.AsNoTracking().Where(m => m.StreetNameGUID == nearestNamedRoad.ID)
                        .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
-                       .Select(l => new NetworkLinkDTO
+                       .Select(l => new NetworkLinkDataDTO
                        {
-                           Id = l.Id,
+                           ID = l.ID,
                            LinkGeometry = l.LinkGeometry,
-                           NetworkLinkType_GUID = l.NetworkLinkType_GUID,
+                           NetworkLinkTypeGUID = l.NetworkLinkTypeGUID,
                            TOID = l.TOID
                        }).FirstOrDefault();
 
@@ -221,24 +236,18 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                             // find any road or path segment intersects with the planned access link.
                             var intersectionCountForRoadOrPath = DataContext.NetworkLinks.AsNoTracking()
                                 .Count(m => m.LinkGeometry.Intersects(accessLinkDbGeometry)
-                                            && (m.NetworkLinkType_GUID == networkRoadLinkType || m.NetworkLinkType_GUID == networkPathLinkType));
+                                            && (m.NetworkLinkTypeGUID == networkRoadLinkType || m.NetworkLinkTypeGUID == networkPathLinkType));
 
                             if (intersectionCountForRoadOrPath == 0)
                             {
-                               // var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
-                               //.Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
-
-                               // if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.AsNoTracking().Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
-                               // {
-                               //     networkIntersectionPoint = accessLinkLine.STEndPoint();
-                               // }
+                                networkIntersectionPoint = accessLinkLine.STEndPoint();
                             }
                         }
                     }
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
             }
         }
 
@@ -248,13 +257,14 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <param name="referenceDataCategoryList">The reference data category list.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public Tuple<NetworkLinkDTO, SqlGeometry> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
+        public Tuple<NetworkLinkDataDTO, List<SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint, List<ReferenceDataCategoryDTO> referenceDataCategoryList)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNearestSegment"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetNearestSegment);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
+                List<SqlGeometry> listNetworkIntersectionPoints = new List<SqlGeometry>();
                 SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
 
                 Guid networkPathLinkType = referenceDataCategoryList.Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.NetworkLinkType)
@@ -271,19 +281,20 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                                                                                              .ReferenceDataValue);
 
                 var networkLinkRoads = DataContext.NetworkLinks.AsNoTracking()
-                    .Where(m => (m.NetworkLinkType_GUID == networkRoadLinkType || m.NetworkLinkType_GUID == networkPathLinkType)
+                    .Where(m => (m.NetworkLinkTypeGUID == networkRoadLinkType || m.NetworkLinkTypeGUID == networkPathLinkType)
                                 && m.LinkGeometry.Distance(operationalObjectPoint) <= accessLinkDiffRoadMaxDistance)
                     .OrderBy(n => n.LinkGeometry.Distance(operationalObjectPoint))
                     .AsEnumerable()
-                    .Select(l => new NetworkLinkDTO
+                    .Select(l => new NetworkLinkDataDTO
                     {
-                        Id = l.Id,
+                        ID = l.ID,
                         LinkGeometry = l.LinkGeometry,
-                        NetworkLinkType_GUID = l.NetworkLinkType_GUID,
+                        NetworkLinkTypeGUID = l.NetworkLinkTypeGUID,
                         TOID = l.TOID
                     });
 
-                NetworkLinkDTO networkLinkRoad = null;
+                NetworkLinkDataDTO networkLinkRoad = null;
+
 
                 // check for nearest segment which does not cross any existing access link
                 foreach (var item in networkLinkRoads)
@@ -295,21 +306,15 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                     {
                         DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
 
-                        //var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
-                        //        .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
-
-                        //if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
-                        //{
-                        //    networkLinkRoad = item;
-                        //    networkIntersectionPoint = accessLinkLine.STEndPoint();
-
-                        //    break;
-                        //}
+                        networkLinkRoad = item;
+                        networkIntersectionPoint = accessLinkLine.STEndPoint();
+                        listNetworkIntersectionPoints.Add(networkIntersectionPoint);
+                        break;
                     }
                 }
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return new Tuple<NetworkLinkDTO, SqlGeometry>(networkLinkRoad, networkIntersectionPoint);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return new Tuple<NetworkLinkDataDTO, List<SqlGeometry>>(networkLinkRoad, listNetworkIntersectionPoints);
             }
         }
 
@@ -318,23 +323,23 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// </summary>
         /// <param name="networkLinkID">networkLink unique identifier Guid.</param>
         /// <returns>NetworkLink object.</returns>
-        public NetworkLinkDTO GetNetworkLink(Guid networkLinkID)
+        public NetworkLinkDataDTO GetNetworkLink(Guid networkLinkID)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNetworkLink"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetNetworkLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => x.Id == networkLinkID).SingleOrDefault();
+                var networkLink = DataContext.NetworkLinks.AsNoTracking().Where(x => x.ID == networkLinkID).SingleOrDefault();
                 Mapper.Initialize(cfg =>
                 {
-                    cfg.CreateMap<NetworkLink, NetworkLinkDTO>();
+                    cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
                 });
 
                 Mapper.Configuration.CreateMapper();
-                var networkLinkDTO = Mapper.Map<NetworkLink, NetworkLinkDTO>(networkLink);
+                var networkLinkDTO = Mapper.Map<NetworkLink, NetworkLinkDataDTO>(networkLink);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return networkLinkDTO;
             }
         }
@@ -343,27 +348,30 @@ namespace RM.CommonLibrary.EntityFramework.DataService
         /// <param name="boundingBoxCoordinates">bbox coordinates</param>
         /// <param name="accessLink">accesslink coordinate array</param>
         /// <returns>List<NetworkLinkDTO></returns>
-        public List<NetworkLinkDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
+        public List<NetworkLinkDataDTO> GetCrossingNetworkLink(string boundingBoxCoordinates, DbGeometry accessLink)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetCrossingNetworkLink"))
             {
-                string methodName = MethodBase.GetCurrentMethod().Name;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetCrossingNetworkLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<NetworkLinkDTO> networkLinkDTOs = new List<NetworkLinkDTO>();
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+                List<NetworkLinkDataDTO> networkLinkDTOs = new List<NetworkLinkDataDTO>();
+                DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
 
                 List<NetworkLink> crossingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Crosses(accessLink)).ToList();
-                List<NetworkLinkDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(crossingNetworkLinks);
+                List<NetworkLinkDataDTO> crossingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDataDTO>(crossingNetworkLinks);
                 networkLinkDTOs.AddRange(crossingNetworkLinkDTOs);
 
                 List<NetworkLink> overLappingNetworkLinks = DataContext.NetworkLinks.AsNoTracking().Where(nl => nl.LinkGeometry != null && nl.LinkGeometry.Intersects(extent) && nl.LinkGeometry.Overlaps(accessLink)).ToList();
-                List<NetworkLinkDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDTO>(overLappingNetworkLinks);
+                List<NetworkLinkDataDTO> overLappingNetworkLinkDTOs = GenericMapper.MapList<NetworkLink, NetworkLinkDataDTO>(overLappingNetworkLinks);
                 networkLinkDTOs.AddRange(overLappingNetworkLinkDTOs);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return networkLinkDTOs;
             }
         }
+
+        #endregion Public Methods
+
     }
 }

@@ -18,22 +18,28 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
 {
     public class NetworkManagerIntegrationService : INetworkManagerIntegrationService
     {
-        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
-
         #region Property Declarations
-
+        private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
         private string referenceDataWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
+        private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
+        private int entryEventId = LoggerTraceConstants.NetworkManagerIntegrationServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.NetworkManagerIntegrationServiceMethodExitEventId;
+
         #endregion Property Declarations
 
+        #region Constructors
         public NetworkManagerIntegrationService(IHttpHandler httpHandler, IConfigurationHelper configurationHelper, ILoggingHelper loggingHelper)
         {
             this.httpHandler = httpHandler;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
             this.loggingHelper = loggingHelper;
         }
+        #endregion Constructors
+
+        #region Public Methods
 
         /// <summary> Gets the name of the reference data categories by category. </summary> <param
         /// name="categoryNames">The category names.</param> <returns>List of <see cref="ReferenceDataCategoryDTO"></returns>
@@ -41,8 +47,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataNameValuePairs"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerIntegrationService) + "." + nameof(GetReferenceDataNameValuePairs);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
                 List<NameValuePair> nameValuePairs = new List<NameValuePair>();
@@ -60,7 +66,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
                 }
 
                 listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(nameValuePairs));
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return listReferenceCategories;
             }
         }
@@ -71,8 +77,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataSimpleLists"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(NetworkManagerIntegrationService) + "." + nameof(GetReferenceDataSimpleLists);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
 
@@ -85,9 +91,12 @@ namespace RM.DataManagement.NetworkManager.WebAPI.IntegrationService
 
                 List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
                 listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NetworkManagerAPIPriority, LoggerTraceConstants.NetworkManagerIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return listReferenceCategories;
             }
         }
+
+        #endregion Public Methods
+
     }
 }

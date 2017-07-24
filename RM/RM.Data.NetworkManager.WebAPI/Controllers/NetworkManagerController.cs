@@ -22,7 +22,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         private INetworkManagerBusinessService networkManagerBusinessService = default(INetworkManagerBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        Guid CurrentUserUnit = Guid.Empty;
         private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
         private int entryEventId = LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.NetworkManagerControllerMethodExitEventId;
