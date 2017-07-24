@@ -320,10 +320,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 PostalAddressDTO postalAddressDto = null;
                 var postalAddressDetails = await postalAddressDataService.GetPostalAddressDetails(selectedItem, unitGuid);
                 var routeData = unitManagerIntegrationService.GetRouteData(selectedItem.Split(',')[1].Trim(), "ID,RouteName").Result;
-                routeData.ForEach(route => {
+                routeData.ForEach(route =>
+                {
                     routeDetails.Add(new BindingDTO { Value = route.ID, DisplayText = route.RouteName });
                 });
-
 
                 Guid nybAddressTypeId = unitManagerIntegrationService.GetReferenceDataGuId(PostalAddressType, FileType.Nyb.ToString()).Result;
 
@@ -359,7 +359,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="searchText"></param>
         /// <param name="unitGuid"></param>
@@ -404,6 +404,5 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 return approxLocation;
             }
         }
-
     }
 }

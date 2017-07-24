@@ -1,11 +1,11 @@
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO
 {
-    using System;   
-        
+    using System;
+
     public class PostcodeHierarchyDataDTO
     {
         public Guid ID { get; private set; }
-                
+
         public string Postcode { get; private set; }
 
         public string ParentPostcode { get; private set; }

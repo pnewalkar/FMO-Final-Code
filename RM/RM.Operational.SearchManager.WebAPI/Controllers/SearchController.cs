@@ -73,7 +73,6 @@ namespace RM.Operational.SearchManager.WebAPI.Controllers
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.SearchManagerAPIPriority, LoggerTraceConstants.SearchManagerControllerMethodEntryEventId);
                 try
                 {
-
                     return await searchBussinessService.GetAdvanceSearchDetails(searchText, this.CurrentUserUnit, this.CurrentUserUnitType);
                 }
                 catch (AggregateException ae)

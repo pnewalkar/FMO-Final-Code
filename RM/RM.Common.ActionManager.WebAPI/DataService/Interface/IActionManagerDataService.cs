@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RM.Common.ActionManager.WebAPI.DataDTO;
 
-
 namespace RM.Common.ActionManager.WebAPI.Interfaces
 {
     public interface IActionManagerDataService

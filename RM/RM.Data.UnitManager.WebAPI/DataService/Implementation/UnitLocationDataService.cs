@@ -94,8 +94,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                                       from postcodeHierarchy in DataContext.PostcodeHierarchies
                                                       join lh in DataContext.LocationPostcodeHierarchies on postcodeHierarchy.ID equals lh.PostcodeHierarchyID
                                                       where postcodeHierarchy.PostcodeTypeGUID == postcodeAreaGUID && location.ID == lh.LocationID
-                                                      select postcodeHierarchy.Postcode
-                                                      ).FirstOrDefault() ?? string.Empty
+                                                      select postcodeHierarchy.Postcode).FirstOrDefault() ?? string.Empty
                                              }).ToListAsync();
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitLocationDataServiceMethodExitEventId);
                 return userUnitDetails;
