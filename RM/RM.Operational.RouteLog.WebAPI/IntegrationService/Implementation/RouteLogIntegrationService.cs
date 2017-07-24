@@ -1,16 +1,13 @@
-﻿using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Operational.RouteLog.WebAPI.DTO;
 using RM.Operational.RouteLog.WebAPI.Utils;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace RM.Operational.RouteLog.WebAPI.IntegrationService
 {
@@ -22,6 +19,9 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         private string pdfGeneratorWebAPIName = string.Empty;
         private IHttpHandler httpHandler = default(IHttpHandler);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private int priority = LoggerTraceConstants.RouteLogAPIPriority;
+        private int entryEventId = LoggerTraceConstants.RouteLogIntegrationServiceMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.RouteLogIntegrationServiceMethodExitEventId;
 
         #endregion Property Declarations
 
@@ -40,24 +40,24 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         /// <summary>
         /// Method to retrieve sequenced delivery point details
         /// </summary>
-        /// <param name="deliveryRouteDto">deliveryRouteDto</param>
-        /// <returns>deliveryRouteDto</returns>
-        public async Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto)
+        /// <param name="deliveryRoute">deliveryRoute</param>
+        /// <returns>deliveryRoute</returns>
+        public async Task<RouteLogSummaryDTO> GenerateRouteLog(RouteDTO deliveryRoute)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GenerateRouteLog"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(RouteLogIntegrationService) + "." + nameof(GenerateRouteLog);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteWebAPIName + "deliveryroute/deliveryroutesummaries/", deliveryRouteDto);
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryRouteWebAPIName + "deliveryroute/deliveryroutesummaries/", deliveryRoute);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                var generateRouteLog = JsonConvert.DeserializeObject<RouteLogSummaryModelDTO>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                var generateRouteLog = JsonConvert.DeserializeObject<RouteLogSummaryDTO>(result.Content.ReadAsStringAsync().Result);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return generateRouteLog;
             }
         }
@@ -72,8 +72,8 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GenerateRouteLogSummaryReport"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogIntegrationServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(RouteLogIntegrationService) + "." + nameof(GenerateRouteLogSummaryReport);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(pdfGeneratorWebAPIName + "PDFReports/" + fileName, xml);
                 if (!result.IsSuccessStatusCode)
@@ -83,7 +83,7 @@ namespace RM.Operational.RouteLog.WebAPI.IntegrationService
                 }
 
                 var generateRouteLogSummaryReport = result.Content.ReadAsStringAsync().Result;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.RouteLogAPIPriority, LoggerTraceConstants.RouteLogIntegrationServiceMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return generateRouteLogSummaryReport;
             }
         }

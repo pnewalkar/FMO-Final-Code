@@ -10,7 +10,6 @@ using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.DataMiddleware;
 using System.Data.Entity;
 using System.Threading.Tasks;
 
