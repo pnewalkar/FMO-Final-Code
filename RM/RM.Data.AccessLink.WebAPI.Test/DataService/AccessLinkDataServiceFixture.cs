@@ -41,7 +41,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_CreateAccessLink()
         {
-            var actualResult = testCandidate.CreateAccessLink(netWorkLinkDataDto);
+            var actualResult = testCandidate.CreateAutomaticAccessLink(netWorkLinkDataDto);
             Assert.IsNotNull(actualResult);
         }
 
@@ -118,7 +118,6 @@ namespace RM.DataServices.Tests.DataService
                     }
                 }
             };
-
 
             var mockAsynEnumerable = new DbAsyncEnumerable<AccessLink>(accessLink);
             mockFmoDbContext = CreateMock<AccessLinkDBContext>();
