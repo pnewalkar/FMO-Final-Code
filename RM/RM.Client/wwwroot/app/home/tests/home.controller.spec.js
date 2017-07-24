@@ -30,8 +30,7 @@ describe('Home: Controller', function() {
                 $mdSidenav : _$mdSidenav_,
                 errorService : _errorService_
             });
-            spyOn($rootScope, '$broadcast').and.callThrough();
-            spyOn($rootScope, '$on').and.callThrough();
+            spyOn($rootScope, '$broadcast').and.callThrough();            
         });
 
         
