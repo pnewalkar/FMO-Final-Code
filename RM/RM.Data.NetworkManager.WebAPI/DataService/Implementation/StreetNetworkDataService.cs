@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Spatial;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.SqlServer.Types;
+using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.DataManagement.NetworkManager.WebAPI.Entities;
-using AutoMapper;
-using Microsoft.IdentityModel.Protocols;
-using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
-using RM.CommonLibrary.ConfigurationMiddleware;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.NetworkManager.WebAPI.Entities;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
@@ -296,7 +291,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
                 NetworkLinkDataDTO networkLinkRoad = null;
 
-
                 // check for nearest segment which does not cross any existing access link
                 foreach (var item in networkLinkRoads)
                 {
@@ -373,6 +367,5 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         }
 
         #endregion Public Methods
-
     }
 }

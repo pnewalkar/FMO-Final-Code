@@ -14,7 +14,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         /// <summary>
         /// This class represents DB data transfer object for PostalAddress entity
         /// </summary>
-
         public Guid ID { get; set; }
 
         public string PostcodeType { get; set; }

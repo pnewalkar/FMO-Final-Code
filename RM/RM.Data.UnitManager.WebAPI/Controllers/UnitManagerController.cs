@@ -253,10 +253,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 throw new ArgumentNullException(nameof(operationStateID));
             }
+
             if (locationID.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException(nameof(locationID));
             }
+
             if (fields.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException(nameof(fields));

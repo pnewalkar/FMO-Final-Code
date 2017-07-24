@@ -176,6 +176,7 @@
             {
                 throw new ArgumentNullException(nameof(objPostalAddress), string.Format(ErrorConstants.Err_ArgumentmentNullException, objPostalAddress));
             }
+
             bool isPostalAddressInserted = false;
             PostalAddress objAddress = new PostalAddress();
             try
@@ -202,6 +203,7 @@
                         await DataContext.SaveChangesAsync();
                         isPostalAddressInserted = true;
                     }
+
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 }
             }

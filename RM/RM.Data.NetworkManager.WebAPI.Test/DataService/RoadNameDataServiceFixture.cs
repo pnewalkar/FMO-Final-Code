@@ -203,7 +203,7 @@ namespace RM.DataServices.Tests.DataService
                 {
                     ID = Guid.Parse("09ce57b1-af13-4f8e-b4af-1de35b4a68a8"),
                     TOID = "osgb4000000023358315",
-                    LinkGeometry =  DbGeometry.LineFromText("LINESTRING (511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933)", 27700),
+                    LinkGeometry = DbGeometry.LineFromText("LINESTRING (511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933)", 27700),
                     NetworkLinkTypeGUID = new Guid("09ce57b1-af13-4f8e-b4af-1de35b4a68a8")
                 }
             };
@@ -216,14 +216,14 @@ namespace RM.DataServices.Tests.DataService
             mockNetworkDBContext.Setup(c => c.OSRoadLinks.AsNoTracking()).Returns(mockRoadNameDataService.Object);
             mockRoadNameDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockRoadNameDataService.Object);
 
-            //Setup for Location.
+            // Setup for Location.
             var mockRoadNameDataService2 = MockDbSet(location);
             mockNetworkDBContext.Setup(x => x.Set<Location>()).Returns(mockRoadNameDataService2.Object);
             mockNetworkDBContext.Setup(x => x.Locations).Returns(mockRoadNameDataService2.Object);
             mockNetworkDBContext.Setup(c => c.Locations.AsNoTracking()).Returns(mockRoadNameDataService2.Object);
             mockRoadNameDataService2.Setup(x => x.Include(It.IsAny<string>())).Returns(mockRoadNameDataService2.Object);
 
-            //Setup for NetworkLink.
+            // Setup for NetworkLink.
             var mockNetworkLink = MockDbSet(networkLinks);
             mockNetworkDBContext.Setup(x => x.Set<NetworkLink>()).Returns(mockNetworkLink.Object);
             mockNetworkDBContext.Setup(x => x.NetworkLinks).Returns(mockNetworkLink.Object);
@@ -233,7 +233,7 @@ namespace RM.DataServices.Tests.DataService
             mockDatabaseFactory = CreateMock<IDatabaseFactory<NetworkDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockNetworkDBContext.Object);
 
-            //Setup for IRMTraceManager.
+            // Setup for IRMTraceManager.
             mockILoggingHelper = CreateMock<ILoggingHelper>();
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
