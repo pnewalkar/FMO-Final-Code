@@ -62,9 +62,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <summary>
         /// Get route details specific to loaction
         /// </summary>
-        /// <param name="LocationId">Location ID</param>
+        /// <param name="locationId">Location ID</param>
         /// <returns> List of routes specific to location </returns>
-        Task<List<RouteDataDTO>> GetRoutesByLocation(Guid LocationId);
+        Task<List<RouteDataDTO>> GetRoutesByLocation(Guid locationId);
 
         /// <summary>
         /// Get route details mapped to delivery point
