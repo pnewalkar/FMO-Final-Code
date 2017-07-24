@@ -69,8 +69,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        [HttpPost("nearestsegment")]
-        public IActionResult GetNearestSegment([FromBody]string operationalObjectPointJson)
+        [HttpGet("nearestsegment/{operationalObjectPointJson}")]
+        public IActionResult GetNearestSegment(string operationalObjectPointJson)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNearestSegment"))
             {

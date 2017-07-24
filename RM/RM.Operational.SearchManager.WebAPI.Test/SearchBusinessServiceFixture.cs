@@ -21,13 +21,14 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         private string input = "road";
         private Guid unitGuid = new Guid("97FE320A-AFEE-4E68-980D-3A70F418E46D");
         private Guid unitLocationTypeId = new Guid("97FE320A-AFEE-4E68-980D-3A70F418E46D");
+        private string unitType = "Delivery Office";
         private PostalAddressDTO postalAddressDTO;
 
         [Test]
         public void Test_Fetch_Advance_Search_Details()
         {
             Exception mockException = It.IsAny<Exception>();
-            var output = testCandidate.FetchAdvanceSearchDetails(input, unitGuid);
+            var output = testCandidate.GetAdvanceSearchDetails(input, unitGuid, unitType);
             Assert.NotNull(output);
         }
 
@@ -35,7 +36,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
         public void Test_Fetch_Basic_Search_Details()
         {
             Exception mockException = It.IsAny<Exception>();
-            var output = testCandidate.FetchBasicSearchDetails(input, unitGuid);
+            var output = testCandidate.GetBasicSearchDetails(input, unitGuid, unitType);
             Assert.NotNull(output);
         }
 
@@ -47,7 +48,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { LocationProvider = "Route 1", PostalAddress = postalAddressDTO } }));
 
-            var output = await testCandidate.FetchAdvanceSearchDetails("xyz", unitGuid);
+            var output = await testCandidate.GetAdvanceSearchDetails("xyz", unitGuid, unitType);
             Assert.NotNull(output);
         }
 
@@ -71,7 +72,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
                 new DeliveryPointDTO { UDPRN = 23456789, PostalAddress = new PostalAddressDTO() }
             }));
 
-            var output = await testCandidate.FetchAdvanceSearchDetails("test", unitGuid);
+            var output = await testCandidate.GetAdvanceSearchDetails("test", unitGuid, unitType);
             Assert.IsTrue(output.SearchResultItems.Count == 7);
         }
 
@@ -87,7 +88,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             var expectedException = new Exception("Expected exception");
             try
             {
-                output = await testCandidate.FetchAdvanceSearchDetails("test", unitGuid);
+                output = await testCandidate.GetAdvanceSearchDetails("test", unitGuid, unitType);
             }
             catch (Exception ex)
             {
@@ -104,7 +105,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "dummyLocalName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new PostalAddressDTO() { BuildingName = "Bldg-001" } } }));
 
-            var output = await testCandidate.FetchAdvanceSearchDetails("test", unitGuid);
+            var output = await testCandidate.GetAdvanceSearchDetails("test", unitGuid, unitType);
 
             Assert.IsTrue(output.SearchResultItems.Count == 4);
         }
@@ -117,7 +118,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "Route 1" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { LocationProvider = "Route 1", PostalAddress = postalAddressDTO } }));
 
-            var output = await testCandidate.FetchBasicSearchDetails(input, unitGuid);
+            var output = await testCandidate.GetBasicSearchDetails(input, unitGuid, unitType);
             Assert.NotNull(output);
         }
 
@@ -129,7 +130,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             searchIntegrationServiceMock.Setup(x => x.FetchStreetNamesForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<StreetNameDTO>() { new StreetNameDTO { LocalName = "dummyLocalName" } }));
             searchIntegrationServiceMock.Setup(x => x.FetchDeliveryPointsForBasicSearch(It.IsAny<string>())).Returns(Task.FromResult(new List<DeliveryPointDTO>() { new DeliveryPointDTO { UDPRN = 123456789, PostalAddress = new PostalAddressDTO() { BuildingName = "Bldg-001" } } }));
 
-            var output = await testCandidate.FetchBasicSearchDetails("test", unitGuid);
+            var output = await testCandidate.GetBasicSearchDetails("test", unitGuid, unitType);
 
             Assert.IsTrue(output.SearchResultItems.Count == 4);
         }
@@ -154,7 +155,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
                 new DeliveryPointDTO { UDPRN = 23456789, PostalAddress = new PostalAddressDTO() }
             }));
 
-            var output = await testCandidate.FetchBasicSearchDetails("test", unitGuid);
+            var output = await testCandidate.GetBasicSearchDetails("test", unitGuid, unitType);
 
             Assert.IsTrue(output.SearchResultItems.Count == 7);
         }
@@ -171,7 +172,7 @@ namespace RM.Operational.SearchManager.WebAPI.Test
             var expectedException = new Exception("Expected exception");
             try
             {
-                output = await testCandidate.FetchBasicSearchDetails("test", unitGuid);
+                output = await testCandidate.GetBasicSearchDetails("test", unitGuid, unitType);
             }
             catch (Exception ex)
             {
