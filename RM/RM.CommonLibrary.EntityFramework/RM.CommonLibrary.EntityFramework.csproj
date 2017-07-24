@@ -71,14 +71,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataService\AccessLinkDataService.cs" />
     <Compile Include="DataService\AccessManager\ActionManagerDataService.cs" />
     <Compile Include="DataService\AccessManager\UserRoleUnitDataService.cs" />
     <Compile Include="DataService\AddressLocationDataService.cs" />
     <Compile Include="DataService\BlockSequenceDataService.cs" />
     <Compile Include="DataService\DeliveryRouteDataService.cs" />
     <Compile Include="DataService\FileProcessingLogDataService.cs" />
-    <Compile Include="DataService\Interfaces\IAccessLinkDataService.cs" />
     <Compile Include="DataService\Interfaces\IActionManagerDataService.cs" />
     <Compile Include="DataService\Interfaces\IAddressLocationDataService.cs" />
     <Compile Include="DataService\Interfaces\IBlockSequenceDataService.cs" />
@@ -104,7 +102,6 @@
     <Compile Include="DBContext\AuditContext.cs" />
     <Compile Include="DBContext\RMDBContext.cs" />
     <Compile Include="DTO\AccessActionDTO.cs" />
-    <Compile Include="DTO\AccessLinkDTO.cs" />
     <Compile Include="DTO\ActionManager\RoleAccessDTO.cs" />
     <Compile Include="DTO\ActionManager\UserUnitInfoDTO.cs" />
     <Compile Include="DTO\AddDeliveryPointDTO.cs" />

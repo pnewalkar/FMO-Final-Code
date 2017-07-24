@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RM.Data.AccessLink.WebAPI.Utils
+﻿namespace RM.Data.AccessLink.WebAPI.Utils
 {
     public static class AccessLinkConstants
     {
@@ -21,5 +16,7 @@ namespace RM.Data.AccessLink.WebAPI.Utils
         internal const string OpenSquareBracket = "[";
         internal const string CloseSquareBracket = "]";
         internal const string Space = " ";
+        internal const string AccessLinkDataProviderGUID = "Access Link Intersection Node";
+        internal const string Internal = "Internal";
     }
 }

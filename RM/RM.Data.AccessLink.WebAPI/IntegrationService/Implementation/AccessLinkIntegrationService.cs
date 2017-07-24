@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.DataManagement.AccessLink.WebAPI.DTO;
+using RM.DataManagement.AccessLink.WebAPI.DTOs;
+using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {
@@ -25,6 +23,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         private const string ReferenceDataWebAPIName = "ReferenceDataWebAPIName";
         private const string NetworkManagerDataWebAPIName = "NetworkManagerDataWebAPIName";
         private const string DeliveryPointManagerDataWebAPIName = "DeliveryPointManagerDataWebAPIName";
+
+        private int priority = LoggerTraceConstants.AccessLinkAPIPriority;
+        private int entryEventId = LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId;
+        private int exitEventId = LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId;
 
         #region Member Variables
 
@@ -61,8 +63,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetNearestNamedRoad"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetNearestNamedRoad);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var jsonSerializerSettings = new JsonSerializerSettings()
                 {
@@ -80,7 +82,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
                 Tuple<NetworkLinkDTO, DbGeometry> nearestNamedRoad = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DbGeometry>>(result.Content.ReadAsStringAsync().Result);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return new Tuple<NetworkLinkDTO, SqlGeometry>(nearestNamedRoad.Item1, nearestNamedRoad.Item2?.ToSqlGeometry());
             }
         }
@@ -90,12 +92,12 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        public async Task<Tuple<NetworkLinkDTO, SqlGeometry>> GetNearestSegment(DbGeometry operationalObjectPoint)
+        public async Task<Tuple<NetworkLinkDTO, List<SqlGeometry>>> GetNearestSegment(DbGeometry operationalObjectPoint)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetNearestSegment"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetNearestNamedRoad);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var jsonSerializerSettings = new JsonSerializerSettings()
                 {
@@ -113,8 +115,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
                 Tuple<NetworkLinkDTO, DbGeometry> nearestSegment = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DbGeometry>>(result.Content.ReadAsStringAsync().Result, new DbGeometryConverter());
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
-                return new Tuple<NetworkLinkDTO, SqlGeometry>(nearestSegment.Item1, nearestSegment.Item2?.ToSqlGeometry());
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return new Tuple<NetworkLinkDTO, List<SqlGeometry>>(nearestSegment.Item1, new List<SqlGeometry>());
             }
         }
 
@@ -127,8 +129,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetNetworkLink"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetNearestNamedRoad);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(networkManagerDataWebAPIName + "networklink/" + networkLinkID);
 
@@ -140,7 +142,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
                 NetworkLinkDTO networkLink = JsonConvert.DeserializeObject<NetworkLinkDTO>(result.Content.ReadAsStringAsync().Result);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return networkLink;
             }
         }
@@ -152,8 +154,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataNameValuePairs"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetReferenceDataNameValuePairs);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
                 List<NameValuePair> nameValuePairs = new List<NameValuePair>();
@@ -171,7 +173,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 }
 
                 listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(nameValuePairs));
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return listReferenceCategories;
             }
         }
@@ -183,8 +185,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetReferenceDataSimpleLists"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetReferenceDataSimpleLists);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 List<ReferenceDataCategoryDTO> listReferenceCategories = new List<ReferenceDataCategoryDTO>();
 
@@ -199,7 +201,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 List<SimpleListDTO> apiResult = JsonConvert.DeserializeObject<List<SimpleListDTO>>(result.Content.ReadAsStringAsync().Result);
 
                 listReferenceCategories.AddRange(ReferenceDataHelper.MapDTO(apiResult));
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return listReferenceCategories;
             }
         }
@@ -211,8 +213,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetCrossingNetworkLinks"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetCrossingNetworkLinks);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var jsonSerializerSettings = new JsonSerializerSettings()
                 {
@@ -230,7 +232,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
                 List<NetworkLinkDTO> networkLinks = JsonConvert.DeserializeObject<List<NetworkLinkDTO>>(result.Content.ReadAsStringAsync().Result);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return networkLinks;
             }
         }
@@ -244,8 +246,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetOSRoadLink"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetOSRoadLink);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(networkManagerDataWebAPIName + "OSRoadLink/" + toid);
 
@@ -256,7 +258,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 }
 
                 string roadLink = result.Content.ReadAsStringAsync().Result.Equals("[]") ? string.Empty : result.Content.ReadAsStringAsync().Result;
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return roadLink;
             }
         }
@@ -265,8 +267,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPoint"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetDeliveryPoint);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerDataWebAPIName + "deliverypoint/guid:" + deliveryPointGuid);
 
@@ -278,7 +281,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
 
                 var deliveryPoint = JsonConvert.DeserializeObject<DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
 
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return deliveryPoint;
             }
         }
@@ -287,8 +290,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.UpdateDeliveryPointAccessLinkCreationStatus"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(UpdateDeliveryPointAccessLinkCreationStatus);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var jsonSerializerSettings = new JsonSerializerSettings()
                 {
@@ -305,7 +308,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 }
 
                 var success = JsonConvert.DeserializeObject<bool>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return success;
             }
         }
@@ -318,8 +321,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointsCrossingOperationalObject"))
             {
-                string methodName = MethodHelper.GetActualAsyncMethodName();
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodEntryEventId, LoggerTraceConstants.Title);
+                string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(UpdateDeliveryPointAccessLinkCreationStatus);
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var jsonSerializerSettings = new JsonSerializerSettings()
                 {
@@ -336,7 +339,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                 }
 
                 var success = JsonConvert.DeserializeObject<List<DeliveryPointDTO>>(result.Content.ReadAsStringAsync().Result);
-                loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Information, null, LoggerTraceConstants.Category, LoggerTraceConstants.AccessLinkAPIPriority, LoggerTraceConstants.AccessLinkIntegrationMethodExitEventId, LoggerTraceConstants.Title);
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return success;
             }
         }
