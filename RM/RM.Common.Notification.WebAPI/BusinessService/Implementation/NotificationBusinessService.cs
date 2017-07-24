@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
+using RM.Common.Notification.WebAPI.DataService.Interface;
+using RM.Common.Notification.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.Common.Notification.WebAPI.DataService.Interface;
-using RM.Common.Notification.WebAPI.DTO;
 
 namespace RM.Common.Notification.WebAPI.BusinessService
 {
@@ -47,7 +46,7 @@ namespace RM.Common.Notification.WebAPI.BusinessService
                         NotificationTypeGUID = notificationDTO.NotificationType_GUID,
                         NotificationPriorityGUID = notificationDTO.NotificationPriority_GUID
                     };
-    
+
                     return await notificationDataService.AddNewNotification(notificationDataDTO);
                 }
                 finally
@@ -112,7 +111,7 @@ namespace RM.Common.Notification.WebAPI.BusinessService
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 var getNotificationByUDPRN = await notificationDataService.GetNotificationByUDPRN(uDPRN);
-                if (getNotificationByUDPRN!=null)
+                if (getNotificationByUDPRN != null)
                 {
                     notificationDTO = new NotificationDTO
                     {
@@ -127,7 +126,7 @@ namespace RM.Common.Notification.WebAPI.BusinessService
                         NotificationType_GUID = getNotificationByUDPRN.NotificationTypeGUID,
                         NotificationPriority_GUID = getNotificationByUDPRN.NotificationPriorityGUID
                     };
-                }                
+                }
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return notificationDTO;
             }

@@ -43,13 +43,13 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.ScenarioDataServiceMethodEntryEventId);
 
-                var scenarios = await (from Scenario in DataContext.Scenarios.AsNoTracking()
-                                       join ScenarioStatus in DataContext.ScenarioStatus.AsNoTracking() on Scenario.ID equals ScenarioStatus.ScenarioID
-                                       where ScenarioStatus.ScenarioStatusGUID == operationStateID && Scenario.LocationID == locationID
+                var scenarios = await (from scenerio in DataContext.Scenarios.AsNoTracking()
+                                       join scenarioStatus in DataContext.ScenarioStatus.AsNoTracking() on scenerio.ID equals scenarioStatus.ScenarioID
+                                       where scenarioStatus.ScenarioStatusGUID == operationStateID && scenerio.LocationID == locationID
                                        select new ScenarioDataDTO
                                        {
-                                           ScenarioName = Scenario.ScenarioName,
-                                           ID = Scenario.ID
+                                           ScenarioName = scenerio.ScenarioName,
+                                           ID = scenerio.ID
                                        }).OrderBy(n => n.ScenarioName).ToListAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.ScenarioDataServiceMethodExitEventId);

@@ -86,7 +86,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            // Infrastructure            
+            // Infrastructure
             services.AddScoped<IDatabaseFactory<DeliveryPointDBContext>, DatabaseFactory<DeliveryPointDBContext>>();
 
             // BusinessServices
