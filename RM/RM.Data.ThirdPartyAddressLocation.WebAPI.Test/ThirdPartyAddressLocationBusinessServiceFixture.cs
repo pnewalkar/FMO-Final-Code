@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.FileProcessing;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
@@ -22,11 +16,11 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         private const string NETWORKLINKDATAPROVIDER = "Data Provider";
         private const string EXTERNAL = "External";
 
-        private ThirdPartyAddressLocationBusinessService testCandidate;
-        private Mock<IAddressLocationDataService> addressLocationDataServiceMock;
-        private Mock<IThirdPartyAddressLocationIntegrationService> thirdPartyAddressLocationIntegrationServiceMock;
-        private Mock<ILoggingHelper> loggingHelperMock;
-        private Mock<IConfigurationHelper> configurationHelperMock;
+        // private ThirdPartyAddressLocationBusinessService testCandidate;
+        // private Mock<IAddressLocationDataService> addressLocationDataServiceMock;
+        // private Mock<IThirdPartyAddressLocationIntegrationService> thirdPartyAddressLocationIntegrationServiceMock;
+        // private Mock<ILoggingHelper> loggingHelperMock;
+        // private Mock<IConfigurationHelper> configurationHelperMock;
 
         //TODO: Nunits to be fixed
         /*
@@ -136,7 +130,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
 
         protected override void OnSetup()
         {
-            // OnSetup to be configured 
+            // OnSetup to be configured
             /*addressLocationDataServiceMock = new Mock<IAddressLocationDataService>();
             thirdPartyAddressLocationIntegrationServiceMock = new Mock<IThirdPartyAddressLocationIntegrationService>();
             loggingHelperMock = new Mock<ILoggingHelper>();

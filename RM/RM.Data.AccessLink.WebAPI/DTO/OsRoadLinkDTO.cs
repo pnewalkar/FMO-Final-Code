@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RM.DataManagement.AccessLink.WebAPI.DTOs
 {
@@ -32,6 +28,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DTOs
         public string AlternateName { get; set; }
 
         public string Directionality { get; set; }
+
         public decimal LengthInMeters { get; set; }
 
         public string StartNodeTOID { get; set; }
