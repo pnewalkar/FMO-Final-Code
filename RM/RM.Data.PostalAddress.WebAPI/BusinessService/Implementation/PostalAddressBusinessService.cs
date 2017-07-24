@@ -616,7 +616,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         objPostalAddress.ID = objPostalAddressMatchedAddress.ID;
                         objPostalAddress.PostalAddressStatus = objPostalAddressMatchedAddress.PostalAddressStatus;
 
-                        // Update Postal address 
+                        // Update Postal address
                         if (await addressDataService.UpdateAddress(objPostalAddress, strFileName))
                         {
                             // Update delivery point for USR records
