@@ -51,7 +51,8 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
                 AddressLocationDataDTO addressLocationDataDto = await this.addressLocationDataService.GetAddressLocationByUDPRN(uDPRN);
-                AddressLocationDTO addressLocationDto = GenericMapper.Map<AddressLocationDataDTO, AddressLocationDTO>(addressLocationDataDto);
+                Mapper.Initialize(cfg => cfg.CreateMap<AddressLocationDataDTO, AddressLocationDTO>());
+                AddressLocationDTO addressLocationDto = Mapper.Map<AddressLocationDataDTO, AddressLocationDTO>(addressLocationDataDto);
                 var getAddressLocationJsonData = GetAddressLocationJsonData(addressLocationDto);
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodExitEventId);
                 return getAddressLocationJsonData;
@@ -187,7 +188,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 
                                     // Update the delivery point location directly in case it is within
                                     // the tolerance limits.
-                                    await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
+                                    await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
 
                                     // Check if the notification exists for the given UDPRN.
                                     if (await addressLocationDataService.CheckIfNotificationExists(fileUdprn, ThirdPartyAddressLocationConstants.TASKPAFACTION))
