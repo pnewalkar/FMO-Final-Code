@@ -1,4 +1,7 @@
 {
+  "title": "RM.Data.DeliveryPoint.WebAPI",
+  "version": "1.0.0-0",
+  "copyright": "Copyright © Royal Mail Group 2017",
   "dependencies": {
     "AutoMapper": "6.0.2",
     "EntityFramework": "6.1.3",

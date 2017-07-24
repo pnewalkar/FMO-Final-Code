@@ -72,5 +72,18 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
                 return token;
             }
         }
+
+        /// <summary>
+        /// Gets user unit type name e.g: Delivery Office, Collection Hub, etc.
+        /// </summary>
+        public string CurrentUserUnitType
+        {
+            get
+            {
+                var UserUnitType = User.Claims.Where(c => c.Type == ClaimTypes.Upn)
+                               .Select(c => c.Value).SingleOrDefault();
+                return UserUnitType;
+            }
+        }
     }
 }

@@ -50,6 +50,7 @@
         public const int SavePAFDetailsPriority = 8;
         public const int SaveDeliveryPointProcessPriority = 8;
         public const int TokenProviderMiddlewarePriority = 8;
+        public const int UpdateDeliveryPointPriority = 8;
 
         #endregion Priority
 
