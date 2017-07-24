@@ -234,7 +234,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         Address_GUID = objPostalAddress.ID,
                         DeliveryPointUseIndicator_GUID = deliveryPointUseIndicator,
                         LocationXY = approxLocation,
-                        OperationalStatus_GUID = operationalStatusGUIDLive,
+                        OperationalStatus_GUID = operationalStatusGUIDLivePending,
                         NetworkNodeType_GUID = networkNodeTypeRMGServiceNode
                     };
                     await postalAddressIntegrationService.InsertDeliveryPoint(newDeliveryPoint);

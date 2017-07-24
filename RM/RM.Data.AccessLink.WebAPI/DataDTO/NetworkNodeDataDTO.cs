@@ -20,7 +20,7 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
 
         public DateTime RowCreateDateTime { get; set; }
 
-        //public virtual DeliveryPoint DeliveryPoint { get; set; }
+        // public virtual DeliveryPoint DeliveryPoint { get; set; }
 
         public virtual LocationDataDTO LocationDatatDTO { get; set; }
 

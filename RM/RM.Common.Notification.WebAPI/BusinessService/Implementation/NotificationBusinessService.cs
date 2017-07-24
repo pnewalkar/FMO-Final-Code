@@ -108,22 +108,26 @@ namespace RM.Common.Notification.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GetNotificationByUDPRN"))
             {
+                NotificationDTO notificationDTO = null;
                 string methodName = MethodHelper.GetActualAsyncMethodName();
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
                 var getNotificationByUDPRN = await notificationDataService.GetNotificationByUDPRN(uDPRN);
-                NotificationDTO notificationDTO = new NotificationDTO
+                if (getNotificationByUDPRN!=null)
                 {
-                    ID = getNotificationByUDPRN.ID,
-                    Notification_Heading = getNotificationByUDPRN.Notification_Heading,
-                    Notification_Message = getNotificationByUDPRN.Notification_Message,
-                    NotificationDueDate = getNotificationByUDPRN.NotificationDueDate,
-                    NotificationActionLink = getNotificationByUDPRN.NotificationActionLink,
-                    NotificationSource = getNotificationByUDPRN.NotificationSource,
-                    PostcodeDistrict = getNotificationByUDPRN.PostcodeDistrict,
-                    PostcodeSector = getNotificationByUDPRN.PostcodeSector,
-                    NotificationType_GUID = getNotificationByUDPRN.NotificationTypeGUID,
-                    NotificationPriority_GUID = getNotificationByUDPRN.NotificationPriorityGUID
-                };
+                    notificationDTO = new NotificationDTO
+                    {
+                        ID = getNotificationByUDPRN.ID,
+                        Notification_Heading = getNotificationByUDPRN.Notification_Heading,
+                        Notification_Message = getNotificationByUDPRN.Notification_Message,
+                        NotificationDueDate = getNotificationByUDPRN.NotificationDueDate,
+                        NotificationActionLink = getNotificationByUDPRN.NotificationActionLink,
+                        NotificationSource = getNotificationByUDPRN.NotificationSource,
+                        PostcodeDistrict = getNotificationByUDPRN.PostcodeDistrict,
+                        PostcodeSector = getNotificationByUDPRN.PostcodeSector,
+                        NotificationType_GUID = getNotificationByUDPRN.NotificationTypeGUID,
+                        NotificationPriority_GUID = getNotificationByUDPRN.NotificationPriorityGUID
+                    };
+                }                
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return notificationDTO;
             }

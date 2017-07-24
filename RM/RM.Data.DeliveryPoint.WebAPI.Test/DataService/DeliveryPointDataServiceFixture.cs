@@ -375,7 +375,7 @@ namespace RM.DataServices.Tests.DataService
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockRMDBContext = CreateMock<DeliveryPointDBContext>();
 
-            //setup for Deliverypoint
+            // setup for Deliverypoint
             var mockAsynEnumerable = new DbAsyncEnumerable<DeliveryPoint>(deliveryPoint);
             var mockDeliveryPointDataService = MockDbSet(deliveryPoint);
             mockDeliveryPointDataService.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable.AsQueryable().Provider);
@@ -388,7 +388,7 @@ namespace RM.DataServices.Tests.DataService
             mockDeliveryPointDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointDataService.Object);
             mockDeliveryPointDataService.Setup(x => x.AsNoTracking()).Returns(mockDeliveryPointDataService.Object);
 
-            //setup for location
+            // setup for location
             var mockAsynEnumerable1 = new DbAsyncEnumerable<Location>(location);
             var mockLocation = MockDbSet(location);
             mockLocation.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable1.AsQueryable().Provider);
