@@ -145,11 +145,11 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
-        public async Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids)
+        public async Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids)
         {
             List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = new List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>();
 
-            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(unitManagerDataWebAPIName + "postcode/search/" + unitGuid, postcodeGuids);
+            HttpResponseMessage result = await httpHandler.PostAsJsonAsync(unitManagerDataWebAPIName + "postcode/search/", postcodeGuids);
             if (!result.IsSuccessStatusCode)
             {
                 // LOG ERROR WITH Statuscode
@@ -160,24 +160,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             postcodes = JsonConvert.DeserializeObject<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>>(result.Content.ReadAsStringAsync().Result);
 
             return postcodes;
-        }
-
-
-        public async Task<CommonLibrary.EntityFramework.DTO.PostCodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid)
-        {
-            CommonLibrary.EntityFramework.DTO.PostCodeDTO postcode = new CommonLibrary.EntityFramework.DTO.PostCodeDTO();
-
-            HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/select/" + postcodeGuid +"/" + unitGuid);
-            if (!result.IsSuccessStatusCode)
-            {
-                // LOG ERROR WITH Statuscode
-                var responseContent = result.ReasonPhrase;
-                throw new ServiceException(responseContent);
-            }
-
-            postcode = JsonConvert.DeserializeObject<CommonLibrary.EntityFramework.DTO.PostCodeDTO>(result.Content.ReadAsStringAsync().Result);
-
-            return postcode;
         }
 
         ///// <summary>
