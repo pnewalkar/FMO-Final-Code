@@ -4,6 +4,7 @@ using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using Microsoft.SqlServer.Types;
 using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.AccessLink.WebAPI.DTO;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {

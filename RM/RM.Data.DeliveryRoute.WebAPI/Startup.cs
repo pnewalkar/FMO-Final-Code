@@ -10,12 +10,12 @@ using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService;
 using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.Entities;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.DeliveryRoute.WebAPI.Entities;
 using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService;
 using RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation;
 using RM.DataManagement.DeliveryRoute.WebAPI.IntegrationService;
@@ -91,14 +91,14 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI
                 return new ExceptionHelper(logWriter);
             });
 
-            services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            services.AddScoped<IDatabaseFactory<RouteDBContext>, DatabaseFactory<RouteDBContext>>();
             services.AddScoped<IHttpHandler, HttpHandler>();
             services.AddScoped<IDeliveryRouteBusinessService, DeliveryRouteBusinessService>();
-            services.AddScoped<IDeliveryRouteDataService, DeliveryRouteDataService>();
-            services.AddScoped<IScenarioDataService, ScenarioDataService>();
+            services.AddScoped<DataService.IDeliveryRouteDataService, DataService.DeliveryRouteDataService>();
             services.AddScoped<IDeliveryRouteIntegrationService, DeliveryRouteIntegrationService>();
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
-            services.AddScoped<IBlockSequenceDataService, BlockSequenceDataService>();
+            services.AddScoped<DataService.IBlockSequenceDataService, DataService.BlockSequenceDataService>();
+            services.AddScoped<DataService.IPostcodeDataService, DataService.PostcodeDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

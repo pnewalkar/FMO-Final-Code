@@ -341,7 +341,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     .Where(a => listNames.Contains(a.ReferenceDataValue))
                     .Select(a => a.ID).ToList();
                     List<Guid> postcodeGuids = await addressDataService.GetPostcodeGuids(searchText);
-                    List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = await postalAddressIntegrationService.GetPostcodes(unitGuid, postcodeGuids);
+                    List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = await postalAddressIntegrationService.GetPostcodes(postcodeGuids);
                     return await addressDataService.GetPostalAddressSearchDetails(searchText, unitGuid, addresstypeIDs, postcodes);
                 }
                 catch (Exception ex)
@@ -372,7 +372,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 List<BindingEntity> nybDetails = new List<BindingEntity>();
                 PostalAddressDBDTO postalAddressDto = null;
                 var postCodeGuids = addressDataService.GetSelectedPostcode(selectedItem).Result;
-                var selectedPostcode = await postalAddressIntegrationService.GetPostcodes(unitGuid, postCodeGuids);
+                var selectedPostcode = await postalAddressIntegrationService.GetPostcodes(postCodeGuids);
                 var postalAddressDetails = await addressDataService.GetPostalAddressDetails(selectedItem, unitGuid, selectedPostcode);
                 Guid nybAddressTypeId = postalAddressIntegrationService.GetReferenceDataGuId(PostalAddressType, FileType.Nyb.ToString()).Result;
                 if (postalAddressDetails != null && postalAddressDetails.Count > 0)

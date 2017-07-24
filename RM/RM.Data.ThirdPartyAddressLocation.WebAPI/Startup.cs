@@ -107,10 +107,10 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI
             services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
             services.AddScoped<IAddressLocationDataService, AddressLocationDataService>();
             services.AddScoped<IPostCodeDataService, PostCodeDataService>();
-            services.AddScoped<IStreetNetworkDataService, StreetNetworkDataService>();
+           // services.AddScoped<IStreetNetworkDataService, StreetNetworkDataService>();
             services.AddScoped<INotificationDataService, NotificationDataService>();
             services.AddScoped<IUnitLocationDataService, UnitLocationDataService>();
-            services.AddScoped<IOSRoadLinkDataService, OSRoadLinkDataService>();
+          //  services.AddScoped<IOSRoadLinkDataService, OSRoadLinkDataService>();
             services.AddScoped<IFileProcessingLogDataService, FileProcessingLogDataService>();
             services.AddScoped<IReferenceDataDataService, ReferenceDataDataService>();
             services.AddScoped<IPostCodeSectorDataService, PostCodeSectorDataService>();

@@ -12,6 +12,7 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService;
 using RM.DataManagement.AccessLink.WebAPI.BusinessService.Interface;
 using RM.DataManagement.AccessLink.WebAPI.Integration;
+using RM.DataManagement.AccessLink.WebAPI.DTO;
 
 namespace RM.Data.AccessLink.WebAPI.Test
 {

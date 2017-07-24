@@ -8,15 +8,17 @@ using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.Entities;
+
+
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.HttpHandler;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.BusinessService;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.NetworkManager.WebAPI.Entities;
 using RM.DataManagement.NetworkManager.WebAPI.IntegrationService;
 
 namespace RM.DataManagement.NetworkManager.WebAPI
@@ -91,7 +93,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI
             });
 
             // Infrastructure
-            services.AddTransient<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            services.AddTransient<IDatabaseFactory<NetworkDBContext>, DatabaseFactory<NetworkDBContext>>();
             services.AddScoped<IStreetNetworkDataService, StreetNetworkDataService>();
             services.AddScoped<IOSRoadLinkDataService, OSRoadLinkDataService>();
             services.AddScoped<IRoadNameDataService, RoadNameDataService>();

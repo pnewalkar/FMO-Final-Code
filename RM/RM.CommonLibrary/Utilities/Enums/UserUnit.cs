@@ -13,13 +13,19 @@ namespace RM.CommonLibrary.HelperMiddleware
         /// <summary>
         /// Delivery Unit
         /// </summary>
-        [Description("Delivery Unit")]
+        [Description("Delivery Office")]
         DeliveryUnit = 1,
 
         /// <summary>
         /// Collection Unit
         /// </summary>
-        [Description("Collection Unit")]
-        CollectionUnit = 2
+        [Description("Collection Hub")]
+        CollectionUnit = 2,
+
+        /// <summary>
+        /// National
+        /// </summary>
+        [Description("National")]
+        National = 3
     }
 }
