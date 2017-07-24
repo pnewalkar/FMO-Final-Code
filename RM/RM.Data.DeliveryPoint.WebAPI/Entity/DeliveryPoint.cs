@@ -17,29 +17,28 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
 
         public Guid ID { get; set; }
 
-        public bool AccessLinkPresent { get; set; }
+        public Guid PostalAddressID { get; set; }
 
         public short? MultipleOccupancyCount { get; set; }
 
         public int? MailVolume { get; set; }
 
-        public bool IsUnit { get; set; }
-
-        public Guid Address_GUID { get; set; }
-
-        public Guid DeliveryPointUseIndicator_GUID { get; set; }
+        public Guid DeliveryPointUseIndicatorGUID { get; set; }
 
         [Column(TypeName = "timestamp")]
         [MaxLength(8)]
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        [Column(TypeName = "datetime2")]
         public DateTime RowCreateDateTime { get; set; }
 
         public virtual NetworkNode NetworkNode { get; set; }
 
+        public virtual PostalAddress PostalAddress { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DeliveryPointStatus> DeliveryPointStatus { get; set; }
+
+        public virtual SupportingDeliveryPoint SupportingDeliveryPoint { get; set; }
     }
 }

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
-//using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
@@ -40,8 +39,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <param name="userUnit">Guid</param>
-        /// <returns>Task</returns>
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForBasicSearch(string searchText, Guid userUnit);
+        /// <returns>Task List of Delivery Point Dto</returns>
+        Task<List<DeliveryPointDTO>> GetDeliveryPointsForBasicSearch(string searchText, Guid userUnit);
 
         /// <summary>
         /// Get the count of delivery point
@@ -57,7 +56,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        Task<List<DeliveryPointDTO>> FetchDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
+        Task<List<DeliveryPointDTO>> GetDeliveryPointsForAdvanceSearch(string searchText, Guid unitGuid);
 
         /// <summary>
         /// Create delivery point for PAF and NYB records.
@@ -112,15 +111,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.BusinessService
         /// Insert the DeliveryPointDTO object into the database
         /// </summary>
         /// <param name="objDeliveryPoint">DeliveryPointDTO object</param>
-        /// <returns>boolean value</returns>
-        Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
+        /// <returns>Unique identifier of delivery point.</returns>
+        Task<Guid> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
-        /// <summary>
-        /// This method updates delivery point access link status
-        /// </summary>
-        /// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
-        /// <returns>success</returns>
-        bool UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
+        ///// <summary>
+        ///// This method updates delivery point access link status
+        ///// </summary>
+        ///// <param name="deliveryPointDTO">deliveryPointDto as DTO</param>
+        ///// <returns>success</returns>
+        //bool UpdateDeliveryPointAccessLinkCreationStatus(DeliveryPointDTO deliveryPointDTO);
 
         /// <summary> This method is used to get the delivery points crossing the operational object.
         /// </summary> <param name="boundingBoxCoordinates">bbox coordinates</param> <param

@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RM.Data.DeliveryPoint.WebAPI.DTO.UIDropdowns;
 
-namespace RM.Data.DeliveryPoint.WebAPI.DTO
+namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 {
-    public class PostalAddressDBDTO
+    /// <summary>
+    /// This class represents data transfer object for PostalAddress entity
+    /// </summary>
+    public class PostalAddressDataDTO
     {
-        public PostalAddressDBDTO()
+        public PostalAddressDataDTO()
         {
-            this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
+            //  this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
         }
-        /// <summary>
-        /// This class represents data transfer object for PostalAddress entity
-        /// </summary>
 
         public Guid ID { get; set; }
 
@@ -57,7 +54,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO
 
         public Guid AddressType_GUID { get; set; }
 
-        public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
+        //  public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
 
         public List<BindingEntity> NybAddressDetails { get; set; }
 

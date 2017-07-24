@@ -1,10 +1,7 @@
-namespace RM.Data.DeliveryPoint.WebAPI.Entities
+namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 {
     using System;
-    using System.ComponentModel.DataAnnotations.Schema;
-
-    [Table("FMO.DeliveryPointStatus")]
-    public partial class DeliveryPointStatus
+    public class DeliveryPointStatusDataDTO
     {
         public Guid ID { get; set; }
 
@@ -15,7 +12,5 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
         public DateTime StartDateTime { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
-        public virtual DeliveryPoint DeliveryPoint { get; set; }
     }
 }
