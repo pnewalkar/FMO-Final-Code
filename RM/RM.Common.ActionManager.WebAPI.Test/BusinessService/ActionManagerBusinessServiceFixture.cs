@@ -31,6 +31,7 @@ namespace RM.Common.ActionManager.WebAPI.Test
         {
             var result = testCandidate.GetRoleBasedAccessFunctions(userUnitInfoDTOList[0]);
             Assert.IsNotNull(result.Result);
+            Assert.AreEqual(result.Result.Count, 1);
         }
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace RM.Common.ActionManager.WebAPI.Test
         {
             var result = testCandidate.GetUserUnitInfo("user1", Guid.Empty);
             Assert.IsNotNull(result.Result);
+            Assert.AreEqual(result.Result.LocationId, new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A"));
         }
 
         /// <summary>
@@ -51,6 +53,7 @@ namespace RM.Common.ActionManager.WebAPI.Test
         {
             var result = testCandidate.GetUserUnitInfo("user1", Guid.NewGuid());
             Assert.IsNotNull(result.Result);
+            Assert.AreEqual(result.Result.LocationId, new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A"));
         }
 
         /// <summary>
@@ -83,9 +86,9 @@ namespace RM.Common.ActionManager.WebAPI.Test
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             //Methods Setup
-            mockActionManagerDataService.Setup(x => x.GetRoleBasedAccessFunctions(It.IsAny<UserUnitInfoDataDTO>())).ReturnsAsync(new List<RoleAccessDataDTO>() { });
-            mockActionManagerDataService.Setup(x => x.GetUserUnitInfo(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new UserUnitInfoDataDTO() { });
-            mockActionManagerDataService.Setup(x => x.GetUserUnitInfoFromReferenceData(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new UserUnitInfoDataDTO() { });
+            mockActionManagerDataService.Setup(x => x.GetRoleBasedAccessFunctions(It.IsAny<UserUnitInfoDataDTO>())).ReturnsAsync(new List<RoleAccessDataDTO>() { new RoleAccessDataDTO() { } });
+            mockActionManagerDataService.Setup(x => x.GetUserUnitInfo(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new UserUnitInfoDataDTO() { LocationId = new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A") });
+            mockActionManagerDataService.Setup(x => x.GetUserUnitInfoFromReferenceData(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new UserUnitInfoDataDTO() { LocationId = new Guid("FFD741D9-5BBE-4D7F-9C3B-79D3588DC98A") });
 
             testCandidate = new ActionManagerBusinessService(mockActionManagerDataService.Object, mockLoggingHelper.Object);
         }
