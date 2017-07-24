@@ -48,7 +48,7 @@ namespace RM.Common.Notification.WebAPI.DataService
                 try
                 {
                     NotificationManager.Notification newNotification = new NotificationManager.Notification();
-                    Mapper.Initialize(cfg => cfg.CreateMap<NotificationDTO, NotificationManager.Notification>());
+                    Mapper.Initialize(cfg => cfg.CreateMap<NotificationDataDTO, NotificationManager.Notification>());
                     newNotification = Mapper.Map<NotificationDataDTO, NotificationManager.Notification>(notificationDTO);
                     DataContext.Notifications.Add(newNotification);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);

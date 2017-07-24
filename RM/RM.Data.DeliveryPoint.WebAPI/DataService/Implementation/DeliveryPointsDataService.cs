@@ -345,7 +345,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 string methodName = typeof(DeliveryPointsDataService) + "." + nameof(GetDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<DeliveryPointDataDTO> deliveryPointDto = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+                List<DeliveryPointDataDTO> deliveryPointDto = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
@@ -649,7 +649,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <returns>DeliveryPointDTO</returns>
         public DeliveryPointDataDTO GetDeliveryPoint(Guid deliveryPointGuid)
         {
-            var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.NetworkNode).Include(x => x.NetworkNode.Location).Include(x => x.PostalAddress).AsNoTracking().Single(n => n.ID == deliveryPointGuid);
+            var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.NetworkNode).AsNoTracking().Include(x => x.NetworkNode.Location).AsNoTracking().Include(x => x.PostalAddress).AsNoTracking().Where(n => n.ID == deliveryPointGuid).SingleOrDefault();
 
             ConfigureMapper();
 
@@ -700,14 +700,17 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                     DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), DeliveryPointConstants.BNGCOORDINATESYSTEM);
 
-                    var deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
-                        .Include(x => x.NetworkNode)
-                        .Include(x => x.NetworkNode.Location)
-                        .Where(dp => dp.NetworkNode.Location.Shape.Intersects(extent) && dp.NetworkNode.Location.Shape.Intersects(polygon)).ToList();
+                    if (polygon != null)
+                    {
+                        var deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
+                                       .Include(x => x.NetworkNode)
+                                       .Include(x => x.NetworkNode.Location)
+                                       .Where(dp => dp.NetworkNode.Location.Shape.Intersects(extent) && dp.NetworkNode.Location.Shape.Intersects(polygon)).ToList();
 
-                    ConfigureMapper();
+                        ConfigureMapper();
 
-                    deliveryPointDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(deliveryPoints);
+                        deliveryPointDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(deliveryPoints);
+                    }
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
