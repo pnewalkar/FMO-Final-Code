@@ -609,6 +609,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// <returns>bool</returns>
         [Route("deliverypoint/batch")]
         [HttpPut]
+
         // [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
         public async Task<IActionResult> UpdateDeliveryPoint([FromBody] string objDeliveryPointJson)
         {

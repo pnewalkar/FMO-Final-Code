@@ -716,6 +716,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         objDeliveryPoint.OperationalStatus_GUID = operationalStatusGUIDLive;
 
                         objDeliveryPoint.NetworkNodeType_GUID = networkNodeTypeRMGServiceNode;
+
                         // };
                         if (await postalAddressIntegrationService.CheckIfNotificationExists((int)objPostalAddress.UDPRN, PostalAddressConstants.TASKPAFACTION))
                         {
@@ -928,6 +929,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             if (postalAddressDTO != null)
             {
                 postalAddressDataDTO.ID = postalAddressDTO.ID;
+
                 // postalAddressDataDTO.AddressStatus_GUID = postalAddressDTO.AddressStatus_GUID;
                 postalAddressDataDTO.AddressType_GUID = postalAddressDTO.AddressType_GUID;
                 postalAddressDataDTO.AMUApproved = postalAddressDTO.AMUApproved;
@@ -941,6 +943,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 postalAddressDataDTO.OrganisationName = postalAddressDTO.OrganisationName;
                 postalAddressDataDTO.POBoxNumber = postalAddressDTO.POBoxNumber;
                 postalAddressDataDTO.Postcode = postalAddressDTO.Postcode;
+
                 // postalAddressDataDTO.pos = postalAddressDTO.PostCodeGUID;
                 postalAddressDataDTO.PostcodeType = postalAddressDTO.PostcodeType;
                 postalAddressDataDTO.PostTown = postalAddressDTO.PostTown;
@@ -987,6 +990,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             if (postalAddressDataDTO != null)
             {
                 postalAddressDTO.ID = postalAddressDataDTO.ID;
+
                 // postalAddressDataDTO.AddressStatus_GUID = postalAddressDTO.AddressStatus_GUID;
                 postalAddressDTO.AddressType_GUID = postalAddressDataDTO.AddressType_GUID;
                 postalAddressDTO.AMUApproved = postalAddressDataDTO.AMUApproved;
@@ -1000,6 +1004,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                 postalAddressDTO.OrganisationName = postalAddressDataDTO.OrganisationName;
                 postalAddressDTO.POBoxNumber = postalAddressDataDTO.POBoxNumber;
                 postalAddressDTO.Postcode = postalAddressDataDTO.Postcode;
+
                 // postalAddressDataDTO.pos = postalAddressDTO.PostCodeGUID;
                 postalAddressDTO.PostcodeType = postalAddressDataDTO.PostcodeType;
                 postalAddressDTO.PostTown = postalAddressDataDTO.PostTown;

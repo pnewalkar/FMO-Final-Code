@@ -287,6 +287,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
+
                     //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
@@ -307,6 +308,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
+
                     //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
@@ -384,6 +386,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
+
                     //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
@@ -404,6 +407,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
                     DeliveryPointSuffix = "DeliveryPointSuffix",
+
                     //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
@@ -517,6 +521,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                 PostcodeType = "xyz",
                 SmallUserOrganisationIndicator = "indicator",
                 DeliveryPointSuffix = "DeliveryPointSuffix",
+
                 //PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                 AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11")
@@ -588,6 +593,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
             mockFmoDbContext.Setup(x => x.Set<RM.DataManagement.PostalAddress.WebAPI.Entities.PostalAddress>()).Returns(mockPostalAddressDBSet.Object);
             mockPostalAddressDBSet.Setup(x => x.Include(It.IsAny<string>())).Returns(mockPostalAddressDBSet.Object);
             mockFmoDbContext.Setup(x => x.PostalAddresses).Returns(mockPostalAddressDBSet.Object);
+
             //mockPostCodeDataService.Setup(x => x.GetPostCodeID(It.IsAny<string>())).Returns(Task.FromResult(Guid.NewGuid()));
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
@@ -649,6 +655,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     Thoroughfare = "ThoroughFare1",
                     DependentThoroughfare = "DependentThoroughFare1",
                     AddressType_GUID = new Guid("222C68A4-D959-4B37-B468-4B1855950A81"),
+
                     //PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000002"),
                     UDPRN = 14856,
                     PostcodeType = "S",
@@ -661,6 +668,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
                     Thoroughfare = "ThoroughFare2",
                     DependentThoroughfare = "DependentThoroughFare2",
                     AddressType_GUID = new Guid("A21F3E46-2D0D-4989-A5D5-872D23B479A2"),
+
                     //PostCodeGUID = new Guid("00000000-0000-0000-0000-000000000001"),
                     UDPRN = 14856,
                     PostcodeType = "S",
