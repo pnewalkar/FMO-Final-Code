@@ -41,10 +41,10 @@ function simulationAPIService($http, $q, GlobalSettings, stringFormatService) {
         return deferred.promise;
     }
 
-    function getRoutes(operationStateID, deliveryScenarioID) {
+    function getRoutes(deliveryScenarioID) {
         var deferred = $q.defer();
 
-        var getDeliveryRoutesParams = stringFormatService.Stringformat(GlobalSettings.getDeliveryRoutes, operationStateID, deliveryScenarioID);
+        var getDeliveryRoutesParams = stringFormatService.Stringformat(GlobalSettings.getDeliveryRoutes, deliveryScenarioID);
         $http.get(GlobalSettings.deliveryRouteApiUrl + getDeliveryRoutesParams).success(function (response) {
             deferred.resolve(response);
 

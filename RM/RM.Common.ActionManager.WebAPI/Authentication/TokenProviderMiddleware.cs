@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Common.ActionManager.WebAPI.BusinessService.Interface;
+using RM.Common.ActionManager.WebAPI.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 
@@ -31,15 +31,16 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
         private readonly TokenProviderOptions options;
         private readonly JsonSerializerSettings serializerSettings;
         private ILoggingHelper loggingHelper;
-        private IActionManagerDataService actionManagerService = default(IActionManagerDataService);
-        private IUserRoleUnitDataService userRoleUnitService = default(IUserRoleUnitDataService);
+        private IActionManagerBusinessService actionManagerBusinessService = default(IActionManagerBusinessService);
+        private int priority = LoggerTraceConstants.TokenProviderMiddlewarePriority;
+        private int entryEventId = LoggerTraceConstants.TokenProviderMiddlewareEntryEventId;
+        private int exitEventId = LoggerTraceConstants.TokenProviderMiddlewareExitEventId;
 
         public TokenProviderMiddleware(
-            RequestDelegate next,
-            IOptions<TokenProviderOptions> options,
-            ILoggingHelper loggingHelper,
-            IActionManagerDataService actionManagerService,
-            IUserRoleUnitDataService userRoleUnitService)
+           RequestDelegate next,
+           IOptions<TokenProviderOptions> options,
+           ILoggingHelper loggingHelper,
+           IActionManagerBusinessService actionManagerBusinessService)
         {
             this.next = next;
             this.loggingHelper = loggingHelper;
@@ -52,8 +53,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                 Formatting = Formatting.Indented
             };
 
-            this.actionManagerService = actionManagerService;
-            this.userRoleUnitService = userRoleUnitService;
+            this.actionManagerBusinessService = actionManagerBusinessService;
         }
 
         /// <summary>
@@ -67,23 +67,33 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             return (long)timeSpan.TotalSeconds;
         }
 
+        /// <summary>
+        /// Generate token
+        /// </summary>
+        /// <param name="context">http context</param>
+        /// <returns>Generated token</returns>
         public Task Invoke(HttpContext context)
         {
-            // If the request path doesn't match, skip
-            if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
+            string methodName = typeof(TokenProviderMiddleware) + "." + nameof(Invoke);
+            using (loggingHelper.RMTraceManager.StartTrace("Middleware.Invoke"))
             {
-                return next(context);
-            }
+                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                // If the request path doesn't match, skip
+                if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
+                {
+                    return next(context);
+                }
 
-            // Request must be POST with Content-Type: application/x-www-form-urlencoded
-            if (!context.Request.Method.Equals("POST")
-               || !context.Request.HasFormContentType)
-            {
-                context.Response.StatusCode = 400;
-                return context.Response.WriteAsync("Bad request.");
+                // Request must be POST with Content-Type: application/x-www-form-urlencoded
+                if (!context.Request.Method.Equals("POST")
+                   || !context.Request.HasFormContentType)
+                {
+                    context.Response.StatusCode = 400;
+                    return context.Response.WriteAsync("Bad request.");
+                }
+                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                return GenerateToken(context);
             }
-
-            return GenerateToken(context);
         }
 
         private static void ThrowIfInvalidOptions(TokenProviderOptions options)
@@ -124,72 +134,92 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             }
         }
 
+        /// <summary>
+        /// This method generates token depending on the user and selected unit
+        /// </summary>
+        /// <param name="context">http context</param>
+        /// <returns>Token</returns>
         private async Task GenerateToken(HttpContext context)
         {
             try
             {
-                var username = context.Request.Form["username"];
-                Guid unitGuid;
-                bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
-
-                var identity = await options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
-                if (identity == null)
+                string methodName = typeof(TokenProviderMiddleware) + "." + nameof(GenerateToken);
+                using (loggingHelper.RMTraceManager.StartTrace("Middleware.GenerateToken"))
                 {
-                    context.Response.StatusCode = 400;
-                    await context.Response.WriteAsync("Invalid username or password.");
-                    return;
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                    var username = context.Request.Form["username"];
+                    Guid unitGuid;
+                    string unitType = string.Empty;
+                    string unitName = string.Empty;
+                    bool isGuid = Guid.TryParse(context.Request.Form["UnitGuid"], out unitGuid);
+
+                    var identity = await options.IdentityResolver(username, unitGuid != null ? unitGuid.ToString() : string.Empty);
+                    if (identity == null)
+                    {
+                        context.Response.StatusCode = 400;
+                        await context.Response.WriteAsync("Invalid username or password.");
+                        return;
+                    }
+
+                    //Get the Unit dtails for current user.
+                    UserUnitInfoDTO userUnitDetails = await actionManagerBusinessService.GetUserUnitInfo(username, unitGuid);
+
+                    //unitGuid would be empty while loading the application for first time for the current session for the current user
+                    if (unitGuid == Guid.Empty)
+                    {
+                        unitGuid = userUnitDetails.LocationId;
+                    }
+
+                    UserUnitInfoDTO userUnitInfoDto = new UserUnitInfoDTO
+                    {
+                        UserName = username,
+                        LocationId = unitGuid,
+                        UnitType = userUnitDetails.UnitType,
+                        UnitName = userUnitDetails.UnitName
+                    };
+
+                    var roleAccessDTO = await actionManagerBusinessService.GetRoleBasedAccessFunctions(userUnitInfoDto);
+
+                    var now = DateTime.UtcNow;
+
+                    // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user)
+                    // claims. You can add other claims here, if you want:
+                    var claims = new List<Claim>()
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, username),
+                        new Claim(JwtRegisteredClaimNames.Jti, await options.NonceGenerator()),
+                        new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
+                        new Claim(ClaimTypes.UserData, roleAccessDTO.FirstOrDefault().Unit_GUID.ToString()),
+                        new Claim(ClaimTypes.Name, username),
+                        new Claim(ClaimTypes.PrimarySid, roleAccessDTO.FirstOrDefault().UserId.ToString()),
+                        new Claim(ClaimTypes.Upn, roleAccessDTO.FirstOrDefault().UnitType.ToString())
+                    };
+
+                    roleAccessDTO.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
+
+                    // Create the JWT and write it to a string
+                    var jwt = new JwtSecurityToken(
+                        issuer: options.Issuer,
+                        audience: options.Audience,
+                        claims: claims,
+                        notBefore: now,
+                        expires: now.Add(options.Expiration),
+                        signingCredentials: options.SigningCredentials);
+                    var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+                    TokenDTO tokenDTO = new TokenDTO
+                    {
+                        AccessToken = encodedJwt,
+                        ExpiresIn = (int)options.Expiration.TotalSeconds,
+                        RoleActions = roleAccessDTO,
+                        UserName = username
+                    };
+
+                    // Serialize and return the response
+                    context.Response.ContentType = "application/json";
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(tokenDTO, serializerSettings));
                 }
-
-                if (unitGuid == Guid.Empty)
-                {
-                    unitGuid = await userRoleUnitService.GetUserUnitInfo(username);
-                }
-
-                UserUnitInfoDTO userUnitInfoDto = new UserUnitInfoDTO
-                {
-                    UserName = username,
-                    UnitGuid = unitGuid
-                };
-
-                var roleAccessDto = await actionManagerService.GetRoleBasedAccessFunctions(userUnitInfoDto);
-
-                var now = DateTime.UtcNow;
-
-                // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user)
-                // claims. You can add other claims here, if you want:
-                var claims = new List<Claim>()
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, await options.NonceGenerator()),
-                new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
-                new Claim(ClaimTypes.UserData, roleAccessDto.FirstOrDefault().Unit_GUID.ToString()),
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.PrimarySid, roleAccessDto.FirstOrDefault().UserId.ToString())
-            };
-
-                roleAccessDto.ForEach(x => claims.Add(new Claim(ClaimTypes.Role, x.FunctionName)));
-
-                // Create the JWT and write it to a string
-                var jwt = new JwtSecurityToken(
-                    issuer: options.Issuer,
-                    audience: options.Audience,
-                    claims: claims,
-                    notBefore: now,
-                    expires: now.Add(options.Expiration),
-                    signingCredentials: options.SigningCredentials);
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-                var response = new
-                {
-                    access_token = encodedJwt,
-                    expires_in = (int)options.Expiration.TotalSeconds,
-                    roleActions = roleAccessDto,
-                    username = username
-                };
-
-                // Serialize and return the response
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(response, serializerSettings));
             }
             catch (Exception ex)
             {

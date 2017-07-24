@@ -120,7 +120,7 @@ GlobalSettings.readJson = "./UI-string.json";
 GlobalSettings.getRouteLogSelectionType = "/RouteLog/RouteLogsSelectionType";
 GlobalSettings.getRouteLogStatus = "/RouteLog/RouteLogsStatus";
 GlobalSettings.getDeliveryRouteScenario = "/UnitManager/scenario/{0}/{1}/ScenarioName,ID";
-GlobalSettings.getDeliveryRoutes = "/DeliveryRouteManager/deliveryroute/{0}/{1}/DisplayText,ID,RouteName,RouteNumber"
+GlobalSettings.getDeliveryRoutes = "/DeliveryRouteManager/deliveryroute/{0}/DisplayText,ID,RouteName,RouteNumber"
 GlobalSettings.getRouteDetailsByGUID = "/DeliveryRouteManager/deliveryroute/routedetails/{0}";
 GlobalSettings.generateRouteLogSummaryReport = "/RouteLogManager/routelogs/";
 

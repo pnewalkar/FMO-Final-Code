@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
+﻿using RM.Operational.RouteLog.WebAPI.DTO;
+using System.Threading.Tasks;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
@@ -8,8 +8,8 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// <summary>
         /// Method to retrieve sequenced delivery point details
         /// </summary>
-        /// <param name="deliveryRouteDto">deliveryRouteDto</param>
-        /// <returns>deliveryRouteDto</returns>
-        Task<string> GenerateRouteLog(RouteDTO deliveryRouteDto);
+        /// <param name="deliveryRoute">deliveryRoute</param>
+        /// <returns>deliveryRoute</returns>
+        Task<string> GenerateRouteLog(RouteDTO deliveryRoute);
     }
 }

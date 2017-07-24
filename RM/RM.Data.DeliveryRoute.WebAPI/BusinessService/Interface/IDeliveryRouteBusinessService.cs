@@ -1,78 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.EntityFramework.DTO.Model;
+using RM.DataManagement.DeliveryRoute.WebAPI.DTO;
 
 namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService
 {
     public interface IDeliveryRouteBusinessService
     {
         /// <summary>
-        /// Fetch the Route by passing operationStateID and deliveryScenarioID.
+        /// Get route details specific to scenario.
         /// </summary>
-        /// <param name="operationStateID">Guid operationStateID</param>
-        /// <param name="deliveryScenarioID">Guid deliveryScenarioID</param>
-        /// <param name="userUnit">Guid</param>
-        /// <returns>List</returns>
-        List<RouteDTO> FetchRoutes(Guid operationStateID, Guid deliveryScenarioID, Guid userUnit);
+        /// <param name="scenarioID">ID of the selected scenario</param>
+        /// <returns>Returns list of route on the basis of selected scenario</returns>
+        Task<List<RouteDTO>> GetScenarioRoutes(Guid scenarioID);
 
         /// <summary>
-        /// Fetch the Delivery Scenario by passing the operationStateID and deliveryScenarioID.
-        /// </summary>
-        /// <param name="operationStateID">operationState ID</param>
-        /// <param name="deliveryScenarioID">deliveryScenario ID</param>
-        /// <returns>List</returns>
-        List<ScenarioDTO> FetchDeliveryScenario(Guid operationStateID, Guid deliveryScenarioID);
-
-        /// <summary>
-        /// Fetch Delivery Route for Basic Search
+        /// Get filtered routes on basis of search text for Advance Search .
         /// </summary>
         /// <param name="searchText">Text to search</param>
-        /// <param name="userUnit">Guid</param>
-        /// <returns>Task</returns>
-        Task<List<RouteDTO>> FetchDeliveryRouteForBasicSearch(string searchText, Guid userUnit);
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>Returns list of routes that matches the search text</returns>
+        Task<List<RouteDTO>> GetRoutesForAdvanceSearch(string searchText, Guid locationId);
 
         /// <summary>
-        /// Fetch Delivery Route For Advance Search
+        /// Get filtered routes on basis of search text for basic Search .
         /// </summary>
         /// <param name="searchText">Text to search</param>
-        /// <param name="userUnit">Guid</param>
-        /// <returns>Task</returns>
-        Task<List<RouteDTO>> FetchDeliveryRouteForAdvanceSearch(string searchText, Guid userUnit);
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>Returns list of routes that matches the search text</returns>
+        Task<List<RouteDTO>> GetRoutesForBasicSearch(string searchText, Guid locationId);
 
         /// <summary>
-        /// Get the count of delivery route
+        /// Get filtered route count
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
-        /// <param name="userUnit">Guid userUnit</param>
+        /// <param name="locationId">selected unit's location ID</param>
         /// <returns>The total count of delivery route</returns>
-        Task<int> GetDeliveryRouteCount(string searchText, Guid userUnit);
+        Task<int> GetRouteCount(string searchText, Guid locationId);
 
         /// <summary>
         /// Gets the delivery route details for Pdf Generation.
         /// </summary>
-        /// <param name="deliveryRouteId">The delivery route identifier.</param>
+        /// <param name="routeId">The delivery route identifier.</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
-        /// <returns>
-        /// DeliveryRouteDTO
-        /// </returns>
-        Task<RouteDTO> GetDeliveryRouteDetailsforPdfGeneration(Guid deliveryRouteId, Guid unitGuid);
+        /// <returns>DeliveryRouteDTO</returns>
+        Task<RouteDTO> GetRouteSummary(Guid routeId);
 
         /// <summary>
         /// Generates the route log.
         /// </summary>
-        /// <param name="deliveryRouteDto">The delivery route dto.</param>
+        /// <param name="routeDetails">Route Details</param>
         /// <param name="userUnit">The user unit.</param>
-        /// <returns>byte[]</returns>
-        Task<RouteLogSummaryModelDTO> GenerateRouteLog(RouteDTO deliveryRouteDto, Guid userUnit);
+        /// <returns>Route log summary</returns>
+        Task<RouteLogSummaryDTO> GenerateRouteLog(RouteDTO routeDetails);
 
         /// <summary>
-        /// Method to create block sequence for delivery point
+        /// Get route details specific to postcode
         /// </summary>
-        /// <param name="deliveryRouteId">deliveryRouteId</param>
-        /// <param name="deliveryPointId">deliveryPointId</param>
-        /// <returns>bool</returns>
-        Task<bool> CreateBlockSequenceForDeliveryPoint(Guid deliveryRouteId, Guid deliveryPointId);
+        /// <param name="postcodeUnit">Post code</param>
+        /// <param name="locationId">selected unit's location ID</param>
+        /// <returns>List of routes</returns>
+        Task<List<RouteDTO>> GetPostcodeSpecificRoutes(string postcodeUnit, Guid locationId);
+
+        /// <summary>
+        /// method to save delivery point and selected route mapping in block sequence table
+        /// </summary>
+        /// <param name="routeId">selected route id</param>
+        /// <param name="deliveryPointId">Delivery point unique id</param>
+        void SaveDeliveryPointRouteMapping(Guid routeId, Guid deliveryPointId);
+
+        /// <summary>
+        /// Get route details mapped to delivery point
+        /// </summary>
+        /// <param name="deliveryPointId">Delivery Point Id</param>
+        /// <returns>Route Details</returns>
+        Task<RouteDTO> GetRouteByDeliveryPoint(Guid deliveryPointId);
     }
 }
