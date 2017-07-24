@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Spatial;
 using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DataDTO;
 using RM.Data.DeliveryPoint.WebAPI.Entities;
 using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
-using System.Threading.Tasks;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -34,14 +33,6 @@ namespace RM.DataServices.Tests.DataService
 
         private DeliveryPointDataDTO deliveryPointDataDTO = null;
 
-        //[Test]
-        //public void Test_UpdateDeliveryPointByAddressId()
-        //{
-        //    var result = testCandidate.UpdateDeliveryPointByAddressId(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"), 1);
-        //    Assert.IsNotNull(result);
-        //    Assert.IsTrue(result);
-        //}
-
         [Test]
         public void Test_GetDeliveryPointByUDPRN()
         {
@@ -61,14 +52,12 @@ namespace RM.DataServices.Tests.DataService
                     new DeliveryPointStatusDataDTO()
                     {
                         LocationID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13")
-
                     }
                 },
                 NetworkNode = new NetworkNodeDataDTO()
                 {
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13")
                 }
-
             };
             var result = testCandidate.InsertDeliveryPoint(deliveryPointDataDTO);
             Assert.IsNotNull(result);
@@ -106,7 +95,6 @@ namespace RM.DataServices.Tests.DataService
                     new DeliveryPointStatusDataDTO()
                     {
                         LocationID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13")
-
                     }
                 },
                 NetworkNode = new NetworkNodeDataDTO()
@@ -116,10 +104,7 @@ namespace RM.DataServices.Tests.DataService
                     {
                         Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700)
                     }
-
                 },
-
-
             };
             var result = await testCandidate.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDataDTO);
             Assert.IsTrue(result == 1);
@@ -129,9 +114,9 @@ namespace RM.DataServices.Tests.DataService
         public async Task Test_GetDeliveryPointsForAdvanceSearch()
         {
             search = "road";
-            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForAdvanceSearch(search,unitGuid);
+            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForAdvanceSearch(search, unitGuid);
             Assert.IsNotNull(expectedResult);
-            Assert.IsTrue(expectedResult.Count==1);
+            Assert.IsTrue(expectedResult.Count == 1);
         }
 
         [Test]
@@ -139,7 +124,7 @@ namespace RM.DataServices.Tests.DataService
         {
             search = "road";
             noOfRecords = 5;
-            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForBasicSearch(search, noOfRecords,unitGuid);
+            List<DeliveryPointDataDTO> expectedResult = await testCandidate.GetDeliveryPointsForBasicSearch(search, noOfRecords, unitGuid);
             Assert.IsNotNull(expectedResult);
             Assert.IsTrue(expectedResult.Count == 1);
         }
@@ -154,9 +139,6 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsTrue(expectedResult == 1);
         }
 
-        
-
-        //GetDeliveryPointsForBasicSearch
         [Test]
         public void Test_UpdatePAFIndicator()
         {
@@ -164,53 +146,149 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(result);
         }
 
-        //[Test]
-        //public void Test_GetDeliveryPoints()
-        //{
-        //    //TODO
-        //   // string coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
-        //   // var result = testCandidate.GetDeliveryPoints(coordinates, new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14"));
-        //  //  Assert.IsNotNull(result);
-        //}
-
         [Test]
-        public void Test_DeliveryPointExists()
+        public void Test_GetDeliveryPointPositiveScenario()
         {
-            var result = testCandidate.DeliveryPointExists(1);
+            var result = testCandidate.GetDeliveryPoint(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"));
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Result);
+            Assert.IsNotNull(result.NetworkNode);
+            Assert.IsNotNull(result.PostalAddress);
+            Assert.IsNotNull(result.NetworkNode.Location);
         }
 
         [Test]
-        public void Test_GetDeliveryPointDistance()
+        public void Test_GetDeliveryPointNegativeScenario()
         {
+            var result = testCandidate.GetDeliveryPoint(new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"));
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointsPositiveScenario()
+        {
+            var result = testCandidate.GetDeliveryPoints("POINT (488938 197021)", new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"));
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointsNegativeScenario()
+        {
+            var result = testCandidate.GetDeliveryPoints("POINT (488938 197021)", new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"));
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task Test_DeliveryPointExistsPositiveScenario()
+        {
+            var result = await testCandidate.DeliveryPointExists(12345);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public async Task Test_DeliveryPointExistsNegativeScenario()
+        {
+            var result = await testCandidate.DeliveryPointExists(54321);
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointByPostalAddressPositiveScenario()
+        {
+            var result = testCandidate.GetDeliveryPointByPostalAddress(new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"));
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointByPostalAddressNegativeScenario()
+        {
+            var result = testCandidate.GetDeliveryPointByPostalAddress(new Guid("D90B6833-7247-4E98-AAA5-94B31C5D264E"));
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointListByUDPRNPositiveScenario()
+        {
+            var result = testCandidate.GetDeliveryPointListByUDPRN(12345);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointListByUDPRNNegativeScenario()
+        {
+            var result = testCandidate.GetDeliveryPointListByUDPRN(54321);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointDistancePositiveScenario()
+        {
+            deliveryPointDataDTO = new DeliveryPointDataDTO()
+            {
+                ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                MailVolume = 5,
+                PostalAddress = new PostalAddressDataDTO()
+                {
+                    BuildingName = "bldg2",
+                    BuildingNumber = 1,
+                    SubBuildingName = "subbldg1",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "PostcodeNew",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
+                },
+                NetworkNode = new NetworkNodeDataDTO()
+                {
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                    Location = new LocationDataDTO()
+                    {
+                        Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700)
+                    }
+                },
+            };
             DbGeometry point = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
             var result = testCandidate.GetDeliveryPointDistance(deliveryPointDataDTO, point);
             Assert.IsNotNull(result);
+            Assert.IsNotNull(result == 0);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointDistanceNegativeScenario()
+        {
+            try
+            {
+                DbGeometry point = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
+                var result = testCandidate.GetDeliveryPointDistance(deliveryPointDataDTO, point);
+                Assert.Fail("An exception should have been thrown");
+            }
+            catch (ArgumentNullException ae)
+            {
+                Assert.AreEqual("Following arguments for the method are null Parameter name: deliveryPointDTO", ae.Message.Replace("\r\n", string.Empty));
+            }
         }
 
         protected override void OnSetup()
         {
-            //var unitBoundary = DbGeometry.PolygonFromText("POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))", 27700);
-
-            //deliveryPointDataDTO = new DeliveryPointDataDTO()
-            //{
-            //    // OperationalStatus_GUID = Guid.NewGuid(),
-
-            //    NetworkNode = new NetworkNodeDataDTO
-            //    {
-            //        Location = new LocationDataDTO
-            //        {
-            //            Shape = unitBoundary
-            //        }
-            //    }
-            //};
-
             var deliveryPoint = new List<DeliveryPoint>()
             {
                new DeliveryPoint()
                {
-                   PostalAddressID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                   ID=new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                   PostalAddressID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),
                    DeliveryPointUseIndicatorGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14"),
                    PostalAddress= new PostalAddress()
                    {
@@ -227,16 +305,15 @@ namespace RM.DataServices.Tests.DataService
                     UDPRN = 12345,
                     PostcodeType = "xyz",
                     SmallUserOrganisationIndicator = "indicator",
-                    DeliveryPointSuffix = "DeliveryPointSuffix",  
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
-                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
+                    ID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA")
                    },
                    DeliveryPointStatus = new List<DeliveryPointStatus>()
                 {
                     new DeliveryPointStatus()
                     {
                         LocationID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13")
-
                     }
                 },
                 NetworkNode = new NetworkNode()
@@ -244,9 +321,9 @@ namespace RM.DataServices.Tests.DataService
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                     Location = new Location()
                     {
+                         ID=new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                         Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700)
                     }
-
                 },
                }
             };
@@ -258,7 +335,41 @@ namespace RM.DataServices.Tests.DataService
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                       Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700)
                 }
+            };
 
+            var networkNode = new List<NetworkNode>()
+            {
+                new NetworkNode()
+                {
+                ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                Location = new Location()
+                {
+                    Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700)
+                }
+                }
+            };
+
+            var postalAddress = new List<PostalAddress>
+            {
+                new PostalAddress()
+                {
+                    BuildingName = "road bldg2",
+                    BuildingNumber = 1,
+                    SubBuildingName = "road subbldg1",
+                    OrganisationName = "org",
+                    DepartmentName = "department",
+                    Thoroughfare = "road ThoroughFare1",
+                    DependentThoroughfare = "DependentThoroughFare1",
+                    Postcode = "road PostcodeNew",
+                    PostTown = "PostTown",
+                    POBoxNumber = "POBoxNumber",
+                    UDPRN = 12345,
+                    PostcodeType = "xyz",
+                    SmallUserOrganisationIndicator = "indicator",
+                    DeliveryPointSuffix = "DeliveryPointSuffix",
+                    AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
+                    ID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA")
+                },
             };
 
             mockLoggingHelper = CreateMock<ILoggingHelper>();
@@ -289,6 +400,30 @@ namespace RM.DataServices.Tests.DataService
             mockRMDBContext.Setup(x => x.Locations).Returns(mockLocation.Object);
             mockLocation.Setup(x => x.Include(It.IsAny<string>())).Returns(mockLocation.Object);
             mockLocation.Setup(x => x.AsNoTracking()).Returns(mockLocation.Object);
+
+            //setup for networknode
+            var mockAsynNetworkNode = new DbAsyncEnumerable<NetworkNode>(networkNode);
+            var mocknetworkNode = MockDbSet(networkNode);
+            mocknetworkNode.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynNetworkNode.AsQueryable().Provider);
+            mocknetworkNode.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynNetworkNode.AsQueryable().Expression);
+            mocknetworkNode.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynNetworkNode.AsQueryable().ElementType);
+            mocknetworkNode.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<NetworkNode>)mockAsynNetworkNode).GetAsyncEnumerator());
+            mockRMDBContext.Setup(x => x.Set<NetworkNode>()).Returns(mocknetworkNode.Object);
+            mockRMDBContext.Setup(x => x.NetworkNodes).Returns(mocknetworkNode.Object);
+            mocknetworkNode.Setup(x => x.Include(It.IsAny<string>())).Returns(mocknetworkNode.Object);
+            mocknetworkNode.Setup(x => x.AsNoTracking()).Returns(mocknetworkNode.Object);
+
+            //setup for PostalAdress
+            var mockAsynPostalAdress = new DbAsyncEnumerable<PostalAddress>(postalAddress);
+            var mocknpostalAddresse = MockDbSet(postalAddress);
+            mocknpostalAddresse.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynPostalAdress.AsQueryable().Provider);
+            mocknpostalAddresse.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynPostalAdress.AsQueryable().Expression);
+            mocknpostalAddresse.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynPostalAdress.AsQueryable().ElementType);
+            mocknpostalAddresse.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<PostalAddress>)mockAsynPostalAdress).GetAsyncEnumerator());
+            mockRMDBContext.Setup(x => x.Set<PostalAddress>()).Returns(mocknpostalAddresse.Object);
+            mockRMDBContext.Setup(x => x.PostalAddresses).Returns(mocknpostalAddresse.Object);
+            mocknpostalAddresse.Setup(x => x.Include(It.IsAny<string>())).Returns(mocknpostalAddresse.Object);
+            mocknpostalAddresse.Setup(x => x.AsNoTracking()).Returns(mocknpostalAddresse.Object);
 
             //var mockAsynEnumerable2 = new DbAsyncEnumerable<RM.Data.DeliveryPoint.WebAPI.Entities.Location>(location);
             //var mockLocation = MockDbSet(location);

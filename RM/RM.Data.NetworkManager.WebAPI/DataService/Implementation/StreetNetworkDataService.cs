@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Protocols;
 using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
 using RM.CommonLibrary.EntityFramework.DTO;
 using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
+using RM.CommonLibrary.ConfigurationMiddleware;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
@@ -31,8 +32,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
         private const int BNGCOORDINATESYSTEM = 27700;
         private const string SearchResultCount = "SearchResultCount";
-
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
         private int entryEventId = LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId;
@@ -41,10 +42,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
         #region Constructors
 
-        public StreetNetworkDataService(IDatabaseFactory<NetworkDBContext> databaseFactory, ILoggingHelper loggingHelper)
+        public StreetNetworkDataService(IDatabaseFactory<NetworkDBContext> databaseFactory, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
+            this.configurationHelper = configurationHelper;
         }
 
         #endregion Constructors
@@ -98,8 +100,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
             {
                 string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNamesForBasicSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-                int takeCount = Convert.ToInt32(ConfigurationSettings.AppSettings[SearchResultCount]);
+                int takeCount = Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(SearchResultCount));
                 searchText = searchText ?? string.Empty;
 
                 DbGeometry polygon =
