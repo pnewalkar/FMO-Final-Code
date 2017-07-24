@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
-using RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
 using RM.DataManagement.NetworkManager.WebAPI.Entities;
-using System;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -43,7 +43,7 @@ namespace RM.DataServices.Tests.DataService
             mockILoggingHelper = CreateMock<ILoggingHelper>();
             List<OSRoadLink> oSRoadLink = new List<OSRoadLink>() { new OSRoadLink() { TOID = "123", RouteHierarchy = "1" } };
 
-            //Setup for OSRoadLink.
+            // Setup for OSRoadLink.
             var mockOSRoadLinkEnumerable = new DbAsyncEnumerable<OSRoadLink>(oSRoadLink);
             var mockOSRoadLinkDataService = MockDbSet(oSRoadLink);
             mockOSRoadLinkDataService.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockOSRoadLinkEnumerable.AsQueryable().Provider);
@@ -57,7 +57,7 @@ namespace RM.DataServices.Tests.DataService
             mockDatabaseFactory = CreateMock<IDatabaseFactory<NetworkDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockNetworkDBContext.Object);
 
-            //Setup for IRMTraceManager.
+            // Setup for IRMTraceManager.
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockILoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);

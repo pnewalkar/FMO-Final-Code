@@ -4,13 +4,13 @@ using System.Data.Entity.Spatial;
 using Microsoft.SqlServer.Types;
 using Moq;
 using NUnit.Framework;
+using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.NetworkManager.WebAPI.BusinessService;
-using RM.DataManagement.NetworkManager.WebAPI.IntegrationService;
-using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.NetworkManager.WebAPI.IntegrationService;
 
 namespace RM.Data.NetworkManager.WebAPI.Test
 {
@@ -183,7 +183,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
                 }
             };
 
-            //Setup Methods.
+            // Setup Methods.
             mockNetworkManagerIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(referenceDataCategoryDTOList);
             mockNetworkManagerIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(referenceDataCategoryDTOList);
             mockStreetNetworkDataService.Setup(x => x.GetNearestNamedRoad(It.IsAny<DbGeometry>(), It.IsAny<string>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(tuple);
@@ -196,7 +196,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             mockOsRoadLinkDataService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("abc");
             mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(new List<NetworkLinkDataDTO>() { networkLink });
 
-            //Setup for IRMTraceManager.
+            // Setup for IRMTraceManager.
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
