@@ -2,7 +2,7 @@
 {
     public static class PostalAddressConstants
     {
-        internal const string TASKPAFACTION = "Position new DP";
+        internal const string TASKPAFACTION = "Position new DP Location";
         internal const string DeliveryPointUseIndicatorPAF = "Organisation";
         internal const string PAFErrorMessageForUnmatchedDeliveryPointForUSRType = "Delivery point not present for Postal address whose address type is <USR>";
         internal const string PAFErrorMessageForAddressTypeNYBNotFound = "Address Type of the selected Postal Address record is not <NYB>";
