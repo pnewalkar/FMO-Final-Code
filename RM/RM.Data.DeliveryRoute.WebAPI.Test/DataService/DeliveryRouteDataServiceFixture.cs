@@ -24,7 +24,6 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IDatabaseFactory<RouteDBContext>> mockDatabaseFactory;
         private IDeliveryRouteDataService testCandidate;
-        private Mock<Common.IReferenceDataCategoryDataService> mockReferenceDataCategoryDataService;
 
         [Test]
         public async Task TestGetScenarioRoutes_PositiveScenario()

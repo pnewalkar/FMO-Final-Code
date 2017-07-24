@@ -25,9 +25,9 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
         private Mock<IBlockSequenceDataService> mockBlockSequenceDataService;
         private List<RouteDataDTO> actualDeliveryRouteResult = null;
         private int actualRoueCount = 0;
-        private RouteDTO actualRouteDTO = null;
+        // private RouteDTO actualRouteDTO = null;
         private RouteDataDTO actualRouteDataDTO = null;
-        private List<RouteDataDTO> actualRoutesResult = null;
+        // private List<RouteDataDTO> actualRoutesResult = null;
         private List<RouteLogSequencedPointsDataDTO> actualRouteLogSequencedPointsDataDTO = null;
         private List<Common.ReferenceDataDTO> actualReferenceDataCategoryResult = null;
         private Mock<ILoggingHelper> mockLoggingHelper;

@@ -32,7 +32,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
         private Mock<IPostalAddressDataService> mockPostalAddressDataService;
         private Mock<ILoggingHelper> loggingHelperMock;
 
-        private UnitLocationDTO actualDeliveryUnitResult = null;
+        // private UnitLocationDTO actualDeliveryUnitResult = null;
         private List<UnitLocationDTO> actualDeliveryUnitListForUserResult = null;
         private Guid deliveryUnitID = System.Guid.NewGuid();
         private Guid userID = System.Guid.NewGuid();
