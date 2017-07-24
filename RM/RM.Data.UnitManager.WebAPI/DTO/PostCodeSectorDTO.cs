@@ -3,6 +3,7 @@
     public class PostcodeSectorDTO
     {
         public string Sector { get; set; }
+
         public string District { get; set; }
     }
 }

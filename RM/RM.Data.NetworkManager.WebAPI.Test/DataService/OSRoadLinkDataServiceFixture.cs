@@ -32,6 +32,7 @@ namespace RM.DataServices.Tests.DataService
         {
             var actualResult = testCandidate.GetOSRoadLink("123");
             Assert.IsNotNull(actualResult);
+            Assert.AreEqual(actualResult.Result, "1");
         }
 
         /// <summary>

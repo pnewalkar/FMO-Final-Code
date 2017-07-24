@@ -10,10 +10,15 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
         }
 
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
+
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
+
         public virtual DbSet<FileProcessingLog> FileProcessingLogs { get; set; }
+
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
+
         public virtual DbSet<PostalAddressStatus> PostalAddressStatus { get; set; }
+
         public virtual DbSet<Postcode> Postcodes { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

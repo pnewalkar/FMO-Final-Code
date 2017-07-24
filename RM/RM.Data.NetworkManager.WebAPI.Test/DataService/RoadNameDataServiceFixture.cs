@@ -39,6 +39,7 @@ namespace RM.DataServices.Tests.DataService
             coordinates = "POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))";
             var actualResult = testCandidate.GetRoadRoutes(coordinates, unit1Guid, refDataCategotyDTO);
             Assert.IsNotNull(actualResult);
+            Assert.AreEqual(actualResult[0].TOID, "osgb4000000023358315");
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace RM.DataServices.Tests.DataService
             unit3Guid = Guid.NewGuid();
             user1Id = System.Guid.NewGuid();
             user2Id = System.Guid.NewGuid();
-
+        
             var unitBoundary = DbGeometry.PolygonFromText("POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))", 27700);
             var Location = new List<Location>() { new Location() { ID = unit1Guid, Shape = unitBoundary } };
             var roadName = new List<OSRoadLink>()

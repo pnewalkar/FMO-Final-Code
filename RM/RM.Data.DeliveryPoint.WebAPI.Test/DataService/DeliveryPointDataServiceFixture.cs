@@ -12,6 +12,7 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DataDTO;
 using RM.Data.DeliveryPoint.WebAPI.Entities;
 using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
+using System.Data.Entity;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -281,6 +282,60 @@ namespace RM.DataServices.Tests.DataService
             }
         }
 
+        [Test]
+        public void Test_GetDeliveryPointRowVersionPositiveScenario()
+        {
+            var actualResult = testCandidate.GetDeliveryPointRowVersion(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"));
+            Assert.IsNotNull(actualResult);
+        }
+
+        [Test]
+        public void Test_GetDeliveryPointRowVersionNegativeScenario()
+        {
+            var actualResult = testCandidate.GetDeliveryPointRowVersion(new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"));
+            Assert.IsNull(actualResult);
+        }
+
+
+        [Test]
+        public void Test_GetDeliveryPointsCrossingOperationalObject()
+        {
+            DbGeometry operationalObjectPoint = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
+            var actualResult = testCandidate.GetDeliveryPointsCrossingOperationalObject("POINT (488938 197021)", operationalObjectPoint);
+            Assert.IsNotNull(actualResult);
+            Assert.IsNotNull(actualResult.Count == 0);
+        }
+
+
+        [Test]
+        public async Task Test_DeleteDeliveryPointPositiveScenario()
+        {
+            Guid ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13");
+            var actualResult = await testCandidate.DeleteDeliveryPoint(ID);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult);
+
+        }
+
+        [Test]
+        public async Task Test_DeleteDeliveryPointNegativeScenario()
+        {
+            Guid ID = new Guid("915DE34F-59E7-49AD-985E-541A76A634FF");
+            var actualResult = await testCandidate.DeleteDeliveryPoint(ID);
+            Assert.IsNotNull(actualResult);
+            Assert.IsFalse(actualResult);
+
+        }
+
+
+        [Test]
+        public async Task Test_GetDeliveryPointByPostalAddressWithLocation()
+        {
+            DeliveryPointDataDTO expectedResult = await testCandidate.GetDeliveryPointByPostalAddressWithLocation(new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"));
+            Assert.IsNotNull(expectedResult);
+
+        }
+
         protected override void OnSetup()
         {
             var deliveryPoint = new List<DeliveryPoint>()
@@ -290,7 +345,8 @@ namespace RM.DataServices.Tests.DataService
                    ID=new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                    PostalAddressID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),
                    DeliveryPointUseIndicatorGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14"),
-                   PostalAddress= new PostalAddress()
+                    RowVersion = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 },
+                   PostalAddress = new PostalAddress()
                    {
                     BuildingName = "road bldg2",
                     BuildingNumber = 1,
@@ -308,7 +364,7 @@ namespace RM.DataServices.Tests.DataService
                     DeliveryPointSuffix = "DeliveryPointSuffix",
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
                     ID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA")
-                   },
+        },
                    DeliveryPointStatus = new List<DeliveryPointStatus>()
                 {
                     new DeliveryPointStatus()
@@ -333,7 +389,19 @@ namespace RM.DataServices.Tests.DataService
                 new Location()
                 {
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
-                      Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700)
+                      Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700),
+                      RowCreateDateTime=DateTime.Now,
+                      NetworkNode= new NetworkNode()
+                {
+                    ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                    DeliveryPoint=new DeliveryPoint()
+               {
+                   ID=new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                   PostalAddressID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),
+                   DeliveryPointUseIndicatorGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14")
+
+                }
+                }
                 }
             };
 
@@ -372,6 +440,14 @@ namespace RM.DataServices.Tests.DataService
                 },
             };
 
+            var deliveryPointStatus = new List<DeliveryPointStatus>()
+                {
+                    new DeliveryPointStatus()
+                    {
+                        LocationID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13")
+                    }
+                };
+
             mockLoggingHelper = CreateMock<ILoggingHelper>();
             mockRMDBContext = CreateMock<DeliveryPointDBContext>();
 
@@ -382,7 +458,6 @@ namespace RM.DataServices.Tests.DataService
             mockDeliveryPointDataService.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynEnumerable.AsQueryable().Expression);
             mockDeliveryPointDataService.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable.AsQueryable().ElementType);
             mockDeliveryPointDataService.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<DeliveryPoint>)mockAsynEnumerable).GetAsyncEnumerator());
-
             mockRMDBContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPointDataService.Object);
             mockRMDBContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPointDataService.Object);
             mockDeliveryPointDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockDeliveryPointDataService.Object);
@@ -425,16 +500,18 @@ namespace RM.DataServices.Tests.DataService
             mocknpostalAddresse.Setup(x => x.Include(It.IsAny<string>())).Returns(mocknpostalAddresse.Object);
             mocknpostalAddresse.Setup(x => x.AsNoTracking()).Returns(mocknpostalAddresse.Object);
 
-            //var mockAsynEnumerable2 = new DbAsyncEnumerable<RM.Data.DeliveryPoint.WebAPI.Entities.Location>(location);
-            //var mockLocation = MockDbSet(location);
-            //mockLocation.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable2.AsQueryable().Provider);
-            //mockLocation.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsynEnumerable2.AsQueryable().Expression);
-            //mockLocation.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsynEnumerable2.AsQueryable().ElementType);
-            //mockLocation.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<RM.Data.DeliveryPoint.WebAPI.Entities.Location>)mockAsynEnumerable2).GetAsyncEnumerator());
-            //mockRMDBContext.Setup(x => x.Set<RM.Data.DeliveryPoint.WebAPI.Entities.Location>()).Returns(mockLocation.Object);
-            //mockRMDBContext.Setup(c => c.Locations.AsNoTracking()).Returns(mockLocation.Object);
-            //mockRMDBContext.Setup(x => x.Locations).Returns(mockLocation.Object);
-            //mockLocation.Setup(x => x.Include(It.IsAny<string>())).Returns(mockLocation.Object);
+            //setup for delivery point status
+            var mockAsyndpStatus = new DbAsyncEnumerable<DeliveryPointStatus>(deliveryPointStatus);
+            var mockdpStatus = MockDbSet(deliveryPointStatus);
+            mockdpStatus.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsyndpStatus.AsQueryable().Provider);
+            mockdpStatus.As<IQueryable>().Setup(mock => mock.Expression).Returns(mockAsyndpStatus.AsQueryable().Expression);
+            mockdpStatus.As<IQueryable>().Setup(mock => mock.ElementType).Returns(mockAsyndpStatus.AsQueryable().ElementType);
+            mockdpStatus.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<DeliveryPointStatus>)mockAsyndpStatus).GetAsyncEnumerator());
+            mockRMDBContext.Setup(x => x.Set<DeliveryPointStatus>()).Returns(mockdpStatus.Object);
+            mockRMDBContext.Setup(x => x.DeliveryPointStatus).Returns(mockdpStatus.Object);
+            mockdpStatus.Setup(x => x.Include(It.IsAny<string>())).Returns(mockdpStatus.Object);
+            mockdpStatus.Setup(x => x.AsNoTracking()).Returns(mockdpStatus.Object);
+
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
@@ -447,5 +524,7 @@ namespace RM.DataServices.Tests.DataService
             mockRMDBContext.Setup(n => n.SaveChangesAsync()).ReturnsAsync(1);
             testCandidate = new DeliveryPointsDataService(mockDatabaseFactory.Object, mockLoggingHelper.Object);
         }
+
+
     }
 }

@@ -1,9 +1,6 @@
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Entities
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
 
     public partial class AddressLocationDBContext : DbContext
     {
@@ -13,9 +10,13 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Entities
         }
 
         public virtual DbSet<AddressLocation> AddressLocations { get; set; }
+
         public virtual DbSet<DeliveryPoint> DeliveryPoints { get; set; }
+
         public virtual DbSet<Notification> Notifications { get; set; }
+
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
+
         public virtual DbSet<PostcodeHierarchy> PostcodeHierarchies { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

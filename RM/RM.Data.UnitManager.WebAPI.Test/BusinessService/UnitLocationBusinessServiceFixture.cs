@@ -34,6 +34,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
 
         // private UnitLocationDTO actualDeliveryUnitResult = null;
         private List<UnitLocationDTO> actualDeliveryUnitListForUserResult = null;
+
         private Guid deliveryUnitID = System.Guid.NewGuid();
         private Guid userID = System.Guid.NewGuid();
         private IUnitLocationBusinessService testCandidate;
