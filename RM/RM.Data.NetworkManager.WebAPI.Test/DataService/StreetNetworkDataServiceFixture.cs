@@ -17,6 +17,9 @@ using RM.DataManagement.NetworkManager.WebAPI.Entities;
 
 namespace RM.Data.NetworkManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for StreetNetworkDataService
+    /// </summary>
     public class StreetNetworkDataServiceFixture : RepositoryFixtureBase
     {
         private Mock<NetworkDBContext> mockNetworkDBContext;
@@ -30,6 +33,10 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         private DbGeometry point;
         private List<ReferenceDataCategoryDTO> referenceDataCategoryList;
 
+        /// <summary>
+        /// Test for getting street names for advance search
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetStreetNamesForAdvanceSearch()
         {
@@ -38,6 +45,10 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             Assert.IsTrue(actualResult.Count == 7);
         }
 
+        /// <summary>
+        /// Test for fetching street name for Basic Search
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetStreetNamesForBasicSearch()
         {
@@ -46,14 +57,45 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             Assert.IsTrue(actualResult.Count == 5);
         }
 
+        /// <summary>
+        /// Negative testing for fetching street name for Basic Search by passing null as a serch text
+        /// </summary>
+        /// <returns></returns>
         [Test]
-        public async Task Test_GetStreetNameCounth()
+        public async Task Test_GetStreetNamesForBasicSearch_NegativeScenario()
+        {
+            var actualResult = await testCandidate.GetStreetNamesForBasicSearch(null, unit1Guid);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult.Count == 5);
+        }
+
+        /// <summary>
+        /// Test for getting the count of street name
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_GetStreetNameCount()
         {
             var actualResult = await testCandidate.GetStreetNameCount("Test", unit1Guid);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult == 7);
         }
 
+        /// <summary>
+        /// Negative testing for for getting the count of street name by passing null as a serch text
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task Test_GetStreetNameCount_NegativeScenario()
+        {
+            var actualResult = await testCandidate.GetStreetNameCount(null, unit1Guid);
+            Assert.IsNotNull(actualResult);
+            Assert.IsTrue(actualResult == 7);
+        }
+
+        /// <summary>
+        /// Test for getting the nearest street for operational object
+        /// </summary>
         [Test]
         public void Test_GetNearestNamedRoad()
         {
@@ -63,6 +105,9 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             Assert.IsNotNull(actualResult.Item2);
         }
 
+        /// <summary>
+        /// Test for getting the nearest segment for operational object
+        /// </summary>
         [Test]
         public void Test_GetNearestSegment()
         {
@@ -72,6 +117,9 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             Assert.IsNotNull(actualResult.Item2);
         }
 
+        /// <summary>
+        /// Test for getting the street DTO for operational object
+        /// </summary>
         [Test]
         public void Test_GetNetworkLink()
         {
@@ -80,6 +128,9 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             Assert.AreEqual(actualResult.ID, new Guid("8134AA41-391F-4579-A18D-D7EDF5B5F911"));
         }
 
+        /// <summary>
+        /// Test for getting the Network Links crossing the operational Object for a given extent
+        /// </summary>
         [Test]
         public void Test_GetCrossingNetworkLink()
         {
@@ -89,8 +140,12 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             Assert.AreEqual(actualResult.Count, 0);
         }
 
+        /// <summary>
+        /// Data and Methods setup required to run test methods
+        /// </summary>
         protected override void OnSetup()
         {
+            //Data setup
             unit1Guid = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918");
             mockIConfigurationHelper = CreateMock<IConfigurationHelper>();
 
@@ -177,6 +232,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             mockNetworkDBContext = CreateMock<NetworkDBContext>();
             mockILoggingHelper = CreateMock<ILoggingHelper>();
 
+            // Setup for StreetName
             var mockAsynEnumerable = new DbAsyncEnumerable<StreetName>(streetNamesList);
             var mockStreetName = MockDbSet(streetNamesList);
             mockStreetName.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable.AsQueryable().Provider);
@@ -187,6 +243,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             mockNetworkDBContext.Setup(x => x.StreetNames).Returns(mockStreetName.Object);
             mockStreetName.Setup(x => x.AsNoTracking()).Returns(mockStreetName.Object);
 
+            // Setup for Location
             var mockAsynEnumerable1 = new DbAsyncEnumerable<Location>(locationList);
             var mockLocation = MockDbSet(locationList);
             mockLocation.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable1.AsQueryable().Provider);
@@ -197,6 +254,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             mockNetworkDBContext.Setup(x => x.Locations).Returns(mockLocation.Object);
             mockLocation.Setup(x => x.AsNoTracking()).Returns(mockLocation.Object);
 
+            // Setup for NetworkLink
             var mockAsynEnumerable3 = new DbAsyncEnumerable<NetworkLink>(networkLinkList);
             var mockNetworkLink = MockDbSet(networkLinkList);
             mockNetworkLink.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable3.AsQueryable().Provider);
@@ -207,6 +265,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             mockNetworkDBContext.Setup(x => x.NetworkLinks).Returns(mockNetworkLink.Object);
             mockNetworkDBContext.Setup(x => x.NetworkLinks.AsNoTracking()).Returns(mockNetworkLink.Object);
 
+            //Mock trace manager
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockILoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);

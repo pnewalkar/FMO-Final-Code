@@ -19,7 +19,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string EXTERNAL = "External";
         internal const int BNGCOORDINATESYSTEM = 27700;
         internal const string Comma = ", ";
-        internal const string TASKPAFACTION = "Position new DP";
+        internal const string TASKPAFACTION = "Position new DP Location";
         internal const string USRNOTIFICATIONBODYPREFIX = "Please check the proposed new Location of the DP ";
 
         internal const string DeliveryPointExists = "DeliveryPointExists";
