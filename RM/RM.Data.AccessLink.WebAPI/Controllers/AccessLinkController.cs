@@ -105,7 +105,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Controllers
         /// </summary>
         /// <param name="boundaryBox">boundaryBox as string</param>
         /// <returns>GeoJson string of Access link data</returns>
-        //[Authorize]
+        // [Authorize]
         [HttpGet("AccessLinks")]
         public IActionResult GetAccessLinks(string bbox)
         {
