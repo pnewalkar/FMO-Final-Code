@@ -11,7 +11,7 @@ using RM.Common.Notification.WebAPI.DTO;
 namespace RM.Common.Notification.WebAPI.Controllers
 {
     [Route("api/notificationmanager")]
-    public class NotificationController : RMBaseController
+    public class NotificationController : Controller
     {
         private INotificationBusinessService notificationBusinessService = default(INotificationBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
