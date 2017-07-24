@@ -16,13 +16,13 @@ using RM.DataManagement.NetworkManager.WebAPI.DTO;
 namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 {
     [Route("/api/NetworkManager")]
-    public class NetworkManagerController : Controller
+    public class NetworkManagerController : RMBaseController
     {
         #region Member Variables
+
         private INetworkManagerBusinessService networkManagerBusinessService = default(INetworkManagerBusinessService);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
-        Guid CurrentUserUnit = Guid.Empty;
         private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
         private int entryEventId = LoggerTraceConstants.NetworkManagerControllerMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.NetworkManagerControllerMethodExitEventId;
@@ -36,6 +36,10 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
             this.networkManagerBusinessService = networkManagerBusinessService;
             this.loggingHelper = loggingHelper;
         }
+
+        #endregion Constructors
+
+        #region Public Methods
 
         /// <summary>
         /// Get the nearest street for operational object.
@@ -61,17 +65,14 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 return Ok(convertedResult);
             }
         }
-        #endregion Constructors
-
-        #region Public Methods
 
         /// <summary>
         /// Get the nearest street for operational object.
         /// </summary>
         /// <param name="operationalObjectPoint">Operational object unique identifier.</param>
         /// <returns>Nearest street and the intersection point.</returns>
-        [HttpGet("nearestsegment/{operationalObjectPointJson}")]
-        public IActionResult GetNearestSegment(string operationalObjectPointJson)
+        [HttpPost("nearestsegment")]
+        public IActionResult GetNearestSegment([FromBody]string operationalObjectPointJson)
         {
             using (loggingHelper.RMTraceManager.StartTrace("Controller.GetNearestSegment"))
             {
@@ -82,7 +83,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
 
                 result = networkManagerBusinessService.GetNearestSegment(JsonConvert.DeserializeObject<DbGeometry>(operationalObjectPointJson, new DbGeometryConverter()));
 
-                var convertedResult = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(result.Item1, result.Item2);
+                var convertedResult = new Tuple<NetworkLinkDTO, List<DbGeometry>>(result.Item1, result.Item2.ToDbGeometry());
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return Ok(convertedResult);
             }
@@ -287,6 +288,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Controllers
                 }
             }
         }
+
         #endregion Public Methods
     }
 }

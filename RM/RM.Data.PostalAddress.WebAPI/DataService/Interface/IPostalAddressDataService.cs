@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DataDTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
-using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
 {
@@ -27,8 +25,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">PostalAddressDataDTO</param>
         /// <param name="fileName">Passing File Name in case PAF, NYB to track error</param>
         /// <param name="deliveryPointUseIndicatorPAF">Guid of DeliveryPointUseIndicatorPAF from reference data</param>
+        /// , Guid deliveryPointUseIndicatorPAF removed this param as DP changes is moved to their resp api
         /// <returns>return status as bool</returns>
-        Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string fileName, Guid deliveryPointUseIndicatorPAF);
+        Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string fileName);
 
         /// <summary>
         /// Get the existing postal address details based on the UDPRN
@@ -61,7 +60,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType);
 
         /*
-        To be moved to Unit manager 
+        To be moved to Unit manager
         /// <summary>
         /// Filter PostalAddress based on the search text
         /// </summary>
@@ -70,7 +69,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <returns>List of Postcodes</returns>
         Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs);*/
 
-        /* 
+        /*
          To be moved to Unit manager
         /// <summary>
         /// Get Postal Address based on postcode
@@ -83,9 +82,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
-        /// <param name="id">postCode</param>
+        /// <param name="postalAddressId">PostalAddress Unique Identifier</param>
         /// <returns>Postal Address DTO</returns>
-        PostalAddressDataDTO GetPostalAddressDetails(Guid id);
+        PostalAddressDataDTO GetPostalAddressDetails(Guid postalAddressId);
 
         /// <summary>
         /// Checking for duplicatesthat already exists in FMO as a NYB record
@@ -98,9 +97,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <summary>
         /// Create delivery point for PAF and NYB details
         /// </summary>
-        /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
+        /// <param name="objPostalAddress">Postal address data DTO.</param>
         /// <returns>Guid</returns>
-        Guid CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus);
+        Guid CreateAddressForDeliveryPoint(PostalAddressDataDTO objPostalAddress);
 
         /// <summary>
         /// Check For Duplicate Address With DeliveryPoints
@@ -108,7 +107,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// <param name="objPostalAddress">objPostalAddress</param>
         /// <returns>bool</returns>
         bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress);
-
 
         /// <summary>
         ///  Get Postal Addresses on adress guid's  as search criteria

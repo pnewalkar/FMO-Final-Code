@@ -110,15 +110,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         }
 
         /// <summary>
-        /// Create delivery point for PAF and NYB details
+        /// Create address for a delivery point with PAF/NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        public async Task<CreateDeliveryPointModelDTO> CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public async Task<CreateDeliveryPointModelDTO> CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateAddressAndDeliveryPoint"))
             {
-                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CreateAddressAndDeliveryPoint);
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CreateAddressForDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/savedeliverypointaddress/", addDeliveryPointDTO);
@@ -195,6 +195,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.MapForDeliveryPoint"))
             {
+                bool mapRouteForDeliveryPointSuccess = true;
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(MapRouteForDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -202,12 +203,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode
+                    mapRouteForDeliveryPointSuccess = false;
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                string returnvalue = result.Content.ReadAsStringAsync().Result;
-                var mapRouteForDeliveryPointSuccess = Convert.ToBoolean(returnvalue);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return mapRouteForDeliveryPointSuccess;
             }

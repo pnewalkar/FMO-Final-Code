@@ -240,16 +240,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
                             if (intersectionCountForRoadOrPath == 0)
                             {
-                                // TODO Code to be refactored : Will be taken care by Access Link Manager 
-                                // and commented lines will be removed once the implementation is done according to the new data model.
-
-                                // var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
-                                //.Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
-
-                                // if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.AsNoTracking().Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
-                                // {
                                 networkIntersectionPoint = accessLinkLine.STEndPoint();
-                                //}
                             }
                         }
                     }
@@ -315,19 +306,10 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
                     {
                         DbGeometry accessLinkDbGeometry = accessLinkLine.ToDbGeometry();
 
-                        // TODO Code to be refactored : Will be taken care by Access Link Manager 
-                        // and commented lines will be removed once the implementation is done according to the new data model.
-
-                        //var intersectionCountForDeliveryPoint = DataContext.DeliveryPoints.AsNoTracking()
-                        //        .Count(m => m.LocationXY.Intersects(accessLinkDbGeometry) && !m.LocationXY.SpatialEquals(operationalObjectPoint));
-
-                        //if (intersectionCountForDeliveryPoint == 0 && !DataContext.AccessLinks.Any(a => a.AccessLinkLine.Crosses(accessLinkDbGeometry) || a.AccessLinkLine.Overlaps(accessLinkDbGeometry)))
-                        //{
                         networkLinkRoad = item;
                         networkIntersectionPoint = accessLinkLine.STEndPoint();
                         listNetworkIntersectionPoints.Add(networkIntersectionPoint);
                         break;
-                        // }
                     }
                 }
 

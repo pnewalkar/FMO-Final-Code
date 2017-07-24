@@ -84,7 +84,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
 
                 var userUnitDetails = await (from r in DataContext.UserRoleLocations.AsNoTracking()
                                              join lref in DataContext.LocationReferenceDatas on r.LocationID equals lref.LocationID
-                                             join location in DataContext.Locations on lref.LocationID equals location.ID
+                                             join location in DataContext.Locations.AsNoTracking() on lref.LocationID equals location.ID
                                              where r.UserID == userId
                                              select new UnitLocationDataDTO
                                              {

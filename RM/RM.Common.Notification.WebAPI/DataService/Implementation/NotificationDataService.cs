@@ -6,13 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using RM.Common.Notification.WebAPI.DataService.Interface;
 using RM.Common.Notification.WebAPI.DTO;
-using NotificationManager= RM.Common.Notification.WebAPI.Entities;
+using NotificationManager = RM.Common.Notification.WebAPI.Entities;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using AutoMapper;
 
 namespace RM.Common.Notification.WebAPI.DataService
 {
@@ -36,7 +37,7 @@ namespace RM.Common.Notification.WebAPI.DataService
         /// </summary>
         /// <param name="notificationDTO">NotificationDTO object</param>
         /// <returns>Task<int></returns>
-        public async Task<int> AddNewNotification(NotificationDTO notificationDTO)
+        public async Task<int> AddNewNotification(NotificationDataDTO notificationDTO)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.AddNewNotification"))
             {
@@ -47,7 +48,8 @@ namespace RM.Common.Notification.WebAPI.DataService
                 try
                 {
                     NotificationManager.Notification newNotification = new NotificationManager.Notification();
-                    GenericMapper.Map(notificationDTO, newNotification);
+                    Mapper.Initialize(cfg => cfg.CreateMap<NotificationDTO, NotificationManager.Notification>());
+                    newNotification = Mapper.Map<NotificationDataDTO, NotificationManager.Notification>(notificationDTO);
                     DataContext.Notifications.Add(newNotification);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                     saveChangesAsync = await DataContext.SaveChangesAsync();
@@ -125,7 +127,7 @@ namespace RM.Common.Notification.WebAPI.DataService
         /// </summary>
         /// <param name="uDPRN">UDPRN id</param>
         /// <returns>NotificationDTO object</returns>
-        public async Task<NotificationDTO> GetNotificationByUDPRN(int uDPRN)
+        public async Task<NotificationDataDTO> GetNotificationByUDPRN(int uDPRN)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetNotificationByUDPRN"))
             {
@@ -135,10 +137,11 @@ namespace RM.Common.Notification.WebAPI.DataService
                 string actionLink = string.Format(USRNOTIFICATIONLINK, uDPRN);
                 NotificationManager.Notification notification = await DataContext.Notifications
                     .Where(notific => notific.NotificationActionLink == actionLink).SingleOrDefaultAsync();
-                NotificationDTO notificationDTO = new NotificationDTO();
-                GenericMapper.Map(notification, notificationDTO);
+                NotificationDataDTO notificationDataDTO = new NotificationDataDTO();
+                Mapper.Initialize(cfg => cfg.CreateMap<NotificationManager.Notification, NotificationDataDTO>());
+                notificationDataDTO = Mapper.Map(notification, notificationDataDTO);
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
-                return notificationDTO;
+                return notificationDataDTO;
             }
         }
 
@@ -164,6 +167,13 @@ namespace RM.Common.Notification.WebAPI.DataService
             }
         }
 
+        /// <summary>
+        /// Update the notifications on UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="oldAction">old Action</param>
+        /// <param name="newAction">updated action</param>
+        /// <returns>whether notification was updated or not</returns>
         public async Task<bool> UpdateNotificationByUDPRN(int uDPRN, string oldAction, string newAction)
         {
             string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());
@@ -178,6 +188,13 @@ namespace RM.Common.Notification.WebAPI.DataService
             return returnVal;
         }
 
+        /// <summary>
+        /// Update notification message by UDPRN
+        /// </summary>
+        /// <param name="uDPRN">UDPRN id</param>
+        /// <param name="action">Action</param>
+        /// <param name="message">message</param>
+        /// <returns>whether notification was updated or not</returns>
         public async Task<bool> UpdateNotificationMessageByUDPRN(int uDPRN, string action, string message)
         {
             string notificationActionlink = string.Format(USRNOTIFICATIONLINK, uDPRN.ToString());

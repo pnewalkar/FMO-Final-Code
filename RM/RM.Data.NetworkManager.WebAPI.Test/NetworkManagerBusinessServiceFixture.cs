@@ -37,6 +37,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         {
             var result = testCandidate.GetNearestNamedRoad(dbGeometry, "abc");
             Assert.IsNotNull(result);
+            Assert.AreEqual(result.Item1.LinkGeometry, lineGeometry);
+            Assert.That(result.Item1.Id, Is.AssignableFrom(typeof(Guid)));
         }
 
         [Test]
@@ -44,6 +46,9 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         {
             var result = testCandidate.GetNearestSegment(dbGeometry);
             Assert.IsNotNull(result);
+            Assert.AreEqual(result.Item1.LinkGeometry, lineGeometry);
+            Assert.That(result.Item1.Id, Is.AssignableFrom(typeof(Guid)));
+            Assert.IsTrue(result.Item2.Count == 0);
         }
 
         [Test]
@@ -51,6 +56,8 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         {
             var result = testCandidate.GetNetworkLink(Guid.NewGuid());
             Assert.IsNotNull(result);
+            Assert.AreEqual(result.LinkGeometry, lineGeometry);
+            Assert.That(result.Id, Is.AssignableFrom(typeof(Guid)));
         }
 
         [Test]
@@ -58,6 +65,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test
         {
             var result = testCandidate.GetCrossingNetworkLinks(coordinates, dbGeometry);
             Assert.IsNotNull(result);
+            Assert.IsTrue(result.Count == 1);
         }
 
         [Test]
@@ -107,62 +115,62 @@ namespace RM.Data.NetworkManager.WebAPI.Test
             Assert.IsNotNull(result);
         }
 
-        // TODO  Code to be refactored
-
         protected override void OnSetup()
         {
-            // TODO  Code to be refactored
+            mockStreetNetworkDataService = CreateMock<IStreetNetworkDataService>();
+            mockNetworkManagerIntegrationService = CreateMock<INetworkManagerIntegrationService>();
+            mockOsRoadLinkDataService = CreateMock<IOSRoadLinkDataService>();
+            mockRoadNameDataService = CreateMock<IRoadNameDataService>();
+            loggingHelperMock = CreateMock<ILoggingHelper>();
 
-            //mockStreetNetworkDataService = CreateMock<IStreetNetworkDataService>();
-            //mockNetworkManagerIntegrationService = CreateMock<INetworkManagerIntegrationService>();
-            //mockOsRoadLinkDataService = CreateMock<IOSRoadLinkDataService>();
-            //mockRoadNameDataService = CreateMock<IRoadNameDataService>();
-            //mockStreetNetworkDataService = CreateMock<IStreetNetworkDataService>();
-            //loggingHelperMock = CreateMock<ILoggingHelper>();
-            //dbGeometry = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
-            //SqlGeometry networkIntersectionPoint = SqlGeometry.Null;
-            //coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
-            //lineGeometry = DbGeometry.LineFromText("LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)", 27700);
-            //NetworkLinkDTO networkLink = new NetworkLinkDTO() { Id = Guid.NewGuid(), LinkGeometry = lineGeometry };
-            //Tuple<NetworkLinkDataDTO, SqlGeometry> tuple = new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
+            dbGeometry = DbGeometry.PointFromText("POINT (488938 197021)", 27700);
+            List<SqlGeometry> listOfnetworkIntersectionPoint = new List<SqlGeometry>();
+            SqlGeometry networkIntersectionPoint = new SqlGeometry();
 
-            //referenceDataCategoryDTOList = new List<ReferenceDataCategoryDTO>()
-            //{
-            //    new ReferenceDataCategoryDTO()
-            //    {
-            //        ReferenceDatas = new List<ReferenceDataDTO>()
-            //        {
-            //            new ReferenceDataDTO()
-            //            {
-            //                ReferenceDataValue = FileType.Nyb.ToString(),
-            //                ID = Guid.NewGuid(),
-            //            }
-            //        },
-            //        CategoryName = PostalAddressType
-            //    }
-            //};
+            coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
+            lineGeometry = DbGeometry.LineFromText("LINESTRING (512722.70000000019 104752.6799999997, 512722.70000000019 104738)", 27700);
 
-            //mockNetworkManagerIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(referenceDataCategoryDTOList);
-            //mockNetworkManagerIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(referenceDataCategoryDTOList);
+            NetworkLinkDataDTO networkLink = new NetworkLinkDataDTO() { ID = Guid.NewGuid(), LinkGeometry = lineGeometry };
+            Tuple<NetworkLinkDataDTO, List<SqlGeometry>> listOfTuple = new Tuple<NetworkLinkDataDTO, List<SqlGeometry>>(networkLink, listOfnetworkIntersectionPoint);
+            Tuple<NetworkLinkDataDTO, SqlGeometry> tuple = new Tuple<NetworkLinkDataDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
 
-            //mockStreetNetworkDataService.Setup(x => x.GetNearestNamedRoad(It.IsAny<DbGeometry>(), It.IsAny<string>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(tuple);
-            //mockStreetNetworkDataService.Setup(x => x.GetNearestSegment(It.IsAny<DbGeometry>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(tuple);
-            //mockStreetNetworkDataService.Setup(x => x.GetNetworkLink(It.IsAny<Guid>())).Returns(networkLink);
-            //mockStreetNetworkDataService.Setup(x => x.GetCrossingNetworkLink(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<NetworkLinkDTO>() { networkLink });
-            //mockStreetNetworkDataService.Setup(x => x.FetchStreetNamesForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<StreetNameDTO>() { new StreetNameDTO() { LocalName = "abc" } });
-            //mockStreetNetworkDataService.Setup(x => x.GetStreetNameCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
-            //mockStreetNetworkDataService.Setup(x => x.FetchStreetNamesForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<StreetNameDTO>() { new StreetNameDTO() { LocalName = "abc" } });
+            referenceDataCategoryDTOList = new List<ReferenceDataCategoryDTO>()
+            {
+                new ReferenceDataCategoryDTO()
+                {
+                    ReferenceDatas = new List<ReferenceDataDTO>()
+                    {
+                        new ReferenceDataDTO()
+                        {
+                            ReferenceDataValue = FileType.Nyb.ToString(),
+                            ID = Guid.NewGuid(),
+                        }
+                    },
+                    CategoryName = PostalAddressType
+                }
+            };
 
-            //mockOsRoadLinkDataService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("abc");
-            //mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(new List<NetworkLinkDTO>() { networkLink });
+            mockNetworkManagerIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(referenceDataCategoryDTOList);
+            mockNetworkManagerIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(referenceDataCategoryDTOList);
 
-            //var rmTraceManagerMock = new Mock<IRMTraceManager>();
-            //rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
-            //loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+            mockStreetNetworkDataService.Setup(x => x.GetNearestNamedRoad(It.IsAny<DbGeometry>(), It.IsAny<string>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(tuple);
+            mockStreetNetworkDataService.Setup(x => x.GetNearestSegment(It.IsAny<DbGeometry>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(listOfTuple);
+            mockStreetNetworkDataService.Setup(x => x.GetNetworkLink(It.IsAny<Guid>())).Returns(networkLink);
+            mockStreetNetworkDataService.Setup(x => x.GetCrossingNetworkLink(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<NetworkLinkDataDTO>() { networkLink });
+            mockStreetNetworkDataService.Setup(x => x.GetStreetNamesForBasicSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<StreetNameDataDTO>() { new StreetNameDataDTO() { LocalName = "abc" } });
+            mockStreetNetworkDataService.Setup(x => x.GetStreetNameCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
+            mockStreetNetworkDataService.Setup(x => x.GetStreetNamesForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<StreetNameDataDTO>() { new StreetNameDataDTO() { LocalName = "abc" } });
 
-            //SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            mockOsRoadLinkDataService.Setup(x => x.GetOSRoadLink(It.IsAny<string>())).ReturnsAsync("abc");
+            mockRoadNameDataService.Setup(x => x.GetRoadRoutes(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<ReferenceDataCategoryDTO>>())).Returns(new List<NetworkLinkDataDTO>() { networkLink });
 
-            //testCandidate = new NetworkManagerBusinessService(mockStreetNetworkDataService.Object, mockNetworkManagerIntegrationService.Object, mockOsRoadLinkDataService.Object, mockRoadNameDataService.Object, loggingHelperMock.Object);
+            var rmTraceManagerMock = new Mock<IRMTraceManager>();
+            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
+            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
+
+            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+
+            testCandidate = new NetworkManagerBusinessService(mockStreetNetworkDataService.Object, mockNetworkManagerIntegrationService.Object, mockOsRoadLinkDataService.Object, mockRoadNameDataService.Object, loggingHelperMock.Object);
         }
     }
 }

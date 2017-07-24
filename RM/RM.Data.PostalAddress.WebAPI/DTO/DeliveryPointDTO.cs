@@ -20,12 +20,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public Guid DeliveryPointUseIndicator_GUID { get; set; }
         public byte[] RowVersion { get; set; }
         public DateTime RowCreateDateTime { get; set; }
+
         // public NetworkNodeDTO NetworkNode { get; set; }
         public PostalAddressDTO PostalAddress { get; set; }
+
         // public ReferenceDataDTO ReferenceData { get; set; }
         // public List<DeliveryPointStatusDTO> DeliveryPointStatus { get; set; }
         public Guid NetworkNodeType_GUID { get; set; }
-
 
         public string LocationProvider { get; set; }
 
@@ -55,7 +56,5 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DTO
         public Guid? DeliveryGroup_GUID { get; set; }
 
         public Guid DeliveryRoute_Guid { get; set; }
-
-        
     }
 }

@@ -47,7 +47,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
         /// <returns>bool</returns>
-        Task<bool> UpdateDeliveryPoint(Guid addressId, Guid deliveryPointUseIndicatorPAF);
+        Task<bool> UpdateDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
         /// <summary>
         /// Add new notification to the database

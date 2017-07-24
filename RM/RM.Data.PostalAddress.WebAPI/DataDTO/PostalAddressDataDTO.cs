@@ -8,7 +8,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         public PostalAddressDataDTO()
         {
             this.PostalAddressStatus = new List<PostalAddressStatusDataDTO>();
+            this.DeliveryPoints = new List<DeliveryPointDataDTO>();
         }
+
         /// <summary>
         /// This class represents DB data transfer object for PostalAddress entity
         /// </summary>
@@ -52,9 +54,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
 
         public DateTime RowCreateDateTime { get; set; }
 
-        public virtual ICollection<DeliveryPointDataDTO> DeliveryPoints { get; set; }
+        public ICollection<DeliveryPointDataDTO> DeliveryPoints { get; set; }
 
-        public virtual ICollection<PostalAddressStatusDataDTO> PostalAddressStatus { get; set; }
-
+        public ICollection<PostalAddressStatusDataDTO> PostalAddressStatus { get; set; }
     }
 }

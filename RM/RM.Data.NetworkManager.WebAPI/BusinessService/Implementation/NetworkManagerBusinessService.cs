@@ -59,6 +59,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
             this.roadNameDataService = roadNameDataService;
             this.loggingHelper = loggingHelper;
         }
+
         #endregion Constructors
 
         #region Public Methods
@@ -84,14 +85,19 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 var referenceDataCategoryList = networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result;
 
                 Tuple<NetworkLinkDataDTO, SqlGeometry> getNearestNamedRoad = streetNetworkDataService.GetNearestNamedRoad(operationalObjectPoint, streetName, referenceDataCategoryList);
-                NetworkLinkDTO networkLink = new NetworkLinkDTO()
+                NetworkLinkDTO networkLink = null;
+
+                if (getNearestNamedRoad != null && getNearestNamedRoad.Item1 != null)
+                {
+                    networkLink = new NetworkLinkDTO()
                     {
                         Id = getNearestNamedRoad.Item1.ID,
                         LinkGeometry = getNearestNamedRoad.Item1.LinkGeometry,
                         NetworkLinkType_GUID = getNearestNamedRoad.Item1.NetworkLinkTypeGUID,
                         TOID = getNearestNamedRoad.Item1.TOID
                     };
-                
+                }
+
                 Tuple<NetworkLinkDTO, SqlGeometry> nearestRoad = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, getNearestNamedRoad.Item2);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -128,13 +134,19 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                    networkManagerIntegrationService.GetReferenceDataSimpleLists(categoryNamesSimpleLists).Result);
 
                 Tuple<NetworkLinkDataDTO, List<SqlGeometry>> getNearestSegment = streetNetworkDataService.GetNearestSegment(operationalObjectPoint, referenceDataCategoryList);
-                NetworkLinkDTO networkLink = new NetworkLinkDTO()
+
+                NetworkLinkDTO networkLink = null;
+
+                if (getNearestSegment != null && getNearestSegment.Item1 != null)
                 {
-                    Id = getNearestSegment.Item1.ID,
-                    LinkGeometry = getNearestSegment.Item1.LinkGeometry,
-                    NetworkLinkType_GUID = getNearestSegment.Item1.NetworkLinkTypeGUID,
-                    TOID = getNearestSegment.Item1.TOID
-                };
+                    networkLink = new NetworkLinkDTO()
+                    {
+                        Id = getNearestSegment.Item1.ID,
+                        LinkGeometry = getNearestSegment.Item1.LinkGeometry,
+                        NetworkLinkType_GUID = getNearestSegment.Item1.NetworkLinkTypeGUID,
+                        TOID = getNearestSegment.Item1.TOID
+                    };
+                }
 
                 Tuple<NetworkLinkDTO, List<SqlGeometry>> nearestSegment = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, getNearestSegment.Item2);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -343,7 +355,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 var fetchStreetNamesForAdvanceSearch = await streetNetworkDataService.GetStreetNamesForAdvanceSearch(searchText, unitGuid).ConfigureAwait(false);
-              
+
                 var streetNameDTO = GenericMapper.MapList<StreetNameDataDTO, StreetNameDTO>(fetchStreetNamesForAdvanceSearch);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -351,7 +363,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
             }
         }
 
-        #endregion Basic And Advanced Search Public methods
+        #endregion Basic And Advanced Search Public Methods
 
         #region Private Methods
 
@@ -440,6 +452,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.BusinessService
             return JsonConvert.SerializeObject(geoJson);
         }
 
-        #endregion private methods
+        #endregion Private Methods
     }
 }
