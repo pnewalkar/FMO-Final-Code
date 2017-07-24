@@ -29,7 +29,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         private int exitEventId = LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId;
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
 
         /// <summary>
         /// Initialises new instance of <see cref="DeliveryPointsDataService"/> that contains data methods related to delivery point.
@@ -40,7 +39,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
-            this.configurationHelper = configurationHelper;
         }
 
         #region Public Methods
