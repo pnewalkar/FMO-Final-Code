@@ -76,6 +76,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             {
                 throw new ArgumentNullException(nameof(searchText));
             }
+
             if (locationId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(locationId));
@@ -108,6 +109,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             {
                 throw new ArgumentNullException(nameof(searchText));
             }
+
             if (locationId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(locationId));
@@ -140,6 +142,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             {
                 throw new ArgumentNullException(nameof(searchText));
             }
+
             if (locationId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(locationId));
@@ -236,6 +239,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             {
                 throw new ArgumentNullException(nameof(postcodeUnit));
             }
+
             if (locationId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(locationId));
@@ -289,6 +293,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.BusinessService.Implementation
             {
                 throw new ArgumentNullException(nameof(routeId));
             }
+
             if (routeId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(routeId));

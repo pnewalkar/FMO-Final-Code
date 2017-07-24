@@ -274,7 +274,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
                 ReferenceDatas = new List<ReferenceDataDTO>()
                 {
                     new ReferenceDataDTO() { DataDescription = "Commercial", ReferenceDataValue = "Commercial", ID = new Guid("990B86A2-9431-E711-83EC-28D244AEF9ED"), ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") },
-                    new ReferenceDataDTO() { DataDescription = "Residential", ReferenceDataValue = "Residential", ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED")  }
+                    new ReferenceDataDTO() { DataDescription = "Residential", ReferenceDataValue = "Residential", ID = new Guid("178EDCAD-9431-E711-83EC-28D244AEF9ED"), ReferenceDataCategory_GUID = new Guid("5F3D7F7A-9431-E711-83EC-28D244AEF9ED") }
                 }
             },
              new ReferenceDataCategoryDTO()
@@ -282,9 +282,9 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
                 CategoryName = "Delivery Route Method Type", CategoryType = 2, Maintainable = false, Id = new Guid("d1ce5369-551b-e711-9f8c-28d244aef9ed"),
                 ReferenceDatas = new List<ReferenceDataDTO>()
                 {
-                    new ReferenceDataDTO() { DataDescription = "High Capacity Trolle", ReferenceDataValue = "High Capacity Trolle", ID = new Guid("c168f46e-561b-e711-9f8c-28d244aef9ed"), ReferenceDataCategory_GUID = new Guid("d1ce5369-551b-e711-9f8c-28d244aef9ed")},
+                    new ReferenceDataDTO() { DataDescription = "High Capacity Trolle", ReferenceDataValue = "High Capacity Trolle", ID = new Guid("c168f46e-561b-e711-9f8c-28d244aef9ed"), ReferenceDataCategory_GUID = new Guid("d1ce5369-551b-e711-9f8c-28d244aef9ed") },
                     new ReferenceDataDTO() { DataDescription = "RM Van (Shared)", ReferenceDataValue = "RM Van (Shared)", ID = new Guid("e1d25b7f-561b-e711-9f8c-28d244aef9ed"), ReferenceDataCategory_GUID = new Guid("d1ce5369-551b-e711-9f8c-28d244aef9ed") },
-                    new ReferenceDataDTO() { DataDescription = "RM Van", ReferenceDataValue = "RM Van", ID = new Guid("c5b94b88-561b-e711-9f8c-28d244aef9ed"), ReferenceDataCategory_GUID = new Guid("d1ce5369-551b-e711-9f8c-28d244aef9ed")},
+                    new ReferenceDataDTO() { DataDescription = "RM Van", ReferenceDataValue = "RM Van", ID = new Guid("c5b94b88-561b-e711-9f8c-28d244aef9ed"), ReferenceDataCategory_GUID = new Guid("d1ce5369-551b-e711-9f8c-28d244aef9ed") },
                     new ReferenceDataDTO() { DataDescription = "PO BOX", ReferenceDataValue = "PO BOX", ID = new Guid("492f4394-561b-e711-9f8c-28d244aef9ed"), ReferenceDataCategory_GUID = new Guid("d1ce5369-551b-e711-9f8c-28d244aef9ed") }
                 }
             },
@@ -293,7 +293,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
                 CategoryName = "Operational Object Type", CategoryType = 2, Maintainable = false, Id = new Guid("bbc205a9-97c4-4345-ae8f-c485d243ecfc"),
                 ReferenceDatas = new List<ReferenceDataDTO>()
                 {
-                    new ReferenceDataDTO() { DataDescription = "Delivery point", ReferenceDataValue = "DP", ID = new Guid("9f82733d-c72c-4111-815d-8813790b5cfb"), ReferenceDataCategory_GUID = new Guid("bbc205a9-97c4-4345-ae8f-c485d243ecfc")},
+                    new ReferenceDataDTO() { DataDescription = "Delivery point", ReferenceDataValue = "DP", ID = new Guid("9f82733d-c72c-4111-815d-8813790b5cfb"), ReferenceDataCategory_GUID = new Guid("bbc205a9-97c4-4345-ae8f-c485d243ecfc") },
                     new ReferenceDataDTO() { DataDescription = "RMG Delivery point", ReferenceDataValue = "RMG DP", ID = new Guid("e0b3dbc4-c2e3-40f7-9df0-eb13c6da0cb0"), ReferenceDataCategory_GUID = new Guid("bbc205a9-97c4-4345-ae8f-c485d243ecfc") }
                 }
             },
@@ -302,9 +302,9 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
                 CategoryName = "Route Activity Type", CategoryType = 2, Maintainable = false, Id = new Guid("0102B1D1-EF66-E711-80ED-000D3A22173B"),
                 ReferenceDatas = new List<ReferenceDataDTO>()
                 {
-                    new ReferenceDataDTO() { DataDescription = "Service Demand Activity", ReferenceDataValue = "Service Demand Activity", ID = new Guid("F22DC917-F066-E711-80ED-000D3A22173B"), ReferenceDataCategory_GUID = new Guid("0102B1D1-EF66-E711-80ED-000D3A22173B")},
-                     new ReferenceDataDTO() { DataDescription = "Travel Out", ReferenceDataValue = "Travel Out", ID = new Guid("7803247C-F866-E711-80ED-000D3A22173B"), ReferenceDataCategory_GUID = new Guid("0102B1D1-EF66-E711-80ED-000D3A22173B")},
-                     new ReferenceDataDTO() { DataDescription = "Travel In", ReferenceDataValue = "Travel In", ID = new Guid("9CC0D090-F866-E711-80ED-000D3A22173B"), ReferenceDataCategory_GUID = new Guid("0102B1D1-EF66-E711-80ED-000D3A22173B")},
+                    new ReferenceDataDTO() { DataDescription = "Service Demand Activity", ReferenceDataValue = "Service Demand Activity", ID = new Guid("F22DC917-F066-E711-80ED-000D3A22173B"), ReferenceDataCategory_GUID = new Guid("0102B1D1-EF66-E711-80ED-000D3A22173B") },
+                     new ReferenceDataDTO() { DataDescription = "Travel Out", ReferenceDataValue = "Travel Out", ID = new Guid("7803247C-F866-E711-80ED-000D3A22173B"), ReferenceDataCategory_GUID = new Guid("0102B1D1-EF66-E711-80ED-000D3A22173B") },
+                     new ReferenceDataDTO() { DataDescription = "Travel In", ReferenceDataValue = "Travel In", ID = new Guid("9CC0D090-F866-E711-80ED-000D3A22173B"), ReferenceDataCategory_GUID = new Guid("0102B1D1-EF66-E711-80ED-000D3A22173B") },
                 }
             }
         };
