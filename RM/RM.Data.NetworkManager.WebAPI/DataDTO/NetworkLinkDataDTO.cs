@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-using RM.CommonLibrary.HelperMiddleware;
 using System;
 using System.Data.Entity.Spatial;
 
@@ -32,6 +30,5 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataDTO
         public string LinkName { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
     }
 }

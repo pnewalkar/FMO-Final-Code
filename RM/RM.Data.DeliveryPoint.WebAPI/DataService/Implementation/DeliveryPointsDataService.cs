@@ -10,7 +10,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
     using Data.DeliveryPoint.WebAPI.DataDTO;
@@ -521,7 +520,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             //        PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
             //    };
             //}
-
             return addDeliveryPointDto;
         }
 
@@ -636,7 +634,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 {
                     return false;
                 }
-
             }
             catch (Exception ex)
             {

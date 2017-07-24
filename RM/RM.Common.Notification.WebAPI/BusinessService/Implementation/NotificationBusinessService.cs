@@ -127,6 +127,7 @@ namespace RM.Common.Notification.WebAPI.BusinessService
                         NotificationPriority_GUID = getNotificationByUDPRN.NotificationPriorityGUID
                     };
                 }
+
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationBusinessServiceMethodExitEventId, LoggerTraceConstants.Title);
                 return notificationDTO;
             }

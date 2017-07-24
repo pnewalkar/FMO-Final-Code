@@ -91,7 +91,6 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI
             services.AddScoped<IDatabaseFactory<AddressLocationDBContext>, DatabaseFactory<AddressLocationDBContext>>();
 
             // DataServices
-
             services.AddScoped<IAddressLocationDataService, AddressLocationDataService>();
 
             services.AddScoped<IThirdPartyAddressLocationBusinessService, ThirdPartyAddressLocationBusinessService>();

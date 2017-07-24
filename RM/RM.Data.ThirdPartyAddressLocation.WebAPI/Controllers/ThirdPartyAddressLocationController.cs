@@ -143,6 +143,5 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.Controllers
                 throw realExceptions;
             }
         }
-
     }
 }

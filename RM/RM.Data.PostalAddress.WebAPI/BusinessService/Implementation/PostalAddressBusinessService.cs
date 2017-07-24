@@ -622,6 +622,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                             // Update delivery point for USR records
                             await UpdateDeliveryPointProcess(objPostalAddress);
                         }
+
                         /*else
                         {
                             objFileProcessingLog = new FileProcessingLogDTO
@@ -716,7 +717,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
 
                         objDeliveryPoint.NetworkNodeType_GUID = networkNodeTypeRMGServiceNode;
                         // };
-
                         if (await postalAddressIntegrationService.CheckIfNotificationExists((int)objPostalAddress.UDPRN, PostalAddressConstants.TASKPAFACTION))
                         {
                             await postalAddressIntegrationService.UpdateDeliveryPoint(objDeliveryPoint);
@@ -739,7 +739,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         //    NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
                         //    NotificationActionLink = string.Format(Constants.PAFNOTIFICATIONLINK, objPostalAddress.UDPRN)
                         //};
-
                         if (await postalAddressIntegrationService.CheckIfNotificationExists((int)objPostalAddress.UDPRN, PostalAddressConstants.TASKPAFACTION))
                         {
                             string message = AddressFields(objPostalAddress);
@@ -747,6 +746,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         }
                     }
                 }
+
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
             }
         }

@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
-using System.Collections.Generic;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
 {

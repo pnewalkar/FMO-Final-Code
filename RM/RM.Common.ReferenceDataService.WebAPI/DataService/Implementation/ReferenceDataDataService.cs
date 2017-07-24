@@ -225,7 +225,6 @@
 
                 List<ListItems> listItems = new List<ListItems>();
 
-
                 var referenceData = DataContext.ReferenceDatas.Include(m => m.ReferenceDataCategory)
                         .Where(n => n.ID == id && n.ReferenceDataCategory.CategoryType.Equals(ReferenceDataCategoryTypeForSimpleList)).SingleOrDefault();
 
