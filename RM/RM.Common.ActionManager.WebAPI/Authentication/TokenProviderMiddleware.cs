@@ -161,10 +161,10 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                         return;
                     }
 
-                    //Get the Unit dtails for current user.
+                    // Get the Unit dtails for current user.
                     UserUnitInfoDTO userUnitDetails = await actionManagerBusinessService.GetUserUnitInfo(username, unitGuid);
 
-                    //unitGuid would be empty while loading the application for first time for the current session for the current user
+                    // unitGuid would be empty while loading the application for first time for the current session for the current user
                     if (unitGuid == Guid.Empty)
                     {
                         unitGuid = userUnitDetails.LocationId;

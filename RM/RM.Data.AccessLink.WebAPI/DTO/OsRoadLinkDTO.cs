@@ -48,6 +48,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.DTOs
 
         public object features { get; set; }
 
-        //public virtual NetworkLink NetworkLink { get; set; }
+        // public virtual NetworkLink NetworkLink { get; set; }
     }
 }

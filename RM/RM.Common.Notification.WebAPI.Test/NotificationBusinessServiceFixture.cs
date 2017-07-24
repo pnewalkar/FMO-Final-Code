@@ -12,9 +12,9 @@ namespace RM.Common.Notification.WebAPI.Test
     [TestFixture]
     public class NotificationBusinessServiceFixture : TestFixtureBase
     {
-        private Mock<INotificationDataService> mockNotificationDataService;
+        // private Mock<INotificationDataService> mockNotificationDataService;
         private INotificationBusinessService testCandidate;
-        private Mock<ILoggingHelper> mockLoggingHelper;
+        // private Mock<ILoggingHelper> mockLoggingHelper;
 
         /*[Test]
         public void Test_AddNewNotification()

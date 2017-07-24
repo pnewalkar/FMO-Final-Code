@@ -241,9 +241,9 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 SqlGeometry networkIntersectionPoint = null;
                 if (accesslink != null)
                 {
-                    //Condition to check any intersection in the delivery point
+                    // Condition to check any intersection in the delivery point
                     var intersectionCountForDeliveryPoint = accessLinkDataService.GetIntersectionCountForDeliveryPoint(operationalObjectPoint, accesslink.ToDbGeometry());
-                    //Condition to check any Crosses or overlaps in Access link
+                    // Condition to check any Crosses or overlaps in Access link
                     var getAccessLinkCountForCrossesorOverLaps = accessLinkDataService.GetAccessLinkCountForCrossesorOverLaps(operationalObjectPoint, accesslink.ToDbGeometry());
 
                     if (intersectionCountForDeliveryPoint == 0 && getAccessLinkCountForCrossesorOverLaps == 0)
@@ -332,7 +332,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     Guid accessLinkGuid = Guid.NewGuid();
                     Guid NetworkNodeTypeGuid = Guid.NewGuid();
 
-                    //code for adding network link
+                    // code for adding network link
                     LocationDataDTO locationDataDTO = new LocationDataDTO
                     {
                         ID = locationGuid,
@@ -340,7 +340,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         RowCreateDateTime = DateTime.UtcNow
                     };
                     networkNodeDataDTO.LocationDatatDTO = locationDataDTO;
-                    //code for adding network node to accesslinkdatadto
+                    // code for adding network node to accesslinkdatadto
 
                     networkNodeDataDTO.ID = locationGuid;
                     networkNodeDataDTO.DataProviderGUID = Guid.Empty;
@@ -358,7 +358,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         .ToDbGeometry();
                     networkLinkDataDTO.RowCreateDateTime = DateTime.Now;
 
-                    //  Code for adding access link
+                    // Code for adding access link
                     accessLinkDatatDTO.ConnectedNetworkLinkID = networkLink.Id;
                     accessLinkDatatDTO.ID = networkLink.Id;
 
@@ -398,7 +398,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     };
                     accessLinkDatatDTO.AccessLinkStatusDataDTO = accessLinkStatusDataDTO;
                     networkLinkDataDTO.AccessLinkDataDTOs = accessLinkDatatDTO;
-                    //calling dataservice alsong with accesslink parameter.
+                    // calling dataservice alsong with accesslink parameter.
                     isAccessLinkCreated = accessLinkDataService.CreateAutomaticAccessLink(networkLinkDataDTO);
                 }
 
@@ -504,7 +504,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                 accessLinkDatatDTO.AccessLinkStatusDataDTO = accessLinkStatusDataDTO;
                 networkLinkDataDTO.AccessLinkDataDTOs = accessLinkDatatDTO;
                 networkLinkDataDTO.ID = networkObject.Id;
-                //calling dataservice for creating accesslink  using networklink parameter.
+                // calling dataservice for creating accesslink  using networklink parameter.
                 isAccessLinkCreated = accessLinkDataService.CreateManualAccessLink(networkLinkDataDTO);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);

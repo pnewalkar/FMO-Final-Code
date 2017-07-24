@@ -21,17 +21,17 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         private const string PostalAddressStatus = "Postal Address Status";
         private const string PostalAddressType = "Postal Address Type";
 
-        private Mock<IPostalAddressDataService> mockPostalAddressDataService;
-        private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
-        private Mock<IConfigurationHelper> mockConfigurationHelper;
-        private Mock<ILoggingHelper> mockLoggingHelper;
-        private Mock<IHttpHandler> mockHttpHandler;
-        private Mock<IPostalAddressIntegrationService> mockPostalAddressIntegrationService;
-        private RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface.IPostalAddressBusinessService testCandidate;
-        private PostalAddressDataDTO postalAddressDTO;
-        private PostalAddressDTO publicPostalAddressDTO;
-        private AddDeliveryPointDTO addDeliveryPointDTO;
-        private List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceDataCategoryDTOList;
+        // private Mock<IPostalAddressDataService> mockPostalAddressDataService;
+        // private Mock<IFileProcessingLogDataService> mockFileProcessingLogDataService;
+        // private Mock<IConfigurationHelper> mockConfigurationHelper;
+        // private Mock<ILoggingHelper> mockLoggingHelper;
+        // private Mock<IHttpHandler> mockHttpHandler;
+        // private Mock<IPostalAddressIntegrationService> mockPostalAddressIntegrationService;
+        // private RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface.IPostalAddressBusinessService testCandidate;
+        // private PostalAddressDataDTO postalAddressDTO;
+        // private PostalAddressDTO publicPostalAddressDTO;
+        // private AddDeliveryPointDTO addDeliveryPointDTO;
+        // private List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceDataCategoryDTOList;
 
         //TODO: Nunits to be fixed
         //[Test]
