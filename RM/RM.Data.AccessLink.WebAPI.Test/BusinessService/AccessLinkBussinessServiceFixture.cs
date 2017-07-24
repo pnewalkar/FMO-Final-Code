@@ -16,14 +16,15 @@ using RM.CommonLibrary.EntityFramework.DTO.Model;
 
 namespace RM.Data.AccessLink.WebAPI.Test
 {
+    /// <summary>
+    /// This class contains test methods for AccessLinkBusinessService.
+    /// </summary>
     [TestFixture]
     public class AccessLinkBussinessServiceFixture : TestFixtureBase
     {
         private IAccessLinkBusinessService testCandidate;
-
         private Mock<IAccessLinkDataService> mockaccessLinkDataService;
         private Mock<IAccessLinkIntegrationService> mockAccessLinkIntegrationService;
-
         private Mock<ILoggingHelper> loggingHelperMock;
         private List<AccessLinkDTO> accessLinkDTO = null;
         private DeliveryPointDTO deliveryPointDTO = null;
@@ -32,6 +33,9 @@ namespace RM.Data.AccessLink.WebAPI.Test
         private Guid operationalObjectId = System.Guid.NewGuid();
         private Guid operationObjectTypeId = new Guid("415c9129-0615-457e-98b7-3a60436320c5");
 
+        /// <summary>
+        /// Test for Load AccessLink.
+        /// </summary>
         [Test]
         public void Test_GetAccessLinks()
         {
@@ -40,6 +44,9 @@ namespace RM.Data.AccessLink.WebAPI.Test
             var result = testCandidate.GetAccessLinks(coordinates, unitGuid);
         }
 
+        /// <summary>
+        /// Test for Create the Automatic AccessLink.
+        /// </summary>
         [Test]
         public void Test_CreateAccessLink()
         {
@@ -47,6 +54,9 @@ namespace RM.Data.AccessLink.WebAPI.Test
             Assert.True(expectedResult);
         }
 
+        /// <summary>
+        /// Test for Create Manual AccessLink.
+        /// </summary>
         [Test]
         public void Test_CreateAccessLinkForMannual()
         {
@@ -54,6 +64,9 @@ namespace RM.Data.AccessLink.WebAPI.Test
             Assert.True(expectedResult);
         }
 
+        /// <summary>
+        /// Test for CheckManualAccess is valid.
+        /// </summary>
         [Test]
         public void Test_CheckManualAccessLinkIsValid()
         {
@@ -63,6 +76,9 @@ namespace RM.Data.AccessLink.WebAPI.Test
             Assert.True(expectedResult);
         }
 
+        /// <summary>
+        /// Setup for Nunit Tests.
+        /// </summary>
         protected override void OnSetup()
         {
             accessLinkManualCreateModelDTO = new AccessLinkManualCreateModelDTO
@@ -260,17 +276,11 @@ namespace RM.Data.AccessLink.WebAPI.Test
                 },
             };
 
+            // Setup Methods.
             mockaccessLinkDataService = new Mock<IAccessLinkDataService>();
             mockAccessLinkIntegrationService = CreateMock<IAccessLinkIntegrationService>();
-            loggingHelperMock = new Mock<ILoggingHelper>();
-
-            var rmTraceManagerMock = new Mock<IRMTraceManager>();
-            rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
-            loggingHelperMock.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
-
             mockaccessLinkDataService.Setup(x => x.GetAccessLinks(It.IsAny<string>(), It.IsAny<Guid>())).Returns(It.IsAny<List<AccessLinkDataDTO>>);
             mockaccessLinkDataService.Setup(x => x.GetAccessLinksCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<AccessLinkDataDTO>() { });
-
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataNameValuePairs(It.IsAny<List<string>>())).ReturnsAsync(new List<ReferenceDataCategoryDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetReferenceDataSimpleLists(It.IsAny<List<string>>())).ReturnsAsync(refDataCategotyDTO);
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).ReturnsAsync(deliveryPointDTO);
@@ -281,9 +291,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
             mockAccessLinkIntegrationService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
             mockAccessLinkIntegrationService.Setup(x => x.GetNetworkLink(It.IsAny<Guid>())).ReturnsAsync(networkLink);
             mockaccessLinkDataService.Setup(x => x.CreateManualAccessLink(It.IsAny<NetworkLinkDataDTO>())).Returns(true);
-
-           // mockaccessLinkDataService.Setup(x => x.CreateAccessLink(It.IsAny<NetworkLinkDataDTO>())).Returns(true);
-
             testCandidate = new AccessLinkBusinessService(mockaccessLinkDataService.Object, loggingHelperMock.Object, mockAccessLinkIntegrationService.Object);
         }
     }

@@ -13,7 +13,9 @@ using RM.DataManagement.AccessLink.WebAPI.Entities;
 
 namespace RM.DataServices.Tests.DataService
 {
-
+    /// <summary>
+    /// This class contains test methods for AccessLinkDataService.
+    /// </summary>
     [TestFixture]
     public class AccessLinkDataServiceFixture : RepositoryFixtureBase
     {
@@ -30,6 +32,9 @@ namespace RM.DataServices.Tests.DataService
         private AccessLinkDataDTO accessLinkDataDto;
         private NetworkLinkDataDTO netWorkLinkDataDto;
 
+        /// <summary>
+        /// Test for Load AccessLink.
+        /// </summary>
         [Test]
         public void Test_GetAccessLinks()
         {
@@ -38,6 +43,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(actualResult);
         }
 
+        /// <summary>
+        /// Test for Create Automatic AccessLink.
+        /// </summary>
         [Test]
         public void Test_CreateAccessLink()
         {
@@ -45,6 +53,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(actualResult);
         }
 
+        /// <summary>
+        /// Test for Create Manual AccessLink.
+        /// </summary>
         [Test]
         public void Test_CreateManualAccessLink()
         {
@@ -52,6 +63,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(actualResult);
         }
 
+        /// <summary>
+        /// Test for Get Intersection count for deliverypoint.
+        /// </summary>
         [Test]
         public void Test_GetIntersectionCountForDeliveryPoint()
         {
@@ -62,6 +76,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.AreEqual(actualResult, 0);
         }
 
+        /// <summary>
+        /// Test for Get AccessLink count for crossesor OverLaps.
+        /// </summary>
         [Test]
         public void Test_GetAccessLinkCountForCrossesorOverLaps()
         {
@@ -72,6 +89,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.AreEqual(actualResult, 0);
         }
 
+        /// <summary>
+        /// Test for Get AccessLink Crossing operational object.
+        /// </summary>
         [Test]
         public void Test_GetAccessLinksCrossingOperationalObject()
         {
@@ -82,6 +102,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.AreEqual(actualResult.Count, 0);
         }
 
+        /// <summary>
+        /// Setup for Nunit Tests.
+        /// </summary>
         protected override void OnSetup()
         {
             mockLoggingHelper = CreateMock<ILoggingHelper>();
