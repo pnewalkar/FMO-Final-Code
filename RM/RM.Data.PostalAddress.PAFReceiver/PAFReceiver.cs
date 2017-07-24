@@ -39,7 +39,7 @@
         private IHttpHandler httpHandler = default(IHttpHandler);
         private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private int count = 0;
+        // private int count = 0;
 
         #endregion private member declaration
 

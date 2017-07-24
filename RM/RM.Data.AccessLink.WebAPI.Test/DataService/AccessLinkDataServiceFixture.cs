@@ -29,7 +29,6 @@ namespace RM.DataServices.Tests.DataService
         private Guid unit3Guid = new Guid("092C69AE-4382-4183-84FF-BA07543D9C75");
         private Guid user1Id;
         private Guid user2Id;
-        private AccessLinkDataDTO accessLinkDataDto;
         private NetworkLinkDataDTO netWorkLinkDataDto;
 
         /// <summary>

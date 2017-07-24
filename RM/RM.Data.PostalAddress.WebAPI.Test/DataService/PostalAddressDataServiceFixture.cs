@@ -23,8 +23,8 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         private Mock<ILoggingHelper> mockLoggingHelper;
         private Mock<IFileProcessingLogDataService> mockFileProcessingLog;
         private Mock<IDatabaseFactory<PostalAddressDBContext>> mockDatabaseFactory;
-        private Mock<CommonLibrary.EntityFramework.DataService.Interfaces.IPostCodeDataService> mockPostCodeDataService;
-        private Mock<CommonLibrary.EntityFramework.DataService.Interfaces.IReferenceDataCategoryDataService> mockReferenceDataCategoryDataService;
+        // private Mock<CommonLibrary.EntityFramework.DataService.Interfaces.IPostCodeDataService> mockPostCodeDataService;
+        // private Mock<CommonLibrary.EntityFramework.DataService.Interfaces.IReferenceDataCategoryDataService> mockReferenceDataCategoryDataService;
         private Mock<IPostalAddressDataService> mockAddressDataService;
         private IPostalAddressDataService testCandidate;
         private List<PostalAddressDataDTO> postalAddressesDTO;
@@ -33,7 +33,7 @@ namespace RM.Data.PostalAddress.WebAPI.Test.DataService
         private AddDeliveryPointDTO addDeliveryPointDTO3;
         private PostalAddressDataDTO dtoPostalAddresses;
         private List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> lstPostCodeDTO;
-        private PostalAddressDataDTO testObject;
+        // private PostalAddressDataDTO testObject;
         private Guid id1 = new Guid("00000000-0000-0000-0000-000000000002");
         private Guid id2 = new Guid("00000000-0000-0000-0000-000000000001");
 
