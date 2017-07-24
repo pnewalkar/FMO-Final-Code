@@ -98,6 +98,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                         deliveryPoint.ID = objDeliveryPoint.ID;
                         deliveryPoint.PostalAddressID = objDeliveryPoint.PostalAddressID;
                         deliveryPoint.DeliveryPointUseIndicatorGUID = objDeliveryPoint.DeliveryPointUseIndicatorGUID;
+                        deliveryPoint.RowCreateDateTime = DateTime.UtcNow;
 
                         deliveryPointStatus.ID = Guid.NewGuid();
                         deliveryPointStatus.LocationID = objDeliveryPoint.ID;
@@ -437,14 +438,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     {
                         deliveryPoint.NetworkNode.Location.Shape = deliveryPointDto.NetworkNode.Location.Shape;
                         deliveryPoint.NetworkNode.DataProviderGUID = deliveryPointDto.NetworkNode.DataProviderGUID;
-
-                        deliveryPoint.DeliveryPointStatus.First().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.First().DeliveryPointStatusGUID;
-
+                        deliveryPoint.NetworkNode.NetworkNodeType_GUID = deliveryPointDto.NetworkNode.NetworkNodeType_GUID;
+                        deliveryPoint.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID = deliveryPointDto.DeliveryPointStatus.FirstOrDefault().DeliveryPointStatusGUID;
+                        deliveryPoint.DeliveryPointUseIndicatorGUID = deliveryPointDto.DeliveryPointUseIndicatorGUID;
                         DataContext.Entry(deliveryPoint).State = EntityState.Modified;
                         DataContext.Entry(deliveryPoint).OriginalValues[DeliveryPointConstants.ROWVERSION] = deliveryPointDto.RowVersion;
                         await DataContext.SaveChangesAsync();
-                        returnId = deliveryPoint.ID;
                     }
+
+                    return deliveryPoint.ID;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -456,18 +458,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 }
                 catch (NotSupportedException notSupportedException)
                 {
-                    notSupportedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    notSupportedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                     throw new InfrastructureException(notSupportedException, ErrorConstants.Err_NotSupportedException);
                 }
                 catch (ObjectDisposedException disposedException)
                 {
-                    disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
+                    disposedException.Data.Add("userFriendlyMessage", ErrorConstants.Err_Default);
                     throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
                 }
-
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-                return returnId;
             }
         }
 

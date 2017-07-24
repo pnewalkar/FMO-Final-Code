@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RM.Data.PostalAddress.WebAPI.Utils
+﻿namespace RM.Data.PostalAddress.WebAPI.Utils
 {
     public static class PostalAddressConstants
     {
@@ -15,15 +10,12 @@ namespace RM.Data.PostalAddress.WebAPI.Utils
         internal const string PAFTaskBodyPreText = "Please position the DP ";
         internal const string PAFNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
         internal const int NOTIFICATIONDUE = 24;
-        internal const string NETWORKLINKDATAPROVIDER = "Data Provider";
         internal const string EXTERNAL = "External";
-        internal const string TASKNOTIFICATION = "Notification Type";
         internal const string TASKACTION = "Action required";
         internal const string TASKSOURCE = "SYSTEM";
         internal const string PostalAddressStatus = "Postal Address Status";
         internal const string PostalAddressType = "Postal Address Type";
-        
-        internal const string DeliveryPointUseIndicator = "DeliveryPoint Use Indicator";
+
         internal const string LiveAddressStatus = "Live";
         internal const string OperationalStatusGUIDLive = "Live";
         internal const string OperationalStatusGUIDLivePending = "Live Pending Location";

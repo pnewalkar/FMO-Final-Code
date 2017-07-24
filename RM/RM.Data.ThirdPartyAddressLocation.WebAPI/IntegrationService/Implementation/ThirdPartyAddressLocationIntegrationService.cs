@@ -275,7 +275,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
         }
 
         /// <summary>
-        /// Get the reference data category details based on the list of categores
+        /// Update the Notification By UDPRN
         /// </summary>
         /// <param name="listNames">Category names</param>
         /// <returns>returns Category details</returns>
@@ -309,8 +309,10 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             }
         }
 
+
+
         /// <summary>
-        /// Update the Notification By UDPRN
+        /// Update Delivery Point by Id
         /// </summary>
         /// <param name="udprn">UDPRN id</param>
         /// <param name="oldAction">old action</param>
@@ -357,10 +359,12 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 loggingHelper.LogMethodEntry(method, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationIntegrationServiceMethodEntryEventId);
 
                 string methodName = MethodHelper.GetActualAsyncMethodName();
-                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(NotificationManagerWebAPIName);
+                string serviceUrl = configurationHelper.ReadAppSettingsConfigurationValues(DeliveryPointManagerDataWebAPIName);
                 string route = configurationHelper.ReadAppSettingsConfigurationValues(methodName);
 
-                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(serviceUrl + route, deliveryPointDTO);
+                string serializedDeliveryPoint = JsonConvert.SerializeObject(deliveryPointDTO);
+
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(serviceUrl + route, serializedDeliveryPoint);
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode

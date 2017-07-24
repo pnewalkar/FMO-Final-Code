@@ -26,11 +26,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         bool CreateAccessLink(Guid operationalObjectId, Guid operationObjectTypeId);
 
         /// <summary>
-        /// Create delivery point for PAF and NYB details
+        /// Create address for a delivery point with PAF/NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        Task<CreateDeliveryPointModelDTO> CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
+        Task<CreateDeliveryPointModelDTO> CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO);
 
         /// <summary>
         /// This method is used to check Duplicate NYB records

@@ -1,9 +1,6 @@
 namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
 
     public partial class PostalAddressDBContext : AuditContext
     {
@@ -18,6 +15,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
         public virtual DbSet<PostalAddress> PostalAddresses { get; set; }
         public virtual DbSet<PostalAddressStatus> PostalAddressStatus { get; set; }
         public virtual DbSet<Postcode> Postcodes { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AddressLocation>()

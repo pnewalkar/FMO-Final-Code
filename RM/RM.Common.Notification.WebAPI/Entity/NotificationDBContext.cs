@@ -8,7 +8,7 @@ namespace RM.Common.Notification.WebAPI.Entities
     public partial class NotificationDBContext : AuditContext
     {
         public NotificationDBContext()
-            : base("name=Notification")
+            : base("name=NotificationDBContext")
         {
         }
 

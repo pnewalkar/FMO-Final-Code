@@ -14,6 +14,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for ScenarioDataService
+    /// </summary>
     [TestFixture]
     public class ScenarioDataServiceFixture : RepositoryFixtureBase
     {
@@ -57,8 +60,12 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsNotNull(result);
         }
 
+        /// <summary>
+        /// setup for nunit tests
+        /// </summary>
         protected override void OnSetup()
         {
+            //Data Setup
             List<Scenario> scenarioList = new List<Scenario>()
             {
                 new Scenario()

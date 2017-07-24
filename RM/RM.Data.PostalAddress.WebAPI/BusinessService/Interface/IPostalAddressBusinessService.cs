@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 using RM.DataManagement.PostalAddress.WebAPI.DTO.Model;
@@ -27,7 +26,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <returns>returns true or false</returns>
         Task<bool> SavePAFDetails(List<PostalAddressDTO> postalAddress);
 
-
         // TODO : To be moved to Unit Manager
         /*
         /// <summary>
@@ -49,9 +47,9 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="postalAddressId">PostalAddress Unique Identifier</param>
         /// <returns>Postal Address DTO</returns>
-        PostalAddressDTO GetPostalAddressDetails(Guid id);
+        PostalAddressDTO GetPostalAddressDetails(Guid postalAddressId);
 
         /// <summary>
         /// This method is used to check Duplicate NYB records
