@@ -106,6 +106,7 @@ namespace RM.Common.ActionManager.WebAPI.DataService
                                                  UnitType = rd.ReferenceDataValue
                                              }).FirstOrDefaultAsync();
                 }
+
                 return userUnitDetails;
             }
         }
