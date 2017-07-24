@@ -629,11 +629,14 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
                     DataContext.NetworkNodes.Remove(location.NetworkNode);
                     DataContext.Locations.Remove(location);
+                    await DataContext.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
 
-                await DataContext.SaveChangesAsync();
-
-                return true;
             }
             catch (Exception ex)
             {
