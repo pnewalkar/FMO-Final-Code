@@ -41,10 +41,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.DTOs
 
         public string OperationalState { get; set; }
 
-        public string type { get; set; }
+        public string Type { get; set; }
 
-        public object features { get; set; }
-
-        // public virtual NetworkLink NetworkLink { get; set; }
+        public object Features { get; set; }
     }
 }

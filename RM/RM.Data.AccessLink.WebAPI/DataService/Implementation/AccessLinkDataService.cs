@@ -6,15 +6,15 @@
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Spatial;
     using System.Linq;
+    using AutoMapper;
     using CommonLibrary.DataMiddleware;
-    using CommonLibrary.LoggingMiddleware;
-    using Entities;
     using CommonLibrary.ExceptionMiddleware;
     using CommonLibrary.HelperMiddleware;
+    using CommonLibrary.LoggingMiddleware;
+    using Data.AccessLink.WebAPI.DataDTOs;
+    using Entities;
     using Interfaces;
     using MappingConfiguration;
-    using AutoMapper;
-    using Data.AccessLink.WebAPI.DataDTOs;
 
     /// <summary>
     /// This class contains methods of Access Link DataService for fetching Access Link data.
@@ -22,8 +22,6 @@
     public class AccessLinkDataService : DataServiceBase<AccessLink, AccessLinkDBContext>, IAccessLinkDataService
     {
         private const int BNGCOORDINATESYSTEM = 27700;
-
-
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private int priority = LoggerTraceConstants.AccessLinkAPIPriority;
         private int entryEventId = LoggerTraceConstants.AccessLinkDataServiceMethodEntryEventId;
@@ -54,8 +52,8 @@
                 {
                     cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
                     cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
-
                 });
+
                 Mapper.Configuration.CreateMapper();
 
                 var resultValue = GetAccessLinkCoordinatesDataByBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
@@ -64,7 +62,6 @@
                 {
                     cfg.CreateMap<AccessLink, AccessLinkDataDTO>();
                     cfg.CreateMap<NetworkLink, NetworkLinkDataDTO>();
-
                 });
                 Mapper.Configuration.CreateMapper();
 
@@ -91,6 +88,7 @@
 
                     bool accessLinkCreationSuccess = false;
                     AccessLink accessLink = new Entities.AccessLink();
+
                     // need to save Location for Access link with shape as NetworkIntersectionPoint i.e. roadlink and access link intersection
                     NetworkNode networkNode = new NetworkNode();
                     NetworkLink networkLink = new Entities.NetworkLink();
@@ -131,32 +129,26 @@
                         RowCreateDateTime = accessLinkStatusDataDTO.RowCreateDateTime
                     };
                     accessLink.AccessLinkStatus.Add(accessLinkStatus);
-
-
                     accessLink.NetworkLink = networkLink1;
                     accessLink.NetworkLink1 = networkLink1;
                     DataContext.AccessLinks.Add(accessLink);
-
                     accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                     return accessLinkCreationSuccess;
                 }
             }
-
             catch (DbUpdateException dbUpdateException)
             {
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
             }
-
         }
+
         /// <summary>
         /// Method to create manual access link in db
         /// </summary>
         /// <param name="networkLinkDataDTO"></param>
         /// <returns></returns>
-
         public bool CreateManualAccessLink(NetworkLinkDataDTO networkLinkDataDTO)
         {
             try
@@ -182,8 +174,8 @@
                     accessLink.AccessLinkTypeGUID = accessLinkDataDTO.AccessLinkTypeGUID;
                     accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
                     accessLink.RowCreateDateTime = DateTime.UtcNow;
-                    // networkLink.AccessLink = accessLink;
 
+                    // networkLink.AccessLink = accessLink;
                     AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatusDataDTO;
                     AccessLinkStatus accessLinkStatus = new AccessLinkStatus
                     {
@@ -206,14 +198,11 @@
                     return accessLinkCreationSuccess;
                 }
             }
-
             catch (DbUpdateException dbUpdateException)
             {
                 throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("automatic access link")));
             }
-    
         }
-
 
         /// <summary>
         /// this method is used to get the access links crossing the created access link
@@ -245,25 +234,6 @@
         }
 
         /// <summary>
-        /// This Method is used to Access Link data for defined coordinates.
-        /// </summary>
-        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
-        /// <param name="unitGuid">unit unique identifier.</param>
-        /// <returns>Link of Access Link Entity</returns>
-        private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
-        {
-            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
-            {
-                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();
-
-                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
-                return DataContext.AccessLinks.Include(m => m.NetworkLink).AsNoTracking().Where(x => x.NetworkLink.LinkGeometry.Intersects(extent) && x.NetworkLink.LinkGeometry.Intersects(polygon)).ToList();
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Getting count of Deliverypoint intersecs with other DP.
         /// </summary>
         /// <param name="operationalObjectPoint"></param>
@@ -288,6 +258,25 @@
             var accesslinkCount = DataContext.NetworkLinks.AsNoTracking().Where(al => al.LinkGeometry != null && al.LinkGeometry.Intersects(accessLink) && al.LinkGeometry.Crosses(accessLink)).ToList();
 
             return accesslinkCount.Count;
+        }
+
+        /// <summary>
+        /// This Method is used to Access Link data for defined coordinates.
+        /// </summary>
+        /// <param name="boundingBoxCoordinates">BoundingBox Coordinates</param>
+        /// <param name="unitGuid">unit unique identifier.</param>
+        /// <returns>Link of Access Link Entity</returns>
+        private IEnumerable<AccessLink> GetAccessLinkCoordinatesDataByBoundingBox(string boundingBoxCoordinates, Guid locationGuid)
+        {
+            if (!string.IsNullOrEmpty(boundingBoxCoordinates))
+            {
+                DbGeometry polygon = DataContext.Locations.AsNoTracking().Where(x => x.ID == locationGuid).Select(x => x.Shape).SingleOrDefault();
+
+                DbGeometry extent = System.Data.Entity.Spatial.DbGeometry.FromText(boundingBoxCoordinates.ToString(), BNGCOORDINATESYSTEM);
+                return DataContext.AccessLinks.Include(m => m.NetworkLink).AsNoTracking().Where(x => x.NetworkLink.LinkGeometry.Intersects(extent) && x.NetworkLink.LinkGeometry.Intersects(polygon)).ToList();
+            }
+
+            return null;
         }
     }
 }

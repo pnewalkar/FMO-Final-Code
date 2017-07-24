@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
 
-
 namespace RM.DataManagement.AccessLink.WebAPI.DataService.MappingConfiguration
 {
     public static class GenericMapper
@@ -23,7 +22,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.MappingConfiguration
             Mapper.Configuration.CreateMapper();
 
             List<TDestination> result = Mapper.Map<List<TSource>, List<TDestination>>(source);
-       
+
             return result;
         }
 
@@ -33,7 +32,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.MappingConfiguration
 
             Mapper.Configuration.CreateMapper();
 
-            Mapper.Map<TSource, TDestination>(source,destination);
+            Mapper.Map<TSource, TDestination>(source, destination);
         }
     }
 }
