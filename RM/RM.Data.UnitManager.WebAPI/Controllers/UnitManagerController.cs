@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
@@ -306,6 +305,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 return Ok(postCodes);
             }
         }
+
         /// <summary>
         /// Api searches pstcode and thorough in postal address entity on basis of searhtext
         /// </summary>

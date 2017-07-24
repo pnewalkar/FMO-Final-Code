@@ -1,11 +1,6 @@
-﻿using System;
-using Moq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RM.Common.Notification.WebAPI.BusinessService;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
 
 namespace RM.Common.Notification.WebAPI.Test
 {
@@ -14,6 +9,7 @@ namespace RM.Common.Notification.WebAPI.Test
     {
         // private Mock<INotificationDataService> mockNotificationDataService;
         private INotificationBusinessService testCandidate;
+
         // private Mock<ILoggingHelper> mockLoggingHelper;
 
         /*[Test]
@@ -62,6 +58,6 @@ namespace RM.Common.Notification.WebAPI.Test
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             testCandidate = new NotificationBusinessService(mockNotificationDataService.Object, mockLoggingHelper.Object);*/
+        }
     }
-}
 }

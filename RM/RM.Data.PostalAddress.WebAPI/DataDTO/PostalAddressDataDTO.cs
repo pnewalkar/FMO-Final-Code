@@ -42,6 +42,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataDTO
         public string Postcode { get; set; }
 
         public string DeliveryPointSuffix { get; set; }
+
         public string SmallUserOrganisationIndicator { get; set; }
 
         public int? UDPRN { get; set; }

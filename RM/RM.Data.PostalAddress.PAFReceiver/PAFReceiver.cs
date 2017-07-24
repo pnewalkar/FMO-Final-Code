@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Diagnostics;
     using System.Reflection;
     using System.ServiceProcess;
@@ -155,7 +154,8 @@
                     if (lstPostalAddress != null && lstPostalAddress.Count > 0)
                     {
                         m_mainTimer.Elapsed -= new ElapsedEventHandler(m_mainTimer_Elapsed);
-                        var result = SavePAFDetails(lstPostalAddress).ContinueWith(p => {
+                        var result = SavePAFDetails(lstPostalAddress).ContinueWith(p =>
+                        {
                             m_mainTimer.Elapsed += new ElapsedEventHandler(m_mainTimer_Elapsed);
                         });
                     }
