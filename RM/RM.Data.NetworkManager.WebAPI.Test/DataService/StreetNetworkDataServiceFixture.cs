@@ -145,7 +145,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
         /// </summary>
         protected override void OnSetup()
         {
-            //Data setup
+            // Data setup
             unit1Guid = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918");
             mockIConfigurationHelper = CreateMock<IConfigurationHelper>();
 
@@ -221,7 +221,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
                     {
                         new ReferenceDataDTO()
                         {
-                            ReferenceDataName =  ReferenceDataValues.AccessLinkDiffRoadMaxDistance,
+                            ReferenceDataName = ReferenceDataValues.AccessLinkDiffRoadMaxDistance,
                             ReferenceDataValue = "5"
                         }
                     },
@@ -265,7 +265,7 @@ namespace RM.Data.NetworkManager.WebAPI.Test.DataService
             mockNetworkDBContext.Setup(x => x.NetworkLinks).Returns(mockNetworkLink.Object);
             mockNetworkDBContext.Setup(x => x.NetworkLinks.AsNoTracking()).Returns(mockNetworkLink.Object);
 
-            //Mock trace manager
+            // Mock trace manager
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
             mockILoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
