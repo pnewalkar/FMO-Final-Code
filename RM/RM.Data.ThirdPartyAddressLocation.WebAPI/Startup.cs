@@ -17,8 +17,6 @@ using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Entities;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
-using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
-using RM.Data.ThirdPartyAddressLocation.WebAPI.Entities;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI
 {
@@ -92,8 +90,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI
             // Infrastructure
             services.AddScoped<IDatabaseFactory<AddressLocationDBContext>, DatabaseFactory<AddressLocationDBContext>>();
 
-            // DataServices 
-            
+            // DataServices
+
             services.AddScoped<IAddressLocationDataService, AddressLocationDataService>();
 
             services.AddScoped<IThirdPartyAddressLocationBusinessService, ThirdPartyAddressLocationBusinessService>();
