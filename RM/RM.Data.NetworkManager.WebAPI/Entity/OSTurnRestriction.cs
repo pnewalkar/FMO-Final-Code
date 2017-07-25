@@ -19,7 +19,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
         public string Restriction { get; set; }
 
         [StringLength(50)]
-        public string inclusion { get; set; }
+        public string Inclusion { get; set; }
 
         [StringLength(50)]
         public string Exclusion { get; set; }

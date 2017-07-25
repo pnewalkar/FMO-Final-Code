@@ -26,7 +26,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
         public DbGeometry Location { get; set; }
 
         [StringLength(21)]
-        public string formOfRoadNode { get; set; }
+        public string FormOfRoadNode { get; set; }
 
         [StringLength(19)]
         public string Classification { get; set; }

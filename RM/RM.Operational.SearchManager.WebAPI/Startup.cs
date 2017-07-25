@@ -69,7 +69,7 @@ namespace RM.Operational.SearchManager.WebAPI
             });
 
             //---Adding scope for all classes
-            //services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
+            // services.AddScoped<IDatabaseFactory<RMDBContext>, DatabaseFactory<RMDBContext>>();
             LogWriterFactory log = new LogWriterFactory();
             LogWriter logWriter = log.Create();
             Logger.SetLogWriter(logWriter, false);

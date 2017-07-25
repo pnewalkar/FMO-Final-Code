@@ -235,7 +235,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSPathNode>()
-                .Property(e => e.formOfRoadNode)
+                .Property(e => e.FormOfRoadNode)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSPathNode>()
@@ -362,7 +362,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
-                .Property(e => e.formOfRoadNode)
+                .Property(e => e.FormOfRoadNode)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
@@ -370,12 +370,12 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
-                .Property(e => e.access)
+                .Property(e => e.Access)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
-                .Property(e => e.junctionName)
+                .Property(e => e.JunctionName)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
@@ -406,7 +406,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSTurnRestriction>()
-                .Property(e => e.inclusion)
+                .Property(e => e.Inclusion)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSTurnRestriction>()
@@ -463,7 +463,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoadName>()
-                .Property(e => e.roadClassification)
+                .Property(e => e.RoadClassification)
                 .IsFixedLength()
                 .IsUnicode(false);
 
