@@ -86,7 +86,7 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         {
             using (loggingHelper.RMTraceManager.StartTrace("Business.GenerateXml"))
             {
-                string[] licenses = printMapDTO.License.Split('©');
+                string[] licenses = printMapDTO.MapArea != "BT" ? printMapDTO.License.Split('©') : null;
                 string methodName = MethodBase.GetCurrentMethod().Name;
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.MapManagerAPIPriority, LoggerTraceConstants.MapManagerBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
@@ -163,6 +163,18 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
                         }
                     }
                 }
+                else
+                {
+                    section = document.CreateElement(MapManagerConstants.Section);
+                    heading1CenterAligned = document.CreateElement(MapManagerConstants.Heading1CenterAligned);
+                    sectionColumn = document.CreateElement(MapManagerConstants.SectionColumn);
+                    sectionColumn.SetAttribute(MapManagerConstants.Width, "1");
+                    heading1CenterAligned.InnerText = printMapDTO.License;
+                    sectionColumn.AppendChild(heading1CenterAligned);
+                    section.AppendChild(sectionColumn);
+                    content.AppendChild(section);
+                }
+
 
                 // Section 5
                 section = document.CreateElement(MapManagerConstants.Section);
