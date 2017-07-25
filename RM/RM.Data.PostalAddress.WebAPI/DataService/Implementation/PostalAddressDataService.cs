@@ -449,7 +449,7 @@
                 ConfigureMapper();
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return GenericMapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
+                return Mapper.Map<PostalAddress, PostalAddressDataDTO>(postalAddress);
             }
         }
 
