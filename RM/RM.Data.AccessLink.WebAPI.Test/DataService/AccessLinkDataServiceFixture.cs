@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
 using Moq;
 using NUnit.Framework;
+using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.AccessLink.WebAPI.DataDTOs;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Implementation;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
 using RM.DataManagement.AccessLink.WebAPI.Entities;
 
 namespace RM.DataServices.Tests.DataService
@@ -121,7 +121,6 @@ namespace RM.DataServices.Tests.DataService
             var accessLink = new List<AccessLink>() { new AccessLink() { ID = Guid.NewGuid(), NetworkLink = networkLink } };
             var deliveryPoint = new List<DeliveryPoint>() { new DeliveryPoint() { NetworkNode = new NetworkNode() { Location = new Location() { Shape = unitBoundary } } } };
 
-
             netWorkLinkDataDto = new NetworkLinkDataDTO()
             {
                 ID = Guid.NewGuid(),
@@ -160,7 +159,6 @@ namespace RM.DataServices.Tests.DataService
                     },
                 }
             };
-
 
             var mockAsynEnumerable = new DbAsyncEnumerable<AccessLink>(accessLink);
             mockFmoDbContext = CreateMock<AccessLinkDBContext>();
