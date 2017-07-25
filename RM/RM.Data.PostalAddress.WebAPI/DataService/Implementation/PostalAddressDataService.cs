@@ -176,6 +176,7 @@
             {
                 throw new ArgumentNullException(nameof(objPostalAddress), string.Format(ErrorConstants.Err_ArgumentmentNullException, objPostalAddress));
             }
+
             bool isPostalAddressInserted = false;
             PostalAddress objAddress = new PostalAddress();
             try
@@ -202,6 +203,7 @@
                         await DataContext.SaveChangesAsync();
                         isPostalAddressInserted = true;
                     }
+
                     loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 }
             }
@@ -878,8 +880,8 @@
         ///// <param name="lstUDPRN">List of UDPRN</param>
         ///// <param name="addressType">NYB</param>
         ///// <returns>true or false</returns>
-        //public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
-        //{
+        // public async Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
+        // {
         //    try
         //    {
         //        bool isPostalAddressDeleted = false;
@@ -912,7 +914,7 @@
         //    {
         //        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlDeleteException, string.Concat("PostalAdresses with UPPRN:", string.Join(",", lstUDPRN))));
         //    }
-        //}
+        // }
 
         /// <summary>
         /// Create or update NYB details depending on the UDPRN
@@ -920,8 +922,8 @@
         /// <param name="objPostalAddress">NYB details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        //public async Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddressDTO, string strFileName)
-        //{
+        // public async Task<bool> SaveAddress(PostalAddressDataDTO objPostalAddressDTO, string strFileName)
+        // {
         //    bool isPostalAddressInserted = false;
         //    PostalAddress objPostalAddress = default(PostalAddress);
         //    PostalAddress entity = new PostalAddress();
@@ -980,7 +982,7 @@
         //    }
 
         //    return isPostalAddressInserted;
-        //}
+        // }
 
         /// <summary>
         /// Insert PAF details depending on the UDPRN
@@ -988,8 +990,8 @@
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        //public async Task<bool> InsertAddress(PostalAddressDataDTO objPostalAddress, string strFileName)
-        //{
+        // public async Task<bool> InsertAddress(PostalAddressDataDTO objPostalAddress, string strFileName)
+        // {
         //    bool isPostalAddressInserted = false;
         //    PostalAddress objAddress = new PostalAddress();
         //    try
@@ -1039,15 +1041,15 @@
         //    }
 
         //    return isPostalAddressInserted;
-        //}
+        // }
 
         ///// <summary>
         ///// Get Postal address details depending on the UDPRN
         ///// </summary>
         ///// <param name="uDPRN">UDPRN id</param>
         ///// <returns>returns PostalAddress object</returns>
-        //public async Task<PostalAddressDataDTO> GetPostalAddress(int? uDPRN)
-        //{
+        // public async Task<PostalAddressDataDTO> GetPostalAddress(int? uDPRN)
+        // {
         //    using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
         //    {
         //        string methodName = MethodHelper.GetActualAsyncMethodName();
@@ -1066,15 +1068,15 @@
         //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
         //        return dtoPostalAddress;
         //    }
-        //}
+        // }
 
         /// <summary>
         /// Get Postal address details depending on the address fields such as BuildingName and etc
         /// </summary>
         /// <param name="objPostalAddress">Postal address</param>
         /// <returns>returns PostalAddress object</returns>
-        //public async Task<PostalAddressDataDTO> GetPostalAddress(PostalAddressDataDTO objPostalAddress)
-        //{
+        // public async Task<PostalAddressDataDTO> GetPostalAddress(PostalAddressDataDTO objPostalAddress)
+        // {
         //    using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddress"))
         //    {
         //        string methodName = MethodHelper.GetActualAsyncMethodName();
@@ -1159,7 +1161,7 @@
         //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId, LoggerTraceConstants.Title);
         //        return dtoPostalAddress;
         //    }
-        //}
+        // }
 
         /// <summary>
         /// Checking for duplicatesthat already exists in FMO as a NYB record
@@ -1167,8 +1169,8 @@
         /// <param name="objPostalAddress">objPostalAddress</param>
         /// <param name="addressTypeNYBGuid">Reference data Guid of NYB</param>
         /// <returns>string</returns>
-        //public string CheckForDuplicateNybRecords(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid)
-        //{
+        // public string CheckForDuplicateNybRecords(PostalAddressDataDTO objPostalAddress, Guid addressTypeNYBGuid)
+        // {
         //    string postCode = string.Empty;
 
         //    var postalAddress = DataContext.PostalAddresses.AsNoTracking()
@@ -1231,15 +1233,15 @@
         //    }
 
         //    return postCode;
-        //}
+        // }
 
         ///// <summary>
         ///// Check For Duplicate Address With DeliveryPoints
         ///// </summary>
         ///// <param name="objPostalAddress">objPostalAddress</param>
         ///// <returns>bool</returns>
-        //public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress)
-        //{
+        // public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress)
+        // {
         //    bool isDuplicate = false;
 
         //    var postalAddress = DataContext.PostalAddresses.AsNoTracking().Include(m => m.DeliveryPoints)
@@ -1301,7 +1303,7 @@
         //    }
 
         //    return isDuplicate;
-        //}
+        // }
 
         /// <summary>
         /// Update PAF details depending on the UDPRN
@@ -1309,8 +1311,8 @@
         /// <param name="objPostalAddress">PAF details DTO</param>
         /// <param name="strFileName">CSV Filename</param>
         /// <returns>true or false</returns>
-        //public async Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string strFileName, Guid deliveryPointUseIndicatorPAF)
-        //{
+        // public async Task<bool> UpdateAddress(PostalAddressDataDTO objPostalAddress, string strFileName, Guid deliveryPointUseIndicatorPAF)
+        // {
         //    bool isPostalAddressUpdated = false;
         //    PostalAddress objAddress = new PostalAddress();
         //    try
@@ -1346,12 +1348,12 @@
         //                    objAddress.Postcode = objPostalAddress.Postcode;
         //                    objAddress.AddressType_GUID = objPostalAddress.AddressType_GUID;
 
-        //                    //if (objAddress.PostalAddressStatus != null && objAddress.PostalAddressStatus.Count > 0)
-        //                    //{
-        //                    //}
+        //                    // if (objAddress.PostalAddressStatus != null && objAddress.PostalAddressStatus.Count > 0)
+        //                    // {
+        //                    // }
 
-        //                    //if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
-        //                    //{
+        //                    // if (objAddress.DeliveryPoints != null && objAddress.DeliveryPoints.Count > 0)
+        //                    // {
         //                    //    foreach (var objDelPoint in objAddress.DeliveryPoints)
         //                    //    {
         //                    //        if (objAddress.OrganisationName.Length > 0)
@@ -1361,7 +1363,7 @@
 
         //                    //        // objDelPoint.UDPRN = objPostalAddress.UDPRN;
         //                    //    }
-        //                    //}
+        //                    // }
         //                }
 
         //                await DataContext.SaveChangesAsync();
@@ -1404,7 +1406,7 @@
         //    }
 
         //    return isPostalAddressUpdated;
-        //}
+        // }
 
         /// <summary>
         /// Filter PostalAddress based on the search text
@@ -1412,8 +1414,8 @@
         /// <param name="searchText">searchText</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of Postcodes</returns>
-        //public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs)
-        //{
+        // public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs, List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postCodeDTOs)
+        // {
         //    try
         //    {
         //        List<string> searchdetails = new List<string>();
@@ -1434,10 +1436,10 @@
         //        this.loggingHelper.Log(ex, TraceEventType.Error);
         //        throw;
         //    }
-        //}
+        // }
 
-        //public async Task<List<Guid>> GetPostcodeGuids(string searchText)
-        //{
+        // public async Task<List<Guid>> GetPostcodeGuids(string searchText)
+        // {
         //    try
         //    {
         //        var postcodeGuids = await (from pa in DataContext.PostalAddresses.AsNoTracking()
@@ -1452,7 +1454,7 @@
         //        this.loggingHelper.Log(ex, TraceEventType.Error);
         //        throw;
         //    }
-        //}
+        // }
 
         /* To be moved to Unit Manager
     /// <summary>
@@ -1599,8 +1601,8 @@
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Postal Address DTO</returns>
-        //public PostalAddressDataDTO GetPostalAddressDetails(Guid id)
-        //{
+        // public PostalAddressDataDTO GetPostalAddressDetails(Guid id)
+        // {
         //    try
         //    {
         //        var postalAddress = DataContext.PostalAddresses.AsNoTracking().Where(n => n.ID == id).FirstOrDefault();
@@ -1611,15 +1613,15 @@
         //        this.loggingHelper.Log(ex, TraceEventType.Error);
         //        throw;
         //    }
-        //}
+        // }
 
         /// <summary>
         /// Create delivery point for PAF and NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        //public CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
-        //{
+        // public CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO, Guid OperationalStatus)
+        // {
         //    try
         //    {
         //        bool isAddressLocationAvailable = false;
@@ -1629,19 +1631,19 @@
         //        if (addDeliveryPointDTO.PostalAddressDTO != null && addDeliveryPointDTO.DeliveryPointDTO != null)
         //        {
         //            var objPostalAddress = DataContext.PostalAddresses.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
-        //            //var objAddressLocation = DataContext.AddressLocations.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
+        //            // var objAddressLocation = DataContext.AddressLocations.SingleOrDefault(n => n.UDPRN == addDeliveryPointDTO.PostalAddressDTO.UDPRN);
 
-        //            //DeliveryPoint objDeliveryPoint = new DeliveryPoint()
-        //            //{
+        //            // DeliveryPoint objDeliveryPoint = new DeliveryPoint()
+        //            // {
         //            //    // ID = Guid.NewGuid(),
         //            //    // UDPRN = addDeliveryPointDTO.PostalAddressDataDTO.UDPRN,
         //            //    DeliveryPointUseIndicator_GUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID,
         //            //    MultipleOccupancyCount = addDeliveryPointDTO.DeliveryPointDTO.MultipleOccupancyCount,
         //            //    MailVolume = addDeliveryPointDTO.DeliveryPointDTO.MailVolume
-        //            //};
+        //            // };
 
-        //            //if (objAddressLocation != null)
-        //            //{
+        //            // if (objAddressLocation != null)
+        //            // {
         //            //    SqlGeometry deliveryPointSqlGeometry = SqlGeometry.STGeomFromWKB(new SqlBytes(objAddressLocation.LocationXY.AsBinary()), Constants.BNGCOORDINATESYSTEM);
         //            //    //objDeliveryPoint.LocationXY = objAddressLocation.LocationXY;
         //            //    //objDeliveryPoint.Latitude = objAddressLocation.Lattitude;
@@ -1650,7 +1652,7 @@
         //            //    isAddressLocationAvailable = true;
         //            //    addLocationXCoOrdinate = deliveryPointSqlGeometry.STX.Value;
         //            //    addLocationYCoOrdinate = deliveryPointSqlGeometry.STY.Value;
-        //            //}
+        //            // }
 
         //            if (objPostalAddress != null)
         //            {
@@ -1705,10 +1707,10 @@
         //    {
         //        throw new DataAccessException(dbUpdateException, string.Format(ErrorConstants.Err_SqlAddException, string.Concat("Delivery Point for UDPRN:", addDeliveryPointDTO.PostalAddressDTO.UDPRN)));
         //    }
-        //}
+        // }
 
-        //public async Task<List<PostalAddressDataDTO>> GetPostalAddresses(List<Guid> addressGuids)
-        //{
+        // public async Task<List<PostalAddressDataDTO>> GetPostalAddresses(List<Guid> addressGuids)
+        // {
         //    try
         //    {
         //        var addressDetails = await DataContext.PostalAddresses.Include(pa => pa.PostalAddressStatus).Where(pa => addressGuids.Contains(pa.ID)).ToListAsync();
@@ -1717,8 +1719,8 @@
         //        {
         //            cfg.CreateMap<PostalAddress, PostalAddressDataDTO>();
         //            cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDTO>();
-        //            //cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
-        //            //cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
+        //            // cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDTO>();
+        //            // cfg.CreateMap<PostalAddress, PostalAddressDTO>().IgnoreAllUnmapped();
         //        });
 
         //        Mapper.Configuration.CreateMapper();
@@ -1735,7 +1737,7 @@
         //        var realExceptions = ae.Flatten().InnerException;
         //        throw realExceptions;
         //    }
-        //}
+        // }
 
         /// <summary>
         /// Log exception into DB if error occurs while inserting NYB,PAF,USR records in DB
@@ -1744,8 +1746,8 @@
         /// <param name="strFileName">FileName</param>
         /// <param name="fileType">Filetype</param>
         /// <param name="strException">Exception</param>
-        //private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
-        //{
+        // private void LogFileException(int uDPRN, string strFileName, string fileType, string strException)
+        // {
         //    FileProcessingLogDTO objFileProcessingLog = new FileProcessingLogDTO()
         //    {
         //        FileID = Guid.NewGuid(),
@@ -1758,35 +1760,35 @@
         //        SuccessFlag = false
         //    };
         //    fileProcessingLog.LogFileException(objFileProcessingLog);
-        //}
+        // }
 
-        //public Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
-        //{
+        // public Task<bool> DeleteNYBPostalAddress(List<int> lstUDPRN, Guid addressType)
+        // {
         //    throw new NotImplementedException();
-        //}
+        // }
 
-        //public Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs)
-        //{
+        // public Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs)
+        // {
         //    throw new NotImplementedException();
-        //}
+        // }
 
-        //public Task<List<PostalAddressDataDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
-        //{
+        // public Task<List<PostalAddressDataDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
+        // {
         //    throw new NotImplementedException();
-        //}
+        // }
 
-        //public CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
-        //{
+        // public CreateDeliveryPointModelDTO CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        // {
         //    throw new NotImplementedException();
-        //}
+        // }
 
-        //public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress)
-        //{
+        // public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress)
+        // {
         //    throw new NotImplementedException();
-        //}
+        // }
 
-        //public async Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid)
-        //{
+        // public async Task<PostalAddressDTO> GetPAFAddress(int udprn, Guid pafGuid)
+        // {
         //    try
         //    {
         //        PostalAddress postalAddress = await DataContext.PostalAddresses.Where(pa => pa.UDPRN == udprn && pa.AddressType_GUID == pafGuid).SingleOrDefaultAsync();
@@ -1806,7 +1808,7 @@
         //    {
         //        return null;
         //    }
-        //}
+        // }
 
         //private DeliveryPoint DeliveryPointAlaisMapping(DeliveryPointDTO deliveryPointDTO)
         //{

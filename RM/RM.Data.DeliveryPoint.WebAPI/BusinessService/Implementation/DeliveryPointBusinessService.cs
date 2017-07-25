@@ -320,7 +320,9 @@
 
                             deliveryPointdataDTO.DeliveryPointStatus.Add(deliveryPointStatusDataDTO);
                         }
+
                         deliveryPointdataDTO.DeliveryPointUseIndicatorGUID = addDeliveryPointDTO.DeliveryPointDTO.DeliveryPointUseIndicator_GUID;
+
                         // create delivery point with real/approx location
                         var newDeliveryPointId = await deliveryPointsDataService.InsertDeliveryPoint(deliveryPointdataDTO);
 
@@ -373,6 +375,7 @@
                 {
                     throw new ArgumentNullException(nameof(deliveryPointModelDTO), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointModelDTO));
                 }
+
                 List<string> categoryNamesSimpleLists = new List<string>
                     {
                         DeliveryPointConstants.TASKNOTIFICATION,
@@ -742,7 +745,8 @@
             using (loggingHelper.RMTraceManager.StartTrace(LoggerTraceConstants.BusinessLayer + methodName))
             {
                 loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.DeliveryPointAPIPriority, LoggerTraceConstants.DeliveryPointBusinessServiceMethodEntryEventId, LoggerTraceConstants.Title);
-                //  Guid deliveryOperationObjectTypeId = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
+
+                // Guid deliveryOperationObjectTypeId = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.OperationalObjectType, ReferenceDataValues.OperationalObjectTypeDP);
                 Guid operationalObjectTypeForDpOrganisation = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.DeliveryPointUseIndicator, ReferenceDataValues.Organisation);
                 Guid operationalObjectTypeForDpResidential = deliveryPointIntegrationService.GetReferenceDataGuId(ReferenceDataCategoryNames.DeliveryPointUseIndicator, ReferenceDataValues.Residential);
 
@@ -784,7 +788,7 @@
                 deliveryPointStatusDataDTO.DeliveryPointStatusGUID = deliveryPointDTO.OperationalStatus_GUID.HasValue ? deliveryPointDTO.OperationalStatus_GUID.Value : Guid.Empty;
                 deliveryPointDataDTO.DeliveryPointStatus.Add(deliveryPointStatusDataDTO);
 
-                //network node details
+                // network node details
                 NetworkNodeDataDTO networkNodeDataDTO = new NetworkNodeDataDTO();
                 networkNodeDataDTO.DataProviderGUID = deliveryPointDTO.LocationProvider_GUID;
                 networkNodeDataDTO.NetworkNodeType_GUID = deliveryPointDTO.NetworkNodeType_GUID;
@@ -797,7 +801,7 @@
 
                 if (deliveryPointDTO.PostalAddress != null)
                 {
-                    //postal address details
+                    // postal address details
                     deliveryPointDataDTO.PostalAddress.ID = deliveryPointDTO.PostalAddress.ID;
                     deliveryPointDataDTO.PostalAddress.OrganisationName = deliveryPointDTO.PostalAddress.OrganisationName;
                     deliveryPointDataDTO.PostalAddress.BuildingName = deliveryPointDTO.PostalAddress.BuildingName;
@@ -860,7 +864,7 @@
 
                 if (deliveryPointDataDTO.NetworkNode != null)
                 {
-                    //network node details
+                    // network node details
                     deliveryPointDTO.LocationProvider_GUID = deliveryPointDataDTO.NetworkNode.DataProviderGUID;
                     deliveryPointDTO.NetworkNodeType_GUID = deliveryPointDataDTO.NetworkNode.NetworkNodeType_GUID;
 
@@ -873,7 +877,7 @@
 
                 if (deliveryPointDataDTO.PostalAddress != null)
                 {
-                    //postal address details
+                    // postal address details
                     deliveryPointDTO.PostalAddress.ID = deliveryPointDataDTO.PostalAddress.ID;
                     deliveryPointDTO.PostalAddress.OrganisationName = deliveryPointDataDTO.PostalAddress.OrganisationName;
                     deliveryPointDTO.PostalAddress.BuildingName = deliveryPointDataDTO.PostalAddress.BuildingName;

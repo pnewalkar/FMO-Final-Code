@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
@@ -15,6 +13,7 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 
 /// <summary>
@@ -244,7 +243,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             }
         }
 
-
         /// <summary>
         /// Get Delivery Point details depending on the UDPRN
         /// </summary>
@@ -309,8 +307,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
             }
         }
 
-
-
         /// <summary>
         /// Update Delivery Point by Id
         /// </summary>
@@ -343,8 +339,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService
                 return isUpdated;
             }
         }
-
-
 
         /// <summary>
         /// Update Delivery Point by Id

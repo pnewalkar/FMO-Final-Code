@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
@@ -14,11 +12,10 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
-using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
 {

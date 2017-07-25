@@ -1,15 +1,15 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.DataManagement.SearchManager.WebAPI.DTO;
-using RM.Operational.SearchManager.WebAPI.Integration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using RM.CommonLibrary.EntityFramework.DTO;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.DataManagement.SearchManager.WebAPI.DTO;
+using RM.Operational.SearchManager.WebAPI.Integration;
 
 namespace RM.Operational.SearchManager.WebAPI.BusinessService
 {

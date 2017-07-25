@@ -10,7 +10,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
     using Data.DeliveryPoint.WebAPI.DataDTO;
@@ -492,7 +491,8 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         public RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
         {
             RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO addDeliveryPointDto = default(RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO);
-            //var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
+
+            // var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
             //                      join pa in DataContext.PostalAddresses.AsNoTracking() on dp.PostalAddressID equals pa.ID
             //                      join al in DataContext.NetworkNodes.AsNoTracking() on pa.UDPRN equals al.UDPRN
             //                       dp.pos.UDPRN == udprn
@@ -503,25 +503,24 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             //                          AddressLocation = al,
             //                      }).SingleOrDefault();
 
-            //Mapper.Initialize(cfg =>
-            //{
+            // Mapper.Initialize(cfg =>
+            // {
             //    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
             //    cfg.CreateMap<PostalAddress, PostalAddressDTO>();
             //    cfg.CreateMap<AddressLocation, AddressLocationDTO>();
-            //});
+            // });
 
-            //Mapper.Configuration.CreateMapper();
+            // Mapper.Configuration.CreateMapper();
 
-            //if (deliveryPoints != null)
-            //{
+            // if (deliveryPoints != null)
+            // {
             //    addDeliveryPointDto = new AddDeliveryPointDTO()
             //    {
             //        DeliveryPointDTO = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoints.DeliveryPoint),
             //        AddressLocationDTO = Mapper.Map<AddressLocation, AddressLocationDTO>(deliveryPoints.AddressLocation),
             //        PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
             //    };
-            //}
-
+            // }
             return addDeliveryPointDto;
         }
 
@@ -636,7 +635,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 {
                     return false;
                 }
-
             }
             catch (Exception ex)
             {

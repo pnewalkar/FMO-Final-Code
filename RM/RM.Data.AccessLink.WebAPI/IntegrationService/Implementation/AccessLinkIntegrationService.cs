@@ -7,14 +7,13 @@ using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
+using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.AccessLink.WebAPI.Utils.ReferenceData;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
-using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {

@@ -9,7 +9,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.Entities
     [Table("FMO.NetworkNode")]
     public partial class NetworkNode
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Justification")]
         public NetworkNode()
         {
             NetworkLinks = new HashSet<NetworkLink>();
@@ -31,10 +31,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Entities
 
         public virtual Location Location { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification ="justification")]
         public virtual ICollection<NetworkLink> NetworkLinks { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification ="justification")]
         public virtual ICollection<NetworkLink> NetworkLinks1 { get; set; }
     }
 }

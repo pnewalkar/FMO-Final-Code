@@ -1,4 +1,8 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
@@ -9,10 +13,6 @@ using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
 using RM.DataManagement.DeliveryPoint.WebAPI.DataService;
 using RM.DataManagement.DeliveryPoint.WebAPI.Integration;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Threading.Tasks;
 
 namespace RM.Data.DeliveryPoint.WebAPI.Test
 {
@@ -192,9 +192,9 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             Assert.IsTrue(expectedresult);
         }
 
-        //[Test]
-        //public void Test_GetDeliveryPointByUDPRN()
-        //{
+        // [Test]
+        // public void Test_GetDeliveryPointByUDPRN()
+        // {
         //    Guid id = Guid.NewGuid();
         //    List<DeliveryPointDTO> lstDeliveryPointDTO = new List<DeliveryPointDTO>();
         //    DeliveryPointDTO objdeliverypointDTO = new DeliveryPointDTO();
@@ -209,123 +209,123 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
         //    Assert.IsNotNull(coordinates);
         //}
 
-        //[Test]
-        //public void Test_UpdateDeliveryPointAccessLinkCreationStatus()
-        //{
+        // [Test]
+        // public void Test_UpdateDeliveryPointAccessLinkCreationStatus()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointAccessLinkCreationStatus(It.IsAny<DeliveryPointDataDTO>())).Returns(true);
         //    var result = testCandidate.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDTO);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetDetailDeliveryPointByUDPRN()
-        //{
+        // [Test]
+        // public void Test_GetDetailDeliveryPointByUDPRN()
+        // {
         //    var result = testCandidate.GetDetailDeliveryPointByUDPRN(12345);
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_FetchDeliveryPointsForBasicSearch()
-        //{
+        // [Test]
+        // public void Test_FetchDeliveryPointsForBasicSearch()
+        // {
         //    var result = testCandidate.FetchDeliveryPointsForBasicSearch("abc", Guid.NewGuid());
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetDeliveryPointsCount()
-        //{
+        // [Test]
+        // public void Test_GetDeliveryPointsCount()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCount(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(5);
         //    var result = testCandidate.GetDeliveryPointsCount("abc", Guid.NewGuid());
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result.Result == 5);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_FetchDeliveryPointsForAdvanceSearch()
-        //{
+        // [Test]
+        // public void Test_FetchDeliveryPointsForAdvanceSearch()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.FetchDeliveryPointsForAdvanceSearch(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(new List<DeliveryPointDTO>() { });
         //    var result = testCandidate.FetchDeliveryPointsForAdvanceSearch("abc", Guid.NewGuid());
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_InsertDeliveryPoint()
-        //{
+        // [Test]
+        // public void Test_InsertDeliveryPoint()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.InsertDeliveryPoint(It.IsAny<DeliveryPointDTO>())).ReturnsAsync(true);
         //    var result = testCandidate.InsertDeliveryPoint(deliveryPointDTO);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result.Result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_DeliveryPointExists()
-        //{
+        // [Test]
+        // public void Test_DeliveryPointExists()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).ReturnsAsync(true);
         //    var result = testCandidate.DeliveryPointExists(12345);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result.Result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetDeliveryPointByUDPRNforBatch()
-        //{
+        // [Test]
+        // public void Test_GetDeliveryPointByUDPRNforBatch()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByUDPRN(It.IsAny<int>())).ReturnsAsync(new DeliveryPointDTO() { });
         //    var result = testCandidate.GetDeliveryPointByUDPRNforBatch(12345);
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_UpdateDeliveryPointLocationOnUDPRN()
-        //{
+        // [Test]
+        // public void Test_UpdateDeliveryPointLocationOnUDPRN()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDTO>())).ReturnsAsync(5);
         //    var result = testCandidate.UpdateDeliveryPointLocationOnUDPRN(deliveryPointDTO);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result.Result == 5);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_UpdateDeliveryPointLocationOnID()
-        //{
+        // [Test]
+        // public void Test_UpdateDeliveryPointLocationOnID()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnID(It.IsAny<DeliveryPointDTO>())).ReturnsAsync(Guid.NewGuid());
         //    var result = testCandidate.UpdateDeliveryPointLocationOnID(deliveryPointDTO);
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetDeliveryPointByPostalAddress()
-        //{
+        // [Test]
+        // public void Test_GetDeliveryPointByPostalAddress()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointByPostalAddress(It.IsAny<Guid>())).Returns(new DeliveryPointDTO() { });
         //    var result = testCandidate.GetDeliveryPointByPostalAddress(Guid.NewGuid());
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetDeliveryPoint()
-        //{
+        // [Test]
+        // public void Test_GetDeliveryPoint()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPoint(It.IsAny<Guid>())).Returns(new DeliveryPointDTO() { });
         //    var result = testCandidate.GetDeliveryPoint(Guid.NewGuid());
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_UpdateDeliveryPointAccessLinkCreationStatus()
-        //{
+        // [Test]
+        // public void Test_UpdateDeliveryPointAccessLinkCreationStatus()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointAccessLinkCreationStatus(It.IsAny<DeliveryPointDTO>())).Returns(true);
         //    var result = testCandidate.UpdateDeliveryPointAccessLinkCreationStatus(deliveryPointDTO);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetDeliveryPointsCrossingOperationalObject()
-        //{
+        // [Test]
+        // public void Test_GetDeliveryPointsCrossingOperationalObject()
+        // {
         //    mockDeliveryPointsDataService.Setup(x => x.GetDeliveryPointsCrossingOperationalObject(It.IsAny<string>(), It.IsAny<DbGeometry>())).Returns(new List<DeliveryPointDTO>() { });
         //    var coordinates = "POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))";
         //    var unitBoundary = DbGeometry.PolygonFromText("POLYGON ((505058.162109375 100281.69677734375, 518986.84887695312 100281.69677734375, 518986.84887695312 114158.546875, 505058.162109375 114158.546875, 505058.162109375 100281.69677734375))", 27700);
         //    var result = testCandidate.GetDeliveryPointsCrossingOperationalObject(coordinates, unitBoundary);
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
         protected override void OnSetup()
         {
@@ -427,7 +427,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             {
                 new DeliveryPointDataDTO() {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
-                MailVolume = 5,PostalAddress= new PostalAddressDataDTO()
+                MailVolume = 5, PostalAddress= new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg1",
                     BuildingNumber = 1,
@@ -446,10 +446,10 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A11"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A12")
-            },NetworkNode = new NetworkNodeDataDTO { ID = new Guid(),NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") ,Location = new LocationDataDTO() {Shape= DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } },DeliveryPointStatus= new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } } },
+            }, NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() {Shape= DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } }, DeliveryPointStatus= new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } } },
                  new DeliveryPointDataDTO() {
                 ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A17"),
-                MailVolume = 2,PostalAddress= new PostalAddressDataDTO()
+                MailVolume = 2, PostalAddress= new PostalAddressDataDTO()
                 {
                     BuildingName = "bldg2",
                     BuildingNumber = 1,
@@ -468,7 +468,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
                     PostCodeGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"),
                     AddressType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"),
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19")
-            },NetworkNode = new NetworkNodeDataDTO { ID = new Guid(),NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") ,Location = new LocationDataDTO() {Shape= DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } },DeliveryPointStatus= new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } }
+            }, NetworkNode = new NetworkNodeDataDTO { ID = new Guid(), NetworkNodeType_GUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19"), Location = new LocationDataDTO() {Shape= DbGeometry.PointFromText("POINT(512722.70000000019 104752.6799999997)", 27700) } }, DeliveryPointStatus= new List<DeliveryPointStatusDataDTO>() { new DeliveryPointStatusDataDTO { ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A19") } }
             } };
 
             actualDeliveryPointDTO = new DeliveryPointDataDTO()
@@ -543,7 +543,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
 
             // GetDeliveryPointsForAdvanceSearch
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDataDTO>())).Returns(Task.FromResult(1));
-            //   mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
+            // mockDeliveryPointsDataService.Setup(x => x.GetRouteForDeliveryPoint(It.IsAny<Guid>())).Returns("ABC");
 
             //    mockDeliveryPointsDataService.Setup(x => x.GetDPUse(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns("Org");
 
@@ -565,7 +565,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Test
             mockDeliveryPointsDataService.Setup(x => x.DeliveryPointExists(It.IsAny<int>())).ReturnsAsync(true);
 
             mockDeliveryPointsDataService.Setup(x => x.UpdateDeliveryPointLocationOnUDPRN(It.IsAny<DeliveryPointDataDTO>())).ReturnsAsync(5);
-            //   mockDeliveryPointIntegrationService.Setup(x => x.CreateBlockSequenceForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            // mockDeliveryPointIntegrationService.Setup(x => x.CreateBlockSequenceForDeliveryPoint(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
 
             mockDeliveryPointIntegrationService.Setup(x => x.CreateAccessLink(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);
             mockDeliveryPointIntegrationService.Setup(x => x.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDTO>())).ReturnsAsync("123");

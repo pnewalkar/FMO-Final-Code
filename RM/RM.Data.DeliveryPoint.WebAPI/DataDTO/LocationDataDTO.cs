@@ -11,6 +11,6 @@ namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 
         public DbGeometry Shape { get; set; }
 
-        public DateTime RowCreateDateTime { get; set; }      
+        public DateTime RowCreateDateTime { get; set; }
     }
 }

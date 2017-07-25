@@ -273,11 +273,10 @@ namespace RM.Data.DeliveryRoute.WebAPI.Test
 
             actualRouteLogSequencedPointsDataDTO = new List<RouteLogSequencedPointsDataDTO>()
             {
-               new RouteLogSequencedPointsDataDTO() { StreetName ="Street001", BuildingNumber =001},
-                new RouteLogSequencedPointsDataDTO() { StreetName ="Street001",BuildingNumber =002 },
+               new RouteLogSequencedPointsDataDTO() { StreetName = "Street001", BuildingNumber = 001 },
+                new RouteLogSequencedPointsDataDTO() { StreetName = "Street001", BuildingNumber = 002 },
             };
 
-            actualRoueCount = new int();
             actualRoueCount = 5;
 
             actualReferenceDataCategoryResult = new List<Common.ReferenceDataDTO>() { new Common.ReferenceDataDTO() { DataDescription = "Live", DisplayText = "Live", ReferenceDataName = "Live" } };

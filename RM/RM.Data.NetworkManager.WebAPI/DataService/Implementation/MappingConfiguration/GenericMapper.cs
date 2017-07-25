@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using AutoMapper;
-
 
 namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation.MappingConfiguration
 {
@@ -27,7 +22,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation.Mapp
             Mapper.Configuration.CreateMapper();
 
             List<TDestination> result = Mapper.Map<List<TSource>, List<TDestination>>(source);
-       
+
             return result;
         }
 
@@ -37,16 +32,16 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation.Mapp
 
             Mapper.Configuration.CreateMapper();
 
-            Mapper.Map<TSource, TDestination>(source,destination);
+            Mapper.Map<TSource, TDestination>(source, destination);
         }
     }
 
-    //public static class MappingExpressionExtensions
-    //{
+    // public static class MappingExpressionExtensions
+    // {
     //    public static IMappingExpression<TSource, TDestination> IgnoreAllUnmapped<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
     //    {
     //        expression.ForAllMembers(opt => opt.Ignore());
     //        return expression;
     //    }
-    //}
+    // }
 }

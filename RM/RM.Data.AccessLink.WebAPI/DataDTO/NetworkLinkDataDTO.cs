@@ -9,9 +9,9 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         /// This class represents data transfer object for NetworkLink entity
         /// </summary>
         public Guid ID { get; set; }
-    
+
         public string TOID { get; set; }
- 
+
         public DbGeometry LinkGeometry { get; set; }
 
         public decimal LinkLength { get; set; }
@@ -35,10 +35,10 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         public DateTime RowCreateDateTime { get; set; }
 
 
-        public virtual AccessLinkDataDTO AccessLinkDataDTOs { get; set; }
+        public AccessLinkDataDTO AccessLinkDataDTOs { get; set; }
 
-        public virtual NetworkNodeDataDTO NetworkNodeDataDTO { get; set; }
+        public NetworkNodeDataDTO NetworkNodeDataDTO { get; set; }
 
-        public virtual NetworkNodeDataDTO NetworkNodeDataDTO1 { get; set; }
+        public NetworkNodeDataDTO NetworkNodeDataDTO1 { get; set; }
     }
 }

@@ -253,10 +253,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 throw new ArgumentNullException(nameof(operationStateID));
             }
+
             if (locationID.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException(nameof(locationID));
             }
+
             if (fields.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException(nameof(fields));
@@ -268,12 +270,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
                 List<object> deliveryScenerioList = null;
-                IEnumerable<ScenarioDTO> Scenerio = await unitLocationBusinessService.GetRouteScenarios(operationStateID, locationID);
+                IEnumerable<ScenarioDTO> scenerio = await unitLocationBusinessService.GetRouteScenarios(operationStateID, locationID);
                 CreateSummaryObject<ScenarioDTO> createSummary = new CreateSummaryObject<ScenarioDTO>();
 
-                if (!string.IsNullOrEmpty(fields) && Scenerio != null)
+                if (!string.IsNullOrEmpty(fields) && scenerio != null)
                 {
-                    deliveryScenerioList = createSummary.SummarisePropertiesForList(Scenerio.ToList(), fields);
+                    deliveryScenerioList = createSummary.SummarisePropertiesForList(scenerio.ToList(), fields);
                 }
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
