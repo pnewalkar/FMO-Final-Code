@@ -4,20 +4,20 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO
 
     public class DeliveryPointDataDTO
     {
-        public Guid ID { get; private set; }
+        public Guid ID { get; set; }
 
-        public Guid PostalAddressID { get; private set; }
+        public Guid PostalAddressID { get; set; }
 
-        public short? MultipleOccupancyCount { get; private set; }
+        public short? MultipleOccupancyCount { get; set; }
 
-        public int? MailVolume { get; private set; }
+        public int? MailVolume { get; set; }
 
-        public Guid DeliveryPointUseIndicatorGUID { get; private set; }
+        public Guid DeliveryPointUseIndicatorGUID { get; set; }
 
-        public byte[] RowVersion { get; private set; }
+        public byte[] RowVersion { get; set; }
 
-        public DateTime RowCreateDateTime { get; private set; }
+        public DateTime RowCreateDateTime { get; set; }
 
-        public PostalAddressDataDTO PostalAddress { get; private set; }
+        public PostalAddressDataDTO PostalAddress { get; set; }
     }
 }
