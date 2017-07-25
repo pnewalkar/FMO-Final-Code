@@ -24,7 +24,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
         public string NationalRoadCode { get; set; }
 
         [StringLength(21)]
-        public string roadClassification { get; set; }
+        public string RoadClassification { get; set; }
 
         [StringLength(255)]
         public string DesignatedName { get; set; }

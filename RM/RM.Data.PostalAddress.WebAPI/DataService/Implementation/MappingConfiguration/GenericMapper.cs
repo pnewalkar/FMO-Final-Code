@@ -36,12 +36,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Implementation.Mapp
         }
     }
 
-    //public static class MappingExpressionExtensions
-    //{
+    // public static class MappingExpressionExtensions
+    // {
     //    public static IMappingExpression<TSource, TDestination> IgnoreAllUnmapped<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
     //    {
     //        expression.ForAllMembers(opt => opt.Ignore());
     //        return expression;
     //    }
-    //}
+    // }
 }

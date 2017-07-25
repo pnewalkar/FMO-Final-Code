@@ -22,21 +22,21 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
         [StringLength(20)]
         public string TOID { get; set; }
 
-        public DateTime? validFrom { get; set; }
+        public DateTime? ValidFrom { get; set; }
 
         public DbGeometry Location { get; set; }
 
         [StringLength(21)]
-        public string formOfRoadNode { get; set; }
+        public string FormOfRoadNode { get; set; }
 
         [StringLength(19)]
         public string Classification { get; set; }
 
         [StringLength(5)]
-        public string access { get; set; }
+        public string Access { get; set; }
 
         [StringLength(120)]
-        public string junctionName { get; set; }
+        public string JunctionName { get; set; }
 
         [StringLength(30)]
         public string JunctionNumber { get; set; }
