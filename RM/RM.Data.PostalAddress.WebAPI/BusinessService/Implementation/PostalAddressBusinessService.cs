@@ -286,8 +286,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="searchText">searchText</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        //public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
-        //{
+        // public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
+        // {
         //    using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressSearchDetails"))
         //    {
         //        string methodName = MethodHelper.GetActualAsyncMethodName();
@@ -315,7 +315,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         //            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressSearchDetailsPriority, LoggerTraceConstants.GetPostalAddressSearchDetailsBusinessMethodExitEventId, LoggerTraceConstants.Title);
         //        }
         //    }
-        //}
+        // }
 
         // To be moved to unit manager
         /// <summary>
@@ -324,8 +324,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// <param name="selectedItem">selectedItem</param>
         /// <param name="unitGuid">unitGuid</param>
         /// <returns>List of postcodes</returns>
-        //public async Task<PostalAddressDBDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
-        //{
+        // public async Task<PostalAddressDBDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
+        // {
         //    using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressDetails"))
         //    {
         //        string methodName = MethodBase.GetCurrentMethod().Name;
@@ -358,7 +358,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodExitEventId, LoggerTraceConstants.Title);
         //        return postalAddressDto;
         //    }
-        //}
+        // }
 
         /// <summary>
         /// Get Postal Address based on postal address id.
@@ -728,8 +728,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                     }
                     else
                     {
-                        //var objTask = new NotificationDTO
-                        //{
+                        // var objTask = new NotificationDTO
+                        // {
                         //    ID = Guid.NewGuid(),
                         //    NotificationType_GUID = tasktypeId,
                         //    NotificationPriority_GUID = null,
@@ -739,7 +739,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
                         //    PostcodeDistrict = postCodeDistrict,
                         //    NotificationDueDate = DateTime.UtcNow.AddHours(Constants.NOTIFICATIONDUE),
                         //    NotificationActionLink = string.Format(Constants.PAFNOTIFICATIONLINK, objPostalAddress.UDPRN)
-                        //};
+                        // };
                         if (await postalAddressIntegrationService.CheckIfNotificationExists((int)objPostalAddress.UDPRN, PostalAddressConstants.TASKPAFACTION))
                         {
                             string message = AddressFields(objPostalAddress);

@@ -10,6 +10,7 @@ using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.DataManagement.SearchManager.WebAPI.DTO;
 using RM.Operational.SearchManager.WebAPI.Integration;
+using RM.DataManagement.SearchManager.WebAPI.DTO;
 
 namespace RM.Operational.SearchManager.WebAPI.BusinessService
 {

@@ -21,35 +21,35 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         // private AddDeliveryPointDTO addDeliveryPointDTO;
         // private List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO> referenceDataCategoryDTOList;
 
-        //TODO: Nunits to be fixed
-        //[Test]
-        //public void Test_ValidPostalAddressData()
-        //{
+        // TODO: Nunits to be fixed
+        // [Test]
+        // public void Test_ValidPostalAddressData()
+        // {
         //    List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { ID = Guid.NewGuid(), UDPRN = 14856 } };
         //    var result = testCandidate.SavePostalAddressForNYB(lstPostalAddressDTO, "NYB.CSV");
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result.Result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_InvalidPostalAddressData()
-        //{
+        // [Test]
+        // public void Test_InvalidPostalAddressData()
+        // {
         //    List<PostalAddressDTO> lstPostalAddressDTO = new List<PostalAddressDTO>() { new PostalAddressDTO() { ID = Guid.NewGuid() } };
         //    var result = testCandidate.SavePostalAddressForNYB(lstPostalAddressDTO, "NYB.CSV");
         //    Assert.IsNotNull(result);
         //    Assert.IsFalse(result.Result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetPostalAddressDetails()
-        //{
+        // [Test]
+        // public void Test_GetPostalAddressDetails()
+        // {
         //    var result = testCandidate.GetPostalAddressDetails(new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A15"));
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void SavePAFDetails_Check_MatchPostalAddressOnAddress()
-        //{
+        // [Test]
+        // public void SavePAFDetails_Check_MatchPostalAddressOnAddress()
+        // {
         //    PostalAddressDTO objPostalAddress = new PostalAddressDTO()
         //    {
         //        Time = "7/19/2016",
@@ -72,11 +72,11 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         //    var result = testCandidate.SavePAFDetails(lstPostalAddress);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result.Result);
-        //}
+        // }
 
-        //[Test]
-        //public void SavePAFDetails_Check_NotMatchPostalAddress()
-        //{
+        // [Test]
+        // public void SavePAFDetails_Check_NotMatchPostalAddress()
+        // {
         //    PostalAddressDTO objPostalAddress = new PostalAddressDTO()
         //    {
         //        Time = "7/19/2016",
@@ -99,18 +99,18 @@ namespace RM.Data.PostalAddress.WebAPI.Test
         //    var result = testCandidate.SavePAFDetails(lstPostalAddress);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result.Result);
-        //}
+        // }
 
-        //[Test]
-        //public async Task Test_SearchByPostcode()
-        //{
+        // [Test]
+        // public async Task Test_SearchByPostcode()
+        // {
         //    var result = await testCandidate.GetPostalAddressDetails("Postcode1", new Guid("00000000-0000-0000-0000-000000000000"));
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public async Task Test_PostalAddressSearchDetails()
-        //{
+        // [Test]
+        // public async Task Test_PostalAddressSearchDetails()
+        // {
         //    PostalAddressDTO objPostalAddress = new PostalAddressDTO()
         //    {
         //        Time = "7/19/2016",
@@ -128,52 +128,52 @@ namespace RM.Data.PostalAddress.WebAPI.Test
 
         //    var result = await testCandidate.GetPostalAddressSearchDetails("Postcode1", new Guid("00000000-0000-0000-0000-000000000000"));
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetPostalAddress()
-        //{
+        // [Test]
+        // public void Test_GetPostalAddress()
+        // {
         //    mockPostalAddressDataService.Setup(n => n.GetPostalAddress(It.IsAny<int>())).Returns(Task.FromResult(postalAddressDTO));
         //    var result = testCandidate.GetPostalAddress(12345);
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_CheckForDuplicateNybRecords()
-        //{
+        // [Test]
+        // public void Test_CheckForDuplicateNybRecords()
+        // {
         //    mockPostalAddressIntegrationService.Setup(n => n.GetReferenceDataSimpleLists(It.IsAny<string>())).Returns(Task.FromResult(referenceDataCategoryDTOList[0]));
         //    mockPostalAddressDataService.Setup(n => n.CheckForDuplicateNybRecords(It.IsAny<PostalAddressDataDTO>(), It.IsAny<Guid>())).Returns("abc");
         //    var result = testCandidate.CheckForDuplicateNybRecords(publicPostalAddressDTO);
         //    Assert.IsNotNull(result);
         //    Assert.AreEqual(result, "abc");
-        //}
+        // }
 
-        //[Test]
-        //public void Test_CheckForDuplicateAddressWithDeliveryPoints()
-        //{
+        // [Test]
+        // public void Test_CheckForDuplicateAddressWithDeliveryPoints()
+        // {
         //    mockPostalAddressDataService.Setup(n => n.CheckForDuplicateAddressWithDeliveryPoints(It.IsAny<PostalAddressDataDTO>())).Returns(true);
         //    var result = testCandidate.CheckForDuplicateAddressWithDeliveryPoints(publicPostalAddressDTO);
         //    Assert.IsNotNull(result);
         //    Assert.IsTrue(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_CreateAddressAndDeliveryPoint()
-        //{
+        // [Test]
+        // public void Test_CreateAddressAndDeliveryPoint()
+        // {
         //    mockPostalAddressDataService.Setup(n => n.CreateAddressAndDeliveryPoint(It.IsAny<AddDeliveryPointDTO>(), It.IsAny<Guid>())).Returns(new CreateDeliveryPointModelDTO() { ID = Guid.NewGuid() });
         //    var result = testCandidate.CreateAddressAndDeliveryPoint(addDeliveryPointDTO);
         //    Assert.IsNotNull(result);
-        //}
+        // }
 
-        //[Test]
-        //public void Test_GetPostalAddresses()
-        //{
+        // [Test]
+        // public void Test_GetPostalAddresses()
+        // {
         //    var result = testCandidate.GetPostalAddresses(new List<Guid>() { Guid.NewGuid() });
         //    Assert.IsNotNull(result);
-        //}
+        // }
         protected override void OnSetup()
         {
-            //OnSetup to be configured
+            // OnSetup to be configured
 
             /*  referenceDataCategoryDTOList = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataCategoryDTO>()
              {

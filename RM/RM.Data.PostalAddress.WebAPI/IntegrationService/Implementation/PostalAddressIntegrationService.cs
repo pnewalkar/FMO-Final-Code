@@ -193,10 +193,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         ///// </summary>
         ///// <param name="addressGuid">addressGuid instead of udprn</param>
         ///// <returns>DeliveryPointDTO</returns>
-        //public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
-        //{
-        //    //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByID"))
-        //    //{
+        // public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
+        // {
+        //    // using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByID"))
+        //    // {
         //    string methodName = MethodBase.GetCurrentMethod().Name;
 
         //    // method logic here
@@ -213,7 +213,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         //    return deliveryPoint;
 
         //    // }
-        //}
+        // }
 
         /// <summary>
         /// Get the delivery points by the Postal Address Guid
