@@ -28,7 +28,6 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         private Mock<IAddressLocationDataService> addressLocationDataServiceMock;
         private Mock<IThirdPartyAddressLocationIntegrationService> thirdPartyAddressLocationIntegrationServiceMock;
         private Mock<ILoggingHelper> loggingHelperMock;
-        private Mock<IConfigurationHelper> configurationHelperMock;
 
         /// <summary>
         /// Test the method get Address location by Udprn.

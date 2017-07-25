@@ -279,87 +279,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
             }
         }
 
-        // To be moved to Unit Manager
-        /// <summary>
-        /// Filter PostalAddress based on the search text
-        /// </summary>
-        /// <param name="searchText">searchText</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of postcodes</returns>
-        // public async Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid)
-        // {
-        //    using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressSearchDetails"))
-        //    {
-        //        string methodName = MethodHelper.GetActualAsyncMethodName();
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressSearchDetailsPriority, LoggerTraceConstants.GetPostalAddressSearchDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
-
-        //        try
-        //        {
-        //            List<string> listNames = new List<string> { FileType.Paf.ToString().ToUpper(), FileType.Nyb.ToString().ToUpper() };
-
-        //            var referenceDataCategoryList = postalAddressIntegrationService.GetReferenceDataSimpleLists(ReferenceDataCategoryNames.PostalAddressType).Result;
-        //            List<Guid> addresstypeIDs = referenceDataCategoryList.ReferenceDatas
-        //            .Where(a => listNames.Contains(a.ReferenceDataValue))
-        //            .Select(a => a.ID).ToList();
-        //            List<Guid> postcodeGuids = await addressDataService.GetPostcodeGuids(searchText);
-        //            List<CommonLibrary.EntityFramework.DTO.PostCodeDTO> postcodes = await postalAddressIntegrationService.GetPostcodes(unitGuid, postcodeGuids);
-        //            return await addressDataService.GetPostalAddressSearchDetails(searchText, unitGuid, addresstypeIDs, postcodes);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            this.loggingHelper.Log(ex.ToString(), TraceEventType.Error, ex);
-        //            throw;
-        //        }
-        //        finally
-        //        {
-        //            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressSearchDetailsPriority, LoggerTraceConstants.GetPostalAddressSearchDetailsBusinessMethodExitEventId, LoggerTraceConstants.Title);
-        //        }
-        //    }
-        // }
-
-        // To be moved to unit manager
-        /// <summary>
-        /// Filter PostalAddress based on the post code
-        /// </summary>
-        /// <param name="selectedItem">selectedItem</param>
-        /// <param name="unitGuid">unitGuid</param>
-        /// <returns>List of postcodes</returns>
-        // public async Task<PostalAddressDBDTO> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
-        // {
-        //    using (loggingHelper.RMTraceManager.StartTrace("Business.GetPostalAddressDetails"))
-        //    {
-        //        string methodName = MethodBase.GetCurrentMethod().Name;
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodEntryEventId, LoggerTraceConstants.Title);
-
-        //        List<BindingEntity> nybDetails = new List<BindingEntity>();
-        //        PostalAddressDBDTO postalAddressDto = null;
-        //        var postCodeGuids = addressDataService.GetSelectedPostcode(selectedItem).Result;
-        //        var selectedPostcode = await postalAddressIntegrationService.GetPostcodes(unitGuid, postCodeGuids);
-        //        var postalAddressDetails = await addressDataService.GetPostalAddressDetails(selectedItem, unitGuid, selectedPostcode);
-        //        Guid nybAddressTypeId = postalAddressIntegrationService.GetReferenceDataGuId(PostalAddressType, FileType.Nyb.ToString()).Result;
-        //        if (postalAddressDetails != null && postalAddressDetails.Count > 0)
-        //        {
-        //            postalAddressDto = postalAddressDetails[0];
-        //            foreach (var postalAddress in postalAddressDetails)
-        //            {
-        //                if (postalAddress.AddressType_GUID == nybAddressTypeId)
-        //                {
-        //                    string address = string.Join(",", Convert.ToString(postalAddress.BuildingNumber) ?? string.Empty, postalAddress.BuildingName, postalAddress.SubBuildingName);
-        //                    string formattedAddress = Regex.Replace(address, ",+", ",").Trim(',');
-        //                    nybDetails.Add(new BindingEntity { Value = postalAddress.ID, DisplayText = formattedAddress });
-        //                }
-        //            }
-
-        //            nybDetails.OrderBy(n => n.DisplayText);
-        //            nybDetails.Add(new BindingEntity { Value = Guid.Empty, DisplayText = "Not Shown" });
-        //            postalAddressDto.NybAddressDetails = nybDetails;
-        //        }
-
-        //        loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.GetPostalAddressDetailsPriority, LoggerTraceConstants.GetPostalAddressDetailsBusinessMethodExitEventId, LoggerTraceConstants.Title);
-        //        return postalAddressDto;
-        //    }
-        // }
-
         /// <summary>
         /// Get Postal Address based on postal address id.
         /// </summary>
@@ -386,7 +305,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">PostalAddressDTO as input</param>
         /// <returns>string</returns>
-        public string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateNybRecords"))
             {
@@ -410,14 +329,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateAddressWithDeliveryPoints"))
             {
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                bool isDuplicate = addressDataService.CheckForDuplicateAddressWithDeliveryPoints(ConvertDTOToDataDTO(objPostalAddress));
+                bool isDuplicate = await addressDataService.CheckForDuplicateAddressWithDeliveryPoints(ConvertDTOToDataDTO(objPostalAddress));
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return isDuplicate;
             }

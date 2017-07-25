@@ -19,8 +19,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DataService
     /// </summary>
     public class AddressLocationDataService : DataServiceBase<AddressLocation, AddressLocationDBContext>, IAddressLocationDataService
     {
-        private ILoggingHelper loggingHelper = default(ILoggingHelper);
         private const string USRNOTIFICATIONLINK = "http://fmoactionlinkurl/?={0}";
+        private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         public AddressLocationDataService(IDatabaseFactory<AddressLocationDBContext> databaseFactory, ILoggingHelper loggingHelper)
             : base(databaseFactory)

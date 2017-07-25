@@ -224,4 +224,3 @@ namespace RM.Operational.MapManager.WebAPI.BusinessService
         }
     }
 }
-

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
-using RM.Data.AccessLink.WebAPI.DataDTOs;
-using RM.DataManagement.AccessLink.WebAPI.DataService.Implementation;
-using RM.DataManagement.AccessLink.WebAPI.Entities;
 using Moq;
 using NUnit.Framework;
+using RM.CommonLibrary.DataMiddleware;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Implementation;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
+using RM.DataManagement.AccessLink.WebAPI.Entities;
 
 namespace RM.DataServices.Tests.DataService
 {
