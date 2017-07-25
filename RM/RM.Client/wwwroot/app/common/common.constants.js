@@ -18,7 +18,8 @@ var CommonConstants = {
     RouteName: "ROUTENAME",
     DpUse: "DPUSE",
     PrintMapActionName: "Print Map",
-    PrintMapmmPerInch: 25.4
+    PrintMapmmPerInch: 25.4,
+    UserType: { DeliveryUser: "Delivery User", CollectionUser: "Collection User", ManagerUser: "Manager User" }
 };
 
 angular.module('RMApp')

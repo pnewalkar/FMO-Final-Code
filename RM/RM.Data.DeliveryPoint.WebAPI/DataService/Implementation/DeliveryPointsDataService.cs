@@ -218,6 +218,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                                 || x.PostalAddress.DependentLocality.Contains(searchText)))
                                 .Select(l => new DeliveryPointDataDTO
                                 {
+                                    ID = l.ID,
+                                    DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                                    PostalAddressID = l.PostalAddressID,
                                     PostalAddress = new PostalAddressDataDTO
                                     {
                                         OrganisationName = l.PostalAddress.OrganisationName,
@@ -268,6 +271,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                                                                      searchText)))
                 .Select(l => new DeliveryPointDataDTO
                 {
+                    ID = l.ID,
+                    DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                    PostalAddressID = l.PostalAddressID,
                     PostalAddress = new PostalAddressDataDTO
                     {
                         OrganisationName = l.PostalAddress.OrganisationName,

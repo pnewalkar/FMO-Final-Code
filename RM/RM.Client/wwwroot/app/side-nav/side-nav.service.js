@@ -3,18 +3,17 @@ angular
     .service('sideNavService', sideNavService);
 
 sideNavService.$inject = [
-'CommonConstants'
+                          'CommonConstants',
+                          'roleAccessService'
                            ];
-function sideNavService(CommonConstants) {
+function sideNavService(
+                         CommonConstants,
+                         roleAccessService) {
     return {
         fetchActionItems: fetchActionItems
     };
 
     function fetchActionItems() {
-        getItem = sessionStorage.getItem(CommonConstants.GetSessionStorageItemType);
-
-        return {
-            RolesActionResult: angular.fromJson(getItem)
-        }
+        return RolesActionResult = roleAccessService.fetchActionItems();
     }
 }

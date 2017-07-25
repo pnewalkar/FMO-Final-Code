@@ -41,6 +41,10 @@
   "ERROR_DIALOG": {
     "TITLE": "Unable to process request"
   },
+  "LICESING_INFO": {
+    "NO_LAYERS_SELECTED": "No layers selected"
+  },
+
   "UNIT_SELECTOR": {
     "SEARCH_PLACEHOLDER": "Filter Unit"
   },

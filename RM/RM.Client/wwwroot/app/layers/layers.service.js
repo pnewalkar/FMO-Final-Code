@@ -1,13 +1,19 @@
 ﻿angular.module('layers')
         .service('layersService', layersService);
 layersService.$inject = [
- 'mapService',
- 'mapStylesFactory',
-'layersAPIService','licensingInfoService'];
+                         'mapService',
+                         'mapStylesFactory',
+                         'layersAPIService',
+                         'licensingInfoService',
+                         '$translate',
+                         'licensingInformationAccessorService'];
 
 function layersService(mapService,
                        mapStylesFactory,
-                       layersAPIService,licensingInfoService) {
+                       layersAPIService,
+                       licensingInfoService,
+                       $translate,
+                       licensingInformationAccessorService) {
     var vm = this;
 
     return {
@@ -74,8 +80,15 @@ function layersService(mapService,
     }
   
     function setSelectedObjectsVisibility(selectedLayer) {
+        debugger;
         mapService.setSelectedObjectsVisibility(selectedLayer);
-        licensingInfoService.getLicensingText(selectedLayer);
+        var selectedLayer = mapService.getLayerSummary();
+        if (selectedLayer === $translate.instant('LICESING_INFO.NO_LAYERS_SELECTED')) {
+            licensingInformationAccessorService.setLicensingInformation(null);
+        }
+        else {
+            licensingInfoService.getLicensingText(selectedLayer);
+        }
     }
 
 }
