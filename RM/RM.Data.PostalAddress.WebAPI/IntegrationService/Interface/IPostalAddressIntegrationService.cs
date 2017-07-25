@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.DataManagement.PostalAddress.WebAPI.DTO;
 
@@ -41,12 +42,12 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         Task<bool> InsertDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
         /// <summary>
-        /// This method will call Delivery point web api which is used to 
+        /// This method will call Delivery point web api which is used to
         /// update delivery point for resp PostalAddress which has type <USR>.
         /// </summary>
         /// <param name="objDeliveryPoint">Delivery point dto as object</param>
         /// <returns>bool</returns>
-        Task<bool> UpdateDeliveryPoint(Guid addressId, Guid deliveryPointUseIndicatorPAF);
+        Task<bool> UpdateDeliveryPoint(DeliveryPointDTO objDeliveryPoint);
 
         /// <summary>
         /// Add new notification to the database
@@ -62,19 +63,21 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Interface
         /// <returns>AddressLocationDTO object</returns>
         Task<AddressLocationDTO> GetAddressLocationByUDPRN(int udprn);
 
-        /// <summary>
-        /// Get post code ID by passing post code.
-        /// </summary>
-        /// <param name="postCode"> Post Code</param>
-        /// <returns>Post code ID</returns>
-        Task<Guid> GetPostCodeID(string postCode);
+        Task<List<PostcodeDTO>> GetPostcodes(Guid unitGuid, List<Guid> postcodeGuids);
 
-        Task<List<CommonLibrary.EntityFramework.DTO.PostCodeDTO>> GetPostcodes(List<Guid> postcodeGuids);
+        Task<PostcodeDTO> GetSelecetdPostcode(Guid postcodeGuid, Guid unitGuid);
 
         Task<bool> CheckIfNotificationExists(int uDPRN, string action);
 
         Task<bool> UpdateNotificationByUDPRN(int udprn, string oldAction, string newAction);
 
         Task<bool> UpdateNotificationMessageByUDPRN(int udprn, string action, string message);
+
+        // <summary>
+        /// Gets approx location based on the postal code.
+        /// </summary>
+        /// <param name="postcode"></param>
+        /// <returns>The approx location/</returns>
+        Task<DbGeometry> GetApproxLocation(string postcode);
     }
 }

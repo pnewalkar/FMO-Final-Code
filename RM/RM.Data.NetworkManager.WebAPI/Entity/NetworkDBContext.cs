@@ -1,9 +1,6 @@
 namespace RM.DataManagement.NetworkManager.WebAPI.Entities
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
 
     public partial class NetworkDBContext : DbContext
     {
@@ -13,23 +10,41 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
         }
 
         public virtual DbSet<Location> Locations { get; set; }
+
         public virtual DbSet<NetworkLink> NetworkLinks { get; set; }
+
         public virtual DbSet<NetworkLinkReference> NetworkLinkReferences { get; set; }
+
         public virtual DbSet<NetworkNode> NetworkNodes { get; set; }
+
         public virtual DbSet<NetworkReference> NetworkReferences { get; set; }
+
         public virtual DbSet<OSAccessRestriction> OSAccessRestrictions { get; set; }
+
         public virtual DbSet<OSConnectingLink> OSConnectingLinks { get; set; }
+
         public virtual DbSet<OSConnectingNode> OSConnectingNodes { get; set; }
+
         public virtual DbSet<OSPathLink> OSPathLinks { get; set; }
+
         public virtual DbSet<OSPathNode> OSPathNodes { get; set; }
+
         public virtual DbSet<OSRestrictionForVehicle> OSRestrictionForVehicles { get; set; }
+
         public virtual DbSet<OSRoadLink> OSRoadLinks { get; set; }
+
         public virtual DbSet<OSRoadNode> OSRoadNodes { get; set; }
+
         public virtual DbSet<OSTurnRestriction> OSTurnRestrictions { get; set; }
+
         public virtual DbSet<RMGLink> RMGLinks { get; set; }
+
         public virtual DbSet<RMGNode> RMGNodes { get; set; }
+
         public virtual DbSet<RoadName> RoadNames { get; set; }
+
         public virtual DbSet<StreetName> StreetNames { get; set; }
+
         public virtual DbSet<StreetNameNetworkLink> StreetNameNetworkLinks { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -220,7 +235,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSPathNode>()
-                .Property(e => e.formOfRoadNode)
+                .Property(e => e.FormOfRoadNode)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSPathNode>()
@@ -347,7 +362,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
-                .Property(e => e.formOfRoadNode)
+                .Property(e => e.FormOfRoadNode)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
@@ -355,12 +370,12 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
-                .Property(e => e.access)
+                .Property(e => e.Access)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
-                .Property(e => e.junctionName)
+                .Property(e => e.JunctionName)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSRoadNode>()
@@ -391,7 +406,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSTurnRestriction>()
-                .Property(e => e.inclusion)
+                .Property(e => e.Inclusion)
                 .IsUnicode(false);
 
             modelBuilder.Entity<OSTurnRestriction>()
@@ -448,7 +463,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoadName>()
-                .Property(e => e.roadClassification)
+                .Property(e => e.RoadClassification)
                 .IsFixedLength()
                 .IsUnicode(false);
 

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.DataManagement.NetworkManager.WebAPI.Entities;
-using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.NetworkManager.WebAPI.Entities;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {

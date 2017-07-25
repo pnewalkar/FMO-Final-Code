@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Spatial;
 using System.Threading.Tasks;
 using RM.Data.UnitManager.WebAPI.DataDTO;
 using RM.DataManagement.UnitManager.WebAPI.DataDTO;
@@ -22,7 +21,5 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService.Interfaces
         Task<List<string>> GetPostalAddressSearchDetails(string searchText, Guid unitGuid, List<Guid> addresstypeIDs);
 
         Task<List<PostalAddressDataDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid);
-
-
     }
 }

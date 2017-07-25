@@ -11,7 +11,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
     {
         public PostalAddressDataDTO()
         {
-            //  this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
+            // this.PostalAddressStatus = new List<PostalAddressStatusDTO>();
         }
 
         public Guid ID { get; set; }
@@ -54,8 +54,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DataDTO
 
         public Guid AddressType_GUID { get; set; }
 
-        //  public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
-
+        // public List<PostalAddressStatusDTO> PostalAddressStatus { get; set; }
         public List<BindingEntity> NybAddressDetails { get; set; }
 
         public List<BindingEntity> RouteDetails { get; set; }

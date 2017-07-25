@@ -1,10 +1,11 @@
-﻿using RM.Operational.RouteLog.WebAPI.DTO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using RM.Operational.RouteLog.WebAPI.DTO;
 
 namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
     public class RouteSummaryGroup
     {
+      
         /// <summary>
         /// Constructs route summary group with an initial address
         /// </summary>
@@ -32,6 +33,17 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             this.BuildingName = address.BuildingName;
         }
 
+        public enum GroupType
+        {
+            SequentialAscending,
+            SequentialDescending,
+            EvensAscending,
+            EvensDescending,
+            OddsAscending,
+            OddsDescending,
+            Unknown
+        }
+
         /// <summary>
         /// Gets or sets the current group type
         /// </summary>
@@ -44,7 +56,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         {
             get
             {
-                string building = "";
+                string building = string.Empty;
 
                 // If the increment mode is unknown or either the first or last building numbers are not set
                 if (this.CurrentGroupType == GroupType.Unknown || !this.FirstBuildingNumber.HasValue || !this.LastBuildingNumber.HasValue)
@@ -63,6 +75,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                 {
                     building = $"{this.FirstBuildingNumber.Value} to {this.LastBuildingNumber.Value} ";
                 }
+
                 return building + $"{GetGroupTypeDescription(this.CurrentGroupType)}";
             }
         }
@@ -75,7 +88,7 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         private string GetGroupTypeDescription(GroupType groupType)
         {
             // Get the description for the group type
-            string description = "";
+            string description = string.Empty;
             switch (groupType)
             {
                 case GroupType.EvensAscending:
@@ -103,18 +116,13 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
                     break;
 
                 case GroupType.Unknown:
-                    description = "";
+                    description = string.Empty;
                     break;
             }
 
             // Return the description
             return description;
         }
-
-        /// <summary>
-        /// Gets or sets the last address in the group
-        /// </summary>
-        public RouteLogSequencedPointsDTO LastAddress { get; set; }
 
         /// <summary>
         /// Gets the building description from the sub name, name, number and thoroughfare
@@ -133,16 +141,18 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
             thoroughfare = (thoroughfare + string.Empty).Trim();
 
             // Construct the description from the sub name, name, number and thoroughfare
-            string description = "";
+            string description = string.Empty;
             const string delimiter = ", ";
             if (subName.Length > 0)
             {
                 description = description + subName + delimiter;
             }
+
             if (name.Length > 0)
             {
                 description = description + name + delimiter;
             }
+
             if (number.Length > 0)
             {
                 description = description + number + delimiter;
@@ -159,16 +169,16 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         }
 
         /// <summary>
-        /// The list of addresses in the group
+        /// Gets or sets the last address in the group
         /// </summary>
-        private List<RouteLogSequencedPointsDTO> _AddressList = new List<RouteLogSequencedPointsDTO>();
+        public RouteLogSequencedPointsDTO LastAddress { get; set; }
 
         /// <summary>
         /// Gets the address list
         /// </summary>
         public List<RouteLogSequencedPointsDTO> AddressList
         {
-            get { return _AddressList; }
+            get { return addressList; }
         }
 
         /// <summary>
@@ -197,15 +207,9 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 
         public string BuildingName { get; set; }
 
-        public enum GroupType
-        {
-            SequentialAscending,
-            SequentialDescending,
-            EvensAscending,
-            EvensDescending,
-            OddsAscending,
-            OddsDescending,
-            Unknown
-        }
+        /// <summary>
+        /// The list of addresses in the group
+        /// </summary>
+        private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
     }
 }

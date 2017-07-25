@@ -1,10 +1,7 @@
 namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.PostalAddressStatus")]
     public partial class PostalAddressStatus
@@ -15,13 +12,8 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public Guid OperationalStatusGUID { get; set; }
 
-        [Column(TypeName = "datetime2")]
         public DateTime StartDateTime { get; set; }
 
-        [Column(TypeName = "datetime2")]
-        public DateTime? EndDateTimee { get; set; }
-
-        [Column(TypeName = "datetime2")]
         public DateTime RowCreateDateTime { get; set; }
 
         public virtual PostalAddress PostalAddress { get; set; }

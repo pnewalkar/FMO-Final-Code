@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using RM.CommonLibrary.EntityFramework.DTO;
+using RM.Common.Notification.WebAPI.DTO;
 
 namespace RM.Common.Notification.WebAPI.BusinessService
 {

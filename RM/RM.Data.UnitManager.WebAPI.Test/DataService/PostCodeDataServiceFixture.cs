@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -15,8 +16,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
-    //TODO: Nunits to be fixed
-
+    /// <summary>
+    /// This class contains test methods for PostcodeDataService
+    /// </summary>
     [TestFixture]
     public class PostCodeDataServiceFixture : RepositoryFixtureBase
     {
@@ -27,7 +29,12 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         private Guid deliveryUnitID = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918");
         private Guid postcodeTypeGUID = new Guid("8534AA41-391F-4579-A18D-D7EDF5B5F918");
         private SearchInputDataDto searchInputDataDto;
-        
+        private DbGeometry unitBoundary = DbGeometry.PolygonFromText("POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))", 27700);
+
+        /// <summary>
+        /// Test for GetPostcodeUnitForBasicSearch
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_FetchPostCodeUnitForBasicSearchValid()
         {
@@ -36,6 +43,10 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsTrue(actualResult.ToList().Count == 1);
         }
 
+        /// <summary>
+        /// Test for GetPostcodeUnitCount
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetPostcodeUnitCountValid()
         {
@@ -44,6 +55,10 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsTrue(actualResult == 1);
         }
 
+        /// <summary>
+        /// Test for GetPostcodeUnitForAdvanceSearch
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetPostcodeUnitForAdvanceSearchValid()
         {
@@ -52,6 +67,10 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsTrue(actualResult.ToList().Count == 1);
         }
 
+        /// <summary>
+        /// Test for GetPostcodeID
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetPostcodeID()
         {
@@ -60,59 +79,24 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.AreEqual(actualResult.ID, new Guid("3534aa41-391f-4579-a18d-d7edf5b5f918"));
         }
 
+        /// <summary>
+        /// Test for GetApproxLocation
+        /// </summary>
+        /// <returns></returns>
         [Test]
         public async Task Test_GetApproxLocation()
         {
             var actualResult = await testCandidate.GetApproxLocation("123", new Guid("1534AA41-391F-4579-A18D-D7EDF5B5F918"));
             Assert.IsNotNull(actualResult);
-           // Assert.AreEqual(actualResult.ID, new Guid("3534aa41-391f-4579-a18d-d7edf5b5f918"));
+            Assert.AreEqual(actualResult, unitBoundary);
         }
 
-
-        /*
-        [Test]
-        public async Task TestFetchPostCodeUnitForBasicSearchInvalid()
-        {
-            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch("invalid_searchtest", deliveryUnitID);
-            Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult.Count == 0);
-        }
-
-        [Test]
-        public async Task TestFetchPostCodeUnitForBasicSearchNull()
-        {
-            var actualResult = await testCandidate.FetchPostCodeUnitForBasicSearch(null, deliveryUnitID);
-            Assert.IsNotNull(actualResult);
-            Assert.IsTrue(actualResult.Count == 1);
-        }
-
-        [Test]
-        public async Task TestGetPostCodeUnitCountValid()
-        {
-            var actualResultCount = await testCandidate.GetPostCodeUnitCount("search", deliveryUnitID);
-            Assert.IsNotNull(actualResultCount);
-            Assert.IsTrue(actualResultCount == 1);
-        }
-
-        [Test]
-        public async Task TestGetPostCodeUnitCountInvalid()
-        {
-            var actualResultCount = await testCandidate.GetPostCodeUnitCount("searchtest", deliveryUnitID);
-            Assert.IsNotNull(actualResultCount);
-            Assert.IsTrue(actualResultCount == 0);
-        }
-
-        [Test]
-        public async Task TestGetPostCodeUnitCountNull()
-        {
-            var actualResultCount = await testCandidate.GetPostCodeUnitCount(null, deliveryUnitID);
-            Assert.IsNotNull(actualResultCount);
-            Assert.IsTrue(actualResultCount == 1);
-        }*/
-
+        /// <summary>
+        /// Setup for Nunit Tests
+        /// </summary>
         protected override void OnSetup()
         {
-
+            // Data Setup
             List<Postcode> postcodeList = new List<Postcode>()
             {
                 new Postcode()
@@ -124,7 +108,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
                 }
             };
 
-           List<PostcodeHierarchy> postcodeHierarchyList = new List<PostcodeHierarchy>()
+            List<PostcodeHierarchy> postcodeHierarchyList = new List<PostcodeHierarchy>()
             {
                 new PostcodeHierarchy()
                 {
@@ -156,7 +140,19 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             {
                 new DeliveryPoint()
                 {
-                    PostalAddress = new PostalAddress() { }
+                    PostalAddress = new PostalAddress()
+                    {
+                        Postcode = "123"
+                    },
+                    NetworkNode = new NetworkNode() { Location = new Location() { Shape = unitBoundary } }
+                },
+                new DeliveryPoint()
+                {
+                    PostalAddress = new PostalAddress()
+                    {
+                        Postcode = "12"
+                    },
+                    NetworkNode = new NetworkNode() { Location = new Location() { } }
                 }
             };
 
@@ -179,7 +175,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext = CreateMock<UnitManagerDbContext>();
             mockILoggingHelper = CreateMock<ILoggingHelper>();
 
-            //Setup for PostcodeHierarchy
+            // Setup for PostcodeHierarchy
             var mockAsynEnumerable = new DbAsyncEnumerable<PostcodeHierarchy>(postcodeHierarchyList);
             var mockPostcodeHierarchy = MockDbSet(postcodeHierarchyList);
             mockPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable.AsQueryable().Provider);
@@ -190,7 +186,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.PostcodeHierarchies).Returns(mockPostcodeHierarchy.Object);
             mockUnitManagerDbContext.Setup(c => c.PostcodeHierarchies.AsNoTracking()).Returns(mockPostcodeHierarchy.Object);
 
-            //Setup for PostalAddressIdentifier
+            // Setup for PostalAddressIdentifier
             var mockAsynEnumerable1 = new DbAsyncEnumerable<PostalAddressIdentifier>(postalAddressIdentifierList);
             var mockPostalAddressIdentifier = MockDbSet(postalAddressIdentifierList);
             mockPostalAddressIdentifier.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable1.AsQueryable().Provider);
@@ -201,7 +197,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.PostalAddressIdentifiers).Returns(mockPostalAddressIdentifier.Object);
             mockUnitManagerDbContext.Setup(c => c.PostalAddressIdentifiers.AsNoTracking()).Returns(mockPostalAddressIdentifier.Object);
 
-            //Setup for LocationPostcodeHierarchy
+            // Setup for LocationPostcodeHierarchy
             var mockAsynEnumerable2 = new DbAsyncEnumerable<LocationPostcodeHierarchy>(locationPostcodeHierarchyList);
             var mockLocationPostcodeHierarchy = MockDbSet(locationPostcodeHierarchyList);
             mockLocationPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable2.AsQueryable().Provider);
@@ -212,7 +208,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.LocationPostcodeHierarchies).Returns(mockLocationPostcodeHierarchy.Object);
             mockUnitManagerDbContext.Setup(c => c.LocationPostcodeHierarchies.AsNoTracking()).Returns(mockLocationPostcodeHierarchy.Object);
 
-            //Setup for Location
+            // Setup for Location
             var mockAsynEnumerable3 = new DbAsyncEnumerable<Location>(locationList);
             var mockLocation = MockDbSet(locationList);
             mockLocation.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable3.AsQueryable().Provider);
@@ -223,7 +219,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Locations).Returns(mockLocation.Object);
             mockUnitManagerDbContext.Setup(c => c.Locations.AsNoTracking()).Returns(mockLocation.Object);
 
-            //Setup for Postcode
+            // Setup for Postcode
             var mockAsynEnumerable4 = new DbAsyncEnumerable<Postcode>(postcodeList);
             var mockPostcode = MockDbSet(postcodeList);
             mockPostcode.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable4.AsQueryable().Provider);
@@ -233,7 +229,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Set<Postcode>()).Returns(mockPostcode.Object);
             mockUnitManagerDbContext.Setup(x => x.Postcodes).Returns(mockPostcode.Object);
 
-            //Setup for DeliveryPoint
+            // Setup for DeliveryPoint
             var mockAsynEnumerable5 = new DbAsyncEnumerable<DeliveryPoint>(deliveryPointList);
             var mockDeliveryPoint = MockDbSet(deliveryPointList);
             mockDeliveryPoint.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable5.AsQueryable().Provider);
@@ -242,8 +238,6 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockDeliveryPoint.As<IDbAsyncEnumerable>().Setup(mock => mock.GetAsyncEnumerator()).Returns(((IDbAsyncEnumerable<DeliveryPoint>)mockAsynEnumerable5).GetAsyncEnumerator());
             mockUnitManagerDbContext.Setup(x => x.Set<DeliveryPoint>()).Returns(mockDeliveryPoint.Object);
             mockUnitManagerDbContext.Setup(x => x.DeliveryPoints).Returns(mockDeliveryPoint.Object);
-            mockUnitManagerDbContext.Setup(c => c.DeliveryPoints.AsNoTracking()).Returns(mockDeliveryPoint.Object);
-            
 
             var rmTraceManagerMock = new Mock<IRMTraceManager>();
             rmTraceManagerMock.Setup(x => x.StartTrace(It.IsAny<string>(), It.IsAny<Guid>()));
@@ -254,5 +248,4 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             testCandidate = new PostcodeDataService(mockDatabaseFactory.Object, mockILoggingHelper.Object);
         }
     }
-
 }

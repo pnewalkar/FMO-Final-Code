@@ -77,7 +77,6 @@ namespace RM.Common.ActionManager.WebAPI.DataService
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetUserUnitInfo"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
                 UserUnitInfoDataDTO userUnitDetails = null;
                 if (locationId == Guid.Empty)
                 {
@@ -107,6 +106,7 @@ namespace RM.Common.ActionManager.WebAPI.DataService
                                                  UnitType = rd.ReferenceDataValue
                                              }).FirstOrDefaultAsync();
                 }
+
                 return userUnitDetails;
             }
         }

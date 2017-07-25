@@ -18,5 +18,6 @@
         internal const string Space = " ";
         internal const string AccessLinkDataProviderGUID = "Access Link Intersection Node";
         internal const string Internal = "Internal";
+        internal const string AccessLink = "Access Link";
     }
 }

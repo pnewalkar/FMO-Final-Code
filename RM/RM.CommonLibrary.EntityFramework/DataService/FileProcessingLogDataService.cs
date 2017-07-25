@@ -40,12 +40,12 @@ namespace RM.CommonLibrary.EntityFramework.DataService
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.LogFileException"))
                 {
                     string methodName = MethodBase.GetCurrentMethod().Name;
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.FileProcessingLogPriority, LoggerTraceConstants.FileProcessingLogPriorityDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
+                    //loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.FileProcessingLogPriority, LoggerTraceConstants.FileProcessingLogPriorityDataServiceMethodEntryEventId, LoggerTraceConstants.Title);
 
                     var entity = GenericMapper.Map<FileProcessingLogDTO, FileProcessingLog>(fileProcessingLogDTO);
                     DataContext.FileProcessingLogs.Add(entity);
                     DataContext.SaveChanges();
-                    loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.FileProcessingLogPriority, LoggerTraceConstants.FileProcessingLogPriorityDataServiceMethodExitEventId, LoggerTraceConstants.Title);
+                    //loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.FileProcessingLogPriority, LoggerTraceConstants.FileProcessingLogPriorityDataServiceMethodExitEventId, LoggerTraceConstants.Title);
                 }
             }
             catch (Exception ex)

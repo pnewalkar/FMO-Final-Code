@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RM.CommonLibrary.ConfigurationMiddleware;
@@ -14,7 +12,7 @@ using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.Utils;
@@ -109,15 +107,15 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         }
 
         /// <summary>
-        /// Create delivery point for PAF and NYB details
+        /// Create address for a delivery point with PAF/NYB details
         /// </summary>
         /// <param name="addDeliveryPointDTO">addDeliveryPointDTO</param>
         /// <returns>bool</returns>
-        public async Task<CreateDeliveryPointModelDTO> CreateAddressAndDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
+        public async Task<CreateDeliveryPointModelDTO> CreateAddressForDeliveryPoint(AddDeliveryPointDTO addDeliveryPointDTO)
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.CreateAddressAndDeliveryPoint"))
             {
-                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CreateAddressAndDeliveryPoint);
+                string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(CreateAddressForDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                 HttpResponseMessage result = await httpHandler.PostAsJsonAsync(postalAddressManagerWebAPIName + "postaladdress/savedeliverypointaddress/", addDeliveryPointDTO);
@@ -194,6 +192,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("IntegrationService.MapForDeliveryPoint"))
             {
+                bool mapRouteForDeliveryPointSuccess = true;
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(MapRouteForDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
@@ -201,12 +200,11 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 if (!result.IsSuccessStatusCode)
                 {
                     // LOG ERROR WITH Statuscode
+                    mapRouteForDeliveryPointSuccess = false;
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                string returnvalue = result.Content.ReadAsStringAsync().Result;
-                var mapRouteForDeliveryPointSuccess = Convert.ToBoolean(returnvalue);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return mapRouteForDeliveryPointSuccess;
             }
@@ -264,7 +262,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
             }
         }
 
-        /// <summary>
+        // <summary>
         /// Gets approx location based on the postal code.
         /// </summary>
         /// <param name="postcode"></param>
@@ -276,14 +274,16 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Integration
                 string methodName = typeof(DeliveryPointIntegrationService) + "." + nameof(GetApproxLocation);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "approxlocation/" + postcode);
+                HttpResponseMessage result = await httpHandler.GetAsync(unitManagerDataWebAPIName + "postcode/approxlocation/" + postcode);
                 if (!result.IsSuccessStatusCode)
                 {
                     var responseContent = result.ReasonPhrase;
                     throw new ServiceException(responseContent);
                 }
 
-                DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                // DbGeometry approxLocation = JsonConvert.DeserializeObject<DbGeometry>(result.Content.ReadAsStringAsync().Result);
+                DBGeometryObj locationObject = JsonConvert.DeserializeObject<DBGeometryObj>(result.Content.ReadAsStringAsync().Result);
+                DbGeometry approxLocation = locationObject.dbGeometry;
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return approxLocation;

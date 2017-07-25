@@ -59,15 +59,15 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         }
 
         // <summary>
-        /// Gets user unit type name e.g: Delivery Office, Collection Hub, etc.
+        /// Gets user unit type name e.g: Delivery Office, Collection Hub, National, etc.
         /// </summary>
         public string CurrentUserUnitType
         {
             get
             {
-                var UserUnitType = User.Claims.Where(c => c.Type == ClaimTypes.Upn)
+                var userUnitType = User.Claims.Where(c => c.Type == ClaimTypes.Upn)
                                .Select(c => c.Value).SingleOrDefault();
-                return UserUnitType;
+                return userUnitType;
             }
         }
     }

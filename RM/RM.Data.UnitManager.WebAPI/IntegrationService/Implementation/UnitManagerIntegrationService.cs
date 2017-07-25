@@ -46,6 +46,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.IntegrationService.Implementation
             this.configurationHelper = configurationHelper;
             this.loggingHelper = loggingHelper;
             this.referenceDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(ReferenceDataWebAPIName).ToString() : string.Empty;
+            this.routeDataWebAPIName = configurationHelper != null ? configurationHelper.ReadAppSettingsConfigurationValues(RouteDataWebAPIName).ToString() : string.Empty;
         }
 
         #endregion Constructor

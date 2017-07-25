@@ -30,7 +30,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         private const int BNGCOORDINATESYSTEM = 27700;
         private const string PostCodeType = "Postcode Type";
         private const string PostalAddressType = "PostalAddressType";
-        private const int searchResultCount = 5;
+        private const int SearchResultCount = 5;
 
         #region property declaration
 
@@ -67,6 +67,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         /// Get all units for a user.
         /// </summary>
         /// <param name="userId">user Id.</param>
+        /// <param name="currentUserUnitType">current user unit type.</param>
         /// <returns>
         /// List of <see cref="UnitLocationDTO" />.
         /// </returns>
@@ -77,7 +78,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                //reference data value for PostcodeSector with Category - Postcode Type
+                // reference data value for PostcodeSector with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeArea.GetDescription()).Result;
 
                 IEnumerable<UnitLocationDataDTO> unitLocationDataDtoList = null;
@@ -152,14 +153,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                //reference data value for Postcode with Category - Postcode Type
+                // reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
                 SearchInputDataDto searchInputs = new SearchInputDataDto
                 {
                     SearchText = searchText,
                     UserUnitLocationId = userUnit,
                     PostcodeTypeGUID = postcodeTypeGUID,
-                    SearchResultCount = searchResultCount
+                    SearchResultCount = SearchResultCount
                 };
 
                 var postcodeUnits = await postCodeDataService.GetPostcodeUnitForBasicSearch(searchInputs).ConfigureAwait(false);
@@ -186,14 +187,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                //reference data value for Postcode with Category - Postcode Type
+                // reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
                 SearchInputDataDto searchInputs = new SearchInputDataDto
                 {
                     SearchText = searchText,
                     UserUnitLocationId = userUnit,
                     PostcodeTypeGUID = postcodeTypeGUID,
-                    SearchResultCount = searchResultCount
+                    SearchResultCount = SearchResultCount
                 };
 
                 var postCodeUnitCount = await postCodeDataService.GetPostcodeUnitCount(searchInputs).ConfigureAwait(false);
@@ -216,14 +217,14 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                //reference data value for Postcode with Category - Postcode Type
+                // reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.Postcode.GetDescription()).Result;
                 SearchInputDataDto searchInputs = new SearchInputDataDto
                 {
                     SearchText = searchText,
                     UserUnitLocationId = userUnit,
                     PostcodeTypeGUID = postcodeTypeGUID,
-                    SearchResultCount = searchResultCount
+                    SearchResultCount = SearchResultCount
                 };
 
                 var postcodeUnits = await postCodeDataService.GetPostcodeUnitForAdvanceSearch(searchInputs).ConfigureAwait(false);
@@ -290,7 +291,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerBusinessServiceMethodEntryEventId);
 
-                //reference data value for Postcode with Category - Postcode Type
+                // reference data value for Postcode with Category - Postcode Type
                 Guid postcodeTypeGUID = unitManagerIntegrationService.GetReferenceDataGuId(PostCodeType, PostCodeTypeCategory.PostcodeSector.GetDescription()).Result;
 
                 var postcodeDataDto = await unitLocationDataService.GetPostcodes(postcodeGuids, postcodeTypeGUID);
@@ -319,10 +320,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 PostalAddressDTO postalAddressDto = null;
                 var postalAddressDetails = await postalAddressDataService.GetPostalAddressDetails(selectedItem, unitGuid);
                 var routeData = unitManagerIntegrationService.GetRouteData(selectedItem.Split(',')[1].Trim(), "ID,RouteName").Result;
-                routeData.ForEach(route => {
+                routeData.ForEach(route =>
+                {
                     routeDetails.Add(new BindingDTO { Value = route.ID, DisplayText = route.RouteName });
                 });
-
 
                 Guid nybAddressTypeId = unitManagerIntegrationService.GetReferenceDataGuId(PostalAddressType, FileType.Nyb.ToString()).Result;
 
@@ -358,7 +359,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="searchText"></param>
         /// <param name="unitGuid"></param>
@@ -403,6 +404,5 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                 return approxLocation;
             }
         }
-
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.Utilities.HelperMiddleware.GeoJsonData;
 using RM.Data.UnitManager.WebAPI.DTO;
 using RM.DataManagement.UnitManager.WebAPI.BusinessService.Interface;
 using RM.DataManagement.UnitManager.WebAPI.DTO;
@@ -252,10 +253,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
             {
                 throw new ArgumentNullException(nameof(operationStateID));
             }
+
             if (locationID.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException(nameof(locationID));
             }
+
             if (fields.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException(nameof(fields));
@@ -267,12 +270,12 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
 
                 List<object> deliveryScenerioList = null;
-                IEnumerable<ScenarioDTO> Scenerio = await unitLocationBusinessService.GetRouteScenarios(operationStateID, locationID);
+                IEnumerable<ScenarioDTO> scenerio = await unitLocationBusinessService.GetRouteScenarios(operationStateID, locationID);
                 CreateSummaryObject<ScenarioDTO> createSummary = new CreateSummaryObject<ScenarioDTO>();
 
-                if (!string.IsNullOrEmpty(fields) && Scenerio != null)
+                if (!string.IsNullOrEmpty(fields) && scenerio != null)
                 {
-                    deliveryScenerioList = createSummary.SummarisePropertiesForList(Scenerio.ToList(), fields);
+                    deliveryScenerioList = createSummary.SummarisePropertiesForList(scenerio.ToList(), fields);
                 }
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
@@ -304,6 +307,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
                 return Ok(postCodes);
             }
         }
+
         /// <summary>
         /// Api searches pstcode and thorough in postal address entity on basis of searhtext
         /// </summary>
@@ -379,7 +383,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
         /// </summary>
         /// <param name="postcode">Postal code</param>
         /// <returns>The approx location for the given postal code.</returns>
-        [HttpPost("postcode/approxlocation/{postcode}")]
+        [HttpGet("postcode/approxlocation/{postcode}")]
         public async Task<IActionResult> GetApproxLocation(string postcode)
         {
             if (postcode == null)
@@ -394,8 +398,10 @@ namespace RM.DataManagement.UnitManager.WebAPI.Controllers
 
                 var location = await unitLocationBusinessService.GetApproxLocation(postcode, CurrentUserUnit);
 
+                DBGeometryObj geometryData = new DBGeometryObj { dbGeometry = location };
+
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.UnitManagerControllerMethodEntryEventId);
-                return Ok(location);
+                return Ok(geometryData);
             }
         }
     }

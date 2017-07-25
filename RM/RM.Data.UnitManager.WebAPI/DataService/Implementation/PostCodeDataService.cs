@@ -72,7 +72,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                var PostcodeDataDTO = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
+                var postcodeDataDTO = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
                                              join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
                                              where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
@@ -84,7 +84,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                              }).CountAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return PostcodeDataDTO;
+                return postcodeDataDTO;
             }
         }
 
@@ -100,7 +100,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             {
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodEntryEventId);
 
-                var PostcodeDataDTO = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
+                var postcodeDataDTO = await (from p in DataContext.PostcodeHierarchies.AsNoTracking()
                                              join s in DataContext.LocationPostcodeHierarchies.AsNoTracking() on p.ID equals s.PostcodeHierarchyID
                                              join l in DataContext.Locations.AsNoTracking() on s.LocationID equals l.ID
                                              where p.Postcode.StartsWith(searchInputs.SearchText ?? string.Empty) && p.PostcodeTypeGUID == searchInputs.PostcodeTypeGUID
@@ -112,7 +112,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                              }).ToListAsync();
 
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostCodeDataServiceMethodExitEventId);
-                return PostcodeDataDTO;
+                return postcodeDataDTO;
             }
         }
 
@@ -167,7 +167,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                           select ph.ParentPostcode.Trim()).FirstOrDefault();
 
                     // get approx location for the pose code sector
-                    var approxLocationForPostCodeSector = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode.Replace(" ", "").StartsWith(postcodeSector));
+                    var approxLocationForPostCodeSector = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode.Replace(" ", string.Empty).StartsWith(postcodeSector));
 
                     if (approxLocationForPostCodeSector != null)
                     {
@@ -180,7 +180,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                                 select ph.ParentPostcode.Trim()).FirstOrDefault();
 
                         // get approx location for the pose code sector
-                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.Replace(" ", "").StartsWith(postcodeDistrict));
+                        var approxLocationForPostCodeDistrict = DataContext.DeliveryPoints.FirstOrDefault(x => x.PostalAddress.Postcode.Replace(" ", string.Empty).StartsWith(postcodeDistrict));
 
                         if (approxLocationForPostCodeDistrict != null)
                         {

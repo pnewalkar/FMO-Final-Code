@@ -5,9 +5,9 @@ using RM.Common.ActionManager.WebAPI.BusinessService.Interface;
 using RM.Common.ActionManager.WebAPI.DataDTO;
 using RM.Common.ActionManager.WebAPI.DTO;
 using RM.Common.ActionManager.WebAPI.Interfaces;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 
 namespace RM.Common.ActionManager.WebAPI.BusinessService
 {
@@ -46,13 +46,13 @@ namespace RM.Common.ActionManager.WebAPI.BusinessService
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                //mapping public DTO to dataDTO
+                // mapping public DTO to dataDTO
                 UserUnitInfoDataDTO userUnitInfoDataDTO = GenericMapper.Map<UserUnitInfoDTO, UserUnitInfoDataDTO>(userUnitInfo);
 
                 var roleAccessDataDto = await actionManagerDataService.GetRoleBasedAccessFunctions(userUnitInfoDataDTO);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
-                //mapping dataDTO to public DTO
+                // mapping dataDTO to public DTO
                 List<RoleAccessDTO> roleAccessDTO = GenericMapper.MapList<RoleAccessDataDTO, RoleAccessDTO>(roleAccessDataDto);
                 return roleAccessDTO;
             }
@@ -72,13 +72,13 @@ namespace RM.Common.ActionManager.WebAPI.BusinessService
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
                 var userUnitDetails = await actionManagerDataService.GetUserUnitInfo(userName, locationId);
 
-                //Get the Unit details from reference data if current user has access to the units above mail center
+                // Get the Unit details from reference data if current user has access to the units above mail center
                 if (userUnitDetails == null)
                 {
                     userUnitDetails = await actionManagerDataService.GetUserUnitInfoFromReferenceData(userName, locationId);
                 }
 
-                //mapping dataDTO to public DTO
+                // mapping dataDTO to public DTO
                 UserUnitInfoDTO userUnitInfoDTO = GenericMapper.Map<UserUnitInfoDataDTO, UserUnitInfoDTO>(userUnitDetails);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 

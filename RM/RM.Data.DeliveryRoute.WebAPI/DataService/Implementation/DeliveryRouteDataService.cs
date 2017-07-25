@@ -158,9 +158,9 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <summary>
         /// Get route details specific to loaction
         /// </summary>
-        /// <param name="LocationId">Location ID</param>
+        /// <param name="locationId">Location ID</param>
         /// <returns> List of routes specific to location </returns>
-        public async Task<List<RouteDataDTO>> GetRoutesByLocation(Guid LocationId)
+        public async Task<List<RouteDataDTO>> GetRoutesByLocation(Guid locationId)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetRouteDetailsByLocation"))
             {
@@ -170,7 +170,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
                 var routeDetails = await (from scenario in DataContext.Scenarios.AsNoTracking()
                                           join scenarioRoute in DataContext.ScenarioRoutes.AsNoTracking() on scenario.ID equals scenarioRoute.ScenarioID
                                           join route in DataContext.Routes.AsNoTracking() on scenarioRoute.RouteID equals route.ID
-                                          where scenario.LocationID == LocationId
+                                          where scenario.LocationID == locationId
                                           select new RouteDataDTO
                                           {
                                               ID = route.ID,
@@ -244,6 +244,7 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
             {
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetRouteSummary);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
+
                 // No of DPs
                 Guid operationalObjectTypeForDp = referenceDataCategoryDtoList
                 .Where(x => x.CategoryName.Replace(" ", string.Empty) == ReferenceDataCategoryNames.OperationalObjectType)
@@ -352,6 +353,39 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
                 return deliveryRoutesDto;
+            }
+        }
+
+        /// <summary>
+        /// retrieve Route Sequenced Point By passing RouteID specific to unit
+        /// </summary>
+        /// <param name="routeId">Selected Route</param>
+        /// <returns>
+        /// List of route log sequenced points
+        /// </returns>
+        public async Task<List<RouteLogSequencedPointsDataDTO>> GetSequencedRouteDetails(Guid routeId)
+        {
+            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetSequencedRouteDetails"))
+            {
+                string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetSequencedRouteDetails);
+                var deliveryRoutes = await (from route in DataContext.Routes.AsNoTracking()
+                                            join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
+                                            join deliveryPoint in DataContext.DeliveryPoints.AsNoTracking() on routeActivity.LocationID equals deliveryPoint.ID
+                                            join postalAddress in DataContext.PostalAddresses.AsNoTracking() on deliveryPoint.PostalAddressID equals postalAddress.ID
+                                            where route.ID == routeId
+                                            orderby routeActivity.RouteActivityOrderIndex
+                                            select new RouteLogSequencedPointsDataDTO
+                                            {
+                                                StreetName = postalAddress.Thoroughfare,
+                                                BuildingNumber = postalAddress.BuildingNumber,
+                                                MultipleOccupancy = deliveryPoint.MultipleOccupancyCount,
+                                                SubBuildingName = postalAddress.SubBuildingName,
+                                                BuildingName = postalAddress.BuildingName
+                                            }).ToListAsync();
+
+                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
+
+                return deliveryRoutes;
             }
         }
 
@@ -474,33 +508,42 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         /// <returns>Comma separated value of paried routes</returns>
         private async Task<string> GetPairedRoutes(Guid routeId, Guid sharedVanId)
         {
-            string pairedRoute = string.Empty;
+            List<string> pairedRoutes = new List<string>();
 
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPairedRoutes"))
             {
                 string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetPairedRoutes);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodEntryEventId);
 
-                var routeResults = await (from r in DataContext.Routes.AsNoTracking()
-                                          join pr in DataContext.Routes.AsNoTracking() on r.PairedRouteID equals pr.ID
-                                          where r.ID == routeId && r.RouteMethodTypeGUID == sharedVanId
-                                          select new
-                                          {
-                                              RouteNumber = pr.RouteNumber
-                                          }).ToListAsync();
+                var route = await DataContext.Routes.AsNoTracking().Where(r => r.ID == routeId).SingleOrDefaultAsync();
 
-                if (routeResults != null && routeResults.Count > 0)
+                if (route != null && route.PairedRouteID != null)
                 {
-                    foreach (var item in routeResults)
-                    {
-                        pairedRoute = pairedRoute + "," + item.RouteNumber;
-                    }
-                    pairedRoute = Regex.Replace(pairedRoute, ",+", ",").Trim(',');
+                    PopulatePairedRoutes(route.PairedRouteID.Value, pairedRoutes, sharedVanId);
                 }
 
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
             }
-            return pairedRoute;
+
+            return string.Join(",", pairedRoutes);
+        }
+
+        /// <summary>
+        /// Method to populate paired routes
+        /// </summary>
+        /// <param name="pairedRouteId">Paired route Id</param>
+        /// <param name="pairedRoutes">list of paired routes</param>
+        private void PopulatePairedRoutes(Guid pairedRouteId, List<string> pairedRoutes, Guid sharedVanId)
+        {
+            Route route = DataContext.Routes.Where(n => n.ID == pairedRouteId && n.RouteMethodTypeGUID == sharedVanId).SingleOrDefault();
+            if (route != null)
+            {
+                pairedRoutes.Add(route.RouteNumber.Trim());
+                if (route.PairedRouteID != null)
+                {
+                    PopulatePairedRoutes(route.PairedRouteID.Value, pairedRoutes, sharedVanId);
+                }
+            }
         }
 
         /// <summary>
@@ -512,39 +555,6 @@ namespace RM.DataManagement.DeliveryRoute.WebAPI.DataService
         {
             TimeSpan timeSpan = TimeSpan.FromMinutes(value);
             return timeSpan.ToString(@"h\:mm") + " mins";
-        }
-
-        /// <summary>
-        /// retrieve Route Sequenced Point By passing RouteID specific to unit
-        /// </summary>
-        /// <param name="routeId">Selected Route</param>
-        /// <returns>
-        /// List of route log sequenced points
-        /// </returns>
-        public async Task<List<RouteLogSequencedPointsDataDTO>> GetSequencedRouteDetails(Guid routeId)
-        {
-            using (loggingHelper.RMTraceManager.StartTrace("DataService.GetSequencedRouteDetails"))
-            {
-                string methodName = typeof(DeliveryRouteDataService) + "." + nameof(GetSequencedRouteDetails);
-                var deliveryRoutes = await (from route in DataContext.Routes.AsNoTracking()
-                                            join routeActivity in DataContext.RouteActivities.AsNoTracking() on route.ID equals routeActivity.RouteID
-                                            join deliveryPoint in DataContext.DeliveryPoints.AsNoTracking() on routeActivity.LocationID equals deliveryPoint.ID
-                                            join postalAddress in DataContext.PostalAddresses.AsNoTracking() on deliveryPoint.PostalAddressID equals postalAddress.ID
-                                            where route.ID == routeId
-                                            orderby routeActivity.RouteActivityOrderIndex
-                                            select new RouteLogSequencedPointsDataDTO
-                                            {
-                                                StreetName = postalAddress.Thoroughfare,
-                                                BuildingNumber = postalAddress.BuildingNumber,
-                                                MultipleOccupancy = deliveryPoint.MultipleOccupancyCount,
-                                                SubBuildingName = postalAddress.SubBuildingName,
-                                                BuildingName = postalAddress.BuildingName
-                                            }).ToListAsync();
-
-                loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.DeliveryRouteAPIPriority, LoggerTraceConstants.DeliveryRouteDataServiceMethodExitEventId);
-
-                return deliveryRoutes;
-            }
         }
     }
 }

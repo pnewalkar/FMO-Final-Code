@@ -1,7 +1,7 @@
-﻿using RM.CommonLibrary.EntityFramework.DTO;
-using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using RM.CommonLibrary.EntityFramework.DTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces
 {

@@ -7,14 +7,13 @@ using Microsoft.SqlServer.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.Utilities.ReferenceData;
+using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.Interfaces;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
+using RM.Data.AccessLink.WebAPI.Utils.ReferenceData;
 using RM.DataManagement.AccessLink.WebAPI.DTOs;
-using RM.CommonLibrary.EntityFramework.DTO.ReferenceData;
 
 namespace RM.DataManagement.AccessLink.WebAPI.Integration
 {
@@ -113,10 +112,10 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
                     throw new ServiceException(responseContent);
                 }
 
-                Tuple<NetworkLinkDTO, DbGeometry> nearestSegment = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, DbGeometry>>(result.Content.ReadAsStringAsync().Result, new DbGeometryConverter());
+                Tuple<NetworkLinkDTO, List<DbGeometry>> nearestSegment = JsonConvert.DeserializeObject<Tuple<NetworkLinkDTO, List<DbGeometry>>>(result.Content.ReadAsStringAsync().Result, new DbGeometryConverter());
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-                return new Tuple<NetworkLinkDTO, List<SqlGeometry>>(nearestSegment.Item1, new List<SqlGeometry>());
+                return new Tuple<NetworkLinkDTO, List<SqlGeometry>>(nearestSegment.Item1, nearestSegment.Item2.ToSqlGeometry());
             }
         }
 
@@ -267,7 +266,6 @@ namespace RM.DataManagement.AccessLink.WebAPI.Integration
         {
             using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPoint"))
             {
-
                 string methodName = typeof(AccessLinkIntegrationService) + "." + nameof(GetDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 

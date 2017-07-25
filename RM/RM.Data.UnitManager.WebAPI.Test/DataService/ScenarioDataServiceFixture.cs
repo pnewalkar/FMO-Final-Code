@@ -14,6 +14,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for ScenarioDataService
+    /// </summary>
     [TestFixture]
     public class ScenarioDataServiceFixture : RepositoryFixtureBase
     {
@@ -57,8 +60,12 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             Assert.IsNotNull(result);
         }
 
+        /// <summary>
+        /// setup for nunit tests
+        /// </summary>
         protected override void OnSetup()
         {
+            // Data Setup
             List<Scenario> scenarioList = new List<Scenario>()
             {
                 new Scenario()
@@ -80,7 +87,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext = CreateMock<UnitManagerDbContext>();
             mockILoggingHelper = CreateMock<ILoggingHelper>();
 
-            //Setup for Scenario
+            // Setup for Scenario
             var mockAsynEnumerable1 = new DbAsyncEnumerable<Scenario>(scenarioList);
             var mockScenario = MockDbSet(scenarioList);
             mockScenario.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable1.AsQueryable().Provider);
@@ -91,7 +98,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Scenarios).Returns(mockScenario.Object);
             mockUnitManagerDbContext.Setup(c => c.Scenarios.AsNoTracking()).Returns(mockScenario.Object);
 
-            //Setup for PostalAddress
+            // Setup for PostalAddress
             var mockAsynEnumerable2 = new DbAsyncEnumerable<ScenarioStatus>(scenarioStatusList);
             var mockScenarioStatus = MockDbSet(scenarioStatusList);
             mockScenarioStatus.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable2.AsQueryable().Provider);

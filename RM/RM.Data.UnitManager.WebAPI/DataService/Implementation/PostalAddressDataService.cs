@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -23,7 +22,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
 
         /// <summary>
-        /// Parameterised Constructor 
+        /// Parameterised Constructor
         /// </summary>
         /// <param name="databaseFactory"></param>
         /// <param name="loggingHelper"></param>
@@ -62,7 +61,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             }
         }
 
-
         /// <summary>
         /// Filter PostalAddress based on the search text
         /// </summary>
@@ -89,7 +87,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
             }
         }
 
-
         public async Task<List<PostalAddressDataDTO>> GetPostalAddressDetails(string selectedItem, Guid unitGuid)
         {
             using (loggingHelper.RMTraceManager.StartTrace("DataService.GetPostalAddressDetails(string, Guid)"))
@@ -115,8 +112,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                                join pa in DataContext.PostalAddresses.AsNoTracking() on pch.Postcode equals pa.Postcode
                                                where pa.Postcode == postCode && pa.Thoroughfare == streetName &&
                                                lph.LocationID == unitGuid
-                                               select pa
-                                               ).ToListAsync();
+                                               select pa).ToListAsync();
                     }
                     else
                     {
@@ -126,8 +122,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                                join pa in DataContext.PostalAddresses.AsNoTracking() on pch.Postcode equals pa.Postcode
                                                where pa.Postcode == postCode &&
                                                lph.LocationID == unitGuid
-                                               select pa
-                                               ).ToListAsync();
+                                               select pa).ToListAsync();
                     }
 
                     Mapper.Initialize(cfg =>
@@ -136,7 +131,6 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                     });
 
                     postalAddressDTO = Mapper.Map<List<PostalAddress>, List<PostalAddressDataDTO>>(postalAddress);
-
 
                     /*postalAddress.ForEach(p => p.Postcode1.DeliveryRoutePostcodes.ToList().ForEach(d =>
                     {
@@ -190,15 +184,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                     loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId);
                     return postalAddressDTO;
                 }
-
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return null;
                 }
-
             }
         }
-
-
     }
 }

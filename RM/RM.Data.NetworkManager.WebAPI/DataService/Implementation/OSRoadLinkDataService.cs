@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.DataManagement.NetworkManager.WebAPI.Entities;
 using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.NetworkManager.WebAPI.Entities;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
@@ -66,6 +64,5 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         }
 
         #endregion Public Methods
-
     }
 }

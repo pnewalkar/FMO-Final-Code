@@ -14,6 +14,9 @@ using RM.DataManagement.UnitManager.WebAPI.Entity;
 
 namespace RM.Data.UnitManager.WebAPI.Test.DataService
 {
+    /// <summary>
+    /// This class contains test methods for PostcodeSectorDataService
+    /// </summary>
     [TestFixture]
     public class PostCodeSectorDataServiceFixture : RepositoryFixtureBase
     {
@@ -80,6 +83,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         /// </summary>
         protected override void OnSetup()
         {
+            // Data Setup
             List<PostcodeHierarchy> postcodeHierarchyList = new List<PostcodeHierarchy>()
             {
                 new PostcodeHierarchy()
@@ -102,7 +106,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext = CreateMock<UnitManagerDbContext>();
             mockILoggingHelper = CreateMock<ILoggingHelper>();
 
-            //Setup for PostcodeHierarchy
+            // Setup for PostcodeHierarchy
             var mockAsynEnumerable1 = new DbAsyncEnumerable<PostcodeHierarchy>(postcodeHierarchyList);
             var mockPostcodeHierarchy = MockDbSet(postcodeHierarchyList);
             mockPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable1.AsQueryable().Provider);
@@ -113,7 +117,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.PostcodeHierarchies).Returns(mockPostcodeHierarchy.Object);
             mockUnitManagerDbContext.Setup(c => c.PostcodeHierarchies.AsNoTracking()).Returns(mockPostcodeHierarchy.Object);
 
-            //Setup for PostalAddress
+            // Setup for PostalAddress
             var mockAsynEnumerable2 = new DbAsyncEnumerable<PostalAddress>(postalAddressList);
             var mockPostalAddress = MockDbSet(postalAddressList);
             mockPostalAddress.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable2.AsQueryable().Provider);

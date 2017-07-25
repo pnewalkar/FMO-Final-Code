@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using Moq;
+using NUnit.Framework;
+using RM.CommonLibrary.DataMiddleware;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
+using RM.Data.AccessLink.WebAPI.DataDTOs;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Implementation;
+using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
+using RM.DataManagement.AccessLink.WebAPI.Entities;
 
 namespace RM.DataServices.Tests.DataService
 {
-    using System.Collections.Generic;
-    using System.Data.Entity.Spatial;
-    using CommonLibrary.DataMiddleware;
-    using CommonLibrary.LoggingMiddleware;
-    using Moq;
-    using NUnit.Framework;
-    using CommonLibrary.HelperMiddleware;
-    using DataManagement.AccessLink.WebAPI.DataService.Interfaces;
-    using DataManagement.AccessLink.WebAPI.DTOs;
-    using Data.AccessLink.WebAPI.DataDTOs;
-    using DataManagement.AccessLink.WebAPI.DataService.Implementation;
-    using DataManagement.AccessLink.WebAPI.Entities;
-
+    /// <summary>
+    /// This class contains test methods for AccessLinkDataService.
+    /// </summary>
+    [TestFixture]
     public class AccessLinkDataServiceFixture : RepositoryFixtureBase
     {
         private Mock<AccessLinkDBContext> mockFmoDbContext;
@@ -27,9 +29,12 @@ namespace RM.DataServices.Tests.DataService
         private Guid unit3Guid = new Guid("092C69AE-4382-4183-84FF-BA07543D9C75");
         private Guid user1Id;
         private Guid user2Id;
-        private AccessLinkDataDTO accessLinkDataDto;
         private NetworkLinkDataDTO netWorkLinkDataDto;
+        private AccessLinkDataDTO accessLinkDataDTO;
 
+        /// <summary>
+        /// Test for Load AccessLink.
+        /// </summary>
         [Test]
         public void Test_GetAccessLinks()
         {
@@ -38,13 +43,19 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(actualResult);
         }
 
+        /// <summary>
+        /// Test for Create Automatic AccessLink.
+        /// </summary>
         [Test]
         public void Test_CreateAccessLink()
         {
-            var actualResult = testCandidate.CreateAutomaticAccessLink(netWorkLinkDataDto);
+            var actualResult = testCandidate.CreateAutomaticAccessLink(accessLinkDataDTO);
             Assert.IsNotNull(actualResult);
         }
 
+        /// <summary>
+        /// Test for Create Manual AccessLink.
+        /// </summary>
         [Test]
         public void Test_CreateManualAccessLink()
         {
@@ -52,6 +63,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.IsNotNull(actualResult);
         }
 
+        /// <summary>
+        /// Test for Get Intersection count for deliverypoint.
+        /// </summary>
         [Test]
         public void Test_GetIntersectionCountForDeliveryPoint()
         {
@@ -62,6 +76,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.AreEqual(actualResult, 0);
         }
 
+        /// <summary>
+        /// Test for Get AccessLink count for crossesor OverLaps.
+        /// </summary>
         [Test]
         public void Test_GetAccessLinkCountForCrossesorOverLaps()
         {
@@ -72,6 +89,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.AreEqual(actualResult, 0);
         }
 
+        /// <summary>
+        /// Test for Get AccessLink Crossing operational object.
+        /// </summary>
         [Test]
         public void Test_GetAccessLinksCrossingOperationalObject()
         {
@@ -82,6 +102,9 @@ namespace RM.DataServices.Tests.DataService
             Assert.AreEqual(actualResult.Count, 0);
         }
 
+        /// <summary>
+        /// Setup for Nunit Tests.
+        /// </summary>
         protected override void OnSetup()
         {
             mockLoggingHelper = CreateMock<ILoggingHelper>();
@@ -101,6 +124,23 @@ namespace RM.DataServices.Tests.DataService
             netWorkLinkDataDto = new NetworkLinkDataDTO()
             {
                 ID = Guid.NewGuid(),
+                DataProviderGUID = Guid.NewGuid(),
+                NetworkLinkTypeGUID = Guid.NewGuid(),
+                StartNodeID = Guid.NewGuid(),
+                EndNodeID = Guid.NewGuid(),
+                LinkLength = 40,
+                LinkGeometry = unitBoundary,
+                RowCreateDateTime = DateTime.UtcNow,
+                NetworkNodeDataDTO = new NetworkNodeDataDTO()
+                {
+                    ID = Guid.NewGuid(),
+                    Location = new LocationDataDTO()
+                    {
+                        ID = Guid.NewGuid(),
+                        Shape = unitBoundary,
+                        RowCreateDateTime = DateTime.UtcNow
+                    }
+                },
                 AccessLinkDataDTOs = new AccessLinkDataDTO()
                 {
                     Approved = true,
@@ -108,14 +148,15 @@ namespace RM.DataServices.Tests.DataService
                     WorkloadLengthMeter = 40,
                     LinkDirectionGUID = Guid.NewGuid(),
                     ConnectedNetworkLinkID = Guid.NewGuid(),
-                    AccessLinkStatusDataDTO = new AccessLinkStatusDataDTO()
+                    AccessLinkTypeGUID = Guid.NewGuid(),
+                    AccessLinkStatus = new AccessLinkStatusDataDTO()
                     {
                         ID = Guid.NewGuid(),
                         NetworkLinkID = Guid.NewGuid(),
                         AccessLinkStatusGUID = Guid.NewGuid(),
                         StartDateTime = DateTime.UtcNow,
                         RowCreateDateTime = DateTime.UtcNow
-                    }
+                    },
                 }
             };
 
@@ -125,14 +166,14 @@ namespace RM.DataServices.Tests.DataService
             var mockAccessLinkDataService = MockDbSet(accessLink);
             mockFmoDbContext.Setup(x => x.Set<AccessLink>()).Returns(mockAccessLinkDataService.Object);
             mockFmoDbContext.Setup(x => x.AccessLinks).Returns(mockAccessLinkDataService.Object);
-            //  mockFmoDbContext.Setup(c => c.AccessLinks.AsNoTracking()).Returns(mockAccessLinkDataService.Object);
+            // mockFmoDbContext.Setup(c => c.AccessLinks.AsNoTracking()).Returns(mockAccessLinkDataService.Object);
             mockAccessLinkDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockAccessLinkDataService.Object);
             mockAccessLinkDataService.Setup(x => x.AsNoTracking()).Returns(mockAccessLinkDataService.Object);
 
             var mockAccessLinkDataService1 = MockDbSet(networkLinks);
             mockFmoDbContext.Setup(x => x.Set<NetworkLink>()).Returns(mockAccessLinkDataService1.Object);
             mockFmoDbContext.Setup(x => x.NetworkLinks).Returns(mockAccessLinkDataService1.Object);
-            //  mockFmoDbContext.Setup(c => c.NetworkLinks.AsNoTracking()).Returns(mockAccessLinkDataService1.Object);
+            // mockFmoDbContext.Setup(c => c.NetworkLinks.AsNoTracking()).Returns(mockAccessLinkDataService1.Object);
             mockAccessLinkDataService1.Setup(x => x.AsNoTracking()).Returns(mockAccessLinkDataService1.Object);
 
             var mockAccessLinkDataService4 = MockDbSet(deliveryPoint);

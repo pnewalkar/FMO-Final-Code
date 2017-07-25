@@ -45,7 +45,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="bbox">bbox as string</param>
         /// <returns>Json Result of Delivery Points</returns>
-        [Authorize]
+     //   [Authorize]
         [Route("deliverypoints")]
         [HttpGet]
         public JsonResult GetDeliveryPoints(string bbox)
@@ -68,7 +68,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="Guid">The Guid </param>
         /// <returns>The coordinates of the delivery point</returns>
-        [Authorize]
+     //   [Authorize]
         [Route("deliverypoint/Guid/{id}")]
         [HttpGet]
         public IActionResult GetDeliveryPointByGuId(Guid id, [FromQuery]string fields)
@@ -111,7 +111,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryPointDto">deliveryPointDto</param>
         /// <returns>createDeliveryPointModelDTO</returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+     //   [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("deliverypoint/newdeliverypoint")]
         [HttpPost]
         public async Task<IActionResult> CreateDeliveryPoint([FromBody]AddDeliveryPointDTO deliveryPointDto)
@@ -152,7 +152,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="deliveryPointModelDto">deliveryPointDTO</param>
         /// <returns>updateDeliveryPointModelDTO</returns>
-        [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+     //   [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
         [Route("deliverypoint")]
         [HttpPut]
         public async Task<IActionResult> UpdateDeliveryPoint([FromBody] DeliveryPointModelDTO deliveryPointModelDto)
@@ -214,7 +214,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// <param name="searchText">searchText as string</param>
         /// <param name="unitGuid">The unit unique identifier.</param>
         /// <returns>Task List of Delivery Point Dto</returns>
-        [Authorize]
+       // [Authorize]
         [Route("deliverypoints/basic/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> GetDeliveryPointsForBasicSearch(string searchText)
@@ -249,7 +249,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">The text to be searched</param>
         /// <returns>The total count of delivery point</returns>
-        [Authorize]
+      //  [Authorize]
         [Route("deliverypoints/count/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> GetDeliveryPointsCount(string searchText)
@@ -283,7 +283,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// </summary>
         /// <param name="searchText">The search text.</param>
         /// <returns></returns>
-        [Authorize]
+       // [Authorize]
         [Route("deliverypoints/advance/{searchText}")]
         [HttpGet]
         public async Task<IActionResult> GetDeliveryPointsForAdvancedSearch(string searchText)
@@ -389,7 +389,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// <param name="deliveryPointDto">deliveryPointDto as DTO</param>
         /// <returns>updated delivery point</returns>
         [Authorize]
-        [HttpPost("deliverypoint/location")]
+        [HttpPut("deliverypoint/location")]
         public async Task<IActionResult> UpdateDeliveryPointLocationOnID([FromBody]string deliveryPointDTO)
         {
             try
@@ -430,7 +430,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             {
                 using (loggingHelper.RMTraceManager.StartTrace("WebService.GetDeliveryPointByUDPRNforBatch"))
                 {
-                    string methodName = typeof(DeliveryPointController) + "." + nameof(InsertDeliveryPoint);
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(GetDeliveryPointByUDPRNforBatch);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
                     DeliveryPointDTO deliveryPointDTO = await businessService.GetDeliveryPointByUDPRNforBatch(udprn);
@@ -601,19 +601,39 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-        [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
-        public Task<bool> UpdatePAFIndicator(Guid addressGuid, [FromBody] Guid pafIndicator)
+        /// <summary>
+        /// This method will call Delivery point web api which is used to
+        /// update delivery point location, status and dpuseindicator for resp PostalAddress which has type <USR>.
+        /// </summary>
+        /// <param name="objDeliveryPoint">Delivery point dto as object</param>
+        /// <returns>bool</returns>
+        [Route("deliverypoint/batch")]
+        [HttpPut]
+
+        // [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
+        public async Task<IActionResult> UpdateDeliveryPoint([FromBody] string objDeliveryPointJson)
         {
-            using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdatePAFIndicator"))
+            try
             {
-                string methodName = typeof(DeliveryPointController) + "." + nameof(UpdatePAFIndicator);
-                loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+                using (loggingHelper.RMTraceManager.StartTrace("WebService.UpdateDeliveryPoint"))
+                {
+                    string methodName = typeof(DeliveryPointController) + "." + nameof(UpdateDeliveryPoint);
+                    loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                var isDeliveryPointUpdated = businessService.UpdatePAFIndicator(addressGuid, pafIndicator);
+                    bool success = await businessService.UpdateDeliveryPointLocationOnID(JsonConvert.DeserializeObject<DeliveryPointDTO>(objDeliveryPointJson)) != Guid.Empty;
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    return Ok(success);
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var exception in ae.InnerExceptions)
+                {
+                    loggingHelper.Log(exception, TraceEventType.Error);
+                }
 
-                loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-                return isDeliveryPointUpdated;
+                var realExceptions = ae.Flatten().InnerException;
+                throw realExceptions;
             }
         }
 
