@@ -90,11 +90,11 @@
 
                     Mapper.Initialize(cfg =>
                     {
-                        cfg.CreateMap<AccessLinkDataDTO, AccessLink>();
-                        cfg.CreateMap<AccessLinkStatusDataDTO, AccessLinkStatus>();
-                        cfg.CreateMap<NetworkLinkDataDTO, NetworkLink>();
-                        cfg.CreateMap<NetworkNodeDataDTO, NetworkNode>();
-                        cfg.CreateMap<LocationDataDTO, Location>();
+                        cfg.CreateMap<AccessLinkDataDTO, AccessLink>().MaxDepth(1);
+                        cfg.CreateMap<AccessLinkStatusDataDTO, AccessLinkStatus>().MaxDepth(2);
+                        cfg.CreateMap<NetworkLinkDataDTO, NetworkLink>().MaxDepth(1);
+                        cfg.CreateMap<NetworkNodeDataDTO, NetworkNode>().MaxDepth(1);
+                        cfg.CreateMap<LocationDataDTO, Location>().MaxDepth(2);
                     });
                     Mapper.Configuration.CreateMapper();
 
