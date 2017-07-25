@@ -7,7 +7,8 @@ advanceSearchService.$inject = ['advanceSearchAPIService',
                                 'mapFactory',
                                 'CommonConstants',
                                 '$state',
-                                'searchDPSelectedService'];
+                                 'roleAccessService',
+                                 'searchDPSelectedService'];
 
 function advanceSearchService(advanceSearchAPIService,
                               $q,                            
@@ -15,6 +16,7 @@ function advanceSearchService(advanceSearchAPIService,
                               mapFactory,
                               CommonConstants,
                               $state,
+                              roleAccessService,
                               searchDPSelectedService) {
     
     
@@ -24,6 +26,11 @@ function advanceSearchService(advanceSearchAPIService,
     var deliveryRouteobj = null;
     var route = [];
     var obj = null;
+    var arrDeliverypoints = [];
+    var arrPostCodes = [];
+    var arrStreetNames = [];
+    var arrDeliveryRoutes = [];
+    var arrRoutes = [];
 
     return {
         queryAdvanceSearch: queryAdvanceSearch,
@@ -34,12 +41,7 @@ function advanceSearchService(advanceSearchAPIService,
     function queryAdvanceSearch(query) {
         var deferred = $q.defer();
         var advanceSearchResults = null;
-        var arrDeliverypoints = [];
-        var arrPostCodes = [];
-        var arrStreetNames = [];
-        var arrDeliveryRoutes = [];
-        var arrRoutes = [];
-
+      
         advanceSearchAPIService.advanceSearch(query).then(function (response) {
             advanceSearchResults = response;
             angular.forEach(advanceSearchResults.searchResultItems, function (value, key) {
@@ -56,7 +58,7 @@ function advanceSearchService(advanceSearchAPIService,
                    obj = { 'displayText': value.displayText }
                    arrStreetNames.push(obj);
                 }
-                if (value.type === CommonConstants.EntityType.Route) {
+              else  if (value.type === CommonConstants.EntityType.Route) {
                     obj = { 'displayText': value.displayText }
                     arrDeliveryRoutes.push(obj);
                 }
@@ -91,19 +93,8 @@ function advanceSearchService(advanceSearchAPIService,
             else {
                 deliveryRouteobj = { 'type': CommonConstants.EntityType.Route, 'name': arrDeliveryRoutes, 'open': false };
             }
-     
-            if (arrPostCodes.length > 0) {
-                arrRoutes.push(postCodeObj);
-            }
-            if (arrStreetNames.length > 0) {
-                arrRoutes.push(streetnameObj);
-            }
-            if (arrDeliverypoints.length > 0) {
-                arrRoutes.push(deliveryPointObj);
-            }
-            if (arrDeliveryRoutes.length > 0) {
-                arrRoutes.push(deliveryRouteobj);
-            }
+
+            groupSearchEntities();
             deferred.resolve(arrRoutes);
         });
         return deferred.promise;
@@ -147,6 +138,70 @@ function advanceSearchService(advanceSearchAPIService,
                       selectedDeliveryPoint: deliveryPointDetails
                   }, { reload: true });
               });
+    }
+
+    function groupSearchEntities() {
+        var userRoleDetails = roleAccessService.fetchActionItems().RolesActionResult;
+        if (userRoleDetails && userRoleDetails.length > 0) {
+            switch (userRoleDetails[0].RoleName) {
+                case CommonConstants.UserType.DeliveryUser:
+                    {
+                        arrRoutes = [];
+                        if (arrPostCodes.length > 0) {
+                            arrRoutes.push(postCodeObj);
+                        }
+                        if (arrStreetNames.length > 0) {
+                            arrRoutes.push(streetnameObj);
+                        }
+                        if (arrDeliverypoints.length > 0) {
+                            arrRoutes.push(deliveryPointObj);
+                        }
+                        if (arrDeliveryRoutes.length > 0) {
+                            arrRoutes.push(deliveryRouteobj);
+                        }
+                        break;
+                    }
+                case CommonConstants.UserType.CollectionUser:
+                    {
+                        arrRoutes = [];
+                        if (arrPostCodes.length > 0) {
+                            arrRoutes.push(postCodeObj);
+                        }
+                        if (arrDeliveryRoutes.length > 0) {
+                            arrRoutes.push(deliveryRouteobj);
+                        }
+                        if (arrStreetNames.length > 0) {
+                            arrRoutes.push(streetnameObj);
+                        }
+                        if (arrDeliverypoints.length > 0) {
+                            arrRoutes.push(deliveryPointObj);
+                        }
+                        break;
+                    }
+                case CommonConstants.UserType.ManagerUser:
+                    {
+                        arrRoutes = [];
+                        if (arrPostCodes.length > 0) {
+                            arrRoutes.push(postCodeObj);
+                        }
+
+                        if (arrDeliverypoints.length > 0) {
+                            arrRoutes.push(deliveryPointObj);
+                        }
+                        if (arrStreetNames.length > 0) {
+                            arrRoutes.push(streetnameObj);
+                        }
+                        if (arrDeliveryRoutes.length > 0) {
+                            arrRoutes.push(deliveryRouteobj);
+                        }
+                        break;
+
+                    }
+                default:
+                    break;
+
+            }
+        }
     }
    
 }
