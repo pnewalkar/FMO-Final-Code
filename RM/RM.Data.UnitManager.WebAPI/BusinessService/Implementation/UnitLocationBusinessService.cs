@@ -30,7 +30,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
         private const int BNGCOORDINATESYSTEM = 27700;
         private const string PostCodeType = "Postcode Type";
         private const string PostalAddressType = "PostalAddressType";
-        private const int searchResultCount = 5;
+        private const int SearchResultCount = 5;
 
         #region property declaration
 
@@ -160,7 +160,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                     SearchText = searchText,
                     UserUnitLocationId = userUnit,
                     PostcodeTypeGUID = postcodeTypeGUID,
-                    SearchResultCount = searchResultCount
+                    SearchResultCount = SearchResultCount
                 };
 
                 var postcodeUnits = await postCodeDataService.GetPostcodeUnitForBasicSearch(searchInputs).ConfigureAwait(false);
@@ -194,7 +194,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                     SearchText = searchText,
                     UserUnitLocationId = userUnit,
                     PostcodeTypeGUID = postcodeTypeGUID,
-                    SearchResultCount = searchResultCount
+                    SearchResultCount = SearchResultCount
                 };
 
                 var postCodeUnitCount = await postCodeDataService.GetPostcodeUnitCount(searchInputs).ConfigureAwait(false);
@@ -224,7 +224,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.BusinessService.Implementation
                     SearchText = searchText,
                     UserUnitLocationId = userUnit,
                     PostcodeTypeGUID = postcodeTypeGUID,
-                    SearchResultCount = searchResultCount
+                    SearchResultCount = SearchResultCount
                 };
 
                 var postcodeUnits = await postCodeDataService.GetPostcodeUnitForAdvanceSearch(searchInputs).ConfigureAwait(false);

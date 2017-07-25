@@ -17,7 +17,8 @@ mapService.$inject = ['$http',
                      '$stateParams',
                      '$rootScope',
                      'layersAPIService',
-                     'CommonConstants'
+                     'CommonConstants',
+                     'searchDPSelectedService'
 ];
 
 function mapService($http,
@@ -36,7 +37,8 @@ function mapService($http,
                     $stateParams,
                     $rootScope,
                     layersAPIService,
-                    CommonConstants
+                    CommonConstants,
+                    searchDPSelectedService
                    ) {
     var vm = this;
     vm.map = null;
@@ -112,8 +114,21 @@ function mapService($http,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing,
         setPolygonTransparency: setPolygonTransparency,
-        getLayerSummary: getLayerSummary
+        getLayerSummary: getLayerSummary,
+        deselectDP: deselectDP
     }
+
+    function deselectDP() {
+        var map = mapFactory.getMap();
+        map.on('click', function (e) {
+            var dpSelected = searchDPSelectedService.getSelectedDP();
+            if (dpSelected !== null && dpSelected) {
+                var deliveryPointDetails = null;
+                showDeliveryPointDetails(deliveryPointDetails);
+            }
+        });
+    }
+
 
     function LicenceInfo(displayText) {
         return mapFactory.LicenceInfo(displayText);

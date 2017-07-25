@@ -563,7 +563,7 @@
                     throw new ArgumentNullException(nameof(deliveryPointDto), string.Format(ErrorConstants.Err_ArgumentmentNullException, deliveryPointDto));
                 }
 
-                var deliveryPointId = await deliveryPointsDataService.UpdateDeliveryPointLocationOnID(ConvertToDataDTO((deliveryPointDto)));
+                var deliveryPointId = await deliveryPointsDataService.UpdateDeliveryPointLocationOnID(ConvertToDataDTO(deliveryPointDto));
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
                 return deliveryPointId;

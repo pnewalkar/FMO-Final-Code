@@ -4,7 +4,7 @@ using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing
 {
-    [Serializable()]
+    [Serializable]
     [XmlType(DTOConstants.ADDRESSLOCATIONXMLROOT)]
     public class AddressLocationUSRDTO
     {

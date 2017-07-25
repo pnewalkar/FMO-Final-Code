@@ -106,7 +106,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress</param>
         /// <returns>bool</returns>
-        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress);
+        Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress);
 
         /// <summary>
         ///  Get Postal Addresses on adress guid's  as search criteria

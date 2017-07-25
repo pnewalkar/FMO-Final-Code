@@ -38,6 +38,10 @@
         }
 
         /// <summary>
+        /// Common steps to configure mapper for PostalAddress
+        /// </summary>
+
+        /// <summary>
         /// Delete postal Address records do not have an associated Delivery Point
         /// </summary>
         /// <param name="lstUDPRN">List of UDPRN</param>
@@ -322,7 +326,7 @@
         /// </summary>
         /// <param name="objPostalAddress">Postal address</param>
         /// <returns>Whether the record is a duplicate or not</returns>
-        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress)
+        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDataDTO objPostalAddress)
         {
             bool isDuplicate = false;
 
@@ -569,6 +573,17 @@
             }
         }
 
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+            });
+            Mapper.Configuration.CreateMapper();
+        }
+
         /// <summary>
         /// Get the Postal Address Entity based on the Address Fields
         /// </summary>
@@ -596,8 +611,7 @@
 
                 if (!string.IsNullOrEmpty(objPostalAddress.BuildingName))
                 {
-                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName,
-                        StringComparison.OrdinalIgnoreCase));
+                    postalAddress = postalAddress.Where(n => n.BuildingName.Equals(objPostalAddress.BuildingName, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (objPostalAddress.BuildingNumber != null)
@@ -607,34 +621,28 @@
 
                 if (!string.IsNullOrEmpty(objPostalAddress.SubBuildingName))
                 {
-                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName,
-                        StringComparison.OrdinalIgnoreCase));
+                    postalAddress = postalAddress.Where(n => n.SubBuildingName.Equals(objPostalAddress.SubBuildingName, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (!string.IsNullOrEmpty(objPostalAddress.OrganisationName))
                 {
-                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName,
-                        StringComparison.OrdinalIgnoreCase));
+                    postalAddress = postalAddress.Where(n => n.OrganisationName.Equals(objPostalAddress.OrganisationName, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (!string.IsNullOrEmpty(objPostalAddress.DepartmentName))
                 {
-                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName,
-                        StringComparison.OrdinalIgnoreCase));
+                    postalAddress = postalAddress.Where(n => n.DepartmentName.Equals(objPostalAddress.DepartmentName, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (!string.IsNullOrEmpty(objPostalAddress.Thoroughfare))
                 {
-                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(
-                        objPostalAddress.Thoroughfare,
-                        StringComparison.OrdinalIgnoreCase));
+                    postalAddress = postalAddress.Where(n => n.Thoroughfare.Equals(objPostalAddress.Thoroughfare, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (!string.IsNullOrEmpty(objPostalAddress.DependentThoroughfare))
                 {
                     postalAddress =
-                        postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare,
-                            StringComparison.OrdinalIgnoreCase));
+                        postalAddress.Where(n => n.DependentThoroughfare.Equals(objPostalAddress.DependentThoroughfare, StringComparison.OrdinalIgnoreCase));
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
@@ -754,20 +762,6 @@
                 fileProcessingLog.LogFileException(objFileProcessingLog);
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
             }
-        }
-
-        /// <summary>
-        /// Common steps to configure mapper for PostalAddress
-        /// </summary>
-        private static void ConfigureMapper()
-        {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
-                cfg.CreateMap<PostalAddressStatus, PostalAddressStatusDataDTO>().MaxDepth(2);
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
-            });
-            Mapper.Configuration.CreateMapper();
         }
 
         /* To be a part of Unit manager
