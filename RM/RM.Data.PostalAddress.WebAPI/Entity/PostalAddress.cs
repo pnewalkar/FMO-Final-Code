@@ -8,7 +8,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
     [Table("FMO.PostalAddress")]
     public partial class PostalAddress
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public PostalAddress()
         {
             DeliveryPoints = new HashSet<DeliveryPoint>();
@@ -72,10 +72,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.Entities
 
         public DateTime RowCreateDateTime { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<DeliveryPoint> DeliveryPoints { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<PostalAddressStatus> PostalAddressStatus { get; set; }
     }
 }

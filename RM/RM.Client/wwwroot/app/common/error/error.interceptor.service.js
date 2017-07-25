@@ -14,9 +14,10 @@ function errorInterceptorService($rootScope, $q, $translate) {
         
         if (rejection.data && rejection.data.message) {
             message = rejection.data.message;
+            $rootScope.$broadcast("showError", message);
         };
 
-        $rootScope.$broadcast("showError", message);
+      
 
         return $q.reject(rejection);
     };

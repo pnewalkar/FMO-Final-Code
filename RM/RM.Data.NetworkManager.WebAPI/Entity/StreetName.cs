@@ -9,7 +9,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
     [Table("FMO.StreetName")]
     public partial class StreetName
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public StreetName()
         {
             NetworkLinks = new HashSet<NetworkLink>();
@@ -63,7 +63,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
         [StringLength(30)]
         public string AdministrativeArea { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<NetworkLink> NetworkLinks { get; set; }
     }
 }

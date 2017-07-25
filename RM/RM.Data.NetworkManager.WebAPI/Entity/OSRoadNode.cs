@@ -9,7 +9,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
     [Table("FMO.OSRoadNode")]
     public partial class OSRoadNode
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public OSRoadNode()
         {
             OSRoadLinks = new HashSet<OSRoadLink>();
@@ -46,10 +46,10 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
 
         public virtual NetworkNode NetworkNode { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<OSRoadLink> OSRoadLinks { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<OSRoadLink> OSRoadLinks1 { get; set; }
     }
 }

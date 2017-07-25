@@ -7,6 +7,11 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
 {
     public class NetworkNodeDataDTO
     {
+        public NetworkNodeDataDTO()
+        {
+            this.Location = new LocationDataDTO();
+        }
+
         public Guid ID { get; set; }
 
         public Guid NetworkNodeType_GUID { get; set; }
@@ -17,13 +22,9 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
 
         public DateTime RowCreateDateTime { get; set; }
 
-        // public virtual DeliveryPoint DeliveryPoint { get; set; }
+        public DeliveryPointDataDTO DeliveryPoint { get; set; }
 
-        public virtual LocationDataDTO Location { get; set; }
+        public LocationDataDTO Location { get; set; }
 
-       
-        public virtual ICollection<NetworkLinkDataDTO> NetworkLinks { get; set; }
-
-        public virtual ICollection<NetworkLinkDataDTO> NetworkLinks1 { get; set; }
     }
 }

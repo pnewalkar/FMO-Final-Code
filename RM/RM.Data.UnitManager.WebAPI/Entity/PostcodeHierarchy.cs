@@ -4,12 +4,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.PostcodeHierarchy")]
     public partial class PostcodeHierarchy
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public PostcodeHierarchy()
         {
             LocationPostcodeHierarchies = new HashSet<LocationPostcodeHierarchy>();
@@ -28,7 +27,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.Entity
 
         public DateTime RowCreateDateTime { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<LocationPostcodeHierarchy> LocationPostcodeHierarchies { get; set; }
 
         public virtual Postcode Postcode1 { get; set; }

@@ -5,7 +5,6 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
 {
     public class RouteSummaryGroup
     {
-      
         /// <summary>
         /// Constructs route summary group with an initial address
         /// </summary>
@@ -48,6 +47,11 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         /// Gets or sets the current group type
         /// </summary>
         public GroupType CurrentGroupType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last address in the group
+        /// </summary>
+        public RouteLogSequencedPointsDTO LastAddress { get; set; }
 
         /// <summary>
         /// Gets the description for the group
@@ -169,9 +173,9 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         }
 
         /// <summary>
-        /// Gets or sets the last address in the group
+        /// The list of addresses in the group
         /// </summary>
-        public RouteLogSequencedPointsDTO LastAddress { get; set; }
+        private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
 
         /// <summary>
         /// Gets the address list
@@ -206,10 +210,5 @@ namespace RM.Operational.RouteLog.WebAPI.BusinessService
         public string SubBuildingName { get; set; }
 
         public string BuildingName { get; set; }
-
-        /// <summary>
-        /// The list of addresses in the group
-        /// </summary>
-        private List<RouteLogSequencedPointsDTO> addressList = new List<RouteLogSequencedPointsDTO>();
     }
 }
