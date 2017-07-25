@@ -81,7 +81,7 @@ function MapFactory($http,
 
     };
 
-    function LicenceInfo(displayText, layerName, layerSource) {
+    function LicenceInfo(layerName, layerSource) {
         var map = getMap();
         var layer = map.getLayers();
         if (layerName !== undefined && layerName !== GlobalSettings.baseLayerName) {

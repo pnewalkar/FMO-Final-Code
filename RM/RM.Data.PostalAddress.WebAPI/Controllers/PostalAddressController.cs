@@ -129,77 +129,6 @@ namespace Fmo.API.Services.Controllers
             }
         }
 
-        //// TODO : to be moved to unit manager as per new archimate
-        ///// <summary>
-        ///// Api searches pstcode and thorough in postal address entity on basis of searhtext
-        ///// </summary>
-        ///// <param name="searchText">searchText</param>
-        ///// <returns></returns>
-        //[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        //[HttpGet("postaladdress/search/{searchText}")]
-        //public async Task<IActionResult> SearchAddressdetails(string searchText)
-        //{
-        //    try
-        //    {
-        //        string methodName = typeof(PostalAddressController) + "." + nameof(SearchAddressdetails);
-        //        using (loggingHelper.RMTraceManager.StartTrace("Controller.SearchAddressdetails"))
-        //        {
-        //            loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-        //            List<string> postalAddressList = await businessService.GetPostalAddressSearchDetails(searchText, CurrentUserUnit);
-
-        //            loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-        //            return Ok(postalAddressList);
-        //        }
-        //    }
-        //    catch (AggregateException ae)
-        //    {
-        //        foreach (var exception in ae.InnerExceptions)
-        //        {
-        //            loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
-        //        }
-
-        //        var realExceptions = ae.Flatten().InnerException;
-        //        throw realExceptions;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Filters postal address on basis of postcode
-        ///// </summary>
-        ///// <param name="postCode">postcode</param>
-        ///// <returns></returns>
-        //[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        //[HttpGet("postaladdress/filter")]
-        //public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
-        //{
-        //    try
-        //    {
-        //        using (loggingHelper.RMTraceManager.StartTrace("Controller.GetAddressByPostCode"))
-        //        {
-        //            string methodName = MethodHelper.GetActualAsyncMethodName();
-        //            loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionStarted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressControllerMethodEntryEventId, LoggerTraceConstants.Title);
-
-        //            PostalAddressDTO postalAddressDto = await businessService.GetPostalAddressDetails(selectedItem, CurrentUserUnit);
-
-        //            loggingHelper.LogMethodExit(methodName, priority, exitEventId);
-
-        //            return Ok(postalAddressDto);
-        //        }
-        //    }
-        //    catch (AggregateException ae)
-        //    {
-        //        foreach (var exception in ae.InnerExceptions)
-        //        {
-        //            loggingHelper.Log(exception, System.Diagnostics.TraceEventType.Error);
-        //        }
-
-        //        var realExceptions = ae.Flatten().InnerException;
-        //        throw realExceptions;
-        //    }
-        //}
-
         /// <summary>
         ///  Filters postal address on basis of postal address id.
         /// </summary>
@@ -274,7 +203,7 @@ namespace Fmo.API.Services.Controllers
                 string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateNybRecords);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                string postCode = businessService.CheckForDuplicateNybRecords(objPostalAddress);
+                string postCode = await businessService.CheckForDuplicateNybRecords(objPostalAddress);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
@@ -297,7 +226,7 @@ namespace Fmo.API.Services.Controllers
                 string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                bool isDuplicate = businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
+                bool isDuplicate = await businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 

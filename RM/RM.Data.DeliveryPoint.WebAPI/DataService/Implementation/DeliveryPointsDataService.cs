@@ -218,6 +218,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                                 || x.PostalAddress.DependentLocality.Contains(searchText)))
                                 .Select(l => new DeliveryPointDataDTO
                                 {
+                                    ID = l.ID,
+                                    DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                                    PostalAddressID = l.PostalAddressID,
                                     PostalAddress = new PostalAddressDataDTO
                                     {
                                         OrganisationName = l.PostalAddress.OrganisationName,
@@ -268,6 +271,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                                                                      searchText)))
                 .Select(l => new DeliveryPointDataDTO
                 {
+                    ID = l.ID,
+                    DeliveryPointUseIndicatorGUID = l.DeliveryPointUseIndicatorGUID,
+                    PostalAddressID = l.PostalAddressID,
                     PostalAddress = new PostalAddressDataDTO
                     {
                         OrganisationName = l.PostalAddress.OrganisationName,
@@ -492,7 +498,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         {
             RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO addDeliveryPointDto = default(RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO);
 
-            //var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
+            // var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
             //                      join pa in DataContext.PostalAddresses.AsNoTracking() on dp.PostalAddressID equals pa.ID
             //                      join al in DataContext.NetworkNodes.AsNoTracking() on pa.UDPRN equals al.UDPRN
             //                       dp.pos.UDPRN == udprn
@@ -503,24 +509,24 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             //                          AddressLocation = al,
             //                      }).SingleOrDefault();
 
-            //Mapper.Initialize(cfg =>
-            //{
+            // Mapper.Initialize(cfg =>
+            // {
             //    cfg.CreateMap<DeliveryPoint, DeliveryPointDTO>();
             //    cfg.CreateMap<PostalAddress, PostalAddressDTO>();
             //    cfg.CreateMap<AddressLocation, AddressLocationDTO>();
-            //});
+            // });
 
-            //Mapper.Configuration.CreateMapper();
+            // Mapper.Configuration.CreateMapper();
 
-            //if (deliveryPoints != null)
-            //{
+            // if (deliveryPoints != null)
+            // {
             //    addDeliveryPointDto = new AddDeliveryPointDTO()
             //    {
             //        DeliveryPointDTO = Mapper.Map<DeliveryPoint, DeliveryPointDTO>(deliveryPoints.DeliveryPoint),
             //        AddressLocationDTO = Mapper.Map<AddressLocation, AddressLocationDTO>(deliveryPoints.AddressLocation),
             //        PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
             //    };
-            //}
+            // }
             return addDeliveryPointDto;
         }
 
@@ -680,6 +686,21 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
         #region Private Methods
 
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
+                cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(2);
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().MaxDepth(1);
+            });
+
+            Mapper.Configuration.CreateMapper();
+        }
+
         /// <summary>
         /// This method is used to Get delivery Point boundingBox data.
         /// </summary>
@@ -718,21 +739,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                 return deliveryPointDTOs;
             }
-        }
-
-        private static void ConfigureMapper()
-        {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
-                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
-                cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(2);
-                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
-                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().MaxDepth(2);
-                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().MaxDepth(1);
-            });
-
-            Mapper.Configuration.CreateMapper();
         }
 
         #endregion Private Methods

@@ -17,7 +17,8 @@ mapService.$inject = ['$http',
                      '$stateParams',
                      '$rootScope',
                      'layersAPIService',
-                     'CommonConstants'
+                     'CommonConstants',
+                     'searchDPSelectedService'
 ];
 
 function mapService($http,
@@ -36,7 +37,8 @@ function mapService($http,
                     $stateParams,
                     $rootScope,
                     layersAPIService,
-                    CommonConstants
+                    CommonConstants,
+                    searchDPSelectedService
                    ) {
     var vm = this;
     vm.map = null;
@@ -111,8 +113,22 @@ function mapService($http,
         setOriginalSize: setOriginalSize,
         LicenceInfo: LicenceInfo,
         baseLayerLicensing: baseLayerLicensing,
-        setPolygonTransparency: setPolygonTransparency
+        setPolygonTransparency: setPolygonTransparency,
+        getLayerSummary: getLayerSummary,
+        deselectDP: deselectDP
     }
+
+    function deselectDP() {
+        var map = mapFactory.getMap();
+        map.on('click', function (e) {
+            var dpSelected = searchDPSelectedService.getSelectedDP();
+            if (dpSelected !== null && dpSelected) {
+                var deliveryPointDetails = null;
+                showDeliveryPointDetails(deliveryPointDetails);
+            }
+        });
+    }
+
 
     function LicenceInfo(displayText) {
         return mapFactory.LicenceInfo(displayText);
@@ -173,7 +189,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchDeliveryPoints(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.deliveryPointLayerName;
-                    mapFactory.LicenceInfo("", layerName, deliveryPointsVector);
+                    mapFactory.LicenceInfo(layerName, deliveryPointsVector);
                     loadFeatures(deliveryPointsVector, response);
                 });
             }
@@ -202,7 +218,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchAccessLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.accessLinkLayerName;
-                    mapFactory.LicenceInfo("", layerName, accessLinkVector);
+                    mapFactory.LicenceInfo(layerName, accessLinkVector);
                     loadFeatures(accessLinkVector, response);
                 });
             }
@@ -217,7 +233,7 @@ function mapService($http,
                 var authData = angular.fromJson(sessionStorage.getItem('authorizationData'));
                 layersAPIService.fetchRouteLinks(extent, authData).then(function (response) {
                     var layerName = GlobalSettings.roadLinkLayerName;
-                    mapFactory.LicenceInfo("", layerName, roadLinkVector);
+                    mapFactory.LicenceInfo(layerName, roadLinkVector);
                     loadFeatures(roadLinkVector, response);
                 });
             }
@@ -229,7 +245,7 @@ function mapService($http,
             }),
             loader: function (extent) {
                 var layerName = GlobalSettings.unitBoundaryLayerName;
-                mapFactory.LicenceInfo("", layerName, unitBoundaryVector);
+                mapFactory.LicenceInfo(layerName, unitBoundaryVector);
             }
         });
 
@@ -323,9 +339,10 @@ function mapService($http,
         vm.showRoadPanel = false;
     }
 
-    function baseLayerLicensing() {
-        mapFactory.LicenceInfo("Base Layers", "Base Layer", null);
+    function baseLayerLicensing(selectedLayer) {
+        mapFactory.LicenceInfo(selectedLayer, null);
     }
+
     function mapLayers() {
         return mapFactory.getAllLayers();
     }

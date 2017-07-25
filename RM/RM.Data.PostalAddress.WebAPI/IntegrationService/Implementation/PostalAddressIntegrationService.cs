@@ -193,10 +193,10 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         ///// </summary>
         ///// <param name="addressGuid">addressGuid instead of udprn</param>
         ///// <returns>DeliveryPointDTO</returns>
-        //public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
-        //{
-        //    //using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByID"))
-        //    //{
+        // public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
+        // {
+        //    // using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByID"))
+        //    // {
         //    string methodName = MethodBase.GetCurrentMethod().Name;
 
         //    // method logic here
@@ -213,7 +213,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
         //    return deliveryPoint;
 
         //    // }
-        //}
+        // }
 
         /// <summary>
         /// Get the delivery points by the Postal Address Guid
@@ -255,11 +255,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(InsertDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                // method logic here
-                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
+                var jsonSerializerSettings = new JsonSerializerSettings()
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
-                }));
+                };
+
+                // method logic here
+                HttpResponseMessage result = await httpHandler.PostAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, jsonSerializerSettings));
                 if (!result.IsSuccessStatusCode)
                 {
                     // Log error with statuscode
@@ -287,11 +289,13 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
                 string methodName = typeof(PostalAddressIntegrationService) + "." + nameof(UpdateDeliveryPoint);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                // method logic here
-                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, new JsonSerializerSettings()
+                var jsonSerializerSettings = new JsonSerializerSettings()
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
-                }));
+                };
+
+                // method logic here
+                HttpResponseMessage result = await httpHandler.PutAsJsonAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/", JsonConvert.SerializeObject(objDeliveryPoint, jsonSerializerSettings));
 
                 // (deliveryPointManagerWebAPIName + "deliverypoint/batch/" + addressId, deliveryPointUseIndicatorPAF);
                 if (!result.IsSuccessStatusCode)

@@ -17,5 +17,7 @@
         public string EncodedString { get; set; }
 
         public string License { get; set; }
+
+        public string MapArea { get; set; }
     }
 }
