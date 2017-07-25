@@ -30,6 +30,7 @@ namespace RM.DataServices.Tests.DataService
         private Guid user1Id;
         private Guid user2Id;
         private NetworkLinkDataDTO netWorkLinkDataDto;
+        private AccessLinkDataDTO accessLinkDataDTO;
 
         /// <summary>
         /// Test for Load AccessLink.
@@ -48,7 +49,7 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public void Test_CreateAccessLink()
         {
-            var actualResult = testCandidate.CreateAutomaticAccessLink(netWorkLinkDataDto);
+            var actualResult = testCandidate.CreateAutomaticAccessLink(accessLinkDataDTO);
             Assert.IsNotNull(actualResult);
         }
 
@@ -134,7 +135,7 @@ namespace RM.DataServices.Tests.DataService
                 NetworkNodeDataDTO = new NetworkNodeDataDTO()
                 {
                     ID = Guid.NewGuid(),
-                    LocationDatatDTO = new LocationDataDTO()
+                    Location = new LocationDataDTO()
                     {
                         ID = Guid.NewGuid(),
                         Shape = unitBoundary,
@@ -149,7 +150,7 @@ namespace RM.DataServices.Tests.DataService
                     LinkDirectionGUID = Guid.NewGuid(),
                     ConnectedNetworkLinkID = Guid.NewGuid(),
                     AccessLinkTypeGUID = Guid.NewGuid(),
-                    AccessLinkStatusDataDTO = new AccessLinkStatusDataDTO()
+                    AccessLinkStatus = new AccessLinkStatusDataDTO()
                     {
                         ID = Guid.NewGuid(),
                         NetworkLinkID = Guid.NewGuid(),

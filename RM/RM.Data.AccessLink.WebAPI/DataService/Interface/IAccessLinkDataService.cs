@@ -23,7 +23,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
-        bool CreateAutomaticAccessLink(NetworkLinkDataDTO networkLinkDataDTO);
+        bool CreateAutomaticAccessLink(AccessLinkDataDTO accessLinkDataDto);
 
         /// <summary>
         /// Creates manual access link

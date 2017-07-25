@@ -76,9 +76,8 @@
         /// </summary>
         /// <param name="accessLinkDto">Access link data object.</param>
         /// <returns>Success.</returns>
-        public bool CreateAutomaticAccessLink(NetworkLinkDataDTO networkLinkDataDTO)
+        public bool CreateAutomaticAccessLink(AccessLinkDataDTO accessLinkDto)
         {
-            // TODO
             try
             {
                 using (loggingHelper.RMTraceManager.StartTrace("DataService.CreateAutomaticAccessLink"))
@@ -86,56 +85,29 @@
                     string methodName = typeof(AccessLinkDataService) + "." + nameof(CreateAutomaticAccessLink);
                     loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                    bool accessLinkCreationSuccess = false;
-                    AccessLink accessLink = new Entities.AccessLink();
+                    AccessLink entity = new  AccessLink();
+                    bool isAccessLinkCreationSuccess = false;
 
-                    // need to save Location for Access link with shape as NetworkIntersectionPoint i.e. roadlink and access link intersection
-                    NetworkNode networkNode = new NetworkNode();
-                    NetworkLink networkLink = new Entities.NetworkLink();
-                    NetworkLink networkLink1 = DataContext.NetworkLinks.Where(n => n.ID == networkLinkDataDTO.ID).SingleOrDefault();
-                    networkLink.NetworkNode = new Entities.NetworkNode();
-                    networkLink.NetworkNode.Location = new Entities.Location();
-                    networkLink.NetworkNode.Location = new Location();
-                    networkLink.NetworkNode.Location.ID = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.ID;
-                    networkLink.NetworkNode.Location.Shape = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.Shape;
-                    networkLink.NetworkNode.Location.RowCreateDateTime = networkLinkDataDTO.NetworkNodeDataDTO.LocationDatatDTO.RowCreateDateTime;
-
-                    networkLink.ID = networkLinkDataDTO.ID;
-                    networkLink.DataProviderGUID = networkLinkDataDTO.DataProviderGUID;
-                    networkLink.NetworkLinkTypeGUID = networkLinkDataDTO.NetworkLinkTypeGUID;
-                    networkLink.StartNodeID = networkLinkDataDTO.StartNodeID;
-                    networkLink.EndNodeID = networkLinkDataDTO.EndNodeID;
-                    networkLink.LinkLength = networkLinkDataDTO.LinkLength;
-                    networkLink.LinkGeometry = networkLinkDataDTO.LinkGeometry;
-                    networkLink.RowCreateDateTime = networkLinkDataDTO.RowCreateDateTime;
-                    AccessLinkDataDTO accessLinkDataDTO = networkLinkDataDTO.AccessLinkDataDTOs;
-
-                    accessLink.ID = accessLinkDataDTO.ID;
-                    accessLink.WorkloadLengthMeter = accessLinkDataDTO.WorkloadLengthMeter;
-                    accessLink.Approved = accessLinkDataDTO.Approved;
-                    accessLink.ConnectedNetworkLinkID = new Guid();
-                    accessLink.AccessLinkTypeGUID = accessLinkDataDTO.AccessLinkTypeGUID;
-                    accessLink.LinkDirectionGUID = accessLinkDataDTO.LinkDirectionGUID;
-                    accessLink.RowCreateDateTime = DateTime.UtcNow;
-                    networkLink.AccessLink = accessLink;
-
-                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatusDataDTO;
-                    AccessLinkStatus accessLinkStatus = new AccessLinkStatus
+                    Mapper.Initialize(cfg =>
                     {
-                        ID = accessLinkStatusDataDTO.ID,
-                        NetworkLinkID = accessLinkStatusDataDTO.NetworkLinkID,
-                        AccessLinkStatusGUID = accessLinkStatusDataDTO.AccessLinkStatusGUID,
-                        StartDateTime = accessLinkStatusDataDTO.StartDateTime,
-                        RowCreateDateTime = accessLinkStatusDataDTO.RowCreateDateTime
-                    };
-                    accessLink.AccessLinkStatus.Add(accessLinkStatus);
-                    accessLink.NetworkLink = networkLink1;
-                    accessLink.NetworkLink1 = networkLink1;
-                    DataContext.AccessLinks.Add(accessLink);
-                    accessLinkCreationSuccess = DataContext.SaveChanges() > 0;
-                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                        cfg.CreateMap<AccessLinkDataDTO, AccessLink>().MaxDepth(1);
+                        cfg.CreateMap<AccessLinkStatusDataDTO, AccessLinkStatus>().MaxDepth(2);
+                        cfg.CreateMap<NetworkLinkDataDTO, NetworkLink>().MaxDepth(1);
+                        cfg.CreateMap<NetworkNodeDataDTO, NetworkNode>().MaxDepth(1);
+                        cfg.CreateMap<LocationDataDTO, Location>().MaxDepth(2);
+                    });
+                    Mapper.Configuration.CreateMapper();
 
-                    return accessLinkCreationSuccess;
+                    entity = Mapper.Map<AccessLinkDataDTO, AccessLink>(accessLinkDto);
+
+                    DataContext.AccessLinks.Add(entity);
+
+                    DataContext.SaveChanges();
+                    isAccessLinkCreationSuccess = true;
+                    loggingHelper.LogMethodExit(methodName, priority, exitEventId);
+                    
+
+                    return isAccessLinkCreationSuccess;
                 }
             }
             catch (DbUpdateException dbUpdateException)
@@ -176,7 +148,8 @@
                     accessLink.RowCreateDateTime = DateTime.UtcNow;
 
                     // networkLink.AccessLink = accessLink;
-                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatusDataDTO;
+
+                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = accessLinkDataDTO.AccessLinkStatus;
                     AccessLinkStatus accessLinkStatus = new AccessLinkStatus
                     {
                         ID = accessLinkStatusDataDTO.ID,
