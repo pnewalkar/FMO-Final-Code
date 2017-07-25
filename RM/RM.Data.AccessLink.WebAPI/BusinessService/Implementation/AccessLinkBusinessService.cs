@@ -333,16 +333,16 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     AccessLinkDataDTO accessLinkDataDto = new AccessLinkDataDTO();
 
                     // Create Location
-                    accessLinkDataDto.NetworkNode.Location.ID = locationGuid;
-                    accessLinkDataDto.NetworkNode.Location.Shape = networkIntersectionPoint.ToDbGeometry();
-                    accessLinkDataDto.NetworkNode.Location.RowCreateDateTime = DateTime.UtcNow;
+                    accessLinkDataDto.NetworkLink.NetworkNode.Location.ID = locationGuid;
+                    accessLinkDataDto.NetworkLink.NetworkNode.Location.Shape = networkIntersectionPoint.ToDbGeometry();
+                    accessLinkDataDto.NetworkLink.NetworkNode.Location.RowCreateDateTime = DateTime.UtcNow;
 
                     // Create NetworkNode
-                    accessLinkDataDto.NetworkNode.ID = locationGuid;
-                    accessLinkDataDto.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true); // ReferenceDataValue(Internal)	CategoryName(Data Provider)
-
-                    accessLinkDataDto.NetworkNode.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true); // ReferenceDataValue(Access Link Intersection Node)	CategoryName(Network Node Type)
-                    accessLinkDataDto.NetworkNode.RowCreateDateTime = DateTime.UtcNow;
+                    accessLinkDataDto.NetworkLink.NetworkNode.ID = locationGuid;
+                    accessLinkDataDto.NetworkLink.NetworkNode.DataProviderGUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.DataProvider, AccessLinkConstants.Internal, true); // ReferenceDataValue(Internal)	CategoryName(Data Provider)
+                                     
+                    accessLinkDataDto.NetworkLink.NetworkNode.NetworkNodeType_GUID = GetReferenceData(referenceDataCategoryList, ReferenceDataCategoryNames.NetworkNodeType, AccessLinkConstants.AccessLinkDataProviderGUID, true); // ReferenceDataValue(Access Link Intersection Node)	CategoryName(Network Node Type)
+                    accessLinkDataDto.NetworkLink.NetworkNode.RowCreateDateTime = DateTime.UtcNow;
 
                     // Create AccessLink
                     accessLinkDataDto.ID = accessLinkGuid;
@@ -381,7 +381,7 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     accessLinkDataDto.NetworkLink.RowCreateDateTime = DateTime.UtcNow;
 
                     // create AccessLinkStatus
-                    accessLinkDataDto.AccessLinkStatus = new AccessLinkStatusDataDTO
+                    AccessLinkStatusDataDTO accessLinkStatusDataDTO = new AccessLinkStatusDataDTO
                     {
                         ID = Guid.NewGuid(),
                         AccessLinkStatusGUID = referenceDataCategoryList
@@ -392,6 +392,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                         NetworkLinkID = accessLinkGuid,
                         StartDateTime = DateTime.UtcNow
                     };
+
+                    accessLinkDataDto.AccessLinkStatus.Add(accessLinkStatusDataDTO);
 
                     // calling dataservice to save AccessLink.
                     isAccessLinkCreated = accessLinkDataService.CreateAutomaticAccessLink(accessLinkDataDto);
@@ -495,8 +497,8 @@ namespace RM.DataManagement.AccessLink.WebAPI.BusinessService
                     StartDateTime = DateTime.UtcNow
                 };
 
-                accessLinkDatatDTO.AccessLinkStatus = accessLinkStatusDataDTO;
-                networkLinkDataDTO.AccessLinkDataDTOs = accessLinkDatatDTO;
+                accessLinkDatatDTO.AccessLinkStatus.Add(accessLinkStatusDataDTO);
+                // ToDO Rahul networkLinkDataDTO.AccessLink = accessLinkDatatDTO;
                 networkLinkDataDTO.ID = networkObject.Id;
 
                 // calling dataservice for creating accesslink  using networklink parameter.

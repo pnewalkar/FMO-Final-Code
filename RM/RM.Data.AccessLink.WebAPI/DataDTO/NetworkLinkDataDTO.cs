@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 
 namespace RM.Data.AccessLink.WebAPI.DataDTOs
@@ -8,6 +9,11 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         /// <summary>
         /// This class represents data transfer object for NetworkLink entity
         /// </summary>
+        public NetworkLinkDataDTO()
+        {
+            this.NetworkNode = new NetworkNodeDataDTO();
+        }
+
         public Guid ID { get; set; }
 
         public string TOID { get; set; }
@@ -35,10 +41,8 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
         public DateTime RowCreateDateTime { get; set; }
 
 
-        public AccessLinkDataDTO AccessLinkDataDTOs { get; set; }
+        public NetworkNodeDataDTO NetworkNode { get; set; }
 
-        public NetworkNodeDataDTO NetworkNodeDataDTO { get; set; }
-
-        public NetworkNodeDataDTO NetworkNodeDataDTO1 { get; set; }
+        public NetworkNodeDataDTO NetworkNode1 { get; set; }
     }
 }

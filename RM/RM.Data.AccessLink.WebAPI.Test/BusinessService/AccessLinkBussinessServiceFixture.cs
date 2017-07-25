@@ -83,13 +83,13 @@ namespace RM.Data.AccessLink.WebAPI.Test
         {
             accessLinkManualCreateModelDTO = new AccessLinkManualCreateModelDTO
             {
-                AccessLinkLine= "[[512455.33999999985,107127.7899999991],[512454.8208646417,107129.43228437999],[512474,107139]]",
-                BoundingBoxCoordinates= "511684.44432227453,106504.23168359262,513419.32779204147,107103.43288199503",
-                NetworkLinkGUID= "c55712fe-ce92-4386-a0a5-e9a158b15441",
-                OperationalObjectGUID= "ffc86397-fbb5-4caf-a070-aca8d723de57",
-                Workloadlength =40,
-                NetworkIntersectionPoint= "[512455.33999999985,107127.7899999991]",
-                OperationalObjectPoint= "[512455.33999999985,107127.7899999991]"
+                AccessLinkLine = "[[512455.33999999985,107127.7899999991],[512454.8208646417,107129.43228437999],[512474,107139]]",
+                BoundingBoxCoordinates = "511684.44432227453,106504.23168359262,513419.32779204147,107103.43288199503",
+                NetworkLinkGUID = "c55712fe-ce92-4386-a0a5-e9a158b15441",
+                OperationalObjectGUID = "ffc86397-fbb5-4caf-a070-aca8d723de57",
+                Workloadlength = 40,
+                NetworkIntersectionPoint = "[512455.33999999985,107127.7899999991]",
+                OperationalObjectPoint = "[512455.33999999985,107127.7899999991]"
             };
 
             deliveryPointDTO = new DeliveryPointDTO
@@ -140,7 +140,7 @@ namespace RM.Data.AccessLink.WebAPI.Test
             }
 
             Tuple<NetworkLinkDTO, SqlGeometry> tuple = new Tuple<NetworkLinkDTO, SqlGeometry>(networkLink, networkIntersectionPoint);
-            Tuple<NetworkLinkDTO, List<SqlGeometry>> tuple1= new Tuple < NetworkLinkDTO, List < SqlGeometry >>(networkLink, lstnetworkIntersectionPoint);
+            Tuple<NetworkLinkDTO, List<SqlGeometry>> tuple1 = new Tuple<NetworkLinkDTO, List<SqlGeometry>>(networkLink, lstnetworkIntersectionPoint);
 
             List<ReferenceDataCategoryDTO> refDataCategotyDTO = new List<ReferenceDataCategoryDTO>()
             {
@@ -200,7 +200,6 @@ namespace RM.Data.AccessLink.WebAPI.Test
                             ReferenceDataValue = ReferenceDataValues.AccessLinkStatusDraftPendingReview,
                             ID = Guid.Parse("7B90B2F9-F62F-E711-8735-28D244AEF9ED")
                         }
-                        
                     }
                 },
                 new ReferenceDataCategoryDTO()
