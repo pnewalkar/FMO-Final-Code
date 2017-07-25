@@ -121,6 +121,37 @@ namespace RM.DataServices.Tests.DataService
             var accessLink = new List<AccessLink>() { new AccessLink() { ID = Guid.NewGuid(), NetworkLink = networkLink } };
             var deliveryPoint = new List<DeliveryPoint>() { new DeliveryPoint() { NetworkNode = new NetworkNode() { Location = new Location() { Shape = unitBoundary } } } };
 
+            var NetworkNodeDataDTO = new NetworkNodeDataDTO()
+            {
+                ID = Guid.NewGuid(),
+                Location = new LocationDataDTO()
+                {
+                    ID = Guid.NewGuid(),
+                    Shape = unitBoundary,
+                    RowCreateDateTime = DateTime.UtcNow
+                }
+            };
+
+            var accessLinkDataDTOs = new AccessLinkDataDTO()
+            {
+                Approved = true,
+                ID = Guid.NewGuid(),
+                WorkloadLengthMeter = 40,
+                LinkDirectionGUID = Guid.NewGuid(),
+                ConnectedNetworkLinkID = Guid.NewGuid(),
+                AccessLinkTypeGUID = Guid.NewGuid()
+                
+            };
+
+            var accessLinkStatus = new AccessLinkStatusDataDTO()
+            {
+                ID = Guid.NewGuid(),
+                NetworkLinkID = Guid.NewGuid(),
+                AccessLinkStatusGUID = Guid.NewGuid(),
+                StartDateTime = DateTime.UtcNow,
+                RowCreateDateTime = DateTime.UtcNow
+            };
+
             netWorkLinkDataDto = new NetworkLinkDataDTO()
             {
                 ID = Guid.NewGuid(),
@@ -131,33 +162,8 @@ namespace RM.DataServices.Tests.DataService
                 LinkLength = 40,
                 LinkGeometry = unitBoundary,
                 RowCreateDateTime = DateTime.UtcNow,
-                NetworkNodeDataDTO = new NetworkNodeDataDTO()
-                {
-                    ID = Guid.NewGuid(),
-                    Location = new LocationDataDTO()
-                    {
-                        ID = Guid.NewGuid(),
-                        Shape = unitBoundary,
-                        RowCreateDateTime = DateTime.UtcNow
-                    }
-                },
-                AccessLinkDataDTOs = new AccessLinkDataDTO()
-                {
-                    Approved = true,
-                    ID = Guid.NewGuid(),
-                    WorkloadLengthMeter = 40,
-                    LinkDirectionGUID = Guid.NewGuid(),
-                    ConnectedNetworkLinkID = Guid.NewGuid(),
-                    AccessLinkTypeGUID = Guid.NewGuid(),
-                    AccessLinkStatus = new AccessLinkStatusDataDTO()
-                    {
-                        ID = Guid.NewGuid(),
-                        NetworkLinkID = Guid.NewGuid(),
-                        AccessLinkStatusGUID = Guid.NewGuid(),
-                        StartDateTime = DateTime.UtcNow,
-                        RowCreateDateTime = DateTime.UtcNow
-                    },
-                }
+                
+                
             };
 
             var mockAsynEnumerable = new DbAsyncEnumerable<AccessLink>(accessLink);
@@ -183,8 +189,8 @@ namespace RM.DataServices.Tests.DataService
             mockFmoDbContext.Setup(x => x.DeliveryPoints).Returns(mockAccessLinkDataService4.Object);
             mockAccessLinkDataService4.Setup(x => x.AsNoTracking()).Returns(mockAccessLinkDataService4.Object);
 
-            var mockAsynEnumerable2 = new DbAsyncEnumerable<Location>(Location);
-            var mockAccessLinkDataService2 = MockDbSet(Location);
+            var mockAsynEnumerable2 = new DbAsyncEnumerable<Location>(location);
+            var mockAccessLinkDataService2 = MockDbSet(location);
             mockFmoDbContext.Setup(x => x.Set<Location>()).Returns(mockAccessLinkDataService2.Object);
             mockFmoDbContext.Setup(x => x.Locations).Returns(mockAccessLinkDataService2.Object);
             mockFmoDbContext.Setup(c => c.Locations.AsNoTracking()).Returns(mockAccessLinkDataService2.Object);
