@@ -188,33 +188,6 @@ namespace RM.DataManagement.PostalAddress.WebAPI.IntegrationService.Implementati
             }
         }
 
-        ///// <summary>
-        ///// This method will call Delivery point web api which is used to fetch Delivery Point by udprn.
-        ///// </summary>
-        ///// <param name="addressGuid">addressGuid instead of udprn</param>
-        ///// <returns>DeliveryPointDTO</returns>
-        // public async Task<DTO.DeliveryPointDTO> GetDeliveryPointByID(Guid addressGuid)
-        // {
-        //    // using (loggingHelper.RMTraceManager.StartTrace("Integration.GetDeliveryPointByID"))
-        //    // {
-        //    string methodName = MethodBase.GetCurrentMethod().Name;
-
-        //    // method logic here
-        //    HttpResponseMessage result = await httpHandler.GetAsync(deliveryPointManagerWebAPIName + "deliverypoint/batch/addressGuid:" + addressGuid);
-        //    if (!result.IsSuccessStatusCode)
-        //    {
-        //        // Log error with statuscode
-        //        var responseContent = string.Format(Constants.ResponseContent, result.StatusCode.GetHashCode(), result.ReasonPhrase);
-        //        this.loggingHelper.Log(methodName + responseContent, TraceEventType.Error);
-        //        return null;
-        //    }
-
-        //    DTO.DeliveryPointDTO deliveryPoint = JsonConvert.DeserializeObject<DTO.DeliveryPointDTO>(result.Content.ReadAsStringAsync().Result);
-        //    return deliveryPoint;
-
-        //    // }
-        // }
-
         /// <summary>
         /// Get the delivery points by the Postal Address Guid
         /// </summary>
