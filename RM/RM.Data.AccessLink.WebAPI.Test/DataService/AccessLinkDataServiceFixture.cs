@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using Moq;
-using NUnit.Framework;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Interfaces;
 using RM.Data.AccessLink.WebAPI.DataDTOs;
 using RM.DataManagement.AccessLink.WebAPI.DataService.Implementation;
 using RM.DataManagement.AccessLink.WebAPI.Entities;
+using Moq;
+using NUnit.Framework;
 
 namespace RM.DataServices.Tests.DataService
 {
@@ -115,12 +115,11 @@ namespace RM.DataServices.Tests.DataService
             user2Id = System.Guid.NewGuid();
 
             var unitBoundary = DbGeometry.PolygonFromText("POLYGON((511570.8590967182 106965.35195621933, 511570.8590967182 107474.95297542136, 512474.1409032818 107474.95297542136, 512474.1409032818 106965.35195621933, 511570.8590967182 106965.35195621933))", 27700);
-            var Location = new List<Location>() { new Location() { ID = unit1Guid, Shape = unitBoundary } };
+            var location = new List<Location>() { new Location() { ID = unit1Guid, Shape = unitBoundary } };
             var networkLinks = new List<NetworkLink>() { new NetworkLink() { LinkGeometry = unitBoundary, } };
             var networkLink = new NetworkLink() { LinkGeometry = unitBoundary, };
             var accessLink = new List<AccessLink>() { new AccessLink() { ID = Guid.NewGuid(), NetworkLink = networkLink } };
             var deliveryPoint = new List<DeliveryPoint>() { new DeliveryPoint() { NetworkNode = new NetworkNode() { Location = new Location() { Shape = unitBoundary } } } };
-
 
             netWorkLinkDataDto = new NetworkLinkDataDTO()
             {
@@ -161,13 +160,13 @@ namespace RM.DataServices.Tests.DataService
                 }
             };
 
-
             var mockAsynEnumerable = new DbAsyncEnumerable<AccessLink>(accessLink);
             mockFmoDbContext = CreateMock<AccessLinkDBContext>();
             mockFmoDbContext.Setup(x => x.SaveChanges()).Returns(1);
             var mockAccessLinkDataService = MockDbSet(accessLink);
             mockFmoDbContext.Setup(x => x.Set<AccessLink>()).Returns(mockAccessLinkDataService.Object);
             mockFmoDbContext.Setup(x => x.AccessLinks).Returns(mockAccessLinkDataService.Object);
+
             // mockFmoDbContext.Setup(c => c.AccessLinks.AsNoTracking()).Returns(mockAccessLinkDataService.Object);
             mockAccessLinkDataService.Setup(x => x.Include(It.IsAny<string>())).Returns(mockAccessLinkDataService.Object);
             mockAccessLinkDataService.Setup(x => x.AsNoTracking()).Returns(mockAccessLinkDataService.Object);
@@ -175,6 +174,7 @@ namespace RM.DataServices.Tests.DataService
             var mockAccessLinkDataService1 = MockDbSet(networkLinks);
             mockFmoDbContext.Setup(x => x.Set<NetworkLink>()).Returns(mockAccessLinkDataService1.Object);
             mockFmoDbContext.Setup(x => x.NetworkLinks).Returns(mockAccessLinkDataService1.Object);
+
             // mockFmoDbContext.Setup(c => c.NetworkLinks.AsNoTracking()).Returns(mockAccessLinkDataService1.Object);
             mockAccessLinkDataService1.Setup(x => x.AsNoTracking()).Returns(mockAccessLinkDataService1.Object);
 
