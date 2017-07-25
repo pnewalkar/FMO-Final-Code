@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RM.CommonLibrary.HelperMiddleware;
@@ -10,7 +11,6 @@ using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.DeliveryPoint.WebAPI.DTO;
 using RM.Data.DeliveryPoint.WebAPI.DTO.Model;
 using RM.DataManagement.DeliveryPoint.WebAPI.BusinessService;
-using Microsoft.AspNetCore.Authorization;
 
 namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
 {
@@ -601,7 +601,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
             }
         }
 
-
         /// <summary>
         /// This method will call Delivery point web api which is used to
         /// update delivery point location, status and dpuseindicator for resp PostalAddress which has type <USR>.
@@ -610,6 +609,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         /// <returns>bool</returns>
         [Route("deliverypoint/batch")]
         [HttpPut]
+
         // [HttpPut("deliverypoint/batch/addressGuid:{addressGuid}")]
         public async Task<IActionResult> UpdateDeliveryPoint([FromBody] string objDeliveryPointJson)
         {

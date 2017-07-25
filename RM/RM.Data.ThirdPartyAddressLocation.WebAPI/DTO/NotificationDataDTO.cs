@@ -1,7 +1,7 @@
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO
 {
     using System;
-        
+
     public class NotificationDataDTO
     {
         public Guid ID { get; private set; }
@@ -17,7 +17,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO
         public string NotificationSource { get; private set; }
 
         public string PostcodeDistrict { get; private set; }
-                
+
         public string PostcodeSector { get; private set; }
 
         public Guid? NotificationTypeGUID { get; private set; }

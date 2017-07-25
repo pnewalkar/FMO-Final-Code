@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
 {
@@ -11,8 +8,11 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataDTO
     public class SearchInputDataDto
     {
         public string SearchText { get; set; }
+
         public Guid UserUnitLocationId { get; set; }
+
         public Guid PostcodeTypeGUID { get; set; }
+
         public int SearchResultCount { get; set; }
     }
 }

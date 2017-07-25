@@ -63,7 +63,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetPostcodes_PositiveScenario()
         {
-            //Setup for PostcodeHierarchy with mocked AsNoTracking()
+            // Setup for PostcodeHierarchy with mocked AsNoTracking()
             var mockAsynEnumerable4 = new DbAsyncEnumerable<PostcodeHierarchy>(postcodeHierarchyList);
             var mockPostcodeHierarchy = MockDbSet(postcodeHierarchyList);
             mockPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable4.AsQueryable().Provider);
@@ -87,7 +87,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         [Test]
         public async Task Test_GetPostcodes_NegativeScenario()
         {
-            //Setup for PostcodeHierarchy with mocked AsNoTracking()
+            // Setup for PostcodeHierarchy with mocked AsNoTracking()
             var mockAsynEnumerable4 = new DbAsyncEnumerable<PostcodeHierarchy>(postcodeHierarchyList);
             var mockPostcodeHierarchy = MockDbSet(postcodeHierarchyList);
             mockPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable4.AsQueryable().Provider);
@@ -123,7 +123,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
         /// </summary>
         protected override void OnSetup()
         {
-            //Data Setup
+            // Data Setup
             List<PostalAddressIdentifier> postalAddressIdentifierList = new List<PostalAddressIdentifier>()
             {
                 new PostalAddressIdentifier()
@@ -191,7 +191,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext = CreateMock<UnitManagerDbContext>();
             mockILoggingHelper = CreateMock<ILoggingHelper>();
 
-            //Setup for PostalAddressIdentifier
+            // Setup for PostalAddressIdentifier
             var mockAsynEnumerable1 = new DbAsyncEnumerable<PostalAddressIdentifier>(postalAddressIdentifierList);
             var mockPostalAddressIdentifier = MockDbSet(postalAddressIdentifierList);
             mockPostalAddressIdentifier.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable1.AsQueryable().Provider);
@@ -202,7 +202,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.PostalAddressIdentifiers).Returns(mockPostalAddressIdentifier.Object);
             mockUnitManagerDbContext.Setup(c => c.PostalAddressIdentifiers.AsNoTracking()).Returns(mockPostalAddressIdentifier.Object);
 
-            //Setup for Location
+            // Setup for Location
             var mockAsynEnumerable2 = new DbAsyncEnumerable<Location>(locationList);
             var mockLocation = MockDbSet(locationList);
             mockLocation.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable2.AsQueryable().Provider);
@@ -213,7 +213,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Locations).Returns(mockLocation.Object);
             mockUnitManagerDbContext.Setup(c => c.Locations.AsNoTracking()).Returns(mockLocation.Object);
 
-            //Setup for UserRoleLocation
+            // Setup for UserRoleLocation
             var mockAsynEnumerable3 = new DbAsyncEnumerable<UserRoleLocation>(userRoleLocationList);
             var mockUserRoleLocation = MockDbSet(userRoleLocationList);
             mockUserRoleLocation.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable3.AsQueryable().Provider);
@@ -224,7 +224,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.UserRoleLocations).Returns(mockUserRoleLocation.Object);
             mockUnitManagerDbContext.Setup(c => c.UserRoleLocations.AsNoTracking()).Returns(mockUserRoleLocation.Object);
 
-            //Setup for PostcodeHierarchy
+            // Setup for PostcodeHierarchy
             var mockAsynEnumerable4 = new DbAsyncEnumerable<PostcodeHierarchy>(postcodeHierarchyList);
             var mockPostcodeHierarchy = MockDbSet(postcodeHierarchyList);
             mockPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable4.AsQueryable().Provider);
@@ -234,7 +234,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Set<PostcodeHierarchy>()).Returns(mockPostcodeHierarchy.Object);
             mockUnitManagerDbContext.Setup(x => x.PostcodeHierarchies).Returns(mockPostcodeHierarchy.Object);
 
-            //Setup for Postcode
+            // Setup for Postcode
             var mockAsynEnumerable5 = new DbAsyncEnumerable<Postcode>(postcodeList);
             var mockPostcode = MockDbSet(postcodeList);
             mockPostcode.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable5.AsQueryable().Provider);
@@ -245,7 +245,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Postcodes).Returns(mockPostcode.Object);
             mockUnitManagerDbContext.Setup(c => c.Postcodes.AsNoTracking()).Returns(mockPostcode.Object);
 
-            //Setup for Postcode
+            // Setup for Postcode
             var mockAsynEnumerable6 = new DbAsyncEnumerable<LocationReferenceData>(locationReferenceDataList);
             var mockLocationReferenceData = MockDbSet(locationReferenceDataList);
             mockLocationReferenceData.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable6.AsQueryable().Provider);
@@ -255,7 +255,7 @@ namespace RM.Data.UnitManager.WebAPI.Test.DataService
             mockUnitManagerDbContext.Setup(x => x.Set<LocationReferenceData>()).Returns(mockLocationReferenceData.Object);
             mockUnitManagerDbContext.Setup(x => x.LocationReferenceDatas).Returns(mockLocationReferenceData.Object);
 
-            //Setup for LocationPostcodeHierarchy
+            // Setup for LocationPostcodeHierarchy
             var mockAsynEnumerable7 = new DbAsyncEnumerable<LocationPostcodeHierarchy>(locationPostcodeHierarchyList);
             var mockLocationPostcodeHierarchy = MockDbSet(locationPostcodeHierarchyList);
             mockLocationPostcodeHierarchy.As<IQueryable>().Setup(mock => mock.Provider).Returns(mockAsynEnumerable7.AsQueryable().Provider);

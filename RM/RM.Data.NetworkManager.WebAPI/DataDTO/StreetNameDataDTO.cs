@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-using RM.CommonLibrary.HelperMiddleware;
 using System;
 using System.Data.Entity.Spatial;
 
@@ -40,6 +38,5 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataDTO
         public string Town { get; set; }
 
         public string AdministrativeArea { get; set; }
-
     }
 }

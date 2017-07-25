@@ -80,9 +80,9 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.Controllers
         {
             get
             {
-                var UserUnitType = User.Claims.Where(c => c.Type == ClaimTypes.Upn)
+                var userUnitType = User.Claims.Where(c => c.Type == ClaimTypes.Upn)
                                .Select(c => c.Value).SingleOrDefault();
-                return UserUnitType;
+                return userUnitType;
             }
         }
     }

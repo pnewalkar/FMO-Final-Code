@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Spatial;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.SqlServer.Types;
+using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.CommonLibrary.DataMiddleware;
 using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.CommonLibrary.EntityFramework.DTO;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.Utilities.HelperMiddleware;
-using RM.DataManagement.NetworkManager.WebAPI.Entities;
-using AutoMapper;
-using Microsoft.IdentityModel.Protocols;
-using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
-using RM.CommonLibrary.EntityFramework.DTO;
 using RM.DataManagement.NetworkManager.WebAPI.DataDTO;
+using RM.DataManagement.NetworkManager.WebAPI.DataService.Interfaces;
+using RM.DataManagement.NetworkManager.WebAPI.Entities;
 
 namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 {
@@ -31,8 +27,8 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
         private const int BNGCOORDINATESYSTEM = 27700;
         private const string SearchResultCount = "SearchResultCount";
-
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
+        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
         private int priority = LoggerTraceConstants.NetworkManagerAPIPriority;
         private int entryEventId = LoggerTraceConstants.StreetNetworkDataServiceMethodEntryEventId;
         private int exitEventId = LoggerTraceConstants.StreetNetworkDataServiceMethodExitEventId;
@@ -41,10 +37,11 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
         #region Constructors
 
-        public StreetNetworkDataService(IDatabaseFactory<NetworkDBContext> databaseFactory, ILoggingHelper loggingHelper)
+        public StreetNetworkDataService(IDatabaseFactory<NetworkDBContext> databaseFactory, ILoggingHelper loggingHelper, IConfigurationHelper configurationHelper)
             : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
+            this.configurationHelper = configurationHelper;
         }
 
         #endregion Constructors
@@ -98,8 +95,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
             {
                 string methodName = typeof(StreetNetworkDataService) + "." + nameof(GetStreetNamesForBasicSearch);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
-
-                int takeCount = Convert.ToInt32(ConfigurationSettings.AppSettings[SearchResultCount]);
+                int takeCount = Convert.ToInt32(configurationHelper.ReadAppSettingsConfigurationValues(SearchResultCount));
                 searchText = searchText ?? string.Empty;
 
                 DbGeometry polygon =
@@ -295,7 +291,6 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
 
                 NetworkLinkDataDTO networkLinkRoad = null;
 
-
                 // check for nearest segment which does not cross any existing access link
                 foreach (var item in networkLinkRoads)
                 {
@@ -372,6 +367,5 @@ namespace RM.DataManagement.NetworkManager.WebAPI.DataService.Implementation
         }
 
         #endregion Public Methods
-
     }
 }

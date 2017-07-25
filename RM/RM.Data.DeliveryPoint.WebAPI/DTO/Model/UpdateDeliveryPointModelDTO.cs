@@ -7,6 +7,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.DTO.Model
         public decimal? XCoordinate { get; set; }
 
         public decimal? YCoordinate { get; set; }
+
         public Guid ID { get; set; }
     }
 }

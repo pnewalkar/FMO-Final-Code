@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Spatial;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using RM.CommonLibrary.ConfigurationMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Entities;
@@ -25,11 +21,11 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         private const string EXTERNAL = "External";
         private const string NOTIFICATIONCLOSED = "Closed";
 
-        private ThirdPartyAddressLocationBusinessService testCandidate;
-        private Mock<IAddressLocationDataService> addressLocationDataServiceMock;
-        private Mock<IThirdPartyAddressLocationIntegrationService> thirdPartyAddressLocationIntegrationServiceMock;
-        private Mock<ILoggingHelper> loggingHelperMock;
-        private Mock<IConfigurationHelper> configurationHelperMock;
+        // private ThirdPartyAddressLocationBusinessService testCandidate;
+        // private Mock<IAddressLocationDataService> addressLocationDataServiceMock;
+        // private Mock<IThirdPartyAddressLocationIntegrationService> thirdPartyAddressLocationIntegrationServiceMock;
+        // private Mock<ILoggingHelper> loggingHelperMock;
+        // private Mock<IConfigurationHelper> configurationHelperMock;
 
         
         /// <summary>

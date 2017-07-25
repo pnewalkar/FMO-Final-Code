@@ -4,16 +4,15 @@ using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using RM.Common.Notification.WebAPI.DataService.Interface;
 using RM.Common.Notification.WebAPI.DTO;
-using NotificationManager = RM.Common.Notification.WebAPI.Entities;
 using RM.CommonLibrary.DataMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.CommonLibrary.ExceptionMiddleware;
 using RM.CommonLibrary.HelperMiddleware;
 using RM.CommonLibrary.LoggingMiddleware;
 using RM.CommonLibrary.Utilities.HelperMiddleware;
-using AutoMapper;
+using NotificationManager = RM.Common.Notification.WebAPI.Entities;
 
 namespace RM.Common.Notification.WebAPI.DataService
 {
@@ -48,7 +47,7 @@ namespace RM.Common.Notification.WebAPI.DataService
                 try
                 {
                     NotificationManager.Notification newNotification = new NotificationManager.Notification();
-                    Mapper.Initialize(cfg => cfg.CreateMap<NotificationDTO, NotificationManager.Notification>());
+                    Mapper.Initialize(cfg => cfg.CreateMap<NotificationDataDTO, NotificationManager.Notification>());
                     newNotification = Mapper.Map<NotificationDataDTO, NotificationManager.Notification>(notificationDTO);
                     DataContext.Notifications.Add(newNotification);
                     loggingHelper.Log(methodName + LoggerTraceConstants.COLON + LoggerTraceConstants.MethodExecutionCompleted, TraceEventType.Verbose, null, LoggerTraceConstants.Category, LoggerTraceConstants.NotificationAPIPriority, LoggerTraceConstants.NotificationDataServiceMethodExitEventId, LoggerTraceConstants.Title);
@@ -71,6 +70,7 @@ namespace RM.Common.Notification.WebAPI.DataService
                     disposedException.Data.Add(ErrorConstants.UserFriendlyErrorMessage, ErrorConstants.Err_Default);
                     throw new ServiceException(disposedException, ErrorConstants.Err_ObjectDisposedException);
                 }
+
                 return saveChangesAsync;
             }
         }
@@ -208,6 +208,5 @@ namespace RM.Common.Notification.WebAPI.DataService
 
             return returnVal;
         }
-
     }
 }

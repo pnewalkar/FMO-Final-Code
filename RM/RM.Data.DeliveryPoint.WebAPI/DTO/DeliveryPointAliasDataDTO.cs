@@ -1,6 +1,7 @@
 namespace RM.Data.DeliveryPoint.WebAPI.DTO
 {
-    using System;    
+    using System;
+
     public class DeliveryPointAliasDataDTO
     {
         public Guid ID { get; set; }

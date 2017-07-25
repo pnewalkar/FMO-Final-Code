@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
 using System.Data.SqlTypes;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.SqlServer.Types;
 using Newtonsoft.Json.Linq;
+using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
+using RM.CommonLibrary.HelperMiddleware;
+using RM.CommonLibrary.LoggingMiddleware;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DataService;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing;
-using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService.MappingConfiguration;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
 using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
-using System.Linq;
-using AutoMapper;
 
 namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
 {
@@ -102,7 +102,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                 string methodName = typeof(ThirdPartyAddressLocationBusinessService) + "." + nameof(SaveUSRDetails);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.ThirdPartyAddressLocationAPIPriority, LoggerTraceConstants.ThirdPartyAddressLocationDataServiceMethodEntryEventId);
 
-
                 List<string> categoryNamesSimpleLists = new List<string>
                             {
                                 ThirdPartyAddressLocationConstants.TASKNOTIFICATION,
@@ -113,7 +112,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 ReferenceDataCategoryNames.NetworkNodeType
                             };
 
-                // Get all the reference data Guids required for the below 
+                // Get all the reference data Guids required for the below
                 Guid tasktypeId = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.TASKNOTIFICATION, ThirdPartyAddressLocationConstants.TASKACTION);
                 Guid locationProviderId = GetReferenceData(categoryNamesSimpleLists, ThirdPartyAddressLocationConstants.NETWORKLINKDATAPROVIDER, ThirdPartyAddressLocationConstants.EXTERNAL);
                 Guid operationalStatusGUIDLive = GetReferenceData(categoryNamesSimpleLists, ReferenceDataCategoryNames.DeliveryPointOperationalStatus, ThirdPartyAddressLocationConstants.OperationalStatusGUIDLive, true);
@@ -152,13 +151,11 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                             // Check if the existing delivery point has an approx location.
                             if (deliveryPointDTO.OperationalStatus_GUID == approxLocation)
                             {
-
-                                deliveryPointDTO.LocationXY = spatialLocationXY;                                
+                                deliveryPointDTO.LocationXY = spatialLocationXY;
                                 deliveryPointDTO.LocationProvider_GUID = locationProviderId;
                                 deliveryPointDTO.UDPRN = fileUdprn;
                                 deliveryPointDTO.OperationalStatus_GUID = operationalStatusGUIDLive;
                                 deliveryPointDTO.NetworkNodeType_GUID = networkNodeTypeRMGServiceNode;
-
 
                                 // Update the location details for the delivery point
                                 await thirdPartyAddressLocationIntegrationService.UpdateDeliveryPointById(deliveryPointDTO);
@@ -179,7 +176,6 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
                                 // Check if the new point is within the tolerance limit
                                 if (straightLineDistance < ThirdPartyAddressLocationConstants.TOLERANCEDISTANCEINMETERS)
                                 {
-
                                     deliveryPointDTO.LocationXY = spatialLocationXY;
                                     deliveryPointDTO.LocationProvider_GUID = locationProviderId;
                                     deliveryPointDTO.UDPRN = fileUdprn;
@@ -364,7 +360,7 @@ namespace RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService
         }
 
         /// <summary>
-        /// Get Reference Data from 
+        /// Get Reference Data from
         /// </summary>
         /// <param name="categoryNamesSimpleLists"></param>
         /// <param name="categoryName"></param>

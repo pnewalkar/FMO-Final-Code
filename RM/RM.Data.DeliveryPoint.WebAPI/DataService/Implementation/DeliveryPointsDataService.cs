@@ -10,7 +10,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using CommonLibrary.ConfigurationMiddleware;
     using CommonLibrary.DataMiddleware;
     using CommonLibrary.LoggingMiddleware;
     using Data.DeliveryPoint.WebAPI.DataDTO;
@@ -29,7 +28,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         private int exitEventId = LoggerTraceConstants.DeliveryPointDataServiceMethodExitEventId;
 
         private ILoggingHelper loggingHelper = default(ILoggingHelper);
-        private IConfigurationHelper configurationHelper = default(IConfigurationHelper);
 
         /// <summary>
         /// Initialises new instance of <see cref="DeliveryPointsDataService"/> that contains data methods related to delivery point.
@@ -40,7 +38,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         : base(databaseFactory)
         {
             this.loggingHelper = loggingHelper;
-            this.configurationHelper = configurationHelper;
         }
 
         #region Public Methods
@@ -347,7 +344,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                 string methodName = typeof(DeliveryPointsDataService) + "." + nameof(GetDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                List<DeliveryPointDataDTO> deliveryPointDto = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid).ToList();
+                List<DeliveryPointDataDTO> deliveryPointDto = GetDeliveryPointsCoordinatesDatabyBoundingBox(boundingBoxCoordinates, unitGuid);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
@@ -494,6 +491,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         public RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO GetDetailDeliveryPointByUDPRN(int udprn)
         {
             RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO addDeliveryPointDto = default(RM.Data.DeliveryPoint.WebAPI.DTO.AddDeliveryPointDTO);
+
             //var deliveryPoints = (from dp in DataContext.DeliveryPoints.AsNoTracking()
             //                      join pa in DataContext.PostalAddresses.AsNoTracking() on dp.PostalAddressID equals pa.ID
             //                      join al in DataContext.NetworkNodes.AsNoTracking() on pa.UDPRN equals al.UDPRN
@@ -523,7 +521,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
             //        PostalAddressDTO = Mapper.Map<PostalAddress, PostalAddressDTO>(deliveryPoints.PostalAddress)
             //    };
             //}
-
             return addDeliveryPointDto;
         }
 
@@ -631,11 +628,13 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
                     DataContext.DeliveryPoints.Remove(location.NetworkNode.DeliveryPoint);
                     DataContext.NetworkNodes.Remove(location.NetworkNode);
                     DataContext.Locations.Remove(location);
+                    await DataContext.SaveChangesAsync();
+                    return true;
                 }
-
-                await DataContext.SaveChangesAsync();
-
-                return true;
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -651,7 +650,7 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
         /// <returns>DeliveryPointDTO</returns>
         public DeliveryPointDataDTO GetDeliveryPoint(Guid deliveryPointGuid)
         {
-            var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.NetworkNode).Include(x => x.NetworkNode.Location).Include(x => x.PostalAddress).AsNoTracking().Single(n => n.ID == deliveryPointGuid);
+            var objDeliveryPoint = DataContext.DeliveryPoints.Include(x => x.NetworkNode).AsNoTracking().Include(x => x.NetworkNode.Location).AsNoTracking().Include(x => x.PostalAddress).AsNoTracking().Where(n => n.ID == deliveryPointGuid).SingleOrDefault();
 
             ConfigureMapper();
 
@@ -702,14 +701,17 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                     DbGeometry extent = DbGeometry.FromText(boundingBoxCoordinates.ToString(), DeliveryPointConstants.BNGCOORDINATESYSTEM);
 
-                    var deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
-                        .Include(x => x.NetworkNode)
-                        .Include(x => x.NetworkNode.Location)
-                        .Where(dp => dp.NetworkNode.Location.Shape.Intersects(extent) && dp.NetworkNode.Location.Shape.Intersects(polygon)).ToList();
+                    if (polygon != null)
+                    {
+                        var deliveryPoints = DataContext.DeliveryPoints.Include(x => x.PostalAddress)
+                                       .Include(x => x.NetworkNode)
+                                       .Include(x => x.NetworkNode.Location)
+                                       .Where(dp => dp.NetworkNode.Location.Shape.Intersects(extent) && dp.NetworkNode.Location.Shape.Intersects(polygon)).ToList();
 
-                    ConfigureMapper();
+                        ConfigureMapper();
 
-                    deliveryPointDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(deliveryPoints);
+                        deliveryPointDTOs = Mapper.Map<List<DeliveryPoint>, List<DeliveryPointDataDTO>>(deliveryPoints);
+                    }
                 }
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);

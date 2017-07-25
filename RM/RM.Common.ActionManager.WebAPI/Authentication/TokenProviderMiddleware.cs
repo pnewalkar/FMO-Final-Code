@@ -78,6 +78,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
             using (loggingHelper.RMTraceManager.StartTrace("Middleware.Invoke"))
             {
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
+
                 // If the request path doesn't match, skip
                 if (!context.Request.Path.Equals(options.Path, StringComparison.Ordinal))
                 {
@@ -91,6 +92,7 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                     context.Response.StatusCode = 400;
                     return context.Response.WriteAsync("Bad request.");
                 }
+
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
                 return GenerateToken(context);
             }
@@ -161,10 +163,10 @@ namespace RM.Common.ActionManager.WebAPI.Authentication
                         return;
                     }
 
-                    //Get the Unit dtails for current user.
+                    // Get the Unit dtails for current user.
                     UserUnitInfoDTO userUnitDetails = await actionManagerBusinessService.GetUserUnitInfo(username, unitGuid);
 
-                    //unitGuid would be empty while loading the application for first time for the current session for the current user
+                    // unitGuid would be empty while loading the application for first time for the current session for the current user
                     if (unitGuid == Guid.Empty)
                     {
                         unitGuid = userUnitDetails.LocationId;

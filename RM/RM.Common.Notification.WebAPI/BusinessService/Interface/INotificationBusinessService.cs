@@ -1,6 +1,5 @@
-﻿using RM.Common.Notification.WebAPI.DTO;
-using System.Threading.Tasks;
-
+﻿using System.Threading.Tasks;
+using RM.Common.Notification.WebAPI.DTO;
 
 namespace RM.Common.Notification.WebAPI.BusinessService
 {

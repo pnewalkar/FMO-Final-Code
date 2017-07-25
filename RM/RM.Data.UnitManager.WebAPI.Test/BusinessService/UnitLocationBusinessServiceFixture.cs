@@ -32,8 +32,9 @@ namespace RM.Data.UnitManager.WebAPI.Test
         private Mock<IPostalAddressDataService> mockPostalAddressDataService;
         private Mock<ILoggingHelper> loggingHelperMock;
 
-        private UnitLocationDTO actualDeliveryUnitResult = null;
+        // private UnitLocationDTO actualDeliveryUnitResult = null;
         private List<UnitLocationDTO> actualDeliveryUnitListForUserResult = null;
+
         private Guid deliveryUnitID = System.Guid.NewGuid();
         private Guid userID = System.Guid.NewGuid();
         private IUnitLocationBusinessService testCandidate;
@@ -197,17 +198,19 @@ namespace RM.Data.UnitManager.WebAPI.Test
                 ReferenceDatas = new List<CommonLibrary.EntityFramework.DTO.ReferenceDataDTO>()
                 {
                     new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
-                    { ReferenceDataValue = PostCodeTypeCategory.PostcodeSector.GetDescription()
+                    {
+                        ReferenceDataValue = PostCodeTypeCategory.PostcodeSector.GetDescription()
                     },
                     new CommonLibrary.EntityFramework.DTO.ReferenceDataDTO()
-                    { ReferenceDataValue = PostCodeTypeCategory.PostcodeDistrict.GetDescription()
+                    {
+                        ReferenceDataValue = PostCodeTypeCategory.PostcodeDistrict.GetDescription()
                     }
                 }
             };
             PostcodeSectorDataDTO postcodeSectorDataDTO = new PostcodeSectorDataDTO() { };
             List<PostcodeDataDTO> postcodeDataDTOList = new List<PostcodeDataDTO>() { new PostcodeDataDTO() { PostcodeUnit = "Unit1", ID = new Guid("B51AA229-C984-4CA6-9C12-510187B81050") } };
             List<ScenarioDataDTO> scenarioDataDTOList = new List<ScenarioDataDTO>() { new ScenarioDataDTO() { } };
-            List<PostalAddressDataDTO> PostalAddressDataServiceList = new List<PostalAddressDataDTO>() { new PostalAddressDataDTO() { AddressType_GUID = new Guid("A867065B-B91E-E711-9F8C-28D244AEF9EC"), BuildingName = "bldg1", BuildingNumber = 1, SubBuildingName = "subbldg" } };
+            List<PostalAddressDataDTO> postalAddressDataServiceList = new List<PostalAddressDataDTO>() { new PostalAddressDataDTO() { AddressType_GUID = new Guid("A867065B-B91E-E711-9F8C-28D244AEF9EC"), BuildingName = "bldg1", BuildingNumber = 1, SubBuildingName = "subbldg" } };
             List<DeliveryRouteDTO> deliveryRouteDTOList = new List<DeliveryRouteDTO>() { };
 
             // setup methods
@@ -222,7 +225,7 @@ namespace RM.Data.UnitManager.WebAPI.Test
             mockScenarioDataService.Setup(x => x.GetScenariosByOperationStateAndDeliveryUnit(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(scenarioDataDTOList);
             mockUnitLocationDataService.Setup(x => x.GetPostcodes(It.IsAny<List<Guid>>(), It.IsAny<Guid>())).ReturnsAsync(postcodeDataDTOList);
             mockPostCodeDataService.Setup(x => x.GetApproxLocation(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(unitBoundary);
-            mockPostalAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(PostalAddressDataServiceList);
+            mockPostalAddressDataService.Setup(x => x.GetPostalAddressDetails(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(postalAddressDataServiceList);
             mockUnitManagerIntegrationService.Setup(x => x.GetRouteData(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(deliveryRouteDTOList);
             mockPostalAddressDataService.Setup(x => x.GetPostalAddressSearchDetails(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<List<Guid>>())).ReturnsAsync(new List<string>() { "123" });
 

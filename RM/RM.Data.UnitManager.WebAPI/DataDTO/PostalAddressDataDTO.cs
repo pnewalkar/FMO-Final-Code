@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RM.Data.UnitManager.WebAPI.DataDTO
 {
@@ -46,6 +43,5 @@ namespace RM.Data.UnitManager.WebAPI.DataDTO
         public Guid AddressType_GUID { get; set; }
 
         public DateTime RowCreateDateTime { get; set; }
-
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
+﻿namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
 {
     public static class DTOConstants
     {
@@ -16,8 +10,8 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Utils
         internal const string USRYCOORDINATE = "yCoordinate";
         internal const string USRLATITUDE = "latitude";
         internal const string USRLONGITITUDE = "longitude";
-        internal const string USRCHANGETYPE = "changeType"; 
+        internal const string USRCHANGETYPE = "changeType";
 
-        #endregion
+        #endregion AddressLocationDTO
     }
 }

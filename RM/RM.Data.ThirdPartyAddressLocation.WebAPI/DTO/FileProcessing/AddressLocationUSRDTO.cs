@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
 using RM.Data.ThirdPartyAddressLocation.WebAPI.Utils;
-using RM.CommonLibrary.HelperMiddleware;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing
 {
@@ -9,8 +8,6 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.DTO.FileProcessing
     [XmlType(DTOConstants.ADDRESSLOCATIONXMLROOT)]
     public class AddressLocationUSRDTO
     {
-        
-
         [XmlElement(ElementName = DTOConstants.USRUDPRN)]
         public int? UDPRN { get; set; }
 
