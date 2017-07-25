@@ -9,7 +9,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
     [Table("FMO.NetworkLink")]
     public partial class NetworkLink
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public NetworkLink()
         {
             NetworkReferences = new HashSet<NetworkReference>();

@@ -4,12 +4,11 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.PostalAddress")]
     public partial class PostalAddress
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public PostalAddress()
         {
             DeliveryPoints = new HashSet<DeliveryPoint>();
@@ -72,7 +71,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Entities
 
         public DateTime RowCreateDateTime { get; private set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<DeliveryPoint> DeliveryPoints { get; private set; }
     }
 }

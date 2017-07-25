@@ -7,7 +7,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
     [Table("FMO.RouteActivity")]
     public partial class RouteActivity
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public RouteActivity()
         {
             RouteNetworkLinks = new HashSet<RouteNetworkLink>();
@@ -40,7 +40,7 @@ namespace RM.Data.DeliveryRoute.WebAPI.Entities
 
         public virtual Route Route { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<RouteNetworkLink> RouteNetworkLinks { get; set; }
     }
 }

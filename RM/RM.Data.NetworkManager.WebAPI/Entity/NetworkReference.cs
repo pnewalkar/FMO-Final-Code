@@ -9,7 +9,7 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
     [Table("FMO.NetworkReference")]
     public partial class NetworkReference
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public NetworkReference()
         {
             NetworkLinkReferences = new HashSet<NetworkLinkReference>();
@@ -42,18 +42,18 @@ namespace RM.DataManagement.NetworkManager.WebAPI.Entities
 
         public virtual NetworkLink NetworkLink { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<NetworkLinkReference> NetworkLinkReferences { get; set; }
 
         public virtual NetworkNode NetworkNode { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<OSAccessRestriction> OSAccessRestrictions { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<OSRestrictionForVehicle> OSRestrictionForVehicles { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<OSTurnRestriction> OSTurnRestrictions { get; set; }
     }
 }

@@ -4,12 +4,11 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Entity.Spatial;
 
     [Table("FMO.DeliveryPoint")]
     public partial class DeliveryPoint
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "Auto Generated")]
         public DeliveryPoint()
         {
             DeliveryPointStatus = new HashSet<DeliveryPointStatus>();
@@ -36,7 +35,7 @@ namespace RM.Data.DeliveryPoint.WebAPI.Entities
 
         public virtual PostalAddress PostalAddress { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "Auto Generated")]
         public virtual ICollection<DeliveryPointStatus> DeliveryPointStatus { get; set; }
 
         public virtual SupportingDeliveryPoint SupportingDeliveryPoint { get; set; }
