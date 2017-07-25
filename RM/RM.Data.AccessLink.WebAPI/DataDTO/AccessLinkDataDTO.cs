@@ -30,7 +30,7 @@ namespace RM.Data.AccessLink.WebAPI.DataDTOs
 
         public Guid? ConnectedNetworkLinkID { get; set; }
 
-        public virtual AccessLinkStatusDataDTO AccessLinkStatusDataDTO { get; set; }
-        public NetworkNodeDataDTO NetworkNodeDataDTO { get; set; }
+        public AccessLinkStatusDataDTO AccessLinkStatus { get; set; }
+        public NetworkNodeDataDTO NetworkNode { get; set; }
     }
 }
