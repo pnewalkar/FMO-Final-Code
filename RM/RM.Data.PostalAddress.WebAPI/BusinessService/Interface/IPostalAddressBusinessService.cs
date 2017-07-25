@@ -56,14 +56,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Interface
         /// </summary>
         /// <param name="objPostalAddress">objPostalAddress as input</param>
         /// <returns>string</returns>
-        string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
+        Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress);
 
         /// <summary>
         /// This method is used to check for Duplicate Address with Delivery Points.
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
+        Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress);
 
         /// <summary>
         /// This method is used to Create Address and Delivery Point.

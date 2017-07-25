@@ -386,7 +386,7 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">PostalAddressDTO as input</param>
         /// <returns>string</returns>
-        public string CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
+        public async Task<string> CheckForDuplicateNybRecords(PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateNybRecords"))
             {
@@ -410,14 +410,14 @@ namespace RM.DataManagement.PostalAddress.WebAPI.BusinessService.Implementation
         /// </summary>
         /// <param name="objPostalAddress">Postal Addess Dto as input</param>
         /// <returns>bool</returns>
-        public bool CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
+        public async Task<bool> CheckForDuplicateAddressWithDeliveryPoints(PostalAddressDTO objPostalAddress)
         {
             using (loggingHelper.RMTraceManager.StartTrace("BusinessService.CheckForDuplicateAddressWithDeliveryPoints"))
             {
                 string methodName = typeof(PostalAddressBusinessService) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodEntryEventId);
 
-                bool isDuplicate = addressDataService.CheckForDuplicateAddressWithDeliveryPoints(ConvertDTOToDataDTO(objPostalAddress));
+                bool isDuplicate = await addressDataService.CheckForDuplicateAddressWithDeliveryPoints(ConvertDTOToDataDTO(objPostalAddress));
                 loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.PostalAddressAPIPriority, LoggerTraceConstants.PostalAddressBusinessServiceMethodExitEventId);
                 return isDuplicate;
             }

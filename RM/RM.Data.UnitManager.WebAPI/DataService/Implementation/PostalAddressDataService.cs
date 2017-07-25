@@ -184,7 +184,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                     loggingHelper.LogMethodExit(methodName, LoggerTraceConstants.UnitManagerAPIPriority, LoggerTraceConstants.PostalAddressDataServiceMethodExitEventId);
                     return postalAddressDTO;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return null;
                 }

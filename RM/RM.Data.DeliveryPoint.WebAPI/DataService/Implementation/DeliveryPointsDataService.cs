@@ -680,6 +680,21 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
         #region Private Methods
 
+        private static void ConfigureMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
+                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
+                cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(2);
+                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
+                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().MaxDepth(2);
+                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().MaxDepth(1);
+            });
+
+            Mapper.Configuration.CreateMapper();
+        }
+
         /// <summary>
         /// This method is used to Get delivery Point boundingBox data.
         /// </summary>
@@ -718,21 +733,6 @@ namespace RM.DataManagement.DeliveryPoint.WebAPI.DataService
 
                 return deliveryPointDTOs;
             }
-        }
-
-        private static void ConfigureMapper()
-        {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<DeliveryPoint, DeliveryPointDataDTO>().MaxDepth(1);
-                cfg.CreateMap<NetworkNode, NetworkNodeDataDTO>().MaxDepth(1);
-                cfg.CreateMap<Location, LocationDataDTO>().MaxDepth(2);
-                cfg.CreateMap<PostalAddress, PostalAddressDataDTO>().MaxDepth(1);
-                cfg.CreateMap<DeliveryPointStatus, DeliveryPointStatusDataDTO>().MaxDepth(2);
-                cfg.CreateMap<SupportingDeliveryPoint, SupportingDeliveryPointDataDTO>().MaxDepth(1);
-            });
-
-            Mapper.Configuration.CreateMapper();
         }
 
         #endregion Private Methods

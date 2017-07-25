@@ -25,10 +25,6 @@ namespace RM.DataServices.Tests.DataService
         private Guid unitGuid = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13");
         private string search = null;
         private int noOfRecords = 0;
-        private Guid unit2Guid;
-        private Guid unit3Guid;
-        private Guid user1Id;
-        private Guid user2Id;
         private Mock<ILoggingHelper> mockLoggingHelper;
 
         private DeliveryPointDataDTO deliveryPointDataDTO = null;
@@ -307,8 +303,8 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public async Task Test_DeleteDeliveryPointPositiveScenario()
         {
-            Guid ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13");
-            var actualResult = await testCandidate.DeleteDeliveryPoint(ID);
+            Guid id = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13");
+            var actualResult = await testCandidate.DeleteDeliveryPoint(id);
             Assert.IsNotNull(actualResult);
             Assert.IsTrue(actualResult);
         }
@@ -316,8 +312,8 @@ namespace RM.DataServices.Tests.DataService
         [Test]
         public async Task Test_DeleteDeliveryPointNegativeScenario()
         {
-            Guid ID = new Guid("915DE34F-59E7-49AD-985E-541A76A634FF");
-            var actualResult = await testCandidate.DeleteDeliveryPoint(ID);
+            Guid id = new Guid("915DE34F-59E7-49AD-985E-541A76A634FF");
+            var actualResult = await testCandidate.DeleteDeliveryPoint(id);
             Assert.IsNotNull(actualResult);
             Assert.IsFalse(actualResult);
         }
@@ -335,7 +331,7 @@ namespace RM.DataServices.Tests.DataService
             {
                new DeliveryPoint()
                {
-                   ID=new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                   ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                    PostalAddressID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),
                    DeliveryPointUseIndicatorGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14"),
                     RowVersion = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 },
@@ -370,7 +366,7 @@ namespace RM.DataServices.Tests.DataService
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                     Location = new Location()
                     {
-                         ID=new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                         ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                         Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700)
                     }
                 },
@@ -383,13 +379,13 @@ namespace RM.DataServices.Tests.DataService
                 {
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                       Shape = DbGeometry.PointFromText("POINT (488938 197021)", 27700),
-                      RowCreateDateTime=DateTime.Now,
-                      NetworkNode= new NetworkNode()
+                      RowCreateDateTime = DateTime.Now,
+                      NetworkNode = new NetworkNode()
                 {
                     ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
-                    DeliveryPoint=new DeliveryPoint()
+                    DeliveryPoint = new DeliveryPoint()
                {
-                   ID=new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
+                   ID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A13"),
                    PostalAddressID = new Guid("619AF1F3-AE0C-4157-9BDE-A7528C1482BA"),
                    DeliveryPointUseIndicatorGUID = new Guid("019DBBBB-03FB-489C-8C8D-F1085E0D2A14")
                 }
@@ -509,7 +505,6 @@ namespace RM.DataServices.Tests.DataService
             mockLoggingHelper.Setup(x => x.RMTraceManager).Returns(rmTraceManagerMock.Object);
 
             // mockConfigurationHelper = new Mock<IConfigurationHelper>();
-
             mockDatabaseFactory = CreateMock<IDatabaseFactory<DeliveryPointDBContext>>();
             mockDatabaseFactory.Setup(x => x.Get()).Returns(mockRMDBContext.Object);
             mockRMDBContext.Setup(n => n.SaveChangesAsync()).ReturnsAsync(1);

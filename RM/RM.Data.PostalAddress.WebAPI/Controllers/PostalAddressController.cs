@@ -274,7 +274,7 @@ namespace Fmo.API.Services.Controllers
                 string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateNybRecords);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                string postCode = businessService.CheckForDuplicateNybRecords(objPostalAddress);
+                string postCode = await businessService.CheckForDuplicateNybRecords(objPostalAddress);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
@@ -297,7 +297,7 @@ namespace Fmo.API.Services.Controllers
                 string methodName = typeof(PostalAddressController) + "." + nameof(CheckForDuplicateAddressWithDeliveryPoints);
                 loggingHelper.LogMethodEntry(methodName, priority, entryEventId);
 
-                bool isDuplicate = businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
+                bool isDuplicate = await businessService.CheckForDuplicateAddressWithDeliveryPoints(objPostalAddress);
 
                 loggingHelper.LogMethodExit(methodName, priority, exitEventId);
 
