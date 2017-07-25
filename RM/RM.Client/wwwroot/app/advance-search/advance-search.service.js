@@ -6,14 +6,16 @@ advanceSearchService.$inject = ['advanceSearchAPIService',
                                 'searchService',
                                 'mapFactory',
                                 'CommonConstants',
-                                '$state'];
+                                '$state',
+                                'searchDPSelectedService'];
 
 function advanceSearchService(advanceSearchAPIService,
                               $q,                            
                               searchService,
                               mapFactory,
                               CommonConstants,
-                              $state) {
+                              $state,
+                              searchDPSelectedService) {
     
     
     var deliveryPointObj = null;
@@ -120,6 +122,8 @@ function advanceSearchService(advanceSearchAPIService,
                     var deliveryPointDetails = coordinatesData.features[0].properties;
                     showDeliveryPointDetails(deliveryPointDetails);
                     deferred.resolve(coordinatesData);
+                    searchDPSelectedService.setSelectedDP(true);
+                    mapService.deselectDP();
                 });
             return deferred.promise;
     }

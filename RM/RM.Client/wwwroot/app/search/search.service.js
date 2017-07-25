@@ -11,7 +11,9 @@ searchBusinessService.$inject = ['searchService',
                                   '$stateParams',
                                   '$timeout',
                                   '$q',
-                                  'CommonConstants'];
+                                  'CommonConstants',
+                                  'mapService',
+                                  'searchDPSelectedService'];
 
 function searchBusinessService(
     searchService,
@@ -23,7 +25,9 @@ function searchBusinessService(
     $stateParams,
     $timeout,
     $q,
-    CommonConstants) {
+    CommonConstants,
+    mapService,
+    searchDPSelectedService) {
     var result = [];
     return {
         resultSet: resultSet,
@@ -90,6 +94,8 @@ function searchBusinessService(
                     mapFactory.setDeliveryPoint(long, lat);
                     var deliveryPointDetails = data.features[0].properties;
                     showDeliveryPointDetails(deliveryPointDetails);
+                    searchDPSelectedService.setSelectedDP(true);
+                    mapService.deselectDP();
                 });
         }
         return contextTitle;
