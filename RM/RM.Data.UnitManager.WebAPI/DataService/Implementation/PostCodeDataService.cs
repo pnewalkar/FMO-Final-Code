@@ -167,7 +167,7 @@ namespace RM.DataManagement.UnitManager.WebAPI.DataService
                                           select ph.ParentPostcode.Trim()).FirstOrDefault();
 
                     // get approx location for the pose code sector
-                    var approxLocationForPostCodeSector = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode.Replace(" ","").StartsWith(postcodeSector));
+                    var approxLocationForPostCodeSector = await DataContext.DeliveryPoints.FirstOrDefaultAsync(x => x.PostalAddress.Postcode.Replace(" ", "").StartsWith(postcodeSector));
 
                     if (approxLocationForPostCodeSector != null)
                     {

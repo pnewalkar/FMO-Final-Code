@@ -135,10 +135,10 @@ namespace Fmo.API.Services.Controllers
         ///// </summary>
         ///// <param name="searchText">searchText</param>
         ///// <returns></returns>
-        //[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        //[HttpGet("postaladdress/search/{searchText}")]
-        //public async Task<IActionResult> SearchAddressdetails(string searchText)
-        //{
+        // [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        // [HttpGet("postaladdress/search/{searchText}")]
+        // public async Task<IActionResult> SearchAddressdetails(string searchText)
+        // {
         //    try
         //    {
         //        string methodName = typeof(PostalAddressController) + "." + nameof(SearchAddressdetails);
@@ -163,17 +163,17 @@ namespace Fmo.API.Services.Controllers
         //        var realExceptions = ae.Flatten().InnerException;
         //        throw realExceptions;
         //    }
-        //}
+        // }
 
         ///// <summary>
         ///// Filters postal address on basis of postcode
         ///// </summary>
         ///// <param name="postCode">postcode</param>
         ///// <returns></returns>
-        //[Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
-        //[HttpGet("postaladdress/filter")]
-        //public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
-        //{
+        // [Authorize(Roles = UserAccessFunctionsConstants.MaintainDeliveryPoints)]
+        // [HttpGet("postaladdress/filter")]
+        // public async Task<IActionResult> GetAddressByPostCode(string selectedItem)
+        // {
         //    try
         //    {
         //        using (loggingHelper.RMTraceManager.StartTrace("Controller.GetAddressByPostCode"))
@@ -198,7 +198,7 @@ namespace Fmo.API.Services.Controllers
         //        var realExceptions = ae.Flatten().InnerException;
         //        throw realExceptions;
         //    }
-        //}
+        // }
 
         /// <summary>
         ///  Filters postal address on basis of postal address id.

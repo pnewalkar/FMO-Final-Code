@@ -1,11 +1,5 @@
-﻿using Moq;
-using NUnit.Framework;
-using RM.CommonLibrary.ConfigurationMiddleware;
-using RM.CommonLibrary.EntityFramework.DataService.Interfaces;
+﻿using NUnit.Framework;
 using RM.CommonLibrary.HelperMiddleware;
-using RM.CommonLibrary.LoggingMiddleware;
-using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.BusinessService;
-using RM.DataManagement.ThirdPartyAddressLocation.WebAPI.IntegrationService;
 
 namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
 {
@@ -22,7 +16,7 @@ namespace RM.Data.ThirdPartyAddressLocation.WebAPI.Test
         // private Mock<ILoggingHelper> loggingHelperMock;
         // private Mock<IConfigurationHelper> configurationHelperMock;
 
-        //TODO: Nunits to be fixed
+        // TODO: Nunits to be fixed
         /*
         /// <summary>
         /// Test the method get Address location by Udprn.
